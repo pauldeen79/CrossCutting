@@ -397,7 +397,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
 
             // Assert
             actual.Should().StartWith(@"""System.OutOfMemoryException: Insufficient memory to continue the execution of the program.");
-            actual.Should().EndWith(@"\\ComposableObjectDumper.cs:line 70"" [System.OutOfMemoryException]");
+            actual.Should().EndWith(@"ComposableObjectDumper.cs:line 70"" [System.OutOfMemoryException]");
         }
 
         [Fact]
