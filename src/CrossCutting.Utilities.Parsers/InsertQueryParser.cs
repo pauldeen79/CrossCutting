@@ -128,10 +128,6 @@ namespace CrossCutting.Utilities.Parsers
                         //value
                         AddValue(currentSection, columnValues);
                     }
-                    else if (insertIntoOpenBracketFound && !insertIntoCloseBracketFound)
-                    {
-                        AddColumnName(currentSection, columnNames);
-                    }
                 }
                 else if (character == '\'' && !inValue && openRoundBracketCount == 0)
                 {
