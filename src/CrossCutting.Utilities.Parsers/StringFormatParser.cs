@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -13,100 +14,56 @@ namespace CrossCutting.Utilities.Parsers
         {
             if (string.IsNullOrWhiteSpace(formatString))
             {
-                return new ParseResult<string, object>(false, new[] { "Format string is empty" }, System.Array.Empty<KeyValuePair<string, object>>());
+                return new ParseResult<string, object>(false, new[] { "Format string is empty" }, Array.Empty<KeyValuePair<string, object>>());
             }
 
-            var currentSection = new StringBuilder();
-            var openBracketCount = 0;
-            var formatPlaceholders = new List<string>();
-            var validationErrors = new List<string>();
-            var formatValues = new List<object>(args.ToList());
+            var state = new StringFormatParserState(args);
 
             foreach (var character in formatString)
             {
                 if (character == '{')
                 {
-                    openBracketCount++;
-                    if (openBracketCount > 1)
+                    state.BeginPlaceholder();
+                    if (state.OpenBracketCount > 1)
                     {
-                        return new ParseResult<string, object>(false, new[] { "Too many opening brackets found" }, System.Array.Empty<KeyValuePair<string, object>>());
+                        return new ParseResult<string, object>(false, new[] { "Too many opening brackets found" }, Array.Empty<KeyValuePair<string, object>>());
                     }
                     else
                     {
-                        currentSection.Clear();
+                        state.ClearCurrentSection();
                     }
                 }
                 else if (character == '}')
                 {
-                    openBracketCount--;
-                    if (openBracketCount < 0)
+                    state.EndPlaceholder();
+                    if (state.OpenBracketCount < 0)
                     {
-                        return new ParseResult<string, object>(false, new[] { "Too many close brackets found" }, System.Array.Empty<KeyValuePair<string, object>>());
+                        return new ParseResult<string, object>(false, new[] { "Too many close brackets found" }, Array.Empty<KeyValuePair<string, object>>());
                     }
                     else
                     {
-                        var name = currentSection.ToString();
-                        var doublePointSplit = name.Split(':');
-                        if (doublePointSplit.Length > 1)
-                        {
-                            name = doublePointSplit[0];
-                        }
-                        if (!formatPlaceholders.Contains(name))
-                        {
-                            formatPlaceholders.Add(name);
-                        }
-                        currentSection.Clear();
+                        state.ProcessCurrentSection();
                     }
                 }
                 else if (character != '\r' && character != '\n' && character != '\t')
                 {
-                    currentSection.Append(character);
+                    state.CurrentSection.Append(character);
                 }
             }
 
-            for (int i = 0; i < formatValues.Count; i++)
-            {
-                if (!formatPlaceholders.Contains(i.ToString()))
-                {
-                    validationErrors.Add($"Warning: Format value {i} was not found in format placeholders");
-                    formatPlaceholders.Add(i.ToString());
-                }
-            }
+            state.AddWarningsForMissingPlaceholders();
 
             //important: sort the placeholders! (i.e. Hello {1} {0} --> {0}, {1})
-            formatPlaceholders = new List<string>(formatPlaceholders.OrderBy(s => s).ToList());
+            state.SortPlaceholders();
 
-            if (formatValues.Count > 0 && formatPlaceholders.Count < formatValues.Count)
-            {
-                var result = new ParseResult<string, object>(false, validationErrors.Concat(new[] { $"Format values count ({formatValues.Count}) is not equal to column placeholders count ({formatPlaceholders.Count}), see #MISSING# in format placeholders list (keys)" }), formatPlaceholders.Zip(formatValues, (name, value) => new KeyValuePair<string, object>(name, value)));
-                formatPlaceholders.AddRange(Enumerable.Range(1, formatValues.Count - formatPlaceholders.Count).Select(_ => "#MISSING#"));
-                return result;
-            }
-            else if (formatPlaceholders.Count > 0 && formatValues.Count < formatPlaceholders.Count)
-            {
-                var result = new ParseResult<string, object>(false, validationErrors.Concat(new[] { $"Format placeholders count ({formatPlaceholders.Count}) is not equal to column values count ({formatValues.Count}), see #MISSING# in format values list (values)" }), formatPlaceholders.Zip(formatValues, (name, value) => new KeyValuePair<string, object>(name, value)));
-                formatValues.AddRange(Enumerable.Range(1, formatPlaceholders.Count - formatValues.Count).Select(_ => "#MISSING#"));
-                return result;
-            }
-
-            if (formatPlaceholders.Count == 0)
-            {
-                return new ParseResult<string, object>(false, validationErrors.Concat(new[] { "No format placeholders were found" }), System.Array.Empty<KeyValuePair<string, object>>());
-            }
-
-            if (formatValues.Count == 0)
-            {
-                return new ParseResult<string, object>(false, validationErrors.Concat(new[] { "No format values were found" }), System.Array.Empty<KeyValuePair<string, object>>());
-            }
-
-            return new ParseResult<string, object>(validationErrors.Count == 0, validationErrors, formatPlaceholders.Zip(formatValues, (name, value) => new KeyValuePair<string, object>(name, value)));
+            return state.GetResult();
         }
 
         public static ParseResult<string, object> ParseWithArgumentsString(string formatString, string argumentsString)
         {
             if (string.IsNullOrWhiteSpace(argumentsString))
             {
-                return new ParseResult<string, object>(false, new[] { "Arguments string is empty" }, System.Array.Empty<KeyValuePair<string, object>>());
+                return new ParseResult<string, object>(false, new[] { "Arguments string is empty" }, Array.Empty<KeyValuePair<string, object>>());
             }
 
             var currentSection = new StringBuilder();
@@ -143,6 +100,99 @@ namespace CrossCutting.Utilities.Parsers
             }
 
             return Parse(formatString, arguments.ToArray());
+        }
+
+        private class StringFormatParserState
+        {
+            public StringBuilder CurrentSection { get; } = new StringBuilder();
+            public int OpenBracketCount { get; private set; }
+            public List<string> FormatPlaceholders { get; private set; } = new List<string>();
+            public List<string> ValidationErrors { get; } = new List<string>();
+            public List<object> FormatValues { get; }
+
+            private bool FormatValueCountUnequalToFormatPlaceholderCount
+                => FormatValues.Count > 0 && FormatPlaceholders.Count < FormatValues.Count;
+
+            private bool FormatPlaceholderCountUnequalToFormatValueCount
+                => FormatPlaceholders.Count > 0 && FormatValues.Count < FormatPlaceholders.Count;
+
+            public StringFormatParserState(IEnumerable<object> args)
+            {
+                FormatValues = new List<object>(args.ToList());
+            }
+
+            public void BeginPlaceholder()
+            {
+                OpenBracketCount++;
+            }
+
+            public void EndPlaceholder()
+            {
+                OpenBracketCount--;
+            }
+
+            public void SortPlaceholders()
+            {
+                FormatPlaceholders = new List<string>(FormatPlaceholders.OrderBy(s => s).ToList());
+            }
+
+            public void ClearCurrentSection()
+            {
+                CurrentSection.Clear();
+            }
+
+            public void ProcessCurrentSection()
+            {
+                var name = CurrentSection.ToString();
+                var doublePointSplit = name.Split(':');
+                if (doublePointSplit.Length > 1)
+                {
+                    name = doublePointSplit[0];
+                }
+                if (!FormatPlaceholders.Contains(name))
+                {
+                    FormatPlaceholders.Add(name);
+                }
+                ClearCurrentSection();
+            }
+
+            public void AddWarningsForMissingPlaceholders()
+            {
+                for (int i = 0; i < FormatValues.Count; i++)
+                {
+                    if (!FormatPlaceholders.Contains(i.ToString()))
+                    {
+                        ValidationErrors.Add($"Warning: Format value {i} was not found in format placeholders");
+                        FormatPlaceholders.Add(i.ToString());
+                    }
+                }
+            }
+
+            public ParseResult<string, object> GetResult()
+            {
+                if (FormatValueCountUnequalToFormatPlaceholderCount)
+                {
+                    var result = new ParseResult<string, object>(false, ValidationErrors.Concat(new[] { $"Format values count ({FormatValues.Count}) is not equal to column placeholders count ({FormatPlaceholders.Count}), see #MISSING# in format placeholders list (keys)" }), FormatPlaceholders.Zip(FormatValues, (name, value) => new KeyValuePair<string, object>(name, value)));
+                    FormatPlaceholders.AddRange(Enumerable.Range(1, FormatValues.Count - FormatPlaceholders.Count).Select(_ => "#MISSING#"));
+                    return result;
+                }
+                else if (FormatPlaceholderCountUnequalToFormatValueCount)
+                {
+                    var result = new ParseResult<string, object>(false, ValidationErrors.Concat(new[] { $"Format placeholders count ({FormatPlaceholders.Count}) is not equal to column values count ({FormatValues.Count}), see #MISSING# in format values list (values)" }), FormatPlaceholders.Zip(FormatValues, (name, value) => new KeyValuePair<string, object>(name, value)));
+                    FormatValues.AddRange(Enumerable.Range(1, FormatPlaceholders.Count - FormatValues.Count).Select(_ => "#MISSING#"));
+                    return result;
+                }
+                else if (FormatPlaceholders.Count == 0)
+                {
+                    return new ParseResult<string, object>(false, ValidationErrors.Concat(new[] { "No format placeholders were found" }), Array.Empty<KeyValuePair<string, object>>());
+                }
+                else if (FormatValues.Count == 0)
+                {
+                    return new ParseResult<string, object>(false, ValidationErrors.Concat(new[] { "No format values were found" }), Array.Empty<KeyValuePair<string, object>>());
+                }
+
+                return new ParseResult<string, object>(ValidationErrors.Count == 0, ValidationErrors, FormatPlaceholders.Zip(FormatValues, (name, value) => new KeyValuePair<string, object>(name, value)));
+            }
         }
     }
 }
