@@ -84,7 +84,11 @@ namespace CrossCutting.Utilities.Parsers
                     valuesOpenBracketFound = true;
                     currentSection.Clear();
                 }
-                else if (character == '(' && (valuesFound || selectFound) && !valuesOpenBracketFound && openRoundBracketCount == 0 && columnValues.Count > 0)
+                else if (character == '(' &&
+                    (
+                        (valuesFound || selectFound) && !valuesOpenBracketFound && openRoundBracketCount == 0 && columnValues.Count > 0
+                        || (valuesOpenBracketFound && !valuesCloseBracketFound && !inValue)
+                    ))
                 {
                     openRoundBracketCount++;
                     currentSection.Append(character);
@@ -94,11 +98,6 @@ namespace CrossCutting.Utilities.Parsers
                     valuesCloseBracketFound = true;
                     columnValues.Add(currentSection.ToString());
                     currentSection.Clear();
-                }
-                else if (character == '(' && valuesOpenBracketFound && !valuesCloseBracketFound && !inValue)
-                {
-                    openRoundBracketCount++;
-                    currentSection.Append(character);
                 }
                 else if (character == ')' && valuesOpenBracketFound && !valuesCloseBracketFound && !inValue)
                 {
@@ -199,9 +198,14 @@ namespace CrossCutting.Utilities.Parsers
                 (
                     "INSERT INTO [{0}]({1}) VALUES({2})",
                     tableName,
-                    string.Join(", ", parseResult.Values.Select(kvp => kvp.Key.Contains(" ") ? $"[{kvp.Key}]" : kvp.Key)),
+                    string.Join(", ", parseResult.Values.Select(kvp => GetSqlName(kvp.Key))),
                     string.Join(", ", parseResult.Values.Select(kvp => kvp.Value))
                 )
                 : "Error: Parse result was not successful. Error messages: " + string.Join(Environment.NewLine, parseResult.ErrorMessages);
+
+        private static string GetSqlName(string key)
+            => key.Contains(" ")
+                ? $"[{key}]"
+                : key;
     }
 }

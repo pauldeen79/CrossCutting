@@ -2,7 +2,7 @@
 
 namespace CrossCutting.Utilities.XmlDocumentTransformation.Interfaces
 {
-    public interface IXDocumentTransformComponent<T>
+    public interface IXDocumentTransformComponent<in T>
     {
         void Transform(XDocument result, T parameters);
     }

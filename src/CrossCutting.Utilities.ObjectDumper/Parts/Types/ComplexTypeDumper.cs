@@ -25,10 +25,13 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 
             var first = IterateChildren
             (
-                true,
-                builder,
-                indent,
-                currentDepth,
+                new ComplexTypeDumperState
+                (
+                    true,
+                    builder,
+                    indent,
+                    currentDepth
+                ),
                 () => Callback.GetProperties(instance),
                 property => ((PropertyDescriptor)property).Name,
                 property => ((PropertyDescriptor)property).GetValue(instance),
@@ -37,10 +40,13 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 
             first = IterateChildren
             (
-                first,
-                builder,
-                indent,
-                currentDepth,
+                new ComplexTypeDumperState
+                (
+                    first,
+                    builder,
+                    indent,
+                    currentDepth
+                ),
                 () => Callback.GetFields(instance),
                 property => ((FieldInfo)property).Name,
                 property => ((FieldInfo)property).GetValue(instance),
@@ -56,33 +62,31 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 
         private bool IterateChildren
         (
-            bool first,
-            IObjectDumperResultBuilder builder,
-            int indent,
-            int currentDepth,
+            ComplexTypeDumperState state,
             Func<IEnumerable> enumerableDelegate,
             Func<object, string> getNameDelegate,
             Func<object, object> getValueDelegate,
             Func<object, Type> getTypeDelegate
         )
         {
+            var first = state.First;
             foreach (var item in enumerableDelegate())
             {
-                builder.AddEnumerableItem(first, indent, true);
-                if (first)
+                state.Builder.AddEnumerableItem(first, state.Indent, true);
+                if (state.First)
                 {
                     first = false;
                 }
 
-                builder.AddName(indent, getNameDelegate(item));
+                state.Builder.AddName(state.Indent, getNameDelegate(item));
 
                 try
                 {
-                    Callback.Process(getValueDelegate(item), getTypeDelegate(item), builder, indent + 4, currentDepth + 1);
+                    Callback.Process(getValueDelegate(item), getTypeDelegate(item), state.Builder, state.Indent + 4, state.CurrentDepth + 1);
                 }
                 catch (Exception ex)
                 {
-                    builder.AddException(ex);
+                    state.Builder.AddException(ex);
                 }
             }
 
@@ -94,5 +98,21 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
         public bool ShouldProcessProperty(object instance, PropertyDescriptor propertyDescriptor) => true;
 
         public object Transform(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
+
+        private class ComplexTypeDumperState
+        {
+            public bool First { get; }
+            public IObjectDumperResultBuilder Builder { get; }
+            public int Indent { get; }
+            public int CurrentDepth { get; }
+
+            public ComplexTypeDumperState(bool first, IObjectDumperResultBuilder builder, int indent, int currentDepth)
+            {
+                First = first;
+                Builder = builder;
+                Indent = indent;
+                CurrentDepth = currentDepth;
+            }
+        }
     }
 }

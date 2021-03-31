@@ -87,7 +87,9 @@ namespace CrossCutting.Utilities.ObjectDumper
         IEnumerable<FieldInfo> IObjectDumperCallback.GetFields(object instance)
             => instance
                 .GetType()
+#pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
                 .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+#pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
                 .Where(fi => !fi.Name.EndsWithAny(">i__Field", ">k__BackingField"));
 
         private IEnumerable<PropertyDescriptor> GetPropertyDescriptors(object instance)
