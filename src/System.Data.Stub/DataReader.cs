@@ -192,11 +192,6 @@ namespace System.Data.Stub
             return true;
         }
 
-        public void Add(IDictionary<string, object> dictionary)
-        {
-            this.dictionary.Add(this.dictionary.Count + 1, dictionary);
-        }
-
         public void Add(object objectWithValues)
         {
             var localDict = new Dictionary<string, object>();
