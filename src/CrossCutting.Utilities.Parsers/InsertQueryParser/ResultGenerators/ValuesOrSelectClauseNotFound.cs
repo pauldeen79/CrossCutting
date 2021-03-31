@@ -1,0 +1,16 @@
+﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators
+{
+    public class ValuesOrSelectClauseNotFound : IInsertQueryParserResultGenerator
+    {
+        public ProcessResult Process(InsertQueryParserState state)
+        {
+            if (!state.ValuesFound
+                && !state.SelectFound)
+            {
+                return ProcessResult.Fail("VALUES or SELECT clause was not found");
+            }
+
+            return ProcessResult.NotUnderstood();
+        }
+    }
+}

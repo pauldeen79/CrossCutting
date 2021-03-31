@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - sonar/*
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -15,6 +16,9 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.301
+      - name: Fetch origin/main
+        run: |
+          git fetch --no-tags --prune --depth=1 origin main
       - name: sonarscan-dotnet
         uses: highbyte/sonarscan-dotnet@1.0.2
         with:
