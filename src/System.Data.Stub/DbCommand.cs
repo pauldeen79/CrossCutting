@@ -1,7 +1,4 @@
-﻿using System;
-using System.Data;
-
-namespace System.Data.Stub
+﻿namespace System.Data.Stub
 {
     public sealed class DbCommand : IDbCommand
     {
