@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 
 namespace System.Data.Stub
@@ -52,7 +50,7 @@ namespace System.Data.Stub
 
         public IEnumerator GetEnumerator()
         {
-            return dictionary.Select(kvp => new DbDataParameter { ParameterName = kvp.Key, Value = kvp.Value, SourceColumn = kvp.Key }).GetEnumerator();
+            return dictionary.Select(kvp => (IDbDataParameter)kvp.Value).GetEnumerator();
         }
 
         public int IndexOf(string parameterName)

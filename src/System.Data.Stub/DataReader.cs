@@ -5,12 +5,17 @@ namespace System.Data.Stub
 {
     public sealed class DataReader : IDataReader
     {
-        private int currentIndex;
-        private Dictionary<int, IDictionary<string, object>> dictionary = new Dictionary<int, IDictionary<string, object>>();
+        public int CurrentIndex { get; private set; }
+        public Dictionary<int, IDictionary<string, object>> Dictionary { get; private set; }  = new Dictionary<int, IDictionary<string, object>>();
 
-        public object this[int i] { get => dictionary[currentIndex][dictionary[currentIndex].Keys.ElementAt(i)]; }
+        public DataReader(CommandBehavior commandBehavior)
+        {
+            CommandBehavior = commandBehavior;
+        }
 
-        public object this[string name] { get => dictionary[currentIndex][name]; }
+        public object this[int i] { get => Dictionary[CurrentIndex][Dictionary[CurrentIndex].Keys.ElementAt(i)]; }
+
+        public object this[string name] { get => Dictionary[CurrentIndex][name]; }
 
         public int Depth => 1;
 
@@ -18,9 +23,11 @@ namespace System.Data.Stub
 
         public int RecordsAffected { get; set; }
 
-        public int FieldCount => currentIndex > dictionary.Count
+        public int FieldCount => CurrentIndex > Dictionary.Count
             ? 0
-            : dictionary[currentIndex].Count;
+            : Dictionary[CurrentIndex].Count;
+
+        public CommandBehavior CommandBehavior { get; }
 
         public void Close()
         {
@@ -114,13 +121,13 @@ namespace System.Data.Stub
 
         public string GetName(int i)
         {
-            return dictionary[currentIndex].Keys.ElementAt(i);
+            return Dictionary[CurrentIndex].Keys.ElementAt(i);
         }
 
         public int GetOrdinal(string name)
         {
             int index = 0;
-            foreach (var key in dictionary[currentIndex].Keys)
+            foreach (var key in Dictionary[CurrentIndex].Keys)
             {
                 if (key == name)
                 {
@@ -150,13 +157,13 @@ namespace System.Data.Stub
         public int GetValues(object[] values)
         {
             var index = 0;
-            foreach (var kvp in dictionary[currentIndex])
+            foreach (var kvp in Dictionary[CurrentIndex])
             {
                 values[index] = kvp.Value;
                 index++;
             }
 
-            return dictionary.Count;
+            return Dictionary.Count;
         }
 
         public bool IsDBNull(int i)
@@ -175,8 +182,8 @@ namespace System.Data.Stub
             NextResultCalled.Invoke(this, args);
             if (args.Result)
             {
-                currentIndex = args.CurrentIndex ?? currentIndex;
-                dictionary = args.Dictionary ?? dictionary;
+                CurrentIndex = args.CurrentIndex ?? CurrentIndex;
+                Dictionary = args.Dictionary ?? Dictionary;
             }
 
             return args.Result;
@@ -184,17 +191,12 @@ namespace System.Data.Stub
 
         public bool Read()
         {
-            if (currentIndex >= dictionary.Count)
+            if (CurrentIndex >= Dictionary.Count)
             {
                 return false;
             }
-            currentIndex++;
+            CurrentIndex++;
             return true;
-        }
-
-        public void Add(IDictionary<string, object> dictionary)
-        {
-            this.dictionary.Add(this.dictionary.Count + 1, dictionary);
         }
 
         public void Add(object objectWithValues)
@@ -204,7 +206,7 @@ namespace System.Data.Stub
             {
                 localDict.Add(property.Name, property.GetValue(objectWithValues));
             }
-            dictionary.Add(dictionary.Count + 1, localDict);
+            Dictionary.Add(Dictionary.Count + 1, localDict);
         }
 
         public event EventHandler<NextResultCalledEventArgs> NextResultCalled;
