@@ -34,14 +34,14 @@
 
         public IDataReader ExecuteReader()
         {
-            var result = new DataReader();
+            var result = new DataReader(CommandBehavior.Default);
             DataReaderCreated?.Invoke(this, new DataReaderCreatedEventArgs(result));
             return result;
         }
 
         public IDataReader ExecuteReader(CommandBehavior behavior)
         {
-            var result = new DataReader();
+            var result = new DataReader(behavior);
             DataReaderCreated?.Invoke(this, new DataReaderCreatedEventArgs(result));
             return result;
         }

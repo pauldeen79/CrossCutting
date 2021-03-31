@@ -8,6 +8,11 @@ namespace System.Data.Stub
         private int currentIndex;
         private Dictionary<int, IDictionary<string, object>> dictionary = new Dictionary<int, IDictionary<string, object>>();
 
+        public DataReader(CommandBehavior commandBehavior)
+        {
+            CommandBehavior = commandBehavior;
+        }
+
         public object this[int i] { get => dictionary[currentIndex][dictionary[currentIndex].Keys.ElementAt(i)]; }
 
         public object this[string name] { get => dictionary[currentIndex][name]; }
@@ -21,6 +26,8 @@ namespace System.Data.Stub
         public int FieldCount => currentIndex > dictionary.Count
             ? 0
             : dictionary[currentIndex].Count;
+
+        public CommandBehavior CommandBehavior { get; }
 
         public void Close()
         {
