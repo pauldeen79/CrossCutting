@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CrossCutting.Common.Testing
 {
+    [ExcludeFromCodeCoverage]
     public static class LoggerExtensions
     {
         public static Mock<ILogger<T>> VerifyLogging<T>(this Mock<ILogger<T>> logger, string expectedMessage, LogLevel expectedLogLevel = LogLevel.Debug, Times? times = null)
