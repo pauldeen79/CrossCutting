@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace CrossCutting.Utilities.Parsers.Tests
+namespace CrossCutting.Utilities.Parsers.Tests.InsertQueryParser
 {
     public class InsertQueryParserTests
     {
@@ -14,7 +14,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string input = "INSERT INTO [Tabel]([Column A], [Column B], ColumnC, Column_D) VALUES(0.5, 'Hello world!', @SqlParameter, :OracleParameter)";
 
             // Act
-            var actual = InsertQueryParser.Parse(input);
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Assert
             actual.IsSuccessful.Should().BeTrue();
@@ -30,7 +30,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string input = "INSERT INTO [Tabel]([Column A], [Column B], ColumnC, Column_D) OUTPUT INSERTED.[Column E], INSERTED.Column_F VALUES(0.5, 'Hello world!', @SqlParameter, :OracleParameter)";
 
             // Act
-            var actual = InsertQueryParser.Parse(input);
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Assert
             actual.IsSuccessful.Should().BeTrue();
@@ -46,7 +46,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string input = "INSERT INTO [Tabel]([Column A], [Column B], ColumnC, Column_D) VALUES(0.5, 'Hello world!', @SqlParameter, :OracleParameter, Missing1, Missing2)";
 
             // Act
-            var actual = InsertQueryParser.Parse(input);
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Assert
             actual.IsSuccessful.Should().BeFalse();
@@ -62,7 +62,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string input = "INSERT INTO [Tabel]([Column A], [Column B], ColumnC, Column_D, Missing1, Missing2) VALUES(0.5, 'Hello world!', @SqlParameter, :OracleParameter)";
 
             // Act
-            var actual = InsertQueryParser.Parse(input);
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Assert
             actual.IsSuccessful.Should().BeFalse();
@@ -78,7 +78,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string input = "INSERT INTO [Tabel]([Column A],     [Column B],     ColumnC,Column_D) VALUES(0.5,            'Hello world!',             @SqlParameter,:OracleParameter)";
 
             // Act
-            var actual = InsertQueryParser.Parse(input);
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Assert
             actual.IsSuccessful.Should().BeTrue();
@@ -94,7 +94,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string input = "INSERT INTO [Tabel]\r\n(\r\n[Column A],\r\n[Column B],\r\nColumnC,\r\nColumn_D\r\n) VALUES\r\n(\r\n0.5,\r\n'Hello world!',\r\n@SqlParameter,\r\n:OracleParameter\r\n)";
 
             // Act
-            var actual = InsertQueryParser.Parse(input);
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Assert
             actual.IsSuccessful.Should().BeTrue();
@@ -110,7 +110,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string input = "INSERT INTO [Tabel]([Column A], [Column B], ColumnC, Column_D) VALUES(0.5, 'Hello ''world!''', @SqlParameter, :OracleParameter)";
 
             // Act
-            var actual = InsertQueryParser.Parse(input);
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Assert
             actual.IsSuccessful.Should().BeTrue();
@@ -126,7 +126,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string input = "INSERT INTO [Tabel]([Column A], [Column B], ColumnC, Column_D) SELECT 0.5, 'Hello world!', FieldC, FieldD FROM Tabel";
 
             // Act
-            var actual = InsertQueryParser.Parse(input);
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Assert
             actual.IsSuccessful.Should().BeTrue();
@@ -142,7 +142,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string input = "INSERT INTO [Tabel]([Column A], [Column B], ColumnC, Column_D) SELECT 0.5, 'Hello world!', FieldC, COALESCE(FieldD, 'Unknown') FROM Tabel";
 
             // Act
-            var actual = InsertQueryParser.Parse(input);
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Assert
             actual.IsSuccessful.Should().BeTrue();
@@ -158,7 +158,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string input = "INSERT INTO [Tabel]([Column A], [Column B], ColumnC, Column_D) SELECT 0.5, 'Hello world!', FieldC, FieldD, Missing1, Missing2 FROM Tabel";
 
             // Act
-            var actual = InsertQueryParser.Parse(input);
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Assert
             actual.IsSuccessful.Should().BeFalse();
@@ -174,7 +174,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string input = "INSERT INTO [Tabel]([Column A], [Column B], ColumnC, Column_D, Missing1, Missing2) SELECT 0.5, 'Hello world!', FieldC, FieldD FROM Tabel";
 
             // Act
-            var actual = InsertQueryParser.Parse(input);
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Assert
             actual.IsSuccessful.Should().BeFalse();
@@ -190,7 +190,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string InsertQuery = "INSERT INTO [Tabel](ColumnA, ColumnB, ColumnC) VALUES (ValueA, ValueB, ValueC)";
 
             // Act
-            var parseResult = InsertQueryParser.Parse(InsertQuery);
+            var parseResult = Parsers.InsertQueryParser.InsertQueryParser.Parse(InsertQuery);
 
             // Act some more
             var insertQuery = string.Format
@@ -212,7 +212,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             const string input = "INSERT INTO [Tabel]([Column A], [Column B], ColumnC, Column_D) VALUES(0.5, CONVERT('Hello world!', 0.5, SYSDATE(), 'Alsjemenou'), @SqlParameter, :OracleParameter)";
 
             // Act
-            var actual = InsertQueryParser.Parse(input);
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Assert
             actual.IsSuccessful.Should().BeTrue();
@@ -226,10 +226,10 @@ namespace CrossCutting.Utilities.Parsers.Tests
         {
             // Arrange
             const string input = "INSERT INTO [Tabel]([Column A], [Column B], ColumnC, Column_D) VALUES(0.5, 'Hello world!', @SqlParameter, :OracleParameter)";
-            var parseResult = InsertQueryParser.Parse(input);
+            var parseResult = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
             // Act
-            var actual = InsertQueryParser.ToInsertIntoString(parseResult, "Tabel");
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.ToInsertIntoString(parseResult, "Tabel");
 
             // Assert
             actual.Should().Be(input);
@@ -242,7 +242,7 @@ namespace CrossCutting.Utilities.Parsers.Tests
             var parseResult = new ParseResult<string, string>(false, new[] { "Some error" }, System.Array.Empty<KeyValuePair<string, string>>());
 
             // Act
-            var actual = InsertQueryParser.ToInsertIntoString(parseResult, "Tabel");
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.ToInsertIntoString(parseResult, "Tabel");
 
             // Assert
             actual.Should().Be("Error: Parse result was not successful. Error messages: Some error");

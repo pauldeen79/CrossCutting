@@ -1,0 +1,21 @@
+﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Processors
+{
+    public class CloseRoundBracket : IInsertQueryParserProcessor
+    {
+        public ProcessResult Process(char character, InsertQueryParserState state)
+        {
+            if (character == ')'
+                && state.ValuesOpenBracketFound
+                && !state.ValuesCloseBracketFound
+                && !state.InValue)
+            {
+                state.OpenRoundBracketCount--;
+                state.CurrentSection.Append(character);
+
+                return ProcessResult.Success();
+            }
+
+            return ProcessResult.NotUnderstood();
+        }
+    }
+}
