@@ -36,7 +36,7 @@ namespace System.Data.Stub
 
         public void Dispose()
         {
-            // Method intentionally left empty.
+            Close();
         }
 
         public bool GetBoolean(int i)

@@ -232,6 +232,38 @@ namespace System.Data.Stub.Tests
             result[1].Amount.Should().Be(3);
         }
 
+        [Fact]
+        public void CanRollbackTransaction()
+        {
+            // Arrange
+            using var transaction = Connection.BeginTransaction();
+            var rolledBack = false;
+            _callback.Transactions.Should().HaveCount(1);
+            _callback.Transactions.First().RolledBack += (sender, args) => rolledBack = true;
+
+            // Act
+            transaction.Rollback();
+
+            // Assert
+            rolledBack.Should().BeTrue();
+        }
+
+        [Fact]
+        public void CanCommitTransaction()
+        {
+            // Arrange
+            using var transaction = Connection.BeginTransaction();
+            var committed = false;
+            _callback.Transactions.Should().HaveCount(1);
+            _callback.Transactions.First().Committed += (sender, args) => committed = true;
+
+            // Act
+            transaction.Commit();
+
+            // Assert
+            committed.Should().BeTrue();
+        }
+
         private void ReaderTest(Func<IDataReader, MyRecord> recordDelegate)
         {
             // Arrange

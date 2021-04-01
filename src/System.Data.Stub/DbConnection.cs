@@ -6,7 +6,7 @@
 
         public int ConnectionTimeout => 1;
 
-        public string Database => "System.Data.Stub.DbConnection";
+        public string Database { get; private set; } = "System.Data.Stub.DbConnection";
 
         public ConnectionState State { get; set; }
 
@@ -26,7 +26,7 @@
 
         public void ChangeDatabase(string databaseName)
         {
-            // Method intentionally left empty.
+            Database = databaseName;
         }
 
         public void Close()
@@ -43,7 +43,7 @@
 
         public void Dispose()
         {
-            // Method intentionally left empty.
+            Close();
         }
 
         public void Open()
