@@ -20,7 +20,7 @@
 
         public void Dispose()
         {
-            // Method intentionally left empty.
+            RolledBack?.Invoke(this, EventArgs.Empty);
         }
 
         public void Rollback()
