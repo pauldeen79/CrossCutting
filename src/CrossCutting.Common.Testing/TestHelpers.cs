@@ -15,21 +15,25 @@ namespace CrossCutting.Common.Testing
         /// </summary>
         /// <param name="type">The type to assert null argument checks for.</param>
         /// <param name="parameterPredicate">Optional predicate to apply to each parameter info. When the predicate returns false, then the parameter will be skipped.</param>
-        public static void ConstructorMustThrowArgumentNullException(Type type, Func<ParameterInfo, bool> parameterPredicate = null)
+        /// <param name="parameterReplaceDelegate">Optional function to apply to a parameter info. When the predicate is not defined, then we will create a mock or value type.</param>
+        public static void ConstructorMustThrowArgumentNullException(Type type, Func<ParameterInfo, bool> parameterPredicate = null, Func<ParameterInfo, object> parameterReplaceDelegate = null)
         {
             foreach (var constructor in type.GetConstructors())
             {
                 var parameters = constructor.GetParameters()
-                    .Where(p => parameterPredicate == null || parameterPredicate.Invoke(p))
                     .ToArray();
-                var mocks = GetMocks(parameters);
+                var mocks = GetMocks(parameters, parameterReplaceDelegate);
 
                 for (int i = 0; i < parameters.Length; i++)
                 {
+                    if (parameterPredicate != null && !parameterPredicate.Invoke(parameters[i]))
+                    {
+                        continue;
+                    }
                     var mocksCopy = mocks.ToArray();
                     mocksCopy[i] = parameters[i].ParameterType.IsValueType
-                        ? Activator.CreateInstance(parameters[i].ParameterType)
-                        : null;
+                            ? Activator.CreateInstance(parameters[i].ParameterType)
+                            : null;
 
                     FixStringsAndArrays(parameters, i, mocksCopy);
 
@@ -49,23 +53,32 @@ namespace CrossCutting.Common.Testing
             }
         }
 
-        public static void ConstructorShouldConstruct(Type type)
+        public static void ConstructorShouldConstruct(Type type, Func<ParameterInfo, object> parameterReplaceDelegate = null)
         {
             foreach (var constructor in type.GetConstructors())
             {
                 var parameters = constructor.GetParameters();
-                var mocks = GetMocks(parameters);
+                var mocks = GetMocks(parameters, parameterReplaceDelegate);
 
                 var actual = constructor.Invoke(mocks);
                 actual.Should().BeOfType(type);
             }
         }
 
-        private static object[] GetMocks(ParameterInfo[] parameters) =>
-            parameters.Select
+        private static object[] GetMocks(ParameterInfo[] parameters, Func<ParameterInfo, object> parameterReplaceDelegate)
+            => parameters.Select
             (
                 p =>
                 {
+                    if (parameterReplaceDelegate != null)
+                    {
+                        var returnValue = parameterReplaceDelegate.Invoke(p);
+                        if (returnValue != null)
+                        {
+                            return returnValue;
+                        }
+                    }
+
                     if (p.ParameterType.IsValueType || p.ParameterType.IsArray || p.ParameterType == typeof(string))
                     {
                         return null; //skip value types, arrays and strings
