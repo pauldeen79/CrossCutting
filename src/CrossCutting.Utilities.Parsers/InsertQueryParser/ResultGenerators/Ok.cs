@@ -1,10 +1,11 @@
-﻿using System;
+﻿using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators
 {
-    public class Ok : IInsertQueryParserResultGenerator
+    internal class Ok : IInsertQueryParserResultGenerator
     {
         public ProcessResult Process(InsertQueryParserState state)
         {

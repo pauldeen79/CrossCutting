@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators
 {
-    public class MissingColumnNames : IInsertQueryParserResultGenerator
+    internal class MissingColumnNames : IInsertQueryParserResultGenerator
     {
         public ProcessResult Process(InsertQueryParserState state)
         {

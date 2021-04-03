@@ -1,6 +1,8 @@
-﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Processors
+﻿using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
+
+namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Processors
 {
-    public class InsertIntoCloseBracket : IInsertQueryParserProcessor
+    internal class InsertIntoCloseBracket : IInsertQueryParserProcessor
     {
         public ProcessResult Process(char character, InsertQueryParserState state)
         {
