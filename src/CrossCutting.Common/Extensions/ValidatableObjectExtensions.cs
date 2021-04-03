@@ -33,12 +33,12 @@ namespace CrossCutting.Common.Extensions
         /// Validates a column of an IValidatableObject for use with IDataErrorInfo.
         /// </summary>
         /// <param name="instance"></param>
-        /// <param name="columnName"></param>
-        /// <returns>Validation error</returns>
-        public static string Validate(this IValidatableObject instance, string columnName)
+        /// <param name="memberName"></param>
+        /// <returns>Validation error, or empty when valid.</returns>
+        public static string Validate(this IValidatableObject instance, string memberName)
         {
             var errors = instance.Validate(null)
-                .Where(vr => vr.MemberNames.Contains(columnName))
+                .Where(vr => vr.MemberNames.Contains(memberName))
                 .ToList();
 
             return ValidateInner(errors);
@@ -75,7 +75,7 @@ namespace CrossCutting.Common.Extensions
         {
             if (errors.Count == 0)
             {
-                return null;
+                return string.Empty;
             }
 
             var sb = new StringBuilder();
