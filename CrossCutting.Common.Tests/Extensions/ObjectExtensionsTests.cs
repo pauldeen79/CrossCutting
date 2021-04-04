@@ -107,6 +107,20 @@ namespace CrossCutting.Common.Tests.Extensions
         }
 
         [Theory,
+            InlineData("True", true),
+            InlineData("False", false),
+            InlineData("", false),
+            InlineData(null, false)]
+        public void IsTrue_Returns_StringValue_Correctly(string input, bool expectedOutput)
+        {
+            // Act
+            var actual = input.IsTrue();
+
+            // Assert
+            actual.Should().Be(expectedOutput);
+        }
+
+        [Theory,
             InlineData(true),
             InlineData(false)]
         public void IsFalse_Returns_Reversed_Boolean_Value(bool input)
@@ -118,6 +132,19 @@ namespace CrossCutting.Common.Tests.Extensions
             actual.Should().Be(!input);
         }
 
+        [Theory,
+            InlineData("True", false),
+            InlineData("False", true),
+            InlineData("", false),
+            InlineData(null, false)]
+        public void IsFalse_Returns_StringValue_Correctly(string input, bool expectedOutput)
+        {
+            // Act
+            var actual = input.IsFalse();
+
+            // Assert
+            actual.Should().Be(expectedOutput);
+        }
         [Fact]
         public void IsTrue_With_Predicate_Returns_Correct_Result()
         {
@@ -125,10 +152,12 @@ namespace CrossCutting.Common.Tests.Extensions
             var input = new MyPocoClass { Value = "A" };
 
             // Act
-            var actual = input.IsTrue(x => x.Value == "A");
+            var actual_true = input.IsTrue(x => x.Value == "A");
+            var actual_false = input.IsTrue(x => x.Value != "A");
 
             // Assert
-            actual.Should().BeTrue();
+            actual_true.Should().BeTrue();
+            actual_false.Should().BeFalse();
         }
 
         [Fact]
@@ -138,10 +167,12 @@ namespace CrossCutting.Common.Tests.Extensions
             var input = new MyPocoClass { Value = "A" };
 
             // Act
-            var actual = input.IsFalse(x => x.Value == "A");
+            var actual_true = input.IsFalse(x => x.Value == "A");
+            var actual_false = input.IsFalse(x => x.Value != "A");
 
             // Assert
-            actual.Should().BeFalse();
+            actual_true.Should().BeFalse();
+            actual_false.Should().BeTrue();
         }
 
         [Fact]
@@ -201,6 +232,24 @@ namespace CrossCutting.Common.Tests.Extensions
         {
             // Arrange
             var input = new MyPocoClass { Value = "MyValue" };
+
+            // Act
+            var actual = input.ToExpandoObject();
+
+            // Assert
+            actual.Should().HaveCount(1);
+            actual.First().Key.Should().Be("Value");
+            actual.First().Value.Should().Be("MyValue");
+        }
+
+        [Fact]
+        public void Can_Convert_Enumerable_Of_KeyValuePair_To_ExpandoObject()
+        {
+            // Arrange
+            var input = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("Value", "MyValue")
+            };
 
             // Act
             var actual = input.ToExpandoObject();
