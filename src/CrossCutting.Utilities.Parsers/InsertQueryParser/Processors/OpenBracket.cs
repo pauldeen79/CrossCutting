@@ -1,10 +1,14 @@
-﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Processors
+﻿using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
+
+namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Processors
 {
-    public class OpenBracket : IInsertQueryParserProcessor
+    internal class OpenBracket : IInsertQueryParserProcessor
     {
         public ProcessResult Process(char character, InsertQueryParserState state)
         {
-            if (character == '[' && !state.ValuesFound && !state.SelectFound)
+            if (character == '['
+                && !state.ValuesFound
+                && !state.SelectFound)
             {
                 state.OpenBracketCount++;
                 return ProcessResult.Success();

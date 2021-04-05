@@ -23,7 +23,7 @@ namespace System.Data.Stub
 
         public int RecordsAffected { get; set; }
 
-        public int FieldCount => CurrentIndex > Dictionary.Count
+        public int FieldCount => CurrentIndex > Dictionary.Count || Dictionary.Count == 0 || !Dictionary.ContainsKey(CurrentIndex)
             ? 0
             : Dictionary[CurrentIndex].Count;
 

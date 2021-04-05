@@ -20,20 +20,17 @@ namespace CrossCutting.Common.Testing
         {
             foreach (var constructor in type.GetConstructors())
             {
-                var parameters = constructor.GetParameters()
-                    .ToArray();
+                var parameters = constructor.GetParameters().ToArray();
                 var mocks = GetMocks(parameters, parameterReplaceDelegate);
 
                 for (int i = 0; i < parameters.Length; i++)
                 {
-                    if (parameterPredicate != null && !parameterPredicate.Invoke(parameters[i]))
+                    if (ShouldSkipParameter(parameterPredicate, parameters, i))
                     {
                         continue;
                     }
                     var mocksCopy = mocks.ToArray();
-                    mocksCopy[i] = parameters[i].ParameterType.IsValueType
-                            ? Activator.CreateInstance(parameters[i].ParameterType)
-                            : null;
+                    mocksCopy[i] = FillParameter(parameters, i);
 
                     FixStringsAndArrays(parameters, i, mocksCopy);
 
@@ -52,6 +49,15 @@ namespace CrossCutting.Common.Testing
                 }
             }
         }
+
+        private static object FillParameter(ParameterInfo[] parameters, int i)
+            => parameters[i].ParameterType.IsValueType
+                ? Activator.CreateInstance(parameters[i].ParameterType)
+                : null;
+
+        private static bool ShouldSkipParameter(Func<ParameterInfo, bool> parameterPredicate, ParameterInfo[] parameters, int i)
+            => parameterPredicate != null
+                && !parameterPredicate.Invoke(parameters[i]);
 
         public static void ConstructorShouldConstruct(Type type, Func<ParameterInfo, object> parameterReplaceDelegate = null)
         {

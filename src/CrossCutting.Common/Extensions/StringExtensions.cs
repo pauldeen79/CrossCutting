@@ -106,8 +106,8 @@ namespace CrossCutting.Common.Extensions
         /// <param name="instance">The instance.</param>
         /// <param name="values">The values.</param>
         /// <returns></returns>
-        public static bool StartsWithAny(this string instance, IEnumerable<string> values) =>
-            values.Any(v => instance.StartsWith(v));
+        public static bool StartsWithAny(this string instance, IEnumerable<string> values)
+            => values.Any(v => instance.StartsWith(v));
 
         /// <summary>
         /// Indicates whether the string instance starts with any of the specified values.
@@ -116,8 +116,8 @@ namespace CrossCutting.Common.Extensions
         /// <param name="comparisonType">Type of the comparison.</param>
         /// <param name="values">The values.</param>
         /// <returns></returns>
-        public static bool StartsWithAny(this string instance, StringComparison comparisonType, params string[] values) =>
-            instance.StartsWithAny(comparisonType, (IEnumerable<string>)values);
+        public static bool StartsWithAny(this string instance, StringComparison comparisonType, params string[] values)
+            => instance.StartsWithAny(comparisonType, (IEnumerable<string>)values);
 
         /// <summary>
         /// Indicates whether the string instance starts with any of the specified values.
@@ -126,8 +126,8 @@ namespace CrossCutting.Common.Extensions
         /// <param name="comparisonType">Type of the comparison.</param>
         /// <param name="values">The values.</param>
         /// <returns></returns>
-        public static bool StartsWithAny(this string instance, StringComparison comparisonType, IEnumerable<string> values) =>
-            values.Any(v => instance.StartsWith(v, comparisonType));
+        public static bool StartsWithAny(this string instance, StringComparison comparisonType, IEnumerable<string> values)
+            => values.Any(v => instance.StartsWith(v, comparisonType));
 
         /// <summary>
         /// Indicates whether the string instance ends with any of the specified values.
@@ -135,8 +135,8 @@ namespace CrossCutting.Common.Extensions
         /// <param name="instance">The instance.</param>
         /// <param name="values">The values.</param>
         /// <returns></returns>
-        public static bool EndsWithAny(this string instance, params string[] values) =>
-            instance.EndsWithAny((IEnumerable<string>)values);
+        public static bool EndsWithAny(this string instance, params string[] values)
+            => instance.EndsWithAny((IEnumerable<string>)values);
 
         /// <summary>
         /// Indicates whether the string instance ends with any of the specified values.
@@ -144,8 +144,8 @@ namespace CrossCutting.Common.Extensions
         /// <param name="instance">The instance.</param>
         /// <param name="values">The values.</param>
         /// <returns></returns>
-        public static bool EndsWithAny(this string instance, IEnumerable<string> values) =>
-            values.Any(v => instance.EndsWith(v));
+        public static bool EndsWithAny(this string instance, IEnumerable<string> values)
+            => values.Any(v => instance.EndsWith(v));
 
         /// <summary>
         /// Indicates whether the string instance ends any of the specified values.
@@ -154,8 +154,8 @@ namespace CrossCutting.Common.Extensions
         /// <param name="comparisonType">Type of the comparison.</param>
         /// <param name="values">The values.</param>
         /// <returns></returns>
-        public static bool EndsWithAny(this string instance, StringComparison comparisonType, params string[] values) =>
-            instance.EndsWithAny(comparisonType, (IEnumerable<string>)values);
+        public static bool EndsWithAny(this string instance, StringComparison comparisonType, params string[] values)
+            => instance.EndsWithAny(comparisonType, (IEnumerable<string>)values);
 
         /// <summary>
         /// Indicates whether the string instance ends any of the specified values.
@@ -164,7 +164,7 @@ namespace CrossCutting.Common.Extensions
         /// <param name="comparisonType">Type of the comparison.</param>
         /// <param name="values">The values.</param>
         /// <returns></returns>
-        public static bool EndsWithAny(this string instance, StringComparison comparisonType, IEnumerable<string> values) =>
-            values.Any(v => instance.EndsWith(v, comparisonType));
+        public static bool EndsWithAny(this string instance, StringComparison comparisonType, IEnumerable<string> values)
+            => values.Any(v => instance.EndsWith(v, comparisonType));
     }
 }

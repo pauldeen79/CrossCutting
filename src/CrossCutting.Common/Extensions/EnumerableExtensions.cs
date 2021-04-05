@@ -6,16 +6,6 @@ namespace CrossCutting.Common.Extensions
 {
     public static class EnumerableExtensions
     {
-        public static ICollection<T> AddRange<T>(this ICollection<T> instance, IEnumerable<T> itemsToAdd)
-        {
-            foreach (var itemToAdd in itemsToAdd)
-            {
-                instance.Add(itemToAdd);
-            }
-
-            return instance;
-        }
-
         /// <summary>
         /// Fixes null reference on this enumerable instance, and optionally applies a filter.
         /// </summary>
@@ -25,7 +15,7 @@ namespace CrossCutting.Common.Extensions
         /// <returns></returns>
         public static IEnumerable<T> NotNull<T>(this IEnumerable<T> instance, Func<T, bool> predicate = null)
         {
-            var notNull = instance ?? Array.Empty<T>();
+            var notNull = instance ?? Enumerable.Empty<T>();
             return predicate == null
                 ? notNull
                 : notNull.Where(predicate);
@@ -41,6 +31,6 @@ namespace CrossCutting.Common.Extensions
         /// Typed array.
         /// </returns>
         public static IEnumerable<T> DefaultWhenNull<T>(this IEnumerable<T> instance, IEnumerable<T> valueWhenNull = null)
-            => instance ?? valueWhenNull ?? Array.Empty<T>();
+            => instance ?? valueWhenNull ?? Enumerable.Empty<T>();
     }
 }

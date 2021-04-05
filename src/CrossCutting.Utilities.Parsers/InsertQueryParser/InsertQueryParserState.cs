@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
+using System.Collections.Generic;
 using System.Text;
 
 namespace CrossCutting.Utilities.Parsers.InsertQueryParser
 {
-    public class InsertQueryParserState
+    internal class InsertQueryParserState
     {
         public StringBuilder CurrentSection { get; } = new StringBuilder();
         public bool InsertIntoFound { get; set; }
