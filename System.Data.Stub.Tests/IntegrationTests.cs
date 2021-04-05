@@ -87,7 +87,46 @@ namespace System.Data.Stub.Tests
                 Amount = (int)reader.GetValue(1)
             });
         }
+
+        [Fact]
+        public void CanCallGetValuesOnDataReader()
+        {
+            // Arrange & Act
+            int result = int.MinValue;
+            object[] values = new object[2];
+            ReaderTest(reader =>
+            {
+                result = reader.GetValues(values);
+                return new MyRecord
+                {
+                    Amount = (int)values[1],
+                    Name = (string)values[0]
+                };
+            });
+        }
 #pragma warning restore S2699 // Tests should include assertions
+
+        [Fact]
+        public void CanGetFieldCountOnDataReader()
+        {
+            // Arrange
+            // Important to initialize datareader BEFORE creating the command! Else, the event won't fire
+            Connection.AddResultForDataReader(new[]
+            {
+                new MyRecord { Name = "Beer", Amount = 1 },
+                new MyRecord { Name = "Milk", Amount = 3 }
+            });
+
+            // Act
+            using var command = Connection.CreateCommand();
+            command.CommandText = "SELECT * FROM [Fridge] WHERE Amount > 0";
+            using var reader = command.ExecuteReader();
+            var actual1 = reader.FieldCount;
+            actual1.Should().Be(0); // not initialized yet
+            reader.Read();
+            var actual2 = reader.FieldCount;
+            actual2.Should().Be(2); // initialized because of Read
+        }
 
         [Fact]
         public void CanStubMultipleCommandsForExecuteReader()
