@@ -1,5 +1,6 @@
 ﻿using CrossCutting.Common.Extensions;
 using FluentAssertions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -117,8 +118,7 @@ namespace CrossCutting.Common.Tests.Extensions
             var actual = input.Validate();
 
             // Assert
-            actual.Should().Be(@"Value1 is required
-Value2 is required");
+            actual.Should().Be($"Value1 is required{Environment.NewLine}Value2 is required");
         }
 
         [Fact]
