@@ -118,7 +118,8 @@ namespace CrossCutting.Common.Tests.Extensions
             var actual = input.Validate();
 
             // Assert
-            actual.Should().Be($"Value1 is required{Environment.NewLine}Value2 is required");
+            actual.Should().Contain("Value1 is required");
+            actual.Should().Contain("Value2 is required");
         }
 
         [Fact]
