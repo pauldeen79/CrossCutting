@@ -21,9 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.XmlD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.XmlDocumentTransformation.Tests", "src\CrossCutting.Utilities.XmlDocumentTransformation.Tests\CrossCutting.Utilities.XmlDocumentTransformation.Tests.csproj", "{16C90C13-010A-46F8-B3AB-84AA62BE4C0E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.Stub.Tests", "System.Data.Stub.Tests\System.Data.Stub.Tests.csproj", "{5FC84CFA-2A6D-49E8-BDC6-4BBADDBDE132}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.Stub.Tests", "src\System.Data.Stub.Tests\System.Data.Stub.Tests.csproj", "{5FC84CFA-2A6D-49E8-BDC6-4BBADDBDE132}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Common.Tests", "CrossCutting.Common.Tests\CrossCutting.Common.Tests.csproj", "{C00E8783-FAF7-4730-9DF4-EDFA3C570335}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Common.Tests", "src\CrossCutting.Common.Tests\CrossCutting.Common.Tests.csproj", "{C00E8783-FAF7-4730-9DF4-EDFA3C570335}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

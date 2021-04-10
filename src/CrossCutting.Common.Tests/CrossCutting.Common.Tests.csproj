@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\CrossCutting.Common\CrossCutting.Common.csproj" />
+    <ProjectReference Include="..\CrossCutting.Common\CrossCutting.Common.csproj" />
   </ItemGroup>
 
 </Project>
