@@ -1,4 +1,4 @@
-using CrossCutting.Common.Testing;
+using CrossCutting.Common.Extensions;
 using CrossCutting.DataTableDumper.Default;
 using FluentAssertions;
 using Xunit;
@@ -22,11 +22,42 @@ namespace CrossCutting.DataTableDumper.Tests
             var actual = sut.Dump(input);
 
             // Assert
-            var lines = TestHelpers.GetLines(actual);
+            var lines = actual.GetLines();
             lines.Should().HaveCount(3);
             lines.Should().HaveElementAt(0, "| Name                        | Age |");
             lines.Should().HaveElementAt(1, "| Person A                    | 42  |");
             lines.Should().HaveElementAt(2, "| Person B with a longer name | 8   |");
+        }
+
+        [Fact]
+        public void Can_Dump_ExcelTable()
+        {
+            // Arrange
+            var input = @"Kolom A	Kolom B	Kolom C
+A	1	z
+B	2	y
+C	3	x
+D	4	w
+E	5	v
+F	6	u"; //copied directly from Excel 8-)
+
+            var result = TabDelimited.Parser.Parse(input);
+            var sut = result.DataTableDumper;
+            var list = result.List;
+
+            // Act
+            var actual = sut.Dump(list);
+
+            // Assert
+            var lines = actual.GetLines();
+            lines.Should().HaveCount(7);
+            lines.Should().HaveElementAt(0, "| Kolom A | Kolom B | Kolom C |");
+            lines.Should().HaveElementAt(1, "| A       | 1       | z       |");
+            lines.Should().HaveElementAt(2, "| B       | 2       | y       |");
+            lines.Should().HaveElementAt(3, "| C       | 3       | x       |");
+            lines.Should().HaveElementAt(4, "| D       | 4       | w       |");
+            lines.Should().HaveElementAt(5, "| E       | 5       | v       |");
+            lines.Should().HaveElementAt(6, "| F       | 6       | u       |");
         }
 
         private class MyClass

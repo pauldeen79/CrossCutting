@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace CrossCutting.Common.Extensions
@@ -166,5 +167,19 @@ namespace CrossCutting.Common.Extensions
         /// <returns></returns>
         public static bool EndsWithAny(this string instance, StringComparison comparisonType, IEnumerable<string> values)
             => values.Any(v => instance.EndsWith(v, comparisonType));
+
+        public static string[] GetLines(this string instance)
+        {
+            var result = new List<string>();
+            using (var reader = new StringReader(instance))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    result.Add(line);
+                }
+            }
+            return result.ToArray();
+        }
     }
 }

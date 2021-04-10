@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CrossCutting.Common.Testing\CrossCutting.Common.Testing.csproj" />
+    <ProjectReference Include="..\CrossCutting.Common\CrossCutting.Common.csproj" />
     <ProjectReference Include="..\CrossCutting.DataTableDumper\CrossCutting.DataTableDumper.csproj" />
   </ItemGroup>
 
