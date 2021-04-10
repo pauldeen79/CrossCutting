@@ -1,7 +1,9 @@
 ﻿using FluentAssertions;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -150,6 +152,20 @@ namespace CrossCutting.Common.Testing
                                 : provider?.GetService(parameterInfo.ParameterType)
                         ).ToArray()
             );
+        }
+
+        public static string[] GetLines(this string instance)
+        {
+            var result = new List<string>();
+            using (var reader = new StringReader(instance))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    result.Add(line);
+                }
+            }
+            return result.ToArray();
         }
     }
 }

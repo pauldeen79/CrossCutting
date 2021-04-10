@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\System.Data.Stub\System.Data.Stub.csproj" />
+    <ProjectReference Include="..\System.Data.Stub\System.Data.Stub.csproj" />
   </ItemGroup>
 
 </Project>
