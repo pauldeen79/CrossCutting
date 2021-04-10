@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>pauldeen79.CrossCutting.DataTableDumper</PackageId>
+    <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
