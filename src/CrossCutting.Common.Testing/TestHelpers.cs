@@ -18,6 +18,11 @@ namespace CrossCutting.Common.Testing
         /// <param name="parameterReplaceDelegate">Optional function to apply to a parameter info. When the predicate is not defined, then we will create a mock or value type.</param>
         public static void ConstructorMustThrowArgumentNullException(Type type, Func<ParameterInfo, bool> parameterPredicate = null, Func<ParameterInfo, object> parameterReplaceDelegate = null)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             foreach (var constructor in type.GetConstructors())
             {
                 var parameters = constructor.GetParameters().ToArray();
@@ -61,6 +66,11 @@ namespace CrossCutting.Common.Testing
 
         public static void ConstructorShouldConstruct(Type type, Func<ParameterInfo, object> parameterReplaceDelegate = null)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             foreach (var constructor in type.GetConstructors())
             {
                 var parameters = constructor.GetParameters();
@@ -122,6 +132,11 @@ namespace CrossCutting.Common.Testing
         /// <returns>Instanciated controller.</returns>
         public static object CreateObjectUsingDependecyInjection(Type typeTocreate, IServiceProvider provider = null)
         {
+            if (typeTocreate == null)
+            {
+                throw new ArgumentNullException(nameof(typeTocreate));
+            }
+
             // First try using dependency injection container
             var firstAttempt = provider?.GetService(typeTocreate);
 

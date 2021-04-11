@@ -4,7 +4,9 @@ using System.Linq;
 
 namespace System.Data.Stub
 {
+#pragma warning disable CA1010 // Generic interface should also be implemented
     public sealed class DbParameterCollection : IDataParameterCollection
+#pragma warning restore CA1010 // Generic interface should also be implemented
     {
         private readonly IDictionary<string, object> dictionary = new Dictionary<string, object>();
 

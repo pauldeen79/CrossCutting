@@ -156,6 +156,11 @@ namespace System.Data.Stub
 
         public int GetValues(object[] values)
         {
+            if (values == null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
+
             var index = 0;
             foreach (var kvp in Dictionary[CurrentIndex])
             {
@@ -201,6 +206,11 @@ namespace System.Data.Stub
 
         public void Add(object objectWithValues)
         {
+            if (objectWithValues == null)
+            {
+                throw new ArgumentNullException(nameof(objectWithValues));
+            }
+
             var localDict = new Dictionary<string, object>();
             foreach (var property in objectWithValues.GetType().GetProperties())
             {

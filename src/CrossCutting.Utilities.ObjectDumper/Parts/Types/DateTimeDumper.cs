@@ -11,6 +11,11 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 
         public bool Process(object instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
             if (instance is DateTime dt)
             {
                 builder.AddSingleValue(dt.ToString("yyyy-MM-dd HH:mm:ss"), instance.GetType());

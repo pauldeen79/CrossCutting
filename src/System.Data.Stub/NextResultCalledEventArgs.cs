@@ -2,7 +2,7 @@
 
 namespace System.Data.Stub
 {
-    public class NextResultCalledEventArgs
+    public class NextResultCalledEventArgs : EventArgs
     {
         public bool Result { get; set; }
         public int? CurrentIndex { get; set; }

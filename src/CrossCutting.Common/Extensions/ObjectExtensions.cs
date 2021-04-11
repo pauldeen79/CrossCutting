@@ -80,7 +80,7 @@ namespace CrossCutting.Common.Extensions
             => (instance is bool x && x) || instance.ToStringWithDefault().IsTrue();
 
         public static bool IsTrue<T>(this T instance, Func<T, bool> predicate)
-            => predicate(instance);
+            => predicate?.Invoke(instance) ?? false;
 
         /// <summary>
         /// Determines whether the specified instance is false.
@@ -91,7 +91,7 @@ namespace CrossCutting.Common.Extensions
             => (instance is bool x && !x) || instance.ToStringWithDefault().IsFalse();
 
         public static bool IsFalse<T>(this T instance, Func<T, bool> predicate)
-            => !predicate(instance);
+            => !predicate?.Invoke(instance) ?? false;
 
         /// <summary>
         /// Determines whether the specified value is contained within the specified sequence.
@@ -139,6 +139,16 @@ namespace CrossCutting.Common.Extensions
             }
 
             return expandoObject;
+        }
+
+        public static T GuardNull<T>(this T value, string argumentName) where T : class
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(argumentName);
+            }
+
+            return value;
         }
     }
 }

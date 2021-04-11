@@ -1,4 +1,5 @@
-﻿using CrossCutting.Utilities.ObjectDumper.Contracts;
+﻿using CrossCutting.Common.Extensions;
+using CrossCutting.Utilities.ObjectDumper.Contracts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,7 +20,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Filters
 
         public bool ShouldProcess(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
 
-        public bool ShouldProcessProperty(object instance, PropertyDescriptor propertyDescriptor) => propertyDescriptor.PropertyType.FullName != _skipPropertyTypeName;
+        public bool ShouldProcessProperty(object instance, PropertyDescriptor propertyDescriptor) => propertyDescriptor.GuardNull(nameof(propertyDescriptor)).PropertyType.FullName != _skipPropertyTypeName;
 
         public object Transform(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
     }

@@ -51,6 +51,11 @@ namespace CrossCutting.Utilities.ObjectDumper
 
         public bool Process(object instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
             try
             {
                 foreach (var part in _parts)

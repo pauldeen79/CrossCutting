@@ -37,9 +37,16 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Filters
         public bool ShouldProcess(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
 
         public bool ShouldProcessProperty(object instance, PropertyDescriptor propertyDescriptor)
-            => propertyDescriptor.Name != _skipPropertyName
-               && (_typeName == null || propertyDescriptor.ComponentType.FullName == _typeName)
-               && (_typeFilter == null || _typeFilter(propertyDescriptor.ComponentType));
+        {
+            if (propertyDescriptor == null)
+            {
+                throw new ArgumentNullException(nameof(propertyDescriptor));
+            }
+
+            return propertyDescriptor.Name != _skipPropertyName
+                          && (_typeName == null || propertyDescriptor.ComponentType.FullName == _typeName)
+                          && (_typeFilter == null || _typeFilter(propertyDescriptor.ComponentType));
+        }
 
         public object Transform(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
     }

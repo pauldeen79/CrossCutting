@@ -10,6 +10,11 @@ namespace CrossCutting.Common.Testing
     {
         public static Mock<ILogger<T>> VerifyLogging<T>(this Mock<ILogger<T>> logger, string expectedMessage, LogLevel expectedLogLevel = LogLevel.Debug, Times? times = null)
         {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
             times = times ?? Times.Once();
 
             Func<object, Type, bool> state = (v, t) => v.ToString().CompareTo(expectedMessage) == 0;

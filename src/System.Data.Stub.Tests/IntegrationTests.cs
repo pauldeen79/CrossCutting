@@ -1,4 +1,4 @@
-using FluentAssertions;
+﻿using FluentAssertions;
 using System.Collections.Generic;
 using System.Data.Stub.Extensions;
 using System.Linq;
