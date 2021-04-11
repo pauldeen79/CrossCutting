@@ -397,7 +397,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
 
             // Assert
             actual.Should().StartWith(@"""System.InvalidOperationException: Operation is not valid due to the current state of the object.");
-            actual.Should().EndWith(@"ComposableObjectDumper.cs:line 70"" [System.InvalidOperationException]");
+            actual.Should().EndWith(@"ComposableObjectDumper.cs:line 75"" [System.InvalidOperationException]");
         }
 
         [Fact]
