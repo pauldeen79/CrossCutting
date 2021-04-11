@@ -24,7 +24,7 @@ namespace CrossCutting.Utilities.ObjectDumper
         public override bool Equals(object obj)
         {
             var o = obj as DynamicPropertyDescriptor<TTarget, TProperty>;
-            return o?.propertyName.Equals(propertyName) == true;
+            return o?.propertyName.Equals(propertyName, StringComparison.Ordinal) == true;
         }
 
         public override int GetHashCode()

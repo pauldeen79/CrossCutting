@@ -30,11 +30,16 @@ namespace CrossCutting.Utilities.ObjectDumper
             }
         }
 
-        public void AddException(Exception ex)
+        public void AddException(Exception exception)
         {
+            if (exception == null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
+
             _builder
-                .Append(ex.ToString().JsonQuote())
-                .Append(ex.GetType().FullName.DumpTypeName());
+                .Append(exception.ToString().JsonQuote())
+                .Append(exception.GetType().FullName.DumpTypeName());
         }
 
         public void AddName(int indent, string name)
@@ -89,6 +94,11 @@ namespace CrossCutting.Utilities.ObjectDumper
 
         public void EndComplexType(bool first, int indent, Type instanceType)
         {
+            if (instanceType == null)
+            {
+                throw new ArgumentNullException(nameof(instanceType));
+            }
+
             if (!first)
             {
                 _builder.AppendLine();
@@ -106,6 +116,11 @@ namespace CrossCutting.Utilities.ObjectDumper
 
         public void EndEnumerable(int indent, Type instanceType)
         {
+            if (instanceType == null)
+            {
+                throw new ArgumentNullException(nameof(instanceType));
+            }
+
             _builder.AppendLine();
 
             if (indent > 4)

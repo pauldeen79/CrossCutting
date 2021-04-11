@@ -9,7 +9,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Contracts
         void BeginEnumerable(int indent, Type instanceType);
         void EndComplexType(bool first, int indent, Type instanceType);
         void AddEnumerableItem(bool first, int indent, bool isComplexType);
-        void AddException(Exception ex);
+        void AddException(Exception exception);
         void AddName(int indent, string name);
         void AddSingleValue(object value, Type instanceType);
         void EndEnumerable(int indent, Type instanceType);

@@ -16,6 +16,11 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 
         public bool Process(object instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
             if (!(instance is string) && instance is IEnumerable enumerable)
             {
                 builder.BeginNesting(indent, instanceType);

@@ -17,6 +17,11 @@ namespace CrossCutting.Utilities.XmlDocumentTransformation
 
         public XmlDocument Transform(XmlDocument input, T parameters)
         {
+            if (input == null)
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
+
             var result = new XmlDocument();
             result.LoadXml(input.OuterXml);
 

@@ -15,7 +15,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers
             {
                 return false;
             }
-            throw new OutOfMemoryException();
+            throw new InvalidOperationException();
         }
 
         public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source) => source;

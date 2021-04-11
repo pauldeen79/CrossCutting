@@ -339,7 +339,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
             // Assert
             actual.Should().StartWith(@"{
     ""Name"": ""Test"" [System.String],
-    ""Error"": ""System.Reflection.TargetInvocationException: Property accessor 'Error' on object 'CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithExceptionProperty' threw the following exception:'Insufficient memory to continue the execution of the program.'");
+    ""Error"": ""System.Reflection.TargetInvocationException: Property accessor 'Error' on object 'CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithExceptionProperty' threw the following exception:'Operation is not valid due to the current state of the object.'");
             actual.Should().EndWith(@""" [System.Reflection.TargetInvocationException]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithExceptionProperty]");
         }
@@ -365,8 +365,8 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
             // Arrange
             var input = new MyType { Name = "Hello world" };
             using var manager = new DynamicPropertyManager<MyType>(input);
-            manager.Properties.Add(DynamicPropertyManager<MyType>.CreateProperty<MyType, string>("Name2", _ => "Name 2", null));
-            manager.Properties.Add(DynamicPropertyManager<MyType>.CreateProperty<MyType, string>("Name3", _ => "Name 3", null));
+            manager.Properties.Add(DynamicPropertyManager.CreateProperty<MyType, string>("Name2", _ => "Name 2", null));
+            manager.Properties.Add(DynamicPropertyManager.CreateProperty<MyType, string>("Name3", _ => "Name 3", null));
 
             // Act
             var actual = input.Dump();
@@ -396,8 +396,8 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
             var actual = input.Dump(new ExceptionThrowingPart());
 
             // Assert
-            actual.Should().StartWith(@"""System.OutOfMemoryException: Insufficient memory to continue the execution of the program.");
-            actual.Should().EndWith(@"ComposableObjectDumper.cs:line 70"" [System.OutOfMemoryException]");
+            actual.Should().StartWith(@"""System.InvalidOperationException: Operation is not valid due to the current state of the object.");
+            actual.Should().EndWith(@"ComposableObjectDumper.cs:line 70"" [System.InvalidOperationException]");
         }
 
         [Fact]

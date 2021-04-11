@@ -4,6 +4,30 @@ using System.ComponentModel;
 
 namespace CrossCutting.Utilities.ObjectDumper
 {
+    public static class DynamicPropertyManager
+    {
+        public static DynamicPropertyDescriptor<TTargetType, TPropertyType>
+            CreateProperty<TTargetType, TPropertyType>(
+                string displayName,
+                Func<TTargetType, TPropertyType> getter,
+                Action<TTargetType, TPropertyType> setter,
+                Attribute[] attributes)
+        {
+            return new DynamicPropertyDescriptor<TTargetType, TPropertyType>(
+               displayName, getter, setter, attributes);
+        }
+
+        public static DynamicPropertyDescriptor<TTargetType, TPropertyType>
+            CreateProperty<TTargetType, TPropertyType>(
+                string displayName,
+                Func<TTargetType, TPropertyType> getHandler,
+                Attribute[] attributes)
+        {
+            return new DynamicPropertyDescriptor<TTargetType, TPropertyType>(
+               displayName, getHandler, (t, p) => { }, attributes);
+        }
+    }
+
     public sealed class DynamicPropertyManager<TTarget> : IDisposable
     {
         private readonly DynamicTypeDescriptionProvider provider;
@@ -40,27 +64,6 @@ namespace CrossCutting.Utilities.ObjectDumper
             {
                 TypeDescriptor.RemoveProvider(provider, target);
             }
-        }
-
-        public static DynamicPropertyDescriptor<TTargetType, TPropertyType>
-           CreateProperty<TTargetType, TPropertyType>(
-               string displayName,
-               Func<TTargetType, TPropertyType> getter,
-               Action<TTargetType, TPropertyType> setter,
-               Attribute[] attributes)
-        {
-            return new DynamicPropertyDescriptor<TTargetType, TPropertyType>(
-               displayName, getter, setter, attributes);
-        }
-
-        public static DynamicPropertyDescriptor<TTargetType, TPropertyType>
-           CreateProperty<TTargetType, TPropertyType>(
-              string displayName,
-              Func<TTargetType, TPropertyType> getHandler,
-              Attribute[] attributes)
-        {
-            return new DynamicPropertyDescriptor<TTargetType, TPropertyType>(
-               displayName, getHandler, (t, p) => { }, attributes);
         }
     }
 }

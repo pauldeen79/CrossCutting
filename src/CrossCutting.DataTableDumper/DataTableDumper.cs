@@ -19,6 +19,11 @@ namespace CrossCutting.DataTableDumper
         }
         public string Dump(IEnumerable<T> data)
         {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             var builder = new StringBuilder();
             var columnNames = _columnNameProvider.Get();
             var columnLengths = GetColumnLengths(columnNames, data);

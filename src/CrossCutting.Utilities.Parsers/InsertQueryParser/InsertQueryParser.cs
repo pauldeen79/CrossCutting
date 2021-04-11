@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CrossCutting.Common.Extensions;
 
 namespace CrossCutting.Utilities.Parsers.InsertQueryParser
 {
@@ -30,15 +31,22 @@ namespace CrossCutting.Utilities.Parsers.InsertQueryParser
         }
 
         public static string ToInsertIntoString(ParseResult<string, string> parseResult, string tableName)
-            => parseResult.IsSuccessful
-                ? string.Format
-                (
-                    "INSERT INTO [{0}]({1}) VALUES({2})",
-                    tableName,
-                    string.Join(", ", parseResult.Values.Select(kvp => GetSqlName(kvp.Key))),
-                    string.Join(", ", parseResult.Values.Select(kvp => kvp.Value))
-                )
-                : "Error: Parse result was not successful. Error messages: " + string.Join(Environment.NewLine, parseResult.ErrorMessages);
+        {
+            if (parseResult == null)
+            {
+                throw new ArgumentNullException(nameof(parseResult));
+            }
+
+            return parseResult.GuardNull(nameof(parseResult)).IsSuccessful
+                           ? string.Format
+                           (
+                               "INSERT INTO [{0}]({1}) VALUES({2})",
+                               tableName,
+                               string.Join(", ", parseResult.Values.Select(kvp => GetSqlName(kvp.Key))),
+                               string.Join(", ", parseResult.Values.Select(kvp => kvp.Value))
+                           )
+                           : "Error: Parse result was not successful. Error messages: " + string.Join(Environment.NewLine, parseResult.ErrorMessages);
+        }
 
         private static string GetSqlName(string key)
             => key.Contains(" ")
