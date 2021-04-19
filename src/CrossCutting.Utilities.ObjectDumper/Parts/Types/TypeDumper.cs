@@ -1,13 +1,14 @@
 ﻿using CrossCutting.Utilities.ObjectDumper.Contracts;
+using CrossCutting.Utilities.ObjectDumper.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 {
-    public class StringOrTypeDumper : IObjectDumperPart
+    public class TypeDumper : IObjectDumperPart
     {
-        public int Order => 20;
+        public int Order => 60;
 
         public bool Process(object instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
@@ -16,9 +17,9 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            if (instance is string || instance is Type)
+            if (instance is Type t)
             {
-                builder.AddSingleValue(instance.ToString(), instance.GetType());
+                builder.AddSingleValue(t.FullName.FixTypeName().ToString(), instance.GetType());
 
                 return true;
             }

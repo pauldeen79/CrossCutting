@@ -1,13 +1,13 @@
-﻿using CrossCutting.Utilities.ObjectDumper.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using CrossCutting.Utilities.ObjectDumper.Contracts;
 
 namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 {
-    public class PrimitiveOrEnumDumper : IObjectDumperPart
+    public class StringDumper : IObjectDumperPart
     {
-        public int Order => 35;
+        public int Order => 20;
 
         public bool Process(object instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
@@ -16,15 +16,9 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            if (instance == null)
+            if (instance is string)
             {
-                return false;
-            }
-
-            var type = instance.GetType();
-            if (type.IsPrimitive || type.IsEnum)
-            {
-                builder.AddSingleValue(instance, instance.GetType());
+                builder.AddSingleValue(instance.ToString(), instance.GetType());
 
                 return true;
             }

@@ -5,6 +5,7 @@ using CrossCutting.Utilities.ObjectDumper.Parts.Transforms;
 using CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
 using FluentAssertions;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace CrossCutting.Utilities.ObjectDumper.Tests
@@ -213,6 +214,26 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
         }
 
         [Fact]
+        public void CanDumpWithGenericTypeProperty()
+        {
+            // Arrange
+            var input = new TypeWithTypeProperty
+            {
+                Name = "John Doe",
+                Type = typeof(List<MyType>)
+            };
+
+            // Act
+            var actual = input.Dump();
+
+            // Assert
+            actual.Should().Be(@"{
+    ""Name"": ""John Doe"" [System.String],
+    ""Type"": ""System.Collections.Generic.List<CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType>"" [System.RuntimeType]
+} [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithTypeProperty]");
+        }
+
+        [Fact]
         public void CanDumpWithTypeProperty()
         {
             // Arrange
@@ -231,7 +252,6 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
     ""Type"": ""CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType"" [System.RuntimeType]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithTypeProperty]");
         }
-
         [Fact]
         public void CanLimitDepthOnDump()
         {
