@@ -66,7 +66,7 @@ namespace CrossCutting.Common.Extensions
         /// <returns>
         /// value.ToString() when te value is not null, defaultValue otherwise.
         /// </returns>
-        public static string ToStringWithDefault(this object value, string defaultValue = null)
+        public static string ToStringWithDefault(this object value, string defaultValue = "")
             => value == null
                 ? defaultValue
                 : value.ToString();
@@ -103,7 +103,7 @@ namespace CrossCutting.Common.Extensions
         /// true when found, otherwise false.
         /// </returns>
         public static bool In<T>(this T value, IEnumerable<T> values)
-            => values.Any(i => i.Equals(value));
+            => values.Any(i => i?.Equals(value) == true);
 
         /// <summary>
         /// Determines whether the specified value is contained within the specified sequence.
@@ -115,7 +115,7 @@ namespace CrossCutting.Common.Extensions
         /// true when found, otherwise false.
         /// </returns>
         public static bool In<T>(this T value, params T[] values)
-            => values.Any(i => i.Equals(value));
+            => values.Any(i => i?.Equals(value) == true);
 
         public static ExpandoObject ToExpandoObject(this object instance)
         {

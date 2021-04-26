@@ -8,9 +8,9 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Filters
 {
     public class PropertyNameFilter : IObjectDumperPart
     {
-        private readonly IEnumerable<string> _includePropertyNames;
-        private readonly string _typeName;
-        private readonly Func<Type, bool> _typeFilter;
+        private readonly IEnumerable<string>? _includePropertyNames;
+        private readonly string? _typeName;
+        private readonly Func<Type, bool>? _typeFilter;
 
         public PropertyNameFilter(string includePropertyName)
         {
@@ -56,13 +56,13 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Filters
 
         public int Order => 99;
 
-        public bool Process(object instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth) => false;
+        public bool Process(object? instance, Type? instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth) => false;
 
         public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source) => source;
 
-        public bool ShouldProcess(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
+        public bool ShouldProcess(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
 
-        public bool ShouldProcessProperty(object instance, PropertyDescriptor propertyDescriptor)
+        public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor)
         {
             if (propertyDescriptor == null)
             {
@@ -74,6 +74,6 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Filters
                           && (_typeFilter == null || _typeFilter(propertyDescriptor.ComponentType));
         }
 
-        public object Transform(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
+        public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
     }
 }

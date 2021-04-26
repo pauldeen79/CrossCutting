@@ -7,11 +7,11 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 {
     public class ExpandoObjectDumper : IObjectDumperPartWithCallback
     {
-        public IObjectDumperCallback Callback { get; set; }
+        public IObjectDumperCallback? Callback { get; set; }
 
         public int Order => 30;
 
-        public bool Process(object instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
+        public bool Process(object? instance, Type? instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
             if (builder == null)
             {
@@ -39,7 +39,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 
                 try
                 {
-                    Callback.Process(keyValuePair.Value, keyValuePair.Value?.GetType(), builder, indent + 4, currentDepth + 1);
+                    Callback?.Process(keyValuePair.Value, keyValuePair.Value?.GetType(), builder, indent + 4, currentDepth + 1);
                 }
                 catch (Exception ex)
                 {
@@ -54,10 +54,10 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 
         public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source) => source;
 
-        public bool ShouldProcess(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
+        public bool ShouldProcess(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
 
-        public bool ShouldProcessProperty(object instance, PropertyDescriptor propertyDescriptor) => true;
+        public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor) => true;
 
-        public object Transform(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
+        public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
     }
 }

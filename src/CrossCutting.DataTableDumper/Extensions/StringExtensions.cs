@@ -2,7 +2,7 @@
 {
     public static class StringExtensions
     {
-        public static string EscapePipes(this string instance, string escapeValue = "_")
+        public static string? EscapePipes(this string? instance, string escapeValue = "_")
         {
             if (instance == null)
             {
@@ -12,7 +12,7 @@
             return instance.Replace("|", escapeValue);
         }
 
-        public static string UnescapePipes(this string instance, string escapeValue = "_")
+        public static string? UnescapePipes(this string? instance, string escapeValue = "_")
         {
             if (instance == null)
             {

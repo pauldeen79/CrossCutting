@@ -21,7 +21,7 @@ namespace CrossCutting.Utilities.Parsers.InsertQueryParser
             foreach (var character in insertQuery)
             {
                 var result = state.Process(character);
-                if (result != null)
+                if (result.Understood)
                 {
                     return result;
                 }

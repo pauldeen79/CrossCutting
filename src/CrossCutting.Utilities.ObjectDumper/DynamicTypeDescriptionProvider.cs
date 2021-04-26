@@ -38,7 +38,7 @@ namespace CrossCutting.Utilities.ObjectDumper
 
             public override PropertyDescriptorCollection GetProperties()
             {
-                return GetProperties(null);
+                return GetProperties(Array.Empty<Attribute>());
             }
 
             public override PropertyDescriptorCollection GetProperties(Attribute[] attributes)

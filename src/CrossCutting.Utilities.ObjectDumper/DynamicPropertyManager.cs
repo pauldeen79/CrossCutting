@@ -29,9 +29,10 @@ namespace CrossCutting.Utilities.ObjectDumper
     }
 
     public sealed class DynamicPropertyManager<TTarget> : IDisposable
+        where TTarget : class
     {
         private readonly DynamicTypeDescriptionProvider provider;
-        private readonly TTarget target;
+        private readonly TTarget? target;
 
         public DynamicPropertyManager()
         {

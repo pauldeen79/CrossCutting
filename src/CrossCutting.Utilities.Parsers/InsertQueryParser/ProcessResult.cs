@@ -14,12 +14,12 @@ namespace CrossCutting.Utilities.Parsers.InsertQueryParser
             Outcome = error;
         }
 
-        internal static ProcessResult Success(ParseResult<string, string> outcome = null) => new ProcessResult(true, outcome);
+        internal static ProcessResult Success(ParseResult<string, string>? outcome = null) => new ProcessResult(true, outcome ?? new ParseResult<string, string>());
 
         internal static ProcessResult Fail(string errorMessage) => new ProcessResult(true, new ParseResult<string, string>(false, new[] { errorMessage }, Array.Empty<KeyValuePair<string, string>>()));
 
         internal static ProcessResult Fail(ParseResult<string, string> result) => new ProcessResult(true, result);
 
-        internal static ProcessResult NotUnderstood() => new ProcessResult(false, null);
+        internal static ProcessResult NotUnderstood() => new ProcessResult(false, new ParseResult<string, string>());
     }
 }

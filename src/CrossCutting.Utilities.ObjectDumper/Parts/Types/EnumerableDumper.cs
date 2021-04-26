@@ -8,13 +8,11 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 {
     public class EnumerableDumper : IObjectDumperPartWithCallback
     {
-        public IEnumerable<string> SkipPropertyNames { get; set; }
-
-        public IObjectDumperCallback Callback { get; set; }
+        public IObjectDumperCallback? Callback { get; set; }
 
         public int Order => 40;
 
-        public bool Process(object instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
+        public bool Process(object? instance, Type? instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
             if (builder == null)
             {
@@ -35,7 +33,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
                         firstEnum = false;
                     }
 
-                    Callback.Process(item, item?.GetType(), builder, indent + 4, currentDepth + 1);
+                    Callback?.Process(item, item?.GetType(), builder, indent + 4, currentDepth + 1);
                 }
 
                 builder.EndEnumerable(indent, instance.GetType());
@@ -48,10 +46,10 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 
         public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source) => source;
 
-        public bool ShouldProcess(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
+        public bool ShouldProcess(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
 
-        public bool ShouldProcessProperty(object instance, PropertyDescriptor propertyDescriptor) => true;
+        public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor) => true;
 
-        public object Transform(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
+        public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
     }
 }

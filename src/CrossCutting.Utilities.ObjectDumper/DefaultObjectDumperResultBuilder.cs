@@ -52,7 +52,7 @@ namespace CrossCutting.Utilities.ObjectDumper
                 .Append(": ");
         }
 
-        public void AddSingleValue(object value, Type instanceType)
+        public void AddSingleValue(object? value, Type? instanceType)
         {
             if (value == null)
             {
@@ -70,7 +70,7 @@ namespace CrossCutting.Utilities.ObjectDumper
             _builder.Append(instanceType?.FullName.DumpTypeName());
         }
 
-        public void BeginNesting(int indent, Type instanceType)
+        public void BeginNesting(int indent, Type? instanceType)
         {
             if (indent > 4 && !_builder.ToString().TrimEnd().EndsWithAny(Environment.NewLine, "],", "["))
             {
@@ -80,19 +80,19 @@ namespace CrossCutting.Utilities.ObjectDumper
             }
         }
 
-        public void BeginComplexType(int indent, Type instanceType)
+        public void BeginComplexType(int indent, Type? instanceType)
         {
             _builder.AppendLine("{");
         }
 
-        public void BeginEnumerable(int indent, Type instanceType)
+        public void BeginEnumerable(int indent, Type? instanceType)
         {
             _builder
                 .AppendLine("[")
                 .Append(new string(' ', indent));
         }
 
-        public void EndComplexType(bool first, int indent, Type instanceType)
+        public void EndComplexType(bool first, int indent, Type? instanceType)
         {
             if (instanceType == null)
             {
@@ -114,7 +114,7 @@ namespace CrossCutting.Utilities.ObjectDumper
                 .Append(instanceType.FullName.DumpTypeName());
         }
 
-        public void EndEnumerable(int indent, Type instanceType)
+        public void EndEnumerable(int indent, Type? instanceType)
         {
             if (instanceType == null)
             {
