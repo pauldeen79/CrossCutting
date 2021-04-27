@@ -172,5 +172,50 @@ namespace CrossCutting.Utilities.Parsers.Tests
             actual.ErrorMessages.Should().HaveCount(1);
             actual.ErrorMessages.First().Should().Be("Arguments string is empty");
         }
+
+        [Fact]
+        public void Calling_Parse_With_Too_Many_OpenBrackets_Returns_Error()
+        {
+            // Arrange
+            var input = "{{";
+
+            // Act
+            var actual = StringFormatParser.Parse(input);
+
+            // Assert
+            actual.IsSuccessful.Should().BeFalse();
+            actual.ErrorMessages.Should().HaveCount(1);
+            actual.ErrorMessages.First().Should().Be("Too many opening brackets found");
+        }
+
+        [Fact]
+        public void Calling_Parse_With_Too_Many_CloseBrackets_Returns_Error()
+        {
+            // Arrange
+            var input = "}}";
+
+            // Act
+            var actual = StringFormatParser.Parse(input);
+
+            // Assert
+            actual.IsSuccessful.Should().BeFalse();
+            actual.ErrorMessages.Should().HaveCount(1);
+            actual.ErrorMessages.First().Should().Be("Too many close brackets found");
+        }
+
+        [Fact]
+        public void Calling_Parse_With_A_String_Without_Placeholders_Returns_Error()
+        {
+            // Arrange
+            var input = "test";
+
+            // Act
+            var actual = StringFormatParser.Parse(input);
+
+            // Assert
+            actual.IsSuccessful.Should().BeFalse();
+            actual.ErrorMessages.Should().HaveCount(1);
+            actual.ErrorMessages.First().Should().Be("No format placeholders were found");
+        }
     }
 }

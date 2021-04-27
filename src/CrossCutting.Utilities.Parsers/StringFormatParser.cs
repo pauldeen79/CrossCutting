@@ -186,10 +186,6 @@ namespace CrossCutting.Utilities.Parsers
                 {
                     return ParseResult.Error(ValidationErrors.Concat(new[] { "No format placeholders were found" }), Array.Empty<KeyValuePair<string, object>>());
                 }
-                else if (FormatValues.Count == 0)
-                {
-                    return ParseResult.Error(ValidationErrors.Concat(new[] { "No format values were found" }), Array.Empty<KeyValuePair<string, object>>());
-                }
 
                 return ParseResult.Create(ValidationErrors.Count == 0, FormatPlaceholders.Zip(FormatValues, (name, value) => new KeyValuePair<string, object>(name, value)), ValidationErrors);
             }
