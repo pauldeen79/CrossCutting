@@ -14,7 +14,7 @@ namespace CrossCutting.DataTableDumper.Default
             var result = new List<string>();
             foreach (var property in TypeDescriptor.GetProperties(typeof(T)).Cast<PropertyDescriptor>())
             {
-                result.Add((property.GetValue(item)?.ToString() ?? string.Empty).EscapePipes());
+                result.Add((property.GetValue(item)?.ToString()).EscapePipes() ?? string.Empty);
             }
 
             return result;

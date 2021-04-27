@@ -26,13 +26,13 @@ namespace CrossCutting.Utilities.Parsers
         /// <param name="columnNames">Optional column names. When null is provided, column names will be generated. (Column 1...Column n)</param>
         /// <param name="transformFunction">Optional function for transforming values to desired output (first arument is column name, second is the value). When null is provided, no transformation will be performed, and data will probably contain leading and trailing spaces.</param>
         /// <returns>Parsed result</returns>
-        public static IEnumerable<ParseResult<string, object>> Parse(string input, int skipLinesForData, int skipColumnsLeft, int skipColumnsRight, int columnNamesLineNumber, IEnumerable<string> columnNames, Func<string, string, object> transformFunction)
+        public static IEnumerable<ParseResult<string, object>> Parse(string input, int skipLinesForData, int skipColumnsLeft, int skipColumnsRight, int columnNamesLineNumber, IEnumerable<string>? columnNames, Func<string, string, object>? transformFunction)
         {
             using (var sr = new StringReader(input))
             {
                 string line;
                 int lineNumber = 0;
-                string[] columnNamesArray = columnNames?.ToArray();
+                string[]? columnNamesArray = columnNames?.ToArray();
 
                 while ((line = sr.ReadLine()) != null)
                 {
@@ -53,7 +53,7 @@ namespace CrossCutting.Utilities.Parsers
                     var values = ParseLine(skipColumnsLeft, skipColumnsRight, transformFunction, line, columnNamesArray);
                     var keyValuePairs = values.Select((value, index) => new KeyValuePair<string, object>(CreateColumnName(columnNamesArray, index + 1), value));
 
-                    yield return new ParseResult<string, object>(true, Enumerable.Empty<string>(), keyValuePairs);
+                    yield return ParseResult.Success(keyValuePairs);
                 }
             }
         }
@@ -61,9 +61,9 @@ namespace CrossCutting.Utilities.Parsers
         private static IList<object> ParseLine(
             int skipColumnsLeft,
             int skipColumnsRight,
-            Func<string, string, object> formatFunction,
+            Func<string, string, object>? formatFunction,
             string line,
-            string[] columnNamesArray)
+            string[]? columnNamesArray)
         {
             var split = line.Split('|');
             var values = new List<object>();
@@ -82,7 +82,7 @@ namespace CrossCutting.Utilities.Parsers
             return values;
         }
 
-        private static string CreateColumnName(string[] columnNamesArray, int columnIndex)
+        private static string CreateColumnName(string[]? columnNamesArray, int columnIndex)
             => columnNamesArray == null
                 ? $"{columnIndex}"
                 : columnNamesArray[columnIndex - 1] ?? $"{columnIndex}";

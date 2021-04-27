@@ -131,8 +131,8 @@ dotnet_diagnostic.CA1834.severity = none
 # Set specific code analysis rules to warning (none by default)
 # Do not hide base class methods
 dotnet_diagnostic.CA1061.severity = warning
-# Validate arguments of public methods
-dotnet_diagnostic.CA1062.severity = warning
+# Validate arguments of public methods, not needed after enabling nullable reference types
+dotnet_diagnostic.CA1062.severity = none
 # Implement IDisposable Correctly
 dotnet_diagnostic.CA1063.severity = warning
 #Avoid excessive complexity

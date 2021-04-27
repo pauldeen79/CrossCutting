@@ -1,9 +1,9 @@
+﻿using System;
+using System.Xml.Linq;
 using CrossCutting.Utilities.XmlDocumentTransformation;
 using CrossCutting.Utilities.XmlDocumentTransformation.Interfaces;
 using FluentAssertions;
 using Moq;
-using System;
-using System.Xml.Linq;
 using Xunit;
 
 namespace CrossCutting.Utilities.XDocumentTransformation.Tests
@@ -15,7 +15,7 @@ namespace CrossCutting.Utilities.XDocumentTransformation.Tests
         {
             this.Invoking(_ => new XDocumentTransformer<object>(transformers: null))
                 .Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("transformers");
+                .And.ParamName.Should().Be("source");
         }
 
         [Fact]

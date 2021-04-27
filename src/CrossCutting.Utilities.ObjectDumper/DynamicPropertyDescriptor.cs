@@ -44,7 +44,9 @@ namespace CrossCutting.Utilities.ObjectDumper
 
         public override object GetValue(object component)
         {
+#pragma warning disable CS8603 // Possible null reference return.
             return getter((TTarget)component);
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public override bool IsReadOnly

@@ -14,16 +14,11 @@ namespace CrossCutting.DataTableDumper
 
         public DataTableDumper(IColumnNameProvider<T> columnNameProvider, IColumnDataProvider<T> columnDataProvider)
         {
-            _columnNameProvider = columnNameProvider ?? throw new ArgumentNullException(nameof(columnNameProvider));
-            _columnDataProvider = columnDataProvider ?? throw new ArgumentNullException(nameof(columnDataProvider));
+            _columnNameProvider = columnNameProvider;
+            _columnDataProvider = columnDataProvider;
         }
         public string Dump(IEnumerable<T> data)
         {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
-
             var builder = new StringBuilder();
             var columnNames = _columnNameProvider.Get();
             var columnLengths = GetColumnLengths(columnNames, data);

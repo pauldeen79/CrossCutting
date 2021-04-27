@@ -13,7 +13,7 @@ namespace CrossCutting.Common.Extensions
         /// <param name="instance"></param>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public static IEnumerable<T> NotNull<T>(this IEnumerable<T> instance, Func<T, bool> predicate = null)
+        public static IEnumerable<T> NotNull<T>(this IEnumerable<T> instance, Func<T, bool>? predicate = null)
         {
             var notNull = instance ?? Enumerable.Empty<T>();
             return predicate == null
@@ -30,7 +30,7 @@ namespace CrossCutting.Common.Extensions
         /// <returns>
         /// Typed array.
         /// </returns>
-        public static IEnumerable<T> DefaultWhenNull<T>(this IEnumerable<T> instance, IEnumerable<T> valueWhenNull = null)
+        public static IEnumerable<T> DefaultWhenNull<T>(this IEnumerable<T> instance, IEnumerable<T>? valueWhenNull = null)
             => instance ?? valueWhenNull ?? Enumerable.Empty<T>();
     }
 }

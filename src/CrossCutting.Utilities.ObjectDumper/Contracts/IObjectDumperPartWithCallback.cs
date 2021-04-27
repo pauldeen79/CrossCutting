@@ -2,6 +2,6 @@
 {
     public interface IObjectDumperPartWithCallback : IObjectDumperPart
     {
-        IObjectDumperCallback Callback { get; set; }
+        IObjectDumperCallback? Callback { get; set; }
     }
 }

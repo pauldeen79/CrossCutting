@@ -37,11 +37,6 @@ namespace CrossCutting.Common.Extensions
         /// <returns>Validation error, or empty when valid.</returns>
         public static string Validate(this IValidatableObject instance, string memberName)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
             var errors = instance.Validate(null)
                 .Where(vr => vr.MemberNames.Contains(memberName))
                 .ToList();
@@ -56,11 +51,6 @@ namespace CrossCutting.Common.Extensions
         /// <returns>Validation error</returns>
         public static string Validate(this IValidatableObject instance)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
             var errors = instance.Validate(null).ToList();
 
             return ValidateInner(errors);

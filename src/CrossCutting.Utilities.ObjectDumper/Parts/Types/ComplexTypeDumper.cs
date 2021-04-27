@@ -1,25 +1,20 @@
-﻿using CrossCutting.Utilities.ObjectDumper.Contracts;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using CrossCutting.Utilities.ObjectDumper.Contracts;
 
 namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 {
     public class ComplexTypeDumper : IObjectDumperPartWithCallback
     {
-        public IObjectDumperCallback Callback { get; set; }
+        public IObjectDumperCallback? Callback { get; set; }
 
         public int Order => 99;
 
-        public bool Process(object instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
+        public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
             if (instance == null)
             {
                 return false;
@@ -37,7 +32,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
                     indent,
                     currentDepth
                 ),
-                () => Callback.GetProperties(instance),
+                () => Callback?.GetProperties(instance),
                 property => ((PropertyDescriptor)property).Name,
                 property => ((PropertyDescriptor)property).GetValue(instance),
                 property => ((PropertyDescriptor)property).PropertyType
@@ -52,7 +47,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
                     indent,
                     currentDepth
                 ),
-                () => Callback.GetFields(instance),
+                () => Callback?.GetFields(instance),
                 property => ((FieldInfo)property).Name,
                 property => ((FieldInfo)property).GetValue(instance),
                 property => ((FieldInfo)property).FieldType
@@ -68,14 +63,14 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
         private bool IterateChildren
         (
             ComplexTypeDumperState state,
-            Func<IEnumerable> enumerableDelegate,
+            Func<IEnumerable?> enumerableDelegate,
             Func<object, string> getNameDelegate,
             Func<object, object> getValueDelegate,
             Func<object, Type> getTypeDelegate
         )
         {
             var first = state.First;
-            foreach (var item in enumerableDelegate())
+            foreach (var item in enumerableDelegate() ?? Array.Empty<object>())
             {
                 state.Builder.AddEnumerableItem(first, state.Indent, true);
                 if (state.First)
@@ -87,7 +82,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 
                 try
                 {
-                    Callback.Process(getValueDelegate(item), getTypeDelegate(item), state.Builder, state.Indent + 4, state.CurrentDepth + 1);
+                    Callback?.Process(getValueDelegate(item), getTypeDelegate(item), state.Builder, state.Indent + 4, state.CurrentDepth + 1);
                 }
                 catch (Exception ex)
                 {
@@ -98,11 +93,11 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
             return first;
         }
 
-        public bool ShouldProcess(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
+        public bool ShouldProcess(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
 
-        public bool ShouldProcessProperty(object instance, PropertyDescriptor propertyDescriptor) => true;
+        public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor) => true;
 
-        public object Transform(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
+        public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
 
         private class ComplexTypeDumperState
         {

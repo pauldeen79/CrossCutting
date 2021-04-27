@@ -1,7 +1,7 @@
-﻿using CrossCutting.Utilities.ObjectDumper.Contracts;
-using CrossCutting.Utilities.ObjectDumper.Extensions;
-using System;
+﻿using System;
 using System.Text;
+using CrossCutting.Utilities.ObjectDumper.Contracts;
+using CrossCutting.Utilities.ObjectDumper.Extensions;
 
 namespace CrossCutting.Utilities.ObjectDumper
 {
@@ -31,28 +31,19 @@ namespace CrossCutting.Utilities.ObjectDumper
         }
 
         public void AddException(Exception exception)
-        {
-            if (exception == null)
-            {
-                throw new ArgumentNullException(nameof(exception));
-            }
-
-            _builder
+            => _builder
                 .Append(exception.ToString().JsonQuote())
                 .Append(exception.GetType().FullName.DumpTypeName());
-        }
 
         public void AddName(int indent, string name)
-        {
-            _builder
+            => _builder
                 .Append(new string(' ', indent))
                 .Append("\"")
                 .Append(name)
                 .Append("\"")
                 .Append(": ");
-        }
 
-        public void AddSingleValue(object value, Type instanceType)
+        public void AddSingleValue(object? value, Type instanceType)
         {
             if (value == null)
             {
@@ -81,24 +72,15 @@ namespace CrossCutting.Utilities.ObjectDumper
         }
 
         public void BeginComplexType(int indent, Type instanceType)
-        {
-            _builder.AppendLine("{");
-        }
+            => _builder.AppendLine("{");
 
         public void BeginEnumerable(int indent, Type instanceType)
-        {
-            _builder
+            => _builder
                 .AppendLine("[")
                 .Append(new string(' ', indent));
-        }
 
         public void EndComplexType(bool first, int indent, Type instanceType)
         {
-            if (instanceType == null)
-            {
-                throw new ArgumentNullException(nameof(instanceType));
-            }
-
             if (!first)
             {
                 _builder.AppendLine();
@@ -116,11 +98,6 @@ namespace CrossCutting.Utilities.ObjectDumper
 
         public void EndEnumerable(int indent, Type instanceType)
         {
-            if (instanceType == null)
-            {
-                throw new ArgumentNullException(nameof(instanceType));
-            }
-
             _builder.AppendLine();
 
             if (indent > 4)

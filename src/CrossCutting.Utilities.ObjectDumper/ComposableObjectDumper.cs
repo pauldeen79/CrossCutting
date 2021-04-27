@@ -1,10 +1,10 @@
-﻿using CrossCutting.Utilities.ObjectDumper.Contracts;
-using CrossCutting.Utilities.ObjectDumper.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using CrossCutting.Utilities.ObjectDumper.Contracts;
+using CrossCutting.Utilities.ObjectDumper.Extensions;
 
 namespace CrossCutting.Utilities.ObjectDumper
 {
@@ -49,13 +49,8 @@ namespace CrossCutting.Utilities.ObjectDumper
                 .PerformActionOnType<IObjectDumperPart, IObjectDumperPartWithCallback>
                 (a => a.Callback = callback);
 
-        public bool Process(object instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
+        public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
             try
             {
                 foreach (var part in _parts)

@@ -1,7 +1,6 @@
-﻿using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
 
 namespace CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators
 {
@@ -10,15 +9,7 @@ namespace CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators
         public ProcessResult Process(InsertQueryParserState state)
         {
             var values = state.ColumnNames.Zip(state.ColumnValues, (name, value) => new KeyValuePair<string, string>(name.Trim(), value.Trim()));
-            return ProcessResult.Success
-            (
-                new ParseResult<string, string>
-                (
-                    isSuccessful: true,
-                    errorMessages: Array.Empty<string>(),
-                    values: values
-                )
-            );
+            return ProcessResult.Success(ParseResult.Success(values));
         }
     }
 }

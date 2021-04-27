@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using CrossCutting.Common.Extensions;
 
 namespace CrossCutting.Utilities.Parsers.InsertQueryParser
 {
@@ -11,7 +9,7 @@ namespace CrossCutting.Utilities.Parsers.InsertQueryParser
         {
             if (string.IsNullOrWhiteSpace(insertQuery))
             {
-                return new ParseResult<string, string>(false, new[] { "Insert query is empty" }, Array.Empty<KeyValuePair<string, string>>());
+                return ParseResult.Error<string, string>("Insert query is empty");
             }
 
             var processors = ComponentConfiguration.GetProcessors();
@@ -20,33 +18,22 @@ namespace CrossCutting.Utilities.Parsers.InsertQueryParser
 
             foreach (var character in insertQuery)
             {
-                var result = state.Process(character);
-                if (result != null)
-                {
-                    return result;
-                }
+                state.Process(character);
             }
 
             return state.GetResult();
         }
 
         public static string ToInsertIntoString(ParseResult<string, string> parseResult, string tableName)
-        {
-            if (parseResult == null)
-            {
-                throw new ArgumentNullException(nameof(parseResult));
-            }
-
-            return parseResult.GuardNull(nameof(parseResult)).IsSuccessful
-                           ? string.Format
-                           (
-                               "INSERT INTO [{0}]({1}) VALUES({2})",
-                               tableName,
-                               string.Join(", ", parseResult.Values.Select(kvp => GetSqlName(kvp.Key))),
-                               string.Join(", ", parseResult.Values.Select(kvp => kvp.Value))
-                           )
-                           : "Error: Parse result was not successful. Error messages: " + string.Join(Environment.NewLine, parseResult.ErrorMessages);
-        }
+            => parseResult.IsSuccessful
+                ? string.Format
+                (
+                    "INSERT INTO [{0}]({1}) VALUES({2})",
+                    tableName,
+                    string.Join(", ", parseResult.Values.Select(kvp => GetSqlName(kvp.Key))),
+                    string.Join(", ", parseResult.Values.Select(kvp => kvp.Value))
+                )
+                : "Error: Parse result was not successful. Error messages: " + string.Join(Environment.NewLine, parseResult.ErrorMessages);
 
         private static string GetSqlName(string key)
             => key.Contains(" ")
