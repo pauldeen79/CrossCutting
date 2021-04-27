@@ -1,8 +1,7 @@
-﻿using CrossCutting.Common.Extensions;
-using CrossCutting.Utilities.ObjectDumper.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using CrossCutting.Utilities.ObjectDumper.Contracts;
 
 namespace CrossCutting.Utilities.ObjectDumper.Parts.Filters
 {
@@ -10,17 +9,17 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Filters
     {
         private readonly string _skipPropertyTypeName;
 
-        public PropertyTypeNameExclusionFilter(string skipPropertyTypeName) => _skipPropertyTypeName = skipPropertyTypeName ?? throw new ArgumentNullException(nameof(skipPropertyTypeName));
+        public PropertyTypeNameExclusionFilter(string skipPropertyTypeName) => _skipPropertyTypeName = skipPropertyTypeName;
 
         public int Order => 99;
 
-        public bool Process(object? instance, Type? instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth) => false;
+        public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth) => false;
 
         public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source) => source;
 
         public bool ShouldProcess(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
 
-        public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor) => propertyDescriptor.GuardNull(nameof(propertyDescriptor)).PropertyType.FullName != _skipPropertyTypeName;
+        public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor) => propertyDescriptor.PropertyType.FullName != _skipPropertyTypeName;
 
         public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
     }

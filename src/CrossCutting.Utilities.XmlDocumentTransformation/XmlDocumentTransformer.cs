@@ -1,8 +1,7 @@
-﻿using CrossCutting.Utilities.XmlDocumentTransformation.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using CrossCutting.Utilities.XmlDocumentTransformation.Interfaces;
 
 namespace CrossCutting.Utilities.XmlDocumentTransformation
 {
@@ -12,16 +11,11 @@ namespace CrossCutting.Utilities.XmlDocumentTransformation
 
         public XmlDocumentTransformer(IEnumerable<IXmlDocumentTransformComponent<T>> transformers)
         {
-            _transformers = transformers?.ToArray() ?? throw new ArgumentNullException(nameof(transformers));
+            _transformers = transformers.ToArray();
         }
 
         public XmlDocument Transform(XmlDocument input, T parameters)
         {
-            if (input == null)
-            {
-                throw new ArgumentNullException(nameof(input));
-            }
-
             var result = new XmlDocument();
             result.LoadXml(input.OuterXml);
 

@@ -140,15 +140,5 @@ namespace CrossCutting.Common.Extensions
 
             return expandoObject;
         }
-
-        public static T GuardNull<T>(this T value, string argumentName) where T : class
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(argumentName);
-            }
-
-            return value;
-        }
     }
 }

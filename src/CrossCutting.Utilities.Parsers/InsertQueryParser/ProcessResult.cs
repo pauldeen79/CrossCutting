@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace CrossCutting.Utilities.Parsers.InsertQueryParser
+﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser
 {
     internal class ProcessResult
     {
@@ -14,12 +11,14 @@ namespace CrossCutting.Utilities.Parsers.InsertQueryParser
             Outcome = error;
         }
 
-        internal static ProcessResult Success(ParseResult<string, string>? outcome = null) => new ProcessResult(true, outcome ?? new ParseResult<string, string>());
+        internal static ProcessResult Success() => new ProcessResult(true, ParseResult.Success<string, string>());
 
-        internal static ProcessResult Fail(string errorMessage) => new ProcessResult(true, new ParseResult<string, string>(false, new[] { errorMessage }, Array.Empty<KeyValuePair<string, string>>()));
+        internal static ProcessResult Success(ParseResult<string, string> outcome) => new ProcessResult(true, outcome);
+
+        internal static ProcessResult Fail(string errorMessage) => new ProcessResult(true, ParseResult.Error<string, string>(errorMessage));
 
         internal static ProcessResult Fail(ParseResult<string, string> result) => new ProcessResult(true, result);
 
-        internal static ProcessResult NotUnderstood() => new ProcessResult(false, new ParseResult<string, string>());
+        internal static ProcessResult NotUnderstood() => new ProcessResult(false, ParseResult.NotUnderstood<string, string>());
     }
 }

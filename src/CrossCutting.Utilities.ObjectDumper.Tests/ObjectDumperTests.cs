@@ -1,11 +1,11 @@
-﻿using CrossCutting.Utilities.ObjectDumper.Contracts;
+﻿using System;
+using System.Collections.Generic;
+using CrossCutting.Utilities.ObjectDumper.Contracts;
 using CrossCutting.Utilities.ObjectDumper.Extensions;
 using CrossCutting.Utilities.ObjectDumper.Parts.Filters;
 using CrossCutting.Utilities.ObjectDumper.Parts.Transforms;
 using CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
 using Xunit;
 
 namespace CrossCutting.Utilities.ObjectDumper.Tests
@@ -417,7 +417,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
 
             // Assert
             actual.Should().StartWith(@"""System.InvalidOperationException: Operation is not valid due to the current state of the object.");
-            actual.Should().EndWith(@"ComposableObjectDumper.cs:line 75"" [System.InvalidOperationException]");
+            actual.Should().EndWith(@"[System.InvalidOperationException]");
         }
 
         [Fact]

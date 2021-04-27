@@ -1,8 +1,8 @@
-﻿using CrossCutting.Utilities.ObjectDumper.Contracts;
-using CrossCutting.Utilities.ObjectDumper.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using CrossCutting.Utilities.ObjectDumper.Contracts;
+using CrossCutting.Utilities.ObjectDumper.Extensions;
 
 namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 {
@@ -10,13 +10,8 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
     {
         public int Order => 60;
 
-        public bool Process(object? instance, Type? instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
+        public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
             if (instance is Type t)
             {
                 builder.AddSingleValue(t.FullName.FixTypeName().ToString(), instance.GetType());

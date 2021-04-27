@@ -42,7 +42,7 @@ namespace CrossCutting.Utilities.Parsers.InsertQueryParser
                     return result.Outcome;
                 }
             }
-            return new ParseResult<string, string>();
+            return ParseResult.NotUnderstood<string, string>();
         }
 
         public void AddColumnName()
@@ -67,7 +67,7 @@ namespace CrossCutting.Utilities.Parsers.InsertQueryParser
                     return result.Outcome;
                 }
             }
-            return new ParseResult<string, string>();
+            return ParseResult.NotUnderstood<string, string>();
         }
     }
 }

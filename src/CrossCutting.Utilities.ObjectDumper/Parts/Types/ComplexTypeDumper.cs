@@ -1,9 +1,9 @@
-﻿using CrossCutting.Utilities.ObjectDumper.Contracts;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using CrossCutting.Utilities.ObjectDumper.Contracts;
 
 namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 {
@@ -13,13 +13,8 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 
         public int Order => 99;
 
-        public bool Process(object? instance, Type? instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
+        public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
             if (instance == null)
             {
                 return false;

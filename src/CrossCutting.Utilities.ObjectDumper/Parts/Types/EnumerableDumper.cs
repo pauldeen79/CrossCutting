@@ -1,8 +1,8 @@
-﻿using CrossCutting.Utilities.ObjectDumper.Contracts;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using CrossCutting.Utilities.ObjectDumper.Contracts;
 
 namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 {
@@ -12,13 +12,8 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 
         public int Order => 40;
 
-        public bool Process(object? instance, Type? instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
+        public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
             if (!(instance is string) && instance is IEnumerable enumerable)
             {
                 builder.BeginNesting(indent, instanceType);
@@ -33,7 +28,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
                         firstEnum = false;
                     }
 
-                    Callback?.Process(item, item?.GetType(), builder, indent + 4, currentDepth + 1);
+                    Callback?.Process(item, item?.GetType() ?? instanceType.GetGenericArguments()[0], builder, indent + 4, currentDepth + 1);
                 }
 
                 builder.EndEnumerable(indent, instance.GetType());

@@ -8,11 +8,6 @@ namespace CrossCutting.Utilities.Parsers
     {
         public static string[] Parse(string instance, char delimiter, char? textQualifier = null)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
             var result = new List<string>();
             var currentSection = new StringBuilder();
             var inText = false;

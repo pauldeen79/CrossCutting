@@ -1,7 +1,7 @@
-﻿using CrossCutting.Utilities.ObjectDumper.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using CrossCutting.Utilities.ObjectDumper.Contracts;
 
 namespace CrossCutting.Utilities.ObjectDumper.Parts.Transforms
 {
@@ -12,9 +12,9 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Transforms
         private readonly Func<object?, object?> _transformDelegate;
 
         public DelegateTransform(Func<object?, object?> transformDelegate)
-            => _transformDelegate = transformDelegate ?? throw new ArgumentNullException(nameof(transformDelegate));
+            => _transformDelegate = transformDelegate;
 
-        public bool Process(object? instance, Type? instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth) => false;
+        public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth) => false;
 
         public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source) => source;
 

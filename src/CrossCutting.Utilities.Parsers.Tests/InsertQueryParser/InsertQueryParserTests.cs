@@ -1,6 +1,5 @@
-﻿using FluentAssertions;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using FluentAssertions;
 using Xunit;
 
 namespace CrossCutting.Utilities.Parsers.Tests.InsertQueryParser
@@ -239,13 +238,28 @@ namespace CrossCutting.Utilities.Parsers.Tests.InsertQueryParser
         public void CantConvertParseResultBackToInsertIntoStatementWhenResultIsNotSuccesful()
         {
             // Arrange
-            var parseResult = new ParseResult<string, string>(false, new[] { "Some error" }, System.Array.Empty<KeyValuePair<string, string>>());
+            var parseResult = ParseResult.Error<string, string>("Some error");
 
             // Act
             var actual = Parsers.InsertQueryParser.InsertQueryParser.ToInsertIntoString(parseResult, "Tabel");
 
             // Assert
             actual.Should().Be("Error: Parse result was not successful. Error messages: Some error");
+        }
+
+        [Fact]
+        public void Parse_With_Empty_Argument_Gives_Error_Result()
+        {
+            // Arrange
+            var input = string.Empty;
+
+            // Act
+            var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
+
+            // Assert
+            actual.IsSuccessful.Should().BeFalse();
+            actual.ErrorMessages.Should().HaveCount(1);
+            actual.ErrorMessages.First().Should().Be("Insert query is empty");
         }
     }
 }

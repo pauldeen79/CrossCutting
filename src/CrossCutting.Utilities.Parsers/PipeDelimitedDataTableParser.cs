@@ -53,7 +53,7 @@ namespace CrossCutting.Utilities.Parsers
                     var values = ParseLine(skipColumnsLeft, skipColumnsRight, transformFunction, line, columnNamesArray);
                     var keyValuePairs = values.Select((value, index) => new KeyValuePair<string, object>(CreateColumnName(columnNamesArray, index + 1), value));
 
-                    yield return new ParseResult<string, object>(true, Enumerable.Empty<string>(), keyValuePairs);
+                    yield return ParseResult.Success(keyValuePairs);
                 }
             }
         }

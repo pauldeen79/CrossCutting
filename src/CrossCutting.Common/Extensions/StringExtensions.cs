@@ -34,11 +34,6 @@ namespace CrossCutting.Common.Extensions
         /// <returns></returns>
         public static string WhenNullOrEmpty(this string instance, Func<string> whenNullOrEmptyDelegate)
         {
-            if (whenNullOrEmptyDelegate == null)
-            {
-                throw new ArgumentNullException(nameof(whenNullOrEmptyDelegate));
-            }
-
             if (string.IsNullOrEmpty(instance))
             {
                 return whenNullOrEmptyDelegate();
@@ -71,11 +66,6 @@ namespace CrossCutting.Common.Extensions
         /// <returns></returns>
         public static string WhenNullOrWhitespace(this string instance, Func<string> whenNullOrWhiteSpaceDelegate)
         {
-            if (whenNullOrWhiteSpaceDelegate == null)
-            {
-                throw new ArgumentNullException(nameof(whenNullOrWhiteSpaceDelegate));
-            }
-
             if (string.IsNullOrWhiteSpace(instance))
             {
                 return whenNullOrWhiteSpaceDelegate();

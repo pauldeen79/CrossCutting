@@ -13,7 +13,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Filters
 
         public int Order => 99;
 
-        public bool Process(object? instance, Type? instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth) => false;
+        public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth) => false;
 
         public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source) => source;
 
