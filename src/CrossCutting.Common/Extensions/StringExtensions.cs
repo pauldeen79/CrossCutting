@@ -79,7 +79,7 @@ namespace CrossCutting.Common.Extensions
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        public static bool IsTrue(this string instance)
+        public static bool IsTrue(this string? instance)
             => instance != null
                 && _trueKeywords.Any(s => s.Equals(instance, StringComparison.OrdinalIgnoreCase));
 
@@ -88,7 +88,7 @@ namespace CrossCutting.Common.Extensions
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        public static bool IsFalse(this string instance)
+        public static bool IsFalse(this string? instance)
             => instance != null
                 && _falseKeywords.Any(s => s.Equals(instance, StringComparison.OrdinalIgnoreCase));
 
