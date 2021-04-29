@@ -45,7 +45,8 @@ namespace CrossCutting.Common.Tests.Extensions
             InlineData("Y", true),
             InlineData("yes", true),
             InlineData("1", true),
-            InlineData("other value", false)]
+            InlineData("other value", false),
+            InlineData(null, false)]
         public void IsTrue_Returns_Correct_Result(string input, bool expectedResult)
         {
             // Act
@@ -60,7 +61,8 @@ namespace CrossCutting.Common.Tests.Extensions
             InlineData("N", true),
             InlineData("no", true),
             InlineData("0", true),
-            InlineData("other value", false)]
+            InlineData("other value", false),
+            InlineData(null, false)]
         public void IsFalse_Returns_Correct_Result(string input, bool expectedResult)
         {
             // Act

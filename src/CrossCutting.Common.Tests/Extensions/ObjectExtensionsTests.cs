@@ -85,6 +85,16 @@ namespace CrossCutting.Common.Tests.Extensions
         }
 
         [Fact]
+        public void ToStringWithDefault_Returns_Null_On_Null_Input_When_DefaultValue_Is_Not_Supplied()
+        {
+            // Act
+            var actual = ((object)null).ToStringWithDefault();
+
+            // Assert
+            actual.Should().BeNull();
+        }
+
+        [Fact]
         public void ToStringWithDefault_Returns_Input_On_NonNull_Input()
         {
             // Act
