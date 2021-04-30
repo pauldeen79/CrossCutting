@@ -252,6 +252,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
     ""Type"": ""CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType"" [System.RuntimeType]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithTypeProperty]");
         }
+
         [Fact]
         public void CanLimitDepthOnDump()
         {
@@ -514,6 +515,36 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
             var dumpB = b.Dump();
 
             dumpB.Should().Be(dumpA);
+        }
+
+        [Fact]
+        public void CanDumpDictionaryBasedObject()
+        {
+            // Arrange
+            var input = new ContextClass("custom1", 23);
+            input.Add("key1", "string value");
+            input.Add("key2", 55);
+
+            // Act
+            var actual = input.Dump(new ContextClassTypeHandler());
+
+            // Assert
+            actual.Should().Be(@"{
+    ""Custom1"": ""custom1"" [System.String],
+    ""Custom2"": 23 [System.Int32],
+    {
+        ""Key"": ""key1"" [System.String],
+        ""Value"": ""string value"" [System.String],
+        ""key"": ""key1"" [System.String],
+        ""value"": ""string value"" [System.String]
+    } [System.Collections.Generic.KeyValuePair<System.String,System.Object>],
+    {
+        ""Key"": ""key2"" [System.String],
+        ""Value"": 55 [System.Int32],
+        ""key"": ""key2"" [System.String],
+        ""value"": 55 [System.Int32]
+    } [System.Collections.Generic.KeyValuePair<System.String,System.Object>]
+} [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.ContextClass]");
         }
 
         [Fact]
