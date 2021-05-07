@@ -2,7 +2,7 @@
 {
     internal class RecursiveType
     {
-        public string Name { get; set; }
-        public RecursiveType Child { get; set; }
+        public string? Name { get; set; }
+        public RecursiveType? Child { get; set; }
     }
 }

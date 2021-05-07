@@ -66,7 +66,9 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers
 
         public bool Remove(string key) => _state.Remove(key);
 
+#pragma warning disable CS8601 // Possible null reference assignment.
         public bool TryGetValue(string key, out object value) => _state.TryGetValue(key, out value);
+#pragma warning restore CS8601 // Possible null reference assignment.
 
         public void Add(KeyValuePair<string, object> item) => _state.Add(item);
 
@@ -85,11 +87,11 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers
 
     public class ContextClassTypeHandler : IObjectDumperPartWithCallback
     {
-        public IObjectDumperCallback Callback { get; set; }
+        public IObjectDumperCallback? Callback { get; set; }
 
         public int Order => 39;
 
-        public bool Process(object instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
+        public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
             if (instance is ContextClass contextClass)
             {

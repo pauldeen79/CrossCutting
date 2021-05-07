@@ -4,7 +4,7 @@
 
     public class TypeWithEnumProperty
     {
-        public string Property1 { get; set; }
+        public string? Property1 { get; set; }
         public MyEnumeration Property2 { get; set; }
     }
 }

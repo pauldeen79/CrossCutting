@@ -9,7 +9,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers
     {
         public int Order => 1; //make sure this part takes over everything :)
 
-        public bool Process(object instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
+        public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
             if (instanceType.IsValueType)
             {
@@ -20,10 +20,10 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers
 
         public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source) => source;
 
-        public bool ShouldProcess(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
+        public bool ShouldProcess(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
 
-        public bool ShouldProcessProperty(object instance, PropertyDescriptor propertyDescriptor) => true;
+        public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor) => true;
 
-        public object Transform(object instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
+        public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
     }
 }
