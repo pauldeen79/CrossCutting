@@ -17,7 +17,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Extensions
 
         public static string Dump<T>(this T instance, IObjectDumperResultBuilder builder, IEnumerable<IObjectDumperPart> customTypeHandlers)
         {
-            new ComposableObjectDumper(customTypeHandlers).Process(instance, typeof(T), builder, 4, 1);
+            ComposableObjectDumperFactory.Create(customTypeHandlers).Process(instance, typeof(T), builder, 4, 1);
 
             return builder.ToString();
         }

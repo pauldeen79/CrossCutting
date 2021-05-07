@@ -12,42 +12,13 @@ namespace CrossCutting.Utilities.ObjectDumper
     {
         private readonly IObjectDumperPart[] _parts;
 
-        public ComposableObjectDumper()
+        public ComposableObjectDumper(IEnumerable<IObjectDumperPart> typeHandlers)
         {
-            _parts = GetDefaultObjectDumpCustomizers(this).OrderBy(x => x.Order).ToArray();
-        }
-
-        public ComposableObjectDumper(params IObjectDumperPart[] customTypeHandlers)
-            : this((IEnumerable<IObjectDumperPart>)customTypeHandlers)
-        {
-        }
-
-        public ComposableObjectDumper(IEnumerable<IObjectDumperPart> customTypeHandlers)
-        {
-            _parts = GetDefaultObjectDumpCustomizers(this)
-                .Concat(customTypeHandlers)
+            _parts = typeHandlers
+                .Select(x => x.PerformActionOnType<IObjectDumperPart, IObjectDumperPartWithCallback>(a => a.Callback = this))
                 .OrderBy(x => x.Order)
                 .ToArray();
         }
-
-        private static IEnumerable<IObjectDumperPart> GetDefaultObjectDumpCustomizers(IObjectDumperCallback callback)
-            => typeof(ComposableObjectDumper)
-                .Assembly
-                .GetExportedTypes()
-                .Where
-                (t =>
-                    !t.IsAbstract
-                    && !t.IsInterface
-                    && !t.ContainsGenericParameters
-                    && typeof(IObjectDumperPart).IsAssignableFrom(t)
-                    && t.GetConstructor(Type.EmptyTypes) != null
-                )
-                .Select(t => CreatePart(t, callback));
-
-        private static IObjectDumperPart CreatePart(Type type, IObjectDumperCallback callback)
-            => ((IObjectDumperPart)Activator.CreateInstance(type))
-                .PerformActionOnType<IObjectDumperPart, IObjectDumperPartWithCallback>
-                (a => a.Callback = callback);
 
         public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         {
