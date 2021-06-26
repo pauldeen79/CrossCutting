@@ -56,7 +56,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
         public void CanDumpNullObject()
         {
             // Arrange
-            object input = null;
+            object? input = null;
 
             // Act
             var actual = input.Dump();
@@ -302,7 +302,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
             };
 
             // Act
-            var actual = input.Dump(new PropertyNameExclusionFilter("Name", typeof(RecursiveType).FullName));
+            var actual = input.Dump(new PropertyNameExclusionFilter("Name", typeof(RecursiveType)?.FullName ?? string.Empty));
 
             // Assert
             actual.Should().Be(@"{
@@ -334,7 +334,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
             };
 
             // Act
-            var actual = input.Dump(new PropertyTypeNameExclusionFilter(typeof(string).FullName));
+            var actual = input.Dump(new PropertyTypeNameExclusionFilter(typeof(string)?.FullName ?? string.Empty));
 
             // Assert
             actual.Should().Be(@"{
@@ -458,7 +458,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
                 Age = 21, 
                 Weight = 80.1
             };
-            var transform = new TypedDelegateTransform<MyType>(mt => mt.ToString());
+            var transform = new TypedDelegateTransform<MyType>(mt => mt?.ToString() ?? string.Empty);
 
             // Act
             var actual = input.Dump(transform);
@@ -583,7 +583,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
         public void CanAssertDifferentTypesWithSameProperties()
         {
             var d = DateTime.Now.AddDays(-1);
-            var dumpConfig = new IObjectDumperPart[] { new OrderByPropertyNameTransform(t => t.FullName.Contains("Anonymous")) };
+            var dumpConfig = new IObjectDumperPart[] { new OrderByPropertyNameTransform(t => t?.FullName?.Contains("Anonymous") == true) };
             var a = new { Name = "Test", Weight = 2, Date = d }.Dump(dumpConfig);
             var b = new { Name = "Test", Date = d, Weight = 2 }.Dump(dumpConfig);
 
@@ -594,7 +594,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
         public void CanAssertDifferentTypesWithSameProperties_ExplicitlyNamePropertiesToCompare()
         {
             var d = DateTime.Now.AddDays(-1);
-            var dumpConfig = new IObjectDumperPart[] { new OrderByPropertyNameTransform(t => t.FullName.Contains("Anonymous")), new PropertyNameFilter("Name", "Weight", "Date") };
+            var dumpConfig = new IObjectDumperPart[] { new OrderByPropertyNameTransform(t => t?.FullName?.Contains("Anonymous") == true), new PropertyNameFilter("Name", "Weight", "Date") };
             var a = new { Name = "Test", Weight = 2, Date = d, Skip = "A" }.Dump(dumpConfig);
             var b = new { Name = "Test", Date = d, Weight = 2, Skip = "B" }.Dump(dumpConfig);
 

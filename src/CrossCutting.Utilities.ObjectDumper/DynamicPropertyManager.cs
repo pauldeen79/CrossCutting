@@ -21,7 +21,7 @@ namespace CrossCutting.Utilities.ObjectDumper
             CreateProperty<TTargetType, TPropertyType>(
                 string displayName,
                 Func<TTargetType, TPropertyType> getHandler,
-                Attribute[] attributes)
+                Attribute[]? attributes)
         {
             return new DynamicPropertyDescriptor<TTargetType, TPropertyType>(
                displayName, getHandler, (t, p) => { }, attributes);

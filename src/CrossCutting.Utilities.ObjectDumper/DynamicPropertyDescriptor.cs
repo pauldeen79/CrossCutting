@@ -13,7 +13,7 @@ namespace CrossCutting.Utilities.ObjectDumper
            string propertyName,
            Func<TTarget, TProperty> getter,
            Action<TTarget, TProperty> setter,
-           Attribute[] attributes)
+           Attribute[]? attributes)
               : base(propertyName, attributes ?? Array.Empty<Attribute>())
         {
             this.setter = setter;
