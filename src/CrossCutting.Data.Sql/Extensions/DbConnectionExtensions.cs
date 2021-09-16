@@ -235,9 +235,9 @@ namespace CrossCutting.Data.Sql.Extensions
         }
 
         private static T ExecuteReader<T>(string? exceptionMessage,
-                                           Func<T, IDataReader, T> afterReadDelegate,
-                                           T resultEntity,
-                                           IDbCommand cmd)
+                                          Func<T, IDataReader, T> afterReadDelegate,
+                                          T resultEntity,
+                                          IDbCommand cmd)
         {
             using (var reader = cmd.ExecuteReader())
             {
