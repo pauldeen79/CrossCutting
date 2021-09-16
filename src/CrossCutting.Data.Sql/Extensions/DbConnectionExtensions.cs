@@ -53,21 +53,21 @@ namespace CrossCutting.Data.Sql.Extensions
                                Func<T, T>? resultEntityDelegate = null,
                                Func<T, IDataReader, T>? afterReadDelegate = null,
                                Func<T, Exception?, T>? finalizeDelegate = null)
-            => connection.ExecuteCommand(instance,
-                                         commandDelegate,
-                                         i =>
-                                         {
-                                             if (isAddDelegate == null)
-                                             {
-                                                 throw new ArgumentNullException(nameof(isAddDelegate));
-                                             }
-                                             return isAddDelegate(i);
-                                         },
-                                         typeof(T).Name + " entity was not added",
-                                         resultEntityDelegate,
-                                         typeof(T).Name + " entity cannot be added, because it's an existing item",
-                                         afterReadDelegate,
-                                         finalizeDelegate);
+        {
+            if (isAddDelegate == null)
+            {
+                throw new ArgumentNullException(nameof(isAddDelegate));
+            }
+
+            return connection.ExecuteCommand(instance,
+                                             commandDelegate,
+                                             i => isAddDelegate(i),
+                                             typeof(T).Name + " entity was not added",
+                                             resultEntityDelegate,
+                                             typeof(T).Name + " entity cannot be added, because it's an existing item",
+                                             afterReadDelegate,
+                                             finalizeDelegate);
+        }
 
         /// <summary>Updates the specified entity to this connection.</summary>
         /// <typeparam name="T"></typeparam>
@@ -85,21 +85,21 @@ namespace CrossCutting.Data.Sql.Extensions
                                   Func<T, T>? resultEntityDelegate = null,
                                   Func<T, IDataReader, T>? afterReadDelegate = null,
                                   Func<T, Exception?, T>? finalizeDelegate = null)
-            => connection.ExecuteCommand(instance,
-                                         commandDelegate,
-                                         i =>
-                                         {
-                                             if (isAddDelegate == null)
-                                             {
-                                                 throw new ArgumentNullException(nameof(isAddDelegate));
-                                             }
-                                             return !isAddDelegate(i);
-                                         },
-                                         typeof(T).Name + " entity was not updated",
-                                         resultEntityDelegate,
-                                         typeof(T).Name + " entity cannot be updated, because it's a new item",
-                                         afterReadDelegate,
-                                         finalizeDelegate);
+        {
+            if (isAddDelegate == null)
+            {
+                throw new ArgumentNullException(nameof(isAddDelegate));
+            }
+
+            return connection.ExecuteCommand(instance,
+                                             commandDelegate,
+                                             i => !isAddDelegate(i),
+                                             typeof(T).Name + " entity was not updated",
+                                             resultEntityDelegate,
+                                             typeof(T).Name + " entity cannot be updated, because it's a new item",
+                                             afterReadDelegate,
+                                             finalizeDelegate);
+        }
 
         /// <summary>Deletes the specified entity from this connection.</summary>
         /// <typeparam name="T"></typeparam>
@@ -115,21 +115,21 @@ namespace CrossCutting.Data.Sql.Extensions
                                   Func<T, IDatabaseCommand> commandDelegate,
                                   Func<T, T>? resultEntityDelegate = null,
                                   Func<T, Exception?, T>? finalizeDelegate = null)
-            => connection.ExecuteCommand(instance,
-                                         commandDelegate,
-                                         i =>
-                                         {
-                                             if (isAddDelegate == null)
-                                             {
-                                                 throw new ArgumentNullException(nameof(isAddDelegate));
-                                             }
-                                             return !isAddDelegate(i);
-                                         },
-                                         typeof(T).Name + " entity was not deleted",
-                                         resultEntityDelegate,
-                                         typeof(T).Name + " entity cannot be deleted, because it's a new item",
-                                         null,
-                                         finalizeDelegate);
+        {
+            if (isAddDelegate == null)
+            {
+                throw new ArgumentNullException(nameof(isAddDelegate));
+            }
+
+            return connection.ExecuteCommand(instance,
+                                             commandDelegate,
+                                             i => !isAddDelegate(i),
+                                             typeof(T).Name + " entity was not deleted",
+                                             resultEntityDelegate,
+                                             typeof(T).Name + " entity cannot be deleted, because it's a new item",
+                                             null,
+                                             finalizeDelegate);
+        }
 
         /// <summary>Finds one entity on this connection.</summary>
         /// <typeparam name="T"></typeparam>
@@ -141,9 +141,9 @@ namespace CrossCutting.Data.Sql.Extensions
                                    IDatabaseCommand command,
                                    Func<IDataReader, T> mapFunction,
                                    Func<T?, Exception?, T?>? finalizeDelegate = null) where T : class
-            => connection.Find<T, T>(command,
-                                     cmd => cmd.FindOne(command.CommandText, command.CommandType, mapFunction, command.CommandParameters),
-                                     finalizeDelegate);
+            => connection.Find(command,
+                               cmd => cmd.FindOne(command.CommandText, command.CommandType, mapFunction, command.CommandParameters),
+                               finalizeDelegate);
 
         /// <summary>Finds multiple entities on this connection.</summary>
         /// <typeparam name="T"></typeparam>
@@ -155,9 +155,9 @@ namespace CrossCutting.Data.Sql.Extensions
                                                          IDatabaseCommand command,
                                                          Func<IDataReader, T> mapFunction,
                                                          Func<IReadOnlyCollection<T>?, Exception?, IReadOnlyCollection<T>?>? finalizeDelegate = null)
-            => connection.Find<T, IReadOnlyCollection<T>>(command,
-                                                          cmd => cmd.FindMany(command.CommandText, command.CommandType, mapFunction, command.CommandParameters).ToList(),
-                                                          finalizeDelegate);
+            => connection.Find(command,
+                               cmd => cmd.FindMany(command.CommandText, command.CommandType, mapFunction, command.CommandParameters).ToList(),
+                               finalizeDelegate);
 
         private static T ExecuteCommand<T>(this IDbConnection connection,
                                            T instance,
@@ -211,27 +211,12 @@ namespace CrossCutting.Data.Sql.Extensions
                     if (afterReadDelegate == null)
                     {
                         //Use ExecuteNonQuery
-                        if (cmd.ExecuteNonQuery() == 0 && !string.IsNullOrEmpty(exceptionMessage))
-                        {
-                            throw new DataException(exceptionMessage);
-                        }
+                        ExecuteNonQuery(exceptionMessage, cmd);
                     }
                     else
                     {
                         //Use ExecuteReader
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            var result = reader.Read();
-                            do { Nothing(); } while ((reader.FieldCount == 0 || !result) && reader.NextResult());
-                            if (result)
-                            {
-                                resultEntity = afterReadDelegate(resultEntity, reader);
-                            }
-                            else if (!string.IsNullOrEmpty(exceptionMessage))
-                            {
-                                throw new DataException(exceptionMessage);
-                            }
-                        }
+                        resultEntity = ExecuteReader(exceptionMessage, afterReadDelegate, resultEntity, cmd);
                     }
                 }
 
@@ -244,6 +229,36 @@ namespace CrossCutting.Data.Sql.Extensions
                 finalizeDelegate?.Invoke(resultEntity, exception);
                 throw;
             }
+        }
+
+        private static void ExecuteNonQuery(string? exceptionMessage, IDbCommand cmd)
+        {
+            if (cmd.ExecuteNonQuery() == 0 && !string.IsNullOrEmpty(exceptionMessage))
+            {
+                throw new DataException(exceptionMessage);
+            }
+        }
+
+        private static T ExecuteReader<T>(string? exceptionMessage,
+                                           Func<T, IDataReader, T> afterReadDelegate,
+                                           T resultEntity,
+                                           IDbCommand cmd)
+        {
+            using (var reader = cmd.ExecuteReader())
+            {
+                var result = reader.Read();
+                do { Nothing(); } while ((reader.FieldCount == 0 || !result) && reader.NextResult());
+                if (result)
+                {
+                    resultEntity = afterReadDelegate(resultEntity, reader);
+                }
+                else if (!string.IsNullOrEmpty(exceptionMessage))
+                {
+                    throw new DataException(exceptionMessage);
+                }
+            }
+
+            return resultEntity;
         }
 
         private static T InvokeCommand<T>(this IDbConnection connection,
@@ -271,10 +286,10 @@ namespace CrossCutting.Data.Sql.Extensions
             }
         }
 
-        private static TResult Find<TEntity, TResult>(this IDbConnection connection,
-                                                      IDatabaseCommand command,
-                                                      Func<IDbCommand, TResult> findDelegate,
-                                                      Func<TResult?, Exception?, TResult?>? finalizeDelegate = null)
+        private static TResult Find<TResult>(this IDbConnection connection,
+                                             IDatabaseCommand command,
+                                             Func<IDbCommand, TResult> findDelegate,
+                                             Func<TResult?, Exception?, TResult?>? finalizeDelegate = null)
             where TResult : class
         {
             if (command == null)
