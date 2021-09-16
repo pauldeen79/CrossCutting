@@ -174,11 +174,6 @@ namespace CrossCutting.Data.Sql.Extensions
                 throw new ArgumentNullException(nameof(commandDelegate));
             }
 
-            if (operationValidationDelegate == null)
-            {
-                throw new ArgumentNullException(nameof(operationValidationDelegate));
-            }
-
             var command = commandDelegate.Invoke(instance);
             if (command == null)
             {
