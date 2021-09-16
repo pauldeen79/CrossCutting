@@ -118,8 +118,8 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
 #pragma warning disable CS8603 // Possible null reference return.
             connection.Invoking(x => x.Add(new MyEntity { Property = "filled" }, _ => true, _ => null))
 #pragma warning restore CS8603 // Possible null reference return.
-                      .Should().Throw<ArgumentNullException>()
-                      .And.ParamName.Should().Be("command");
+                      .Should().Throw<ArgumentException>()
+                      .And.ParamName.Should().Be("commandDelegate");
         }
 
         [Fact]
