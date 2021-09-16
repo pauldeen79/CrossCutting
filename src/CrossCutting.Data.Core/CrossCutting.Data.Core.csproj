@@ -6,6 +6,8 @@
     <AnalysisLevel>latest</AnalysisLevel>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
+    <PackageId>pauldeen79.CrossCutting.Data.Core</PackageId>
+    <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
