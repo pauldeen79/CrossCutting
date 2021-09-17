@@ -396,8 +396,10 @@ namespace CrossCutting.Data.Sql.Extensions
         /// <param name="valueWhenDBNull">The value to use when the database value is DBNull.Value.</param>
         /// <param name="skipUnknownColumn"></param>
         /// <exception cref="ArgumentOutOfRangeException">columnName</exception>
-        public static string GetString(this IDataReader instance, string columnName, string valueWhenDBNull, bool skipUnknownColumn = false)
+        public static string GetString(this IDataReader instance, string columnName, string? valueWhenDBNull, bool skipUnknownColumn = false)
+#pragma warning disable CS8603 // Possible null reference return.
             => instance.Invoke(columnName, skipUnknownColumn, valueWhenDBNull, true, false, (reader, ordinal) => reader.GetString(ordinal));
+#pragma warning restore CS8603 // Possible null reference return.
 
         /// <summary>
         /// Gets the byte array.
