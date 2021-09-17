@@ -29,6 +29,13 @@
 
         public int ExecuteNonQuery()
         {
+            if (ExecuteNonQueryResultDelegate != null)
+            {
+                if (ExecuteNonQueryResultPredicate == null || ExecuteNonQueryResultPredicate(this))
+                {
+                    return ExecuteNonQueryResultDelegate(this);
+                }
+            }
             return ExecuteNonQueryResult;
         }
 
@@ -56,8 +63,10 @@
             // Method intentionally left empty.
         }
 
+        public Func<DbCommand, bool> ExecuteNonQueryResultPredicate { get; set; }
         public int ExecuteNonQueryResult { get; set; }
         public object ExecuteScalarResult { get; set; }
+        public Func<DbCommand, int> ExecuteNonQueryResultDelegate { get; set; }
         public event EventHandler<DataReaderCreatedEventArgs> DataReaderCreated;
     }
 }

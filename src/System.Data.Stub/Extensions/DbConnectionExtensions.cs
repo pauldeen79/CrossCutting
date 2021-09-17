@@ -78,10 +78,8 @@ namespace System.Data.Stub.Extensions
         {
             instance.DbCommandCreated += (sender, args) =>
             {
-                if (predicate(args.DbCommand))
-                {
-                    args.DbCommand.ExecuteNonQueryResult = result;
-                }
+                args.DbCommand.ExecuteNonQueryResultPredicate = predicate;
+                args.DbCommand.ExecuteNonQueryResultDelegate = _ => result;
             };
             return instance;
         }
@@ -90,7 +88,7 @@ namespace System.Data.Stub.Extensions
         {
             instance.DbCommandCreated += (sender, args) =>
             {
-                args.DbCommand.ExecuteNonQueryResult = resultDelegate(args.DbCommand);
+                args.DbCommand.ExecuteNonQueryResultDelegate = resultDelegate;
             };
             return instance;
         }
@@ -99,10 +97,8 @@ namespace System.Data.Stub.Extensions
         {
             instance.DbCommandCreated += (sender, args) =>
             {
-                if (predicate(args.DbCommand))
-                {
-                    args.DbCommand.ExecuteNonQueryResult = resultDelegate(args.DbCommand);
-                }
+                args.DbCommand.ExecuteNonQueryResultPredicate = predicate;
+                args.DbCommand.ExecuteNonQueryResultDelegate = resultDelegate;
             };
             return instance;
         }
