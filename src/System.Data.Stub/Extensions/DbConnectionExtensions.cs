@@ -102,5 +102,43 @@ namespace System.Data.Stub.Extensions
             };
             return instance;
         }
+
+        public static DbConnection AddResultForScalarCommand(this DbConnection instance, int result)
+        {
+            instance.DbCommandCreated += (sender, args) =>
+            {
+                args.DbCommand.ExecuteScalarResult = result;
+            };
+            return instance;
+        }
+
+        public static DbConnection AddResultForScalarCommand(this DbConnection instance, Func<DbCommand, bool> predicate, int result)
+        {
+            instance.DbCommandCreated += (sender, args) =>
+            {
+                args.DbCommand.ExecuteScalarResultPredicate = predicate;
+                args.DbCommand.ExecuteScalarResultDelegate = _ => result;
+            };
+            return instance;
+        }
+
+        public static DbConnection AddResultForScalarCommand(this DbConnection instance, Func<DbCommand, object> resultDelegate)
+        {
+            instance.DbCommandCreated += (sender, args) =>
+            {
+                args.DbCommand.ExecuteScalarResultDelegate = resultDelegate;
+            };
+            return instance;
+        }
+
+        public static DbConnection AddResultForScalarCommand(this DbConnection instance, Func<DbCommand, bool> predicate, Func<DbCommand, object> resultDelegate)
+        {
+            instance.DbCommandCreated += (sender, args) =>
+            {
+                args.DbCommand.ExecuteScalarResultPredicate = predicate;
+                args.DbCommand.ExecuteScalarResultDelegate = resultDelegate;
+            };
+            return instance;
+        }
     }
 }

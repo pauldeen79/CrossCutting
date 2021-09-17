@@ -363,6 +363,66 @@ namespace System.Data.Stub.Tests
             actual.Should().Be(12345);
         }
 
+        [Fact]
+        public void CanAddResultForScalarCommand()
+        {
+            // Arrange
+            Connection.AddResultForScalarCommand(12345);
+            using var command = Connection.CreateCommand();
+
+            // Act
+            command.CommandText = "SELECT COUNT(*) FROM MyTable";
+            var actual = command.ExecuteScalar();
+
+            // Assert
+            actual.Should().Be(12345);
+        }
+
+        [Fact]
+        public void CanAddResultForScalarCommandWithPredicate()
+        {
+            // Arrange
+            Connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("UPDATE"), 12345);
+            using var command = Connection.CreateCommand();
+
+            // Act
+            command.CommandText = "SELECT COUNT(*) FROM MyTable";
+            var actual = command.ExecuteScalar();
+
+            // Assert
+            actual.Should().BeNull();
+        }
+
+        [Fact]
+        public void CanAddResultForScalarCommandWithPredicateAndDynamicDelegate()
+        {
+            // Arrange
+            Connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("SELECT"), cmd => cmd.CommandText.Contains("MyTable") ? 12345 : 0);
+            using var command = Connection.CreateCommand();
+
+            // Act
+            command.CommandText = "SELECT COUNT(*) FROM MyTable";
+            var actual = command.ExecuteScalar();
+
+            // Assert
+            actual.Should().Be(12345);
+        }
+
+        [Fact]
+        public void CanAddResultForScalarCommandWithDynamicDelegate()
+        {
+            // Arrange
+            Connection.AddResultForScalarCommand(cmd => cmd.CommandText.Contains("MyTable") ? 12345 : 0);
+            using var command = Connection.CreateCommand();
+
+            // Act
+            command.CommandText = "SELECT COUNT(*) FROM MyTable";
+            var actual = command.ExecuteScalar();
+
+            // Assert
+            actual.Should().Be(12345);
+        }
+
         private void ReaderTest(Func<IDataReader, MyRecord> recordDelegate)
         {
             // Arrange
