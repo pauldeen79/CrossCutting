@@ -29,6 +29,11 @@
 
         public int ExecuteNonQuery()
         {
+            if (ExecuteNonQueryResultDelegate != null
+                && (ExecuteNonQueryResultPredicate == null || ExecuteNonQueryResultPredicate(this)))
+            {
+                return ExecuteNonQueryResultDelegate(this);
+            }
             return ExecuteNonQueryResult;
         }
 
@@ -48,6 +53,11 @@
 
         public object ExecuteScalar()
         {
+            if (ExecuteScalarResultDelegate != null
+                && (ExecuteScalarResultPredicate == null || ExecuteScalarResultPredicate(this)))
+            {
+                return ExecuteScalarResultDelegate(this);
+            }
             return ExecuteScalarResult;
         }
 
@@ -56,7 +66,11 @@
             // Method intentionally left empty.
         }
 
+        public Func<DbCommand, bool> ExecuteNonQueryResultPredicate { get; set; }
+        public Func<DbCommand, int> ExecuteNonQueryResultDelegate { get; set; }
         public int ExecuteNonQueryResult { get; set; }
+        public Func<DbCommand, bool> ExecuteScalarResultPredicate { get; set; }
+        public Func<DbCommand, object> ExecuteScalarResultDelegate { get; set; }
         public object ExecuteScalarResult { get; set; }
         public event EventHandler<DataReaderCreatedEventArgs> DataReaderCreated;
     }

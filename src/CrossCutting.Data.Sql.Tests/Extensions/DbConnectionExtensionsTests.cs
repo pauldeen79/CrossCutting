@@ -81,96 +81,70 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         }
 
         [Fact]
-        public void Add_Throws_When_CommandDelegate_Is_Null()
+        public void Invoke_Throws_When_CommandDelegate_Is_Null()
         {
             // Arrange
             var connection = new DbConnection();
 
             // Act
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            connection.Invoking(x => x.Add(new MyEntity { Property = "filled" }, _ => true, null))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "filled" }, null))
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
                       .Should().Throw<ArgumentNullException>()
                       .And.ParamName.Should().Be("commandDelegate");
         }
 
         [Fact]
-        public void Add_Throws_When_IsAddDelegate_Is_Null()
-        {
-            // Arrange
-            var connection = new DbConnection();
-
-            // Act
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            connection.Invoking(x => x.Add(new MyEntity { Property = "filled" }, null, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text)))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                      .Should().Throw<ArgumentNullException>()
-                      .And.ParamName.Should().Be("isAddDelegate");
-        }
-
-        [Fact]
-        public void Add_Throws_When_CommandDelegate_Returns_Null()
+        public void Invoke_Throws_When_CommandDelegate_Returns_Null()
         {
             // Arrange
             var connection = new DbConnection();
 
             // Act
 #pragma warning disable CS8603 // Possible null reference return.
-            connection.Invoking(x => x.Add(new MyEntity { Property = "filled" }, _ => true, _ => null))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "filled" }, _ => null))
 #pragma warning restore CS8603 // Possible null reference return.
                       .Should().Throw<ArgumentException>()
                       .And.ParamName.Should().Be("commandDelegate");
         }
 
         [Fact]
-        public void Add_Throws_When_ResultEntityDelegate_Returns_Null()
+        public void Invoke_Throws_When_ResultEntityDelegate_Returns_Null()
         {
             // Arrange
             var connection = new DbConnection();
 
             // Act
-            connection.Invoking(x => x.Add(new MyEntity { Property = "filled" }, _ => true, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), _ => null))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "filled" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), null, _ => null))
                       .Should().Throw<ArgumentException>()
                       .WithMessage("Instance should be supplied, or result entity delegate should deliver an instance");
         }
 
         [Fact]
-        public void Add_Throws_When_OperationValidationDelegate_Returns_False()
+        public void Invoke_Does_Not_Throw_When_OperationValidationDelegate_Returns_True()
         {
             // Arrange
             var connection = new DbConnection();
 
             // Act
-            connection.Invoking(x => x.Add(new MyEntity { Property = "filled" }, _ => false, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), x => x))
-                      .Should().Throw<ArgumentException>()
-                      .And.Message.Should().StartWith("MyEntity entity cannot be added, because it's an existing item");
-        }
-
-        [Fact]
-        public void Add_Does_Not_Throw_When_OperationValidationDelegate_Returns_True()
-        {
-            // Arrange
-            var connection = new DbConnection();
-
-            // Act
-            connection.Invoking(x => x.Add(new MyEntity { Property = "filled" }, _ => true, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), x => x))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "filled" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), null, x => x))
                       .Should().NotThrow<ArgumentException>();
         }
 
         [Fact]
-        public void Add_Throws_When_Instance_Validation_Fails()
+        public void Invoke_Throws_When_Instance_Validation_Fails()
         {
             // Arrange
             var connection = new DbConnection();
 
             // Act
-            connection.Invoking(x => x.Add(new MyEntity { Property = null }, _ => true, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text)))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = null }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text)))
                       .Should().Throw<ValidationException>()
                       .WithMessage("The Property field is required.");
         }
 
         [Fact]
-        public void Add_No_AfterReadDelegate_Throws_When_ExecuteNonQuery_Returns_0()
+        public void Invoke_No_AfterReadDelegate_Throws_When_ExecuteNonQuery_Returns_0()
         {
             // Arrange
             var connection = new DbConnection();
@@ -180,13 +154,13 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             };
 
             // Act
-            connection.Invoking(x => x.Add(new MyEntity { Property = "test" }, _ => true, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text)))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), exceptionMessage: "MyEntity entity was not added"))
                       .Should().Throw<DataException>()
                       .WithMessage("MyEntity entity was not added");
         }
 
         [Fact]
-        public void Add_No_AfterReadDelegate_Does_Not_Throw_When_ExecuteNonQuery_Returns_1()
+        public void Invoke_No_AfterReadDelegate_Does_Not_Throw_When_ExecuteNonQuery_Returns_1()
         {
             // Arrange
             var connection = new DbConnection();
@@ -196,31 +170,31 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             };
 
             // Act
-            connection.Invoking(x => x.Add(new MyEntity { Property = "test" }, _ => true, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text)))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text)))
                       .Should().NotThrow<DataException>();
         }
 
         [Fact]
-        public void Add_AfterReadDelegate_Throws_When_ExecuteReader_Read_Returns_False()
+        public void Invoke_AfterReadDelegate_Throws_When_ExecuteReader_Read_Returns_False()
         {
             // Arrange
             var connection = new DbConnection();
 
             // Act
-            connection.Invoking(x => x.Add(new MyEntity { Property = "test" }, _ => true, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, exception) => entity))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), exceptionMessage: "Myentity entity was not added", afterReadDelegate: (entity, exception) => entity))
                       .Should().Throw<DataException>()
                       .WithMessage("MyEntity entity was not added");
         }
 
         [Fact]
-        public void Add_Returns_ResultEntity_When_FinalizeDelegate_Is_Null()
+        public void Invoke_Returns_ResultEntity_When_FinalizeDelegate_Is_Null()
         {
             // Arrange
             var connection = new DbConnection();
             connection.AddResultForDataReader(new[] { new MyEntity { Property = "test1" } });
 
             // Act
-            var result = connection.Add(new MyEntity { Property = "test" }, _ => true, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
+            var result = connection.InvokeCommand(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
             {
                 entity.Property = reader.GetString("Property");
                 return entity;
@@ -232,14 +206,14 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         }
 
         [Fact]
-        public void Add_Returns_FinalizeDelegate_Result_When_FinalizeDelegate_Is_Not_Null()
+        public void Invoke_Returns_FinalizeDelegate_Result_When_FinalizeDelegate_Is_Not_Null()
         {
             // Arrange
             var connection = new DbConnection();
             connection.AddResultForDataReader(new[] { new MyEntity { Property = "test1" } });
 
             // Act
-            var result = connection.Add(new MyEntity { Property = "test" }, _ => true, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
+            var result = connection.InvokeCommand(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
             {
                 entity.Property = reader.GetString("Property");
                 return entity;
@@ -255,14 +229,14 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         }
 
         [Fact]
-        public void Add_Executes_FinalizeDelegate_And_Rethrows_When_Exception_Occurs_In_Database()
+        public void Invoke_Executes_FinalizeDelegate_And_Rethrows_When_Exception_Occurs_In_Database()
         {
             // Arrange
             var connection = new DbConnection();
             connection.AddResultForDataReader(new Action<DataReader>(_ => throw new InvalidOperationException("Kaboom")), new[] { new MyEntity { Property = "test1" } });
 
             // Act
-            connection.Invoking(x => x.Add(new MyEntity { Property = "test" }, _ => true, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
             {
                 entity.Property = reader.GetString("Property");
                 return entity;
@@ -271,100 +245,6 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
                 entity.Property = "test2";
                 return entity;
             })).Should().Throw<InvalidOperationException>().WithMessage("Kaboom");
-        }
-
-        [Fact]
-        public void Update_Throws_When_CommandDelegate_Is_Null()
-        {
-            // Arrange
-            var connection = new DbConnection();
-
-            // Act
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            connection.Invoking(x => x.Update(new MyEntity { Property = "filled" }, _ => false, null))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                      .Should().Throw<ArgumentNullException>()
-                      .And.ParamName.Should().Be("commandDelegate");
-        }
-
-        [Fact]
-        public void Update_Throws_When_IsAddDelegate_Is_Null()
-        {
-            // Arrange
-            var connection = new DbConnection();
-
-            // Act
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            connection.Invoking(x => x.Update(new MyEntity { Property = "filled" }, null, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text)))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                      .Should().Throw<ArgumentNullException>()
-                      .And.ParamName.Should().Be("isAddDelegate");
-        }
-
-        [Fact]
-        public void Update_Returns_ResultEntity_When_FinalizeDelegate_Is_Null()
-        {
-            // Arrange
-            var connection = new DbConnection();
-            connection.AddResultForDataReader(new[] { new MyEntity { Property = "test1" } });
-
-            // Act
-            var result = connection.Update(new MyEntity { Property = "test" }, _ => false, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
-            {
-                entity.Property = reader.GetString("Property");
-                return entity;
-            });
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Property.Should().Be("test1");
-        }
-
-        [Fact]
-        public void Delete_Throws_When_CommandDelegate_Is_Null()
-        {
-            // Arrange
-            var connection = new DbConnection();
-
-            // Act
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            connection.Invoking(x => x.Delete(new MyEntity { Property = "filled" }, _ => false, null))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                      .Should().Throw<ArgumentNullException>()
-                      .And.ParamName.Should().Be("commandDelegate");
-        }
-
-        [Fact]
-        public void Delete_Throws_When_IsAddDelegate_Is_Null()
-        {
-            // Arrange
-            var connection = new DbConnection();
-
-            // Act
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            connection.Invoking(x => x.Delete(new MyEntity { Property = "filled" }, null, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text)))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                      .Should().Throw<ArgumentNullException>()
-                      .And.ParamName.Should().Be("isAddDelegate");
-        }
-
-        [Fact]
-        public void Delete_Returns_ResultEntity_When_FinalizeDelegate_Is_Null()
-        {
-            // Arrange
-            var connection = new DbConnection();
-            // Note that Delete doesn't have an after read delegate... If you wnt this, you probably use a soft delete, and need to use the Update method ;-)
-            connection.DbCommandCreated += (sender, args) =>
-            {
-                args.DbCommand.ExecuteNonQueryResult = 1; //1 row affected
-            };
-
-            // Act
-            var result = connection.Delete(new MyEntity { Property = "test" }, _ => false, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text));
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Property.Should().Be("test");
         }
 
         [Fact]

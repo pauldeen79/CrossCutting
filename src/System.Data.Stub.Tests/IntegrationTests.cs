@@ -303,6 +303,126 @@ namespace System.Data.Stub.Tests
             committed.Should().BeTrue();
         }
 
+        [Fact]
+        public void CanAddResultForNonQueryCommand()
+        {
+            // Arrange
+            Connection.AddResultForNonQueryCommand(12345);
+            using var command = Connection.CreateCommand();
+
+            // Act
+            command.CommandText = "INSERT INTO [Fridge](Name, Amount) VALUES ('Beer', 1)";
+            var actual = command.ExecuteNonQuery();
+
+            // Assert
+            actual.Should().Be(12345);
+        }
+
+        [Fact]
+        public void CanAddResultForNonQueryCommandWithPredicate()
+        {
+            // Arrange
+            Connection.AddResultForNonQueryCommand(cmd => cmd.CommandText.StartsWith("UPDATE"), 12345);
+            using var command = Connection.CreateCommand();
+
+            // Act
+            command.CommandText = "INSERT INTO [Fridge](Name, Amount) VALUES ('Beer', 1)";
+            var actual = command.ExecuteNonQuery();
+
+            // Assert
+            actual.Should().Be(0);
+        }
+
+        [Fact]
+        public void CanAddResultForNonQueryCommandWithPredicateAndDynamicDelegate()
+        {
+            // Arrange
+            Connection.AddResultForNonQueryCommand(cmd => cmd.CommandText.StartsWith("INSERT"), cmd => cmd.CommandText.Contains("Beer") ? 12345 : 0);
+            using var command = Connection.CreateCommand();
+
+            // Act
+            command.CommandText = "INSERT INTO [Fridge](Name, Amount) VALUES ('Beer', 1)";
+            var actual = command.ExecuteNonQuery();
+
+            // Assert
+            actual.Should().Be(12345);
+        }
+
+        [Fact]
+        public void CanAddResultForNonQueryCommandWithDynamicDelegate()
+        {
+            // Arrange
+            Connection.AddResultForNonQueryCommand(cmd => cmd.CommandText.Contains("Beer") ? 12345 : 0);
+            using var command = Connection.CreateCommand();
+
+            // Act
+            command.CommandText = "INSERT INTO [Fridge](Name, Amount) VALUES ('Beer', 1)";
+            var actual = command.ExecuteNonQuery();
+
+            // Assert
+            actual.Should().Be(12345);
+        }
+
+        [Fact]
+        public void CanAddResultForScalarCommand()
+        {
+            // Arrange
+            Connection.AddResultForScalarCommand(12345);
+            using var command = Connection.CreateCommand();
+
+            // Act
+            command.CommandText = "SELECT COUNT(*) FROM MyTable";
+            var actual = command.ExecuteScalar();
+
+            // Assert
+            actual.Should().Be(12345);
+        }
+
+        [Fact]
+        public void CanAddResultForScalarCommandWithPredicate()
+        {
+            // Arrange
+            Connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("UPDATE"), 12345);
+            using var command = Connection.CreateCommand();
+
+            // Act
+            command.CommandText = "SELECT COUNT(*) FROM MyTable";
+            var actual = command.ExecuteScalar();
+
+            // Assert
+            actual.Should().BeNull();
+        }
+
+        [Fact]
+        public void CanAddResultForScalarCommandWithPredicateAndDynamicDelegate()
+        {
+            // Arrange
+            Connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("SELECT"), cmd => cmd.CommandText.Contains("MyTable") ? 12345 : 0);
+            using var command = Connection.CreateCommand();
+
+            // Act
+            command.CommandText = "SELECT COUNT(*) FROM MyTable";
+            var actual = command.ExecuteScalar();
+
+            // Assert
+            actual.Should().Be(12345);
+        }
+
+        [Fact]
+        public void CanAddResultForScalarCommandWithDynamicDelegate()
+        {
+            // Arrange
+            Connection.AddResultForScalarCommand(cmd => cmd.CommandText.Contains("MyTable") ? 12345 : 0);
+            using var command = Connection.CreateCommand();
+
+            // Act
+            command.CommandText = "SELECT COUNT(*) FROM MyTable";
+            var actual = command.ExecuteScalar();
+
+            // Assert
+            actual.Should().Be(12345);
+        }
+
         private void ReaderTest(Func<IDataReader, MyRecord> recordDelegate)
         {
             // Arrange
