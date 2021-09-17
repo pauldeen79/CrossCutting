@@ -64,5 +64,47 @@ namespace System.Data.Stub.Extensions
             instance.DbTransactionCreated += (sender, args) => callback.AddTransaction(args.DbTransaction);
             return instance;
         }
+
+        public static DbConnection AddResultForNonQueryCommand(this DbConnection instance, int result)
+        {
+            instance.DbCommandCreated += (sender, args) =>
+            {
+                args.DbCommand.ExecuteNonQueryResult = result;
+            };
+            return instance;
+        }
+
+        public static DbConnection AddResultForNonQueryCommand(this DbConnection instance, Func<DbCommand, bool> predicate, int result)
+        {
+            instance.DbCommandCreated += (sender, args) =>
+            {
+                if (predicate(args.DbCommand))
+                {
+                    args.DbCommand.ExecuteNonQueryResult = result;
+                }
+            };
+            return instance;
+        }
+
+        public static DbConnection AddResultForNonQueryCommand(this DbConnection instance, Func<DbCommand, int> resultDelegate)
+        {
+            instance.DbCommandCreated += (sender, args) =>
+            {
+                args.DbCommand.ExecuteNonQueryResult = resultDelegate(args.DbCommand);
+            };
+            return instance;
+        }
+
+        public static DbConnection AddResultForNonQueryCommand(this DbConnection instance, Func<DbCommand, bool> predicate, Func<DbCommand, int> resultDelegate)
+        {
+            instance.DbCommandCreated += (sender, args) =>
+            {
+                if (predicate(args.DbCommand))
+                {
+                    args.DbCommand.ExecuteNonQueryResult = resultDelegate(args.DbCommand);
+                }
+            };
+            return instance;
+        }
     }
 }
