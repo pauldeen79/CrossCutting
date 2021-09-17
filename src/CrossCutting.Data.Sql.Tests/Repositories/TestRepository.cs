@@ -11,17 +11,17 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
     [ExcludeFromCodeCoverage]
     public class TestRepository
     {
-        private TestEntity Add(TestEntity instance)
+        public TestEntity Add(TestEntity instance)
         {
             if (instance == null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }
-            return _connection.Add
+            return _connection.Invoke
             (
                 instance,
-                IsAdd,
                 x => new StoredProcedureCommand<TestEntity>(@"[InsertCode]", x, AddParameters),
+                typeof(TestEntity).Name + " entity was not added",
                 AddResultEntity,
                 AddAfterRead,
                 AddFinalize
@@ -59,17 +59,17 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             };
         }
 
-        private TestEntity Update(TestEntity instance)
+        public TestEntity Update(TestEntity instance)
         {
             if (instance == null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }
-            return _connection.Update
+            return _connection.Invoke
             (
                 instance,
-                IsAdd,
                 x => new StoredProcedureCommand<TestEntity>(@"[UpdateCode]", x, UpdateParameters),
+                typeof(TestEntity).Name + " entity was not updated",
                 UpdateResultEntity,
                 UpdateAfterRead
             );
@@ -106,11 +106,11 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             {
                 throw new ArgumentNullException(nameof(instance));
             }
-            return _connection.Delete
+            return _connection.Invoke
             (
                 instance,
-                IsAdd,
                 x => new StoredProcedureCommand<TestEntity>(@"[DeleteCode]", x, DeleteParameters),
+                typeof(TestEntity).Name + " entity was not deleted",
                 DeleteResultEntity
             );
         }
@@ -129,27 +129,6 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
                 new KeyValuePair<string, object>("@CodeType", resultEntity.CodeType),
                 new KeyValuePair<string, object>("@Description", resultEntity.Description),
             };
-        }
-
-        private bool IsAdd(TestEntity instance)
-        {
-            return !instance.IsExistingEntity;
-        }
-
-        public TestEntity Save(TestEntity instance)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-            if (IsAdd(instance))
-            {
-                return Add(instance);
-            }
-            else
-            {
-                return Update(instance);
-            }
         }
 
         public TestRepository(IDbConnection connection)

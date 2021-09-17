@@ -37,109 +37,6 @@ namespace CrossCutting.Data.Sql.Extensions
                                           bool closeConnection = false)
             => connection.InvokeCommand(command, closeConnection, cmd => cmd.ExecuteNonQuery());
 
-        /// <summary>Adds the specified entity to this connection.</summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="connection">The connection.</param>
-        /// <param name="instance">The instance.</param>
-        /// <param name="isAddDelegate">The is add delegate.</param>
-        /// <param name="commandDelegate">The command delegate.</param>
-        /// <param name="resultEntityDelegate">The result entity delegate.</param>
-        /// <param name="afterReadDelegate">The after read delegate.</param>
-        /// <param name="finalizeDelegate">The finalize delegate.</param>
-        public static T Add<T>(this IDbConnection connection,
-                               T instance,
-                               Func<T, bool> isAddDelegate,
-                               Func<T, IDatabaseCommand> commandDelegate,
-                               Func<T, T>? resultEntityDelegate = null,
-                               Func<T, IDataReader, T>? afterReadDelegate = null,
-                               Func<T, Exception?, T>? finalizeDelegate = null)
-        {
-            if (isAddDelegate == null)
-            {
-                throw new ArgumentNullException(nameof(isAddDelegate));
-            }
-
-            if (!isAddDelegate(instance))
-            {
-                throw new ArgumentException(typeof(T).Name + " entity cannot be added, because it's an existing item", nameof(instance));
-            }
-
-            return connection.ExecuteCommand(instance,
-                                             commandDelegate,
-                                             typeof(T).Name + " entity was not added",
-                                             resultEntityDelegate,
-                                             afterReadDelegate,
-                                             finalizeDelegate);
-        }
-
-        /// <summary>Updates the specified entity to this connection.</summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="connection">The connection.</param>
-        /// <param name="instance">The instance.</param>
-        /// <param name="isAddDelegate">The is add delegate.</param>
-        /// <param name="resultEntityDelegate">The result entity delegate.</param>
-        /// <param name="commandDelegate">The command delegate.</param>
-        /// <param name="afterReadDelegate">The after read delegate.</param>
-        /// <param name="finalizeDelegate">The finalize delegate.</param>
-        public static T Update<T>(this IDbConnection connection,
-                                  T instance,
-                                  Func<T, bool> isAddDelegate,
-                                  Func<T, IDatabaseCommand> commandDelegate,
-                                  Func<T, T>? resultEntityDelegate = null,
-                                  Func<T, IDataReader, T>? afterReadDelegate = null,
-                                  Func<T, Exception?, T>? finalizeDelegate = null)
-        {
-            if (isAddDelegate == null)
-            {
-                throw new ArgumentNullException(nameof(isAddDelegate));
-            }
-
-            if (isAddDelegate(instance))
-            {
-                throw new ArgumentException(typeof(T).Name + " entity cannot be updated, because it's a new item", nameof(instance));
-            }
-
-            return connection.ExecuteCommand(instance,
-                                             commandDelegate,
-                                             typeof(T).Name + " entity was not updated",
-                                             resultEntityDelegate,
-                                             afterReadDelegate,
-                                             finalizeDelegate);
-        }
-
-        /// <summary>Deletes the specified entity from this connection.</summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="connection">The connection.</param>
-        /// <param name="instance">The instance.</param>
-        /// <param name="isAddDelegate">The is add delegate.</param>
-        /// <param name="commandDelegate">The command delegate.</param>
-        /// <param name="resultEntityDelegate">The result entity delegate.</param>
-        /// <param name="finalizeDelegate">The finalize delegate.</param>
-        public static T Delete<T>(this IDbConnection connection,
-                                  T instance,
-                                  Func<T, bool> isAddDelegate,
-                                  Func<T, IDatabaseCommand> commandDelegate,
-                                  Func<T, T>? resultEntityDelegate = null,
-                                  Func<T, Exception?, T>? finalizeDelegate = null)
-        {
-            if (isAddDelegate == null)
-            {
-                throw new ArgumentNullException(nameof(isAddDelegate));
-            }
-
-            if (isAddDelegate(instance))
-            {
-                throw new ArgumentException(typeof(T).Name + " entity cannot be updated, because it's a new item", nameof(instance));
-            }
-
-            return connection.ExecuteCommand(instance,
-                                             commandDelegate,
-                                             typeof(T).Name + " entity was not deleted",
-                                             resultEntityDelegate,
-                                             null,
-                                             finalizeDelegate);
-        }
-
         /// <summary>Finds one entity on this connection.</summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="connection">The connection.</param>
@@ -168,13 +65,13 @@ namespace CrossCutting.Data.Sql.Extensions
                                cmd => cmd.FindMany(command.CommandText, command.CommandType, mapFunction, command.CommandParameters).ToList(),
                                finalizeDelegate);
 
-        private static T ExecuteCommand<T>(this IDbConnection connection,
-                                           T instance,
-                                           Func<T, IDatabaseCommand> commandDelegate,
-                                           string? exceptionMessage = null,
-                                           Func<T, T>? resultEntityDelegate = null,
-                                           Func<T, IDataReader, T>? afterReadDelegate = null,
-                                           Func<T, Exception?, T>? finalizeDelegate = null)
+        public static T Invoke<T>(this IDbConnection connection,
+                                   T instance,
+                                   Func<T, IDatabaseCommand> commandDelegate,
+                                   string? exceptionMessage = null,
+                                   Func<T, T>? resultEntityDelegate = null,
+                                   Func<T, IDataReader, T>? afterReadDelegate = null,
+                                   Func<T, Exception?, T>? finalizeDelegate = null)
         {
             if (commandDelegate == null)
             {

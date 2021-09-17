@@ -22,7 +22,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             var sut = new TestRepository(connection);
 
             // Act
-            var result = sut.Save(input);
+            var result = sut.Add(input);
 
             // Assert
             result.IsExistingEntity.Should().BeTrue();
@@ -42,7 +42,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             var sut = new TestRepository(connection);
 
             // Act
-            var result = sut.Save(input);
+            var result = sut.Update(input);
 
             // Assert
             result.IsExistingEntity.Should().BeTrue();
