@@ -59,12 +59,15 @@ namespace CrossCutting.Data.Sql.Extensions
                 throw new ArgumentNullException(nameof(isAddDelegate));
             }
 
+            if (!isAddDelegate(instance))
+            {
+                throw new ArgumentException(typeof(T).Name + " entity cannot be added, because it's an existing item", nameof(instance));
+            }
+
             return connection.ExecuteCommand(instance,
                                              commandDelegate,
-                                             i => isAddDelegate(i),
                                              typeof(T).Name + " entity was not added",
                                              resultEntityDelegate,
-                                             typeof(T).Name + " entity cannot be added, because it's an existing item",
                                              afterReadDelegate,
                                              finalizeDelegate);
         }
@@ -91,12 +94,15 @@ namespace CrossCutting.Data.Sql.Extensions
                 throw new ArgumentNullException(nameof(isAddDelegate));
             }
 
+            if (isAddDelegate(instance))
+            {
+                throw new ArgumentException(typeof(T).Name + " entity cannot be updated, because it's a new item", nameof(instance));
+            }
+
             return connection.ExecuteCommand(instance,
                                              commandDelegate,
-                                             i => !isAddDelegate(i),
                                              typeof(T).Name + " entity was not updated",
                                              resultEntityDelegate,
-                                             typeof(T).Name + " entity cannot be updated, because it's a new item",
                                              afterReadDelegate,
                                              finalizeDelegate);
         }
@@ -121,12 +127,15 @@ namespace CrossCutting.Data.Sql.Extensions
                 throw new ArgumentNullException(nameof(isAddDelegate));
             }
 
+            if (isAddDelegate(instance))
+            {
+                throw new ArgumentException(typeof(T).Name + " entity cannot be updated, because it's a new item", nameof(instance));
+            }
+
             return connection.ExecuteCommand(instance,
                                              commandDelegate,
-                                             i => !isAddDelegate(i),
                                              typeof(T).Name + " entity was not deleted",
                                              resultEntityDelegate,
-                                             typeof(T).Name + " entity cannot be deleted, because it's a new item",
                                              null,
                                              finalizeDelegate);
         }
@@ -162,10 +171,8 @@ namespace CrossCutting.Data.Sql.Extensions
         private static T ExecuteCommand<T>(this IDbConnection connection,
                                            T instance,
                                            Func<T, IDatabaseCommand> commandDelegate,
-                                           Func<T, bool>? operationValidationDelegate = null,
                                            string? exceptionMessage = null,
                                            Func<T, T>? resultEntityDelegate = null,
-                                           string? invalidOperationErrorMessage = null,
                                            Func<T, IDataReader, T>? afterReadDelegate = null,
                                            Func<T, Exception?, T>? finalizeDelegate = null)
         {
@@ -187,11 +194,6 @@ namespace CrossCutting.Data.Sql.Extensions
             if (resultEntity == null)
             {
                 throw new ArgumentException("Instance should be supplied, or result entity delegate should deliver an instance");
-            }
-
-            if (operationValidationDelegate != null && !operationValidationDelegate(resultEntity))
-            {
-                throw new ArgumentException(invalidOperationErrorMessage, nameof(instance));
             }
 
             resultEntity.Validate();
