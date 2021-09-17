@@ -88,7 +88,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
 
             // Act
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            connection.Invoking(x => x.Invoke(new MyEntity { Property = "filled" }, null))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "filled" }, null))
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
                       .Should().Throw<ArgumentNullException>()
                       .And.ParamName.Should().Be("commandDelegate");
@@ -102,7 +102,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
 
             // Act
 #pragma warning disable CS8603 // Possible null reference return.
-            connection.Invoking(x => x.Invoke(new MyEntity { Property = "filled" }, _ => null))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "filled" }, _ => null))
 #pragma warning restore CS8603 // Possible null reference return.
                       .Should().Throw<ArgumentException>()
                       .And.ParamName.Should().Be("commandDelegate");
@@ -115,7 +115,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             var connection = new DbConnection();
 
             // Act
-            connection.Invoking(x => x.Invoke(new MyEntity { Property = "filled" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), null, _ => null))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "filled" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), null, _ => null))
                       .Should().Throw<ArgumentException>()
                       .WithMessage("Instance should be supplied, or result entity delegate should deliver an instance");
         }
@@ -127,7 +127,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             var connection = new DbConnection();
 
             // Act
-            connection.Invoking(x => x.Invoke(new MyEntity { Property = "filled" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), null, x => x))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "filled" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), null, x => x))
                       .Should().NotThrow<ArgumentException>();
         }
 
@@ -138,7 +138,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             var connection = new DbConnection();
 
             // Act
-            connection.Invoking(x => x.Invoke(new MyEntity { Property = null }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text)))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = null }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text)))
                       .Should().Throw<ValidationException>()
                       .WithMessage("The Property field is required.");
         }
@@ -154,7 +154,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             };
 
             // Act
-            connection.Invoking(x => x.Invoke(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), exceptionMessage: "MyEntity entity was not added"))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), exceptionMessage: "MyEntity entity was not added"))
                       .Should().Throw<DataException>()
                       .WithMessage("MyEntity entity was not added");
         }
@@ -170,7 +170,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             };
 
             // Act
-            connection.Invoking(x => x.Invoke(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text)))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text)))
                       .Should().NotThrow<DataException>();
         }
 
@@ -181,7 +181,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             var connection = new DbConnection();
 
             // Act
-            connection.Invoking(x => x.Invoke(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), exceptionMessage: "Myentity entity was not added", afterReadDelegate: (entity, exception) => entity))
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), exceptionMessage: "Myentity entity was not added", afterReadDelegate: (entity, exception) => entity))
                       .Should().Throw<DataException>()
                       .WithMessage("MyEntity entity was not added");
         }
@@ -194,7 +194,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             connection.AddResultForDataReader(new[] { new MyEntity { Property = "test1" } });
 
             // Act
-            var result = connection.Invoke(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
+            var result = connection.InvokeCommand(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
             {
                 entity.Property = reader.GetString("Property");
                 return entity;
@@ -213,7 +213,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             connection.AddResultForDataReader(new[] { new MyEntity { Property = "test1" } });
 
             // Act
-            var result = connection.Invoke(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
+            var result = connection.InvokeCommand(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
             {
                 entity.Property = reader.GetString("Property");
                 return entity;
@@ -236,7 +236,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             connection.AddResultForDataReader(new Action<DataReader>(_ => throw new InvalidOperationException("Kaboom")), new[] { new MyEntity { Property = "test1" } });
 
             // Act
-            connection.Invoking(x => x.Invoke(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
+            connection.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }, _ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text), afterReadDelegate: (entity, reader) =>
             {
                 entity.Property = reader.GetString("Property");
                 return entity;

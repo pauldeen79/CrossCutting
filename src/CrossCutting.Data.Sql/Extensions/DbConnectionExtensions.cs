@@ -65,13 +65,25 @@ namespace CrossCutting.Data.Sql.Extensions
                                cmd => cmd.FindMany(command.CommandText, command.CommandType, mapFunction, command.CommandParameters).ToList(),
                                finalizeDelegate);
 
-        public static T Invoke<T>(this IDbConnection connection,
-                                   T instance,
-                                   Func<T, IDatabaseCommand> commandDelegate,
-                                   string? exceptionMessage = null,
-                                   Func<T, T>? resultEntityDelegate = null,
-                                   Func<T, IDataReader, T>? afterReadDelegate = null,
-                                   Func<T, Exception?, T>? finalizeDelegate = null)
+        /// <summary>
+        /// Invokes the command on the connection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="connection">The connection</param>
+        /// <param name="instance">Input and output entity</param>
+        /// <param name="commandDelegate">The command delegat</param>
+        /// <param name="exceptionMessage">Optional exception message (applied to result of command execution)</param>
+        /// <param name="resultEntityDelegate">Optional pre processing delegate</param>
+        /// <param name="afterReadDelegate">Optional post processing delegate</param>
+        /// <param name="finalizeDelegate">Optional finalization delegate</param>
+        /// <returns></returns>
+        public static T InvokeCommand<T>(this IDbConnection connection,
+                                         T instance,
+                                         Func<T, IDatabaseCommand> commandDelegate,
+                                         string? exceptionMessage = null,
+                                         Func<T, T>? resultEntityDelegate = null,
+                                         Func<T, IDataReader, T>? afterReadDelegate = null,
+                                         Func<T, Exception?, T>? finalizeDelegate = null)
         {
             if (commandDelegate == null)
             {
@@ -105,12 +117,12 @@ namespace CrossCutting.Data.Sql.Extensions
                     if (afterReadDelegate == null)
                     {
                         //Use ExecuteNonQuery
-                        ExecuteNonQuery(exceptionMessage, cmd);
+                        ExecuteNonQuery(cmd, exceptionMessage);
                     }
                     else
                     {
                         //Use ExecuteReader
-                        resultEntity = ExecuteReader(exceptionMessage, afterReadDelegate, resultEntity, cmd);
+                        resultEntity = ExecuteReader(cmd, exceptionMessage, afterReadDelegate, resultEntity);
                     }
                 }
 
@@ -125,7 +137,7 @@ namespace CrossCutting.Data.Sql.Extensions
             }
         }
 
-        private static void ExecuteNonQuery(string? exceptionMessage, IDbCommand cmd)
+        private static void ExecuteNonQuery(IDbCommand cmd, string? exceptionMessage)
         {
             if (cmd.ExecuteNonQuery() == 0 && !string.IsNullOrEmpty(exceptionMessage))
             {
@@ -133,10 +145,10 @@ namespace CrossCutting.Data.Sql.Extensions
             }
         }
 
-        private static T ExecuteReader<T>(string? exceptionMessage,
+        private static T ExecuteReader<T>(IDbCommand cmd,
+                                          string? exceptionMessage,
                                           Func<T, IDataReader, T> afterReadDelegate,
-                                          T resultEntity,
-                                          IDbCommand cmd)
+                                          T resultEntity)
         {
             using (var reader = cmd.ExecuteReader())
             {

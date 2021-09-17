@@ -17,7 +17,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             {
                 throw new ArgumentNullException(nameof(instance));
             }
-            return _connection.Invoke
+            return _connection.InvokeCommand
             (
                 instance,
                 x => new StoredProcedureCommand<TestEntity>(@"[InsertCode]", x, AddParameters),
@@ -65,7 +65,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             {
                 throw new ArgumentNullException(nameof(instance));
             }
-            return _connection.Invoke
+            return _connection.InvokeCommand
             (
                 instance,
                 x => new StoredProcedureCommand<TestEntity>(@"[UpdateCode]", x, UpdateParameters),
@@ -106,7 +106,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             {
                 throw new ArgumentNullException(nameof(instance));
             }
-            return _connection.Invoke
+            return _connection.InvokeCommand
             (
                 instance,
                 x => new StoredProcedureCommand<TestEntity>(@"[DeleteCode]", x, DeleteParameters),
