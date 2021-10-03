@@ -1,11 +1,13 @@
-﻿using CrossCutting.Common.Extensions;
-using FluentAssertions;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Common.Extensions;
+using FluentAssertions;
 using Xunit;
 
 namespace CrossCutting.Common.Tests.Extensions
 {
+    [ExcludeFromCodeCoverage]
     public class StringExtensionsTests
     {
         [Theory,

@@ -1,8 +1,10 @@
-﻿using FluentAssertions;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using Xunit;
 
 namespace CrossCutting.Utilities.Parsers.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class FlatTextParserTests
     {
         [Fact]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Utilities.ObjectDumper.Contracts;
 using CrossCutting.Utilities.ObjectDumper.Extensions;
 using CrossCutting.Utilities.ObjectDumper.Parts.Filters;
@@ -10,6 +11,7 @@ using Xunit;
 
 namespace CrossCutting.Utilities.ObjectDumper.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class ObjectDumperTests
     {
         [Fact]

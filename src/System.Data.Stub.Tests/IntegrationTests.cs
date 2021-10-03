@@ -1,11 +1,13 @@
-﻿using FluentAssertions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Stub.Extensions;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 
 namespace System.Data.Stub.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class IntegrationTests
     {
         private readonly DbConnection Connection;

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using CrossCutting.Common.Extensions;
 using CrossCutting.DataTableDumper.Default;
 using CrossCutting.DataTableDumper.Extensions;
@@ -7,6 +8,7 @@ using Xunit;
 
 namespace CrossCutting.DataTableDumper.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class DataTableDumperTests
     {
         [Fact]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 using CrossCutting.Utilities.XmlDocumentTransformation;
 using CrossCutting.Utilities.XmlDocumentTransformation.Interfaces;
@@ -8,6 +9,7 @@ using Xunit;
 
 namespace CrossCutting.Utilities.XDocumentTransformation.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class XDocumentTransformerTests
     {
         [Fact]

@@ -1,10 +1,12 @@
-﻿using FluentAssertions;
-using FluentAssertions.Execution;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Xunit;
 
 namespace CrossCutting.Utilities.Parsers.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class PipeDelimitedDataTableParserTests
     {
         [Fact]

@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using FluentAssertions;
 using Xunit;
 
 namespace CrossCutting.Utilities.Parsers.Tests.InsertQueryParser
 {
+    [ExcludeFromCodeCoverage]
     public class InsertQueryParserTests
     {
         [Fact]

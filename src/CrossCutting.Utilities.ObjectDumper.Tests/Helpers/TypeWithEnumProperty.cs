@@ -1,7 +1,10 @@
-﻿namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers
 {
     public enum MyEnumeration { A, B, C }
 
+    [ExcludeFromCodeCoverage]
     public class TypeWithEnumProperty
     {
         public string? Property1 { get; set; }

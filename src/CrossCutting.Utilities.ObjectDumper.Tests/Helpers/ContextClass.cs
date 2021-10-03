@@ -2,11 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
+using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Utilities.ObjectDumper.Contracts;
 
 namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers
 {
+    [ExcludeFromCodeCoverage]
 #pragma warning disable CA1710 // Identifiers should have correct suffix
     public class ContextClass : IDictionary<string, object>
 #pragma warning restore CA1710 // Identifiers should have correct suffix
@@ -85,6 +86,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_state).GetEnumerator();
     }
 
+    [ExcludeFromCodeCoverage]
     public class ContextClassTypeHandler : IObjectDumperPartWithCallback
     {
         public IObjectDumperCallback? Callback { get; set; }

@@ -1,9 +1,11 @@
-﻿using CrossCutting.DataTableDumper.Extensions;
+﻿using System.Diagnostics.CodeAnalysis;
+using CrossCutting.DataTableDumper.Extensions;
 using FluentAssertions;
 using Xunit;
 
 namespace CrossCutting.DataTableDumper.Tests.Extensions
 {
+    [ExcludeFromCodeCoverage]
     public class StringExtensionsTests
     {
         [Theory,

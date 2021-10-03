@@ -1,10 +1,12 @@
-﻿using FluentAssertions;
-using System;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 
 namespace CrossCutting.Utilities.Parsers.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class StringFormatParserTests
     {
         [Fact]

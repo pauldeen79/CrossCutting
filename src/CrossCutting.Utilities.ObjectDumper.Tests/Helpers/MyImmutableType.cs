@@ -1,5 +1,8 @@
-﻿namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers
 {
+    [ExcludeFromCodeCoverage]
     public class MyImmutableType
     {
         public string Name { get; }

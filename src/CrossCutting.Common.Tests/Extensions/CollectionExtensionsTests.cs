@@ -1,10 +1,12 @@
-﻿using CrossCutting.Common.Extensions;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
-using System.Collections.ObjectModel;
 using Xunit;
 
 namespace CrossCutting.Common.Tests.Extensions
 {
+    [ExcludeFromCodeCoverage]
     public class CollectionExtensionsTests
     {
         [Fact]

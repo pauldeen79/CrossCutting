@@ -1,11 +1,10 @@
-﻿using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using Xunit;
 
 namespace System.Data.Stub.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class DbParameterCollectionTests
     {
         [Fact]
