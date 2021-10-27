@@ -15,7 +15,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var input = new TestEntity("01", "Test", "first entity", false);
-            var connection = new DbConnection();
+            using var connection = new DbConnection();
             connection.AddResultForDataReader(new[] { new TestEntity("01", "Test", "first entity", true) });
             var callback = new DbConnectionCallback();
             connection.AddCallback(callback);
@@ -35,7 +35,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var input = new TestEntity("01", "Test", "first entity", true);
-            var connection = new DbConnection();
+            using var connection = new DbConnection();
             connection.AddResultForDataReader(new[] { new TestEntity("01", "Test", "first entity", true) });
             var callback = new DbConnectionCallback();
             connection.AddCallback(callback);
@@ -55,7 +55,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var input = new TestEntity("01", "Test", "first entity", true);
-            var connection = new DbConnection();
+            using var connection = new DbConnection();
             connection.AddResultForNonQueryCommand(1);
             var callback = new DbConnectionCallback();
             connection.AddCallback(callback);

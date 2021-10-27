@@ -19,7 +19,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         public void AddParameter_Creates_Parameter_Correctly()
         {
             // Arrange
-            var command = new DbCommand();
+            using var command = new DbCommand();
 
             // Act
             command.AddParameter("Name", "Value");
@@ -35,7 +35,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         public void AddParameters_Throws_On_Null_Argument()
         {
             // Arrange
-            var command = new DbCommand();
+            using var command = new DbCommand();
 
             // Act & Assert
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
@@ -49,7 +49,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         public void AddParameters_Add_All_Parameters_When_Argument_Is_Not_Null()
         {
             // Arrange
-            var command = new DbCommand();
+            using var command = new DbCommand();
             var parameters = new List<KeyValuePair<string, object?>>
             {
                 new KeyValuePair<string, object?>("param1", "value1"),
@@ -72,7 +72,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         public void FillCommand_Fills_CommandText_Correctly()
         {
             // Arrange
-            var command = new DbCommand();
+            using var command = new DbCommand();
 
             // Act
             command.FillCommand("Test", DatabaseCommandType.Text);
@@ -87,7 +87,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         public void FillCommand_Fills_CommandType_Correctly(DatabaseCommandType dbCommandType, CommandType expectedCommandType)
         {
             // Arrange
-            var command = new DbCommand();
+            using var command = new DbCommand();
 
             // Act
             command.FillCommand("Test", dbCommandType);
@@ -100,7 +100,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         public void FillCommand_Fills_Parameters_Correctly()
         {
             // Arrange
-            var command = new DbCommand();
+            using var command = new DbCommand();
             var parameters = new List<KeyValuePair<string, object?>>
             {
                 new KeyValuePair<string, object?>("param1", "value1"),
@@ -123,7 +123,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         public void FindOne_Returns_Correct_Result()
         {
             // Arrange
-            var connection = new DbConnection();
+            using var connection = new DbConnection();
             connection.AddResultForDataReader(new[]
             {
                 new MyDataObject { Property = "test" }
@@ -142,7 +142,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         public void FindMany_Returns_Correct_Result()
         {
             // Arrange
-            var connection = new DbConnection();
+            using var connection = new DbConnection();
             connection.AddResultForDataReader(new[]
             {
                 new MyDataObject { Property = "test1" },

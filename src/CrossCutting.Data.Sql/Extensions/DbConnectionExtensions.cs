@@ -65,6 +65,61 @@ namespace CrossCutting.Data.Sql.Extensions
                                cmd => cmd.FindMany(command.CommandText, command.CommandType, mapFunction, command.CommandParameters).ToList(),
                                finalizeDelegate);
 
+        /// <summary>Finds multiple entities on this connection in a paged set.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="connection">The connection.</param>
+        /// <param name="dataCommand">The sql command to get paged data.</param>
+        /// <param name="recordCountCommand">The sql command to get the total record count.</param>
+        /// <param name="mapFunction">The map function.</param>
+        /// <param name="finalizeDelegate">The finalize delegate.</param>
+        public static IPagedResult<T> FindPaged<T>(this IDbConnection connection,
+                                                   IDatabaseCommand dataCommand,
+                                                   IDatabaseCommand recordCountCommand,
+                                                   Func<IDataReader, T> mapFunction,
+                                                   Func<IPagedResult<T>?, Exception?, IPagedResult<T>?>? finalizeDelegate = null)
+        {
+            if (dataCommand == null)
+            {
+                throw new ArgumentNullException(nameof(dataCommand));
+            }
+
+            if (recordCountCommand == null)
+            {
+                throw new ArgumentNullException(nameof(recordCountCommand));
+            }
+
+            var returnValue = default(IPagedResult<T>);
+
+            try
+            {
+                connection.OpenIfNecessary();
+                using (var cmd = connection.CreateCommand())
+                {
+                    using (var countCommand = connection.CreateCommand())
+                    {
+                        countCommand.FillCommand(recordCountCommand.CommandText, recordCountCommand.CommandType, recordCountCommand.CommandParameters);
+                        var totalRecordCount = (int)countCommand.ExecuteScalar();
+                        returnValue = new PagedResult<T>
+                        (
+                            cmd.FindMany(dataCommand.CommandText, dataCommand.CommandType, mapFunction, dataCommand.CommandParameters).ToList(),
+                            totalRecordCount
+                        );
+                    }
+                }
+
+#pragma warning disable CS8603 // Possible null reference return.
+                return finalizeDelegate != null
+                    ? finalizeDelegate.Invoke(returnValue, null)
+                    : returnValue;
+#pragma warning restore CS8603 // Possible null reference return.
+            }
+            catch (Exception exception)
+            {
+                finalizeDelegate?.Invoke(returnValue, exception);
+                throw;
+            }
+        }
+
         /// <summary>
         /// Invokes the command on the connection.
         /// </summary>
