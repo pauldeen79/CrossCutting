@@ -25,7 +25,7 @@ namespace CrossCutting.DataTableDumper.TabDelimited
             return new ParseResult(new DataTableDumper<ExpandoObject>(new MyColumnNameProvider(split), new MyColumnDataProvider()), list);
         }
 
-        private class MyColumnNameProvider : IColumnNameProvider<ExpandoObject>
+        private sealed class MyColumnNameProvider : IColumnNameProvider<ExpandoObject>
         {
             private readonly IEnumerable<string[]> _data;
 
@@ -40,7 +40,7 @@ namespace CrossCutting.DataTableDumper.TabDelimited
             }
         }
 
-        private class MyColumnDataProvider : IColumnDataProvider<ExpandoObject>
+        private sealed class MyColumnDataProvider : IColumnDataProvider<ExpandoObject>
         {
             public IReadOnlyCollection<string> Get(ExpandoObject item)
             {

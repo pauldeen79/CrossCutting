@@ -99,7 +99,7 @@ namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
 
         public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
 
-        private class ComplexTypeDumperState
+        private sealed class ComplexTypeDumperState
         {
             public bool First { get; }
             public IObjectDumperResultBuilder Builder { get; }

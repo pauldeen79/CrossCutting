@@ -72,14 +72,10 @@ namespace System.Data.Stub
 
         public void Remove(object value)
         {
-            foreach (var kvp in dictionary.ToArray())
-            {
-                if (kvp.Value.Equals(value))
-                {
-                    dictionary.Remove(kvp.Key);
-                    break;
-                }
-            }
+            dictionary.Where(kvp => kvp.Value.Equals(value))
+                      .Select(kvp => kvp.Key)
+                      .ToList()
+                      .ForEach(key => dictionary.Remove(key));
         }
 
         public void RemoveAt(string parameterName)

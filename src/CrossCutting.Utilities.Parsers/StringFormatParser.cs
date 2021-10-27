@@ -102,7 +102,7 @@ namespace CrossCutting.Utilities.Parsers
             return Parse(formatString, arguments.ToArray());
         }
 
-        private class StringFormatParserState
+        private sealed class StringFormatParserState
         {
             public StringBuilder CurrentSection { get; } = new StringBuilder();
             public int OpenBracketCount { get; private set; }

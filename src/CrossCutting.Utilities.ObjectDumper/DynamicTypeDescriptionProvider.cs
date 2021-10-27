@@ -25,7 +25,7 @@ namespace CrossCutting.Utilities.ObjectDumper
                this, provider.GetTypeDescriptor(objectType, instance));
         }
 
-        private class DynamicCustomTypeDescriptor : CustomTypeDescriptor
+        private sealed class DynamicCustomTypeDescriptor : CustomTypeDescriptor
         {
             private readonly DynamicTypeDescriptionProvider provider;
 
