@@ -42,7 +42,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
 
         private TestEntity AddAfterRead(TestEntity resultEntity, IDataReader reader)
         {
-            resultEntity.Code =reader.GetString("Code", default(string));
+            resultEntity.Code = reader.GetString("Code", default(string));
             resultEntity.CodeType = reader.GetString("CodeType", default(string));
             resultEntity.Description = reader.GetString("Description", default(string));
 
@@ -81,7 +81,9 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             return resultEntity;
         }
 
+#pragma warning disable S4144 // Methods should not have identical implementations
         private TestEntity UpdateAfterRead(TestEntity resultEntity, IDataReader reader)
+#pragma warning restore S4144 // Methods should not have identical implementations
         {
             resultEntity.Code = reader.GetString("Code", default(string));
             resultEntity.CodeType = reader.GetString("CodeType", default(string));
