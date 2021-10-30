@@ -420,7 +420,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
 
             // Act
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            connection.Invoking(x => x.FindPaged(null, new Mock<IDatabaseCommand>().Object, Map))
+            connection.Invoking(x => x.FindPaged(null, new Mock<IDatabaseCommand>().Object, 0, 10, Map))
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
                       .Should().Throw<ArgumentNullException>()
                       .And.ParamName.Should().Be("dataCommand");
@@ -434,7 +434,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
 
             // Act
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            connection.Invoking(x => x.FindPaged(new Mock<IDatabaseCommand>().Object, null, Map))
+            connection.Invoking(x => x.FindPaged(new Mock<IDatabaseCommand>().Object, null, 0, 10, Map))
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
                       .Should().Throw<ArgumentNullException>()
                       .And.ParamName.Should().Be("recordCountCommand");
@@ -450,14 +450,14 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
 
             // Act
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            connection.Invoking(x => x.FindPaged<MyEntity>(new SqlDbCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text), new SqlDbCommand("SELECT Count(*) FROM MyEntity", DatabaseCommandType.Text), null))
+            connection.Invoking(x => x.FindPaged<MyEntity>(new SqlDbCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text), new SqlDbCommand("SELECT Count(*) FROM MyEntity", DatabaseCommandType.Text), 0, 10, null))
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
                       .Should().Throw<ArgumentNullException>()
                       .And.ParamName.Should().Be("mapFunction");
         }
 
         [Fact]
-        public void FindPaged_Returns_MappedEntities_And_TotalRecordCount_When_All_Goes_Well()
+        public void FindPaged_Returns_MappedEntities_And_Other_Properties_When_All_Goes_Well()
         {
             // Arrange
             using var connection = new DbConnection();
@@ -469,13 +469,15 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             connection.AddResultForScalarCommand(1);
 
             // Act
-            var actual = connection.FindPaged(new SqlDbCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text), new SqlDbCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text), Map);
+            var actual = connection.FindPaged(new SqlDbCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text), new SqlDbCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text), 20, 10, Map);
 
             // Assert
             actual.Should().NotBeNull().And.HaveCount(2);
             actual.First().Property.Should().Be("test1");
             actual.Last().Property.Should().Be("test2");
             actual.TotalRecordCount.Should().Be(1);
+            actual.Offset.Should().Be(20);
+            actual.PageSize.Should().Be(10);
         }
 
         [Fact]
@@ -492,7 +494,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             var isCalled = false;
 
             // Act
-            connection.FindPaged(new SqlDbCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text), new SqlDbCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text), Map, (result, exception) => { isCalled = true; return result; });
+            connection.FindPaged(new SqlDbCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text), new SqlDbCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text), 0, 10, Map, (result, exception) => { isCalled = true; return result; });
 
             // Assert
             isCalled.Should().BeTrue();
@@ -513,7 +515,7 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             var isCalled = false;
 
             // Act
-            connection.Invoking(x => x.FindPaged(new SqlDbCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text), new SqlDbCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text), Map, (result, exception) => { isCalled = true; return result; }))
+            connection.Invoking(x => x.FindPaged(new SqlDbCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text), new SqlDbCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text), 0, 10, Map, (result, exception) => { isCalled = true; return result; }))
                       .Should().Throw<InvalidOperationException>()
                       .And.Message.Should().Be("Kaboom");
 

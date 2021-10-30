@@ -68,6 +68,8 @@ namespace CrossCutting.Data.Sql.Extensions
         /// <summary>Finds multiple entities on this connection in a paged set.</summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="connection">The connection.</param>
+        /// <param name="offset">Record offset, start of the paged set within the total set.</param>
+        /// <param name="pageSize">Page size, number of records per page.</param>
         /// <param name="dataCommand">The sql command to get paged data.</param>
         /// <param name="recordCountCommand">The sql command to get the total record count.</param>
         /// <param name="mapFunction">The map function.</param>
@@ -75,6 +77,8 @@ namespace CrossCutting.Data.Sql.Extensions
         public static IPagedResult<T> FindPaged<T>(this IDbConnection connection,
                                                    IDatabaseCommand dataCommand,
                                                    IDatabaseCommand recordCountCommand,
+                                                   int offset,
+                                                   int pageSize,
                                                    Func<IDataReader, T> mapFunction,
                                                    Func<IPagedResult<T>?, Exception?, IPagedResult<T>?>? finalizeDelegate = null)
         {
@@ -102,7 +106,9 @@ namespace CrossCutting.Data.Sql.Extensions
                         returnValue = new PagedResult<T>
                         (
                             cmd.FindMany(dataCommand.CommandText, dataCommand.CommandType, mapFunction, dataCommand.CommandParameters).ToList(),
-                            totalRecordCount
+                            totalRecordCount,
+                            offset,
+                            pageSize
                         );
                     }
                 }

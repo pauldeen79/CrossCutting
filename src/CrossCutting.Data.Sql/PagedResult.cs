@@ -11,11 +11,17 @@ namespace CrossCutting.Data.Sql
 
         public int TotalRecordCount { get; }
 
+        public int Offset { get; }
+
+        public int PageSize { get; }
+
         public int Count => _records.Count;
 
-        public PagedResult(IEnumerable<T> records, int totalRecordCount)
+        public PagedResult(IEnumerable<T> records, int totalRecordCount, int offset, int pageSize)
         {
             TotalRecordCount = totalRecordCount;
+            Offset = offset;
+            PageSize = pageSize;
             _records = new List<T>(records ?? Enumerable.Empty<T>()).AsReadOnly();
         }
 
