@@ -83,9 +83,7 @@ namespace CrossCutting.Data.Sql.Extensions
                                    DatabaseCommandType commandType,
                                    Func<IDataReader, T> mapFunction,
                                    object? commandParameters = null)
-            => command.FillCommand(commandText,
-                                   commandType,
-                                   commandParameters)
+            => command.FillCommand(commandText, commandType, commandParameters)
                       .FindOne(mapFunction);
 
         /// <summary>Finds multiple entities using a data reader.</summary>
@@ -100,9 +98,7 @@ namespace CrossCutting.Data.Sql.Extensions
                                                          DatabaseCommandType commandType,
                                                          Func<IDataReader, T> mapFunction,
                                                          object? commandParameters = null)
-            => command.FillCommand(commandText,
-                                   commandType,
-                                   commandParameters)
+            => command.FillCommand(commandText, commandType, commandParameters)
                       .FindMany(mapFunction);
 
         private static KeyValuePair<string, object> CreateParameter(string name, object? value)

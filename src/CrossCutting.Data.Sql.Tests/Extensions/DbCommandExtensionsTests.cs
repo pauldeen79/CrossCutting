@@ -139,6 +139,21 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         }
 
         [Fact]
+        public void FindOne_Throws_When_MapFunction_Is_Null()
+        {
+            // Arrange
+            using var connection = new DbConnection();
+            var command = connection.CreateCommand();
+
+            // Act & Assert
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            command.Invoking(x => x.FindOne<MyDataObject>("SELECT TOP 1 * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, null))
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+                   .Should().Throw<ArgumentNullException>()
+                   .WithParameterName("mapFunction");
+        }
+
+        [Fact]
         public void FindMany_Returns_Correct_Result()
         {
             // Arrange
@@ -159,7 +174,23 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             result.Last().Property.Should().Be("test2");
         }
 
-        private class MyDataObject
+        [Fact]
+        public void FindMany_Throws_When_MapFunction_Is_Null()
+        {
+            // Arrange
+            using var connection = new DbConnection();
+            var command = connection.CreateCommand();
+
+            // Act & Assert
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            command.Invoking(x => x.FindMany<MyDataObject>("SELECT TOP 1 * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, null))
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+                   .Should().Throw<ArgumentNullException>()
+                   .WithParameterName("mapFunction");
+        }
+
+        [ExcludeFromCodeCoverage]
+        public class MyDataObject
         {
             public string? Property { get; set; }
         }
