@@ -191,7 +191,9 @@ namespace System.Data.Stub.Tests
                     var isCommandValid = command.CommandText == "SELECT * FROM [Fridge] WHERE Amount = @amount";
                     if (isCommandValid)
                     {
+#pragma warning disable CS8605 // Unboxing a possibly null value.
                         parameterValue = (int)command.Parameters.OfType<IDbDataParameter>().First().Value;
+#pragma warning restore CS8605 // Unboxing a possibly null value.
                     }
                     return isCommandValid;
                 },
@@ -324,7 +326,7 @@ namespace System.Data.Stub.Tests
         public void CanAddResultForNonQueryCommandWithPredicate()
         {
             // Arrange
-            Connection.AddResultForNonQueryCommand(cmd => cmd.CommandText.StartsWith("UPDATE"), 12345);
+            Connection.AddResultForNonQueryCommand(cmd => cmd.CommandText.StartsWith("UPDATE", StringComparison.OrdinalIgnoreCase), 12345);
             using var command = Connection.CreateCommand();
 
             // Act
@@ -339,7 +341,7 @@ namespace System.Data.Stub.Tests
         public void CanAddResultForNonQueryCommandWithPredicateAndDynamicDelegate()
         {
             // Arrange
-            Connection.AddResultForNonQueryCommand(cmd => cmd.CommandText.StartsWith("INSERT"), cmd => cmd.CommandText.Contains("Beer") ? 12345 : 0);
+            Connection.AddResultForNonQueryCommand(cmd => cmd.CommandText.StartsWith("INSERT", StringComparison.OrdinalIgnoreCase), cmd => cmd.CommandText.Contains("Beer") ? 12345 : 0);
             using var command = Connection.CreateCommand();
 
             // Act
@@ -384,7 +386,7 @@ namespace System.Data.Stub.Tests
         public void CanAddResultForScalarCommandWithPredicate()
         {
             // Arrange
-            Connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("UPDATE"), 12345);
+            Connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("UPDATE", StringComparison.OrdinalIgnoreCase), 12345);
             using var command = Connection.CreateCommand();
 
             // Act
@@ -399,7 +401,7 @@ namespace System.Data.Stub.Tests
         public void CanAddResultForScalarCommandWithPredicateAndDynamicDelegate()
         {
             // Arrange
-            Connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("SELECT"), cmd => cmd.CommandText.Contains("MyTable") ? 12345 : 0);
+            Connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("SELECT", StringComparison.OrdinalIgnoreCase), cmd => cmd.CommandText.Contains("MyTable") ? 12345 : 0);
             using var command = Connection.CreateCommand();
 
             // Act
@@ -455,7 +457,7 @@ namespace System.Data.Stub.Tests
 
         private class MyRecord
         {
-            public string Name { get; set; }
+            public string? Name { get; set; }
             public int Amount { get; set; }
         }
     }

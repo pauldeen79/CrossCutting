@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace System.Data.Stub
@@ -6,11 +7,14 @@ namespace System.Data.Stub
     public sealed class DataReader : IDataReader
     {
         public int CurrentIndex { get; private set; }
-        public Dictionary<int, IDictionary<string, object>> Dictionary { get; private set; }  = new Dictionary<int, IDictionary<string, object>>();
+        private CultureInfo CultureInfo { get; }
+        public Dictionary<int, IDictionary<string, object>> Dictionary { get; private set; }
+            = new Dictionary<int, IDictionary<string, object>>();
 
-        public DataReader(CommandBehavior commandBehavior)
+        public DataReader(CommandBehavior commandBehavior, CultureInfo? cultureInfo = null)
         {
             CommandBehavior = commandBehavior;
+            CultureInfo = cultureInfo ?? CultureInfo.CurrentCulture;
         }
 
         public object this[int i] { get => Dictionary[CurrentIndex][Dictionary[CurrentIndex].Keys.ElementAt(i)]; }
@@ -41,12 +45,12 @@ namespace System.Data.Stub
 
         public bool GetBoolean(int i)
         {
-            return Convert.ToBoolean(this[i]);
+            return Convert.ToBoolean(this[i], CultureInfo);
         }
 
         public byte GetByte(int i)
         {
-            return Convert.ToByte(this[i]);
+            return Convert.ToByte(this[i], CultureInfo);
         }
 
         public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
@@ -56,7 +60,7 @@ namespace System.Data.Stub
 
         public char GetChar(int i)
         {
-            return Convert.ToChar(this[i]);
+            return Convert.ToChar(this[i], CultureInfo);
         }
 
         public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
@@ -76,17 +80,17 @@ namespace System.Data.Stub
 
         public DateTime GetDateTime(int i)
         {
-            return Convert.ToDateTime(this[i]);
+            return Convert.ToDateTime(this[i], CultureInfo);
         }
 
         public decimal GetDecimal(int i)
         {
-            return Convert.ToDecimal(this[i]);
+            return Convert.ToDecimal(this[i], CultureInfo);
         }
 
         public double GetDouble(int i)
         {
-            return Convert.ToDouble(this[i]);
+            return Convert.ToDouble(this[i], CultureInfo);
         }
 
         public Type GetFieldType(int i)
@@ -96,27 +100,27 @@ namespace System.Data.Stub
 
         public float GetFloat(int i)
         {
-            return Convert.ToSingle(this[i]);
+            return Convert.ToSingle(this[i], CultureInfo);
         }
 
         public Guid GetGuid(int i)
         {
-            return new Guid(Convert.ToString(this[i]));
+            return new Guid(Convert.ToString(this[i], CultureInfo));
         }
 
         public short GetInt16(int i)
         {
-            return Convert.ToInt16(this[i]);
+            return Convert.ToInt16(this[i], CultureInfo);
         }
 
         public int GetInt32(int i)
         {
-            return Convert.ToInt32(this[i]);
+            return Convert.ToInt32(this[i], CultureInfo);
         }
 
         public long GetInt64(int i)
         {
-            return Convert.ToInt64(this[i]);
+            return Convert.ToInt64(this[i], CultureInfo);
         }
 
         public string GetName(int i)
@@ -146,7 +150,7 @@ namespace System.Data.Stub
 
         public string GetString(int i)
         {
-            return Convert.ToString(this[i]);
+            return Convert.ToString(this[i], CultureInfo);
         }
 
         public object GetValue(int i)
@@ -156,11 +160,6 @@ namespace System.Data.Stub
 
         public int GetValues(object[] values)
         {
-            if (values == null)
-            {
-                throw new ArgumentNullException(nameof(values));
-            }
-
             var index = 0;
             foreach (var kvp in Dictionary[CurrentIndex])
             {
@@ -206,11 +205,6 @@ namespace System.Data.Stub
 
         public void Add(object objectWithValues)
         {
-            if (objectWithValues == null)
-            {
-                throw new ArgumentNullException(nameof(objectWithValues));
-            }
-
             var localDict = new Dictionary<string, object>();
             foreach (var property in objectWithValues.GetType().GetProperties())
             {
@@ -219,6 +213,6 @@ namespace System.Data.Stub
             Dictionary.Add(Dictionary.Count + 1, localDict);
         }
 
-        public event EventHandler<NextResultCalledEventArgs> NextResultCalled;
+        public event EventHandler<NextResultCalledEventArgs>? NextResultCalled;
     }
 }

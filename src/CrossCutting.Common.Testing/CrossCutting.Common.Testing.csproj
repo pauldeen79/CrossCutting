@@ -4,6 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
     <PackageId>pauldeen79.CrossCutting.Common.Testing</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
   </PropertyGroup>

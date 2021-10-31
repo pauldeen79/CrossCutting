@@ -34,23 +34,13 @@ namespace CrossCutting.Data.Sql
             => InvokeCommand(command, cmd => cmd.ExecuteScalar());
 
         public IReadOnlyCollection<T> FindMany(IDatabaseCommand command)
-            => Find(command, cmd => cmd.FindMany(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters).ToList());
+            => Find(cmd => cmd.FindMany(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters).ToList());
 
-        public T FindOne(IDatabaseCommand command)
-            => Find(command, cmd => cmd.FindOne(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters));
+        public T? FindOne(IDatabaseCommand command)
+            => Find(cmd => cmd.FindOne(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters));
 
         public IPagedResult<T> FindPaged(IDatabaseCommand dataCommand, IDatabaseCommand recordCountCommand, int offset, int pageSize)
         {
-            if (dataCommand == null)
-            {
-                throw new ArgumentNullException(nameof(dataCommand));
-            }
-
-            if (recordCountCommand == null)
-            {
-                throw new ArgumentNullException(nameof(recordCountCommand));
-            }
-
             var returnValue = default(IPagedResult<T>);
 
             OpenConnection();
@@ -76,11 +66,6 @@ namespace CrossCutting.Data.Sql
         public T InvokeCommand(T instance)
         {
             var command = _provider.CommandDelegate.Invoke(instance);
-            if (command == null)
-            {
-                throw new InvalidOperationException("CommandDelegate resulted in null");
-            }
-
             var resultEntity = _provider.ResultEntityDelegate == null
                 ? instance
                 : _provider.ResultEntityDelegate.Invoke(instance);
@@ -122,11 +107,6 @@ namespace CrossCutting.Data.Sql
 
         private TResult InvokeCommand<TResult>(IDatabaseCommand command, Func<IDbCommand, TResult> actionDelegate)
         {
-            if (command == null)
-            {
-                throw new ArgumentNullException(nameof(command));
-            }
-
             OpenConnection();
             using (var cmd = _connection.CreateCommand())
             {
@@ -165,13 +145,8 @@ namespace CrossCutting.Data.Sql
             }
         }
 
-        private TResult Find<TResult>(IDatabaseCommand command, Func<IDbCommand, TResult> findDelegate)
+        private TResult Find<TResult>(Func<IDbCommand, TResult> findDelegate)
         {
-            if (command == null)
-            {
-                throw new ArgumentNullException(nameof(command));
-            }
-
             var returnValue = default(TResult);
 
             OpenConnection();

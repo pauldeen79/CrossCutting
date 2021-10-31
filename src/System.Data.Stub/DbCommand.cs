@@ -2,14 +2,14 @@
 {
     public sealed class DbCommand : IDbCommand
     {
-        public string CommandText { get; set; }
+        public string CommandText { get; set; } = string.Empty;
         public int CommandTimeout { get; set; }
         public CommandType CommandType { get; set; }
-        public IDbConnection Connection { get; set; }
+        public IDbConnection? Connection { get; set; }
 
         public IDataParameterCollection Parameters { get; } = new DbParameterCollection();
 
-        public IDbTransaction Transaction { get; set; }
+        public IDbTransaction? Transaction { get; set; }
         public UpdateRowSource UpdatedRowSource { get; set; }
 
         public void Cancel()
@@ -51,7 +51,7 @@
             return result;
         }
 
-        public object ExecuteScalar()
+        public object? ExecuteScalar()
         {
             if (ExecuteScalarResultDelegate != null
                 && (ExecuteScalarResultPredicate == null || ExecuteScalarResultPredicate(this)))
@@ -66,12 +66,12 @@
             // Method intentionally left empty.
         }
 
-        public Func<DbCommand, bool> ExecuteNonQueryResultPredicate { get; set; }
-        public Func<DbCommand, int> ExecuteNonQueryResultDelegate { get; set; }
+        public Func<DbCommand, bool>? ExecuteNonQueryResultPredicate { get; set; }
+        public Func<DbCommand, int>? ExecuteNonQueryResultDelegate { get; set; }
         public int ExecuteNonQueryResult { get; set; }
-        public Func<DbCommand, bool> ExecuteScalarResultPredicate { get; set; }
-        public Func<DbCommand, object> ExecuteScalarResultDelegate { get; set; }
-        public object ExecuteScalarResult { get; set; }
-        public event EventHandler<DataReaderCreatedEventArgs> DataReaderCreated;
+        public Func<DbCommand, bool>? ExecuteScalarResultPredicate { get; set; }
+        public Func<DbCommand, object>? ExecuteScalarResultDelegate { get; set; }
+        public object? ExecuteScalarResult { get; set; }
+        public event EventHandler<DataReaderCreatedEventArgs>? DataReaderCreated;
     }
 }

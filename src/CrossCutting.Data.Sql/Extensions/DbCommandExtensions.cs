@@ -43,11 +43,6 @@ namespace CrossCutting.Data.Sql.Extensions
         /// <param name="keyValuePairs">The key value pairs.</param>
         public static IDbCommand AddParameters(this IDbCommand command, IEnumerable<KeyValuePair<string, object?>> keyValuePairs)
         {
-            if (keyValuePairs == null)
-            {
-                throw new ArgumentNullException(nameof(keyValuePairs));
-            }
-
             foreach (var keyValuePair in keyValuePairs)
             {
                 command.AddParameter(keyValuePair.Key, keyValuePair.Value);
@@ -78,11 +73,12 @@ namespace CrossCutting.Data.Sql.Extensions
             return command;
         }
 
-        public static T FindOne<T>(this IDbCommand command,
-                                   string commandText,
-                                   DatabaseCommandType commandType,
-                                   Func<IDataReader, T> mapFunction,
-                                   object? commandParameters = null)
+        public static T? FindOne<T>(this IDbCommand command,
+                                    string commandText,
+                                    DatabaseCommandType commandType,
+                                    Func<IDataReader, T> mapFunction,
+                                    object? commandParameters = null)
+            where T : class
             => command.FillCommand(commandText, commandType, commandParameters)
                       .FindOne(mapFunction);
 
@@ -104,7 +100,8 @@ namespace CrossCutting.Data.Sql.Extensions
         private static KeyValuePair<string, object> CreateParameter(string name, object? value)
             => new KeyValuePair<string, object>(name, value.FixNull());
 
-        private static T FindOne<T>(this IDbCommand command, Func<IDataReader, T> mapFunction)
+        private static T? FindOne<T>(this IDbCommand command, Func<IDataReader, T> mapFunction)
+            where T : class
         {
             using (var reader = command.ExecuteReader())
             {

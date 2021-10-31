@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Data.Abstractions;
 
 namespace CrossCutting.Data.Sql
@@ -22,7 +21,7 @@ namespace CrossCutting.Data.Sql
             TotalRecordCount = totalRecordCount;
             Offset = offset;
             PageSize = pageSize;
-            _records = new List<T>(records ?? Enumerable.Empty<T>()).AsReadOnly();
+            _records = new List<T>(records).AsReadOnly();
         }
 
         public IEnumerator<T> GetEnumerator() => _records.GetEnumerator();

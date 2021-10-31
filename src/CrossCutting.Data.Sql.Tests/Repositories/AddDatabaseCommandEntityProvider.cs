@@ -36,9 +36,10 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
 
         private TestEntity AddAfterRead(TestEntity resultEntity, IDataReader reader)
         {
-            resultEntity.Code = reader.GetString("Code", default(string));
-            resultEntity.CodeType = reader.GetString("CodeType", default(string));
-            resultEntity.Description = reader.GetString("Description", default(string));
+            // replace default(string) with string.Empty
+            resultEntity.Code = reader.GetString("Code", string.Empty);
+            resultEntity.CodeType = reader.GetString("CodeType", string.Empty);
+            resultEntity.Description = reader.GetString("Description", string.Empty);
             // Moved from AddFinalize!
             resultEntity.IsExistingEntity = true;
             return resultEntity;

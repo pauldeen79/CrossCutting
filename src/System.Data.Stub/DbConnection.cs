@@ -2,7 +2,7 @@
 {
     public sealed class DbConnection : IDbConnection
     {
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get; set; } = string.Empty;
 
         public int ConnectionTimeout => 1;
 
@@ -51,7 +51,7 @@
             State = ConnectionState.Open;
         }
 
-        public event EventHandler<DbCommandCreatedEventArgs> DbCommandCreated;
-        public event EventHandler<DbTransactionCreatedEventArgs> DbTransactionCreated;
+        public event EventHandler<DbCommandCreatedEventArgs>? DbCommandCreated;
+        public event EventHandler<DbTransactionCreatedEventArgs>? DbTransactionCreated;
     }
 }

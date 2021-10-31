@@ -10,27 +10,23 @@ namespace System.Data.Stub.Extensions
         public static DbConnection AddResultForDataReader(this DbConnection instance, Func<IEnumerable> data)
             => instance.AddResultForDataReader(null, null, data);
 
-        public static DbConnection AddResultForDataReader(this DbConnection instance, Action<DataReader> callback, IEnumerable data)
+        public static DbConnection AddResultForDataReader(this DbConnection instance, Action<DataReader>? callback, IEnumerable data)
             => instance.AddResultForDataReader(null, callback, () => data);
 
-        public static DbConnection AddResultForDataReader(this DbConnection instance, Action<DataReader> callback, Func<IEnumerable> data)
+        public static DbConnection AddResultForDataReader(this DbConnection instance, Action<DataReader>? callback, Func<IEnumerable> data)
             => instance.AddResultForDataReader(null, callback, data);
 
-        public static DbConnection AddResultForDataReader(this DbConnection instance, Func<DbCommand, bool> predicate, IEnumerable data)
+        public static DbConnection AddResultForDataReader(this DbConnection instance, Func<DbCommand, bool>? predicate, IEnumerable data)
             => instance.AddResultForDataReader(predicate, null, () => data);
 
-        public static DbConnection AddResultForDataReader(this DbConnection instance, Func<DbCommand, bool> predicate, Func<IEnumerable> data)
+        public static DbConnection AddResultForDataReader(this DbConnection instance, Func<DbCommand, bool>? predicate, Func<IEnumerable> data)
             => instance.AddResultForDataReader(predicate, null, data);
 
-        public static DbConnection AddResultForDataReader(this DbConnection instance, Func<DbCommand, bool> predicate, Action<DataReader> callback, IEnumerable data)
+        public static DbConnection AddResultForDataReader(this DbConnection instance, Func<DbCommand, bool>? predicate, Action<DataReader>? callback, IEnumerable data)
             => instance.AddResultForDataReader(predicate, callback, () => data);
 
-        public static DbConnection AddResultForDataReader(this DbConnection instance, Func<DbCommand, bool> predicate, Action<DataReader> callback, Func<IEnumerable> data)
+        public static DbConnection AddResultForDataReader(this DbConnection instance, Func<DbCommand, bool>? predicate, Action<DataReader>? callback, Func<IEnumerable> data)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
             instance.DbCommandCreated += (sender, args) =>
             {
                 args.DbCommand.DataReaderCreated += (sender2, args2) =>
@@ -52,14 +48,6 @@ namespace System.Data.Stub.Extensions
 
         public static DbConnection AddCallback(this DbConnection instance, DbConnectionCallback callback)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-            if (callback == null)
-            {
-                throw new ArgumentNullException(nameof(callback));
-            }
             instance.DbCommandCreated += (sender, args) => callback.AddCommand(args.DbCommand);
             instance.DbTransactionCreated += (sender, args) => callback.AddTransaction(args.DbTransaction);
             return instance;

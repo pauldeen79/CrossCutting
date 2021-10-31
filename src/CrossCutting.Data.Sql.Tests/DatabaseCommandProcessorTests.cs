@@ -33,17 +33,6 @@ namespace CrossCutting.Data.Sql.Tests
         }
 
         [Fact]
-        public void ExecuteScalar_Throws_When_Command_Is_Null()
-        {
-            // Act
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Sut.Invoking(x => x.ExecuteScalar(null))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-               .Should().Throw<ArgumentNullException>()
-               .And.ParamName.Should().Be("command");
-        }
-
-        [Fact]
         public void ExecuteScalar_Returns_Correct_Value_When_Command_Is_Not_Null()
         {
             // Arrange
@@ -58,17 +47,6 @@ namespace CrossCutting.Data.Sql.Tests
         }
 
         [Fact]
-        public void ExecuteNonQuery_Throws_When_Command_Is_Null()
-        {
-            // Act
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Sut.Invoking(x => x.ExecuteNonQuery(null))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-               .Should().Throw<ArgumentNullException>()
-               .And.ParamName.Should().Be("command");
-        }
-
-        [Fact]
         public void ExecuteNonQuery_Returns_Correct_Value_When_Command_Is_Not_Null()
         {
             // Arrange
@@ -80,20 +58,6 @@ namespace CrossCutting.Data.Sql.Tests
 
             // Assert
             actual.Should().Be(12345);
-        }
-
-        [Fact]
-        public void InvokeCommand_Throws_When_CommandDelegate_Returns_Null()
-        {
-            // Arrange
-#pragma warning disable CS8603 // Possible null reference return.
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => null);
-#pragma warning restore CS8603 // Possible null reference return.
-
-            // Act
-            Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "filled" }))
-               .Should().Throw<InvalidOperationException>()
-               .WithMessage("CommandDelegate resulted in null");
         }
 
         [Fact]
@@ -193,20 +157,6 @@ namespace CrossCutting.Data.Sql.Tests
         }
 
         [Fact]
-        public void FindOne_Throws_When_Command_Is_Null()
-        {
-            // Arrange
-            InitializeMapper();
-
-            // Act
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Sut.Invoking(x => x.FindOne(null))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-               .Should().Throw<ArgumentNullException>()
-               .And.ParamName.Should().Be("command");
-        }
-
-        [Fact]
         public void FindOne_Returns_MappedEntity_When_All_Goes_Well()
         {
             // Arrange
@@ -218,21 +168,10 @@ namespace CrossCutting.Data.Sql.Tests
 
             // Assert
             actual.Should().NotBeNull();
-            actual.Property.Should().Be("test");
-        }
-
-        [Fact]
-        public void FindMany_Throws_When_Command_Is_Null()
-        {
-            // Arrange
-            InitializeMapper();
-
-            // Act
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Sut.Invoking(x => x.FindMany(null))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-               .Should().Throw<ArgumentNullException>()
-               .And.ParamName.Should().Be("command");
+            if (actual != null)
+            {
+                actual.Property.Should().Be("test");
+            }
         }
 
         [Fact]
@@ -255,34 +194,6 @@ namespace CrossCutting.Data.Sql.Tests
             actual.First().Property.Should().Be("test1");
             actual.Last().Should().NotBeNull();
             actual.Last().Property.Should().Be("test2");
-        }
-
-        [Fact]
-        public void FindPaged_Throws_When_DataCommand_Is_Null()
-        {
-            // Arrange
-            InitializeMapper();
-
-            // Act
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Sut.Invoking(x => x.FindPaged(null, new Mock<IDatabaseCommand>().Object, 0, 10))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-               .Should().Throw<ArgumentNullException>()
-               .And.ParamName.Should().Be("dataCommand");
-        }
-
-        [Fact]
-        public void FindPaged_Throws_When_RecordCountCommand_Is_Null()
-        {
-            // Arrange
-            InitializeMapper();
-
-            // Act
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Sut.Invoking(x => x.FindPaged(new Mock<IDatabaseCommand>().Object, null, 0, 10))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-               .Should().Throw<ArgumentNullException>()
-               .And.ParamName.Should().Be("recordCountCommand");
         }
 
         [Fact]

@@ -14,11 +14,10 @@ namespace CrossCutting.Data.Sql.Extensions
         /// <param name="columnName">Name of the column.</param>
         /// <param name="skipUnknownColumn"></param>
         /// <exception cref="ArgumentOutOfRangeException">columnName</exception>
-        public static T GetValue<T>(this IDataReader instance, string columnName, bool skipUnknownColumn = false) =>
+        public static T GetValue<T>(this IDataReader instance, string columnName, bool skipUnknownColumn = false)
 #pragma warning disable CS8604 // Possible null reference argument.
-            instance.GetValue<T>(columnName, default, skipUnknownColumn);
+            => instance.GetValue<T>(columnName, default, skipUnknownColumn);
 #pragma warning restore CS8604 // Possible null reference argument.
-
 
         /// <summary>
         /// Gets the value.
@@ -384,9 +383,7 @@ namespace CrossCutting.Data.Sql.Extensions
         /// <exception cref="ArgumentOutOfRangeException">columnName</exception>
         /// <exception cref="NullReferenceException"></exception>
         public static string GetString(this IDataReader instance, string columnName, bool skipUnknownColumn = false)
-#pragma warning disable CS8603 // Possible null reference return.
-            => instance.Invoke(columnName, skipUnknownColumn, default, true, true, (reader, ordinal) => reader.GetString(ordinal));
-#pragma warning restore CS8603 // Possible null reference return.
+            => instance.Invoke(columnName, skipUnknownColumn, string.Empty, true, true, (reader, ordinal) => reader.GetString(ordinal));
 
         /// <summary>
         /// Gets the (optional) string value.
@@ -396,10 +393,8 @@ namespace CrossCutting.Data.Sql.Extensions
         /// <param name="valueWhenDBNull">The value to use when the database value is DBNull.Value.</param>
         /// <param name="skipUnknownColumn"></param>
         /// <exception cref="ArgumentOutOfRangeException">columnName</exception>
-        public static string GetString(this IDataReader instance, string columnName, string? valueWhenDBNull, bool skipUnknownColumn = false)
-#pragma warning disable CS8603 // Possible null reference return.
+        public static string GetString(this IDataReader instance, string columnName, string valueWhenDBNull, bool skipUnknownColumn = false)
             => instance.Invoke(columnName, skipUnknownColumn, valueWhenDBNull, true, false, (reader, ordinal) => reader.GetString(ordinal));
-#pragma warning restore CS8603 // Possible null reference return.
 
         /// <summary>
         /// Gets the byte array.
@@ -449,19 +444,11 @@ namespace CrossCutting.Data.Sql.Extensions
         /// <returns>
         /// Mapped instance, or null when IDataReader.Read returns false.
         /// </returns>
-        public static T FindOne<T>(this IDataReader instance, Func<IDataReader, T> mapFunction)
-        {
-            if (mapFunction == null)
-            {
-                throw new ArgumentNullException(nameof(mapFunction));
-            }
-
-#pragma warning disable CS8603 // Possible null reference return.
-            return instance.Read()
+        public static T? FindOne<T>(this IDataReader instance, Func<IDataReader, T> mapFunction)
+            where T : class
+            => instance.Read()
                 ? mapFunction(instance)
                 : default;
-#pragma warning restore CS8603 // Possible null reference return.
-        }
 
         /// <summary>
         /// Maps all entities of an IDataReader instance.
@@ -474,11 +461,6 @@ namespace CrossCutting.Data.Sql.Extensions
         /// </returns>
         public static IReadOnlyCollection<T> FindMany<T>(this IDataReader instance, Func<IDataReader, T> mapFunction)
         {
-            if (mapFunction == null)
-            {
-                throw new ArgumentNullException(nameof(mapFunction));
-            }
-
             var result = new List<T>();
             while (instance.Read())
             {
