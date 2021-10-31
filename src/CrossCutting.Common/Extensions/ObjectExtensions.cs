@@ -66,7 +66,7 @@ namespace CrossCutting.Common.Extensions
         /// <returns>
         /// value.ToString() when te value is not null, defaultValue otherwise.
         /// </returns>
-        public static string? ToStringWithDefault(this object? value, string? defaultValue = null)
+        public static string ToStringWithDefault(this object? value, string defaultValue = "")
             => value == null
                 ? defaultValue
                 : value.ToString();
