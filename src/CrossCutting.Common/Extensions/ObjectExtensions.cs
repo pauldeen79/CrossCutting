@@ -38,7 +38,7 @@ namespace CrossCutting.Common.Extensions
         /// Disposes this object, when it implements IDisposable.
         /// </summary>
         /// <param name="instance">The instance.</param>
-        public static void TryDispose(this object instance)
+        public static void TryDispose(this object? instance)
         {
             if (instance is IDisposable disp)
             {
@@ -53,7 +53,7 @@ namespace CrossCutting.Common.Extensions
         /// <returns>
         /// value.ToString() when the value is not null, string.Empty otherwise.
         /// </returns>
-        public static string ToStringWithNullCheck(this object value)
+        public static string ToStringWithNullCheck(this object? value)
             => value == null
                 ? string.Empty
                 : value.ToString();
@@ -66,7 +66,7 @@ namespace CrossCutting.Common.Extensions
         /// <returns>
         /// value.ToString() when te value is not null, defaultValue otherwise.
         /// </returns>
-        public static string? ToStringWithDefault(this object value, string? defaultValue = null)
+        public static string? ToStringWithDefault(this object? value, string? defaultValue = null)
             => value == null
                 ? defaultValue
                 : value.ToString();
@@ -76,7 +76,7 @@ namespace CrossCutting.Common.Extensions
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        public static bool IsTrue(this object instance)
+        public static bool IsTrue(this object? instance)
             => (instance is bool x && x) || instance.ToStringWithDefault().IsTrue();
 
         public static bool IsTrue<T>(this T instance, Func<T, bool> predicate)
@@ -87,7 +87,7 @@ namespace CrossCutting.Common.Extensions
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        public static bool IsFalse(this object instance)
+        public static bool IsFalse(this object? instance)
             => (instance is bool x && !x) || instance.ToStringWithDefault().IsFalse();
 
         public static bool IsFalse<T>(this T instance, Func<T, bool> predicate)
@@ -117,7 +117,7 @@ namespace CrossCutting.Common.Extensions
         public static bool In<T>(this T value, params T[] values)
             => values.Any(i => i?.Equals(value) == true);
 
-        public static ExpandoObject ToExpandoObject(this object instance)
+        public static ExpandoObject ToExpandoObject(this object? instance)
         {
             var expandoObject = new ExpandoObject();
 
