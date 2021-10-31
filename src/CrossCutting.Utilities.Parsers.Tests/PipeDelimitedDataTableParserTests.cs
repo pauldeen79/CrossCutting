@@ -135,7 +135,7 @@ Value 1|Value 2|Value 3";
             }
         }
 
-        private static void AssertParseResult(ParseResult<string, object>[] actual, string[] columnNames = null)
+        private static void AssertParseResult(ParseResult<string, object>[] actual, string[]? columnNames = null)
         {
             if (columnNames == null)
             {
@@ -147,12 +147,15 @@ Value 1|Value 2|Value 3";
             var firstRow = actual.FirstOrDefault();
 
             firstRow.Should().NotBeNull();
-            firstRow.IsSuccessful.Should().BeTrue();
-            firstRow.ErrorMessages.Should().BeEmpty();
+            if (firstRow != null)
+            {
+                firstRow.IsSuccessful.Should().BeTrue();
+                firstRow.ErrorMessages.Should().BeEmpty();
 
-            var contents = string.Join("|", firstRow.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
+                var contents = string.Join("|", firstRow.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
 
-            contents.Should().Be($"{columnNames[0]};Value 1|{columnNames[1]};Value 2|{columnNames[2]};Value 3");
+                contents.Should().Be($"{columnNames[0]};Value 1|{columnNames[1]};Value 2|{columnNames[2]};Value 3");
+            }
         }
     }
 }

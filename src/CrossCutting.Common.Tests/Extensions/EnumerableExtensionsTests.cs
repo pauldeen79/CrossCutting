@@ -13,7 +13,7 @@ namespace CrossCutting.Common.Tests.Extensions
         public void Can_Use_NotNull_On_Null_Enumerable_To_Work_With_Null_Easily()
         {
             // Arrange
-            IEnumerable<string> input = null;
+            IEnumerable<string>? input = null;
 
             // Act
             var actual = input.NotNull();
@@ -26,7 +26,7 @@ namespace CrossCutting.Common.Tests.Extensions
         public void Can_Use_NotNull_With_Predicate_On_Null_Enumerable_To_Work_With_Null_Easily()
         {
             // Arrange
-            IEnumerable<string> input = null;
+            IEnumerable<string>? input = null;
 
             // Act
             var actual = input.NotNull(x => x.StartsWith("A"));
@@ -52,7 +52,7 @@ namespace CrossCutting.Common.Tests.Extensions
         public void Can_Use_DefaultWhenNull_On_Null_Enumerable_To_Work_With_Null_Easily()
         {
             // Arrange
-            IEnumerable<string> input = null;
+            IEnumerable<string>? input = null;
 
             // Act
             var actual = input.DefaultWhenNull();
@@ -65,7 +65,7 @@ namespace CrossCutting.Common.Tests.Extensions
         public void Can_Use_DefaultWhenNull_On_Null_Enumerable_With_DefaultValue_To_Work_With_Null_Easily()
         {
             // Arrange
-            IEnumerable<string> input = null;
+            IEnumerable<string>? input = null;
 
             // Act
             var actual = input.DefaultWhenNull(new[] { "a", "b", "c" });

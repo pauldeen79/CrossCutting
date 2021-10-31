@@ -19,7 +19,7 @@ namespace CrossCutting.Common.Extensions
         /// <returns>
         /// true when valid, false when invalid, null when no validation attributes have been defined.
         /// </returns>
-        public static bool? Validate(this IValidatableObject instance, IList<ValidationResult> results, object value, string name, IEnumerable<ValidationAttribute> validationAttributes)
+        public static bool? Validate(this IValidatableObject instance, IList<ValidationResult> results, object? value, string name, IEnumerable<ValidationAttribute>? validationAttributes)
         {
             if (validationAttributes?.Any() == true)
             {

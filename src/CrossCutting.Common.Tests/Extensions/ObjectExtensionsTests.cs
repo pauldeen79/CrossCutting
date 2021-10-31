@@ -80,7 +80,7 @@ namespace CrossCutting.Common.Tests.Extensions
         public void ToStringWithDefault_Returns_DefaultValue_On_Null_Input()
         {
             // Act
-            var actual = ((object)null).ToStringWithDefault("default");
+            var actual = ((object?)null).ToStringWithDefault("default");
 
             // Assert
             actual.Should().Be("default");
@@ -90,7 +90,7 @@ namespace CrossCutting.Common.Tests.Extensions
         public void ToStringWithDefault_Returns_Null_On_Null_Input_When_DefaultValue_Is_Not_Supplied()
         {
             // Act
-            var actual = ((object)null).ToStringWithDefault();
+            var actual = ((object?)null).ToStringWithDefault();
 
             // Assert
             actual.Should().BeNull();
@@ -275,7 +275,7 @@ namespace CrossCutting.Common.Tests.Extensions
         private class MyPocoClass
         {
             [Required]
-            public string Value { get; set; }
+            public string? Value { get; set; }
         }
 
         private sealed class MyDisposableClass : IDisposable

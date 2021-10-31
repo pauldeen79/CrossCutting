@@ -167,7 +167,7 @@ namespace CrossCutting.Common.Tests
             var value = new ValueCollection<string>(new[] { "a", "b", "C" });
 
             // Act
-            var actual = value.Equals((object)null);
+            var actual = value.Equals((object?)null);
 
             // Assert
             actual.Should().BeFalse();
@@ -190,9 +190,7 @@ namespace CrossCutting.Common.Tests
         public void ToString_Gives_Correct_Result_On_Null_Value()
         {
             // Arrange
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
             var value = new ValueCollection<string?>(new string?[] { null, null });
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 
             // Act
             var actual = value.ToString();

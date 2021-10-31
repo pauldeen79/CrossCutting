@@ -145,9 +145,10 @@ namespace CrossCutting.Common.Tests.Extensions
                  .Should().Throw<ValidationException>();
         }
 
+        [ExcludeFromCodeCoverage]
         private class MyValidatableClass : IValidatableObject
         {
-            public string Value { get; set; }
+            public string? Value { get; set; }
 
             public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
             {
@@ -158,10 +159,11 @@ namespace CrossCutting.Common.Tests.Extensions
             }
         }
 
+        [ExcludeFromCodeCoverage]
         private class MyValidatableClassWithTwoProperties : IValidatableObject
         {
-            public string Value1 { get; set; }
-            public string Value2 { get; set; }
+            public string? Value1 { get; set; }
+            public string? Value2 { get; set; }
 
             public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
             {
