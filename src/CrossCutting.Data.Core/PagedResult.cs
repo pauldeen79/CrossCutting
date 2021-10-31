@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using CrossCutting.Data.Abstractions;
 
-namespace CrossCutting.Data.Sql
+namespace CrossCutting.Data.Core
 {
-    internal class PagedResult<T> : IPagedResult<T>
+    public class PagedResult<T> : IPagedResult<T>
     {
         private readonly IReadOnlyCollection<T> _records;
 

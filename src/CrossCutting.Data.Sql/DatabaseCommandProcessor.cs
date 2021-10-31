@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using CrossCutting.Common.Extensions;
 using CrossCutting.Data.Abstractions;
+using CrossCutting.Data.Core;
 using CrossCutting.Data.Sql.Extensions;
 
 namespace CrossCutting.Data.Sql
