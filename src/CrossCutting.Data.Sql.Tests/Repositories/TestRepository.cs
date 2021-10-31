@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using CrossCutting.Data.Core;
-using CrossCutting.Data.Sql.Extensions;
+using CrossCutting.Data.Abstractions;
 
 namespace CrossCutting.Data.Sql.Tests.Repositories
 {
@@ -17,46 +13,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             {
                 throw new ArgumentNullException(nameof(instance));
             }
-            return _connection.InvokeCommand
-            (
-                instance,
-                x => new StoredProcedureCommand<TestEntity>(@"[InsertCode]", x, AddParameters),
-                typeof(TestEntity).Name + " entity was not added",
-                AddResultEntity,
-                AddAfterRead,
-                AddFinalize
-            );
-        }
-
-        private TestEntity AddResultEntity(TestEntity resultEntity)
-        {
-
-            return resultEntity;
-        }
-
-        private TestEntity AddFinalize(TestEntity resultEntity, Exception? exception)
-        {
-            resultEntity.IsExistingEntity = true;
-            return resultEntity;
-        }
-
-        private TestEntity AddAfterRead(TestEntity resultEntity, IDataReader reader)
-        {
-            resultEntity.Code = reader.GetString("Code", default(string));
-            resultEntity.CodeType = reader.GetString("CodeType", default(string));
-            resultEntity.Description = reader.GetString("Description", default(string));
-
-            return resultEntity;
-        }
-
-        private object AddParameters(TestEntity resultEntity)
-        {
-            return new[]
-            {
-                new KeyValuePair<string, object>("@Code", resultEntity.Code),
-                new KeyValuePair<string, object>("@CodeType", resultEntity.CodeType),
-                new KeyValuePair<string, object>("@Description", resultEntity.Description),
-            };
+            return _addProcessor.InvokeCommand(instance);
         }
 
         public TestEntity Update(TestEntity instance)
@@ -65,41 +22,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             {
                 throw new ArgumentNullException(nameof(instance));
             }
-            return _connection.InvokeCommand
-            (
-                instance,
-                x => new StoredProcedureCommand<TestEntity>(@"[UpdateCode]", x, UpdateParameters),
-                typeof(TestEntity).Name + " entity was not updated",
-                UpdateResultEntity,
-                UpdateAfterRead
-            );
-        }
-
-        private TestEntity UpdateResultEntity(TestEntity resultEntity)
-        {
-
-            return resultEntity;
-        }
-
-#pragma warning disable S4144 // Methods should not have identical implementations
-        private TestEntity UpdateAfterRead(TestEntity resultEntity, IDataReader reader)
-#pragma warning restore S4144 // Methods should not have identical implementations
-        {
-            resultEntity.Code = reader.GetString("Code", default(string));
-            resultEntity.CodeType = reader.GetString("CodeType", default(string));
-            resultEntity.Description = reader.GetString("Description", default(string));
-
-            return resultEntity;
-        }
-
-        private object UpdateParameters(TestEntity resultEntity)
-        {
-            return new[]
-            {
-                new KeyValuePair<string, object>("@Code", resultEntity.Code),
-                new KeyValuePair<string, object>("@CodeType", resultEntity.CodeType),
-                new KeyValuePair<string, object>("@Description", resultEntity.Description),
-            };
+            return _updateProcessor.InvokeCommand(instance);
         }
 
         public TestEntity Delete(TestEntity instance)
@@ -108,41 +31,32 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             {
                 throw new ArgumentNullException(nameof(instance));
             }
-            return _connection.InvokeCommand
-            (
-                instance,
-                x => new StoredProcedureCommand<TestEntity>(@"[DeleteCode]", x, DeleteParameters),
-                typeof(TestEntity).Name + " entity was not deleted",
-                DeleteResultEntity
-            );
+            return _deleteProcessor.InvokeCommand(instance);
         }
 
-        private TestEntity DeleteResultEntity(TestEntity resultEntity)
+        public TestRepository(IDatabaseCommandProcessor<TestEntity> addProcessor,
+                              IDatabaseCommandProcessor<TestEntity> updateProcessor,
+                              IDatabaseCommandProcessor<TestEntity> deleteProcessor)
         {
-
-            return resultEntity;
-        }
-
-        private object DeleteParameters(TestEntity resultEntity)
-        {
-            return new[]
+            if (addProcessor == null)
             {
-                new KeyValuePair<string, object>("@Code", resultEntity.Code),
-                new KeyValuePair<string, object>("@CodeType", resultEntity.CodeType),
-                new KeyValuePair<string, object>("@Description", resultEntity.Description),
-            };
-        }
-
-        public TestRepository(IDbConnection connection)
-        {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
+                throw new ArgumentNullException(nameof(addProcessor));
             }
-            _connection = connection;
-
+            if (updateProcessor == null)
+            {
+                throw new ArgumentNullException(nameof(updateProcessor));
+            }
+            if (deleteProcessor == null)
+            {
+                throw new ArgumentNullException(nameof(deleteProcessor));
+            }
+            _addProcessor = addProcessor;
+            _updateProcessor = updateProcessor;
+            _deleteProcessor = deleteProcessor;
         }
 
-        private readonly IDbConnection _connection;
+        private readonly IDatabaseCommandProcessor<TestEntity> _addProcessor;
+        private readonly IDatabaseCommandProcessor<TestEntity> _updateProcessor;
+        private readonly IDatabaseCommandProcessor<TestEntity> _deleteProcessor;
     }
 }

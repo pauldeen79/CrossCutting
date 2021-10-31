@@ -32,20 +32,6 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         }
 
         [Fact]
-        public void AddParameters_Throws_On_Null_Argument()
-        {
-            // Arrange
-            using var command = new DbCommand();
-
-            // Act & Assert
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            command.Invoking(x => x.AddParameters(null))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                   .Should()
-                   .Throw<ArgumentNullException>().And.ParamName.Should().Be("keyValuePairs");
-        }
-
-        [Fact]
         public void AddParameters_Add_All_Parameters_When_Argument_Is_Not_Null()
         {
             // Arrange
@@ -135,7 +121,10 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
 
             // Assert
             result.Should().NotBeNull();
-            result.Property.Should().Be("test");
+            if (result != null)
+            {
+                result.Property.Should().Be("test");
+            }
         }
 
         [Fact]
@@ -159,7 +148,8 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
             result.Last().Property.Should().Be("test2");
         }
 
-        private class MyDataObject
+        [ExcludeFromCodeCoverage]
+        public class MyDataObject
         {
             public string? Property { get; set; }
         }

@@ -28,7 +28,7 @@
             RolledBack?.Invoke(this, EventArgs.Empty);
         }
 
-        public event EventHandler Committed;
-        public event EventHandler RolledBack;
+        public event EventHandler? Committed;
+        public event EventHandler? RolledBack;
     }
 }

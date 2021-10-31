@@ -16,13 +16,10 @@ namespace CrossCutting.Common.Testing
         /// <param name="type">The type to assert null argument checks for.</param>
         /// <param name="parameterPredicate">Optional predicate to apply to each parameter info. When the predicate returns false, then the parameter will be skipped.</param>
         /// <param name="parameterReplaceDelegate">Optional function to apply to a parameter info. When the predicate is not defined, then we will create a mock or value type.</param>
-        public static void ConstructorMustThrowArgumentNullException(Type type, Func<ParameterInfo, bool> parameterPredicate = null, Func<ParameterInfo, object> parameterReplaceDelegate = null)
+        public static void ConstructorMustThrowArgumentNullException(Type type,
+                                                                     Func<ParameterInfo, bool>? parameterPredicate = null,
+                                                                     Func<ParameterInfo, object>? parameterReplaceDelegate = null)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
             foreach (var constructor in type.GetConstructors())
             {
                 var parameters = constructor.GetParameters().ToArray();
@@ -55,22 +52,17 @@ namespace CrossCutting.Common.Testing
             }
         }
 
-        private static object FillParameter(ParameterInfo[] parameters, int i)
+        private static object? FillParameter(ParameterInfo[] parameters, int i)
             => parameters[i].ParameterType.IsValueType
                 ? Activator.CreateInstance(parameters[i].ParameterType)
                 : null;
 
-        private static bool ShouldSkipParameter(Func<ParameterInfo, bool> parameterPredicate, ParameterInfo[] parameters, int i)
+        private static bool ShouldSkipParameter(Func<ParameterInfo, bool>? parameterPredicate, ParameterInfo[] parameters, int i)
             => parameterPredicate != null
                 && !parameterPredicate.Invoke(parameters[i]);
 
-        public static void ConstructorShouldConstruct(Type type, Func<ParameterInfo, object> parameterReplaceDelegate = null)
+        public static void ConstructorShouldConstruct(Type type, Func<ParameterInfo, object>? parameterReplaceDelegate = null)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
             foreach (var constructor in type.GetConstructors())
             {
                 var parameters = constructor.GetParameters();
@@ -81,7 +73,7 @@ namespace CrossCutting.Common.Testing
             }
         }
 
-        private static object[] GetMocks(ParameterInfo[] parameters, Func<ParameterInfo, object> parameterReplaceDelegate)
+        private static object?[] GetMocks(ParameterInfo[] parameters, Func<ParameterInfo, object>? parameterReplaceDelegate)
             => parameters.Select
             (
                 p =>
@@ -105,7 +97,7 @@ namespace CrossCutting.Common.Testing
                 }
             ).ToArray();
 
-        private static void FixStringsAndArrays(ParameterInfo[] parameters, int i, object[] mocksCopy)
+        private static void FixStringsAndArrays(ParameterInfo[] parameters, int i, object?[] mocksCopy)
         {
             for (int j = 0; j < parameters.Length; j++)
             {
@@ -130,13 +122,8 @@ namespace CrossCutting.Common.Testing
         /// <param name="typeTocreate">Type to create</param>
         /// <param name="provider">Optional dependency injection container to use</param>
         /// <returns>Instanciated controller.</returns>
-        public static object CreateObjectUsingDependecyInjection(Type typeTocreate, IServiceProvider provider = null)
+        public static object? CreateObjectUsingDependecyInjection(Type typeTocreate, IServiceProvider? provider = null)
         {
-            if (typeTocreate == null)
-            {
-                throw new ArgumentNullException(nameof(typeTocreate));
-            }
-
             // First try using dependency injection container
             var firstAttempt = provider?.GetService(typeTocreate);
 

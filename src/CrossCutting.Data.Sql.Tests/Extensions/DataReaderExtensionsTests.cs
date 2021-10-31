@@ -846,20 +846,6 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
         }
 
         [Fact]
-        public void FindOne_Throws_On_Null_MapFunction()
-        {
-            // Arrange
-            var reader = new Mock<IDataReader>();
-
-            // Act & Assert
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            reader.Object.Invoking(x => x.FindOne<MyEntity>(null))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                         .Should().Throw<ArgumentNullException>()
-                         .And.ParamName.Should().Be("mapFunction");
-        }
-
-        [Fact]
         public void FindOne_Returns_Default_When_No_Data_Is_Found()
         {
             // Arrange
@@ -870,20 +856,6 @@ namespace CrossCutting.Data.Sql.Tests.Extensions
 
             // Assert
             result.Should().BeNull();
-        }
-
-        [Fact]
-        public void FindMany_Throws_On_Null_MapFunction()
-        {
-            // Arrange
-            var reader = new Mock<IDataReader>();
-
-            // Act & Assert
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            reader.Object.Invoking(x => x.FindMany<MyEntity>(null))
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                         .Should().Throw<ArgumentNullException>()
-                         .And.ParamName.Should().Be("mapFunction");
         }
 
         private MyEntity Map(IDataReader reader)

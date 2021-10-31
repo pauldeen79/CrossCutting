@@ -10,9 +10,9 @@
 
         public bool IsNullable { get; set; }
 
-        public string ParameterName { get; set; }
-        public string SourceColumn { get; set; }
+        public string ParameterName { get; set; } = string.Empty;
+        public string SourceColumn { get; set; } = string.Empty;
         public DataRowVersion SourceVersion { get; set; }
-        public object Value { get; set; }
+        public object? Value { get; set; }
     }
 }
