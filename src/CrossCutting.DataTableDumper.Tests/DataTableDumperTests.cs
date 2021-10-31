@@ -106,9 +106,10 @@ F	6	u"; //copied directly from Excel 8-)
 
         }
 
-        private class MyClass
+        [ExcludeFromCodeCoverage]
+        public class MyClass
         {
-            public string Name { get; set; }
+            public string? Name { get; set; }
             public int Age { get; set; }
         }
     }
