@@ -1,31 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using CrossCutting.Common.Extensions;
 using CrossCutting.Data.Abstractions;
-using CrossCutting.Data.Core;
 using CrossCutting.Data.Sql.Extensions;
 
 namespace CrossCutting.Data.Sql
 {
-    public class DatabaseCommandProcessor<T> : IDatabaseCommandProcessor<T>
-        where T : class
+    public class DatabaseCommandProcessor<T> : IDatabaseCommandProcessor<T> where T : class
     {
         private readonly IDbConnection _connection;
-        private readonly IDataReaderMapper<T> _mapper;
-        private readonly IDatabaseCommandProcessorSettings _settings;
         private readonly IDatabaseCommandEntityProvider<T> _provider;
+        private readonly IDatabaseCommandProcessorSettings _settings;
 
         public DatabaseCommandProcessor(IDbConnection connection,
-                                        IDataReaderMapper<T> mapper,
-                                        IDatabaseCommandProcessorSettings settings,
-                                        IDatabaseCommandEntityProvider<T> provider)
+                                        IDatabaseCommandEntityProvider<T> provider,
+                                        IDatabaseCommandProcessorSettings settings)
         {
             _connection = connection;
-            _mapper = mapper;
-            _settings = settings;
             _provider = provider;
+            _settings = settings;
         }
 
         public int ExecuteNonQuery(IDatabaseCommand command)
@@ -33,36 +26,6 @@ namespace CrossCutting.Data.Sql
 
         public object ExecuteScalar(IDatabaseCommand command)
             => InvokeCommand(command, cmd => cmd.ExecuteScalar());
-
-        public IReadOnlyCollection<T> FindMany(IDatabaseCommand command)
-            => Find(cmd => cmd.FindMany(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters).ToList());
-
-        public T? FindOne(IDatabaseCommand command)
-            => Find(cmd => cmd.FindOne(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters));
-
-        public IPagedResult<T> FindPaged(IDatabaseCommand dataCommand, IDatabaseCommand recordCountCommand, int offset, int pageSize)
-        {
-            var returnValue = default(IPagedResult<T>);
-
-            OpenConnection();
-            using (var cmd = _connection.CreateCommand())
-            {
-                using (var countCommand = _connection.CreateCommand())
-                {
-                    countCommand.FillCommand(recordCountCommand.CommandText, recordCountCommand.CommandType, recordCountCommand.CommandParameters);
-                    var totalRecordCount = (int)countCommand.ExecuteScalar();
-                    returnValue = new PagedResult<T>
-                    (
-                        cmd.FindMany(dataCommand.CommandText, dataCommand.CommandType, _mapper.Map, dataCommand.CommandParameters).ToList(),
-                        totalRecordCount,
-                        offset,
-                        pageSize
-                    );
-                }
-            }
-
-            return returnValue;
-        }
 
         public T InvokeCommand(T instance)
         {
@@ -78,7 +41,7 @@ namespace CrossCutting.Data.Sql
 
             resultEntity.Validate();
 
-            OpenConnection();
+            _connection.OpenIfNecessary();
             using (var cmd = _connection.CreateCommand())
             {
                 cmd.FillCommand(command.CommandText, command.CommandType, command.CommandParameters);
@@ -98,17 +61,9 @@ namespace CrossCutting.Data.Sql
             return resultEntity;
         }
 
-        private void OpenConnection()
-        {
-            if (_connection.State == ConnectionState.Closed)
-            {
-                _connection.Open();
-            }
-        }
-
         private TResult InvokeCommand<TResult>(IDatabaseCommand command, Func<IDbCommand, TResult> actionDelegate)
         {
-            OpenConnection();
+            _connection.OpenIfNecessary();
             using (var cmd = _connection.CreateCommand())
             {
                 cmd.FillCommand(command.CommandText, command.CommandType, command.CommandParameters);
@@ -144,19 +99,6 @@ namespace CrossCutting.Data.Sql
             {
                 throw new DataException(exceptionMessage);
             }
-        }
-
-        private TResult Find<TResult>(Func<IDbCommand, TResult> findDelegate)
-        {
-            var returnValue = default(TResult);
-
-            OpenConnection();
-            using (var cmd = _connection.CreateCommand())
-            {
-                returnValue = findDelegate(cmd);
-            }
-
-            return returnValue;
         }
 
         private static void Nothing()
