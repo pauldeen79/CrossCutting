@@ -13,13 +13,18 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         private Mock<IDatabaseCommandProcessor<TestEntity>> AddProcessorMock { get; }
         private Mock<IDatabaseCommandProcessor<TestEntity>> UpdateProcessorMock { get; }
         private Mock<IDatabaseCommandProcessor<TestEntity>> DeleteProcessorMock { get; }
+        private Mock<IDatabaseEntityRetriever<TestEntity>> RetrieverMock { get; }
 
         public TestRespositoryTests()
         {
             AddProcessorMock = new Mock<IDatabaseCommandProcessor<TestEntity>>();
             UpdateProcessorMock = new Mock<IDatabaseCommandProcessor<TestEntity>>();
             DeleteProcessorMock = new Mock<IDatabaseCommandProcessor<TestEntity>>();
-            Sut = new TestRepository(AddProcessorMock.Object, UpdateProcessorMock.Object, DeleteProcessorMock.Object);
+            RetrieverMock = new Mock<IDatabaseEntityRetriever<TestEntity>>();
+            Sut = new TestRepository(AddProcessorMock.Object,
+                                     UpdateProcessorMock.Object,
+                                     DeleteProcessorMock.Object,
+                                     RetrieverMock.Object);
         }
 
         [Fact]
@@ -66,5 +71,38 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             result.Should().Be(input);
             DeleteProcessorMock.Verify(x => x.InvokeCommand(input), Times.Once);
         }
+
+        [Fact]
+        public void Can_FindOne_Entity_Using_Repository()
+        {
+            // Arrange
+            var expected = new TestEntity("code", "codeType", "description");
+            RetrieverMock.Setup(x => x.FindOne(It.IsAny<IDatabaseCommand>())).Returns(expected);
+
+            // Act
+            var actual = Sut.FindOne();
+
+            // Assert
+            actual.Should().Be(expected);
+        }
+
+        [Fact]
+        public void Can_FindMany_Entities_Using_Repository()
+        {
+            // Arrange
+            var expected = new[]
+            {
+                new TestEntity("code1", "codeType1", "description1"),
+                new TestEntity("code2", "codeType2", "description2")
+            };
+            RetrieverMock.Setup(x => x.FindMany(It.IsAny<IDatabaseCommand>())).Returns(expected);
+
+            // Act
+            var actual = Sut.FindMany();
+
+            // Assert
+            actual.Should().BeSameAs(expected);
+        }
+
     }
 }

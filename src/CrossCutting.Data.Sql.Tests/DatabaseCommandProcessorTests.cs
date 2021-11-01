@@ -4,10 +4,8 @@ using System.Data;
 using System.Data.Stub;
 using System.Data.Stub.Extensions;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core;
-using CrossCutting.Data.Sql.Extensions;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -19,17 +17,15 @@ namespace CrossCutting.Data.Sql.Tests
     {
         private DatabaseCommandProcessor<MyEntity> Sut { get; }
         private DbConnection Connection { get; }
-        private Mock<IDataReaderMapper<MyEntity>> MapperMock { get; }
         private Mock<IDatabaseCommandProcessorSettings> SettingsMock { get; }
         private Mock<IDatabaseCommandEntityProvider<MyEntity>> ProviderMock { get; }
 
         public DatabaseCommandProcessorTests()
         {
             Connection = new DbConnection();
-            MapperMock = new Mock<IDataReaderMapper<MyEntity>>();
             SettingsMock = new Mock<IDatabaseCommandProcessorSettings>();
             ProviderMock = new Mock<IDatabaseCommandEntityProvider<MyEntity>>();
-            Sut = new DatabaseCommandProcessor<MyEntity>(Connection, MapperMock.Object, SettingsMock.Object, ProviderMock.Object);
+            Sut = new DatabaseCommandProcessor<MyEntity>(Connection, ProviderMock.Object, SettingsMock.Object);
         }
 
         [Fact]
@@ -142,7 +138,6 @@ namespace CrossCutting.Data.Sql.Tests
         public void InvokeCommand_AfterReadDelegate_Does_Not_Throw_When_ExecuteReader_Read_Returns_True()
         {
             // Arrange
-            InitializeMapper();
             Connection.AddResultForDataReader(new[] { new MyEntity { Property = "test" } });
             SettingsMock.SetupGet(x => x.ExceptionMessage).Returns("MyEntity entity was not added");
             ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text));
@@ -154,81 +149,6 @@ namespace CrossCutting.Data.Sql.Tests
             // Assert
             actual.Should().NotBeNull();
             actual.Property.Should().Be("test");
-        }
-
-        [Fact]
-        public void FindOne_Returns_MappedEntity_When_All_Goes_Well()
-        {
-            // Arrange
-            Connection.AddResultForDataReader(new[] { new MyEntity { Property = "test" } });
-            InitializeMapper();
-
-            // Act
-            var actual = Sut.FindOne(new SqlDbCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text));
-
-            // Assert
-            actual.Should().NotBeNull();
-            if (actual != null)
-            {
-                actual.Property.Should().Be("test");
-            }
-        }
-
-        [Fact]
-        public void FindMany_Returns_MappedEntities_When_All_Goes_Well()
-        {
-            // Arrange
-            Connection.AddResultForDataReader(new[]
-            {
-                new MyEntity { Property = "test1" },
-                new MyEntity { Property = "test2" }
-            });
-            InitializeMapper();
-
-            // Act
-            var actual = Sut.FindMany(new SqlDbCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text));
-
-            // Assert
-            actual.Should().NotBeNull().And.HaveCount(2);
-            actual.First().Should().NotBeNull();
-            actual.First().Property.Should().Be("test1");
-            actual.Last().Should().NotBeNull();
-            actual.Last().Property.Should().Be("test2");
-        }
-
-        [Fact]
-        public void FindPaged_Returns_MappedEntities_And_Other_Properties_When_All_Goes_Well()
-        {
-            // Arrange
-            Connection.AddResultForDataReader(new[]
-            {
-                new MyEntity { Property = "test1" },
-                new MyEntity { Property = "test2" }
-            });
-            Connection.AddResultForScalarCommand(1);
-            InitializeMapper();
-
-            // Act
-            var actual = Sut.FindPaged(new SqlDbCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text),
-                                       new SqlDbCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text),
-                                       20,
-                                       10);
-
-            // Assert
-            actual.Should().NotBeNull().And.HaveCount(2);
-            actual.First().Should().NotBeNull();
-            actual.First().Property.Should().Be("test1");
-            actual.Last().Should().NotBeNull();
-            actual.Last().Property.Should().Be("test2");
-            actual.TotalRecordCount.Should().Be(1);
-            actual.Offset.Should().Be(20);
-            actual.PageSize.Should().Be(10);
-        }
-
-        private void InitializeMapper()
-        {
-            MapperMock.Setup(x => x.Map(It.IsAny<IDataReader>()))
-                      .Returns<IDataReader>(reader => new MyEntity { Property = reader.GetString("Property") });
         }
 
         public void Dispose()

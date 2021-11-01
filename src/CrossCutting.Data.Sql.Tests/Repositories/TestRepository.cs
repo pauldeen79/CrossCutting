@@ -1,62 +1,48 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Data.Abstractions;
+using Moq;
 
 namespace CrossCutting.Data.Sql.Tests.Repositories
 {
     [ExcludeFromCodeCoverage]
     public class TestRepository
     {
-        public TestEntity Add(TestEntity instance)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-            return _addProcessor.InvokeCommand(instance);
-        }
-
-        public TestEntity Update(TestEntity instance)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-            return _updateProcessor.InvokeCommand(instance);
-        }
-
-        public TestEntity Delete(TestEntity instance)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-            return _deleteProcessor.InvokeCommand(instance);
-        }
-
         public TestRepository(IDatabaseCommandProcessor<TestEntity> addProcessor,
                               IDatabaseCommandProcessor<TestEntity> updateProcessor,
-                              IDatabaseCommandProcessor<TestEntity> deleteProcessor)
+                              IDatabaseCommandProcessor<TestEntity> deleteProcessor,
+                              IDatabaseEntityRetriever<TestEntity> retriever)
         {
-            if (addProcessor == null)
-            {
-                throw new ArgumentNullException(nameof(addProcessor));
-            }
-            if (updateProcessor == null)
-            {
-                throw new ArgumentNullException(nameof(updateProcessor));
-            }
-            if (deleteProcessor == null)
-            {
-                throw new ArgumentNullException(nameof(deleteProcessor));
-            }
             _addProcessor = addProcessor;
             _updateProcessor = updateProcessor;
             _deleteProcessor = deleteProcessor;
+            _retriever = retriever;
         }
 
         private readonly IDatabaseCommandProcessor<TestEntity> _addProcessor;
         private readonly IDatabaseCommandProcessor<TestEntity> _updateProcessor;
         private readonly IDatabaseCommandProcessor<TestEntity> _deleteProcessor;
+        private readonly IDatabaseEntityRetriever<TestEntity> _retriever;
+
+        public TestEntity Add(TestEntity instance)
+            => _addProcessor.InvokeCommand(instance);
+
+        public TestEntity Update(TestEntity instance)
+            => _updateProcessor.InvokeCommand(instance);
+
+        public TestEntity Delete(TestEntity instance)
+            => _deleteProcessor.InvokeCommand(instance);
+
+        // for test purposes only. normally you would add arguments here (request/query)
+        public TestEntity? FindOne()
+            => _retriever.FindOne(new Mock<IDatabaseCommand>().Object);
+
+        // for test purposes only. normally you would add arguments here (request/query)
+        public IReadOnlyCollection<TestEntity> FindMany()
+            => _retriever.FindMany(new Mock<IDatabaseCommand>().Object);
+
+        // for test purposes only. normally you would add arguments here (request/query)
+        public IPagedResult<TestEntity> FindPaged()
+            => _retriever.FindPaged(new Mock<IDatabaseCommand>().Object, new Mock<IDatabaseCommand>().Object, 0, 10);
     }
 }
