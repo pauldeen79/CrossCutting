@@ -11,15 +11,15 @@ namespace CrossCutting.Common
     {
         private readonly IEqualityComparer<T> _equalityComparer;
 
-        public ValueCollection() : this(new List<T>())
+        public ValueCollection() : this(Enumerable.Empty<T>())
         {
         }
 
-        public ValueCollection(IEqualityComparer<T>? equalityComparer) : this(new List<T>(), equalityComparer)
+        public ValueCollection(IEqualityComparer<T>? equalityComparer) : this(Enumerable.Empty<T>(), equalityComparer)
         {
         }
 
-        public ValueCollection(IList<T> list, IEqualityComparer<T>? equalityComparer = null) : base(list)
+        public ValueCollection(IEnumerable<T> list, IEqualityComparer<T>? equalityComparer = null) : base(list.ToList())
             => _equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
 
         public bool Equals(ValueCollection<T>? other)
