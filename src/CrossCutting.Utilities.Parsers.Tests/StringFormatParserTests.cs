@@ -118,8 +118,6 @@ namespace CrossCutting.Utilities.Parsers.Tests
         {
             // Arrange
             const string FormatString = "Hello, {0}{1}";
-            //const string ArgumentsString = "\"John Doe\", \"!\"";
-            //var parsedArguments = StringFormatParser.ParseWithArgumentsString(FormatString, ArgumentsString).Values.Select(kvp => kvp.Value.ToString().Replace("\"", "")).ToArray(); //note that we have to replace the double quotes...
             const string ArgumentsString = "John Doe, !";
             var parsedArguments = StringFormatParser.ParseWithArgumentsString(FormatString, ArgumentsString).Values.Select(kvp => kvp.Value.ToString()).ToArray(); //note that we have to replace the double quotes...
 
