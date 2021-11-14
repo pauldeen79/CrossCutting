@@ -5,6 +5,7 @@ using System.Data.Stub;
 using System.Data.Stub.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Data.Abstractions;
+using CrossCutting.Data.Abstractions.Extensions;
 using CrossCutting.Data.Core;
 using FluentAssertions;
 using Moq;
@@ -17,15 +18,13 @@ namespace CrossCutting.Data.Sql.Tests
     {
         private DatabaseCommandProcessor<MyEntity> Sut { get; }
         private DbConnection Connection { get; }
-        private Mock<IDatabaseCommandProcessorSettings> SettingsMock { get; }
         private Mock<IDatabaseCommandEntityProvider<MyEntity>> ProviderMock { get; }
 
         public DatabaseCommandProcessorTests()
         {
             Connection = new DbConnection();
-            SettingsMock = new Mock<IDatabaseCommandProcessorSettings>();
             ProviderMock = new Mock<IDatabaseCommandEntityProvider<MyEntity>>();
-            Sut = new DatabaseCommandProcessor<MyEntity>(Connection, ProviderMock.Object, SettingsMock.Object);
+            Sut = new DatabaseCommandProcessor<MyEntity>(Connection, ProviderMock.Object);
         }
 
         [Fact]
@@ -99,11 +98,10 @@ namespace CrossCutting.Data.Sql.Tests
         {
             // Arrange
             Connection.AddResultForNonQueryCommand(0); // 0 rows affected
-            SettingsMock.SetupGet(x => x.ExceptionMessage).Returns("MyEntity entity was not added");
             ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text));
 
             // Act
-            Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }))
+            Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added"))
                .Should().Throw<DataException>()
                .WithMessage("MyEntity entity was not added");
         }
@@ -124,12 +122,11 @@ namespace CrossCutting.Data.Sql.Tests
         public void InvokeCommand_AfterReadDelegate_Throws_When_ExecuteReader_Read_Returns_False()
         {
             // Arrange
-            SettingsMock.SetupGet(x => x.ExceptionMessage).Returns("MyEntity entity was not added");
             ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text));
             ProviderMock.SetupGet(x => x.AfterReadDelegate).Returns(new Func<MyEntity, IDataReader, MyEntity>((x, _) => x));
 
             // Act
-            Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }))
+            Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added"))
                .Should().Throw<DataException>()
                .WithMessage("MyEntity entity was not added");
         }
@@ -139,15 +136,13 @@ namespace CrossCutting.Data.Sql.Tests
         {
             // Arrange
             Connection.AddResultForDataReader(new[] { new MyEntity { Property = "test" } });
-            SettingsMock.SetupGet(x => x.ExceptionMessage).Returns("MyEntity entity was not added");
             ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text));
             ProviderMock.SetupGet(x => x.AfterReadDelegate).Returns(new Func<MyEntity, IDataReader, MyEntity>((x, _) => x));
 
             // Act
-            var actual = Sut.InvokeCommand(new MyEntity { Property = "test" });
+            var actual = Sut.InvokeCommand(new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added");
 
             // Assert
-            actual.Should().NotBeNull();
             actual.Property.Should().Be("test");
         }
 

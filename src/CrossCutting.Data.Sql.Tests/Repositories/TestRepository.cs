@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Data.Abstractions;
+using CrossCutting.Data.Abstractions.Extensions;
 using Moq;
 
 namespace CrossCutting.Data.Sql.Tests.Repositories
@@ -25,13 +26,13 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         private readonly IDatabaseEntityRetriever<TestEntity> _retriever;
 
         public TestEntity Add(TestEntity instance)
-            => _addProcessor.InvokeCommand(instance);
+            => _addProcessor.InvokeCommand(instance).HandleResult("TestEntity was not added");
 
         public TestEntity Update(TestEntity instance)
-            => _updateProcessor.InvokeCommand(instance);
+            => _updateProcessor.InvokeCommand(instance).HandleResult("TestEntity was not updated");
 
         public TestEntity Delete(TestEntity instance)
-            => _deleteProcessor.InvokeCommand(instance);
+            => _deleteProcessor.InvokeCommand(instance).HandleResult("TestEntity was not deleted");
 
         // for test purposes only. normally you would add arguments here (request/query)
         public TestEntity? FindOne()

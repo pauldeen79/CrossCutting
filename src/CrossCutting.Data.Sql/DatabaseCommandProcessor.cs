@@ -2,6 +2,7 @@
 using System.Data;
 using CrossCutting.Common.Extensions;
 using CrossCutting.Data.Abstractions;
+using CrossCutting.Data.Core;
 using CrossCutting.Data.Sql.Extensions;
 
 namespace CrossCutting.Data.Sql
@@ -10,15 +11,11 @@ namespace CrossCutting.Data.Sql
     {
         private readonly IDbConnection _connection;
         private readonly IDatabaseCommandEntityProvider<T> _provider;
-        private readonly IDatabaseCommandProcessorSettings _settings;
 
-        public DatabaseCommandProcessor(IDbConnection connection,
-                                        IDatabaseCommandEntityProvider<T> provider,
-                                        IDatabaseCommandProcessorSettings settings)
+        public DatabaseCommandProcessor(IDbConnection connection, IDatabaseCommandEntityProvider<T> provider)
         {
             _connection = connection;
             _provider = provider;
-            _settings = settings;
         }
 
         public int ExecuteNonQuery(IDatabaseCommand command)
@@ -27,7 +24,7 @@ namespace CrossCutting.Data.Sql
         public object ExecuteScalar(IDatabaseCommand command)
             => InvokeCommand(command, cmd => cmd.ExecuteScalar());
 
-        public T InvokeCommand(T instance)
+        public IDatabaseCommandResult<T> InvokeCommand(T instance)
         {
             var command = _provider.CommandDelegate.Invoke(instance);
             var resultEntity = _provider.ResultEntityDelegate == null
@@ -49,16 +46,14 @@ namespace CrossCutting.Data.Sql
                 if (_provider.AfterReadDelegate == null)
                 {
                     //Use ExecuteNonQuery
-                    ExecuteNonQuery(cmd, _settings.ExceptionMessage);
+                    return ExecuteNonQuery(cmd, resultEntity);
                 }
                 else
                 {
                     //Use ExecuteReader
-                    resultEntity = ExecuteReader(cmd, _settings.ExceptionMessage, _provider.AfterReadDelegate, resultEntity);
+                    return ExecuteReader(cmd, _provider.AfterReadDelegate, resultEntity);
                 }
             }
-
-            return resultEntity;
         }
 
         private TResult InvokeCommand<TResult>(IDatabaseCommand command, Func<IDbCommand, TResult> actionDelegate)
@@ -71,11 +66,14 @@ namespace CrossCutting.Data.Sql
             }
         }
 
-        private T ExecuteReader(IDbCommand cmd,
-                                string? exceptionMessage,
-                                Func<T, IDataReader, T> afterReadDelegate,
-                                T resultEntity)
+        private IDatabaseCommandResult<T> ExecuteNonQuery(IDbCommand cmd, T result)
+            => new DatabaseCommandResult<T>(cmd.ExecuteNonQuery() != 0, result);
+
+        private IDatabaseCommandResult<T> ExecuteReader(IDbCommand cmd,
+                                                        Func<T, IDataReader, T> afterReadDelegate,
+                                                        T resultEntity)
         {
+            var success = false;
             using (var reader = cmd.ExecuteReader())
             {
                 var result = reader.Read();
@@ -83,22 +81,11 @@ namespace CrossCutting.Data.Sql
                 if (result)
                 {
                     resultEntity = afterReadDelegate(resultEntity, reader);
-                }
-                else if (!string.IsNullOrEmpty(exceptionMessage))
-                {
-                    throw new DataException(exceptionMessage);
+                    success = true;
                 }
             }
 
-            return resultEntity;
-        }
-
-        private static void ExecuteNonQuery(IDbCommand cmd, string? exceptionMessage)
-        {
-            if (cmd.ExecuteNonQuery() == 0 && !string.IsNullOrEmpty(exceptionMessage))
-            {
-                throw new DataException(exceptionMessage);
-            }
+            return new DatabaseCommandResult<T>(success, resultEntity);
         }
 
         private static void Nothing()

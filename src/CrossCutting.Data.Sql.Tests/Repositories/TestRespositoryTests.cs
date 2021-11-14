@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Data.Abstractions;
+using CrossCutting.Data.Core;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -32,7 +33,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var input = new TestEntity("01", "Test", "first entity", false);
-            AddProcessorMock.Setup(x => x.InvokeCommand(input)).Returns(input);
+            AddProcessorMock.Setup(x => x.InvokeCommand(input)).Returns(new DatabaseCommandResult<TestEntity>(input));
 
             // Act
             var result = Sut.Add(input);
@@ -47,7 +48,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var input = new TestEntity("01", "Test", "first entity", true);
-            UpdateProcessorMock.Setup(x => x.InvokeCommand(input)).Returns(input);
+            UpdateProcessorMock.Setup(x => x.InvokeCommand(input)).Returns(new DatabaseCommandResult<TestEntity>(input));
 
             // Act
             var result = Sut.Update(input);
@@ -62,7 +63,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var input = new TestEntity("01", "Test", "first entity", true);
-            DeleteProcessorMock.Setup(x => x.InvokeCommand(input)).Returns(input);
+            DeleteProcessorMock.Setup(x => x.InvokeCommand(input)).Returns(new DatabaseCommandResult<TestEntity>(input));
 
             // Act
             var result = Sut.Delete(input);
@@ -103,6 +104,5 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             // Assert
             actual.Should().BeSameAs(expected);
         }
-
     }
 }

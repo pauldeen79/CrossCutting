@@ -4,6 +4,6 @@
     {
         object ExecuteScalar(IDatabaseCommand command);
         int ExecuteNonQuery(IDatabaseCommand command);
-        T InvokeCommand(T instance);
+        IDatabaseCommandResult<T> InvokeCommand(T instance);
     }
 }
