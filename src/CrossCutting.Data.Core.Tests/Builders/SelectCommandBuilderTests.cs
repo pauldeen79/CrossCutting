@@ -131,6 +131,18 @@ namespace CrossCutting.Data.Core.Tests.Builders
         }
 
         [Fact]
+        public void InnerJoin_Throws_Exception_When_FromClause_Is_Empty()
+        {
+            // Arrange
+            var command = new SelectCommandBuilder().AsText();
+
+            // Act
+            command.Invoking(x => x.InnerJoin("Table2 ON Table.Id = Table2.FkId"))
+                   .Should().Throw<InvalidOperationException>()
+                   .WithMessage("No FROM clause found to add INNER JOIN clause to");
+        }
+
+        [Fact]
         public void Can_Build_SelectCommand_From_SelectCommandBuilder_With_LeftOuterJoin_Clause()
         {
             // Arrange
@@ -149,6 +161,18 @@ namespace CrossCutting.Data.Core.Tests.Builders
         }
 
         [Fact]
+        public void LeftOuterJoin_Throws_Exception_When_FromClause_Is_Empty()
+        {
+            // Arrange
+            var command = new SelectCommandBuilder().AsText();
+
+            // Act
+            command.Invoking(x => x.LeftOuterJoin("Table2 ON Table.Id = Table2.FkId"))
+                   .Should().Throw<InvalidOperationException>()
+                   .WithMessage("No FROM clause found to add LEFT OUTER JOIN clause to");
+        }
+
+        [Fact]
         public void Can_Build_SelectCommand_From_SelectCommandBuilder_With_RightOuterJoin_Clause()
         {
             // Arrange
@@ -164,6 +188,36 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Assert
             actual.CommandText.Should().Be("SELECT Table.Field1, Table.Field2, Table2.Field3 FROM Table RIGHT OUTER JOIN Table2 ON Table.Id = Table2.FkId");
+        }
+
+        [Fact]
+        public void RightOuterJoin_Throws_Exception_When_FromClause_Is_Empty()
+        {
+            // Arrange
+            var command = new SelectCommandBuilder().AsText();
+
+            // Act
+            command.Invoking(x => x.RightOuterJoin("Table2 ON Table.Id = Table2.FkId"))
+                   .Should().Throw<InvalidOperationException>()
+                   .WithMessage("No FROM clause found to add RIGHT OUTER JOIN clause to");
+        }
+
+        [Fact]
+        public void Can_Build_SelectCommand_From_SelectCommandBuilder_With_CrossJoin_Clause()
+        {
+            // Arrange
+            var command = new SelectCommandBuilder();
+
+            // Act
+            var actual = command
+                .AsText()
+                .From("Table")
+                .CrossJoin("Table2")
+                .Select("Table.Field1, Table.Field2, Table2.Field3")
+                .Build();
+
+            // Assert
+            actual.CommandText.Should().Be("SELECT Table.Field1, Table.Field2, Table2.Field3 FROM Table CROSS JOIN Table2");
         }
 
         [Fact]

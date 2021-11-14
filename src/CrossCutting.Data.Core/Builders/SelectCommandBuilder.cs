@@ -51,7 +51,7 @@ namespace CrossCutting.Data.Core.Builders
         {
             if (_fromBuilder.Length == 0)
             {
-                throw new InvalidOperationException("No FROM clause foudn to add INNER JOIN clause to");
+                throw new InvalidOperationException("No FROM clause found to add INNER JOIN clause to");
             }
             _fromBuilder.Append(" INNER JOIN ").Append(value);
             return this;
@@ -61,7 +61,7 @@ namespace CrossCutting.Data.Core.Builders
         {
             if (_fromBuilder.Length == 0)
             {
-                throw new InvalidOperationException("No FROM clause foudn to add LEFT OUTER JOIN clause to");
+                throw new InvalidOperationException("No FROM clause found to add LEFT OUTER JOIN clause to");
             }
             _fromBuilder.Append(" LEFT OUTER JOIN ").Append(value);
             return this;
@@ -71,7 +71,7 @@ namespace CrossCutting.Data.Core.Builders
         {
             if (_fromBuilder.Length == 0)
             {
-                throw new InvalidOperationException("No FROM clause foudn to add RIGHT OUTER JOIN clause to");
+                throw new InvalidOperationException("No FROM clause found to add RIGHT OUTER JOIN clause to");
             }
             _fromBuilder.Append(" RIGHT OUTER JOIN ").Append(value);
             return this;
@@ -81,7 +81,7 @@ namespace CrossCutting.Data.Core.Builders
         {
             if (_fromBuilder.Length == 0)
             {
-                throw new InvalidOperationException("No FROM clause foudn to add CROSS JOIN clause to");
+                throw new InvalidOperationException("No FROM clause found to add CROSS JOIN clause to");
             }
             _fromBuilder.Append(" CROSS JOIN ").Append(value);
             return this;
