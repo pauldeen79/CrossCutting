@@ -24,9 +24,10 @@ namespace CrossCutting.Data.Core
 
         public DatabaseCommandType CommandType { get; }
 
-        public object? CommandParameters => _commandParametersDelegate == null
-            ? null
-            : _commandParametersDelegate(_instance);
+        public object? CommandParameters
+            => _commandParametersDelegate == null
+                ? null
+                : _commandParametersDelegate(_instance);
     }
 
     public class SqlDbCommand : IDatabaseCommand
