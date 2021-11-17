@@ -239,6 +239,24 @@ namespace CrossCutting.Data.Core.Tests.Builders
         }
 
         [Fact]
+        public void Can_Build_SelectCommand_From_SelectCommandBuilder_With_Distinct_Clause()
+        {
+            // Arrange
+            var command = new SelectCommandBuilder();
+
+            // Act
+            var actual = command
+                .AsText()
+                .Distinct()
+                .From("Table")
+                .Select("Field1, Field2")
+                .Build();
+
+            // Assert
+            actual.CommandText.Should().Be("SELECT DISTINCT Field1, Field2 FROM Table");
+        }
+
+        [Fact]
         public void Can_Build_SelectCommand_From_SelectCommandBuilder_Without_Fields()
         {
             // Arrange

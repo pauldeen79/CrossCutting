@@ -24,6 +24,7 @@ namespace CrossCutting.Data.Abstractions.Builders
         ISelectCommandBuilder RightOuterJoin(string value);
         ISelectCommandBuilder Select(string value);
         ISelectCommandBuilder Top(int top);
+        ISelectCommandBuilder Distinct(bool distinct = true);
         ISelectCommandBuilder Where(string value);
     }
 }
