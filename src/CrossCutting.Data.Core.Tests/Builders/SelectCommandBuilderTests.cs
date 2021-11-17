@@ -296,6 +296,8 @@ namespace CrossCutting.Data.Core.Tests.Builders
         {
             // Arrange
             var command = new SelectCommandBuilder().AsStoredProcedure()
+                .Distinct()
+                .Top(1)
                 .From("Table2")
                 .Select("Field4, Field5, Field6");
 

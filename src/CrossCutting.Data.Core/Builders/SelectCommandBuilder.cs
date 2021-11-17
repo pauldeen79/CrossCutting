@@ -150,6 +150,8 @@ namespace CrossCutting.Data.Core.Builders
             _groupByBuilder.Clear();
             _havingBuilder.Clear();
             CommandParameters.Clear();
+            _distinct = false;
+            _top = null;
             return this;
         }
 
