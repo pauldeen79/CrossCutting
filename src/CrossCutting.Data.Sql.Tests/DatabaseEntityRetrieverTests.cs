@@ -37,7 +37,7 @@ namespace CrossCutting.Data.Sql.Tests
             InitializeMapper();
 
             // Act
-            var actual = Sut.FindOne(new SqlDbCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text));
+            var actual = Sut.FindOne(new SqlDatabaseCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text));
 
             // Assert
             actual.Should().NotBeNull();
@@ -59,7 +59,7 @@ namespace CrossCutting.Data.Sql.Tests
             InitializeMapper();
 
             // Act
-            var actual = Sut.FindMany(new SqlDbCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text));
+            var actual = Sut.FindMany(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text));
 
             // Assert
             actual.Should().NotBeNull().And.HaveCount(2);
@@ -82,8 +82,8 @@ namespace CrossCutting.Data.Sql.Tests
             InitializeMapper();
 
             // Act
-            var actual = Sut.FindPaged(new SqlDbCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text),
-                                       new SqlDbCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text),
+            var actual = Sut.FindPaged(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text),
+                                       new SqlDatabaseCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text),
                                        20,
                                        10);
 

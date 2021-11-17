@@ -29,24 +29,4 @@ namespace CrossCutting.Data.Core
                 ? null
                 : _commandParametersDelegate(_instance);
     }
-
-    public class SqlDbCommand : IDatabaseCommand
-    {
-        public SqlDbCommand(string commandText, DatabaseCommandType commandType, object? commandParameters = null)
-        {
-            if (string.IsNullOrEmpty(commandText))
-            {
-                throw new ArgumentOutOfRangeException(nameof(commandText), "CommandText may not be null or empty");
-            }
-            CommandText = commandText;
-            CommandType = commandType;
-            CommandParameters = commandParameters;
-        }
-
-        public string CommandText { get; }
-
-        public DatabaseCommandType CommandType { get; }
-
-        public object? CommandParameters { get; }
-    }
 }

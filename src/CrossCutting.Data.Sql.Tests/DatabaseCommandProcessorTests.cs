@@ -32,7 +32,7 @@ namespace CrossCutting.Data.Sql.Tests
         {
             // Arrange
             Connection.AddResultForScalarCommand(12345);
-            var command = new SqlDbCommand("Select 12345", DatabaseCommandType.Text);
+            var command = new SqlDatabaseCommand("Select 12345", DatabaseCommandType.Text);
 
             // Act
             var actual = Sut.ExecuteScalar(command);
@@ -46,7 +46,7 @@ namespace CrossCutting.Data.Sql.Tests
         {
             // Arrange
             Connection.AddResultForNonQueryCommand(12345);
-            var command = new SqlDbCommand("Select 12345", DatabaseCommandType.Text);
+            var command = new SqlDatabaseCommand("Select 12345", DatabaseCommandType.Text);
 
             // Act
             var actual = Sut.ExecuteNonQuery(command);
@@ -59,7 +59,7 @@ namespace CrossCutting.Data.Sql.Tests
         public void InvokeCommand_Throws_When_ResultEntityDelegate_Returns_Null()
         {
             // Arrange
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text));
+            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text));
 #pragma warning disable CS8603 // Possible null reference return.
             ProviderMock.SetupGet(x => x.ResultEntityDelegate).Returns(_ => null);
 #pragma warning restore CS8603 // Possible null reference return.
@@ -74,7 +74,7 @@ namespace CrossCutting.Data.Sql.Tests
         public void InvokeCommand_Does_Not_Throw_When_OperationValidationDelegate_Returns_True()
         {
             // Arrange
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text));
+            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text));
 
             // Act
             Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "filled" }))
@@ -85,7 +85,7 @@ namespace CrossCutting.Data.Sql.Tests
         public void InvokeCommand_Throws_When_Instance_Validation_Fails()
         {
             // Arrange
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text));
+            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text));
 
             // Act
             Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = null }))
@@ -98,7 +98,7 @@ namespace CrossCutting.Data.Sql.Tests
         {
             // Arrange
             Connection.AddResultForNonQueryCommand(0); // 0 rows affected
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text));
+            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text));
 
             // Act
             Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added"))
@@ -111,7 +111,7 @@ namespace CrossCutting.Data.Sql.Tests
         {
             // Arrange
             Connection.AddResultForNonQueryCommand(1); // 1 row affected
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text));
+            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text));
 
             // Act
             Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }))
@@ -122,7 +122,7 @@ namespace CrossCutting.Data.Sql.Tests
         public void InvokeCommand_AfterReadDelegate_Throws_When_ExecuteReader_Read_Returns_False()
         {
             // Arrange
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text));
+            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text));
             ProviderMock.SetupGet(x => x.AfterReadDelegate).Returns(new Func<MyEntity, IDataReader, MyEntity>((x, _) => x));
 
             // Act
@@ -136,7 +136,7 @@ namespace CrossCutting.Data.Sql.Tests
         {
             // Arrange
             Connection.AddResultForDataReader(new[] { new MyEntity { Property = "test" } });
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDbCommand("INSERT INTO ...", DatabaseCommandType.Text));
+            ProviderMock.SetupGet(x => x.CommandDelegate).Returns(_ => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text));
             ProviderMock.SetupGet(x => x.AfterReadDelegate).Returns(new Func<MyEntity, IDataReader, MyEntity>((x, _) => x));
 
             // Act

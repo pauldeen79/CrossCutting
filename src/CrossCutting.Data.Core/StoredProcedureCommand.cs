@@ -11,7 +11,7 @@ namespace CrossCutting.Data.Core
         }
     }
 
-    public class SqlStoredProcedureCommand : SqlDbCommand
+    public class SqlStoredProcedureCommand : SqlDatabaseCommand
     {
         public SqlStoredProcedureCommand(string commandText, object? commandParameters = null)
             : base(commandText, DatabaseCommandType.StoredProcedure, commandParameters)

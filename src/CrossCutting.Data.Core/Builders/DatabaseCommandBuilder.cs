@@ -36,6 +36,6 @@ namespace CrossCutting.Data.Core.Builders
         }
 
         public IDatabaseCommand Build()
-            => new SqlDbCommand(_commandTextBuilder.ToString(), CommandType, CommandParameters);
+            => new SqlDatabaseCommand(_commandTextBuilder.ToString(), CommandType, CommandParameters);
     }
 }

@@ -11,7 +11,7 @@ namespace CrossCutting.Data.Core
         }
     }
 
-    public class SqlTextCommand : SqlDbCommand
+    public class SqlTextCommand : SqlDatabaseCommand
     {
         public SqlTextCommand(string commandText, object? commandParameters = null)
             : base(commandText, DatabaseCommandType.Text, commandParameters)
