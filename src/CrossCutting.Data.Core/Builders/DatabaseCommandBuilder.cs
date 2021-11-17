@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using CrossCutting.Data.Abstractions;
-using CrossCutting.Data.Abstractions.Builders;
 
 namespace CrossCutting.Data.Core.Builders
 {
-    public class DatabaseCommandBuilder : IDatabaseCommandBuilder
+    public class DatabaseCommandBuilder
     {
         public DatabaseCommandType CommandType { get; set; }
         public IDictionary<string, object> CommandParameters { get; set; }
@@ -17,19 +16,19 @@ namespace CrossCutting.Data.Core.Builders
             _commandTextBuilder = new StringBuilder();
         }
 
-        public IDatabaseCommandBuilder Append(string value)
+        public DatabaseCommandBuilder Append(string value)
         {
             _commandTextBuilder.Append(value);
             return this;
         }
 
-        public IDatabaseCommandBuilder AppendParameter(string key, object value)
+        public DatabaseCommandBuilder AppendParameter(string key, object value)
         {
             CommandParameters.Add(key, value);
             return this;
         }
 
-        public IDatabaseCommandBuilder Clear()
+        public DatabaseCommandBuilder Clear()
         {
             _commandTextBuilder.Clear();
             CommandParameters.Clear();

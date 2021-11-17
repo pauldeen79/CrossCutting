@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using CrossCutting.Data.Abstractions;
-using CrossCutting.Data.Abstractions.Builders;
 
 namespace CrossCutting.Data.Core.Builders
 {
-    public class SelectCommandBuilder : ISelectCommandBuilder
+    public class SelectCommandBuilder
     {
         public DatabaseCommandType CommandType { get; set; }
         public IDictionary<string, object> CommandParameters { get; set; }
@@ -30,31 +29,31 @@ namespace CrossCutting.Data.Core.Builders
             _havingBuilder = new StringBuilder();
         }
 
-        public ISelectCommandBuilder Distinct(bool distinct = true)
+        public SelectCommandBuilder Distinct(bool distinct = true)
         {
             _distinct = distinct;
             return this;
         }
 
-        public ISelectCommandBuilder Top(int top)
+        public SelectCommandBuilder Top(int top)
         {
             _top = top;
             return this;
         }
 
-        public ISelectCommandBuilder Select(string value)
+        public SelectCommandBuilder Select(string value)
         {
             _selectBuilder.Append(value);
             return this;
         }
 
-        public ISelectCommandBuilder From(string value)
+        public SelectCommandBuilder From(string value)
         {
             _fromBuilder.Append(value);
             return this;
         }
 
-        public ISelectCommandBuilder InnerJoin(string value)
+        public SelectCommandBuilder InnerJoin(string value)
         {
             if (_fromBuilder.Length == 0)
             {
@@ -64,7 +63,7 @@ namespace CrossCutting.Data.Core.Builders
             return this;
         }
 
-        public ISelectCommandBuilder LeftOuterJoin(string value)
+        public SelectCommandBuilder LeftOuterJoin(string value)
         {
             if (_fromBuilder.Length == 0)
             {
@@ -74,7 +73,7 @@ namespace CrossCutting.Data.Core.Builders
             return this;
         }
 
-        public ISelectCommandBuilder RightOuterJoin(string value)
+        public SelectCommandBuilder RightOuterJoin(string value)
         {
             if (_fromBuilder.Length == 0)
             {
@@ -84,7 +83,7 @@ namespace CrossCutting.Data.Core.Builders
             return this;
         }
 
-        public ISelectCommandBuilder CrossJoin(string value)
+        public SelectCommandBuilder CrossJoin(string value)
         {
             if (_fromBuilder.Length == 0)
             {
@@ -94,7 +93,7 @@ namespace CrossCutting.Data.Core.Builders
             return this;
         }
 
-        public ISelectCommandBuilder Where(string value)
+        public SelectCommandBuilder Where(string value)
         {
             if (_whereBuilder.Length > 0)
             {
@@ -104,10 +103,10 @@ namespace CrossCutting.Data.Core.Builders
             return this;
         }
 
-        public ISelectCommandBuilder And(string value)
+        public SelectCommandBuilder And(string value)
             => Where(value);
 
-        public ISelectCommandBuilder Or(string value)
+        public SelectCommandBuilder Or(string value)
         {
             if (_whereBuilder.Length == 0)
             {
@@ -117,31 +116,31 @@ namespace CrossCutting.Data.Core.Builders
             return this;
         }
 
-        public ISelectCommandBuilder OrderBy(string value)
+        public SelectCommandBuilder OrderBy(string value)
         {
             _orderByBuilder.Append(value);
             return this;
         }
 
-        public ISelectCommandBuilder GroupBy(string value)
+        public SelectCommandBuilder GroupBy(string value)
         {
             _groupByBuilder.Append(value);
             return this;
         }
 
-        public ISelectCommandBuilder Having(string value)
+        public SelectCommandBuilder Having(string value)
         {
             _havingBuilder.Append(value);
             return this;
         }
 
-        public ISelectCommandBuilder AppendParameter(string key, object value)
+        public SelectCommandBuilder AppendParameter(string key, object value)
         {
             CommandParameters.Add(key, value);
             return this;
         }
 
-        public ISelectCommandBuilder Clear()
+        public SelectCommandBuilder Clear()
         {
             _selectBuilder.Clear();
             _fromBuilder.Clear();
@@ -155,13 +154,13 @@ namespace CrossCutting.Data.Core.Builders
             return this;
         }
 
-        public ISelectCommandBuilder AsStoredProcedure()
+        public SelectCommandBuilder AsStoredProcedure()
         {
             CommandType = DatabaseCommandType.StoredProcedure;
             return this;
         }
 
-        public ISelectCommandBuilder AsText()
+        public SelectCommandBuilder AsText()
         {
             CommandType = DatabaseCommandType.Text;
             return this;
