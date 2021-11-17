@@ -9,30 +9,24 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
     [ExcludeFromCodeCoverage]
     public class TestRepository
     {
-        public TestRepository(IDatabaseCommandProcessor<TestEntity> addProcessor,
-                              IDatabaseCommandProcessor<TestEntity> updateProcessor,
-                              IDatabaseCommandProcessor<TestEntity> deleteProcessor,
+        public TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcessor,
                               IDatabaseEntityRetriever<TestEntity> retriever)
         {
-            _addProcessor = addProcessor;
-            _updateProcessor = updateProcessor;
-            _deleteProcessor = deleteProcessor;
+            _commandProcessor = commandProcessor;
             _retriever = retriever;
         }
 
-        private readonly IDatabaseCommandProcessor<TestEntity> _addProcessor;
-        private readonly IDatabaseCommandProcessor<TestEntity> _updateProcessor;
-        private readonly IDatabaseCommandProcessor<TestEntity> _deleteProcessor;
+        private readonly IDatabaseCommandProcessor<TestEntity> _commandProcessor;
         private readonly IDatabaseEntityRetriever<TestEntity> _retriever;
 
         public TestEntity Add(TestEntity instance)
-            => _addProcessor.InvokeCommand(instance).HandleResult("TestEntity was not added");
+            => _commandProcessor.InvokeCommand(instance).HandleResult("TestEntity was not added");
 
         public TestEntity Update(TestEntity instance)
-            => _updateProcessor.InvokeCommand(instance).HandleResult("TestEntity was not updated");
+            => _commandProcessor.InvokeCommand(instance).HandleResult("TestEntity was not updated");
 
         public TestEntity Delete(TestEntity instance)
-            => _deleteProcessor.InvokeCommand(instance).HandleResult("TestEntity was not deleted");
+            => _commandProcessor.InvokeCommand(instance).HandleResult("TestEntity was not deleted");
 
         // for test purposes only. normally you would add arguments here (request/query)
         public TestEntity? FindOne()
