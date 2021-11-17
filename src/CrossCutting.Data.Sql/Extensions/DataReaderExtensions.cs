@@ -251,7 +251,7 @@ namespace CrossCutting.Data.Sql.Extensions
         /// <exception cref="ArgumentOutOfRangeException">columnName</exception>
         /// <exception cref="NullReferenceException"></exception>
         public static Guid GetGuid(this IDataReader instance, string columnName, bool skipUnknownColumn = false)
-            => instance.Invoke(columnName, skipUnknownColumn, default, true, true, (reader, ordinal) => reader.GetGuid(ordinal));
+            => instance.Invoke(columnName, skipUnknownColumn, Guid.Empty, true, true, (reader, ordinal) => reader.GetGuid(ordinal));
 
         /// <summary>
         /// Gets the Guid value.
