@@ -18,10 +18,10 @@ namespace CrossCutting.Data.Sql
             _provider = provider;
         }
 
-        public int ExecuteNonQuery(IDatabaseCommand command, DatabaseOperation operation)
+        public int ExecuteNonQuery(IDatabaseCommand command)
             => InvokeCommand(command, cmd => cmd.ExecuteNonQuery());
 
-        public object ExecuteScalar(IDatabaseCommand command, DatabaseOperation operation)
+        public object ExecuteScalar(IDatabaseCommand command)
             => InvokeCommand(command, cmd => cmd.ExecuteScalar());
 
         public IDatabaseCommandResult<T> InvokeCommand(T instance, DatabaseOperation operation)
