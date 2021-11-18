@@ -167,7 +167,7 @@ namespace CrossCutting.Data.Core.Builders
         }
 
         public IDatabaseCommand Build()
-            => new SqlDatabaseCommand(BuildSql(), CommandType, CommandParameters);
+            => new SqlDatabaseCommand(BuildSql(), CommandType, DatabaseOperation.Select, CommandParameters);
 
         private string BuildSql()
         {

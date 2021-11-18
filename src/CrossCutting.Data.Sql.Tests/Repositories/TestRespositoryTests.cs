@@ -27,14 +27,14 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var input = new TestEntity("01", "Test", "first entity", false);
-            CommandProcessorMock.Setup(x => x.InvokeCommand(input)).Returns(new DatabaseCommandResult<TestEntity>(input));
+            CommandProcessorMock.Setup(x => x.InvokeCommand(input, DatabaseOperation.Insert)).Returns(new DatabaseCommandResult<TestEntity>(input));
 
             // Act
             var result = Sut.Add(input);
 
             // Assert
             result.Should().Be(input);
-            CommandProcessorMock.Verify(x => x.InvokeCommand(input), Times.Once);
+            CommandProcessorMock.Verify(x => x.InvokeCommand(input, DatabaseOperation.Insert), Times.Once);
         }
 
         [Fact]
@@ -42,14 +42,14 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var input = new TestEntity("01", "Test", "first entity", true);
-            CommandProcessorMock.Setup(x => x.InvokeCommand(input)).Returns(new DatabaseCommandResult<TestEntity>(input));
+            CommandProcessorMock.Setup(x => x.InvokeCommand(input, DatabaseOperation.Update)).Returns(new DatabaseCommandResult<TestEntity>(input));
 
             // Act
             var result = Sut.Update(input);
 
             // Assert
             result.Should().Be(input);
-            CommandProcessorMock.Verify(x => x.InvokeCommand(input), Times.Once);
+            CommandProcessorMock.Verify(x => x.InvokeCommand(input, DatabaseOperation.Update), Times.Once);
         }
 
         [Fact]
@@ -57,14 +57,14 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var input = new TestEntity("01", "Test", "first entity", true);
-            CommandProcessorMock.Setup(x => x.InvokeCommand(input)).Returns(new DatabaseCommandResult<TestEntity>(input));
+            CommandProcessorMock.Setup(x => x.InvokeCommand(input, DatabaseOperation.Delete)).Returns(new DatabaseCommandResult<TestEntity>(input));
 
             // Act
             var result = Sut.Delete(input);
 
             // Assert
             result.Should().Be(input);
-            CommandProcessorMock.Verify(x => x.InvokeCommand(input), Times.Once);
+            CommandProcessorMock.Verify(x => x.InvokeCommand(input, DatabaseOperation.Delete), Times.Once);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var expected = new TestEntity("code", "codeType", "description");
-            RetrieverMock.Setup(x => x.FindOne(It.IsAny<IDatabaseCommand>())).Returns(expected);
+            RetrieverMock.Setup(x => x.FindOne(It.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select))).Returns(expected);
 
             // Act
             var actual = Sut.FindOne();
@@ -90,7 +90,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
                 new TestEntity("code1", "codeType1", "description1"),
                 new TestEntity("code2", "codeType2", "description2")
             };
-            RetrieverMock.Setup(x => x.FindMany(It.IsAny<IDatabaseCommand>())).Returns(expected);
+            RetrieverMock.Setup(x => x.FindMany(It.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select))).Returns(expected);
 
             // Act
             var actual = Sut.FindMany();

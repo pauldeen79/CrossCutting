@@ -18,18 +18,18 @@ namespace CrossCutting.Data.Sql
             _provider = provider;
         }
 
-        public int ExecuteNonQuery(IDatabaseCommand command)
+        public int ExecuteNonQuery(IDatabaseCommand command, DatabaseOperation operation)
             => InvokeCommand(command, cmd => cmd.ExecuteNonQuery());
 
-        public object ExecuteScalar(IDatabaseCommand command)
+        public object ExecuteScalar(IDatabaseCommand command, DatabaseOperation operation)
             => InvokeCommand(command, cmd => cmd.ExecuteScalar());
 
-        public IDatabaseCommandResult<T> InvokeCommand(T instance)
+        public IDatabaseCommandResult<T> InvokeCommand(T instance, DatabaseOperation operation)
         {
-            var command = _provider.CommandDelegate.Invoke(instance);
+            var command = _provider.CommandDelegate.Invoke(instance, operation);
             var resultEntity = _provider.ResultEntityDelegate == null
                 ? instance
-                : _provider.ResultEntityDelegate.Invoke(instance);
+                : _provider.ResultEntityDelegate.Invoke(instance, operation);
 
             if (resultEntity == null)
             {
@@ -51,7 +51,7 @@ namespace CrossCutting.Data.Sql
                 else
                 {
                     //Use ExecuteReader
-                    return ExecuteReader(cmd, _provider.AfterReadDelegate, resultEntity);
+                    return ExecuteReader(cmd, operation, _provider.AfterReadDelegate, resultEntity);
                 }
             }
         }
@@ -70,7 +70,8 @@ namespace CrossCutting.Data.Sql
             => new DatabaseCommandResult<T>(cmd.ExecuteNonQuery() != 0, result);
 
         private IDatabaseCommandResult<T> ExecuteReader(IDbCommand cmd,
-                                                        Func<T, IDataReader, T> afterReadDelegate,
+                                                        DatabaseOperation operation,
+                                                        Func<T, DatabaseOperation, IDataReader, T> afterReadDelegate,
                                                         T resultEntity)
         {
             var success = false;
@@ -80,7 +81,7 @@ namespace CrossCutting.Data.Sql
                 do { Nothing(); } while ((reader.FieldCount == 0 || !result) && reader.NextResult());
                 if (result)
                 {
-                    resultEntity = afterReadDelegate(resultEntity, reader);
+                    resultEntity = afterReadDelegate(resultEntity, operation, reader);
                     success = true;
                 }
             }

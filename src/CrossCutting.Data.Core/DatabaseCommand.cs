@@ -8,7 +8,19 @@ namespace CrossCutting.Data.Core
         private readonly T _instance;
         private readonly Func<T, object?> _commandParametersDelegate;
 
-        public DatabaseCommand(string commandText, DatabaseCommandType commandType, T instance, Func<T, object?> commandParametersDelegate)
+        public DatabaseCommand(string commandText,
+                       DatabaseCommandType commandType,
+                       T instance,
+                       Func<T, object?> commandParametersDelegate)
+            : this(commandText, commandType, instance, DatabaseOperation.Unspecified, commandParametersDelegate)
+        {
+        }
+        
+        public DatabaseCommand(string commandText,
+                               DatabaseCommandType commandType,
+                               T instance,
+                               DatabaseOperation operation,
+                               Func<T, object?> commandParametersDelegate)
         {
             if (string.IsNullOrEmpty(commandText))
             {
@@ -16,13 +28,14 @@ namespace CrossCutting.Data.Core
             }
             CommandText = commandText;
             CommandType = commandType;
+            Operation = operation;
             _instance = instance;
             _commandParametersDelegate = commandParametersDelegate;
         }
 
         public string CommandText { get; }
-
         public DatabaseCommandType CommandType { get; }
+        public DatabaseOperation Operation { get; }
 
         public object? CommandParameters
             => _commandParametersDelegate == null

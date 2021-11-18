@@ -5,7 +5,10 @@ namespace CrossCutting.Data.Core
 {
     public class SqlDatabaseCommand : IDatabaseCommand
     {
-        public SqlDatabaseCommand(string commandText, DatabaseCommandType commandType, object? commandParameters = null)
+        public SqlDatabaseCommand(string commandText,
+                                  DatabaseCommandType commandType,
+                                  DatabaseOperation operation = DatabaseOperation.Unspecified,
+                                  object? commandParameters = null)
         {
             if (string.IsNullOrEmpty(commandText))
             {
@@ -13,13 +16,13 @@ namespace CrossCutting.Data.Core
             }
             CommandText = commandText;
             CommandType = commandType;
+            Operation = operation;
             CommandParameters = commandParameters;
         }
 
         public string CommandText { get; }
-
         public DatabaseCommandType CommandType { get; }
-
+        public DatabaseOperation Operation { get; }
         public object? CommandParameters { get; }
     }
 }

@@ -4,6 +4,7 @@
     {
         string CommandText { get; }
         DatabaseCommandType CommandType { get; }
+        DatabaseOperation Operation { get; }
         object? CommandParameters { get; }
     }
 }

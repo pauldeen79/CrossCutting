@@ -9,12 +9,6 @@ namespace CrossCutting.Data.Sql.Extensions
 {
     public static class DbCommandExtensions
     {
-        /// <summary>
-        /// Creates the parameter.
-        /// </summary>
-        /// <param name="command">The command.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
         public static IDbDataParameter CreateParameter(this IDbCommand command, string name, object? value)
         {
             var param = command.CreateParameter();
@@ -25,12 +19,6 @@ namespace CrossCutting.Data.Sql.Extensions
             return param;
         }
 
-        /// <summary>
-        /// Adds the parameter.
-        /// </summary>
-        /// <param name="command">The command.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
         public static IDbCommand AddParameter(this IDbCommand command, string name, object? value)
         {
             var p = command.CreateParameter(name, value);
@@ -38,9 +26,6 @@ namespace CrossCutting.Data.Sql.Extensions
             return command;
         }
 
-        /// <summary>Adds the parameters.</summary>
-        /// <param name="command">The command.</param>
-        /// <param name="keyValuePairs">The key value pairs.</param>
         public static IDbCommand AddParameters(this IDbCommand command, IEnumerable<KeyValuePair<string, object?>> keyValuePairs)
         {
             foreach (var keyValuePair in keyValuePairs)
@@ -51,11 +36,6 @@ namespace CrossCutting.Data.Sql.Extensions
             return command;
         }
 
-        /// <summary>Fills the command.</summary>
-        /// <param name="command">The command.</param>
-        /// <param name="commandText">The command text.</param>
-        /// <param name="commandType">Type of the command.</param>
-        /// <param name="commandParameters">The command parameters.</param>
         public static IDbCommand FillCommand(this IDbCommand command,
                                              string commandText,
                                              DatabaseCommandType commandType,
@@ -82,13 +62,6 @@ namespace CrossCutting.Data.Sql.Extensions
             => command.FillCommand(commandText, commandType, commandParameters)
                       .FindOne(mapFunction);
 
-        /// <summary>Finds multiple entities using a data reader.</summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="command">The command.</param>
-        /// <param name="commandText">The command text.</param>
-        /// <param name="commandType">Type of the command.</param>
-        /// <param name="mapFunction">The map function.</param>
-        /// <param name="commandParameters">The command parameters.</param>
         public static IReadOnlyCollection<T> FindMany<T>(this IDbCommand command,
                                                          string commandText,
                                                          DatabaseCommandType commandType,
