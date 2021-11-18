@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Abstractions.Extensions;
 using CrossCutting.Data.Core;
-using Moq;
 
 namespace CrossCutting.Data.Sql.Tests.Repositories
 {
@@ -39,6 +38,9 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
 
         // for test purposes only. normally you would add arguments here (request/query)
         public IPagedResult<TestEntity> FindPaged()
-            => _retriever.FindPaged(new Mock<IDatabaseCommand>().Object, new Mock<IDatabaseCommand>().Object, 0, 10);
+            => _retriever.FindPaged(new PagedDatabaseCommand(new SqlDatabaseCommand("SELECT TOP 10 * FROM MyTable WHERE ...", DatabaseCommandType.Text, DatabaseOperation.Select),
+                                                             new SqlDatabaseCommand("SELECT COUNT(*) FROM MyTable WHERE ...", DatabaseCommandType.Text, DatabaseOperation.Select),
+                                                             0,
+                                                             10));
     }
 }

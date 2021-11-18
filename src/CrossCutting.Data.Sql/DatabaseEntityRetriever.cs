@@ -26,7 +26,7 @@ namespace CrossCutting.Data.Sql
         public IReadOnlyCollection<T> FindMany(IDatabaseCommand command)
             => Find(cmd => cmd.FindMany(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters).ToList());
 
-        public IPagedResult<T> FindPaged(IDatabaseCommand dataCommand, IDatabaseCommand recordCountCommand, int offset, int pageSize)
+        public IPagedResult<T> FindPaged(IPagedDatabaseCommand command)
         {
             var returnValue = default(IPagedResult<T>);
 
@@ -35,14 +35,14 @@ namespace CrossCutting.Data.Sql
             {
                 using (var countCommand = _connection.CreateCommand())
                 {
-                    countCommand.FillCommand(recordCountCommand.CommandText, recordCountCommand.CommandType, recordCountCommand.CommandParameters);
+                    countCommand.FillCommand(command.RecordCountCommand.CommandText, command.RecordCountCommand.CommandType, command.RecordCountCommand.CommandParameters);
                     var totalRecordCount = (int)countCommand.ExecuteScalar();
                     returnValue = new PagedResult<T>
                     (
-                        cmd.FindMany(dataCommand.CommandText, dataCommand.CommandType, _mapper.Map, dataCommand.CommandParameters).ToList(),
+                        cmd.FindMany(command.DataCommand.CommandText, command.DataCommand.CommandType, _mapper.Map, command.DataCommand.CommandParameters).ToList(),
                         totalRecordCount,
-                        offset,
-                        pageSize
+                        command.Offset,
+                        command.PageSize
                     );
                 }
             }

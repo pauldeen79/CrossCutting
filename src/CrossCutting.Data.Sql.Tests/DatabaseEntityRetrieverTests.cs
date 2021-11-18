@@ -80,12 +80,13 @@ namespace CrossCutting.Data.Sql.Tests
             });
             Connection.AddResultForScalarCommand(1);
             InitializeMapper();
+            var command = new PagedDatabaseCommand(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text),
+                                                   new SqlDatabaseCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text),
+                                                   20,
+                                                   10);
 
             // Act
-            var actual = Sut.FindPaged(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text),
-                                       new SqlDatabaseCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text),
-                                       20,
-                                       10);
+            var actual = Sut.FindPaged(command);
 
             // Assert
             actual.Should().NotBeNull().And.HaveCount(2);

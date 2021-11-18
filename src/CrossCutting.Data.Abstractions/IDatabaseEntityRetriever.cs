@@ -6,9 +6,6 @@ namespace CrossCutting.Data.Abstractions
     {
         T? FindOne(IDatabaseCommand command);
         IReadOnlyCollection<T> FindMany(IDatabaseCommand command);
-        IPagedResult<T> FindPaged(IDatabaseCommand dataCommand,
-                                  IDatabaseCommand recordCountCommand,
-                                  int offset,
-                                  int pageSize);
+        IPagedResult<T> FindPaged(IPagedDatabaseCommand command);
     }
 }
