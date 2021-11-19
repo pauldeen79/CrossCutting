@@ -397,6 +397,17 @@ namespace CrossCutting.Data.Sql.Extensions
             => instance.Invoke(columnName, skipUnknownColumn, valueWhenDBNull, true, false, (reader, ordinal) => reader.GetString(ordinal));
 
         /// <summary>
+        /// Gets the (optional) nullable string value.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="valueWhenDBNull">The value to use when the database value is DBNull.Value.</param>
+        /// <param name="skipUnknownColumn"></param>
+        /// <exception cref="ArgumentOutOfRangeException">columnName</exception>
+        public static string? GetNullableString(this IDataReader instance, string columnName, string? valueWhenDBNull, bool skipUnknownColumn = false)
+            => instance.Invoke(columnName, skipUnknownColumn, valueWhenDBNull, true, false, (reader, ordinal) => reader.GetString(ordinal));
+
+        /// <summary>
         /// Gets the byte array.
         /// </summary>
         /// <param name="instance">The instance.</param>
