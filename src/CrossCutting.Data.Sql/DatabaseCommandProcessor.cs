@@ -7,12 +7,23 @@ using CrossCutting.Data.Sql.Extensions;
 
 namespace CrossCutting.Data.Sql
 {
-    public class DatabaseCommandProcessor<T> : IDatabaseCommandProcessor<T> where T : class
+    public class DatabaseCommandProcessor<TEntity> : DatabaseCommandProcessor<TEntity, TEntity>
+        where TEntity : class
+    {
+        public DatabaseCommandProcessor(IDbConnection connection, IDatabaseCommandEntityProvider<TEntity, TEntity> provider)
+            : base(connection, provider)
+        {
+        }
+    }
+
+    public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProcessor<TEntity>
+        where TEntity : class
+        where TBuilder : class
     {
         private readonly IDbConnection _connection;
-        private readonly IDatabaseCommandEntityProvider<T> _provider;
+        private readonly IDatabaseCommandEntityProvider<TEntity, TBuilder> _provider;
 
-        public DatabaseCommandProcessor(IDbConnection connection, IDatabaseCommandEntityProvider<T> provider)
+        public DatabaseCommandProcessor(IDbConnection connection, IDatabaseCommandEntityProvider<TEntity, TBuilder> provider)
         {
             _connection = connection;
             _provider = provider;
@@ -24,12 +35,26 @@ namespace CrossCutting.Data.Sql
         public object ExecuteScalar(IDatabaseCommand command)
             => InvokeCommand(command, cmd => cmd.ExecuteScalar());
 
-        public IDatabaseCommandResult<T> InvokeCommand(T instance, DatabaseOperation operation)
+        public IDatabaseCommandResult<TEntity> InvokeCommand(TEntity instance, DatabaseOperation operation)
         {
-            var command = _provider.CommandDelegate.Invoke(instance, operation);
+            var builder = _provider.CreateBuilderDelegate != null
+                ? _provider.CreateBuilderDelegate.Invoke(instance)
+                : default;
+
+            if (builder == null && instance is TBuilder x)
+            {
+                builder = x;
+            }
+
+            if (builder == null)
+            {
+                throw new InvalidOperationException("Builder instance was not constructed, create builder delegate should deliver an instance");
+            }
+
+            var command = _provider.CommandDelegate.Invoke(builder, operation);
             var resultEntity = _provider.ResultEntityDelegate == null
-                ? instance
-                : _provider.ResultEntityDelegate.Invoke(instance, operation);
+                ? builder
+                : _provider.ResultEntityDelegate.Invoke(builder, operation);
 
             if (resultEntity == null)
             {
@@ -66,13 +91,28 @@ namespace CrossCutting.Data.Sql
             }
         }
 
-        private IDatabaseCommandResult<T> ExecuteNonQuery(IDbCommand cmd, T result)
-            => new DatabaseCommandResult<T>(cmd.ExecuteNonQuery() != 0, result);
+        private IDatabaseCommandResult<TEntity> ExecuteNonQuery(IDbCommand cmd, TBuilder result)
+            => new DatabaseCommandResult<TEntity>(cmd.ExecuteNonQuery() != 0, CreateEntityFromBuilder(result));
 
-        private IDatabaseCommandResult<T> ExecuteReader(IDbCommand cmd,
-                                                        DatabaseOperation operation,
-                                                        Func<T, DatabaseOperation, IDataReader, T> afterReadDelegate,
-                                                        T resultEntity)
+        private TEntity CreateEntityFromBuilder(TBuilder result)
+        {
+            if (_provider.CreateEntityDelegate != null)
+            {
+                return _provider.CreateEntityDelegate.Invoke(result);
+            }
+
+            if (result is TEntity x)
+            {
+                return x;
+            }
+
+            throw new InvalidOperationException($"Could not cast type [{result.GetType().FullName}] to [{typeof(TEntity).FullName}]");
+        }
+
+        private IDatabaseCommandResult<TEntity> ExecuteReader(IDbCommand cmd,
+                                                              DatabaseOperation operation,
+                                                              Func<TBuilder, DatabaseOperation, IDataReader, TBuilder> afterReadDelegate,
+                                                              TBuilder resultEntity)
         {
             var success = false;
             using (var reader = cmd.ExecuteReader())
@@ -86,7 +126,7 @@ namespace CrossCutting.Data.Sql
                 }
             }
 
-            return new DatabaseCommandResult<T>(success, resultEntity);
+            return new DatabaseCommandResult<TEntity>(success, CreateEntityFromBuilder(resultEntity));
         }
 
         private static void Nothing()

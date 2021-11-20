@@ -19,7 +19,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var sut = new TestEntityDatabaseCommandEntityProvider();
-            var entity = new TestEntity("", "", "");
+            var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
             // Act
             var actual = sut.CommandDelegate.Invoke(entity, operation);
@@ -35,7 +35,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var sut = new TestEntityDatabaseCommandEntityProvider();
-            var entity = new TestEntity("", "", "");
+            var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
             // Act
             sut.Invoking(x => x.CommandDelegate.Invoke(entity, operation))
@@ -51,7 +51,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var sut = new TestEntityDatabaseCommandEntityProvider();
-            var entity = new TestEntity("", "", "");
+            var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
             // Act
             sut.ResultEntityDelegate.Should().NotBeNull();
@@ -71,7 +71,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var sut = new TestEntityDatabaseCommandEntityProvider();
-            var entity = new TestEntity("", "", "");
+            var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
             // Act
             sut.ResultEntityDelegate.Should().NotBeNull();
@@ -91,7 +91,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var sut = new TestEntityDatabaseCommandEntityProvider();
-            var entity = new TestEntity("", "", "");
+            var entity = new TestEntityBuilder(new TestEntity("", "", ""));
             var readerMock = new Mock<IDataReader>();
             readerMock.SetupGet(x => x.FieldCount).Returns(3);
             readerMock.Setup(x => x.GetName(It.IsAny<int>())).Returns<int>(index =>
@@ -161,7 +161,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var sut = new TestEntityDatabaseCommandEntityProvider();
-            var entity = new TestEntity("", "", "");
+            var entity = new TestEntityBuilder(new TestEntity("", "", ""));
             var readerMock = new Mock<IDataReader>();
 
             // Act
@@ -171,6 +171,48 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
                 sut.Invoking(x => x.AfterReadDelegate?.Invoke(entity, operation, readerMock.Object))
                    .Should().Throw<ArgumentOutOfRangeException>()
                    .And.ParamName.Should().Be("operation");
+            }
+        }
+
+        [Fact]
+        public void CreateBuilderDelegate_Creates_Builder_From_Entity()
+        {
+            // Arrange
+            var sut = new TestEntityDatabaseCommandEntityProvider();
+            var entity = new TestEntity("A", "B", "C", true);
+
+            // Act
+            sut.CreateBuilderDelegate.Should().NotBeNull();
+            if (sut.CreateBuilderDelegate != null)
+            {
+                var actual = sut.CreateBuilderDelegate.Invoke(entity);
+
+                // Assert
+                actual.Should().NotBeNull();
+                actual.Code.Should().Be(entity.Code);
+                actual.CodeType.Should().Be(entity.CodeType);
+                actual.Description.Should().Be(entity.Description);
+            }
+        }
+
+        [Fact]
+        public void CreateEntityDelegate_Creates_Entity_From_Builder()
+        {
+            // Arrange
+            var sut = new TestEntityDatabaseCommandEntityProvider();
+            var builder = new TestEntityBuilder(new TestEntity("A", "B", "C", true));
+
+            // Act
+            sut.CreateEntityDelegate.Should().NotBeNull();
+            if (sut.CreateEntityDelegate != null)
+            {
+                var actual = sut.CreateEntityDelegate.Invoke(builder);
+
+                // Assert
+                actual.Should().NotBeNull();
+                actual.Code.Should().Be(builder.Code);
+                actual.CodeType.Should().Be(builder.CodeType);
+                actual.Description.Should().Be(builder.Description);
             }
         }
     }
