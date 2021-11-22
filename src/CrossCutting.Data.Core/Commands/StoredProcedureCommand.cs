@@ -7,7 +7,7 @@ namespace CrossCutting.Data.Core.Commands
     {
         public StoredProcedureCommand(string commandText,
                                       T instance,
-                                      Func<T, object> commandParametersDelegate)
+                                      Func<T, object?>? commandParametersDelegate)
             : this(commandText, instance, DatabaseOperation.Unspecified, commandParametersDelegate)
         {
         }
@@ -15,7 +15,7 @@ namespace CrossCutting.Data.Core.Commands
         public StoredProcedureCommand(string commandText,
                                       T instance,
                                       DatabaseOperation operation,
-                                      Func<T, object> commandParametersDelegate)
+                                      Func<T, object?>? commandParametersDelegate)
             : base(commandText, DatabaseCommandType.StoredProcedure, instance, operation, commandParametersDelegate)
         {
         }
