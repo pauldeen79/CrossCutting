@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core;
+using CrossCutting.Data.Core.Commands;
 using CrossCutting.Data.Sql.Extensions;
 
 namespace CrossCutting.Data.Sql.Tests.Repositories

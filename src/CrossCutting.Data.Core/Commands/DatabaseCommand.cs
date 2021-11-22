@@ -1,7 +1,7 @@
 ﻿using System;
 using CrossCutting.Data.Abstractions;
 
-namespace CrossCutting.Data.Core
+namespace CrossCutting.Data.Core.Commands
 {
     public class DatabaseCommand<T> : IDatabaseCommand
     {

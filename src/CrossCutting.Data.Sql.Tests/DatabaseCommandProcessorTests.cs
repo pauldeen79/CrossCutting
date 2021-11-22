@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Abstractions.Extensions;
 using CrossCutting.Data.Core;
+using CrossCutting.Data.Core.Commands;
 using CrossCutting.Data.Sql.Tests.Repositories;
 using FluentAssertions;
 using Moq;

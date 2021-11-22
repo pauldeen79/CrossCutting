@@ -3,7 +3,7 @@
 namespace CrossCutting.Data.Sql.Tests.Repositories
 {
     [ExcludeFromCodeCoverage]
-    public class TestEntity
+    public record TestEntity
     {
         public bool IsExistingEntity { get; }
         public string Code { get; }

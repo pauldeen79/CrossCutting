@@ -12,9 +12,9 @@ namespace CrossCutting.Data.Sql
         where T : class
     {
         private readonly IDbConnection _connection;
-        private readonly IDataReaderMapper<T> _mapper;
+        private readonly IDatabaseEntityMapper<T> _mapper;
 
-        public DatabaseEntityRetriever(IDbConnection connection, IDataReaderMapper<T> mapper)
+        public DatabaseEntityRetriever(IDbConnection connection, IDatabaseEntityMapper<T> mapper)
         {
             _connection = connection;
             _mapper = mapper;

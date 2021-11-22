@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Data.Abstractions;
+using CrossCutting.Data.Core.Commands;
 using FluentAssertions;
 using Xunit;
 
-namespace CrossCutting.Data.Core.Tests
+namespace CrossCutting.Data.Core.Tests.Commands
 {
     [ExcludeFromCodeCoverage]
     public class DatabaseCommandTests

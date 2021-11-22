@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CrossCutting.Common.Extensions;
 using CrossCutting.Data.Abstractions;
+using CrossCutting.Data.Core.Commands;
 
 namespace CrossCutting.Data.Core.Builders
 {
