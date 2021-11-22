@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CrossCutting.Common.Extensions;
 using CrossCutting.Data.Abstractions;
 
 namespace CrossCutting.Data.Core.Builders
@@ -137,6 +138,15 @@ namespace CrossCutting.Data.Core.Builders
         public SelectCommandBuilder AppendParameter(string key, object value)
         {
             CommandParameters.Add(key, value);
+            return this;
+        }
+
+        public SelectCommandBuilder AppendParameters(object parameters)
+        {
+            foreach (var param in parameters.ToExpandoObject())
+            {
+                CommandParameters.Add(param.Key, param.Value);
+            }
             return this;
         }
 
