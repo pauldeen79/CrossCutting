@@ -6,12 +6,12 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
     [ExcludeFromCodeCoverage]
     public class TestEntityDatabaseEntityRetrieverSettings : IDatabaseEntityRetrieverSettings
     {
-        public string TableName => throw new System.NotImplementedException();
+        public string TableName => "MyTable";
 
-        public string Fields => throw new System.NotImplementedException();
+        public string Fields => "Field1, Field2, Field3";
 
-        public string DefaultOrderBy => throw new System.NotImplementedException();
+        public string DefaultOrderBy => string.Empty;
 
-        public string DefaultWhere => throw new System.NotImplementedException();
+        public string DefaultWhere => string.Empty;
     }
 }

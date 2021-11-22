@@ -14,61 +14,73 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         private TestRepository Sut { get; }
         private Mock<IDatabaseCommandProcessor<TestEntity>> CommandProcessorMock { get; }
         private Mock<IDatabaseEntityRetriever<TestEntity>> EntityRetrieverMock { get; }
-        private Mock<IDatabaseCommandProvider<TestEntityIdentity>> CommandProviderMock { get; }
+        private Mock<IDatabaseCommandProvider<TestEntityIdentity>> IdentityCommandProviderMock { get; }
+        private Mock<IDatabaseCommandProvider<TestEntity>> EntityCommandProviderMock { get; }
 
         public TestRespositoryTests()
         {
             CommandProcessorMock = new Mock<IDatabaseCommandProcessor<TestEntity>>();
             EntityRetrieverMock = new Mock<IDatabaseEntityRetriever<TestEntity>>();
-            CommandProviderMock = new Mock<IDatabaseCommandProvider<TestEntityIdentity>>();
+            IdentityCommandProviderMock = new Mock<IDatabaseCommandProvider<TestEntityIdentity>>();
+            EntityCommandProviderMock = new Mock<IDatabaseCommandProvider<TestEntity>>();
             Sut = new TestRepository(CommandProcessorMock.Object,
                                      EntityRetrieverMock.Object,
-                                     CommandProviderMock.Object);
+                                     IdentityCommandProviderMock.Object,
+                                     EntityCommandProviderMock.Object);
         }
 
         [Fact]
         public void Can_Add_Entity_To_Repository()
         {
             // Arrange
-            var input = new TestEntity("01", "Test", "first entity", false);
-            CommandProcessorMock.Setup(x => x.InvokeCommand(input, DatabaseOperation.Insert)).Returns(new DatabaseCommandResult<TestEntity>(input));
+            var commandMock = new Mock<IDatabaseCommand>();
+            commandMock.SetupGet(x => x.Operation).Returns(DatabaseOperation.Insert);
+            var entity = new TestEntity("01", "Test", "first entity", false);
+            CommandProcessorMock.Setup(x => x.ExecuteCommand(commandMock.Object, entity)).Returns(new DatabaseCommandResult<TestEntity>(entity));
+            EntityCommandProviderMock.Setup(x => x.Create(It.IsAny<TestEntity>(), DatabaseOperation.Insert)).Returns(commandMock.Object);
 
             // Act
-            var result = Sut.Add(input);
+            var result = Sut.Add(entity);
 
             // Assert
-            result.Should().Be(input);
-            CommandProcessorMock.Verify(x => x.InvokeCommand(input, DatabaseOperation.Insert), Times.Once);
+            result.Should().Be(entity);
+            CommandProcessorMock.Verify(x => x.ExecuteCommand(commandMock.Object, entity), Times.Once);
         }
 
         [Fact]
         public void Can_Update_Entity_To_Repository()
         {
             // Arrange
-            var input = new TestEntity("01", "Test", "first entity", true);
-            CommandProcessorMock.Setup(x => x.InvokeCommand(input, DatabaseOperation.Update)).Returns(new DatabaseCommandResult<TestEntity>(input));
+            var entity = new TestEntity("01", "Test", "first entity", true);
+            var commandMock = new Mock<IDatabaseCommand>();
+            commandMock.SetupGet(x => x.Operation).Returns(DatabaseOperation.Update);
+            CommandProcessorMock.Setup(x => x.ExecuteCommand(commandMock.Object, entity)).Returns(new DatabaseCommandResult<TestEntity>(entity));
+            EntityCommandProviderMock.Setup(x => x.Create(It.IsAny<TestEntity>(), DatabaseOperation.Update)).Returns(commandMock.Object);
 
             // Act
-            var result = Sut.Update(input);
+            var result = Sut.Update(entity);
 
             // Assert
-            result.Should().Be(input);
-            CommandProcessorMock.Verify(x => x.InvokeCommand(input, DatabaseOperation.Update), Times.Once);
+            result.Should().Be(entity);
+            CommandProcessorMock.Verify(x => x.ExecuteCommand(commandMock.Object, entity), Times.Once);
         }
 
         [Fact]
         public void Can_Delete_Entity_To_Repository()
         {
             // Arrange
-            var input = new TestEntity("01", "Test", "first entity", true);
-            CommandProcessorMock.Setup(x => x.InvokeCommand(input, DatabaseOperation.Delete)).Returns(new DatabaseCommandResult<TestEntity>(input));
+            var entity = new TestEntity("01", "Test", "first entity", true);
+            var commandMock = new Mock<IDatabaseCommand>();
+            commandMock.SetupGet(x => x.Operation).Returns(DatabaseOperation.Delete);
+            CommandProcessorMock.Setup(x => x.ExecuteCommand(commandMock.Object, entity)).Returns(new DatabaseCommandResult<TestEntity>(entity));
+            EntityCommandProviderMock.Setup(x => x.Create(It.IsAny<TestEntity>(), DatabaseOperation.Delete)).Returns(commandMock.Object);
 
             // Act
-            var result = Sut.Delete(input);
+            var result = Sut.Delete(entity);
 
             // Assert
-            result.Should().Be(input);
-            CommandProcessorMock.Verify(x => x.InvokeCommand(input, DatabaseOperation.Delete), Times.Once);
+            result.Should().Be(entity);
+            CommandProcessorMock.Verify(x => x.ExecuteCommand(commandMock.Object, entity), Times.Once);
         }
 
         [Fact]
@@ -76,7 +88,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var expected = new TestEntity("code", "codeType", "description");
-            CommandProviderMock.Setup(x => x.Create(It.IsAny<TestEntityIdentity>(), DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
+            IdentityCommandProviderMock.Setup(x => x.Create(It.IsAny<TestEntityIdentity>(), DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
             EntityRetrieverMock.Setup(x => x.FindOne(It.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select))).Returns(expected);
 
             // Act
@@ -116,6 +128,22 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
 
             // Assert
             actual.Should().BeSameAs(expected);
+        }
+
+        [Fact]
+        public void Can_FindAll()
+        {
+            // Arrange
+            var expected = new[] { new TestEntity("code", "codeType", "description") };
+            EntityCommandProviderMock.Setup(x => x.Create(DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
+            IdentityCommandProviderMock.Setup(x => x.Create(DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
+            EntityRetrieverMock.Setup(x => x.FindMany(It.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select))).Returns(expected);
+
+            // Act
+            var actual = Sut.FindAll();
+
+            // Assert
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }

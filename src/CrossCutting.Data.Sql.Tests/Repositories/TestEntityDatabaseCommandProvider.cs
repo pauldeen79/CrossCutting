@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core.CommandProviders;
+using CrossCutting.Data.Core.Commands;
 
 namespace CrossCutting.Data.Sql.Tests.Repositories
 {
@@ -14,7 +15,17 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
 
         public IDatabaseCommand Create(TestEntity source, DatabaseOperation operation)
         {
-            throw new NotImplementedException();
+            switch (operation)
+            {
+                case DatabaseOperation.Insert:
+                    return new SqlTextCommand("INSERT INTO...", DatabaseOperation.Insert);
+                case DatabaseOperation.Update:
+                    return new SqlTextCommand("UPDATE...", DatabaseOperation.Update);
+                case DatabaseOperation.Delete:
+                    return new SqlTextCommand("DELETE...", DatabaseOperation.Delete);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(operation), $"Unsupported operation: {operation}");
+            }
         }
     }
 }

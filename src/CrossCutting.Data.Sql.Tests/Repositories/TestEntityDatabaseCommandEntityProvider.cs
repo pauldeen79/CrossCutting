@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core;
 using CrossCutting.Data.Core.Commands;
@@ -8,6 +9,7 @@ using CrossCutting.Data.Sql.Extensions;
 
 namespace CrossCutting.Data.Sql.Tests.Repositories
 {
+    [ExcludeFromCodeCoverage]
     public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>
     {
         public Func<TestEntityBuilder, DatabaseOperation, IDatabaseCommand> CommandDelegate

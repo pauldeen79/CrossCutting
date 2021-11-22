@@ -35,7 +35,7 @@ namespace CrossCutting.Data.Sql
         public object ExecuteScalar(IDatabaseCommand command)
             => InvokeCommand(command, cmd => cmd.ExecuteScalar());
 
-        public IDatabaseCommandResult<TEntity> InvokeCommand(TEntity instance, DatabaseOperation operation)
+        public IDatabaseCommandResult<TEntity> ExecuteCommand(IDatabaseCommand command, TEntity instance)
         {
             var builder = _provider.CreateBuilderDelegate != null
                 ? _provider.CreateBuilderDelegate.Invoke(instance)
@@ -51,10 +51,9 @@ namespace CrossCutting.Data.Sql
                 throw new InvalidOperationException("Builder instance was not constructed, create builder delegate should deliver an instance");
             }
 
-            var command = _provider.CommandDelegate.Invoke(builder, operation);
             var resultEntity = _provider.ResultEntityDelegate == null
                 ? builder
-                : _provider.ResultEntityDelegate.Invoke(builder, operation);
+                : _provider.ResultEntityDelegate.Invoke(builder, command.Operation);
 
             if (resultEntity == null)
             {
@@ -76,7 +75,7 @@ namespace CrossCutting.Data.Sql
                 else
                 {
                     //Use ExecuteReader
-                    return ExecuteReader(cmd, operation, _provider.AfterReadDelegate, resultEntity);
+                    return ExecuteReader(cmd, command.Operation, _provider.AfterReadDelegate, resultEntity);
                 }
             }
         }
