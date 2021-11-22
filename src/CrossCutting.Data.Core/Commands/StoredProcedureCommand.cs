@@ -1,13 +1,13 @@
 ﻿using System;
 using CrossCutting.Data.Abstractions;
 
-namespace CrossCutting.Data.Core
+namespace CrossCutting.Data.Core.Commands
 {
     public class StoredProcedureCommand<T> : DatabaseCommand<T>
     {
         public StoredProcedureCommand(string commandText,
                                       T instance,
-                                      Func<T, object> commandParametersDelegate)
+                                      Func<T, object?>? commandParametersDelegate)
             : this(commandText, instance, DatabaseOperation.Unspecified, commandParametersDelegate)
         {
         }
@@ -15,7 +15,7 @@ namespace CrossCutting.Data.Core
         public StoredProcedureCommand(string commandText,
                                       T instance,
                                       DatabaseOperation operation,
-                                      Func<T, object> commandParametersDelegate)
+                                      Func<T, object?>? commandParametersDelegate)
             : base(commandText, DatabaseCommandType.StoredProcedure, instance, operation, commandParametersDelegate)
         {
         }

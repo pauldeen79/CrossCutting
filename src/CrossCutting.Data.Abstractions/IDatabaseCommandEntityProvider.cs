@@ -11,7 +11,6 @@ namespace CrossCutting.Data.Abstractions
     {
         public Func<TEntity, TBuilder>? CreateBuilderDelegate { get; }
         public Func<TBuilder, TEntity>? CreateEntityDelegate { get; }
-        public Func<TBuilder, DatabaseOperation, IDatabaseCommand> CommandDelegate { get; }
         public Func<TBuilder, DatabaseOperation, TBuilder>? ResultEntityDelegate { get; }
         public Func<TBuilder, DatabaseOperation, IDataReader, TBuilder>? AfterReadDelegate { get; }
     }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core;
+using CrossCutting.Data.Core.Commands;
 using CrossCutting.Data.Sql.Extensions;
 using FluentAssertions;
 using Moq;
@@ -20,12 +21,12 @@ namespace CrossCutting.Data.Sql.Tests
     {
         private DatabaseEntityRetriever<MyEntity> Sut { get; }
         private DbConnection Connection { get; }
-        private Mock<IDataReaderMapper<MyEntity>> MapperMock { get; }
+        private Mock<IDatabaseEntityMapper<MyEntity>> MapperMock { get; }
 
         public DatabaseEntityRetrieverTests()
         {
             Connection = new DbConnection();
-            MapperMock = new Mock<IDataReaderMapper<MyEntity>>();
+            MapperMock = new Mock<IDatabaseEntityMapper<MyEntity>>();
             Sut = new DatabaseEntityRetriever<MyEntity>(Connection, MapperMock.Object);
         }
 

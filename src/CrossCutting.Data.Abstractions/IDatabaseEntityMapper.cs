@@ -2,7 +2,7 @@
 
 namespace CrossCutting.Data.Abstractions
 {
-    public interface IDataReaderMapper<out T>
+    public interface IDatabaseEntityMapper<out T>
     {
         T Map(IDataReader reader);
     }

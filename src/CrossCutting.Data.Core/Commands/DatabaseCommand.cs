@@ -1,17 +1,17 @@
 ﻿using System;
 using CrossCutting.Data.Abstractions;
 
-namespace CrossCutting.Data.Core
+namespace CrossCutting.Data.Core.Commands
 {
     public class DatabaseCommand<T> : IDatabaseCommand
     {
         private readonly T _instance;
-        private readonly Func<T, object?> _commandParametersDelegate;
+        private readonly Func<T, object?>? _commandParametersDelegate;
 
         public DatabaseCommand(string commandText,
-                       DatabaseCommandType commandType,
-                       T instance,
-                       Func<T, object?> commandParametersDelegate)
+                               DatabaseCommandType commandType,
+                               T instance,
+                               Func<T, object?>? commandParametersDelegate)
             : this(commandText, commandType, instance, DatabaseOperation.Unspecified, commandParametersDelegate)
         {
         }
@@ -20,7 +20,7 @@ namespace CrossCutting.Data.Core
                                DatabaseCommandType commandType,
                                T instance,
                                DatabaseOperation operation,
-                               Func<T, object?> commandParametersDelegate)
+                               Func<T, object?>? commandParametersDelegate)
         {
             if (string.IsNullOrEmpty(commandText))
             {

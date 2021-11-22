@@ -6,7 +6,7 @@ using System.Data.Stub.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Abstractions.Extensions;
-using CrossCutting.Data.Core;
+using CrossCutting.Data.Core.Commands;
 using CrossCutting.Data.Sql.Tests.Repositories;
 using FluentAssertions;
 using Moq;
@@ -60,13 +60,13 @@ namespace CrossCutting.Data.Sql.Tests
         public void InvokeCommand_Throws_When_ResultEntityDelegate_Returns_Null()
         {
             // Arrange
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns((_, _) => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert));
+            var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
 #pragma warning disable CS8603 // Possible null reference return.
             ProviderMock.SetupGet(x => x.ResultEntityDelegate).Returns((_, _) => null);
 #pragma warning restore CS8603 // Possible null reference return.
 
             // Act
-            Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "filled" }))
+            Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "filled" }))
                .Should().Throw<InvalidOperationException>()
                .WithMessage("Instance should be supplied, or result entity delegate should deliver an instance");
         }
@@ -75,10 +75,10 @@ namespace CrossCutting.Data.Sql.Tests
         public void InvokeCommand_Does_Not_Throw_When_OperationValidationDelegate_Returns_True()
         {
             // Arrange
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns((_, _) => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert));
+            var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
 
             // Act
-            Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "filled" }))
+            Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "filled" }))
                .Should().NotThrow<InvalidOperationException>();
         }
 
@@ -86,10 +86,10 @@ namespace CrossCutting.Data.Sql.Tests
         public void InvokeCommand_Throws_When_Instance_Validation_Fails()
         {
             // Arrange
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns((_, _) => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert));
+            var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
 
             // Act
-            Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = null }))
+            Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = null }))
                .Should().Throw<ValidationException>()
                .WithMessage("The Property field is required.");
         }
@@ -99,10 +99,10 @@ namespace CrossCutting.Data.Sql.Tests
         {
             // Arrange
             Connection.AddResultForNonQueryCommand(0); // 0 rows affected
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns((_, _) => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert));
+            var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
 
             // Act
-            Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added"))
+            Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added"))
                .Should().Throw<DataException>()
                .WithMessage("MyEntity entity was not added");
         }
@@ -112,10 +112,10 @@ namespace CrossCutting.Data.Sql.Tests
         {
             // Arrange
             Connection.AddResultForNonQueryCommand(1); // 1 row affected
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns((_, _) => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert));
+            var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
 
             // Act
-            Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }))
+            Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "test" }))
                .Should().NotThrow<DataException>();
         }
 
@@ -123,11 +123,11 @@ namespace CrossCutting.Data.Sql.Tests
         public void InvokeCommand_AfterReadDelegate_Throws_When_ExecuteReader_Read_Returns_False()
         {
             // Arrange
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns((_, _) => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert));
+            var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
             ProviderMock.SetupGet(x => x.AfterReadDelegate).Returns(new Func<MyEntity, DatabaseOperation, IDataReader, MyEntity>((x, _, _) => x));
 
             // Act
-            Sut.Invoking(x => x.InvokeCommand(new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added"))
+            Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added"))
                .Should().Throw<DataException>()
                .WithMessage("MyEntity entity was not added");
         }
@@ -137,11 +137,11 @@ namespace CrossCutting.Data.Sql.Tests
         {
             // Arrange
             Connection.AddResultForDataReader(new[] { new MyEntity { Property = "test" } });
-            ProviderMock.SetupGet(x => x.CommandDelegate).Returns((_, _) => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert));
+            var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
             ProviderMock.SetupGet(x => x.AfterReadDelegate).Returns(new Func<MyEntity, DatabaseOperation, IDataReader, MyEntity>((x, _, _) => x));
 
             // Act
-            var actual = Sut.InvokeCommand(new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added");
+            var actual = Sut.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added");
 
             // Assert
             actual.Property.Should().Be("test");
@@ -156,7 +156,7 @@ namespace CrossCutting.Data.Sql.Tests
             var entity = new TestEntity("A", "B", "C", true);
 
             // Act & Assert
-            builderSut.Invoking(x => x.InvokeCommand(entity))
+            builderSut.Invoking(x => x.ExecuteCommand(new Mock<IDatabaseCommand>().Object, entity))
                       .Should().Throw<InvalidOperationException>()
                       .WithMessage("Builder instance was not constructed, create builder delegate should deliver an instance");
         }
@@ -168,13 +168,12 @@ namespace CrossCutting.Data.Sql.Tests
             var builderProviderMock = new Mock<IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>>();
             builderProviderMock.SetupGet(x => x.CreateBuilderDelegate)
                                .Returns(new Func<TestEntity, TestEntityBuilder>(entity => new TestEntityBuilder(entity)));
-            builderProviderMock.SetupGet(x => x.CommandDelegate)
-                               .Returns((_, _) => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert));
+            var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
             var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock.Object);
             var entity = new TestEntity("A", "B", "C", true);
 
             // Act & Assert
-            builderSut.Invoking(x => x.InvokeCommand(entity))
+            builderSut.Invoking(x => x.ExecuteCommand(command, entity))
                       .Should().Throw<InvalidOperationException>()
                       .WithMessage("Could not cast type [CrossCutting.Data.Sql.Tests.Repositories.TestEntityBuilder] to [CrossCutting.Data.Sql.Tests.Repositories.TestEntity]");
         }
@@ -187,15 +186,14 @@ namespace CrossCutting.Data.Sql.Tests
             var builderProviderMock = new Mock<IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>>();
             builderProviderMock.SetupGet(x => x.CreateBuilderDelegate)
                                .Returns(new Func<TestEntity, TestEntityBuilder>(entity => new TestEntityBuilder(entity)));
-            builderProviderMock.SetupGet(x => x.CommandDelegate)
-                               .Returns((_, _) => new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert));
+            var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
             builderProviderMock.SetupGet(x => x.CreateEntityDelegate)
                                .Returns(x => x.Build());
             var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock.Object);
             var entity = new TestEntity("A", "B", "C", true);
 
             // Act
-            var actual = builderSut.InvokeCommand(entity).HandleResult("Something went wrong");
+            var actual = builderSut.ExecuteCommand(command, entity).HandleResult("Something went wrong");
 
             // Assert
             actual.Code.Should().Be(entity.Code);

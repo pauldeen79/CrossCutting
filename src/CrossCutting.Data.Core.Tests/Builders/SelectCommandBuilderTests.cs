@@ -12,7 +12,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
     public class SelectCommandBuilderTests
     {
         [Fact]
-        public void Can_Build_SelectCommand_From_SelectCommandBuilder_With_Where_Clause()
+        public void Can_Build_SelectCommand_From_SelectCommandBuilder_With_Where_Clause_Using_Single_Parameter()
         {
             // Arrange
             var command = new SelectCommandBuilder();
@@ -38,6 +38,32 @@ namespace CrossCutting.Data.Core.Tests.Builders
             }
         }
 
+        [Fact]
+        public void Can_Build_SelectCommand_From_SelectCommandBuilder_With_Where_Clause_Using_Parameters_Object()
+        {
+            // Arrange
+            var command = new SelectCommandBuilder();
+
+            // Act
+            var actual = command
+                .AsText()
+                .From("Table")
+                .Select("Field1, Field2")
+                .Where("Field1 = @field1")
+                .AppendParameters(new { field1 = "some value" })
+                .Build();
+
+            // Assert
+            actual.CommandText.Should().Be("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1");
+            actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+            var parameters = actual.CommandParameters as IDictionary<string, object>;
+            if (parameters != null)
+            {
+                parameters.Should().HaveCount(1);
+                parameters.First().Key.Should().Be("field1");
+                parameters.First().Value.Should().Be("some value");
+            }
+        }
         [Fact]
         public void Can_Build_SelectCommand_From_SelectCommandBuilder_With_And_Clause()
         {

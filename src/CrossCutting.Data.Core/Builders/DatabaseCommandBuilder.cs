@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using CrossCutting.Data.Abstractions;
+using CrossCutting.Data.Core.Commands;
 
 namespace CrossCutting.Data.Core.Builders
 {
