@@ -36,9 +36,9 @@ namespace CrossCutting.Data.Core
             EntityCommandProvider = entityDatabaseCommandProvider;
         }
 
-        protected IDatabaseCommandProcessor<TEntity> CommandProcessor;
-        protected IDatabaseEntityRetriever<TEntity> EntityRetriever;
-        protected IPagedDatabaseCommandProvider<TIdentity> IdentityCommandProvider;
-        protected IDatabaseCommandProvider<TEntity> EntityCommandProvider;
+        protected IDatabaseCommandProcessor<TEntity> CommandProcessor { get; }
+        protected IDatabaseEntityRetriever<TEntity> EntityRetriever { get; }
+        protected IPagedDatabaseCommandProvider<TIdentity> IdentityCommandProvider { get; }
+        protected IDatabaseCommandProvider<TEntity> EntityCommandProvider { get; }
     }
 }

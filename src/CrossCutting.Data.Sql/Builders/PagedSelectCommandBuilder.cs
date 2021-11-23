@@ -12,12 +12,12 @@ namespace CrossCutting.Data.Sql.Builders
     {
         public DatabaseCommandType CommandType { get; set; }
         public IDictionary<string, object> CommandParameters { get; set; }
-        private readonly StringBuilder _selectBuilder;
-        private readonly StringBuilder _fromBuilder;
-        private readonly StringBuilder _whereBuilder;
-        private readonly StringBuilder _orderByBuilder;
-        private readonly StringBuilder _groupByBuilder;
-        private readonly StringBuilder _havingBuilder;
+        private StringBuilder SelectBuilder { get; }
+        private StringBuilder FromBuilder { get; }
+        private StringBuilder WhereBuilder { get; }
+        private StringBuilder OrderByBuilder { get; }
+        private StringBuilder GroupByBuilder { get; }
+        private StringBuilder HavingBuilder { get; }
         private bool _distinct;
         private int? _offset;
         private int? _pageSize;
@@ -25,12 +25,12 @@ namespace CrossCutting.Data.Sql.Builders
         public PagedSelectCommandBuilder()
         {
             CommandParameters = new Dictionary<string, object>();
-            _selectBuilder = new StringBuilder();
-            _fromBuilder = new StringBuilder();
-            _whereBuilder = new StringBuilder();
-            _orderByBuilder = new StringBuilder();
-            _groupByBuilder = new StringBuilder();
-            _havingBuilder = new StringBuilder();
+            SelectBuilder = new StringBuilder();
+            FromBuilder = new StringBuilder();
+            WhereBuilder = new StringBuilder();
+            OrderByBuilder = new StringBuilder();
+            GroupByBuilder = new StringBuilder();
+            HavingBuilder = new StringBuilder();
         }
 
         public PagedSelectCommandBuilder Distinct(bool distinct = true)
@@ -48,23 +48,23 @@ namespace CrossCutting.Data.Sql.Builders
 
         public PagedSelectCommandBuilder Select(string value)
         {
-            _selectBuilder.Append(value);
+            SelectBuilder.Append(value);
             return this;
         }
 
         public PagedSelectCommandBuilder From(string value)
         {
-            _fromBuilder.Append(value);
+            FromBuilder.Append(value);
             return this;
         }
 
         public PagedSelectCommandBuilder InnerJoin(string value)
         {
-            if (_fromBuilder.Length == 0)
+            if (FromBuilder.Length == 0)
             {
                 throw new InvalidOperationException("No FROM clause found to add INNER JOIN clause to");
             }
-            _fromBuilder.Append(" INNER JOIN ").Append(value);
+            FromBuilder.Append(" INNER JOIN ").Append(value);
             return this;
         }
 
@@ -82,41 +82,41 @@ namespace CrossCutting.Data.Sql.Builders
 
         public PagedSelectCommandBuilder LeftOuterJoin(string value)
         {
-            if (_fromBuilder.Length == 0)
+            if (FromBuilder.Length == 0)
             {
                 throw new InvalidOperationException("No FROM clause found to add LEFT OUTER JOIN clause to");
             }
-            _fromBuilder.Append(" LEFT OUTER JOIN ").Append(value);
+            FromBuilder.Append(" LEFT OUTER JOIN ").Append(value);
             return this;
         }
 
         public PagedSelectCommandBuilder RightOuterJoin(string value)
         {
-            if (_fromBuilder.Length == 0)
+            if (FromBuilder.Length == 0)
             {
                 throw new InvalidOperationException("No FROM clause found to add RIGHT OUTER JOIN clause to");
             }
-            _fromBuilder.Append(" RIGHT OUTER JOIN ").Append(value);
+            FromBuilder.Append(" RIGHT OUTER JOIN ").Append(value);
             return this;
         }
 
         public PagedSelectCommandBuilder CrossJoin(string value)
         {
-            if (_fromBuilder.Length == 0)
+            if (FromBuilder.Length == 0)
             {
                 throw new InvalidOperationException("No FROM clause found to add CROSS JOIN clause to");
             }
-            _fromBuilder.Append(" CROSS JOIN ").Append(value);
+            FromBuilder.Append(" CROSS JOIN ").Append(value);
             return this;
         }
 
         public PagedSelectCommandBuilder Where(string value)
         {
-            if (_whereBuilder.Length > 0)
+            if (WhereBuilder.Length > 0)
             {
-                _whereBuilder.Append(" AND ");
+                WhereBuilder.Append(" AND ");
             }
-            _whereBuilder.Append(value);
+            WhereBuilder.Append(value);
             return this;
         }
 
@@ -125,29 +125,29 @@ namespace CrossCutting.Data.Sql.Builders
 
         public PagedSelectCommandBuilder Or(string value)
         {
-            if (_whereBuilder.Length == 0)
+            if (WhereBuilder.Length == 0)
             {
                 throw new InvalidOperationException("There is no WHERE clause to combine the current value with");
             }
-            _whereBuilder.Append(" OR ").Append(value);
+            WhereBuilder.Append(" OR ").Append(value);
             return this;
         }
 
         public PagedSelectCommandBuilder OrderBy(string value)
         {
-            _orderByBuilder.Append(value);
+            OrderByBuilder.Append(value);
             return this;
         }
 
         public PagedSelectCommandBuilder GroupBy(string value)
         {
-            _groupByBuilder.Append(value);
+            GroupByBuilder.Append(value);
             return this;
         }
 
         public PagedSelectCommandBuilder Having(string value)
         {
-            _havingBuilder.Append(value);
+            HavingBuilder.Append(value);
             return this;
         }
 
@@ -168,12 +168,12 @@ namespace CrossCutting.Data.Sql.Builders
 
         public PagedSelectCommandBuilder Clear()
         {
-            _selectBuilder.Clear();
-            _fromBuilder.Clear();
-            _whereBuilder.Clear();
-            _orderByBuilder.Clear();
-            _groupByBuilder.Clear();
-            _havingBuilder.Clear();
+            SelectBuilder.Clear();
+            FromBuilder.Clear();
+            WhereBuilder.Clear();
+            OrderByBuilder.Clear();
+            GroupByBuilder.Clear();
+            HavingBuilder.Clear();
             CommandParameters.Clear();
             _distinct = false;
             _offset = null;
@@ -198,22 +198,22 @@ namespace CrossCutting.Data.Sql.Builders
 
         private string BuildSql(bool countOnly)
         {
-            if (_fromBuilder.Length == 0)
+            if (FromBuilder.Length == 0)
             {
                 throw new InvalidOperationException("FROM clause is missing");
             }
 
-            return new StringBuilder().AppendPagingOuterQuery(_selectBuilder, _offset, countOnly)
+            return new StringBuilder().AppendPagingOuterQuery(SelectBuilder, _offset, countOnly)
                 .AppendSelectAndDistinctClause(_distinct, countOnly)
-                .AppendTopClause(_orderByBuilder, _offset, _pageSize, countOnly)
-                .AppendCountOrSelectFields(_selectBuilder, countOnly)
-                .AppendPagingPrefix(_orderByBuilder, _offset, countOnly)
+                .AppendTopClause(OrderByBuilder, _offset, _pageSize, countOnly)
+                .AppendCountOrSelectFields(SelectBuilder, countOnly)
+                .AppendPagingPrefix(OrderByBuilder, _offset, countOnly)
                 .AppendFromClause()
-                .AppendTableName(_fromBuilder)
-                .AppendWhereClause(_whereBuilder, _offset, _pageSize)
-                .AppendGroupByClause(_groupByBuilder)
-                .AppendHavingClause(_havingBuilder)
-                .AppendOrderByClause(_orderByBuilder, _offset, countOnly)
+                .AppendTableName(FromBuilder)
+                .AppendWhereClause(WhereBuilder, _offset, _pageSize)
+                .AppendGroupByClause(GroupByBuilder)
+                .AppendHavingClause(HavingBuilder)
+                .AppendOrderByClause(OrderByBuilder, _offset, countOnly)
                 .AppendPagingSuffix(_offset, _pageSize, countOnly)
                 .ToString();
         }
