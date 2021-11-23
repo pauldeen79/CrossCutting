@@ -23,7 +23,12 @@ namespace CrossCutting.Data.Sql.CommandProviders
                 throw new ArgumentOutOfRangeException(nameof(operation), "Only Select operation is supported");
             }
 
-            return new SelectCommandBuilder().Select(Settings.Fields).From(Settings.TableName).Where(Settings.DefaultWhere).OrderBy(Settings.DefaultOrderBy).Build();
+            return new SelectCommandBuilder()
+                .Select(Settings.Fields)
+                .From(Settings.TableName)
+                .Where(Settings.DefaultWhere)
+                .OrderBy(Settings.DefaultOrderBy)
+                .Build();
         }
 
         public IPagedDatabaseCommand CreatePaged(DatabaseOperation operation, int offset, int pageSize)
@@ -39,17 +44,7 @@ namespace CrossCutting.Data.Sql.CommandProviders
         }
 
         private IDatabaseCommand CreatePagedCommand(int? offset, int? pageSize, bool countOnly)
-        {
-            //if (countOnly)
-            //{
-            //    return new PagedSelectCommandBuilder()
-            //        .Select("COUNT(*)")
-            //        .From(Settings.TableName)
-            //        .Where(Settings.DefaultWhere)
-            //        .Build(countOnly);
-            //}
-            
-            return new PagedSelectCommandBuilder()
+            => new PagedSelectCommandBuilder()
                 .Select(Settings.Fields)
                 .From(Settings.TableName)
                 .Where(Settings.DefaultWhere)
@@ -57,6 +52,5 @@ namespace CrossCutting.Data.Sql.CommandProviders
                 .Offset(offset)
                 .PageSize(pageSize)
                 .Build(countOnly);
-        }
     }
 }
