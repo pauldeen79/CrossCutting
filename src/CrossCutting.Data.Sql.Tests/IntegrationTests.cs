@@ -80,6 +80,50 @@ namespace CrossCutting.Data.Sql.Tests
             actual.IsExistingEntity.Should().BeTrue();
         }
 
+        [Fact]
+        public void Can_Find_Entity_By_Identity()
+        {
+            // Arrange
+            var expectedResult = new TestEntity("A", "B", "C", true);
+            var identity = new TestEntityIdentity(expectedResult);
+            _connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT"), new[] { expectedResult });
+
+            // Act
+            var actual = _repository.Find(identity);
+
+            // Assert
+            actual.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Fact]
+        public void Can_Find_All_Entities()
+        {
+            // Arrange
+            var expectedResult = new[] { new TestEntity("A", "B", "C", true) };
+            _connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT"), expectedResult);
+
+            // Act
+            var actual = _repository.FindAll();
+
+            // Assert
+            actual.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Fact]
+        public void Can_Find_All_Entities_Paged()
+        {
+            // Arrange
+            var expectedResult = new[] { new TestEntity("A", "B", "C", true) };
+            _connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT"), expectedResult);
+            _connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("SELECT COUNT(*)"), 1);
+
+            // Act
+            var actual = _repository.FindAllPaged(0, 1);
+
+            // Assert
+            actual.Should().BeEquivalentTo(expectedResult);
+        }
+
         public void Dispose()
         {
             _connection.Dispose();

@@ -14,14 +14,14 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         private TestRepository Sut { get; }
         private Mock<IDatabaseCommandProcessor<TestEntity>> CommandProcessorMock { get; }
         private Mock<IDatabaseEntityRetriever<TestEntity>> EntityRetrieverMock { get; }
-        private Mock<IDatabaseCommandProvider<TestEntityIdentity>> IdentityCommandProviderMock { get; }
+        private Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>> IdentityCommandProviderMock { get; }
         private Mock<IDatabaseCommandProvider<TestEntity>> EntityCommandProviderMock { get; }
 
         public TestRespositoryTests()
         {
             CommandProcessorMock = new Mock<IDatabaseCommandProcessor<TestEntity>>();
             EntityRetrieverMock = new Mock<IDatabaseEntityRetriever<TestEntity>>();
-            IdentityCommandProviderMock = new Mock<IDatabaseCommandProvider<TestEntityIdentity>>();
+            IdentityCommandProviderMock = new Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>>();
             EntityCommandProviderMock = new Mock<IDatabaseCommandProvider<TestEntity>>();
             Sut = new TestRepository(CommandProcessorMock.Object,
                                      EntityRetrieverMock.Object,
@@ -141,6 +141,22 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
 
             // Act
             var actual = Sut.FindAll();
+
+            // Assert
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void Can_FindAll_Paged()
+        {
+            // Arrange
+            var expected = new PagedResult<TestEntity>(new[] { new TestEntity("code", "codeType", "description") }, 10, 1, 10);
+            EntityCommandProviderMock.Setup(x => x.Create(DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
+            IdentityCommandProviderMock.Setup(x => x.CreatePaged(DatabaseOperation.Select, 1, 10)).Returns(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10));
+            EntityRetrieverMock.Setup(x => x.FindPaged(It.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select))).Returns(expected);
+
+            // Act
+            var actual = Sut.FindAllPaged(1, 10);
 
             // Assert
             actual.Should().BeEquivalentTo(expected);
