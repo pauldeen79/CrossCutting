@@ -11,7 +11,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
     {
         public TestRepository(IDatabaseCommandProcessor<TestEntity> databaseCommandProcessor,
                               IDatabaseEntityRetriever<TestEntity> entityRetriever,
-                              IDatabaseCommandProvider<TestEntityIdentity> identityDatabaseCommandProvider,
+                              IPagedDatabaseCommandProvider<TestEntityIdentity> identityDatabaseCommandProvider,
                               IDatabaseCommandProvider<TestEntity> entityDatabaseCommandProvider)
             : base(databaseCommandProcessor, entityRetriever, identityDatabaseCommandProvider, entityDatabaseCommandProvider)
         {

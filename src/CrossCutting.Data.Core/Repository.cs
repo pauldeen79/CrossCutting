@@ -22,9 +22,12 @@ namespace CrossCutting.Data.Core
         public IReadOnlyCollection<TEntity> FindAll()
             => EntityRetriever.FindMany(IdentityCommandProvider.Create(DatabaseOperation.Select));
 
+        public IPagedResult<TEntity> FindAllPaged(int offset, int pageSize)
+            => EntityRetriever.FindPaged(IdentityCommandProvider.CreatePaged(DatabaseOperation.Select, offset, pageSize));
+
         public Repository(IDatabaseCommandProcessor<TEntity> databaseCommandProcessor,
                           IDatabaseEntityRetriever<TEntity> entityRetriever,
-                          IDatabaseCommandProvider<TIdentity> identityDatabaseCommandProvider,
+                          IPagedDatabaseCommandProvider<TIdentity> identityDatabaseCommandProvider,
                           IDatabaseCommandProvider<TEntity> entityDatabaseCommandProvider)
         {
             CommandProcessor = databaseCommandProcessor;
@@ -35,7 +38,7 @@ namespace CrossCutting.Data.Core
 
         protected IDatabaseCommandProcessor<TEntity> CommandProcessor;
         protected IDatabaseEntityRetriever<TEntity> EntityRetriever;
-        protected IDatabaseCommandProvider<TIdentity> IdentityCommandProvider;
+        protected IPagedDatabaseCommandProvider<TIdentity> IdentityCommandProvider;
         protected IDatabaseCommandProvider<TEntity> EntityCommandProvider;
     }
 }
