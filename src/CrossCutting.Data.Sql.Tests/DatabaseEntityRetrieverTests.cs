@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using CrossCutting.Data.Abstractions;
-using CrossCutting.Data.Core;
 using CrossCutting.Data.Core.Commands;
 using CrossCutting.Data.Sql.Extensions;
 using FluentAssertions;

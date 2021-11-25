@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using AutoFixture;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core;
 using CrossCutting.Data.Core.Commands;
@@ -9,28 +10,13 @@ using Xunit;
 namespace CrossCutting.Data.Sql.Tests.Repositories
 {
     [ExcludeFromCodeCoverage]
-    public class TestRespositoryTests
+    public class TestRespositoryTests : TestBase<TestRepository>
     {
-        private TestRepository Sut { get; }
-        private Mock<IDatabaseCommandProcessor<TestEntity>> CommandProcessorMock { get; }
-        private Mock<IDatabaseEntityRetriever<TestEntity>> EntityRetrieverMock { get; }
-        private Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>> IdentityCommandProviderMock { get; }
-        private Mock<IPagedDatabaseCommandProvider> GenericDatabaseCommandProviderMock { get; }
-        private Mock<IDatabaseCommandProvider<TestEntity>> EntityCommandProviderMock { get; }
-
-        public TestRespositoryTests()
-        {
-            CommandProcessorMock = new Mock<IDatabaseCommandProcessor<TestEntity>>();
-            EntityRetrieverMock = new Mock<IDatabaseEntityRetriever<TestEntity>>();
-            IdentityCommandProviderMock = new Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>>();
-            GenericDatabaseCommandProviderMock = new Mock<IPagedDatabaseCommandProvider>();
-            EntityCommandProviderMock = new Mock<IDatabaseCommandProvider<TestEntity>>();
-            Sut = new TestRepository(CommandProcessorMock.Object,
-                                     EntityRetrieverMock.Object,
-                                     IdentityCommandProviderMock.Object,
-                                     GenericDatabaseCommandProviderMock.Object,
-                                     EntityCommandProviderMock.Object);
-        }
+        private Mock<IDatabaseCommandProcessor<TestEntity>> CommandProcessorMock => Fixture.Freeze<Mock<IDatabaseCommandProcessor<TestEntity>>>();
+        private Mock<IDatabaseEntityRetriever<TestEntity>> EntityRetrieverMock => Fixture.Freeze<Mock<IDatabaseEntityRetriever<TestEntity>>>();
+        private Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>> IdentityCommandProviderMock => Fixture.Freeze<Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>>>();
+        private Mock<IPagedDatabaseCommandProvider> GenericDatabaseCommandProviderMock => Fixture.Freeze<Mock<IPagedDatabaseCommandProvider>>();
+        private Mock<IDatabaseCommandProvider<TestEntity>> EntityCommandProviderMock => Fixture.Freeze<Mock<IDatabaseCommandProvider<TestEntity>>>();
 
         [Fact]
         public void Can_Add_Entity_To_Repository()
@@ -73,7 +59,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var entity = new TestEntity("01", "Test", "first entity", true);
-            var commandMock = new Mock<IDatabaseCommand>();
+            var commandMock = Fixture.Freeze<Mock<IDatabaseCommand>>();
             commandMock.SetupGet(x => x.Operation).Returns(DatabaseOperation.Delete);
             CommandProcessorMock.Setup(x => x.ExecuteCommand(commandMock.Object, entity)).Returns(new DatabaseCommandResult<TestEntity>(entity));
             EntityCommandProviderMock.Setup(x => x.Create(It.IsAny<TestEntity>(), DatabaseOperation.Delete)).Returns(commandMock.Object);
