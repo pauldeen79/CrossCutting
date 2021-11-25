@@ -21,7 +21,12 @@ namespace CrossCutting.Data.Core.CommandProviders
                 throw new ArgumentOutOfRangeException(nameof(operation), "Only Select operation is supported");
             }
 
-            return new SelectCommandBuilder().Select(Settings.Fields).From(Settings.TableName).Where(Settings.DefaultWhere).OrderBy(Settings.DefaultOrderBy).Build();
+            return new SelectCommandBuilder()
+                .Select(Settings.Fields)
+                .From(Settings.TableName)
+                .Where(Settings.DefaultWhere)
+                .OrderBy(Settings.DefaultOrderBy)
+                .Build();
         }
     }
 }

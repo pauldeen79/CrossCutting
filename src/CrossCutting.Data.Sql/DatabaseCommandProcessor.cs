@@ -37,13 +37,16 @@ namespace CrossCutting.Data.Sql
 
         public IDatabaseCommandResult<TEntity> ExecuteCommand(IDatabaseCommand command, TEntity instance)
         {
-            var builder = _provider.CreateBuilderDelegate != null
-                ? _provider.CreateBuilderDelegate.Invoke(instance)
-                : default;
-
-            if (builder == null && instance is TBuilder x)
+            TBuilder? builder = default;
+            if (instance is TBuilder x)
             {
                 builder = x;
+            }
+            else
+            {
+                builder = _provider.CreateBuilderDelegate != null
+                    ? _provider.CreateBuilderDelegate.Invoke(instance)
+                    : default;
             }
 
             if (builder == null)

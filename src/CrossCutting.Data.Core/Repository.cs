@@ -17,31 +17,31 @@ namespace CrossCutting.Data.Core
             => CommandProcessor.ExecuteCommand(EntityCommandProvider.Create(instance, DatabaseOperation.Delete), instance).HandleResult($"{typeof(TEntity).Name} has not been deleted");
 
         public TEntity? Find(TIdentity identity)
-            => EntityRetriever.FindOne(IdentityCommandProvider.Create(identity, DatabaseOperation.Select));
+            => EntityRetriever.FindOne(IdentitySelectCommandProvider.Create(identity, DatabaseOperation.Select));
 
         public IReadOnlyCollection<TEntity> FindAll()
-            => EntityRetriever.FindMany(GenericCommandProvider.Create(DatabaseOperation.Select));
+            => EntityRetriever.FindMany(EntitySelectCommandProvider.Create(DatabaseOperation.Select));
 
         public IPagedResult<TEntity> FindAllPaged(int offset, int pageSize)
-            => EntityRetriever.FindPaged(GenericCommandProvider.CreatePaged(DatabaseOperation.Select, offset, pageSize));
+            => EntityRetriever.FindPaged(EntitySelectCommandProvider.CreatePaged(DatabaseOperation.Select, offset, pageSize));
 
-        public Repository(IDatabaseCommandProcessor<TEntity> databaseCommandProcessor,
+        public Repository(IDatabaseCommandProcessor<TEntity> commandProcessor,
                           IDatabaseEntityRetriever<TEntity> entityRetriever,
-                          IPagedDatabaseCommandProvider<TIdentity> identityDatabaseCommandProvider,
-                          IPagedDatabaseCommandProvider genericCommandProvider,
-                          IDatabaseCommandProvider<TEntity> entityDatabaseCommandProvider)
+                          IPagedDatabaseCommandProvider<TIdentity> identitySelectCommandProvider,
+                          IPagedDatabaseCommandProvider entitySelectCommandProvider,
+                          IDatabaseCommandProvider<TEntity> entityCommandProvider)
         {
-            CommandProcessor = databaseCommandProcessor;
+            CommandProcessor = commandProcessor;
             EntityRetriever = entityRetriever;
-            IdentityCommandProvider = identityDatabaseCommandProvider;
-            GenericCommandProvider = genericCommandProvider;
-            EntityCommandProvider = entityDatabaseCommandProvider;
+            IdentitySelectCommandProvider = identitySelectCommandProvider;
+            EntitySelectCommandProvider = entitySelectCommandProvider;
+            EntityCommandProvider = entityCommandProvider;
         }
 
         protected IDatabaseCommandProcessor<TEntity> CommandProcessor { get; }
         protected IDatabaseEntityRetriever<TEntity> EntityRetriever { get; }
-        protected IPagedDatabaseCommandProvider<TIdentity> IdentityCommandProvider { get; }
-        protected IPagedDatabaseCommandProvider GenericCommandProvider { get; }
+        protected IPagedDatabaseCommandProvider<TIdentity> IdentitySelectCommandProvider { get; }
+        protected IPagedDatabaseCommandProvider EntitySelectCommandProvider { get; }
         protected IDatabaseCommandProvider<TEntity> EntityCommandProvider { get; }
     }
 }

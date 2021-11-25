@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using AutoFixture;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core.CommandProviders;
 using FluentAssertions;
@@ -9,16 +10,9 @@ using Xunit;
 namespace CrossCutting.Data.Core.Tests.CommandProviders
 {
     [ExcludeFromCodeCoverage]
-    public class SelectDatabaseCommandProviderBaseTests
+    public class SelectDatabaseCommandProviderBaseTests : TestBase<TestSelectDatabaseCommandProvider>
     {
-        private Mock<IDatabaseEntityRetrieverSettings> SettingsMock { get; }
-        private TestSelectDatabaseCommandProvider Sut { get; }
-
-        public SelectDatabaseCommandProviderBaseTests()
-        {
-            SettingsMock = new Mock<IDatabaseEntityRetrieverSettings>();
-            Sut = new TestSelectDatabaseCommandProvider(SettingsMock.Object);
-        }
+        private Mock<IDatabaseEntityRetrieverSettings> SettingsMock => Fixture.Freeze<Mock<IDatabaseEntityRetrieverSettings>>();
 
         [Theory]
         [InlineData(DatabaseOperation.Delete)]
