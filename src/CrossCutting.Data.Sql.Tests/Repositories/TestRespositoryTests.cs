@@ -15,6 +15,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         private Mock<IDatabaseCommandProcessor<TestEntity>> CommandProcessorMock { get; }
         private Mock<IDatabaseEntityRetriever<TestEntity>> EntityRetrieverMock { get; }
         private Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>> IdentityCommandProviderMock { get; }
+        private Mock<IPagedDatabaseCommandProvider> GenericDatabaseCommandProviderMock { get; }
         private Mock<IDatabaseCommandProvider<TestEntity>> EntityCommandProviderMock { get; }
 
         public TestRespositoryTests()
@@ -22,10 +23,12 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             CommandProcessorMock = new Mock<IDatabaseCommandProcessor<TestEntity>>();
             EntityRetrieverMock = new Mock<IDatabaseEntityRetriever<TestEntity>>();
             IdentityCommandProviderMock = new Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>>();
+            GenericDatabaseCommandProviderMock = new Mock<IPagedDatabaseCommandProvider>();
             EntityCommandProviderMock = new Mock<IDatabaseCommandProvider<TestEntity>>();
             Sut = new TestRepository(CommandProcessorMock.Object,
                                      EntityRetrieverMock.Object,
                                      IdentityCommandProviderMock.Object,
+                                     GenericDatabaseCommandProviderMock.Object,
                                      EntityCommandProviderMock.Object);
         }
 
@@ -135,8 +138,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var expected = new[] { new TestEntity("code", "codeType", "description") };
-            EntityCommandProviderMock.Setup(x => x.Create(DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
-            IdentityCommandProviderMock.Setup(x => x.Create(DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
+            GenericDatabaseCommandProviderMock.Setup(x => x.Create(DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
             EntityRetrieverMock.Setup(x => x.FindMany(It.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select))).Returns(expected);
 
             // Act
@@ -151,8 +153,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         {
             // Arrange
             var expected = new PagedResult<TestEntity>(new[] { new TestEntity("code", "codeType", "description") }, 10, 1, 10);
-            EntityCommandProviderMock.Setup(x => x.Create(DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
-            IdentityCommandProviderMock.Setup(x => x.CreatePaged(DatabaseOperation.Select, 1, 10)).Returns(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10));
+            GenericDatabaseCommandProviderMock.Setup(x => x.CreatePaged(DatabaseOperation.Select, 1, 10)).Returns(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10));
             EntityRetrieverMock.Setup(x => x.FindPaged(It.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select))).Returns(expected);
 
             // Act

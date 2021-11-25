@@ -20,25 +20,28 @@ namespace CrossCutting.Data.Core
             => EntityRetriever.FindOne(IdentityCommandProvider.Create(identity, DatabaseOperation.Select));
 
         public IReadOnlyCollection<TEntity> FindAll()
-            => EntityRetriever.FindMany(IdentityCommandProvider.Create(DatabaseOperation.Select));
+            => EntityRetriever.FindMany(GenericCommandProvider.Create(DatabaseOperation.Select));
 
         public IPagedResult<TEntity> FindAllPaged(int offset, int pageSize)
-            => EntityRetriever.FindPaged(IdentityCommandProvider.CreatePaged(DatabaseOperation.Select, offset, pageSize));
+            => EntityRetriever.FindPaged(GenericCommandProvider.CreatePaged(DatabaseOperation.Select, offset, pageSize));
 
         public Repository(IDatabaseCommandProcessor<TEntity> databaseCommandProcessor,
                           IDatabaseEntityRetriever<TEntity> entityRetriever,
                           IPagedDatabaseCommandProvider<TIdentity> identityDatabaseCommandProvider,
+                          IPagedDatabaseCommandProvider genericCommandProvider,
                           IDatabaseCommandProvider<TEntity> entityDatabaseCommandProvider)
         {
             CommandProcessor = databaseCommandProcessor;
             EntityRetriever = entityRetriever;
             IdentityCommandProvider = identityDatabaseCommandProvider;
+            GenericCommandProvider = genericCommandProvider;
             EntityCommandProvider = entityDatabaseCommandProvider;
         }
 
         protected IDatabaseCommandProcessor<TEntity> CommandProcessor { get; }
         protected IDatabaseEntityRetriever<TEntity> EntityRetriever { get; }
         protected IPagedDatabaseCommandProvider<TIdentity> IdentityCommandProvider { get; }
+        protected IPagedDatabaseCommandProvider GenericCommandProvider { get; }
         protected IDatabaseCommandProvider<TEntity> EntityCommandProvider { get; }
     }
 }
