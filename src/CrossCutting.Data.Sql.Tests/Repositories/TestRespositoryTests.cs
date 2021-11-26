@@ -12,7 +12,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
     public class TestRespositoryTests : TestBase<TestRepository>
     {
         private Mock<IDatabaseEntityRetriever<TestEntity>> EntityRetrieverMock => Fixture.Freeze<Mock<IDatabaseEntityRetriever<TestEntity>>>();
-        private Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>> IdentityCommandProviderMock => Fixture.Freeze<Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>>>();
+        private Mock<IDatabaseCommandProvider<TestEntityIdentity>> IdentityCommandProviderMock => Fixture.Freeze<Mock<IDatabaseCommandProvider<TestEntityIdentity>>>();
 
         [Fact]
         public void Can_Find_Entity_Using_Identity()

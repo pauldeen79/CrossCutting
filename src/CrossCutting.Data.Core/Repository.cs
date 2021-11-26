@@ -27,7 +27,7 @@ namespace CrossCutting.Data.Core
 
         public Repository(IDatabaseCommandProcessor<TEntity> commandProcessor,
                           IDatabaseEntityRetriever<TEntity> entityRetriever,
-                          IPagedDatabaseCommandProvider<TIdentity> identitySelectCommandProvider,
+                          IDatabaseCommandProvider<TIdentity> identitySelectCommandProvider,
                           IPagedDatabaseCommandProvider pagedEntitySelectCommandProvider,
                           IDatabaseCommandProvider entitySelectCommandProvider,
                           IDatabaseCommandProvider<TEntity> entityCommandProvider)
@@ -42,7 +42,7 @@ namespace CrossCutting.Data.Core
 
         protected IDatabaseCommandProcessor<TEntity> CommandProcessor { get; }
         protected IDatabaseEntityRetriever<TEntity> EntityRetriever { get; }
-        protected IPagedDatabaseCommandProvider<TIdentity> IdentitySelectCommandProvider { get; }
+        protected IDatabaseCommandProvider<TIdentity> IdentitySelectCommandProvider { get; }
         protected IDatabaseCommandProvider EntitySelectCommandProvider { get; }
         protected IPagedDatabaseCommandProvider PagedEntitySelectCommandProvider { get; }
         protected IDatabaseCommandProvider<TEntity> EntityCommandProvider { get; }

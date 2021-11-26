@@ -14,7 +14,7 @@ namespace CrossCutting.Data.Core.Tests
     {
         private Mock<IDatabaseCommandProcessor<TestEntity>> CommandProcessorMock => Fixture.Freeze<Mock<IDatabaseCommandProcessor<TestEntity>>>();
         private Mock<IDatabaseEntityRetriever<TestEntity>> EntityRetrieverMock => Fixture.Freeze<Mock<IDatabaseEntityRetriever<TestEntity>>>();
-        private Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>> IdentitySelectCommandProviderMock => Fixture.Freeze<Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>>>();
+        private Mock<IDatabaseCommandProvider<TestEntityIdentity>> IdentitySelectCommandProviderMock => Fixture.Freeze<Mock<IDatabaseCommandProvider<TestEntityIdentity>>>();
         private Mock<IDatabaseCommandProvider> EntitySelectCommandProviderMock => Fixture.Freeze<Mock<IDatabaseCommandProvider>>();
         private Mock<IPagedDatabaseCommandProvider> PagedEntitySelectCommandProviderMock => Fixture.Freeze<Mock<IPagedDatabaseCommandProvider>>();
         private Mock<IDatabaseCommandProvider<TestEntity>> EntityCommandProviderMock => Fixture.Freeze<Mock<IDatabaseCommandProvider<TestEntity>>>();
