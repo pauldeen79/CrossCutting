@@ -11,42 +11,13 @@ namespace CrossCutting.Data.Sql.Tests.CommandProviders
     [ExcludeFromCodeCoverage]
     public class PagedSelectDatabaseCommandProviderBaseTests
     {
-        private Mock<IDatabaseEntityRetrieverSettings> SettingsMock { get; }
+        private Mock<IPagedDatabaseEntityRetrieverSettings> SettingsMock { get; }
         private TestPagedSelectDatabaseCommandProvider Sut { get; }
 
         public PagedSelectDatabaseCommandProviderBaseTests()
         {
-            SettingsMock = new Mock<IDatabaseEntityRetrieverSettings>();
+            SettingsMock = new Mock<IPagedDatabaseEntityRetrieverSettings>();
             Sut = new TestPagedSelectDatabaseCommandProvider(SettingsMock.Object);
-        }
-
-        [Theory]
-        [InlineData(DatabaseOperation.Delete)]
-        [InlineData(DatabaseOperation.Insert)]
-        [InlineData(DatabaseOperation.Unspecified)]
-        [InlineData(DatabaseOperation.Update)]
-        public void Create_Throws_On_Unsupported_DatabaseOperation(DatabaseOperation operation)
-        {
-            // Act
-            Sut.Invoking(x => x.Create(operation))
-               .Should().ThrowExactly<ArgumentOutOfRangeException>().And.ParamName.Should().Be("operation");
-        }
-
-        [Fact]
-        public void Create_Returns_Correct_Command_On_Select_DatabaseOperation()
-        {
-            // Arrange
-            const string Sql = "SELECT Id, Active, Field1, Field2, Field3 FROM MyTable WHERE Active = 1 ORDER BY Field1";
-            SettingsMock.SetupGet(x => x.DefaultOrderBy).Returns("Field1");
-            SettingsMock.SetupGet(x => x.DefaultWhere).Returns("Active = 1");
-            SettingsMock.SetupGet(x => x.Fields).Returns("Id, Active, Field1, Field2, Field3");
-            SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
-
-            // Act
-            var actual = Sut.Create(DatabaseOperation.Select);
-
-            // Assert
-            actual.CommandText.Should().Be(Sql);
         }
 
         [Theory]
@@ -116,12 +87,26 @@ namespace CrossCutting.Data.Sql.Tests.CommandProviders
             actual.DataCommand.CommandText.Should().Be(CommandSql);
             actual.RecordCountCommand.CommandText.Should().Be(RecordCountSql);
         }
+
+        [Fact]
+        public void CreatePaged_Limits_PageSize_Based_On_Settings()
+        {
+            // Arrange
+            SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
+            SettingsMock.SetupGet(x => x.OverridePageSize).Returns(100);
+
+            // Act
+            var actual = Sut.CreatePaged(DatabaseOperation.Select, 0, 1000);
+
+            // Assert
+            actual.PageSize.Should().Be(100);
+        }
     }
 
     [ExcludeFromCodeCoverage]
-    public class TestPagedSelectDatabaseCommandProvider : PagedSelectDatabaseCommandProviderBase<IDatabaseEntityRetrieverSettings>
+    public class TestPagedSelectDatabaseCommandProvider : PagedSelectDatabaseCommandProviderBase<IPagedDatabaseEntityRetrieverSettings>
     {
-        public TestPagedSelectDatabaseCommandProvider(IDatabaseEntityRetrieverSettings settings) : base(settings)
+        public TestPagedSelectDatabaseCommandProvider(IPagedDatabaseEntityRetrieverSettings settings) : base(settings)
         {
         }
     }

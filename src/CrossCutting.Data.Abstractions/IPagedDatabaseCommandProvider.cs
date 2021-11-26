@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Data.Abstractions
 {
-    public interface IPagedDatabaseCommandProvider : IDatabaseCommandProvider
+    public interface IPagedDatabaseCommandProvider
     {
         IPagedDatabaseCommand CreatePaged(DatabaseOperation operation, int offset, int pageSize);
     }

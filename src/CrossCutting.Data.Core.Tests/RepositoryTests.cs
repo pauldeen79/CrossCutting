@@ -14,8 +14,9 @@ namespace CrossCutting.Data.Core.Tests
     {
         private Mock<IDatabaseCommandProcessor<TestEntity>> CommandProcessorMock => Fixture.Freeze<Mock<IDatabaseCommandProcessor<TestEntity>>>();
         private Mock<IDatabaseEntityRetriever<TestEntity>> EntityRetrieverMock => Fixture.Freeze<Mock<IDatabaseEntityRetriever<TestEntity>>>();
-        private Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>> IdentityCommandProviderMock => Fixture.Freeze<Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>>>();
-        private Mock<IPagedDatabaseCommandProvider> GenericDatabaseCommandProviderMock => Fixture.Freeze<Mock<IPagedDatabaseCommandProvider>>();
+        private Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>> IdentitySelectCommandProviderMock => Fixture.Freeze<Mock<IPagedDatabaseCommandProvider<TestEntityIdentity>>>();
+        private Mock<IDatabaseCommandProvider> EntitySelectCommandProviderMock => Fixture.Freeze<Mock<IDatabaseCommandProvider>>();
+        private Mock<IPagedDatabaseCommandProvider> PagedEntitySelectCommandProviderMock => Fixture.Freeze<Mock<IPagedDatabaseCommandProvider>>();
         private Mock<IDatabaseCommandProvider<TestEntity>> EntityCommandProviderMock => Fixture.Freeze<Mock<IDatabaseCommandProvider<TestEntity>>>();
 
         [Fact]
@@ -77,7 +78,7 @@ namespace CrossCutting.Data.Core.Tests
         {
             // Arrange
             var expected = new TestEntity("code", "codeType", "description");
-            IdentityCommandProviderMock.Setup(x => x.Create(It.IsAny<TestEntityIdentity>(), DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
+            IdentitySelectCommandProviderMock.Setup(x => x.Create(It.IsAny<TestEntityIdentity>(), DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
             EntityRetrieverMock.Setup(x => x.FindOne(It.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select))).Returns(expected);
 
             // Act
@@ -92,7 +93,7 @@ namespace CrossCutting.Data.Core.Tests
         {
             // Arrange
             var expected = new[] { new TestEntity("code", "codeType", "description") };
-            GenericDatabaseCommandProviderMock.Setup(x => x.Create(DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
+            EntitySelectCommandProviderMock.Setup(x => x.Create(DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
             EntityRetrieverMock.Setup(x => x.FindMany(It.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select))).Returns(expected);
 
             // Act
@@ -107,7 +108,7 @@ namespace CrossCutting.Data.Core.Tests
         {
             // Arrange
             var expected = new PagedResult<TestEntity>(new[] { new TestEntity("code", "codeType", "description") }, 10, 1, 10);
-            GenericDatabaseCommandProviderMock.Setup(x => x.CreatePaged(DatabaseOperation.Select, 1, 10)).Returns(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10));
+            PagedEntitySelectCommandProviderMock.Setup(x => x.CreatePaged(DatabaseOperation.Select, 1, 10)).Returns(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10));
             EntityRetrieverMock.Setup(x => x.FindPaged(It.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select))).Returns(expected);
 
             // Act

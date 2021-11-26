@@ -4,7 +4,7 @@ using CrossCutting.Data.Abstractions;
 namespace CrossCutting.Data.Sql.Tests.Repositories
 {
     [ExcludeFromCodeCoverage]
-    public class TestEntityDatabaseEntityRetrieverSettings : IDatabaseEntityRetrieverSettings
+    public class TestEntityDatabaseEntityRetrieverSettings : IPagedDatabaseEntityRetrieverSettings
     {
         public string TableName => "MyTable";
 
@@ -13,5 +13,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         public string DefaultOrderBy => string.Empty;
 
         public string DefaultWhere => string.Empty;
+
+        public int? OverridePageSize => null;
     }
 }

@@ -1,13 +1,13 @@
 ﻿using System;
 using CrossCutting.Data.Abstractions;
-using CrossCutting.Data.Core.Builders;
 using CrossCutting.Data.Core.Commands;
 using CrossCutting.Data.Sql.Builders;
+using CrossCutting.Data.Sql.Extensions;
 
 namespace CrossCutting.Data.Sql.CommandProviders
 {
     public abstract class PagedSelectDatabaseCommandProviderBase<TSettings> : IPagedDatabaseCommandProvider
-        where TSettings : IDatabaseEntityRetrieverSettings
+        where TSettings : IPagedDatabaseEntityRetrieverSettings
     {
         protected TSettings Settings { get; }
 
@@ -16,21 +16,6 @@ namespace CrossCutting.Data.Sql.CommandProviders
             Settings = settings;
         }
         
-        public IDatabaseCommand Create(DatabaseOperation operation)
-        {
-            if (operation != DatabaseOperation.Select)
-            {
-                throw new ArgumentOutOfRangeException(nameof(operation), "Only Select operation is supported");
-            }
-
-            return new SelectCommandBuilder()
-                .Select(Settings.Fields)
-                .From(Settings.TableName)
-                .Where(Settings.DefaultWhere)
-                .OrderBy(Settings.DefaultOrderBy)
-                .Build();
-        }
-
         public IPagedDatabaseCommand CreatePaged(DatabaseOperation operation, int offset, int pageSize)
         {
             if (operation != DatabaseOperation.Select)
@@ -40,7 +25,7 @@ namespace CrossCutting.Data.Sql.CommandProviders
 
             var dataCommand = CreatePagedCommand(offset, pageSize, false);
             var recordCountCommand = CreatePagedCommand(offset, pageSize, true);
-            return new PagedDatabaseCommand(dataCommand, recordCountCommand, offset, pageSize);
+            return new PagedDatabaseCommand(dataCommand, recordCountCommand, offset, ((int?)pageSize).IfNotGreaterThan(Settings.OverridePageSize));
         }
 
         private IDatabaseCommand CreatePagedCommand(int? offset, int? pageSize, bool countOnly)
@@ -50,7 +35,7 @@ namespace CrossCutting.Data.Sql.CommandProviders
                 .Where(Settings.DefaultWhere)
                 .OrderBy(Settings.DefaultOrderBy)
                 .Offset(offset)
-                .PageSize(pageSize)
+                .PageSize(pageSize.IfNotGreaterThan(Settings.OverridePageSize))
                 .Build(countOnly);
     }
 }

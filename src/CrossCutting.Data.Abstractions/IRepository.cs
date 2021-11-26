@@ -10,5 +10,6 @@ namespace CrossCutting.Data.Abstractions
         TEntity Delete(TEntity instance);
         TEntity? Find(TIdentity identity);
         IReadOnlyCollection<TEntity> FindAll();
+        IPagedResult<TEntity> FindAllPaged(int offset, int pageSize);
     }
 }

@@ -25,7 +25,8 @@ namespace CrossCutting.Data.Sql.Tests
                     new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(_connection, new TestEntityDatabaseCommandEntityProvider()),
                     new DatabaseEntityRetriever<TestEntity>(_connection, _mapper),
                     new TestEntityIdentityDatabaseCommandProvider(),
-                    new TestEntityGenericDatabaseCommandProvider(),
+                    new TestEntityPagedSelectDatabaseCommandProvider(),
+                    new TestEntitySelectDatabaseCommandProvider(),
                     new TestEntityDatabaseCommandProvider()
                 );
         }

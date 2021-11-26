@@ -12,9 +12,10 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         public TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcessor,
                               IDatabaseEntityRetriever<TestEntity> entityRetriever,
                               IPagedDatabaseCommandProvider<TestEntityIdentity> identitySelectCommandProvider,
-                              IPagedDatabaseCommandProvider entitySelectCommandProvider,
+                              IPagedDatabaseCommandProvider pagedEntitySelectCommandProvider,
+                              IDatabaseCommandProvider entitySelectCommandProvider,
                               IDatabaseCommandProvider<TestEntity> entityCommandProvider)
-            : base(commandProcessor, entityRetriever, identitySelectCommandProvider, entitySelectCommandProvider, entityCommandProvider)
+            : base(commandProcessor, entityRetriever, identitySelectCommandProvider, pagedEntitySelectCommandProvider, entitySelectCommandProvider, entityCommandProvider)
         {
         }
 
