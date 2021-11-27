@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core;
+using CrossCutting.Data.Core.Builders;
 using CrossCutting.Data.Core.Commands;
 
 namespace CrossCutting.Data.Sql.Tests.Repositories
@@ -21,11 +22,11 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
 
         // for test purposes only. normally you would add arguments here (request/query)
         public TestEntity? FindOne()
-            => EntityRetriever.FindOne(new SqlDatabaseCommand("SELECT * FROM MyTable WHERE ...", DatabaseCommandType.Text, DatabaseOperation.Select));
+            => EntityRetriever.FindOne(new SelectCommandBuilder().Select("*").Top(1).From("MyTable").Where("Field = Value").Build());
 
         // for test purposes only. normally you would add arguments here (request/query)
         public IReadOnlyCollection<TestEntity> FindMany()
-            => EntityRetriever.FindMany(new SqlDatabaseCommand("SELECT * FROM MyTable WHERE ...", DatabaseCommandType.Text, DatabaseOperation.Select));
+            => EntityRetriever.FindMany(new SelectCommandBuilder().Select("*").From("MyTable").Where("Field = Value").Build());
 
         // for test purposes only. normally you would add arguments here (request/query)
         public IPagedResult<TestEntity> FindPaged()
