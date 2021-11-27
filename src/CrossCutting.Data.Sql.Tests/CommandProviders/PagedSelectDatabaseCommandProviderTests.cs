@@ -10,7 +10,7 @@ using Xunit;
 namespace CrossCutting.Data.Sql.Tests.CommandProviders
 {
     [ExcludeFromCodeCoverage]
-    public class PagedSelectDatabaseCommandProviderBaseTests : TestBase<PagedSelectDatabaseCommandProvider>
+    public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatabaseCommandProvider>
     {
         private Mock<IPagedDatabaseEntityRetrieverSettings> SettingsMock => Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettings>>();
 
@@ -30,7 +30,7 @@ namespace CrossCutting.Data.Sql.Tests.CommandProviders
         public void CreatePaged_Returns_Correct_Command_On_Select_DatabaseOperation_First_Page()
         {
             // Arrange
-            const string CommandSql = "SELECT Id, Active, Field1, Field2, Field3 FROM (SELECT TOP 10 Id, Active, Field1, Field2, Field3, ROW_NUMBER() OVER (ORDER BY Field1) as sq_row_number FROM MyTable WHERE Active = 1";
+            const string CommandSql = "SELECT TOP 10 Id, Active, Field1, Field2, Field3 FROM MyTable WHERE Active = 1 ORDER BY Field1";
             const string RecordCountSql = "SELECT COUNT(*) FROM MyTable WHERE Active = 1";
             SettingsMock.SetupGet(x => x.DefaultOrderBy).Returns("Field1");
             SettingsMock.SetupGet(x => x.DefaultWhere).Returns("Active = 1");

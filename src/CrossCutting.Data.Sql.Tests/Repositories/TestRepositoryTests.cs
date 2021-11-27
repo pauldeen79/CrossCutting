@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using AutoFixture;
 using CrossCutting.Data.Abstractions;
+using CrossCutting.Data.Core;
 using CrossCutting.Data.Core.Commands;
 using FluentAssertions;
 using Moq;
@@ -9,7 +10,7 @@ using Xunit;
 namespace CrossCutting.Data.Sql.Tests.Repositories
 {
     [ExcludeFromCodeCoverage]
-    public class TestRespositoryTests : TestBase<TestRepository>
+    public class TestRepositoryTests : TestBase<TestRepository>
     {
         private Mock<IDatabaseEntityRetriever<TestEntity>> EntityRetrieverMock => Fixture.Freeze<Mock<IDatabaseEntityRetriever<TestEntity>>>();
         private Mock<IDatabaseCommandProvider<TestEntityIdentity>> IdentityCommandProviderMock => Fixture.Freeze<Mock<IDatabaseCommandProvider<TestEntityIdentity>>>();
@@ -55,7 +56,25 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             EntityRetrieverMock.Setup(x => x.FindMany(It.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select))).Returns(expected);
 
             // Act
-            var actual = Sut.FindMany();
+            var actual = Sut.FindMany("Value");
+
+            // Assert
+            actual.Should().BeSameAs(expected);
+        }
+
+        [Fact]
+        public void Can_FindPaged_Entities_Using_Repository()
+        {
+            // Arrange
+            var expected = new[]
+            {
+                new TestEntity("code1", "codeType1", "description1"),
+                new TestEntity("code2", "codeType2", "description2")
+            };
+            EntityRetrieverMock.Setup(x => x.FindPaged(It.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select))).Returns(new PagedResult<TestEntity>(expected, 2, 0, 10));
+
+            // Act
+            var actual = Sut.FindMany("Value");
 
             // Assert
             actual.Should().BeSameAs(expected);

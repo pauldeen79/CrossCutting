@@ -8,7 +8,7 @@ namespace CrossCutting.Data.Core.Extensions
                                                              StringBuilder selectBuilder,
                                                              int? offset,
                                                              bool countOnly)
-            => offset.HasValue && offset.Value >= 0 && !countOnly
+            => offset.HasValue && offset.Value > 0 && !countOnly
                 ? builder
                     .Append("SELECT ")
                     .AppendSelectFields(selectBuilder, countOnly)
@@ -56,7 +56,8 @@ namespace CrossCutting.Data.Core.Extensions
                                                       bool countOnly)
         {
             if ((offset == null || offset.Value <= 0 || orderByBuilder.Length == 0)
-                && (pageSize.HasValue && pageSize.Value >= 0)
+                && pageSize.HasValue 
+                && pageSize.Value > 0
                 && !countOnly)
             {
                 return builder.Append($"TOP {pageSize} ");
@@ -77,7 +78,7 @@ namespace CrossCutting.Data.Core.Extensions
                                                          int? offset,
                                                          bool countOnly)
         {
-            if (offset.HasValue && offset.Value >= 0 && !countOnly)
+            if (offset.HasValue && offset.Value > 0 && !countOnly)
             {
                 if (orderByBuilder.Length == 0)
                 {
@@ -134,7 +135,7 @@ namespace CrossCutting.Data.Core.Extensions
                                                           int? offset,
                                                           bool countOnly)
         {
-            if (offset.HasValue && offset.Value >= 0)
+            if (offset.HasValue && offset.Value > 0)
             {
                 //do not use order by (this will be taken care of by the row_number function)
                 return instance;

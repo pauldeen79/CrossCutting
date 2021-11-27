@@ -39,7 +39,7 @@ namespace CrossCutting.Data.Sql.Builders
             return this;
         }
 
-        public PagedSelectCommandBuilder Top(int top)
+        public PagedSelectCommandBuilder Top(int? top)
         {
             _pageSize = top;
             _offset = null;
@@ -176,8 +176,8 @@ namespace CrossCutting.Data.Sql.Builders
             HavingBuilder.Clear();
             CommandParameters.Clear();
             _distinct = false;
-            _offset = null;
-            _pageSize = null;
+            _offset = 0;
+            _pageSize = 0;
             return this;
         }
 
@@ -193,7 +193,13 @@ namespace CrossCutting.Data.Sql.Builders
             return this;
         }
 
-        public IDatabaseCommand Build(bool countOnly)
+        public IPagedDatabaseCommand Build()
+            => new PagedDatabaseCommand(CreateCommand(false),
+                                        CreateCommand(true),
+                                        _offset.GetValueOrDefault(),
+                                        _pageSize.GetValueOrDefault(int.MaxValue));
+
+        private IDatabaseCommand CreateCommand(bool countOnly)
             => new SqlDatabaseCommand(BuildSql(countOnly), CommandType, DatabaseOperation.Select, CommandParameters);
 
         private string BuildSql(bool countOnly)

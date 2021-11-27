@@ -24,7 +24,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .Select("Field1, Field2")
                 .Where("Field1 = @field1")
                 .AppendParameter("field1", "some value")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1");
@@ -51,7 +51,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .Select("Field1, Field2")
                 .Where("Field1 = @field1")
                 .AppendParameters(new { field1 = "some value" })
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1");
@@ -79,7 +79,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .Where("Field1 = @field1")
                 .And("Field2 IS NOT NULL")
                 .AppendParameter("field1", "some value")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1 AND Field2 IS NOT NULL");
@@ -107,7 +107,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .Where("Field1 = @field1")
                 .Or("Field2 IS NOT NULL")
                 .AppendParameter("field1", "some value")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1 OR Field2 IS NOT NULL");
@@ -133,7 +133,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .From("Table")
                 .Select("Field1, Field2")
                 .OrderBy("Field1")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT Field1, Field2 FROM Table ORDER BY Field1");
@@ -151,7 +151,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .From("Table")
                 .InnerJoin("Table2 ON Table.Id = Table2.FkId")
                 .Select("Table.Field1, Table.Field2, Table2.Field3")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT Table.Field1, Table.Field2, Table2.Field3 FROM Table INNER JOIN Table2 ON Table.Id = Table2.FkId");
@@ -181,7 +181,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .From("Table")
                 .LeftOuterJoin("Table2 ON Table.Id = Table2.FkId")
                 .Select("Table.Field1, Table.Field2, Table2.Field3")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT Table.Field1, Table.Field2, Table2.Field3 FROM Table LEFT OUTER JOIN Table2 ON Table.Id = Table2.FkId");
@@ -211,7 +211,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .From("Table")
                 .RightOuterJoin("Table2 ON Table.Id = Table2.FkId")
                 .Select("Table.Field1, Table.Field2, Table2.Field3")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT Table.Field1, Table.Field2, Table2.Field3 FROM Table RIGHT OUTER JOIN Table2 ON Table.Id = Table2.FkId");
@@ -241,7 +241,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .From("Table")
                 .CrossJoin("Table2")
                 .Select("Table.Field1, Table.Field2, Table2.Field3")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT Table.Field1, Table.Field2, Table2.Field3 FROM Table CROSS JOIN Table2");
@@ -259,7 +259,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .Top(1)
                 .From("Table")
                 .Select("Field1, Field2")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT TOP 1 Field1, Field2 FROM Table");
@@ -277,7 +277,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .Distinct()
                 .From("Table")
                 .Select("Field1, Field2")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT DISTINCT Field1, Field2 FROM Table");
@@ -293,7 +293,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
             var actual = command
                 .AsText()
                 .From("Table")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT * FROM Table");
@@ -312,7 +312,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .Select("Field1, Field2, COUNT(Field3)")
                 .GroupBy("Field3")
                 .Having("Field3 IS NOT NULL")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT Field1, Field2, COUNT(Field3) FROM Table GROUP BY Field3 HAVING Field3 IS NOT NULL");
@@ -330,7 +330,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .From("Table")
                 .OrderBy("Id")
                 .PageSize(10)
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT TOP 10 * FROM Table ORDER BY Id");
@@ -349,7 +349,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .OrderBy("Id")
                 .PageSize(10)
                 .Offset(10)
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY Id) as sq_row_number FROM Table) sq WHERE sq.sq_row_number BETWEEN 11 and 20;");
@@ -370,7 +370,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
                 .AsText()
                 .From("Table")
                 .Select("Field1, Field2, Field3")
-                .Build(false);
+                .Build().DataCommand;
 
             // Assert
             actual.CommandText.Should().Be("SELECT Field1, Field2, Field3 FROM Table");
@@ -383,7 +383,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
             var command = new PagedSelectCommandBuilder();
 
             // Act
-            command.Invoking(x => x.Build(false))
+            command.Invoking(x => x.Build())
                    .Should().Throw<InvalidOperationException>()
                    .And.Message.Should().Be("FROM clause is missing");
         }
