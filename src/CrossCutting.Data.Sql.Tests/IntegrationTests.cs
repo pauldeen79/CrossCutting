@@ -3,6 +3,8 @@ using System.Data.Stub;
 using System.Data.Stub.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Data.Abstractions;
+using CrossCutting.Data.Core.CommandProviders;
+using CrossCutting.Data.Sql.CommandProviders;
 using CrossCutting.Data.Sql.Tests.Repositories;
 using FluentAssertions;
 using Xunit;
@@ -18,15 +20,16 @@ namespace CrossCutting.Data.Sql.Tests
 
         public IntegrationTests()
         {
+            var settings = new TestEntityDatabaseEntityRetrieverSettings();
             _connection = new DbConnection();
             _mapper = new TestEntityMapper();
             _repository = new TestRepository
                 (
                     new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(_connection, new TestEntityDatabaseCommandEntityProvider()),
                     new DatabaseEntityRetriever<TestEntity>(_connection, _mapper),
-                    new TestEntityIdentityDatabaseCommandProvider(),
-                    new TestEntityPagedSelectDatabaseCommandProvider(),
-                    new TestEntitySelectDatabaseCommandProvider(),
+                    new TestEntityIdentityDatabaseCommandProvider(settings),
+                    new PagedSelectDatabaseCommandProvider(settings),
+                    new SelectDatabaseCommandProvider(settings),
                     new TestEntityDatabaseCommandProvider()
                 );
         }

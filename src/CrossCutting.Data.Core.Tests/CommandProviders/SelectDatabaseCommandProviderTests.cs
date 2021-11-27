@@ -10,7 +10,7 @@ using Xunit;
 namespace CrossCutting.Data.Core.Tests.CommandProviders
 {
     [ExcludeFromCodeCoverage]
-    public class SelectDatabaseCommandProviderBaseTests : TestBase<TestSelectDatabaseCommandProvider>
+    public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommandProvider>
     {
         private Mock<IDatabaseEntityRetrieverSettings> SettingsMock => Fixture.Freeze<Mock<IDatabaseEntityRetrieverSettings>>();
 
@@ -41,14 +41,6 @@ namespace CrossCutting.Data.Core.Tests.CommandProviders
 
             // Assert
             actual.CommandText.Should().Be(Sql);
-        }
-    }
-
-    [ExcludeFromCodeCoverage]
-    public class TestSelectDatabaseCommandProvider : SelectDatabaseCommandProviderBase<IDatabaseEntityRetrieverSettings>
-    {
-        public TestSelectDatabaseCommandProvider(IDatabaseEntityRetrieverSettings settings) : base(settings)
-        {
         }
     }
 }
