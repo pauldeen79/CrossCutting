@@ -74,10 +74,10 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
             EntityRetrieverMock.Setup(x => x.FindPaged(It.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select))).Returns(new PagedResult<TestEntity>(expected, 2, 0, 10));
 
             // Act
-            var actual = Sut.FindMany("Value");
+            var actual = Sut.FindPaged(0, 10);
 
             // Assert
-            actual.Should().BeSameAs(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }
