@@ -4,12 +4,11 @@ using CrossCutting.Data.Core.Builders;
 
 namespace CrossCutting.Data.Core.CommandProviders
 {
-    public abstract class SelectDatabaseCommandProviderBase<TSettings> : IDatabaseCommandProvider
-        where TSettings : IDatabaseEntityRetrieverSettings
+    public class SelectDatabaseCommandProvider : IDatabaseCommandProvider
     {
-        protected TSettings Settings { get; }
+        private IDatabaseEntityRetrieverSettings Settings { get; }
 
-        protected SelectDatabaseCommandProviderBase(TSettings settings)
+        public SelectDatabaseCommandProvider(IDatabaseEntityRetrieverSettings settings)
         {
             Settings = settings;
         }

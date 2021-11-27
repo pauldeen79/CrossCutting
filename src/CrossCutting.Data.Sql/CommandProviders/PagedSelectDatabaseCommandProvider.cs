@@ -6,12 +6,11 @@ using CrossCutting.Data.Sql.Extensions;
 
 namespace CrossCutting.Data.Sql.CommandProviders
 {
-    public abstract class PagedSelectDatabaseCommandProviderBase<TSettings> : IPagedDatabaseCommandProvider
-        where TSettings : IPagedDatabaseEntityRetrieverSettings
+    public class PagedSelectDatabaseCommandProvider : IPagedDatabaseCommandProvider
     {
-        protected TSettings Settings { get; }
+        private IPagedDatabaseEntityRetrieverSettings Settings { get; }
 
-        protected PagedSelectDatabaseCommandProviderBase(TSettings settings)
+        public PagedSelectDatabaseCommandProvider(IPagedDatabaseEntityRetrieverSettings settings)
         {
             Settings = settings;
         }

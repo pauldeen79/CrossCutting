@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using AutoFixture;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Sql.CommandProviders;
 using FluentAssertions;
@@ -9,16 +10,9 @@ using Xunit;
 namespace CrossCutting.Data.Sql.Tests.CommandProviders
 {
     [ExcludeFromCodeCoverage]
-    public class PagedSelectDatabaseCommandProviderBaseTests
+    public class PagedSelectDatabaseCommandProviderBaseTests : TestBase<PagedSelectDatabaseCommandProvider>
     {
-        private Mock<IPagedDatabaseEntityRetrieverSettings> SettingsMock { get; }
-        private TestPagedSelectDatabaseCommandProvider Sut { get; }
-
-        public PagedSelectDatabaseCommandProviderBaseTests()
-        {
-            SettingsMock = new Mock<IPagedDatabaseEntityRetrieverSettings>();
-            Sut = new TestPagedSelectDatabaseCommandProvider(SettingsMock.Object);
-        }
+        private Mock<IPagedDatabaseEntityRetrieverSettings> SettingsMock => Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettings>>();
 
         [Theory]
         [InlineData(DatabaseOperation.Delete)]
@@ -100,14 +94,6 @@ namespace CrossCutting.Data.Sql.Tests.CommandProviders
 
             // Assert
             actual.PageSize.Should().Be(100);
-        }
-    }
-
-    [ExcludeFromCodeCoverage]
-    public class TestPagedSelectDatabaseCommandProvider : PagedSelectDatabaseCommandProviderBase<IPagedDatabaseEntityRetrieverSettings>
-    {
-        public TestPagedSelectDatabaseCommandProvider(IPagedDatabaseEntityRetrieverSettings settings) : base(settings)
-        {
         }
     }
 }
