@@ -17,8 +17,8 @@ namespace CrossCutting.Data.Core.Builders
         private readonly StringBuilder _orderByBuilder;
         private readonly StringBuilder _groupByBuilder;
         private readonly StringBuilder _havingBuilder;
-        private int? _top;
-        private bool _distinct;
+        public int? Top { get; set; }
+        public bool Distinct { get; set; }
 
         public SelectCommandBuilder()
         {
@@ -31,15 +31,15 @@ namespace CrossCutting.Data.Core.Builders
             _havingBuilder = new StringBuilder();
         }
 
-        public SelectCommandBuilder Distinct(bool distinct = true)
+        public SelectCommandBuilder WithDistinct(bool distinct = true)
         {
-            _distinct = distinct;
+            Distinct = distinct;
             return this;
         }
 
-        public SelectCommandBuilder Top(int top)
+        public SelectCommandBuilder WithTop(int top)
         {
-            _top = top;
+            Top = top;
             return this;
         }
 
@@ -163,8 +163,8 @@ namespace CrossCutting.Data.Core.Builders
             _groupByBuilder.Clear();
             _havingBuilder.Clear();
             CommandParameters.Clear();
-            _distinct = false;
-            _top = null;
+            Distinct = false;
+            Top = null;
             return this;
         }
 
@@ -181,14 +181,14 @@ namespace CrossCutting.Data.Core.Builders
             var builder = new StringBuilder();
 
             builder.Append("SELECT ");
-            if (_distinct)
+            if (Distinct)
             {
                 builder.Append("DISTINCT ");
             }
-            if (_top != null)
+            if (Top != null)
             {
                 builder.Append("TOP ")
-                       .Append(_top.Value)
+                       .Append(Top.Value)
                        .Append(" ");
             }
             if (_selectBuilder.Length > 0)

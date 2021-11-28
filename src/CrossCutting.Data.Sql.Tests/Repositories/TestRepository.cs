@@ -24,7 +24,7 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
         public TestEntity? FindOne()
             => EntityRetriever.FindOne(new SelectCommandBuilder()
                 .Select("*")
-                .Top(1)
+                .WithTop(1)
                 .From("MyTable")
                 .Where("Field = Value")
                 .Build());

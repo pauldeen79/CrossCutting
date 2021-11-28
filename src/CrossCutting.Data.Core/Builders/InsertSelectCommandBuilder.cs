@@ -10,49 +10,49 @@ namespace CrossCutting.Data.Core.Builders
     public class InsertSelectCommandBuilder
     {
         public IDictionary<string, object> CommandParameters { get; set; }
-        private string _table;
-        private string _temporaryTable;
-        private SelectCommandBuilder SelectCommand { get; set; }
-        private readonly List<string> _fieldNames;
-        private readonly List<string> _outputFields;
+        public string Table { get; set; }
+        public string TemporaryTable { get; set; }
+        public SelectCommandBuilder SelectCommand { get; set; }
+        public List<string> FieldNames { get; set; }
+        public List<string> OutputFields { get; set; }
 
         public InsertSelectCommandBuilder()
         {
             CommandParameters = new Dictionary<string, object>();
-            _table = string.Empty;
-            _temporaryTable = string.Empty;
-            _fieldNames = new List<string>();
-            _outputFields = new List<string>();
+            Table = string.Empty;
+            TemporaryTable = string.Empty;
+            FieldNames = new List<string>();
+            OutputFields = new List<string>();
             SelectCommand = new SelectCommandBuilder();
         }
 
         public InsertSelectCommandBuilder Into(string table)
         {
-            _table = table;
+            Table = table;
             return this;
         }
 
-        public InsertSelectCommandBuilder TemporaryTable(string temporaryTable)
+        public InsertSelectCommandBuilder WithTemporaryTable(string temporaryTable)
         {
-            _temporaryTable = temporaryTable;
+            TemporaryTable = temporaryTable;
             return this;
         }
 
         public InsertSelectCommandBuilder WithFieldName(string fieldName)
         {
-            _fieldNames.Add(fieldName);
+            FieldNames.Add(fieldName);
             return this;
         }
 
         public InsertSelectCommandBuilder WithFieldNames(IEnumerable<string> fieldNames)
         {
-            _fieldNames.AddRange(fieldNames);
+            FieldNames.AddRange(fieldNames);
             return this;
         }
 
         public InsertSelectCommandBuilder WithFieldNames(params string[] fieldNames)
         {
-            _fieldNames.AddRange(fieldNames);
+            FieldNames.AddRange(fieldNames);
             return this;
         }
 
@@ -64,19 +64,19 @@ namespace CrossCutting.Data.Core.Builders
 
         public InsertSelectCommandBuilder WithOutputField(string outputField)
         {
-            _outputFields.Add(outputField);
+            OutputFields.Add(outputField);
             return this;
         }
 
         public InsertSelectCommandBuilder WithOutputFields(IEnumerable<string> outputFields)
         {
-            _outputFields.AddRange(outputFields);
+            OutputFields.AddRange(outputFields);
             return this;
         }
 
         public InsertSelectCommandBuilder WithOutputFields(params string[] outputFields)
         {
-            _outputFields.AddRange(outputFields);
+            OutputFields.AddRange(outputFields);
             return this;
         }
 
@@ -98,10 +98,10 @@ namespace CrossCutting.Data.Core.Builders
         public InsertSelectCommandBuilder Clear()
         {
             CommandParameters.Clear();
-            _table = string.Empty;
-            _temporaryTable = string.Empty;
-            _fieldNames.Clear();
-            _outputFields.Clear();
+            Table = string.Empty;
+            TemporaryTable = string.Empty;
+            FieldNames.Clear();
+            OutputFields.Clear();
             SelectCommand.Clear();
             return this;
         }
@@ -111,12 +111,12 @@ namespace CrossCutting.Data.Core.Builders
 
         private string BuildSql()
         {
-            if (string.IsNullOrWhiteSpace(_table))
+            if (string.IsNullOrWhiteSpace(Table))
             {
                 throw new InvalidOperationException("table name is missing");
             }
 
-            if (_fieldNames.Count == 0)
+            if (FieldNames.Count == 0)
             {
                 throw new InvalidOperationException("field names are missing");
             }
@@ -124,21 +124,21 @@ namespace CrossCutting.Data.Core.Builders
             var builder = new StringBuilder();
 
             builder.Append("INSERT INTO ")
-                   .Append(_table)
+                   .Append(Table)
                    .Append("(")
-                   .Append(string.Join(", ", _fieldNames))
+                   .Append(string.Join(", ", FieldNames))
                    .Append(")");
 
-            if (_outputFields.Count > 0)
+            if (OutputFields.Count > 0)
             {
                 builder.Append(" OUTPUT ")
-                       .Append(string.Join(", ", _outputFields));
+                       .Append(string.Join(", ", OutputFields));
             }
 
-            if (!string.IsNullOrEmpty(_temporaryTable))
+            if (!string.IsNullOrEmpty(TemporaryTable))
             {
                 builder.Append(" INTO ")
-                       .Append(_temporaryTable);
+                       .Append(TemporaryTable);
             }
 
             return builder.Append(" ")

@@ -246,7 +246,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .Top(1)
+                .WithTop(1)
                 .From("Table")
                 .Select("Field1", "Field2")
                 .Build();
@@ -263,7 +263,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .Distinct()
+                .WithDistinct()
                 .From("Table")
                 .Select("Field1", "Field2")
                 .Build();
@@ -310,8 +310,8 @@ namespace CrossCutting.Data.Core.Tests.Builders
         {
             // Arrange
             var command = new SelectCommandBuilder()
-                .Distinct()
-                .Top(1)
+                .WithDistinct()
+                .WithTop(1)
                 .From("Table2")
                 .Select("Field4", "Field5", "Field6");
 

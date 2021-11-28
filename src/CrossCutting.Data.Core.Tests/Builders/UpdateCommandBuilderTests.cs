@@ -26,7 +26,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
         public void Build_Throws_When_FieldNames_Are_Empty()
         {
             // Arrange
-            var input = new UpdateCommandBuilder().Table("MyTable");
+            var input = new UpdateCommandBuilder().WithTable("MyTable");
 
             // Act & Assert
             input.Invoking(x => x.Build())
@@ -39,7 +39,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
         {
             // Arrange
             var input = new UpdateCommandBuilder()
-                .Table("MyTable")
+                .WithTable("MyTable")
                 .WithFieldNames("Field1", "Field2", "Field3");
 
             // Act & Assert
@@ -53,7 +53,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
         {
             // Arrange
             var input = new UpdateCommandBuilder()
-                .Table("MyTable")
+                .WithTable("MyTable")
                 .WithFieldNames("Field1", "Field2", "Field3")
                 .WithFieldValues("Value1", "Value2");
 
@@ -68,7 +68,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
         {
             // Arrange
             var input = new UpdateCommandBuilder()
-                .Table("MyTable")
+                .WithTable("MyTable")
                 .WithFieldNames("Field1", "Field2", "Field3")
                 .WithFieldValues("@Field1", "@Field2", "@Field3")
                 .AppendParameters(new { Field1 = "Value1", Field2 = "Value2", Field3 = "Value3" });
@@ -94,7 +94,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
         {
             // Arrange
             var input = new UpdateCommandBuilder()
-                .Table("MyTable")
+                .WithTable("MyTable")
                 .WithFieldNames("Field1", "Field2", "Field3")
                 .WithFieldValues("\"Field1\"", "\"Field2\"", "\"Field3\"")
                 .Where("Field1 = \"OldValue1\"")
@@ -117,7 +117,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
         {
             // Arrange
             var input = new UpdateCommandBuilder()
-                .Table("MyTable")
+                .WithTable("MyTable")
                 .WithFieldName("Field1")
                 .WithFieldValue("@Field1")
                 .AppendParameter("Field1", "Value1");
@@ -143,14 +143,14 @@ namespace CrossCutting.Data.Core.Tests.Builders
         {
             // Arrange
             var input = new UpdateCommandBuilder()
-                .Table("MyTable")
+                .WithTable("MyTable")
                 .WithFieldName("Field1")
                 .WithFieldValue("@Field1")
                 .AppendParameter("Field1", "Value1");
 
             // Act
             var actual = input.Clear()
-                .Table("MyTable2")
+                .WithTable("MyTable2")
                 .WithFieldName("Field2")
                 .WithFieldValue("@Field2")
                 .AppendParameter("Field2", "Value2")

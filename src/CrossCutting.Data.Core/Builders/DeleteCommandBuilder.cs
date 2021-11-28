@@ -10,19 +10,19 @@ namespace CrossCutting.Data.Core.Builders
     public class DeleteCommandBuilder
     {
         public IDictionary<string, object> CommandParameters { get; set; }
-        private string _table;
+        public string Table { get; set; }
         private readonly StringBuilder _whereBuilder;
 
         public DeleteCommandBuilder()
         {
             CommandParameters = new Dictionary<string, object>();
-            _table = string.Empty;
+            Table = string.Empty;
             _whereBuilder = new StringBuilder();
         }
 
         public DeleteCommandBuilder From(string table)
         {
-            _table = table;
+            Table = table;
             return this;
         }
 
@@ -67,7 +67,7 @@ namespace CrossCutting.Data.Core.Builders
         public DeleteCommandBuilder Clear()
         {
             CommandParameters.Clear();
-            _table = string.Empty;
+            Table = string.Empty;
             _whereBuilder.Clear();
             return this;
         }
@@ -77,14 +77,14 @@ namespace CrossCutting.Data.Core.Builders
 
         private string BuildSql()
         {
-            if (string.IsNullOrWhiteSpace(_table))
+            if (string.IsNullOrWhiteSpace(Table))
             {
                 throw new InvalidOperationException("table name is missing");
             }
 
             var builder = new StringBuilder()
                 .Append("DELETE FROM ")
-                .Append(_table);
+                .Append(Table);
 
             if (_whereBuilder.Length > 0)
             {

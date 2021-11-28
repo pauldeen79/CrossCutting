@@ -11,59 +11,59 @@ namespace CrossCutting.Data.Core.Builders
     public class UpdateCommandBuilder
     {
         public IDictionary<string, object> CommandParameters { get; set; }
-        private string _table;
-        private readonly List<string> _fieldNames;
-        private readonly List<string> _fieldValues;
+        public string Table { get; set; }
+        public List<string> FieldNames { get; set; }
+        public List<string> FieldValues { get; set; }
         private readonly StringBuilder _whereBuilder;
 
         public UpdateCommandBuilder()
         {
             CommandParameters = new Dictionary<string, object>();
-            _table = string.Empty;
-            _fieldNames = new List<string>();
-            _fieldValues = new List<string>();
+            Table = string.Empty;
+            FieldNames = new List<string>();
+            FieldValues = new List<string>();
             _whereBuilder = new StringBuilder();
         }
 
-        public UpdateCommandBuilder Table(string table)
+        public UpdateCommandBuilder WithTable(string table)
         {
-            _table = table;
+            Table = table;
             return this;
         }
 
         public UpdateCommandBuilder WithFieldName(string fieldName)
         {
-            _fieldNames.Add(fieldName);
+            FieldNames.Add(fieldName);
             return this;
         }
 
         public UpdateCommandBuilder WithFieldNames(IEnumerable<string> fieldNames)
         {
-            _fieldNames.AddRange(fieldNames);
+            FieldNames.AddRange(fieldNames);
             return this;
         }
 
         public UpdateCommandBuilder WithFieldNames(params string[] fieldNames)
         {
-            _fieldNames.AddRange(fieldNames);
+            FieldNames.AddRange(fieldNames);
             return this;
         }
 
         public UpdateCommandBuilder WithFieldValue(string fieldValue)
         {
-            _fieldValues.Add(fieldValue);
+            FieldValues.Add(fieldValue);
             return this;
         }
 
         public UpdateCommandBuilder WithFieldValues(IEnumerable<string> fieldValues)
         {
-            _fieldValues.AddRange(fieldValues);
+            FieldValues.AddRange(fieldValues);
             return this;
         }
 
         public UpdateCommandBuilder WithFieldValues(params string[] fieldValues)
         {
-            _fieldValues.AddRange(fieldValues);
+            FieldValues.AddRange(fieldValues);
             return this;
         }
 
@@ -108,9 +108,9 @@ namespace CrossCutting.Data.Core.Builders
         public UpdateCommandBuilder Clear()
         {
             CommandParameters.Clear();
-            _table = string.Empty;
-            _fieldNames.Clear();
-            _fieldValues.Clear();
+            Table = string.Empty;
+            FieldNames.Clear();
+            FieldValues.Clear();
             _whereBuilder.Clear();
             return this;
         }
@@ -120,29 +120,29 @@ namespace CrossCutting.Data.Core.Builders
 
         private string BuildSql()
         {
-            if (string.IsNullOrWhiteSpace(_table))
+            if (string.IsNullOrWhiteSpace(Table))
             {
                 throw new InvalidOperationException("table name is missing");
             }
 
-            if (_fieldNames.Count == 0)
+            if (FieldNames.Count == 0)
             {
                 throw new InvalidOperationException("field names are missing");
             }
 
-            if (_fieldValues.Count == 0)
+            if (FieldValues.Count == 0)
             {
                 throw new InvalidOperationException("field values are missing");
             }
 
-            if (_fieldNames.Count != _fieldValues.Count)
+            if (FieldNames.Count != FieldValues.Count)
             {
                 throw new InvalidOperationException("field name count should be equal to field value count");
             }
 
             var builder = new StringBuilder()
                 .Append("UPDATE ")
-                .Append(_table)
+                .Append(Table)
                 .Append(" SET ")
                 .Append(string.Join(", ", GenerateValues()));
 
@@ -155,6 +155,6 @@ namespace CrossCutting.Data.Core.Builders
         }
 
         private IEnumerable<string> GenerateValues()
-            => _fieldNames.Zip(_fieldValues, (name, value) => $"{name} = {value}");
+            => FieldNames.Zip(FieldValues, (name, value) => $"{name} = {value}");
     }
 }

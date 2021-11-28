@@ -90,7 +90,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
                     .And("Field3 = \"Value3\""))
                 .WithOutputFields("INSERTED.Field1", "INSERTED.Field2", "INSERTED.Field3")
                 .Into("MyTable")
-                .TemporaryTable("@NewValues");
+                .WithTemporaryTable("@NewValues");
 
             // Act
             var actual = input.Build();
@@ -117,7 +117,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
                     .And("Field3 = \"Value3\""))
                 .WithOutputFields("INSERTED.Field1", "INSERTED.Field2", "INSERTED.Field3")
                 .Into("MyTable")
-                .TemporaryTable("@NewValues");
+                .WithTemporaryTable("@NewValues");
 
             // Act
             var actual = input

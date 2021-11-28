@@ -10,85 +10,85 @@ namespace CrossCutting.Data.Core.Builders
     public class InsertCommandBuilder
     {
         public IDictionary<string, object> CommandParameters { get; set; }
-        private string _table;
-        private string _temporaryTable;
-        private readonly List<string> _fieldNames;
-        private readonly List<string> _outputFields;
-        private readonly List<string> _fieldValues;
+        public string Table { get; set; }
+        public string TemporaryTable { get; set; }
+        public List<string> FieldNames { get; set; }
+        public List<string> OutputFields { get; set; }
+        public List<string> FieldValues { get; set; }
 
         public InsertCommandBuilder()
         {
             CommandParameters = new Dictionary<string, object>();
-            _table = string.Empty;
-            _temporaryTable = string.Empty;
-            _fieldNames = new List<string>();
-            _outputFields = new List<string>();
-            _fieldValues = new List<string>();
+            Table = string.Empty;
+            TemporaryTable = string.Empty;
+            FieldNames = new List<string>();
+            OutputFields = new List<string>();
+            FieldValues = new List<string>();
         }
 
         public InsertCommandBuilder Into(string table)
         {
-            _table = table;
+            Table = table;
             return this;
         }
 
-        public InsertCommandBuilder TemporaryTable(string temporaryTable)
+        public InsertCommandBuilder WithTemporaryTable(string temporaryTable)
         {
-            _temporaryTable = temporaryTable;
+            TemporaryTable = temporaryTable;
             return this;
         }
 
         public InsertCommandBuilder WithFieldName(string fieldName)
         {
-            _fieldNames.Add(fieldName);
+            FieldNames.Add(fieldName);
             return this;
         }
 
         public InsertCommandBuilder WithFieldNames(IEnumerable<string> fieldNames)
         {
-            _fieldNames.AddRange(fieldNames);
+            FieldNames.AddRange(fieldNames);
             return this;
         }
 
         public InsertCommandBuilder WithFieldNames(params string[] fieldNames)
         {
-            _fieldNames.AddRange(fieldNames);
+            FieldNames.AddRange(fieldNames);
             return this;
         }
 
         public InsertCommandBuilder WithFieldValue(string fieldValue)
         {
-            _fieldValues.Add(fieldValue);
+            FieldValues.Add(fieldValue);
             return this;
         }
 
         public InsertCommandBuilder WithFieldValues(IEnumerable<string> fieldValues)
         {
-            _fieldValues.AddRange(fieldValues);
+            FieldValues.AddRange(fieldValues);
             return this;
         }
 
         public InsertCommandBuilder WithFieldValues(params string[] fieldValues)
         {
-            _fieldValues.AddRange(fieldValues);
+            FieldValues.AddRange(fieldValues);
             return this;
         }
 
         public InsertCommandBuilder WithOutputField(string outputField)
         {
-            _outputFields.Add(outputField);
+            OutputFields.Add(outputField);
             return this;
         }
 
         public InsertCommandBuilder WithOutputFields(IEnumerable<string> outputFields)
         {
-            _outputFields.AddRange(outputFields);
+            OutputFields.AddRange(outputFields);
             return this;
         }
 
         public InsertCommandBuilder WithOutputFields(params string[] outputFields)
         {
-            _outputFields.AddRange(outputFields);
+            OutputFields.AddRange(outputFields);
             return this;
         }
 
@@ -110,11 +110,11 @@ namespace CrossCutting.Data.Core.Builders
         public InsertCommandBuilder Clear()
         {
             CommandParameters.Clear();
-            _table = string.Empty;
-            _temporaryTable = string.Empty;
-            _fieldNames.Clear();
-            _outputFields.Clear();
-            _fieldValues.Clear();
+            Table = string.Empty;
+            TemporaryTable = string.Empty;
+            FieldNames.Clear();
+            OutputFields.Clear();
+            FieldValues.Clear();
             return this;
         }
 
@@ -123,22 +123,22 @@ namespace CrossCutting.Data.Core.Builders
 
         private string BuildSql()
         {
-            if (string.IsNullOrWhiteSpace(_table))
+            if (string.IsNullOrWhiteSpace(Table))
             {
                 throw new InvalidOperationException("table name is missing");
             }
 
-            if (_fieldNames.Count == 0)
+            if (FieldNames.Count == 0)
             {
                 throw new InvalidOperationException("field names are missing");
             }
 
-            if (_fieldValues.Count == 0)
+            if (FieldValues.Count == 0)
             {
                 throw new InvalidOperationException("field values are missing");
             }
 
-            if (_fieldNames.Count != _fieldValues.Count)
+            if (FieldNames.Count != FieldValues.Count)
             {
                 throw new InvalidOperationException("field name count should be equal to field value count");
             }
@@ -146,25 +146,25 @@ namespace CrossCutting.Data.Core.Builders
             var builder = new StringBuilder();
 
             builder.Append("INSERT INTO ")
-                   .Append(_table)
+                   .Append(Table)
                    .Append("(")
-                   .Append(string.Join(", ", _fieldNames))
+                   .Append(string.Join(", ", FieldNames))
                    .Append(")");
 
-            if (_outputFields.Count > 0)
+            if (OutputFields.Count > 0)
             {
                 builder.Append(" OUTPUT ")
-                       .Append(string.Join(", ", _outputFields));
+                       .Append(string.Join(", ", OutputFields));
             }
 
-            if (!string.IsNullOrEmpty(_temporaryTable))
+            if (!string.IsNullOrEmpty(TemporaryTable))
             {
                 builder.Append(" INTO ")
-                       .Append(_temporaryTable);
+                       .Append(TemporaryTable);
             }
 
             return builder.Append(" VALUES(")
-                          .Append(string.Join(", ", _fieldValues))
+                          .Append(string.Join(", ", FieldValues))
                           .Append(")")
                           .ToString();
         }
