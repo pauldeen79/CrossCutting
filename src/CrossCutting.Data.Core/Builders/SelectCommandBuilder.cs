@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using CrossCutting.Common.Extensions;
 using CrossCutting.Data.Abstractions;
@@ -9,7 +10,6 @@ namespace CrossCutting.Data.Core.Builders
 {
     public class SelectCommandBuilder
     {
-        public DatabaseCommandType CommandType { get; set; }
         public IDictionary<string, object> CommandParameters { get; set; }
         private readonly StringBuilder _selectBuilder;
         private readonly StringBuilder _fromBuilder;
@@ -17,8 +17,8 @@ namespace CrossCutting.Data.Core.Builders
         private readonly StringBuilder _orderByBuilder;
         private readonly StringBuilder _groupByBuilder;
         private readonly StringBuilder _havingBuilder;
-        private int? _top;
-        private bool _distinct;
+        public int? Top { get; set; }
+        public bool Distinct { get; set; }
 
         public SelectCommandBuilder()
         {
@@ -31,125 +31,98 @@ namespace CrossCutting.Data.Core.Builders
             _havingBuilder = new StringBuilder();
         }
 
-        public SelectCommandBuilder Distinct(bool distinct = true)
-        {
-            _distinct = distinct;
-            return this;
-        }
+        public SelectCommandBuilder DistinctValues(bool distinct = true)
+            => this.Chain(() => Distinct = distinct);
 
-        public SelectCommandBuilder Top(int top)
-        {
-            _top = top;
-            return this;
-        }
+        public SelectCommandBuilder WithTop(int top)
+            => this.Chain(() => Top = top);
 
-        public SelectCommandBuilder Select(string value)
-        {
-            _selectBuilder.Append(value);
-            return this;
-        }
+        public SelectCommandBuilder Select(IEnumerable<string> values)
+            => Select(values.ToArray());
+
+        public SelectCommandBuilder Select(params string[] values)
+            => this.Chain(() => _selectBuilder.Append(string.Join(", ", values)));
 
         public SelectCommandBuilder From(string value)
-        {
-            _fromBuilder.Append(value);
-            return this;
-        }
+            => this.Chain(() => _fromBuilder.Append(value));
 
         public SelectCommandBuilder InnerJoin(string value)
-        {
-            if (_fromBuilder.Length == 0)
+            => this.Chain(() =>
             {
-                throw new InvalidOperationException("No FROM clause found to add INNER JOIN clause to");
-            }
-            _fromBuilder.Append(" INNER JOIN ").Append(value);
-            return this;
-        }
+                if (_fromBuilder.Length == 0)
+                {
+                    throw new InvalidOperationException("No FROM clause found to add INNER JOIN clause to");
+                }
+                _fromBuilder.Append(" INNER JOIN ").Append(value);
+            });
 
         public SelectCommandBuilder LeftOuterJoin(string value)
-        {
-            if (_fromBuilder.Length == 0)
+            => this.Chain(() =>
             {
-                throw new InvalidOperationException("No FROM clause found to add LEFT OUTER JOIN clause to");
-            }
-            _fromBuilder.Append(" LEFT OUTER JOIN ").Append(value);
-            return this;
-        }
+                if (_fromBuilder.Length == 0)
+                {
+                    throw new InvalidOperationException("No FROM clause found to add LEFT OUTER JOIN clause to");
+                }
+                _fromBuilder.Append(" LEFT OUTER JOIN ").Append(value);
+            });
 
         public SelectCommandBuilder RightOuterJoin(string value)
-        {
-            if (_fromBuilder.Length == 0)
+            => this.Chain(() =>
             {
-                throw new InvalidOperationException("No FROM clause found to add RIGHT OUTER JOIN clause to");
-            }
-            _fromBuilder.Append(" RIGHT OUTER JOIN ").Append(value);
-            return this;
-        }
+                if (_fromBuilder.Length == 0)
+                {
+                    throw new InvalidOperationException("No FROM clause found to add RIGHT OUTER JOIN clause to");
+                }
+                _fromBuilder.Append(" RIGHT OUTER JOIN ").Append(value);
+            });
 
         public SelectCommandBuilder CrossJoin(string value)
-        {
-            if (_fromBuilder.Length == 0)
+            => this.Chain(() =>
             {
-                throw new InvalidOperationException("No FROM clause found to add CROSS JOIN clause to");
-            }
-            _fromBuilder.Append(" CROSS JOIN ").Append(value);
-            return this;
-        }
+                if (_fromBuilder.Length == 0)
+                {
+                    throw new InvalidOperationException("No FROM clause found to add CROSS JOIN clause to");
+                }
+                _fromBuilder.Append(" CROSS JOIN ").Append(value);
+            });
 
         public SelectCommandBuilder Where(string value)
-        {
-            if (_whereBuilder.Length > 0)
+            => this.Chain(() =>
             {
-                _whereBuilder.Append(" AND ");
-            }
-            _whereBuilder.Append(value);
-            return this;
-        }
+                if (_whereBuilder.Length > 0)
+                {
+                    _whereBuilder.Append(" AND ");
+                }
+                _whereBuilder.Append(value);
+            });
 
         public SelectCommandBuilder And(string value)
             => Where(value);
 
         public SelectCommandBuilder Or(string value)
-        {
-            if (_whereBuilder.Length == 0)
+            => this.Chain(() =>
             {
-                throw new InvalidOperationException("There is no WHERE clause to combine the current value with");
-            }
-            _whereBuilder.Append(" OR ").Append(value);
-            return this;
-        }
+                if (_whereBuilder.Length == 0)
+                {
+                    throw new InvalidOperationException("There is no WHERE clause to combine the current value with");
+                }
+                _whereBuilder.Append(" OR ").Append(value);
+            });
 
         public SelectCommandBuilder OrderBy(string value)
-        {
-            _orderByBuilder.Append(value);
-            return this;
-        }
+            => this.Chain(() => _orderByBuilder.Append(value));
 
         public SelectCommandBuilder GroupBy(string value)
-        {
-            _groupByBuilder.Append(value);
-            return this;
-        }
+            => this.Chain(() => _groupByBuilder.Append(value));
 
         public SelectCommandBuilder Having(string value)
-        {
-            _havingBuilder.Append(value);
-            return this;
-        }
+            => this.Chain(() => _havingBuilder.Append(value));
 
         public SelectCommandBuilder AppendParameter(string key, object value)
-        {
-            CommandParameters.Add(key, value);
-            return this;
-        }
+            => this.Chain(() => CommandParameters.Add(key, value));
 
         public SelectCommandBuilder AppendParameters(object parameters)
-        {
-            foreach (var param in parameters.ToExpandoObject())
-            {
-                CommandParameters.Add(param.Key, param.Value);
-            }
-            return this;
-        }
+            => this.Chain(() => CommandParameters.AddRange(parameters.ToExpandoObject()));
 
         public SelectCommandBuilder Clear()
         {
@@ -160,39 +133,32 @@ namespace CrossCutting.Data.Core.Builders
             _groupByBuilder.Clear();
             _havingBuilder.Clear();
             CommandParameters.Clear();
-            _distinct = false;
-            _top = null;
-            return this;
-        }
-
-        public SelectCommandBuilder AsStoredProcedure()
-        {
-            CommandType = DatabaseCommandType.StoredProcedure;
-            return this;
-        }
-
-        public SelectCommandBuilder AsText()
-        {
-            CommandType = DatabaseCommandType.Text;
+            Distinct = false;
+            Top = null;
             return this;
         }
 
         public IDatabaseCommand Build()
-            => new SqlDatabaseCommand(BuildSql(), CommandType, DatabaseOperation.Select, CommandParameters);
+            => new SqlDatabaseCommand(BuildSql(), DatabaseCommandType.Text, DatabaseOperation.Select, CommandParameters);
 
         private string BuildSql()
         {
+            if (_fromBuilder.Length == 0)
+            {
+                throw new InvalidOperationException("FROM clause is missing");
+            }
+
             var builder = new StringBuilder();
 
             builder.Append("SELECT ");
-            if (_distinct)
+            if (Distinct)
             {
                 builder.Append("DISTINCT ");
             }
-            if (_top != null)
+            if (Top != null)
             {
                 builder.Append("TOP ")
-                       .Append(_top.Value)
+                       .Append(Top.Value)
                        .Append(" ");
             }
             if (_selectBuilder.Length > 0)
@@ -204,14 +170,7 @@ namespace CrossCutting.Data.Core.Builders
                 builder.Append("*");
             }
             builder.Append(" FROM ");
-            if (_fromBuilder.Length > 0)
-            {
-                builder.Append(_fromBuilder);
-            }
-            else
-            {
-                throw new InvalidOperationException("FROM clause is missing");
-            }
+            builder.Append(_fromBuilder);
             if (_whereBuilder.Length > 0)
             {
                 builder.Append(" WHERE ").Append(_whereBuilder);

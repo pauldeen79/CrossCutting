@@ -26,8 +26,8 @@ namespace CrossCutting.Data.Sql.CommandProviders
                 .From(Settings.TableName)
                 .Where(Settings.DefaultWhere)
                 .OrderBy(Settings.DefaultOrderBy)
-                .Offset(offset)
-                .PageSize(((int?)pageSize).IfNotGreaterThan(Settings.OverridePageSize))
+                .Skip(offset)
+                .Take(((int?)pageSize).IfNotGreaterThan(Settings.OverridePageSize))
                 .Build();
         }
     }

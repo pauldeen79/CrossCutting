@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using CrossCutting.Common.Extensions;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core.Commands;
 
@@ -20,30 +21,21 @@ namespace CrossCutting.Data.Core.Builders
         }
 
         public DatabaseCommandBuilder Append(string value)
-        {
-            _commandTextBuilder.Append(value);
-            return this;
-        }
+            => this.Chain(() => _commandTextBuilder.Append(value));
 
         public DatabaseCommandBuilder AppendParameter(string key, object value)
-        {
-            CommandParameters.Add(key, value);
-            return this;
-        }
+            => this.Chain(() => CommandParameters.Add(key, value));
 
         public DatabaseCommandBuilder WithOperation(DatabaseOperation operation)
-        {
-            Operation = operation;
-            return this;
-        }
+            => this.Chain(() => Operation = operation);
 
         public DatabaseCommandBuilder Clear()
-        {
-            _commandTextBuilder.Clear();
-            CommandParameters.Clear();
-            Operation = DatabaseOperation.Unspecified;
-            return this;
-        }
+            => this.Chain(() =>
+            {
+                _commandTextBuilder.Clear();
+                CommandParameters.Clear();
+                Operation = DatabaseOperation.Unspecified;
+            });
 
         public IDatabaseCommand Build()
             => new SqlDatabaseCommand(_commandTextBuilder.ToString(), CommandType, Operation, CommandParameters);

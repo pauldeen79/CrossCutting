@@ -10,7 +10,6 @@ namespace CrossCutting.Data.Sql.Builders
 {
     public class PagedSelectCommandBuilder
     {
-        public DatabaseCommandType CommandType { get; set; }
         public IDictionary<string, object> CommandParameters { get; set; }
         private StringBuilder SelectBuilder { get; }
         private StringBuilder FromBuilder { get; }
@@ -18,9 +17,9 @@ namespace CrossCutting.Data.Sql.Builders
         private StringBuilder OrderByBuilder { get; }
         private StringBuilder GroupByBuilder { get; }
         private StringBuilder HavingBuilder { get; }
-        private bool _distinct;
-        private int? _offset;
-        private int? _pageSize;
+        public bool Distinct { get; set; }
+        public int? Offset { get; set; }
+        public int? PageSize { get; set; }
 
         public PagedSelectCommandBuilder()
         {
@@ -33,138 +32,105 @@ namespace CrossCutting.Data.Sql.Builders
             HavingBuilder = new StringBuilder();
         }
 
-        public PagedSelectCommandBuilder Distinct(bool distinct = true)
-        {
-            _distinct = distinct;
-            return this;
-        }
+        public PagedSelectCommandBuilder DistinctValues(bool distinct = true)
+            => this.Chain(() => Distinct = distinct);
 
-        public PagedSelectCommandBuilder Top(int? top)
-        {
-            _pageSize = top;
-            _offset = null;
-            return this;
-        }
+        public PagedSelectCommandBuilder WithTop(int? top)
+            => this.Chain(() =>
+            {
+                PageSize = top;
+                Offset = null;
+            });
 
         public PagedSelectCommandBuilder Select(string value)
-        {
-            SelectBuilder.Append(value);
-            return this;
-        }
+            => this.Chain(() => SelectBuilder.Append(value));
 
         public PagedSelectCommandBuilder From(string value)
-        {
-            FromBuilder.Append(value);
-            return this;
-        }
+            => this.Chain(() => FromBuilder.Append(value));
 
         public PagedSelectCommandBuilder InnerJoin(string value)
-        {
-            if (FromBuilder.Length == 0)
+            => this.Chain(() =>
             {
-                throw new InvalidOperationException("No FROM clause found to add INNER JOIN clause to");
-            }
-            FromBuilder.Append(" INNER JOIN ").Append(value);
-            return this;
-        }
+                if (FromBuilder.Length == 0)
+                {
+                    throw new InvalidOperationException("No FROM clause found to add INNER JOIN clause to");
+                }
+                FromBuilder.Append(" INNER JOIN ").Append(value);
+            });
 
-        public PagedSelectCommandBuilder Offset(int? offset)
-        {
-            _offset = offset;
-            return this;
-        }
+        public PagedSelectCommandBuilder Skip(int? offset)
+            => this.Chain(() => Offset = offset);
 
-        public PagedSelectCommandBuilder PageSize(int? pageSize)
-        {
-            _pageSize = pageSize;
-            return this;
-        }
+        public PagedSelectCommandBuilder Take(int? pageSize)
+            => this.Chain(() => PageSize = pageSize);
 
         public PagedSelectCommandBuilder LeftOuterJoin(string value)
-        {
-            if (FromBuilder.Length == 0)
+            => this.Chain(() =>
             {
-                throw new InvalidOperationException("No FROM clause found to add LEFT OUTER JOIN clause to");
-            }
-            FromBuilder.Append(" LEFT OUTER JOIN ").Append(value);
-            return this;
-        }
+                if (FromBuilder.Length == 0)
+                {
+                    throw new InvalidOperationException("No FROM clause found to add LEFT OUTER JOIN clause to");
+                }
+                FromBuilder.Append(" LEFT OUTER JOIN ").Append(value);
+            });
 
         public PagedSelectCommandBuilder RightOuterJoin(string value)
-        {
-            if (FromBuilder.Length == 0)
+            => this.Chain(() =>
             {
-                throw new InvalidOperationException("No FROM clause found to add RIGHT OUTER JOIN clause to");
-            }
-            FromBuilder.Append(" RIGHT OUTER JOIN ").Append(value);
-            return this;
-        }
+                if (FromBuilder.Length == 0)
+                {
+                    throw new InvalidOperationException("No FROM clause found to add RIGHT OUTER JOIN clause to");
+                }
+                FromBuilder.Append(" RIGHT OUTER JOIN ").Append(value);
+            });
 
         public PagedSelectCommandBuilder CrossJoin(string value)
-        {
-            if (FromBuilder.Length == 0)
+            => this.Chain(() =>
             {
-                throw new InvalidOperationException("No FROM clause found to add CROSS JOIN clause to");
-            }
-            FromBuilder.Append(" CROSS JOIN ").Append(value);
-            return this;
-        }
+                if (FromBuilder.Length == 0)
+                {
+                    throw new InvalidOperationException("No FROM clause found to add CROSS JOIN clause to");
+                }
+                FromBuilder.Append(" CROSS JOIN ").Append(value);
+            });
 
         public PagedSelectCommandBuilder Where(string value)
-        {
-            if (WhereBuilder.Length > 0)
+            => this.Chain(() =>
             {
-                WhereBuilder.Append(" AND ");
-            }
-            WhereBuilder.Append(value);
-            return this;
-        }
+                if (WhereBuilder.Length > 0)
+                {
+                    WhereBuilder.Append(" AND ");
+                }
+                WhereBuilder.Append(value);
+            });
 
         public PagedSelectCommandBuilder And(string value)
             => Where(value);
 
         public PagedSelectCommandBuilder Or(string value)
-        {
-            if (WhereBuilder.Length == 0)
+            => this.Chain(() =>
             {
-                throw new InvalidOperationException("There is no WHERE clause to combine the current value with");
-            }
-            WhereBuilder.Append(" OR ").Append(value);
-            return this;
-        }
+                if (WhereBuilder.Length == 0)
+                {
+                    throw new InvalidOperationException("There is no WHERE clause to combine the current value with");
+                }
+                WhereBuilder.Append(" OR ").Append(value);
+            });
 
         public PagedSelectCommandBuilder OrderBy(string value)
-        {
-            OrderByBuilder.Append(value);
-            return this;
-        }
+            => this.Chain(() => OrderByBuilder.Append(value));
 
         public PagedSelectCommandBuilder GroupBy(string value)
-        {
-            GroupByBuilder.Append(value);
-            return this;
-        }
+            => this.Chain(() => GroupByBuilder.Append(value));
 
         public PagedSelectCommandBuilder Having(string value)
-        {
-            HavingBuilder.Append(value);
-            return this;
-        }
+            => this.Chain(() => HavingBuilder.Append(value));
 
         public PagedSelectCommandBuilder AppendParameter(string key, object value)
-        {
-            CommandParameters.Add(key, value);
-            return this;
-        }
+            => this.Chain(() => CommandParameters.Add(key, value));
 
         public PagedSelectCommandBuilder AppendParameters(object parameters)
-        {
-            foreach (var param in parameters.ToExpandoObject())
-            {
-                CommandParameters.Add(param.Key, param.Value);
-            }
-            return this;
-        }
+            => this.Chain(() => CommandParameters.AddRange(parameters.ToExpandoObject()));
 
         public PagedSelectCommandBuilder Clear()
         {
@@ -175,32 +141,20 @@ namespace CrossCutting.Data.Sql.Builders
             GroupByBuilder.Clear();
             HavingBuilder.Clear();
             CommandParameters.Clear();
-            _distinct = false;
-            _offset = 0;
-            _pageSize = 0;
-            return this;
-        }
-
-        public PagedSelectCommandBuilder AsStoredProcedure()
-        {
-            CommandType = DatabaseCommandType.StoredProcedure;
-            return this;
-        }
-
-        public PagedSelectCommandBuilder AsText()
-        {
-            CommandType = DatabaseCommandType.Text;
+            Distinct = false;
+            Offset = 0;
+            PageSize = 0;
             return this;
         }
 
         public IPagedDatabaseCommand Build()
             => new PagedDatabaseCommand(CreateCommand(false),
                                         CreateCommand(true),
-                                        _offset.GetValueOrDefault(),
-                                        _pageSize.GetValueOrDefault(int.MaxValue));
+                                        Offset.GetValueOrDefault(),
+                                        PageSize.GetValueOrDefault(int.MaxValue));
 
         private IDatabaseCommand CreateCommand(bool countOnly)
-            => new SqlDatabaseCommand(BuildSql(countOnly), CommandType, DatabaseOperation.Select, CommandParameters);
+            => new SqlDatabaseCommand(BuildSql(countOnly), DatabaseCommandType.Text, DatabaseOperation.Select, CommandParameters);
 
         private string BuildSql(bool countOnly)
         {
@@ -209,18 +163,18 @@ namespace CrossCutting.Data.Sql.Builders
                 throw new InvalidOperationException("FROM clause is missing");
             }
 
-            return new StringBuilder().AppendPagingOuterQuery(SelectBuilder, _offset, countOnly)
-                .AppendSelectAndDistinctClause(_distinct, countOnly)
-                .AppendTopClause(OrderByBuilder, _offset, _pageSize, countOnly)
+            return new StringBuilder().AppendPagingOuterQuery(SelectBuilder, Offset, countOnly)
+                .AppendSelectAndDistinctClause(Distinct, countOnly)
+                .AppendTopClause(OrderByBuilder, Offset, PageSize, countOnly)
                 .AppendCountOrSelectFields(SelectBuilder, countOnly)
-                .AppendPagingPrefix(OrderByBuilder, _offset, countOnly)
+                .AppendPagingPrefix(OrderByBuilder, Offset, countOnly)
                 .AppendFromClause()
                 .AppendTableName(FromBuilder)
-                .AppendWhereClause(WhereBuilder, _offset, _pageSize)
+                .AppendWhereClause(WhereBuilder, Offset, PageSize)
                 .AppendGroupByClause(GroupByBuilder)
                 .AppendHavingClause(HavingBuilder)
-                .AppendOrderByClause(OrderByBuilder, _offset, countOnly)
-                .AppendPagingSuffix(_offset, _pageSize, countOnly)
+                .AppendOrderByClause(OrderByBuilder, Offset, countOnly)
+                .AppendPagingSuffix(Offset, PageSize, countOnly)
                 .ToString();
         }
     }

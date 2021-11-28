@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 
 namespace CrossCutting.Data.Core.Extensions
 {
@@ -170,6 +171,33 @@ namespace CrossCutting.Data.Core.Extensions
                 {
                     return instance.Append($") sq WHERE sq.sq_row_number > {offset.Value};");
                 }
+            }
+
+            return instance;
+        }
+
+        internal static StringBuilder AppendInsert(this StringBuilder instance,
+                                                   string table,
+                                                   string temporaryTable,
+                                                   ICollection<string> fieldNames,
+                                                   ICollection<string> outputFields)
+        {
+            instance.Append("INSERT INTO ")
+               .Append(table)
+               .Append("(")
+               .Append(string.Join(", ", fieldNames))
+               .Append(")");
+
+            if (outputFields.Count > 0)
+            {
+                instance.Append(" OUTPUT ")
+                       .Append(string.Join(", ", outputFields));
+            }
+
+            if (!string.IsNullOrEmpty(temporaryTable))
+            {
+                instance.Append(" INTO ")
+                       .Append(temporaryTable);
             }
 
             return instance;
