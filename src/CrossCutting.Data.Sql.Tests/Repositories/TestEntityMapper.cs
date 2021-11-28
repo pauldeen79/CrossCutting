@@ -10,17 +10,13 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
     {
         public TestEntity Map(IDataReader reader)
         {
-            var result = new TestEntityBuilder
-            {
-                Code = reader.GetString("Code"),
-                CodeType = reader.GetString("CodeType"),
-                Description = reader.GetNullableString("Description"),
-                IsExistingEntity = true
-            };
-            
-            // you can put some logic here to modify the result, if you want...
-
-            return result.Build();
+            return new TestEntity
+            (
+                code: reader.GetString("Code"),
+                codeType: reader.GetString("CodeType"),
+                description: reader.GetNullableString("Description"),
+                isExistingEntity: true
+            );
         }
     }
 }
