@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using CrossCutting.Common.Extensions;
 using CrossCutting.Data.Abstractions;
@@ -43,9 +44,12 @@ namespace CrossCutting.Data.Core.Builders
             return this;
         }
 
-        public SelectCommandBuilder Select(string value)
+        public SelectCommandBuilder Select(IEnumerable<string> values)
+            => Select(values.ToArray());
+
+        public SelectCommandBuilder Select(params string[] values)
         {
-            _selectBuilder.Append(value);
+            _selectBuilder.Append(string.Join(", ", values));
             return this;
         }
 
@@ -182,6 +186,11 @@ namespace CrossCutting.Data.Core.Builders
 
         private string BuildSql()
         {
+            if (_fromBuilder.Length == 0)
+            {
+                throw new InvalidOperationException("FROM clause is missing");
+            }
+
             var builder = new StringBuilder();
 
             builder.Append("SELECT ");
@@ -204,14 +213,7 @@ namespace CrossCutting.Data.Core.Builders
                 builder.Append("*");
             }
             builder.Append(" FROM ");
-            if (_fromBuilder.Length > 0)
-            {
-                builder.Append(_fromBuilder);
-            }
-            else
-            {
-                throw new InvalidOperationException("FROM clause is missing");
-            }
+            builder.Append(_fromBuilder);
             if (_whereBuilder.Length > 0)
             {
                 builder.Append(" WHERE ").Append(_whereBuilder);

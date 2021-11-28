@@ -21,7 +21,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
             var actual = command
                 .AsText()
                 .From("Table")
-                .Select("Field1, Field2")
+                .Select("Field1", "Field2")
                 .Where("Field1 = @field1")
                 .AppendParameter("field1", "some value")
                 .Build();
@@ -48,7 +48,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
             var actual = command
                 .AsText()
                 .From("Table")
-                .Select("Field1, Field2")
+                .Select("Field1", "Field2")
                 .Where("Field1 = @field1")
                 .AppendParameters(new { field1 = "some value" })
                 .Build();
@@ -75,7 +75,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
             var actual = command
                 .AsText()
                 .From("Table")
-                .Select("Field1, Field2")
+                .Select("Field1", "Field2")
                 .Where("Field1 = @field1")
                 .And("Field2 IS NOT NULL")
                 .AppendParameter("field1", "some value")
@@ -103,7 +103,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
             var actual = command
                 .AsText()
                 .From("Table")
-                .Select("Field1, Field2")
+                .Select("Field1", "Field2")
                 .Where("Field1 = @field1")
                 .Or("Field2 IS NOT NULL")
                 .AppendParameter("field1", "some value")
@@ -131,7 +131,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
             var actual = command
                 .AsText()
                 .From("Table")
-                .Select("Field1, Field2")
+                .Select("Field1", "Field2")
                 .OrderBy("Field1")
                 .Build();
 
@@ -180,7 +180,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
                 .AsText()
                 .From("Table")
                 .LeftOuterJoin("Table2 ON Table.Id = Table2.FkId")
-                .Select("Table.Field1, Table.Field2, Table2.Field3")
+                .Select("Table.Field1", "Table.Field2", "Table2.Field3")
                 .Build();
 
             // Assert
@@ -210,7 +210,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
                 .AsText()
                 .From("Table")
                 .RightOuterJoin("Table2 ON Table.Id = Table2.FkId")
-                .Select("Table.Field1, Table.Field2, Table2.Field3")
+                .Select("Table.Field1", "Table.Field2", "Table2.Field3")
                 .Build();
 
             // Assert
@@ -240,7 +240,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
                 .AsText()
                 .From("Table")
                 .CrossJoin("Table2")
-                .Select("Table.Field1, Table.Field2, Table2.Field3")
+                .Select("Table.Field1", "Table.Field2", "Table2.Field3")
                 .Build();
 
             // Assert
@@ -258,7 +258,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
                 .AsText()
                 .Top(1)
                 .From("Table")
-                .Select("Field1, Field2")
+                .Select("Field1", "Field2")
                 .Build();
 
             // Assert
@@ -276,7 +276,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
                 .AsText()
                 .Distinct()
                 .From("Table")
-                .Select("Field1, Field2")
+                .Select("Field1", "Field2")
                 .Build();
 
             // Assert
@@ -309,7 +309,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
             var actual = command
                 .AsText()
                 .From("Table")
-                .Select("Field1, Field2, COUNT(Field3)")
+                .Select("Field1, Field2, COUNT(Field3)") // use single string, works as well
                 .GroupBy("Field3")
                 .Having("Field3 IS NOT NULL")
                 .Build();
@@ -326,13 +326,13 @@ namespace CrossCutting.Data.Core.Tests.Builders
                 .Distinct()
                 .Top(1)
                 .From("Table2")
-                .Select("Field4, Field5, Field6");
+                .Select("Field4", "Field5", "Field6");
 
             // Act
             var actual = command.Clear()
                 .AsText()
                 .From("Table")
-                .Select("Field1, Field2, Field3")
+                .Select(new List<string>(new [] { "Field1", "Field2", "Field3" })) // use enumerable, works as well
                 .Build();
 
             // Assert
