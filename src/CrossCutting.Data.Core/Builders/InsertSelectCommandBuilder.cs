@@ -4,6 +4,7 @@ using System.Text;
 using CrossCutting.Common.Extensions;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core.Commands;
+using CrossCutting.Data.Core.Extensions;
 
 namespace CrossCutting.Data.Core.Builders
 {
@@ -85,29 +86,11 @@ namespace CrossCutting.Data.Core.Builders
                 throw new InvalidOperationException("field names are missing");
             }
 
-            var builder = new StringBuilder();
-
-            builder.Append("INSERT INTO ")
-                   .Append(Table)
-                   .Append("(")
-                   .Append(string.Join(", ", FieldNames))
-                   .Append(")");
-
-            if (OutputFields.Count > 0)
-            {
-                builder.Append(" OUTPUT ")
-                       .Append(string.Join(", ", OutputFields));
-            }
-
-            if (!string.IsNullOrEmpty(TemporaryTable))
-            {
-                builder.Append(" INTO ")
-                       .Append(TemporaryTable);
-            }
-
-            return builder.Append(" ")
-                          .Append(SelectCommand.Build().CommandText)
-                          .ToString();
+            return new StringBuilder()
+                .AppendInsert(Table, TemporaryTable, FieldNames, OutputFields)
+                .Append(" ")
+                .Append(SelectCommand.Build().CommandText)
+                .ToString();
         }
 /*
 DECLARE @NewValues TABLE ([Code] varchar(3), [CodeType] varchar(3), [CreatedBy] varchar(128), [CreatedOn] datetime, [UpdatedBy] varchar(128), [UpdatedOn] datetime, [DeletedBy] varchar(128), [DeletedOn] datetime)
