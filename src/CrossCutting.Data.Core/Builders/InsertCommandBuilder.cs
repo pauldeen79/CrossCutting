@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using CrossCutting.Common.Extensions;
 using CrossCutting.Data.Abstractions;
@@ -27,85 +28,43 @@ namespace CrossCutting.Data.Core.Builders
         }
 
         public InsertCommandBuilder Into(string table)
-        {
-            Table = table;
-            return this;
-        }
+            => this.Chain(() => Table = table);
 
         public InsertCommandBuilder WithTemporaryTable(string temporaryTable)
-        {
-            TemporaryTable = temporaryTable;
-            return this;
-        }
+            => this.Chain(() => TemporaryTable = temporaryTable);
 
         public InsertCommandBuilder WithFieldName(string fieldName)
-        {
-            FieldNames.Add(fieldName);
-            return this;
-        }
+            => this.Chain(() => FieldNames.Add(fieldName));
 
         public InsertCommandBuilder WithFieldNames(IEnumerable<string> fieldNames)
-        {
-            FieldNames.AddRange(fieldNames);
-            return this;
-        }
+            => this.Chain(() => FieldNames.AddRange(fieldNames));
 
         public InsertCommandBuilder WithFieldNames(params string[] fieldNames)
-        {
-            FieldNames.AddRange(fieldNames);
-            return this;
-        }
+            => this.Chain(() => FieldNames.AddRange(fieldNames));
 
         public InsertCommandBuilder WithFieldValue(string fieldValue)
-        {
-            FieldValues.Add(fieldValue);
-            return this;
-        }
+            => this.Chain(() => FieldValues.Add(fieldValue));
 
         public InsertCommandBuilder WithFieldValues(IEnumerable<string> fieldValues)
-        {
-            FieldValues.AddRange(fieldValues);
-            return this;
-        }
+            => WithFieldValues(fieldValues.ToArray());
 
         public InsertCommandBuilder WithFieldValues(params string[] fieldValues)
-        {
-            FieldValues.AddRange(fieldValues);
-            return this;
-        }
+            => this.Chain(() => FieldValues.AddRange(fieldValues));
 
         public InsertCommandBuilder WithOutputField(string outputField)
-        {
-            OutputFields.Add(outputField);
-            return this;
-        }
+            => this.Chain(() => OutputFields.Add(outputField));
 
         public InsertCommandBuilder WithOutputFields(IEnumerable<string> outputFields)
-        {
-            OutputFields.AddRange(outputFields);
-            return this;
-        }
+            => this.Chain(() => OutputFields.AddRange(outputFields));
 
         public InsertCommandBuilder WithOutputFields(params string[] outputFields)
-        {
-            OutputFields.AddRange(outputFields);
-            return this;
-        }
+            => this.Chain(() => OutputFields.AddRange(outputFields));
 
         public InsertCommandBuilder AppendParameter(string key, object value)
-        {
-            CommandParameters.Add(key, value);
-            return this;
-        }
+            => this.Chain(() => CommandParameters.Add(key, value));
 
         public InsertCommandBuilder AppendParameters(object parameters)
-        {
-            foreach (var param in parameters.ToExpandoObject())
-            {
-                CommandParameters.Add(param.Key, param.Value);
-            }
-            return this;
-        }
+            => this.Chain(() => CommandParameters.AddRange(parameters.ToExpandoObject()));
 
         public InsertCommandBuilder Clear()
         {

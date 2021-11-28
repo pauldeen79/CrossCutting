@@ -26,84 +26,54 @@ namespace CrossCutting.Data.Core.Builders
         }
 
         public UpdateCommandBuilder WithTable(string table)
-        {
-            Table = table;
-            return this;
-        }
+            => this.Chain(() => Table = table);
 
         public UpdateCommandBuilder WithFieldName(string fieldName)
-        {
-            FieldNames.Add(fieldName);
-            return this;
-        }
+            => this.Chain(() => FieldNames.Add(fieldName));
 
         public UpdateCommandBuilder WithFieldNames(IEnumerable<string> fieldNames)
-        {
-            FieldNames.AddRange(fieldNames);
-            return this;
-        }
+            => this.Chain(() => FieldNames.AddRange(fieldNames));
 
         public UpdateCommandBuilder WithFieldNames(params string[] fieldNames)
-        {
-            FieldNames.AddRange(fieldNames);
-            return this;
-        }
+            => this.Chain(() => FieldNames.AddRange(fieldNames));
 
         public UpdateCommandBuilder WithFieldValue(string fieldValue)
-        {
-            FieldValues.Add(fieldValue);
-            return this;
-        }
+            => this.Chain(() => FieldValues.Add(fieldValue));
 
         public UpdateCommandBuilder WithFieldValues(IEnumerable<string> fieldValues)
-        {
-            FieldValues.AddRange(fieldValues);
-            return this;
-        }
+            => this.Chain(() => FieldValues.AddRange(fieldValues));
 
         public UpdateCommandBuilder WithFieldValues(params string[] fieldValues)
-        {
-            FieldValues.AddRange(fieldValues);
-            return this;
-        }
+            => this.Chain(() => FieldValues.AddRange(fieldValues));
 
         public UpdateCommandBuilder Where(string value)
-        {
-            if (_whereBuilder.Length > 0)
+            => this.Chain(() =>
             {
-                _whereBuilder.Append(" AND ");
-            }
-            _whereBuilder.Append(value);
-            return this;
-        }
+                if (_whereBuilder.Length > 0)
+                {
+                    _whereBuilder.Append(" AND ");
+                }
+                _whereBuilder.Append(value);
+            });
 
         public UpdateCommandBuilder And(string value)
             => Where(value);
 
         public UpdateCommandBuilder Or(string value)
-        {
-            if (_whereBuilder.Length == 0)
+            => this.Chain(() =>
             {
-                throw new InvalidOperationException("There is no WHERE clause to combine the current value with");
-            }
-            _whereBuilder.Append(" OR ").Append(value);
-            return this;
-        }
+                if (_whereBuilder.Length == 0)
+                {
+                    throw new InvalidOperationException("There is no WHERE clause to combine the current value with");
+                }
+                _whereBuilder.Append(" OR ").Append(value);
+            });
 
         public UpdateCommandBuilder AppendParameter(string key, object value)
-        {
-            CommandParameters.Add(key, value);
-            return this;
-        }
+            => this.Chain(() => CommandParameters.Add(key, value));
 
         public UpdateCommandBuilder AppendParameters(object parameters)
-        {
-            foreach (var param in parameters.ToExpandoObject())
-            {
-                CommandParameters.Add(param.Key, param.Value);
-            }
-            return this;
-        }
+            => this.Chain(() => CommandParameters.AddRange(parameters.ToExpandoObject()));
 
         public UpdateCommandBuilder Clear()
         {

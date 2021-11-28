@@ -21,56 +21,44 @@ namespace CrossCutting.Data.Core.Builders
         }
 
         public DeleteCommandBuilder From(string table)
-        {
-            Table = table;
-            return this;
-        }
+            => this.Chain(() => Table = table);
 
         public DeleteCommandBuilder Where(string value)
-        {
-            if (_whereBuilder.Length > 0)
+            => this.Chain(() =>
             {
-                _whereBuilder.Append(" AND ");
-            }
-            _whereBuilder.Append(value);
-            return this;
-        }
+                if (_whereBuilder.Length > 0)
+                {
+                    _whereBuilder.Append(" AND ");
+                }
+                _whereBuilder.Append(value);
+            });
 
         public DeleteCommandBuilder And(string value)
             => Where(value);
 
         public DeleteCommandBuilder Or(string value)
-        {
-            if (_whereBuilder.Length == 0)
+            => this.Chain(() =>
             {
-                throw new InvalidOperationException("There is no WHERE clause to combine the current value with");
-            }
-            _whereBuilder.Append(" OR ").Append(value);
-            return this;
-        }
+                if (_whereBuilder.Length == 0)
+                {
+                    throw new InvalidOperationException("There is no WHERE clause to combine the current value with");
+                }
+                _whereBuilder.Append(" OR ").Append(value);
+            });
 
         public DeleteCommandBuilder AppendParameter(string key, object value)
-        {
-            CommandParameters.Add(key, value);
-            return this;
-        }
+            => this.Chain(() => CommandParameters.Add(key, value));
 
         public DeleteCommandBuilder AppendParameters(object parameters)
-        {
-            foreach (var param in parameters.ToExpandoObject())
-            {
-                CommandParameters.Add(param.Key, param.Value);
-            }
-            return this;
-        }
+            => this.Chain(() => CommandParameters.AddRange(parameters.ToExpandoObject()));
 
         public DeleteCommandBuilder Clear()
-        {
-            CommandParameters.Clear();
-            Table = string.Empty;
-            _whereBuilder.Clear();
-            return this;
-        }
+            => this.Chain(() =>
+            {
+                CommandParameters.Clear();
+                Table = string.Empty;
+                _whereBuilder.Clear();
+            });
 
         public IDatabaseCommand Build()
             => new SqlDatabaseCommand(BuildSql(), DatabaseCommandType.Text, DatabaseOperation.Delete, CommandParameters);

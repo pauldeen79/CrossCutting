@@ -27,73 +27,37 @@ namespace CrossCutting.Data.Core.Builders
         }
 
         public InsertSelectCommandBuilder Into(string table)
-        {
-            Table = table;
-            return this;
-        }
+            => this.Chain(() => Table = table);
 
         public InsertSelectCommandBuilder WithTemporaryTable(string temporaryTable)
-        {
-            TemporaryTable = temporaryTable;
-            return this;
-        }
+            => this.Chain(() => TemporaryTable = temporaryTable);
 
         public InsertSelectCommandBuilder WithFieldName(string fieldName)
-        {
-            FieldNames.Add(fieldName);
-            return this;
-        }
+            => this.Chain(() => FieldNames.Add(fieldName));
 
         public InsertSelectCommandBuilder WithFieldNames(IEnumerable<string> fieldNames)
-        {
-            FieldNames.AddRange(fieldNames);
-            return this;
-        }
+            => this.Chain(() => FieldNames.AddRange(fieldNames));
 
         public InsertSelectCommandBuilder WithFieldNames(params string[] fieldNames)
-        {
-            FieldNames.AddRange(fieldNames);
-            return this;
-        }
+            => this.Chain(() => FieldNames.AddRange(fieldNames));
 
         public InsertSelectCommandBuilder WithSelectCommand(SelectCommandBuilder builder)
-        {
-            SelectCommand = builder;
-            return this;
-        }
+            => this.Chain(() => SelectCommand = builder);
 
         public InsertSelectCommandBuilder WithOutputField(string outputField)
-        {
-            OutputFields.Add(outputField);
-            return this;
-        }
+            => this.Chain(() => OutputFields.Add(outputField));
 
         public InsertSelectCommandBuilder WithOutputFields(IEnumerable<string> outputFields)
-        {
-            OutputFields.AddRange(outputFields);
-            return this;
-        }
+            => this.Chain(() => OutputFields.AddRange(outputFields));
 
         public InsertSelectCommandBuilder WithOutputFields(params string[] outputFields)
-        {
-            OutputFields.AddRange(outputFields);
-            return this;
-        }
+            => this.Chain(() => OutputFields.AddRange(outputFields));
 
         public InsertSelectCommandBuilder AppendParameter(string key, object value)
-        {
-            CommandParameters.Add(key, value);
-            return this;
-        }
+            => this.Chain(() => CommandParameters.Add(key, value));
 
         public InsertSelectCommandBuilder AppendParameters(object parameters)
-        {
-            foreach (var param in parameters.ToExpandoObject())
-            {
-                CommandParameters.Add(param.Key, param.Value);
-            }
-            return this;
-        }
+            => this.Chain(() => CommandParameters.AddRange(parameters.ToExpandoObject()));
 
         public InsertSelectCommandBuilder Clear()
         {

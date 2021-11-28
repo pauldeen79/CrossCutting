@@ -140,5 +140,11 @@ namespace CrossCutting.Common.Extensions
 
             return expandoObject;
         }
+
+        public static T Chain<T>(this T instance, Action action)
+        {
+            action.Invoke();
+            return instance;
+        }
     }
 }

@@ -19,7 +19,6 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Select("Field1, Field2")
                 .Where("Field1 = @field1")
@@ -46,7 +45,6 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Select("Field1, Field2")
                 .Where("Field1 = @field1")
@@ -73,7 +71,6 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Select("Field1, Field2")
                 .Where("Field1 = @field1")
@@ -101,7 +98,6 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Select("Field1, Field2")
                 .Where("Field1 = @field1")
@@ -129,7 +125,6 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Select("Field1, Field2")
                 .OrderBy("Field1")
@@ -147,7 +142,6 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .InnerJoin("Table2 ON Table.Id = Table2.FkId")
                 .Select("Table.Field1, Table.Field2, Table2.Field3")
@@ -161,7 +155,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
         public void InnerJoin_Throws_Exception_When_FromClause_Is_Empty()
         {
             // Arrange
-            var command = new PagedSelectCommandBuilder().AsText();
+            var command = new PagedSelectCommandBuilder();
 
             // Act
             command.Invoking(x => x.InnerJoin("Table2 ON Table.Id = Table2.FkId"))
@@ -177,7 +171,6 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .LeftOuterJoin("Table2 ON Table.Id = Table2.FkId")
                 .Select("Table.Field1, Table.Field2, Table2.Field3")
@@ -191,7 +184,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
         public void LeftOuterJoin_Throws_Exception_When_FromClause_Is_Empty()
         {
             // Arrange
-            var command = new PagedSelectCommandBuilder().AsText();
+            var command = new PagedSelectCommandBuilder();
 
             // Act
             command.Invoking(x => x.LeftOuterJoin("Table2 ON Table.Id = Table2.FkId"))
@@ -207,7 +200,6 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .RightOuterJoin("Table2 ON Table.Id = Table2.FkId")
                 .Select("Table.Field1, Table.Field2, Table2.Field3")
@@ -221,7 +213,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
         public void RightOuterJoin_Throws_Exception_When_FromClause_Is_Empty()
         {
             // Arrange
-            var command = new PagedSelectCommandBuilder().AsText();
+            var command = new PagedSelectCommandBuilder();
 
             // Act
             command.Invoking(x => x.RightOuterJoin("Table2 ON Table.Id = Table2.FkId"))
@@ -237,7 +229,6 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .CrossJoin("Table2")
                 .Select("Table.Field1, Table.Field2, Table2.Field3")
@@ -255,8 +246,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
-                .Top(1)
+                .WithTop(1)
                 .From("Table")
                 .Select("Field1, Field2")
                 .Build().DataCommand;
@@ -273,8 +263,7 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
-                .Distinct()
+                .DistinctValues()
                 .From("Table")
                 .Select("Field1, Field2")
                 .Build().DataCommand;
@@ -291,7 +280,6 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Build().DataCommand;
 
@@ -307,7 +295,6 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Select("Field1, Field2, COUNT(Field3)")
                 .GroupBy("Field3")
@@ -326,10 +313,9 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .OrderBy("Id")
-                .PageSize(10)
+                .Take(10)
                 .Build().DataCommand;
 
             // Assert
@@ -344,11 +330,10 @@ namespace CrossCutting.Data.Sql.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .OrderBy("Id")
-                .PageSize(10)
-                .Offset(10)
+                .Take(10)
+                .Skip(10)
                 .Build().DataCommand;
 
             // Assert
@@ -359,15 +344,14 @@ namespace CrossCutting.Data.Sql.Tests.Builders
         public void Can_Clear_PagedSelectCommandBuilder()
         {
             // Arrange
-            var command = new PagedSelectCommandBuilder().AsStoredProcedure()
-                .Distinct()
-                .Top(1)
+            var command = new PagedSelectCommandBuilder()
+                .DistinctValues()
+                .WithTop(1)
                 .From("Table2")
                 .Select("Field4, Field5, Field6");
 
             // Act
             var actual = command.Clear()
-                .AsText()
                 .From("Table")
                 .Select("Field1, Field2, Field3")
                 .Build().DataCommand;

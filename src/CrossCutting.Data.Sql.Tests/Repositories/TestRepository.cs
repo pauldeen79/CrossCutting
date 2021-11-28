@@ -44,8 +44,8 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
                 .Select("*")
                 .From("MyTable")
                 .OrderBy("Name")
-                .Offset(offset)
-                .PageSize(pageSize)
+                .Skip(offset)
+                .Take(pageSize)
                 .Build());
     }
 }
