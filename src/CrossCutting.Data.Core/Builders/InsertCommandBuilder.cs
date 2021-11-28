@@ -9,7 +9,6 @@ namespace CrossCutting.Data.Core.Builders
 {
     public class InsertCommandBuilder
     {
-        public DatabaseCommandType CommandType { get; set; }
         public IDictionary<string, object> CommandParameters { get; set; }
         private string _table;
         private string _temporaryTable;
@@ -119,20 +118,8 @@ namespace CrossCutting.Data.Core.Builders
             return this;
         }
 
-        public InsertCommandBuilder AsStoredProcedure()
-        {
-            CommandType = DatabaseCommandType.StoredProcedure;
-            return this;
-        }
-
-        public InsertCommandBuilder AsText()
-        {
-            CommandType = DatabaseCommandType.Text;
-            return this;
-        }
-
         public IDatabaseCommand Build()
-            => new SqlDatabaseCommand(BuildSql(), CommandType, DatabaseOperation.Insert, CommandParameters);
+            => new SqlDatabaseCommand(BuildSql(), DatabaseCommandType.Text, DatabaseOperation.Insert, CommandParameters);
 
         private string BuildSql()
         {

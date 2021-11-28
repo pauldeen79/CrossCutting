@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core.Builders;
 using FluentAssertions;
 using Xunit;
@@ -105,6 +106,24 @@ namespace CrossCutting.Data.Core.Tests.Builders
             actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
             var parameters = actual.CommandParameters as IDictionary<string, object>;
             parameters.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Can_Clear_Builder()
+        {
+            // Arrange
+            var input = new InsertCommandBuilder().Into("MyTable")
+                .WithFieldNames("Field1", "Field2", "Field3")
+                .WithFieldValues("@Field1", "@Field2", "@Field3")
+                .AppendParameters(new { Field1 = "Value1", Field2 = "Value2", Field3 = "Value3" });
+
+            // Act
+            input.Clear();
+
+            // Assert
+            input.Invoking(x => x.Build())
+                 .Should().Throw<InvalidOperationException>()
+                 .WithMessage("table name is missing");
         }
     }
 }

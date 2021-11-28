@@ -19,7 +19,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Select("Field1", "Field2")
                 .Where("Field1 = @field1")
@@ -46,7 +45,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Select("Field1", "Field2")
                 .Where("Field1 = @field1")
@@ -73,7 +71,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Select("Field1", "Field2")
                 .Where("Field1 = @field1")
@@ -101,7 +98,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Select("Field1", "Field2")
                 .Where("Field1 = @field1")
@@ -129,7 +125,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Select("Field1", "Field2")
                 .OrderBy("Field1")
@@ -147,7 +142,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .InnerJoin("Table2 ON Table.Id = Table2.FkId")
                 .Select("Table.Field1, Table.Field2, Table2.Field3")
@@ -161,7 +155,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
         public void InnerJoin_Throws_Exception_When_FromClause_Is_Empty()
         {
             // Arrange
-            var command = new SelectCommandBuilder().AsText();
+            var command = new SelectCommandBuilder();
 
             // Act
             command.Invoking(x => x.InnerJoin("Table2 ON Table.Id = Table2.FkId"))
@@ -177,7 +171,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .LeftOuterJoin("Table2 ON Table.Id = Table2.FkId")
                 .Select("Table.Field1", "Table.Field2", "Table2.Field3")
@@ -191,7 +184,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
         public void LeftOuterJoin_Throws_Exception_When_FromClause_Is_Empty()
         {
             // Arrange
-            var command = new SelectCommandBuilder().AsText();
+            var command = new SelectCommandBuilder();
 
             // Act
             command.Invoking(x => x.LeftOuterJoin("Table2 ON Table.Id = Table2.FkId"))
@@ -207,7 +200,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .RightOuterJoin("Table2 ON Table.Id = Table2.FkId")
                 .Select("Table.Field1", "Table.Field2", "Table2.Field3")
@@ -221,7 +213,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
         public void RightOuterJoin_Throws_Exception_When_FromClause_Is_Empty()
         {
             // Arrange
-            var command = new SelectCommandBuilder().AsText();
+            var command = new SelectCommandBuilder();
 
             // Act
             command.Invoking(x => x.RightOuterJoin("Table2 ON Table.Id = Table2.FkId"))
@@ -237,7 +229,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .CrossJoin("Table2")
                 .Select("Table.Field1", "Table.Field2", "Table2.Field3")
@@ -255,7 +246,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .Top(1)
                 .From("Table")
                 .Select("Field1", "Field2")
@@ -273,7 +263,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .Distinct()
                 .From("Table")
                 .Select("Field1", "Field2")
@@ -291,7 +280,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Build();
 
@@ -307,7 +295,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command
-                .AsText()
                 .From("Table")
                 .Select("Field1, Field2, COUNT(Field3)") // use single string, works as well
                 .GroupBy("Field3")
@@ -322,7 +309,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
         public void Can_Clear_SelectCommandBuilder()
         {
             // Arrange
-            var command = new SelectCommandBuilder().AsStoredProcedure()
+            var command = new SelectCommandBuilder()
                 .Distinct()
                 .Top(1)
                 .From("Table2")
@@ -330,7 +317,6 @@ namespace CrossCutting.Data.Core.Tests.Builders
 
             // Act
             var actual = command.Clear()
-                .AsText()
                 .From("Table")
                 .Select(new List<string>(new [] { "Field1", "Field2", "Field3" })) // use enumerable, works as well
                 .Build();

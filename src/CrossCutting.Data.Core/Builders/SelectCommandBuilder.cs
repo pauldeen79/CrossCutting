@@ -10,7 +10,6 @@ namespace CrossCutting.Data.Core.Builders
 {
     public class SelectCommandBuilder
     {
-        public DatabaseCommandType CommandType { get; set; }
         public IDictionary<string, object> CommandParameters { get; set; }
         private readonly StringBuilder _selectBuilder;
         private readonly StringBuilder _fromBuilder;
@@ -169,20 +168,8 @@ namespace CrossCutting.Data.Core.Builders
             return this;
         }
 
-        public SelectCommandBuilder AsStoredProcedure()
-        {
-            CommandType = DatabaseCommandType.StoredProcedure;
-            return this;
-        }
-
-        public SelectCommandBuilder AsText()
-        {
-            CommandType = DatabaseCommandType.Text;
-            return this;
-        }
-
         public IDatabaseCommand Build()
-            => new SqlDatabaseCommand(BuildSql(), CommandType, DatabaseOperation.Select, CommandParameters);
+            => new SqlDatabaseCommand(BuildSql(), DatabaseCommandType.Text, DatabaseOperation.Select, CommandParameters);
 
         private string BuildSql()
         {
