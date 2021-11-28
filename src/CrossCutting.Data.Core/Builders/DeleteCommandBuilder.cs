@@ -9,7 +9,6 @@ namespace CrossCutting.Data.Core.Builders
 {
     public class DeleteCommandBuilder
     {
-        public DatabaseCommandType CommandType { get; set; }
         public IDictionary<string, object> CommandParameters { get; set; }
         private string _table;
         private readonly StringBuilder _whereBuilder;

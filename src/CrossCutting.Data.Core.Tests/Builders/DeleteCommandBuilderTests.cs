@@ -65,5 +65,25 @@ namespace CrossCutting.Data.Core.Tests.Builders
             var parameters = actual.CommandParameters as IDictionary<string, object>;
             parameters.Should().BeEmpty();
         }
+
+        [Fact]
+        public void Can_Clear_And_Rebuild()
+        {
+            // Arrange
+            var input = new DeleteCommandBuilder()
+                .From("MyTable")
+                .Where("Field = @Field")
+                .AppendParameter("Field", "Value");
+
+            // Act
+            var actual = input.Clear().From("MyTable2").Build();
+
+            // Assert
+            actual.Operation.Should().Be(Abstractions.DatabaseOperation.Delete);
+            actual.CommandText.Should().Be("DELETE FROM MyTable2");
+            actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+            var parameters = actual.CommandParameters as IDictionary<string, object>;
+            parameters.Should().BeEmpty();
+        }
     }
 }

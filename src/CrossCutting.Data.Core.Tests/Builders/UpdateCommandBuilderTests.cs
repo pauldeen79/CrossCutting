@@ -38,7 +38,9 @@ namespace CrossCutting.Data.Core.Tests.Builders
         public void Build_Throws_When_FieldValues_Are_Empty()
         {
             // Arrange
-            var input = new UpdateCommandBuilder().Table("MyTable").WithFieldNames("Field1", "Field2", "Field3");
+            var input = new UpdateCommandBuilder()
+                .Table("MyTable")
+                .WithFieldNames("Field1", "Field2", "Field3");
 
             // Act & Assert
             input.Invoking(x => x.Build())
@@ -50,7 +52,8 @@ namespace CrossCutting.Data.Core.Tests.Builders
         public void Build_Throws_When_FieldNames_And_FieldValues_Count_Are_Not_Equal()
         {
             // Arrange
-            var input = new UpdateCommandBuilder().Table("MyTable")
+            var input = new UpdateCommandBuilder()
+                .Table("MyTable")
                 .WithFieldNames("Field1", "Field2", "Field3")
                 .WithFieldValues("Value1", "Value2");
 
@@ -64,7 +67,8 @@ namespace CrossCutting.Data.Core.Tests.Builders
         public void Build_Generates_Command_With_Parameters()
         {
             // Arrange
-            var input = new UpdateCommandBuilder().Table("MyTable")
+            var input = new UpdateCommandBuilder()
+                .Table("MyTable")
                 .WithFieldNames("Field1", "Field2", "Field3")
                 .WithFieldValues("@Field1", "@Field2", "@Field3")
                 .AppendParameters(new { Field1 = "Value1", Field2 = "Value2", Field3 = "Value3" });
@@ -89,7 +93,8 @@ namespace CrossCutting.Data.Core.Tests.Builders
         public void Build_Generates_Command_With_Where_Statement()
         {
             // Arrange
-            var input = new UpdateCommandBuilder().Table("MyTable")
+            var input = new UpdateCommandBuilder()
+                .Table("MyTable")
                 .WithFieldNames("Field1", "Field2", "Field3")
                 .WithFieldValues("\"Field1\"", "\"Field2\"", "\"Field3\"")
                 .Where("Field1 = \"OldValue1\"")
@@ -105,6 +110,63 @@ namespace CrossCutting.Data.Core.Tests.Builders
             actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
             var parameters = actual.CommandParameters as IDictionary<string, object>;
             parameters.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Can_Add_Single_Parameter()
+        {
+            // Arrange
+            var input = new UpdateCommandBuilder()
+                .Table("MyTable")
+                .WithFieldName("Field1")
+                .WithFieldValue("@Field1")
+                .AppendParameter("Field1", "Value1");
+
+            // Act
+            var actual = input.Build();
+
+            // Assert
+            actual.Operation.Should().Be(Abstractions.DatabaseOperation.Update);
+            actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = @Field1");
+            actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+            var parameters = actual.CommandParameters as IDictionary<string, object>;
+            if (parameters != null)
+            {
+                parameters.Should().HaveCount(1);
+                parameters.Keys.Should().BeEquivalentTo(new[] { "Field1" });
+                parameters.Values.Should().BeEquivalentTo(new[] { "Value1" });
+            }
+        }
+
+        [Fact]
+        public void Can_Clear_And_Rebuild()
+        {
+            // Arrange
+            var input = new UpdateCommandBuilder()
+                .Table("MyTable")
+                .WithFieldName("Field1")
+                .WithFieldValue("@Field1")
+                .AppendParameter("Field1", "Value1");
+
+            // Act
+            var actual = input.Clear()
+                .Table("MyTable2")
+                .WithFieldName("Field2")
+                .WithFieldValue("@Field2")
+                .AppendParameter("Field2", "Value2")
+                .Build();
+
+            // Assert
+            actual.Operation.Should().Be(Abstractions.DatabaseOperation.Update);
+            actual.CommandText.Should().Be("UPDATE MyTable2 SET Field2 = @Field2");
+            actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+            var parameters = actual.CommandParameters as IDictionary<string, object>;
+            if (parameters != null)
+            {
+                parameters.Should().HaveCount(1);
+                parameters.Keys.Should().BeEquivalentTo(new[] { "Field2" });
+                parameters.Values.Should().BeEquivalentTo(new[] { "Value2" });
+            }
         }
     }
 }
