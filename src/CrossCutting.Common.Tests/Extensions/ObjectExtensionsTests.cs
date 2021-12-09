@@ -80,14 +80,14 @@ namespace CrossCutting.Common.Tests.Extensions
         public void ToStringWithDefault_Returns_DefaultValue_On_Null_Input()
         {
             // Act
-            var actual = ((object?)null).ToStringWithDefault("default");
+            var actual = ((object?)null).ToStringWithDefault(() => "default");
 
             // Assert
             actual.Should().Be("default");
         }
 
         [Fact]
-        public void ToStringWithDefault_Returns_StringEMpty_On_Null_Input_When_DefaultValue_Is_Not_Supplied()
+        public void ToStringWithDefault_Returns_StringEmpty_On_Null_Input_When_DefaultValue_Is_Not_Supplied()
         {
             // Act
             var actual = ((object?)null).ToStringWithDefault();
@@ -272,12 +272,40 @@ namespace CrossCutting.Common.Tests.Extensions
             actual.First().Value.Should().Be("MyValue");
         }
 
+        [Fact]
+        public void Can_Chain_Without_Argument()
+        {
+            // Arrange
+            var input = new MyPocoClass();
+
+            // Act
+            var actual = input.Chain(() => { /* something interesting */ });
+
+            // Assert
+            actual.Should().BeSameAs(input);
+        }
+
+        [Fact]
+        public void Can_Chain_With_Argument()
+        {
+            // Arrange
+            var input = new MyPocoClass();
+
+            // Act
+            var actual = input.Chain(_ => { /* something interesting */ });
+
+            // Assert
+            actual.Should().BeSameAs(input);
+        }
+
+        [ExcludeFromCodeCoverage]
         private class MyPocoClass
         {
             [Required]
             public string? Value { get; set; }
         }
 
+        [ExcludeFromCodeCoverage]
         private sealed class MyDisposableClass : IDisposable
         {
             public bool IsDisposed { get; private set; }

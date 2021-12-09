@@ -62,6 +62,17 @@ namespace CrossCutting.Common.Extensions
         /// Converts an object value to string with default value if null.
         /// </summary>
         /// <param name="value">The value.</param>
+        /// <param name="defaultValueDelegate">The default value delegate.</param>
+        /// <returns>
+        /// value.ToString() when te value is not null, defaultValueDelegate result otherwise.
+        /// </returns>
+        public static string ToStringWithDefault(this object? value, Func<string> defaultValueDelegate)
+            => value.ToStringWithDefault(defaultValueDelegate());
+
+        /// <summary>
+        /// Converts an object value to string with default value if null.
+        /// </summary>
+        /// <param name="value">The value.</param>
         /// <param name="defaultValue">The default value.</param>
         /// <returns>
         /// value.ToString() when te value is not null, defaultValue otherwise.
@@ -144,6 +155,12 @@ namespace CrossCutting.Common.Extensions
         public static T Chain<T>(this T instance, Action action)
         {
             action.Invoke();
+            return instance;
+        }
+
+        public static T Chain<T>(this T instance, Action<T> action)
+        {
+            action.Invoke(instance);
             return instance;
         }
     }
