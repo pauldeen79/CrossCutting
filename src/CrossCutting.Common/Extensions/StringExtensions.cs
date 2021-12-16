@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CrossCutting.Common.Extensions
 {
@@ -181,5 +182,8 @@ namespace CrossCutting.Common.Extensions
             }
             return result.ToArray();
         }
+
+        public static string NormalizeLineEndings(this string instance)
+            => Regex.Replace(instance, @"\r\n|\n\r|\n|\r", Environment.NewLine);
     }
 }
