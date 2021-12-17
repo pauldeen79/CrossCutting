@@ -162,8 +162,8 @@ namespace CrossCutting.Data.Core.Tests.Builders
             // Arrange
             var input = new UpdateCommandBuilder()
                 .WithTable("MyTable")
-                .AddFieldName("Field1")
-                .AddFieldValue("@Field1")
+                .AddFieldNames("Field1")
+                .AddFieldValues("@Field1")
                 .AppendParameter("Field1", "Value1");
 
             // Act
@@ -188,15 +188,15 @@ namespace CrossCutting.Data.Core.Tests.Builders
             // Arrange
             var input = new UpdateCommandBuilder()
                 .WithTable("MyTable")
-                .AddFieldName("Field1")
-                .AddFieldValue("@Field1")
+                .AddFieldNames("Field1")
+                .AddFieldValues("@Field1")
                 .AppendParameter("Field1", "Value1");
 
             // Act
             var actual = input.Clear()
                 .WithTable("MyTable2")
-                .AddFieldName("Field2")
-                .AddFieldValue("@Field2")
+                .AddFieldNames("Field2")
+                .AddFieldValues("@Field2")
                 .AppendParameter("Field2", "Value2")
                 .Build();
 

@@ -33,9 +33,6 @@ namespace CrossCutting.Data.Core.Builders
         public InsertSelectCommandBuilder WithTemporaryTable(string temporaryTable)
             => this.Chain(() => TemporaryTable = temporaryTable);
 
-        public InsertSelectCommandBuilder WithFieldName(string fieldName)
-            => this.Chain(() => FieldNames.Add(fieldName));
-
         public InsertSelectCommandBuilder WithFieldNames(IEnumerable<string> fieldNames)
             => this.Chain(() => FieldNames.AddRange(fieldNames));
 
@@ -44,9 +41,6 @@ namespace CrossCutting.Data.Core.Builders
 
         public InsertSelectCommandBuilder WithSelectCommand(SelectCommandBuilder builder)
             => this.Chain(() => SelectCommand = builder);
-
-        public InsertSelectCommandBuilder AddOutputField(string outputField)
-            => this.Chain(() => OutputFields.Add(outputField));
 
         public InsertSelectCommandBuilder AddOutputFields(IEnumerable<string> outputFields)
             => this.Chain(() => OutputFields.AddRange(outputFields));

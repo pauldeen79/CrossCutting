@@ -34,26 +34,17 @@ namespace CrossCutting.Data.Core.Builders
         public InsertCommandBuilder WithTemporaryTable(string temporaryTable)
             => this.Chain(() => TemporaryTable = temporaryTable);
 
-        public InsertCommandBuilder AddFieldName(string fieldName)
-            => this.Chain(() => FieldNames.Add(fieldName));
-
         public InsertCommandBuilder AddFieldNames(IEnumerable<string> fieldNames)
             => this.Chain(() => FieldNames.AddRange(fieldNames));
 
         public InsertCommandBuilder AddFieldNames(params string[] fieldNames)
             => this.Chain(() => FieldNames.AddRange(fieldNames));
 
-        public InsertCommandBuilder AddFieldValue(string fieldValue)
-            => this.Chain(() => FieldValues.Add(fieldValue));
-
         public InsertCommandBuilder AddFieldValues(IEnumerable<string> fieldValues)
             => AddFieldValues(fieldValues.ToArray());
 
         public InsertCommandBuilder AddFieldValues(params string[] fieldValues)
             => this.Chain(() => FieldValues.AddRange(fieldValues));
-
-        public InsertCommandBuilder AddOutputField(string outputField)
-            => this.Chain(() => OutputFields.Add(outputField));
 
         public InsertCommandBuilder AddOutputFields(IEnumerable<string> outputFields)
             => this.Chain(() => OutputFields.AddRange(outputFields));

@@ -54,9 +54,6 @@ namespace CrossCutting.Data.Core.Builders
                 _whereBuilder.Append(" OR ").Append(value);
             });
 
-        public DeleteCommandBuilder AddOutputField(string outputField)
-            => this.Chain(() => OutputFields.Add(outputField));
-
         public DeleteCommandBuilder AddOutputFields(IEnumerable<string> outputFields)
             => this.Chain(() => OutputFields.AddRange(outputFields));
 
