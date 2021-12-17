@@ -191,13 +191,13 @@ namespace CrossCutting.Data.Core.Extensions
             if (outputFields.Count > 0)
             {
                 instance.Append(" OUTPUT ")
-                       .Append(string.Join(", ", outputFields));
+                        .Append(string.Join(", ", outputFields));
             }
 
             if (!string.IsNullOrEmpty(temporaryTable))
             {
                 instance.Append(" INTO ")
-                       .Append(temporaryTable);
+                        .Append(temporaryTable);
             }
 
             return instance;
