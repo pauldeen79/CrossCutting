@@ -181,13 +181,16 @@ namespace CrossCutting.Data.Core.Extensions
                                                    string temporaryTable,
                                                    ICollection<string> fieldNames,
                                                    ICollection<string> outputFields)
-        {
-            instance.Append("INSERT INTO ")
+            => instance
+               .Append("INSERT INTO ")
                .Append(table)
                .Append("(")
                .Append(string.Join(", ", fieldNames))
-               .Append(")");
+               .Append(")")
+               .AppendOutputFields(temporaryTable, outputFields);
 
+        internal static StringBuilder AppendOutputFields(this StringBuilder instance, string temporaryTable, ICollection<string> outputFields)
+        {
             if (outputFields.Count > 0)
             {
                 instance.Append(" OUTPUT ")

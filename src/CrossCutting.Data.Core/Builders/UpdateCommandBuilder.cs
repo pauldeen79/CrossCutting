@@ -5,6 +5,7 @@ using System.Text;
 using CrossCutting.Common.Extensions;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core.Commands;
+using CrossCutting.Data.Core.Extensions;
 
 namespace CrossCutting.Data.Core.Builders
 {
@@ -12,39 +13,55 @@ namespace CrossCutting.Data.Core.Builders
     {
         public IDictionary<string, object> CommandParameters { get; set; }
         public string Table { get; set; }
+        public string TemporaryTable { get; set; }
         public List<string> FieldNames { get; set; }
         public List<string> FieldValues { get; set; }
+        public List<string> OutputFields { get; set; }
         private readonly StringBuilder _whereBuilder;
 
         public UpdateCommandBuilder()
         {
             CommandParameters = new Dictionary<string, object>();
-            Table = string.Empty;
             FieldNames = new List<string>();
             FieldValues = new List<string>();
+            OutputFields = new List<string>();
+            Table = string.Empty;
+            TemporaryTable = string.Empty;
             _whereBuilder = new StringBuilder();
         }
 
         public UpdateCommandBuilder WithTable(string table)
             => this.Chain(() => Table = table);
 
-        public UpdateCommandBuilder WithFieldName(string fieldName)
+        public UpdateCommandBuilder WithTemporaryTable(string temporaryTable)
+            => this.Chain(() => TemporaryTable = temporaryTable);
+
+        public UpdateCommandBuilder AddFieldName(string fieldName)
             => this.Chain(() => FieldNames.Add(fieldName));
 
-        public UpdateCommandBuilder WithFieldNames(IEnumerable<string> fieldNames)
+        public UpdateCommandBuilder AddFieldNames(IEnumerable<string> fieldNames)
             => this.Chain(() => FieldNames.AddRange(fieldNames));
 
-        public UpdateCommandBuilder WithFieldNames(params string[] fieldNames)
+        public UpdateCommandBuilder AddFieldNames(params string[] fieldNames)
             => this.Chain(() => FieldNames.AddRange(fieldNames));
 
-        public UpdateCommandBuilder WithFieldValue(string fieldValue)
+        public UpdateCommandBuilder AddFieldValue(string fieldValue)
             => this.Chain(() => FieldValues.Add(fieldValue));
 
-        public UpdateCommandBuilder WithFieldValues(IEnumerable<string> fieldValues)
+        public UpdateCommandBuilder AddFieldValues(IEnumerable<string> fieldValues)
             => this.Chain(() => FieldValues.AddRange(fieldValues));
 
-        public UpdateCommandBuilder WithFieldValues(params string[] fieldValues)
+        public UpdateCommandBuilder AddFieldValues(params string[] fieldValues)
             => this.Chain(() => FieldValues.AddRange(fieldValues));
+
+        public UpdateCommandBuilder AddOutputField(string outputField)
+            => this.Chain(() => OutputFields.Add(outputField));
+
+        public UpdateCommandBuilder AddOutputFields(IEnumerable<string> outputFields)
+            => this.Chain(() => OutputFields.AddRange(outputFields));
+
+        public UpdateCommandBuilder AddOutputFields(params string[] outputFields)
+            => this.Chain(() => OutputFields.AddRange(outputFields));
 
         public UpdateCommandBuilder Where(string value)
             => this.Chain(() =>
@@ -78,9 +95,11 @@ namespace CrossCutting.Data.Core.Builders
         public UpdateCommandBuilder Clear()
         {
             CommandParameters.Clear();
-            Table = string.Empty;
             FieldNames.Clear();
             FieldValues.Clear();
+            OutputFields.Clear();
+            Table = string.Empty;
+            TemporaryTable = string.Empty;
             _whereBuilder.Clear();
             return this;
         }
@@ -114,7 +133,8 @@ namespace CrossCutting.Data.Core.Builders
                 .Append("UPDATE ")
                 .Append(Table)
                 .Append(" SET ")
-                .Append(string.Join(", ", GenerateValues()));
+                .Append(string.Join(", ", GenerateValues()))
+                .AppendOutputFields(TemporaryTable, OutputFields);
 
             if (_whereBuilder.Length > 0)
             {

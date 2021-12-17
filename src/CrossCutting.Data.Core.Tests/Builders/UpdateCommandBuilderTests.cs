@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using CrossCutting.Data.Core.Builders;
 using FluentAssertions;
 using Xunit;
@@ -40,7 +41,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
             // Arrange
             var input = new UpdateCommandBuilder()
                 .WithTable("MyTable")
-                .WithFieldNames("Field1", "Field2", "Field3");
+                .AddFieldNames("Field1", "Field2", "Field3");
 
             // Act & Assert
             input.Invoking(x => x.Build())
@@ -54,8 +55,8 @@ namespace CrossCutting.Data.Core.Tests.Builders
             // Arrange
             var input = new UpdateCommandBuilder()
                 .WithTable("MyTable")
-                .WithFieldNames("Field1", "Field2", "Field3")
-                .WithFieldValues("Value1", "Value2");
+                .AddFieldNames("Field1", "Field2", "Field3")
+                .AddFieldValues("Value1", "Value2");
 
             // Act & Assert
             input.Invoking(x => x.Build())
@@ -69,8 +70,8 @@ namespace CrossCutting.Data.Core.Tests.Builders
             // Arrange
             var input = new UpdateCommandBuilder()
                 .WithTable("MyTable")
-                .WithFieldNames("Field1", "Field2", "Field3")
-                .WithFieldValues("@Field1", "@Field2", "@Field3")
+                .AddFieldNames("Field1", "Field2", "Field3")
+                .AddFieldValues("@Field1", "@Field2", "@Field3")
                 .AppendParameters(new { Field1 = "Value1", Field2 = "Value2", Field3 = "Value3" });
 
             // Act
@@ -95,8 +96,8 @@ namespace CrossCutting.Data.Core.Tests.Builders
             // Arrange
             var input = new UpdateCommandBuilder()
                 .WithTable("MyTable")
-                .WithFieldNames("Field1", "Field2", "Field3")
-                .WithFieldValues("\"Field1\"", "\"Field2\"", "\"Field3\"")
+                .AddFieldNames("Field1", "Field2", "Field3")
+                .AddFieldValues("\"Field1\"", "\"Field2\"", "\"Field3\"")
                 .Where("Field1 = \"OldValue1\"")
                 .And("Field2 = \"OldValue2\"")
                 .And("Field3 = \"OldValue3\"");
@@ -113,13 +114,56 @@ namespace CrossCutting.Data.Core.Tests.Builders
         }
 
         [Fact]
+        public void Build_Generates_Command_With_Output_Statement()
+        {
+            // Arrange
+            var input = new UpdateCommandBuilder()
+                .WithTable("MyTable")
+                .AddFieldNames("Field1", "Field2", "Field3")
+                .AddFieldValues("\"Field1\"", "\"Field2\"", "\"Field3\"")
+                .AddOutputFields("Field1", "Field2")
+                .Where("Field1 = \"OldValue1\"")
+                .And("Field2 = \"OldValue2\"")
+                .And("Field3 = \"OldValue3\"");
+
+            // Act
+            var actual = input.Build();
+
+            // Assert
+            actual.Operation.Should().Be(Abstractions.DatabaseOperation.Update);
+            actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = \"Field1\", Field2 = \"Field2\", Field3 = \"Field3\" OUTPUT Field1, Field2 WHERE Field1 = \"OldValue1\" AND Field2 = \"OldValue2\" AND Field3 = \"OldValue3\"");
+        }
+
+        [Fact]
+        public void Build_Generates_Command_With_Output_Statement_And_TemporaryTable()
+        {
+            // Arrange
+            var input = new UpdateCommandBuilder()
+                .WithTable("MyTable")
+                .AddFieldNames(new[] { "Field1", "Field2", "Field3" }.AsEnumerable())
+                .AddFieldValues(new[] { "\"Field1\"", "\"Field2\"", "\"Field3\"" }.AsEnumerable())
+                .AddOutputFields(new[] { "Field1", "Field2" }.AsEnumerable())
+                .WithTemporaryTable("@NewValues")
+                .Where("Field1 = \"OldValue1\"")
+                .And("Field2 = \"OldValue2\"")
+                .And("Field3 = \"OldValue3\"");
+
+            // Act
+            var actual = input.Build();
+
+            // Assert
+            actual.Operation.Should().Be(Abstractions.DatabaseOperation.Update);
+            actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = \"Field1\", Field2 = \"Field2\", Field3 = \"Field3\" OUTPUT Field1, Field2 INTO @NewValues WHERE Field1 = \"OldValue1\" AND Field2 = \"OldValue2\" AND Field3 = \"OldValue3\"");
+        }
+
+        [Fact]
         public void Can_Add_Single_Parameter()
         {
             // Arrange
             var input = new UpdateCommandBuilder()
                 .WithTable("MyTable")
-                .WithFieldName("Field1")
-                .WithFieldValue("@Field1")
+                .AddFieldName("Field1")
+                .AddFieldValue("@Field1")
                 .AppendParameter("Field1", "Value1");
 
             // Act
@@ -144,15 +188,15 @@ namespace CrossCutting.Data.Core.Tests.Builders
             // Arrange
             var input = new UpdateCommandBuilder()
                 .WithTable("MyTable")
-                .WithFieldName("Field1")
-                .WithFieldValue("@Field1")
+                .AddFieldName("Field1")
+                .AddFieldValue("@Field1")
                 .AppendParameter("Field1", "Value1");
 
             // Act
             var actual = input.Clear()
                 .WithTable("MyTable2")
-                .WithFieldName("Field2")
-                .WithFieldValue("@Field2")
+                .AddFieldName("Field2")
+                .AddFieldValue("@Field2")
                 .AppendParameter("Field2", "Value2")
                 .Build();
 

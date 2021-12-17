@@ -21,11 +21,11 @@ namespace CrossCutting.Data.Core.Builders
         public InsertCommandBuilder()
         {
             CommandParameters = new Dictionary<string, object>();
-            Table = string.Empty;
-            TemporaryTable = string.Empty;
             FieldNames = new List<string>();
             OutputFields = new List<string>();
             FieldValues = new List<string>();
+            Table = string.Empty;
+            TemporaryTable = string.Empty;
         }
 
         public InsertCommandBuilder Into(string table)
@@ -34,31 +34,31 @@ namespace CrossCutting.Data.Core.Builders
         public InsertCommandBuilder WithTemporaryTable(string temporaryTable)
             => this.Chain(() => TemporaryTable = temporaryTable);
 
-        public InsertCommandBuilder WithFieldName(string fieldName)
+        public InsertCommandBuilder AddFieldName(string fieldName)
             => this.Chain(() => FieldNames.Add(fieldName));
 
-        public InsertCommandBuilder WithFieldNames(IEnumerable<string> fieldNames)
+        public InsertCommandBuilder AddFieldNames(IEnumerable<string> fieldNames)
             => this.Chain(() => FieldNames.AddRange(fieldNames));
 
-        public InsertCommandBuilder WithFieldNames(params string[] fieldNames)
+        public InsertCommandBuilder AddFieldNames(params string[] fieldNames)
             => this.Chain(() => FieldNames.AddRange(fieldNames));
 
-        public InsertCommandBuilder WithFieldValue(string fieldValue)
+        public InsertCommandBuilder AddFieldValue(string fieldValue)
             => this.Chain(() => FieldValues.Add(fieldValue));
 
-        public InsertCommandBuilder WithFieldValues(IEnumerable<string> fieldValues)
-            => WithFieldValues(fieldValues.ToArray());
+        public InsertCommandBuilder AddFieldValues(IEnumerable<string> fieldValues)
+            => AddFieldValues(fieldValues.ToArray());
 
-        public InsertCommandBuilder WithFieldValues(params string[] fieldValues)
+        public InsertCommandBuilder AddFieldValues(params string[] fieldValues)
             => this.Chain(() => FieldValues.AddRange(fieldValues));
 
-        public InsertCommandBuilder WithOutputField(string outputField)
+        public InsertCommandBuilder AddOutputField(string outputField)
             => this.Chain(() => OutputFields.Add(outputField));
 
-        public InsertCommandBuilder WithOutputFields(IEnumerable<string> outputFields)
+        public InsertCommandBuilder AddOutputFields(IEnumerable<string> outputFields)
             => this.Chain(() => OutputFields.AddRange(outputFields));
 
-        public InsertCommandBuilder WithOutputFields(params string[] outputFields)
+        public InsertCommandBuilder AddOutputFields(params string[] outputFields)
             => this.Chain(() => OutputFields.AddRange(outputFields));
 
         public InsertCommandBuilder AppendParameter(string key, object value)
@@ -70,11 +70,11 @@ namespace CrossCutting.Data.Core.Builders
         public InsertCommandBuilder Clear()
         {
             CommandParameters.Clear();
-            Table = string.Empty;
-            TemporaryTable = string.Empty;
             FieldNames.Clear();
             OutputFields.Clear();
             FieldValues.Clear();
+            Table = string.Empty;
+            TemporaryTable = string.Empty;
             return this;
         }
 

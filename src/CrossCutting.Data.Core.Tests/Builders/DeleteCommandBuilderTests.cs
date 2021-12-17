@@ -67,6 +67,45 @@ namespace CrossCutting.Data.Core.Tests.Builders
         }
 
         [Fact]
+        public void Build_Generates_Command_With_OutputValues()
+        {
+            // Arrange
+            var input = new DeleteCommandBuilder()
+                .From("MyTable")
+                .Where("Field1 = @Field1")
+                .And("Field2 = @Field2")
+                .And("Field3 = @Field3")
+                .AddOutputFields("Field1", "Field2");
+
+            // Act
+            var actual = input.Build();
+
+            // Assert
+            actual.Operation.Should().Be(Abstractions.DatabaseOperation.Delete);
+            actual.CommandText.Should().Be("DELETE FROM MyTable OUTPUT Field1, Field2 WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
+        }
+
+        [Fact]
+        public void Build_Generates_Command_With_OutputValues_And_TemporaryTable()
+        {
+            // Arrange
+            var input = new DeleteCommandBuilder()
+                .From("MyTable")
+                .WithTemporaryTable("@NewValues")
+                .Where("Field1 = @Field1")
+                .And("Field2 = @Field2")
+                .And("Field3 = @Field3")
+                .AddOutputFields("Field1", "Field2");
+
+            // Act
+            var actual = input.Build();
+
+            // Assert
+            actual.Operation.Should().Be(Abstractions.DatabaseOperation.Delete);
+            actual.CommandText.Should().Be("DELETE FROM MyTable OUTPUT Field1, Field2 INTO @NewValues WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
+        }
+
+        [Fact]
         public void Can_Clear_And_Rebuild()
         {
             // Arrange

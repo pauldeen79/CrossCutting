@@ -4,6 +4,7 @@ using System.Text;
 using CrossCutting.Common.Extensions;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core.Commands;
+using CrossCutting.Data.Core.Extensions;
 
 namespace CrossCutting.Data.Core.Builders
 {
@@ -11,17 +12,24 @@ namespace CrossCutting.Data.Core.Builders
     {
         public IDictionary<string, object> CommandParameters { get; set; }
         public string Table { get; set; }
+        public string TemporaryTable { get; set; }
+        public List<string> OutputFields { get; set; }
         private readonly StringBuilder _whereBuilder;
 
         public DeleteCommandBuilder()
         {
             CommandParameters = new Dictionary<string, object>();
+            OutputFields = new List<string>();
             Table = string.Empty;
+            TemporaryTable = string.Empty;
             _whereBuilder = new StringBuilder();
         }
 
         public DeleteCommandBuilder From(string table)
             => this.Chain(() => Table = table);
+
+        public DeleteCommandBuilder WithTemporaryTable(string temporaryTable)
+            => this.Chain(() => TemporaryTable = temporaryTable);
 
         public DeleteCommandBuilder Where(string value)
             => this.Chain(() =>
@@ -46,6 +54,15 @@ namespace CrossCutting.Data.Core.Builders
                 _whereBuilder.Append(" OR ").Append(value);
             });
 
+        public DeleteCommandBuilder AddOutputField(string outputField)
+            => this.Chain(() => OutputFields.Add(outputField));
+
+        public DeleteCommandBuilder AddOutputFields(IEnumerable<string> outputFields)
+            => this.Chain(() => OutputFields.AddRange(outputFields));
+
+        public DeleteCommandBuilder AddOutputFields(params string[] outputFields)
+            => this.Chain(() => OutputFields.AddRange(outputFields));
+
         public DeleteCommandBuilder AppendParameter(string key, object value)
             => this.Chain(() => CommandParameters.Add(key, value));
 
@@ -56,7 +73,9 @@ namespace CrossCutting.Data.Core.Builders
             => this.Chain(() =>
             {
                 CommandParameters.Clear();
+                OutputFields.Clear();
                 Table = string.Empty;
+                TemporaryTable = string.Empty;
                 _whereBuilder.Clear();
             });
 
@@ -72,7 +91,8 @@ namespace CrossCutting.Data.Core.Builders
 
             var builder = new StringBuilder()
                 .Append("DELETE FROM ")
-                .Append(Table);
+                .Append(Table)
+                .AppendOutputFields(TemporaryTable, OutputFields);
 
             if (_whereBuilder.Length > 0)
             {

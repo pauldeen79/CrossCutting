@@ -20,11 +20,11 @@ namespace CrossCutting.Data.Core.Builders
         public InsertSelectCommandBuilder()
         {
             CommandParameters = new Dictionary<string, object>();
-            Table = string.Empty;
-            TemporaryTable = string.Empty;
             FieldNames = new List<string>();
             OutputFields = new List<string>();
             SelectCommand = new SelectCommandBuilder();
+            Table = string.Empty;
+            TemporaryTable = string.Empty;
         }
 
         public InsertSelectCommandBuilder Into(string table)
@@ -45,13 +45,13 @@ namespace CrossCutting.Data.Core.Builders
         public InsertSelectCommandBuilder WithSelectCommand(SelectCommandBuilder builder)
             => this.Chain(() => SelectCommand = builder);
 
-        public InsertSelectCommandBuilder WithOutputField(string outputField)
+        public InsertSelectCommandBuilder AddOutputField(string outputField)
             => this.Chain(() => OutputFields.Add(outputField));
 
-        public InsertSelectCommandBuilder WithOutputFields(IEnumerable<string> outputFields)
+        public InsertSelectCommandBuilder AddOutputFields(IEnumerable<string> outputFields)
             => this.Chain(() => OutputFields.AddRange(outputFields));
 
-        public InsertSelectCommandBuilder WithOutputFields(params string[] outputFields)
+        public InsertSelectCommandBuilder AddOutputFields(params string[] outputFields)
             => this.Chain(() => OutputFields.AddRange(outputFields));
 
         public InsertSelectCommandBuilder AppendParameter(string key, object value)
@@ -63,11 +63,11 @@ namespace CrossCutting.Data.Core.Builders
         public InsertSelectCommandBuilder Clear()
         {
             CommandParameters.Clear();
-            Table = string.Empty;
-            TemporaryTable = string.Empty;
             FieldNames.Clear();
             OutputFields.Clear();
             SelectCommand.Clear();
+            Table = string.Empty;
+            TemporaryTable = string.Empty;
             return this;
         }
 

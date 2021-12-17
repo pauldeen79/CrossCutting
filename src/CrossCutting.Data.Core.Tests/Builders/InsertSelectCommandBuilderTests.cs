@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using CrossCutting.Data.Core.Builders;
 using FluentAssertions;
 using Xunit;
@@ -88,7 +89,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
                     .Where("Field1 = \"Value1\"")
                     .And("Field2 = \"Value2\"")
                     .And("Field3 = \"Value3\""))
-                .WithOutputFields("INSERTED.Field1", "INSERTED.Field2", "INSERTED.Field3")
+                .AddOutputFields("INSERTED.Field1", "INSERTED.Field2", "INSERTED.Field3")
                 .Into("MyTable")
                 .WithTemporaryTable("@NewValues");
 
@@ -108,14 +109,14 @@ namespace CrossCutting.Data.Core.Tests.Builders
         {
             // Arrange
             var input = new InsertSelectCommandBuilder().Into("MyTable")
-                .WithFieldNames("Field1", "Field2", "Field3")
+                .WithFieldNames(new[] { "Field1", "Field2", "Field3" } .AsEnumerable())
                 .WithSelectCommand(new SelectCommandBuilder()
                     .Select("Field1", "Field2", "Field3")
                     .From("SomeOtherTable")
                     .Where("Field1 = \"Value1\"")
                     .And("Field2 = \"Value2\"")
                     .And("Field3 = \"Value3\""))
-                .WithOutputFields("INSERTED.Field1", "INSERTED.Field2", "INSERTED.Field3")
+                .AddOutputFields(new[] { "INSERTED.Field1", "INSERTED.Field2", "INSERTED.Field3" }.AsEnumerable())
                 .Into("MyTable")
                 .WithTemporaryTable("@NewValues");
 

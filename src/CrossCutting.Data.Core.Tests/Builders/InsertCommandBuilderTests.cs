@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core.Builders;
 using FluentAssertions;
@@ -39,7 +40,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
         public void Build_Throws_When_FieldValues_Are_Empty()
         {
             // Arrange
-            var input = new InsertCommandBuilder().Into("MyTable").WithFieldNames("Field1", "Field2", "Field3");
+            var input = new InsertCommandBuilder().Into("MyTable").AddFieldNames("Field1", "Field2", "Field3");
 
             // Act & Assert
             input.Invoking(x => x.Build())
@@ -52,8 +53,8 @@ namespace CrossCutting.Data.Core.Tests.Builders
         {
             // Arrange
             var input = new InsertCommandBuilder().Into("MyTable")
-                .WithFieldNames("Field1", "Field2", "Field3")
-                .WithFieldValues("Value1", "Value2");
+                .AddFieldNames(new[] { "Field1", "Field2", "Field3" }.AsEnumerable())
+                .AddFieldValues(new[] { "Value1", "Value2" }.AsEnumerable());
 
             // Act & Assert
             input.Invoking(x => x.Build())
@@ -66,15 +67,15 @@ namespace CrossCutting.Data.Core.Tests.Builders
         {
             // Arrange
             var input = new InsertCommandBuilder().Into("MyTable")
-                .WithFieldNames("Field1", "Field2", "Field3")
-                .WithFieldValues("@Field1", "@Field2", "@Field3")
+                .AddFieldNames("Field1", "Field2", "Field3")
+                .AddFieldValues("@Field1", "@Field2", "@Field3")
                 .AppendParameters(new { Field1 = "Value1", Field2 = "Value2", Field3 = "Value3" });
 
             // Act
             var actual = input.Build();
 
             // Assert
-            actual.Operation.Should().Be(Abstractions.DatabaseOperation.Insert);
+            actual.Operation.Should().Be(DatabaseOperation.Insert);
             actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) VALUES(@Field1, @Field2, @Field3)");
             actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
             var parameters = actual.CommandParameters as IDictionary<string, object>;
@@ -91,9 +92,9 @@ namespace CrossCutting.Data.Core.Tests.Builders
         {
             // Arrange
             var input = new InsertCommandBuilder().Into("MyTable")
-                .WithFieldNames("Field1", "Field2", "Field3")
-                .WithFieldValues("\"Value1\"", "\"Value2\"", "\"Value3\"")
-                .WithOutputFields("INSERTED.Field1", "INSERTED.Field2", "INSERTED.Field3")
+                .AddFieldNames("Field1", "Field2", "Field3")
+                .AddFieldValues("\"Value1\"", "\"Value2\"", "\"Value3\"")
+                .AddOutputFields("INSERTED.Field1", "INSERTED.Field2", "INSERTED.Field3")
                 .Into("MyTable")
                 .WithTemporaryTable("@NewValues");
 
@@ -101,7 +102,7 @@ namespace CrossCutting.Data.Core.Tests.Builders
             var actual = input.Build();
 
             // Assert
-            actual.Operation.Should().Be(Abstractions.DatabaseOperation.Insert);
+            actual.Operation.Should().Be(DatabaseOperation.Insert);
             actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) OUTPUT INSERTED.Field1, INSERTED.Field2, INSERTED.Field3 INTO @NewValues VALUES(\"Value1\", \"Value2\", \"Value3\")");
             actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
             var parameters = actual.CommandParameters as IDictionary<string, object>;
@@ -109,12 +110,29 @@ namespace CrossCutting.Data.Core.Tests.Builders
         }
 
         [Fact]
+        public void Build_Generates_Command_With_Output()
+        {
+            // Arrange
+            var input = new InsertCommandBuilder().Into("MyTable")
+                .AddFieldNames(new[] { "Field1", "Field2", "Field3" }.AsEnumerable())
+                .AddFieldValues(new[] { "\"Value1\"", "\"Value2\"", "\"Value3\"" }.AsEnumerable())
+                .AddOutputFields(new[] { "INSERTED.Field1", "INSERTED.Field2", "INSERTED.Field3" }.AsEnumerable());
+
+            // Act
+            var actual = input.Build();
+
+            // Assert
+            actual.Operation.Should().Be(DatabaseOperation.Insert);
+            actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) OUTPUT INSERTED.Field1, INSERTED.Field2, INSERTED.Field3 VALUES(\"Value1\", \"Value2\", \"Value3\")");
+        }
+
+        [Fact]
         public void Can_Clear_Builder()
         {
             // Arrange
             var input = new InsertCommandBuilder().Into("MyTable")
-                .WithFieldNames("Field1", "Field2", "Field3")
-                .WithFieldValues("@Field1", "@Field2", "@Field3")
+                .AddFieldNames("Field1", "Field2", "Field3")
+                .AddFieldValues("@Field1", "@Field2", "@Field3")
                 .AppendParameters(new { Field1 = "Value1", Field2 = "Value2", Field3 = "Value3" });
 
             // Act
