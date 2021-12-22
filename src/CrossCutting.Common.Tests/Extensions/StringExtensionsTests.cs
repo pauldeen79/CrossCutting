@@ -15,7 +15,7 @@ namespace CrossCutting.Common.Tests.Extensions
             InlineData(null, "replaced"),
             InlineData("other", "other"),
             InlineData(" ", " ")]
-        public void WhenNullOrEmpty_Returns_Correct_Value(string input, string expectedOutput)
+        public void WhenNullOrEmpty_Returns_Correct_Value(string? input, string expectedOutput)
         {
             // Act
             var actual_noDelegate = input.WhenNullOrEmpty("replaced");
@@ -31,7 +31,7 @@ namespace CrossCutting.Common.Tests.Extensions
             InlineData(null, "replaced"),
             InlineData("other", "other"),
             InlineData(" ", "replaced")]
-        public void WhenNullOrWhitespace_Returns_Correct_Value(string input, string expectedOutput)
+        public void WhenNullOrWhitespace_Returns_Correct_Value(string? input, string expectedOutput)
         {
             // Act
             var actual_noDelegate = input.WhenNullOrWhitespace("replaced");

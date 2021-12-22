@@ -17,9 +17,9 @@ namespace CrossCutting.Common.Extensions
         /// <param name="instance">The instance.</param>
         /// <param name="whenNullOrEmpty">The when null or empty.</param>
         /// <returns></returns>
-        public static string WhenNullOrEmpty(this string instance, string whenNullOrEmpty)
+        public static string WhenNullOrEmpty(this string? instance, string whenNullOrEmpty)
         {
-            if (string.IsNullOrEmpty(instance))
+            if (instance == null || string.IsNullOrEmpty(instance))
             {
                 return whenNullOrEmpty;
             }
@@ -33,9 +33,9 @@ namespace CrossCutting.Common.Extensions
         /// <param name="instance">The instance.</param>
         /// <param name="whenNullOrEmptyDelegate">The delegate to invoke when null or empty.</param>
         /// <returns></returns>
-        public static string WhenNullOrEmpty(this string instance, Func<string> whenNullOrEmptyDelegate)
+        public static string WhenNullOrEmpty(this string? instance, Func<string> whenNullOrEmptyDelegate)
         {
-            if (string.IsNullOrEmpty(instance))
+            if (instance == null || string.IsNullOrEmpty(instance))
             {
                 return whenNullOrEmptyDelegate();
             }
@@ -49,9 +49,9 @@ namespace CrossCutting.Common.Extensions
         /// <param name="instance">The instance.</param>
         /// <param name="whenNullOrWhiteSpace">The when null or white space.</param>
         /// <returns></returns>
-        public static string WhenNullOrWhitespace(this string instance, string whenNullOrWhiteSpace)
+        public static string WhenNullOrWhitespace(this string? instance, string whenNullOrWhiteSpace)
         {
-            if (string.IsNullOrWhiteSpace(instance))
+            if (instance == null || string.IsNullOrWhiteSpace(instance))
             {
                 return whenNullOrWhiteSpace;
             }
@@ -65,9 +65,9 @@ namespace CrossCutting.Common.Extensions
         /// <param name="instance">The instance.</param>
         /// <param name="whenNullOrWhiteSpaceDelegate">The when null or white space.</param>
         /// <returns></returns>
-        public static string WhenNullOrWhitespace(this string instance, Func<string> whenNullOrWhiteSpaceDelegate)
+        public static string WhenNullOrWhitespace(this string? instance, Func<string> whenNullOrWhiteSpaceDelegate)
         {
-            if (string.IsNullOrWhiteSpace(instance))
+            if (instance == null || string.IsNullOrWhiteSpace(instance))
             {
                 return whenNullOrWhiteSpaceDelegate();
             }
