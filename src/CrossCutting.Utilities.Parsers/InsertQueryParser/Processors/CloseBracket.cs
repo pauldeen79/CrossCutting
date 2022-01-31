@@ -1,23 +1,20 @@
-﻿using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
+﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Processors;
 
-namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Processors
+internal class CloseBracket : IInsertQueryParserProcessor
 {
-    internal class CloseBracket : IInsertQueryParserProcessor
+    public ProcessResult Process(char character, InsertQueryParserState state)
     {
-        public ProcessResult Process(char character, InsertQueryParserState state)
+        if (character == ']' && !state.ValuesFound && !state.SelectFound)
         {
-            if (character == ']' && !state.ValuesFound && !state.SelectFound)
+            state.OpenBracketCount--;
+            if (state.OpenBracketCount < 0)
             {
-                state.OpenBracketCount--;
-                if (state.OpenBracketCount < 0)
-                {
-                    return ProcessResult.Fail("Too many close brackets found");
-                }
-
-                return ProcessResult.Success();
+                return ProcessResult.Fail("Too many close brackets found");
             }
 
-            return ProcessResult.NotUnderstood();
+            return ProcessResult.Success();
         }
+
+        return ProcessResult.NotUnderstood();
     }
 }

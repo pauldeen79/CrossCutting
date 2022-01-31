@@ -1,11 +1,10 @@
-﻿namespace CrossCutting.Data.Abstractions
+﻿namespace CrossCutting.Data.Abstractions;
+
+public enum DatabaseOperation
 {
-    public enum DatabaseOperation
-    {
-        Unspecified,
-        Select,
-        Insert,
-        Update,
-        Delete
-    }
+    Unspecified,
+    Select,
+    Insert,
+    Update,
+    Delete
 }

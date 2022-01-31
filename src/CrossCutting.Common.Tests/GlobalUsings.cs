@@ -1,0 +1,10 @@
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Collections.ObjectModel;
+global using System.ComponentModel.DataAnnotations;
+global using System.Globalization;
+global using System.Linq;
+global using CrossCutting.Common.Extensions;
+global using FluentAssertions;
+global using Moq;
+global using Xunit;

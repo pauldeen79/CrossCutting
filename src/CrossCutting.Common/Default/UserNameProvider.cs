@@ -1,11 +1,9 @@
 ﻿using CrossCutting.Common.Abstractions;
-using System;
 
-namespace CrossCutting.Common.Default
+namespace CrossCutting.Common.Default;
+
+public class UserNameProvider : IUserNameProvider
 {
-    public class UserNameProvider : IUserNameProvider
-    {
-        public string GetCurrentUserName() =>
-            Environment.UserName;
-    }
+    public string GetCurrentUserName() =>
+        Environment.UserName;
 }

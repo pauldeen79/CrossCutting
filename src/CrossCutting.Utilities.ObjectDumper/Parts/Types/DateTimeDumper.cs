@@ -1,32 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using CrossCutting.Utilities.ObjectDumper.Contracts;
+﻿namespace CrossCutting.Utilities.ObjectDumper.Parts.Types;
 
-namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
+public class DateTimeDumper : IObjectDumperPart
 {
-    public class DateTimeDumper : IObjectDumperPart
+    public int Order => 50;
+
+    public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
-        public int Order => 50;
-
-        public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
+        if (instance is DateTime dt)
         {
-            if (instance is DateTime dt)
-            {
-                builder.AddSingleValue(dt.ToString("yyyy-MM-dd HH:mm:ss"), instance.GetType());
+            builder.AddSingleValue(dt.ToString("yyyy-MM-dd HH:mm:ss"), instance.GetType());
 
-                return true;
-            }
-
-            return false;
+            return true;
         }
 
-        public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source) => source;
-
-        public bool ShouldProcess(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
-
-        public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor) => true;
-
-        public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
+        return false;
     }
+
+    public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source) => source;
+
+    public bool ShouldProcess(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
+
+    public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor) => true;
+
+    public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
 }

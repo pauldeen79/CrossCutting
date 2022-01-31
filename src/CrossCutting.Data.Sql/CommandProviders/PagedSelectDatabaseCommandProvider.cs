@@ -1,34 +1,28 @@
-﻿using System;
-using CrossCutting.Data.Abstractions;
-using CrossCutting.Data.Sql.Builders;
-using CrossCutting.Data.Sql.Extensions;
+﻿namespace CrossCutting.Data.Sql.CommandProviders;
 
-namespace CrossCutting.Data.Sql.CommandProviders
+public class PagedSelectDatabaseCommandProvider : IPagedDatabaseCommandProvider
 {
-    public class PagedSelectDatabaseCommandProvider : IPagedDatabaseCommandProvider
+    private IPagedDatabaseEntityRetrieverSettings Settings { get; }
+
+    public PagedSelectDatabaseCommandProvider(IPagedDatabaseEntityRetrieverSettings settings)
     {
-        private IPagedDatabaseEntityRetrieverSettings Settings { get; }
+        Settings = settings;
+    }
 
-        public PagedSelectDatabaseCommandProvider(IPagedDatabaseEntityRetrieverSettings settings)
+    public IPagedDatabaseCommand CreatePaged(DatabaseOperation operation, int offset, int pageSize)
+    {
+        if (operation != DatabaseOperation.Select)
         {
-            Settings = settings;
+            throw new ArgumentOutOfRangeException(nameof(operation), "Only Select operation is supported");
         }
-        
-        public IPagedDatabaseCommand CreatePaged(DatabaseOperation operation, int offset, int pageSize)
-        {
-            if (operation != DatabaseOperation.Select)
-            {
-                throw new ArgumentOutOfRangeException(nameof(operation), "Only Select operation is supported");
-            }
 
-            return new PagedSelectCommandBuilder()
-                .Select(Settings.Fields)
-                .From(Settings.TableName)
-                .Where(Settings.DefaultWhere)
-                .OrderBy(Settings.DefaultOrderBy)
-                .Skip(offset)
-                .Take(((int?)pageSize).IfNotGreaterThan(Settings.OverridePageSize))
-                .Build();
-        }
+        return new PagedSelectCommandBuilder()
+            .Select(Settings.Fields)
+            .From(Settings.TableName)
+            .Where(Settings.DefaultWhere)
+            .OrderBy(Settings.DefaultOrderBy)
+            .Skip(offset)
+            .Take(((int?)pageSize).IfNotGreaterThan(Settings.OverridePageSize))
+            .Build();
     }
 }

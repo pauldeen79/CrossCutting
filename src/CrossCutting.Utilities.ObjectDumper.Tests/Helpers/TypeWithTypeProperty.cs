@@ -1,12 +1,7 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
 
-namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers
+internal class TypeWithTypeProperty
 {
-    [ExcludeFromCodeCoverage]
-    internal class TypeWithTypeProperty
-    {
-        public string? Name { get; set; }
-        public Type? Type { get; set; }
-    }
+    public string? Name { get; set; }
+    public Type? Type { get; set; }
 }

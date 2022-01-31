@@ -1,31 +1,26 @@
-﻿using System;
-using CrossCutting.Data.Abstractions;
-using CrossCutting.Data.Core.Builders;
+﻿namespace CrossCutting.Data.Core.CommandProviders;
 
-namespace CrossCutting.Data.Core.CommandProviders
+public class SelectDatabaseCommandProvider : IDatabaseCommandProvider
 {
-    public class SelectDatabaseCommandProvider : IDatabaseCommandProvider
+    private IDatabaseEntityRetrieverSettings Settings { get; }
+
+    public SelectDatabaseCommandProvider(IDatabaseEntityRetrieverSettings settings)
     {
-        private IDatabaseEntityRetrieverSettings Settings { get; }
+        Settings = settings;
+    }
 
-        public SelectDatabaseCommandProvider(IDatabaseEntityRetrieverSettings settings)
+    public IDatabaseCommand Create(DatabaseOperation operation)
+    {
+        if (operation != DatabaseOperation.Select)
         {
-            Settings = settings;
+            throw new ArgumentOutOfRangeException(nameof(operation), "Only Select operation is supported");
         }
 
-        public IDatabaseCommand Create(DatabaseOperation operation)
-        {
-            if (operation != DatabaseOperation.Select)
-            {
-                throw new ArgumentOutOfRangeException(nameof(operation), "Only Select operation is supported");
-            }
-
-            return new SelectCommandBuilder()
-                .Select(Settings.Fields)
-                .From(Settings.TableName)
-                .Where(Settings.DefaultWhere)
-                .OrderBy(Settings.DefaultOrderBy)
-                .Build();
-        }
+        return new SelectCommandBuilder()
+            .Select(Settings.Fields)
+            .From(Settings.TableName)
+            .Where(Settings.DefaultWhere)
+            .OrderBy(Settings.DefaultOrderBy)
+            .Build();
     }
 }

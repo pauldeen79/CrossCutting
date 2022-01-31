@@ -1,25 +1,24 @@
-﻿namespace CrossCutting.DataTableDumper.Extensions
+﻿namespace CrossCutting.DataTableDumper.Extensions;
+
+public static class StringExtensions
 {
-    public static class StringExtensions
+    public static string? EscapePipes(this string? instance, string escapeValue = "_")
     {
-        public static string? EscapePipes(this string? instance, string escapeValue = "_")
+        if (instance == null)
         {
-            if (instance == null)
-            {
-                return null;
-            }
-
-            return instance.Replace("|", escapeValue);
+            return null;
         }
 
-        public static string? UnescapePipes(this string? instance, string escapeValue = "_")
-        {
-            if (instance == null)
-            {
-                return null;
-            }
+        return instance.Replace("|", escapeValue);
+    }
 
-            return instance.Replace(escapeValue, "|");
+    public static string? UnescapePipes(this string? instance, string escapeValue = "_")
+    {
+        if (instance == null)
+        {
+            return null;
         }
+
+        return instance.Replace(escapeValue, "|");
     }
 }

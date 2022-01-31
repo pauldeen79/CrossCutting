@@ -1,64 +1,50 @@
-﻿using CrossCutting.Common.Extensions;
-using CrossCutting.DataTableDumper.Abstractions;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
+﻿namespace CrossCutting.DataTableDumper.TabDelimited;
 
-namespace CrossCutting.DataTableDumper.TabDelimited
+public static class Parser
 {
-    public static class Parser
+    public static ParseResult Parse(string input)
     {
-        public static ParseResult Parse(string input)
+        var split = input.GetLines().Select(x => x.Split('\t'));
+        var list = new List<ExpandoObject>();
+        foreach (var item in split.Skip(1))
         {
-            var split = input.GetLines().Select(x => x.Split('\t'));
-            var list = new List<ExpandoObject>();
-            foreach (var item in split.Skip(1))
+            var target = new ExpandoObject();
+            var dict = target as IDictionary<string, object>;
+            foreach (var column in item.Select((x, index) => new { Value = x, Name = split.First().ElementAt(index) }))
             {
-                var target = new ExpandoObject();
-                var dict = target as IDictionary<string, object>;
-                foreach (var column in item.Select((x, index) => new { Value = x, Name = split.First().ElementAt(index) }))
-                {
-                    dict[column.Name] = column.Value;
-                }
-                list.Add(target);
+                dict[column.Name] = column.Value;
             }
-            return new ParseResult(new DataTableDumper<ExpandoObject>(new MyColumnNameProvider(split), new MyColumnDataProvider()), list);
+            list.Add(target);
         }
-
-        private sealed class MyColumnNameProvider : IColumnNameProvider<ExpandoObject>
-        {
-            private readonly IEnumerable<string[]> _data;
-
-            public MyColumnNameProvider(IEnumerable<string[]> data)
-            {
-                _data = data;
-            }
-
-            public IReadOnlyCollection<string> Get()
-            {
-                return new List<string>(_data.First()).AsReadOnly();
-            }
-        }
-
-        private sealed class MyColumnDataProvider : IColumnDataProvider<ExpandoObject>
-        {
-            public IReadOnlyCollection<string> Get(ExpandoObject item)
-            {
-                var dict = item as IDictionary<string, object>;
-                return new List<string>(dict.Values.Select(x => x.ToString())).AsReadOnly();
-            }
-        }
+        return new ParseResult(new DataTableDumper<ExpandoObject>(new MyColumnNameProvider(split), new MyColumnDataProvider()), list);
     }
 
-    public class ParseResult
+    private sealed class MyColumnNameProvider : IColumnNameProvider<ExpandoObject>
     {
-        public ParseResult(DataTableDumper<ExpandoObject> dataTableDumper, List<ExpandoObject> list)
-        {
-            DataTableDumper = dataTableDumper;
-            List = list;
-        }
+        private readonly IEnumerable<string[]> _data;
 
-        public DataTableDumper<ExpandoObject> DataTableDumper { get; }
-        public List<ExpandoObject> List { get; }
+        public MyColumnNameProvider(IEnumerable<string[]> data)
+            => _data = data;
+
+        public IReadOnlyCollection<string> Get()
+            => new List<string>(_data.First()).AsReadOnly();
     }
+
+    private sealed class MyColumnDataProvider : IColumnDataProvider<ExpandoObject>
+    {
+        public IReadOnlyCollection<string> Get(ExpandoObject item)
+            => new List<string>((item as IDictionary<string, object>).Values.Select(x => x.ToString())).AsReadOnly();
+    }
+}
+
+public class ParseResult
+{
+    public ParseResult(DataTableDumper<ExpandoObject> dataTableDumper, List<ExpandoObject> list)
+    {
+        DataTableDumper = dataTableDumper;
+        List = list;
+    }
+
+    public DataTableDumper<ExpandoObject> DataTableDumper { get; }
+    public List<ExpandoObject> List { get; }
 }

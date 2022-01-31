@@ -1,7 +1,6 @@
-﻿namespace CrossCutting.Common.Abstractions
+﻿namespace CrossCutting.Common.Abstractions;
+
+public interface IUserNameProvider
 {
-    public interface IUserNameProvider
-    {
-        string GetCurrentUserName();
-    }
+    string GetCurrentUserName();
 }

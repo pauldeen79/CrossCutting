@@ -1,36 +1,33 @@
-﻿using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
+﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Processors;
 
-namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Processors
+internal class Comma : IInsertQueryParserProcessor
 {
-    internal class Comma : IInsertQueryParserProcessor
+    public ProcessResult Process(char character, InsertQueryParserState state)
     {
-        public ProcessResult Process(char character, InsertQueryParserState state)
+        if (character == ','
+            && state.InsertIntoFound
+            && !state.InValue
+            && !state.StopInsertInto
+            && state.OpenRoundBracketCount == 0)
         {
-            if (character == ','
-                && state.InsertIntoFound
-                && !state.InValue
-                && !state.StopInsertInto
-                && state.OpenRoundBracketCount == 0)
+            //part of INSERT INTO or VALUES
+            if (state.ValuesOpenBracketFound && !state.ValuesCloseBracketFound)
             {
-                //part of INSERT INTO or VALUES
-                if (state.ValuesOpenBracketFound && !state.ValuesCloseBracketFound)
-                {
-                    state.AddValue();
-                }
-                else if (state.InsertIntoOpenBracketFound && !state.InsertIntoCloseBracketFound)
-                {
-                    state.AddColumnName();
-                }
-                else if (!state.FromFound)
-                {
-                    //value
-                    state.AddValue();
-                }
-
-                return ProcessResult.Success();
+                state.AddValue();
+            }
+            else if (state.InsertIntoOpenBracketFound && !state.InsertIntoCloseBracketFound)
+            {
+                state.AddColumnName();
+            }
+            else if (!state.FromFound)
+            {
+                //value
+                state.AddValue();
             }
 
-            return ProcessResult.NotUnderstood();
+            return ProcessResult.Success();
         }
+
+        return ProcessResult.NotUnderstood();
     }
 }

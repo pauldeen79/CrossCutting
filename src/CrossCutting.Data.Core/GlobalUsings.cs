@@ -1,0 +1,11 @@
+﻿global using System;
+global using System.Collections;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Text;
+global using CrossCutting.Common.Extensions;
+global using CrossCutting.Data.Abstractions;
+global using CrossCutting.Data.Abstractions.Extensions;
+global using CrossCutting.Data.Core.Commands;
+global using CrossCutting.Data.Core.Builders;
+global using CrossCutting.Data.Core.Extensions;

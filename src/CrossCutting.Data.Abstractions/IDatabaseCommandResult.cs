@@ -1,9 +1,8 @@
-﻿namespace CrossCutting.Data.Abstractions
+﻿namespace CrossCutting.Data.Abstractions;
+
+public interface IDatabaseCommandResult<out T>
+    where T : class
 {
-    public interface IDatabaseCommandResult<out T>
-        where T : class
-    {
-        bool Success { get; }
-        T? Data { get; }
-    }
+    bool Success { get; }
+    T? Data { get; }
 }

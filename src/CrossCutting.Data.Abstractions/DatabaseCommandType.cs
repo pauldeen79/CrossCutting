@@ -1,8 +1,7 @@
-﻿namespace CrossCutting.Data.Abstractions
+﻿namespace CrossCutting.Data.Abstractions;
+
+public enum DatabaseCommandType
 {
-    public enum DatabaseCommandType
-    {
-        Text,
-        StoredProcedure
-    }
+    Text,
+    StoredProcedure
 }

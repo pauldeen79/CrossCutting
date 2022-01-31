@@ -1,34 +1,21 @@
-﻿namespace System.Data.Stub
+﻿namespace System.Data.Stub;
+
+public sealed class DbTransaction : IDbTransaction
 {
-    public sealed class DbTransaction : IDbTransaction
-    {
-        private readonly DbConnection dbConnection;
+    private readonly DbConnection dbConnection;
 
-        public DbTransaction(DbConnection dbConnection)
-        {
-            this.dbConnection = dbConnection;
-        }
+    public DbTransaction(DbConnection dbConnection) => this.dbConnection = dbConnection;
 
-        public IDbConnection Connection => dbConnection;
+    public IDbConnection Connection => dbConnection;
 
-        public IsolationLevel IsolationLevel { get; set; }
+    public IsolationLevel IsolationLevel { get; set; }
 
-        public void Commit()
-        {
-            Committed?.Invoke(this, EventArgs.Empty);
-        }
+    public void Commit() => Committed?.Invoke(this, EventArgs.Empty);
 
-        public void Dispose()
-        {
-            RolledBack?.Invoke(this, EventArgs.Empty);
-        }
+    public void Dispose() => RolledBack?.Invoke(this, EventArgs.Empty);
 
-        public void Rollback()
-        {
-            RolledBack?.Invoke(this, EventArgs.Empty);
-        }
+    public void Rollback() => RolledBack?.Invoke(this, EventArgs.Empty);
 
-        public event EventHandler? Committed;
-        public event EventHandler? RolledBack;
-    }
+    public event EventHandler? Committed;
+    public event EventHandler? RolledBack;
 }

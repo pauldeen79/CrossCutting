@@ -1,7 +1,6 @@
-﻿namespace CrossCutting.Utilities.ObjectDumper.Contracts
+﻿namespace CrossCutting.Utilities.ObjectDumper.Contracts;
+
+public interface IObjectDumperPartWithCallback : IObjectDumperPart
 {
-    public interface IObjectDumperPartWithCallback : IObjectDumperPart
-    {
-        IObjectDumperCallback? Callback { get; set; }
-    }
+    IObjectDumperCallback? Callback { get; set; }
 }

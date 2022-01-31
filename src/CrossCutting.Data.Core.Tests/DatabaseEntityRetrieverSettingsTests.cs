@@ -1,23 +1,17 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
-using Xunit;
+﻿namespace CrossCutting.Data.Core.Tests;
 
-namespace CrossCutting.Data.Core.Tests
+public class DatabaseEntityRetrieverSettingsTests
 {
-    [ExcludeFromCodeCoverage]
-    public class DatabaseEntityRetrieverSettingsTests
+    [Fact]
+    public void Can_Construct()
     {
-        [Fact]
-        public void Can_Construct()
-        {
-            // Act
-            var sut = new DatabaseEntityRetrieverSettings("table", "fields", "orderby", "where");
+        // Act
+        var sut = new DatabaseEntityRetrieverSettings("table", "fields", "orderby", "where");
 
-            // Assert
-            sut.TableName.Should().Be("table");
-            sut.Fields.Should().Be("fields");
-            sut.DefaultOrderBy.Should().Be("orderby");
-            sut.DefaultWhere.Should().Be("where");
-        }
+        // Assert
+        sut.TableName.Should().Be("table");
+        sut.Fields.Should().Be("fields");
+        sut.DefaultOrderBy.Should().Be("orderby");
+        sut.DefaultWhere.Should().Be("where");
     }
 }
