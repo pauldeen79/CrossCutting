@@ -93,8 +93,8 @@ public static class StringExtensions
     /// <param name="instance">The instance.</param>
     /// <param name="values">The values.</param>
     /// <returns></returns>
-    public static bool StartsWithAny(this string instance, params string[] values) =>
-        instance.StartsWithAny((IEnumerable<string>)values);
+    public static bool StartsWithAny(this string instance, params string[] values)
+        => instance.StartsWithAny((IEnumerable<string>)values);
 
     /// <summary>
     /// Indicates whether the string instance starts with any of the specified values.
