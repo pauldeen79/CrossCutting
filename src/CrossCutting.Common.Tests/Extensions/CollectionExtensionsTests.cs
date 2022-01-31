@@ -1,25 +1,18 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using CrossCutting.Common.Extensions;
-using FluentAssertions;
-using Xunit;
+﻿namespace CrossCutting.Common.Tests.Extensions;
 
-namespace CrossCutting.Common.Tests.Extensions
+[ExcludeFromCodeCoverage]
+public class CollectionExtensionsTests
 {
-    [ExcludeFromCodeCoverage]
-    public class CollectionExtensionsTests
+    [Fact]
+    public void Can_Use_AddRange_On_GenericCollection()
     {
-        [Fact]
-        public void Can_Use_AddRange_On_GenericCollection()
-        {
-            // Arrange
-            var input = new Collection<string>();
+        // Arrange
+        var input = new Collection<string>();
 
-            // Act
-            input.AddRange(new[] { "a", "b", "c" });
+        // Act
+        input.AddRange(new[] { "a", "b", "c" });
 
-            // Assert
-            input.Should().BeEquivalentTo(new[] { "a", "b", "c" });
-        }
+        // Assert
+        input.Should().BeEquivalentTo(new[] { "a", "b", "c" });
     }
 }

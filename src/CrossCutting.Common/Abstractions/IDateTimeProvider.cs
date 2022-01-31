@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace CrossCutting.Common.Abstractions;
 
-namespace CrossCutting.Common.Abstractions
+public interface IDateTimeProvider
 {
-    public interface IDateTimeProvider
-    {
-        DateTime GetCurrentDateTime();
-    }
+    DateTime GetCurrentDateTime();
 }
