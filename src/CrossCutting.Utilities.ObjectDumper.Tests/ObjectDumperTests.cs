@@ -1,88 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using CrossCutting.Utilities.ObjectDumper.Contracts;
-using CrossCutting.Utilities.ObjectDumper.Extensions;
-using CrossCutting.Utilities.ObjectDumper.Parts.Filters;
-using CrossCutting.Utilities.ObjectDumper.Parts.Transforms;
-using CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
-using FluentAssertions;
-using Xunit;
+﻿namespace CrossCutting.Utilities.ObjectDumper.Tests;
 
-namespace CrossCutting.Utilities.ObjectDumper.Tests
+[ExcludeFromCodeCoverage]
+public class ObjectDumperTests
 {
-    [ExcludeFromCodeCoverage]
-    public class ObjectDumperTests
+    [Fact]
+    public void CanDumpSimpleObject()
     {
-        [Fact]
-        public void CanDumpSimpleObject()
+        // Arrange
+        var input = new
         {
-            // Arrange
-            var input = new
-            {
-                Name = "John Doe",
-                Age = 21,
-                Weight = 80.1
-            };
+            Name = "John Doe",
+            Age = 21,
+            Weight = 80.1
+        };
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().Be(
+        // Assert
+        actual.Should().Be(
 @"{
     ""Name"": ""John Doe"" [System.String],
     ""Age"": 21 [System.Int32],
     ""Weight"": 80.1 [System.Double]
 } [AnonymousType]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpObjectWithNullProperty()
-        {
-            // Arrange
-            var input = new MyType();
+    [Fact]
+    public void CanDumpObjectWithNullProperty()
+    {
+        // Arrange
+        var input = new MyType();
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().Be(@"{
+        // Assert
+        actual.Should().Be(@"{
     ""Name"": NULL [System.String],
     ""Age"": 0 [System.Int32],
     ""Weight"": 0 [System.Double]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpNullObject()
+    [Fact]
+    public void CanDumpNullObject()
+    {
+        // Arrange
+        object? input = null;
+
+        // Act
+        var actual = input.Dump();
+
+        // Assert
+        actual.Should().Be("NULL [System.Object]");
+    }
+
+    [Fact]
+    public void CanDumpListOfObjects()
+    {
+        // Arrange
+        var input = new[]
         {
-            // Arrange
-            object? input = null;
+            new MyType { Age = 1, Name = "Name 1", Weight = 11.1 },
+            new MyType { Age = 2, Name = "Name 2", Weight = 22.2 },
+            new MyType { Age = 3, Name = "Name 3", Weight = 33.3 }
+        };
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().Be("NULL [System.Object]");
-        }
-
-        [Fact]
-        public void CanDumpListOfObjects()
-        {
-            // Arrange
-            var input = new[]
-            {
-                new MyType { Age = 1, Name = "Name 1", Weight = 11.1 },
-                new MyType { Age = 2, Name = "Name 2", Weight = 22.2 },
-                new MyType { Age = 3, Name = "Name 3", Weight = 33.3 }
-            };
-
-            // Act
-            var actual = input.Dump();
-
-            // Assert
-            actual.Should().Be(
+        // Assert
+        actual.Should().Be(
 @"[
     {
         ""Name"": ""Name 1"" [System.String],
@@ -100,33 +89,33 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
         ""Weight"": 33.3 [System.Double]
     } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType]
 ] [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType[]]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpNestedObject()
+    [Fact]
+    public void CanDumpNestedObject()
+    {
+        // Arrange
+        var input = new
         {
-            // Arrange
-            var input = new
+            Name = "John Doe",
+            Age = 21,
+            Weight = 80.1,
+            Sub = new
             {
-                Name = "John Doe",
-                Age = 21,
-                Weight = 80.1,
-                Sub = new
+                Name = "Sub1",
+                Age = 1,
+                SubSub = new
                 {
-                    Name = "Sub1",
-                    Age = 1,
-                    SubSub = new
-                    {
-                        Name = "Sub2"
-                    }
+                    Name = "Sub2"
                 }
-            };
+            }
+        };
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().Be(
+        // Assert
+        actual.Should().Be(
 @"{
     ""Name"": ""John Doe"" [System.String],
     ""Age"": 21 [System.Int32],
@@ -141,27 +130,27 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
         } [AnonymousType]
     } [AnonymousType]
 } [AnonymousType]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpSimpleObjectWithArrayProperty()
+    [Fact]
+    public void CanDumpSimpleObjectWithArrayProperty()
+    {
+        // Arrange
+        var input = new
         {
-            // Arrange
-            var input = new
+            Name = "John Doe",
+            Hobbies = new[]
             {
-                Name = "John Doe",
-                Hobbies = new[]
-                {
-                    "Reading",
-                    "Programming"
-                }
-            };
+                "Reading",
+                "Programming"
+            }
+        };
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().Be(
+        // Assert
+        actual.Should().Be(
 @"{
     ""Name"": ""John Doe"" [System.String],
     ""Hobbies"": 
@@ -170,35 +159,35 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
         ""Programming"" [System.String]
     ] [System.String[]]
 } [AnonymousType]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpObjectWithNestedArrayProperty()
+    [Fact]
+    public void CanDumpObjectWithNestedArrayProperty()
+    {
+        // Arrange
+        var input = new
         {
-            // Arrange
-            var input = new
+            Name = "John Doe",
+            Children = new[]
             {
-                Name = "John Doe",
-                Children = new[]
+                new
                 {
-                    new
-                    {
-                        Name = "Child 1",
-                        Age = 1
-                    },
-                    new
-                    {
-                        Name = "Child 2",
-                        Age = 2
-                    }
+                    Name = "Child 1",
+                    Age = 1
+                },
+                new
+                {
+                    Name = "Child 2",
+                    Age = 2
                 }
-            };
+            }
+        };
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().Be(
+        // Assert
+        actual.Should().Be(
 @"{
     ""Name"": ""John Doe"" [System.String],
     ""Children"": 
@@ -213,70 +202,70 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
         } [AnonymousType]
     ] [AnonymousType[]]
 } [AnonymousType]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpWithGenericTypeProperty()
+    [Fact]
+    public void CanDumpWithGenericTypeProperty()
+    {
+        // Arrange
+        var input = new TypeWithTypeProperty
         {
-            // Arrange
-            var input = new TypeWithTypeProperty
-            {
-                Name = "John Doe",
-                Type = typeof(List<MyType>)
-            };
+            Name = "John Doe",
+            Type = typeof(List<MyType>)
+        };
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().Be(@"{
+        // Assert
+        actual.Should().Be(@"{
     ""Name"": ""John Doe"" [System.String],
     ""Type"": ""System.Collections.Generic.List<CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType>"" [System.RuntimeType]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithTypeProperty]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpWithTypeProperty()
+    [Fact]
+    public void CanDumpWithTypeProperty()
+    {
+        // Arrange
+        var input = new TypeWithTypeProperty
         {
-            // Arrange
-            var input = new TypeWithTypeProperty
-            {
-                Name = "John Doe",
-                Type = typeof(MyType)
-            };
+            Name = "John Doe",
+            Type = typeof(MyType)
+        };
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().Be(@"{
+        // Assert
+        actual.Should().Be(@"{
     ""Name"": ""John Doe"" [System.String],
     ""Type"": ""CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType"" [System.RuntimeType]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithTypeProperty]");
-        }
+    }
 
-        [Fact]
-        public void CanLimitDepthOnDump()
+    [Fact]
+    public void CanLimitDepthOnDump()
+    {
+        // Arrange
+        var input = new RecursiveType
         {
-            // Arrange
-            var input = new RecursiveType
+            Name = "Root",
+            Child = new RecursiveType
             {
-                Name = "Root",
+                Name = "Child1",
                 Child = new RecursiveType
                 {
-                    Name = "Child1",
-                    Child = new RecursiveType
-                    {
-                        Name = "Child2"
-                    }
+                    Name = "Child2"
                 }
-            };
+            }
+        };
 
-            // Act
-            var actual = input.Dump(new MaxDepthFilter(2));
+        // Act
+        var actual = input.Dump(new MaxDepthFilter(2));
 
-            // Assert
-            actual.Should().Be(@"{
+        // Assert
+        actual.Should().Be(@"{
     ""Name"": ""Root"" [System.String],
     ""Child"": 
     {
@@ -284,30 +273,30 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
         ""Child"": 
     } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.RecursiveType]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.RecursiveType]");
-        }
+    }
 
-        [Fact]
-        public void CanSkipPropertyByName()
+    [Fact]
+    public void CanSkipPropertyByName()
+    {
+        // Arrange
+        var input = new RecursiveType
         {
-            // Arrange
-            var input = new RecursiveType
+            Name = "Root",
+            Child = new RecursiveType
             {
-                Name = "Root",
+                Name = "Child1",
                 Child = new RecursiveType
                 {
-                    Name = "Child1",
-                    Child = new RecursiveType
-                    {
-                        Name = "Child2"
-                    }
+                    Name = "Child2"
                 }
-            };
+            }
+        };
 
-            // Act
-            var actual = input.Dump(new PropertyNameExclusionFilter("Name", typeof(RecursiveType)?.FullName ?? string.Empty));
+        // Act
+        var actual = input.Dump(new PropertyNameExclusionFilter("Name", typeof(RecursiveType)?.FullName ?? string.Empty));
 
-            // Assert
-            actual.Should().Be(@"{
+        // Assert
+        actual.Should().Be(@"{
     ""Child"": 
     {
         ""Child"": 
@@ -316,30 +305,30 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
         } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.RecursiveType]
     } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.RecursiveType]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.RecursiveType]");
-        }
+    }
 
-        [Fact]
-        public void CanSkipPropertyByTypeName()
+    [Fact]
+    public void CanSkipPropertyByTypeName()
+    {
+        // Arrange
+        var input = new RecursiveType
         {
-            // Arrange
-            var input = new RecursiveType
+            Name = "Root",
+            Child = new RecursiveType
             {
-                Name = "Root",
+                Name = "Child1",
                 Child = new RecursiveType
                 {
-                    Name = "Child1",
-                    Child = new RecursiveType
-                    {
-                        Name = "Child2"
-                    }
+                    Name = "Child2"
                 }
-            };
+            }
+        };
 
-            // Act
-            var actual = input.Dump(new PropertyTypeNameExclusionFilter(typeof(string)?.FullName ?? string.Empty));
+        // Act
+        var actual = input.Dump(new PropertyTypeNameExclusionFilter(typeof(string)?.FullName ?? string.Empty));
 
-            // Assert
-            actual.Should().Be(@"{
+        // Assert
+        actual.Should().Be(@"{
     ""Child"": 
     {
         ""Child"": 
@@ -348,190 +337,190 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
         } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.RecursiveType]
     } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.RecursiveType]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.RecursiveType]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpObjectWithPropertyThatThrowsException()
-        {
-            // Arrange
-            var input = new TypeWithExceptionProperty { Name = "Test" };
+    [Fact]
+    public void CanDumpObjectWithPropertyThatThrowsException()
+    {
+        // Arrange
+        var input = new TypeWithExceptionProperty { Name = "Test" };
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().StartWith(@"{
+        // Assert
+        actual.Should().StartWith(@"{
     ""Name"": ""Test"" [System.String],
     ""Error"": ""System.Reflection.TargetInvocationException: Property accessor 'Error' on object 'CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithExceptionProperty' threw the following exception:'Operation is not valid due to the current state of the object.'");
-            actual.Should().EndWith(@""" [System.Reflection.TargetInvocationException]
+        actual.Should().EndWith(@""" [System.Reflection.TargetInvocationException]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithExceptionProperty]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpObjectWithSetterOnlyProperty()
-        {
-            // Arrange
-            var input = new TypeWithSetterProperty { Name = "Test" };
+    [Fact]
+    public void CanDumpObjectWithSetterOnlyProperty()
+    {
+        // Arrange
+        var input = new TypeWithSetterProperty { Name = "Test" };
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().Be(@"{
+        // Assert
+        actual.Should().Be(@"{
     ""Name"": ""Test"" [System.String]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithSetterProperty]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpObjectWithDynamicallyAddedProperties()
-        {
-            // Arrange
-            var input = new MyType { Name = "Hello world" };
-            using var manager = new DynamicPropertyManager<MyType>(input);
-            manager.Properties.Add(DynamicPropertyManager.CreateProperty<MyType, string>("Name2", _ => "Name 2", null));
-            manager.Properties.Add(DynamicPropertyManager.CreateProperty<MyType, string>("Name3", _ => "Name 3", null));
+    [Fact]
+    public void CanDumpObjectWithDynamicallyAddedProperties()
+    {
+        // Arrange
+        var input = new MyType { Name = "Hello world" };
+        using var manager = new DynamicPropertyManager<MyType>(input);
+        manager.Properties.Add(DynamicPropertyManager.CreateProperty<MyType, string>("Name2", _ => "Name 2", null));
+        manager.Properties.Add(DynamicPropertyManager.CreateProperty<MyType, string>("Name3", _ => "Name 3", null));
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().Be(@"{
+        // Assert
+        actual.Should().Be(@"{
     ""Name"": ""Hello world"" [System.String],
     ""Age"": 0 [System.Int32],
     ""Weight"": 0 [System.Double],
     ""Name2"": ""Name 2"" [System.String],
     ""Name3"": ""Name 3"" [System.String]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpObjectWithErrorThrowingObjectDumperPart()
+    [Fact]
+    public void CanDumpObjectWithErrorThrowingObjectDumperPart()
+    {
+        // Arrange
+        var input = new
         {
-            // Arrange
-            var input = new
+            Name = "John Doe",
+            Age = 21,
+            Weight = 80.1
+        };
+
+        // Act
+        var actual = input.Dump(new ExceptionThrowingPart());
+
+        // Assert
+        actual.Should().StartWith(@"""System.InvalidOperationException: Operation is not valid due to the current state of the object.");
+        actual.Should().EndWith(@"[System.InvalidOperationException]");
+    }
+
+    [Fact]
+    public void CanDumpObjectUsingDelegateTransform()
+    {
+        // Arrange
+        var input = new MyType { Name = "John Doe", Age = 21, Weight = 80.1 };
+        var transform = new DelegateTransform(i => i is MyType myType
+            ? new
             {
-                Name = "John Doe",
-                Age = 21,
-                Weight = 80.1
-            };
+                myType.Name,
+                myType.Age,
+                myType.Weight,
+                AdditionalProperty = "Test"
+            }
+            : i);
 
-            // Act
-            var actual = input.Dump(new ExceptionThrowingPart());
+        // Act
+        var actual = input.Dump(transform);
 
-            // Assert
-            actual.Should().StartWith(@"""System.InvalidOperationException: Operation is not valid due to the current state of the object.");
-            actual.Should().EndWith(@"[System.InvalidOperationException]");
-        }
-
-        [Fact]
-        public void CanDumpObjectUsingDelegateTransform()
-        {
-            // Arrange
-            var input = new MyType { Name = "John Doe", Age = 21, Weight = 80.1 };
-            var transform = new DelegateTransform(i => i is MyType myType
-                ? new
-                  {
-                      myType.Name,
-                      myType.Age,
-                      myType.Weight,
-                      AdditionalProperty = "Test"
-                  }
-                : i);
-
-            // Act
-            var actual = input.Dump(transform);
-
-            // Assert
-            actual.Should().Be(@"{
+        // Assert
+        actual.Should().Be(@"{
     ""Name"": ""John Doe"" [System.String],
     ""Age"": 21 [System.Int32],
     ""Weight"": 80.1 [System.Double],
     ""AdditionalProperty"": ""Test"" [System.String]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpObjectUsingTypedDelegateTransform()
+    [Fact]
+    public void CanDumpObjectUsingTypedDelegateTransform()
+    {
+        // Arrange
+        var input = new MyType
         {
-            // Arrange
-            var input = new MyType
-            {
-                Name = "John Doe",
-                Age = 21, 
-                Weight = 80.1
-            };
-            var transform = new TypedDelegateTransform<MyType>(mt => mt?.ToString() ?? string.Empty);
+            Name = "John Doe",
+            Age = 21,
+            Weight = 80.1
+        };
+        var transform = new TypedDelegateTransform<MyType>(mt => mt?.ToString() ?? string.Empty);
 
-            // Act
-            var actual = input.Dump(transform);
+        // Act
+        var actual = input.Dump(transform);
 
-            // Assert
-            actual.Should().Be(@"""CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType"" [System.String]");
-        }
+        // Assert
+        actual.Should().Be(@"""CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType"" [System.String]");
+    }
 
-        [Fact]
-        public void CanDumpImmutableObject()
-        {
-            // Arrange
-            var input = new MyImmutableType("John Doe", 20);
+    [Fact]
+    public void CanDumpImmutableObject()
+    {
+        // Arrange
+        var input = new MyImmutableType("John Doe", 20);
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().Be(
+        // Assert
+        actual.Should().Be(
 @"{
     ""Name"": ""John Doe"" [System.String],
     ""Age"": 20 [System.Int32]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyImmutableType]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpObjectWithEnumProperty()
+    [Fact]
+    public void CanDumpObjectWithEnumProperty()
+    {
+        // Arrange
+        var input = new TypeWithEnumProperty
         {
-            // Arrange
-            var input = new TypeWithEnumProperty
-            {
-                Property1 = "Test",
-                Property2 = MyEnumeration.B
-            };
+            Property1 = "Test",
+            Property2 = MyEnumeration.B
+        };
 
-            // Act
-            var actual = input.Dump();
+        // Act
+        var actual = input.Dump();
 
-            // Assert
-            actual.Should().Be(@"{
+        // Assert
+        actual.Should().Be(@"{
     ""Property1"": ""Test"" [System.String],
     ""Property2"": B [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyEnumeration]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithEnumProperty]");
-        }
+    }
 
-        [Fact]
-        public void CanDumpObjectWithDateTime()
-        {
-            var d = DateTime.Now.AddDays(-1);
-            var a = new { Name = "Test", Weight = 2, Date = d };
-            var b = new { Name = "Test", Weight = 2, Date = d };
+    [Fact]
+    public void CanDumpObjectWithDateTime()
+    {
+        var d = DateTime.Now.AddDays(-1);
+        var a = new { Name = "Test", Weight = 2, Date = d };
+        var b = new { Name = "Test", Weight = 2, Date = d };
 
-            var dumpA = a.Dump();
-            var dumpB = b.Dump();
+        var dumpA = a.Dump();
+        var dumpB = b.Dump();
 
-            dumpB.Should().Be(dumpA);
-        }
+        dumpB.Should().Be(dumpA);
+    }
 
-        [Fact]
-        public void CanDumpDictionaryBasedObject()
-        {
-            // Arrange
-            var input = new ContextClass("custom1", 23);
-            input.Add("key1", "string value");
-            input.Add("key2", 55);
+    [Fact]
+    public void CanDumpDictionaryBasedObject()
+    {
+        // Arrange
+        var input = new ContextClass("custom1", 23);
+        input.Add("key1", "string value");
+        input.Add("key2", 55);
 
-            // Act
-            var actual = input.Dump(new ContextClassTypeHandler());
+        // Act
+        var actual = input.Dump(new ContextClassTypeHandler());
 
-            // Assert
-            actual.Should().Be(@"{
+        // Assert
+        actual.Should().Be(@"{
     ""Custom1"": ""custom1"" [System.String],
     ""Custom2"": 23 [System.Int32],
     {
@@ -547,60 +536,59 @@ namespace CrossCutting.Utilities.ObjectDumper.Tests
         ""value"": 55 [System.Int32]
     } [System.Collections.Generic.KeyValuePair<System.String,System.Object>]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.ContextClass]");
-        }
+    }
 
-        [Fact]
-        public void CanAssertMultiplePropertiesWithFluentAssertions()
-        {
-            var d = DateTime.Now.AddDays(-1);
-            var a = new { Name = "Test", Weight = 2, Date = d }.Dump();
-            var b = new { Name = "Test", Weight = 2, Date = d }.Dump();
+    [Fact]
+    public void CanAssertMultiplePropertiesWithFluentAssertions()
+    {
+        var d = DateTime.Now.AddDays(-1);
+        var a = new { Name = "Test", Weight = 2, Date = d }.Dump();
+        var b = new { Name = "Test", Weight = 2, Date = d }.Dump();
 
-            a.Should().BeEquivalentTo(b);
-        }
+        a.Should().BeEquivalentTo(b);
+    }
 
-        [Fact]
-        public void CanAssertMultiplePropertiesWithFluentAssertions_SkipOneProperty()
-        {
-            var d = DateTime.Now.AddDays(-1);
-            var dumpConfig = new IObjectDumperPart[] { new PropertyNameExclusionFilter("Skip") };
-            var a = new { Name = "Test", Weight = 2, Date = d, Skip = "A" }.Dump(dumpConfig);
-            var b = new { Name = "Test", Weight = 2, Date = d, Skip = "B" }.Dump(dumpConfig);
+    [Fact]
+    public void CanAssertMultiplePropertiesWithFluentAssertions_SkipOneProperty()
+    {
+        var d = DateTime.Now.AddDays(-1);
+        var dumpConfig = new IObjectDumperPart[] { new PropertyNameExclusionFilter("Skip") };
+        var a = new { Name = "Test", Weight = 2, Date = d, Skip = "A" }.Dump(dumpConfig);
+        var b = new { Name = "Test", Weight = 2, Date = d, Skip = "B" }.Dump(dumpConfig);
 
-            a.Should().BeEquivalentTo(b);
-        }
+        a.Should().BeEquivalentTo(b);
+    }
 
-        [Fact]
-        public void CanAssertMultiplePropertiesWithFluentAssertions_ExplicitlyNamePropertiesToCompare()
-        {
-            var d = DateTime.Now.AddDays(-1);
-            var dumpConfig = new IObjectDumperPart[] { new PropertyNameFilter("Name", "Weight", "Date") };
-            var a = new { Name = "Test", Weight = 2, Date = d, Skip = "A" }.Dump(dumpConfig);
-            var b = new { Name = "Test", Weight = 2, Date = d, Skip = "B" }.Dump(dumpConfig);
+    [Fact]
+    public void CanAssertMultiplePropertiesWithFluentAssertions_ExplicitlyNamePropertiesToCompare()
+    {
+        var d = DateTime.Now.AddDays(-1);
+        var dumpConfig = new IObjectDumperPart[] { new PropertyNameFilter("Name", "Weight", "Date") };
+        var a = new { Name = "Test", Weight = 2, Date = d, Skip = "A" }.Dump(dumpConfig);
+        var b = new { Name = "Test", Weight = 2, Date = d, Skip = "B" }.Dump(dumpConfig);
 
-            a.Should().BeEquivalentTo(b);
-        }
+        a.Should().BeEquivalentTo(b);
+    }
 
-        [Fact]
-        public void CanAssertDifferentTypesWithSameProperties()
-        {
-            var d = DateTime.Now.AddDays(-1);
-            var dumpConfig = new IObjectDumperPart[] { new OrderByPropertyNameTransform(t => t?.FullName?.Contains("Anonymous") == true) };
-            var a = new { Name = "Test", Weight = 2, Date = d }.Dump(dumpConfig);
-            var b = new { Name = "Test", Date = d, Weight = 2 }.Dump(dumpConfig);
+    [Fact]
+    public void CanAssertDifferentTypesWithSameProperties()
+    {
+        var d = DateTime.Now.AddDays(-1);
+        var dumpConfig = new IObjectDumperPart[] { new OrderByPropertyNameTransform(t => t?.FullName?.Contains("Anonymous") == true) };
+        var a = new { Name = "Test", Weight = 2, Date = d }.Dump(dumpConfig);
+        var b = new { Name = "Test", Date = d, Weight = 2 }.Dump(dumpConfig);
 
-            a.Should().BeEquivalentTo(b);
-        }
+        a.Should().BeEquivalentTo(b);
+    }
 
-        [Fact]
-        public void CanAssertDifferentTypesWithSameProperties_ExplicitlyNamePropertiesToCompare()
-        {
-            var d = DateTime.Now.AddDays(-1);
-            var dumpConfig = new IObjectDumperPart[] { new OrderByPropertyNameTransform(t => t?.FullName?.Contains("Anonymous") == true), new PropertyNameFilter("Name", "Weight", "Date") };
-            var a = new { Name = "Test", Weight = 2, Date = d, Skip = "A" }.Dump(dumpConfig);
-            var b = new { Name = "Test", Date = d, Weight = 2, Skip = "B" }.Dump(dumpConfig);
+    [Fact]
+    public void CanAssertDifferentTypesWithSameProperties_ExplicitlyNamePropertiesToCompare()
+    {
+        var d = DateTime.Now.AddDays(-1);
+        var dumpConfig = new IObjectDumperPart[] { new OrderByPropertyNameTransform(t => t?.FullName?.Contains("Anonymous") == true), new PropertyNameFilter("Name", "Weight", "Date") };
+        var a = new { Name = "Test", Weight = 2, Date = d, Skip = "A" }.Dump(dumpConfig);
+        var b = new { Name = "Test", Date = d, Weight = 2, Skip = "B" }.Dump(dumpConfig);
 
-            a.Should().BeEquivalentTo(b);
-        }
+        a.Should().BeEquivalentTo(b);
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace CrossCutting.Data.Abstractions
+﻿namespace CrossCutting.Data.Abstractions;
+
+public interface IPagedDatabaseEntityRetrieverSettings : IDatabaseEntityRetrieverSettings
 {
-    public interface IPagedDatabaseEntityRetrieverSettings : IDatabaseEntityRetrieverSettings
-    {
-        int? OverridePageSize { get; }
-    }
+    int? OverridePageSize { get; }
 }

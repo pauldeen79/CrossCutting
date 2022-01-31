@@ -1,10 +1,9 @@
-﻿namespace CrossCutting.Data.Abstractions
+﻿namespace CrossCutting.Data.Abstractions;
+
+public interface IPagedDatabaseCommand
 {
-    public interface IPagedDatabaseCommand
-    {
-        IDatabaseCommand DataCommand { get; }
-        IDatabaseCommand RecordCountCommand { get; }
-        int Offset { get; }
-        int PageSize { get; }
-    }
+    IDatabaseCommand DataCommand { get; }
+    IDatabaseCommand RecordCountCommand { get; }
+    int Offset { get; }
+    int PageSize { get; }
 }

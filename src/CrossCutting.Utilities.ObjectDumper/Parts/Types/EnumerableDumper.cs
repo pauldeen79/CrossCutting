@@ -1,50 +1,43 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using CrossCutting.Utilities.ObjectDumper.Contracts;
+﻿namespace CrossCutting.Utilities.ObjectDumper.Parts.Types;
 
-namespace CrossCutting.Utilities.ObjectDumper.Parts.Types
+public class EnumerableDumper : IObjectDumperPartWithCallback
 {
-    public class EnumerableDumper : IObjectDumperPartWithCallback
+    public IObjectDumperCallback? Callback { get; set; }
+
+    public int Order => 40;
+
+    public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
-        public IObjectDumperCallback? Callback { get; set; }
-
-        public int Order => 40;
-
-        public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
+        if (!(instance is string) && instance is IEnumerable enumerable)
         {
-            if (!(instance is string) && instance is IEnumerable enumerable)
+            builder.BeginNesting(indent, instanceType);
+            builder.BeginEnumerable(indent, instanceType);
+
+            var firstEnum = true;
+            foreach (var item in enumerable)
             {
-                builder.BeginNesting(indent, instanceType);
-                builder.BeginEnumerable(indent, instanceType);
-
-                var firstEnum = true;
-                foreach (var item in enumerable)
+                builder.AddEnumerableItem(firstEnum, indent, false);
+                if (firstEnum)
                 {
-                    builder.AddEnumerableItem(firstEnum, indent, false);
-                    if (firstEnum)
-                    {
-                        firstEnum = false;
-                    }
-
-                    Callback?.Process(item, item?.GetType() ?? instanceType.GetGenericArguments()[0], builder, indent + 4, currentDepth + 1);
+                    firstEnum = false;
                 }
 
-                builder.EndEnumerable(indent, instance.GetType());
-
-                return true;
+                Callback?.Process(item, item?.GetType() ?? instanceType.GetGenericArguments()[0], builder, indent + 4, currentDepth + 1);
             }
 
-            return false;
+            builder.EndEnumerable(indent, instance.GetType());
+
+            return true;
         }
 
-        public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source) => source;
-
-        public bool ShouldProcess(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
-
-        public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor) => true;
-
-        public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
+        return false;
     }
+
+    public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source) => source;
+
+    public bool ShouldProcess(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => true;
+
+    public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor) => true;
+
+    public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
 }

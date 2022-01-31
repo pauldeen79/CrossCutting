@@ -1,8 +1,4 @@
-﻿using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
-using CrossCutting.Utilities.Parsers.InsertQueryParser.Processors;
-using CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators;
-
-namespace CrossCutting.Utilities.Parsers.InsertQueryParser
+﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser
 {
     internal static class ComponentConfiguration
     {

@@ -1,67 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using CrossCutting.Data.Abstractions;
-using CrossCutting.Data.Core.CommandProviders;
-using CrossCutting.Data.Core.Tests.TestFixtures;
-using FluentAssertions;
-using Xunit;
+﻿namespace CrossCutting.Data.Core.Tests.CommandProviders;
 
-namespace CrossCutting.Data.Core.Tests.CommandProviders
+[ExcludeFromCodeCoverage]
+public class IdentityDatabaseCommandProviderBaseTests : IdentityDatabaseCommandProviderBase<TestEntityIdentity>
 {
-    [ExcludeFromCodeCoverage]
-    public class IdentityDatabaseCommandProviderBaseTests : IdentityDatabaseCommandProviderBase<TestEntityIdentity>
+    public IdentityDatabaseCommandProviderBaseTests() : base(new PagedDatabaseEntityRetrieverSettingsMock())
     {
-        public IdentityDatabaseCommandProviderBaseTests() : base(new PagedDatabaseEntityRetrieverSettingsMock())
-        {
-        }
+    }
 
-        [Theory]
-        [InlineData(DatabaseOperation.Delete)]
-        [InlineData(DatabaseOperation.Insert)]
-        [InlineData(DatabaseOperation.Unspecified)]
-        [InlineData(DatabaseOperation.Update)]
-        public void Create_Throws_On_Wrong_DatabaseOperation(DatabaseOperation operation)
-        {
-            // Arrange
-            var sut = this;
+    [Theory]
+    [InlineData(DatabaseOperation.Delete)]
+    [InlineData(DatabaseOperation.Insert)]
+    [InlineData(DatabaseOperation.Unspecified)]
+    [InlineData(DatabaseOperation.Update)]
+    public void Create_Throws_On_Wrong_DatabaseOperation(DatabaseOperation operation)
+    {
+        // Arrange
+        var sut = this;
 
-            // Act
-            sut.Invoking(x => x.Create(new TestEntityIdentity("A", "B"), operation))
-               .Should().Throw<ArgumentOutOfRangeException>()
-               .And.ParamName.Should().Be("operation");
-        }
+        // Act
+        sut.Invoking(x => x.Create(new TestEntityIdentity("A", "B"), operation))
+           .Should().Throw<ArgumentOutOfRangeException>()
+           .And.ParamName.Should().Be("operation");
+    }
 
-        [Fact]
-        public void Create_Generates_Where_Statement_For_Both_Simple_Fields_And_Fields_With_Different_Name_In_Database()
-        {
-            // Arrange
-            var sut = this;
+    [Fact]
+    public void Create_Generates_Where_Statement_For_Both_Simple_Fields_And_Fields_With_Different_Name_In_Database()
+    {
+        // Arrange
+        var sut = this;
 
-            // Act
-            var actual = sut.Create(new TestEntityIdentity("A", "B"), DatabaseOperation.Select);
+        // Act
+        var actual = sut.Create(new TestEntityIdentity("A", "B"), DatabaseOperation.Select);
 
-            // Assert
-            actual.CommandText.Should().Be(@"SELECT A, B, C FROM Table WHERE [Field1] = @Field1 AND [Field2] = @Field2Alias");
-        }
+        // Assert
+        actual.CommandText.Should().Be(@"SELECT A, B, C FROM Table WHERE [Field1] = @Field1 AND [Field2] = @Field2Alias");
+    }
 
-        protected override IEnumerable<IdentityDatabaseCommandProviderField> GetFields()
-        {
-            yield return new IdentityDatabaseCommandProviderField("Field1");
-            yield return new IdentityDatabaseCommandProviderField("Field2Alias", "Field2");
-        }
+    protected override IEnumerable<IdentityDatabaseCommandProviderField> GetFields()
+    {
+        yield return new IdentityDatabaseCommandProviderField("Field1");
+        yield return new IdentityDatabaseCommandProviderField("Field2Alias", "Field2");
+    }
 
-        private class PagedDatabaseEntityRetrieverSettingsMock : IPagedDatabaseEntityRetrieverSettings
-        {
-            public int? OverridePageSize => null;
+    [ExcludeFromCodeCoverage]
+    private class PagedDatabaseEntityRetrieverSettingsMock : IPagedDatabaseEntityRetrieverSettings
+    {
+        public int? OverridePageSize => null;
 
-            public string TableName => "Table";
+        public string TableName => "Table";
 
-            public string Fields => "A, B, C";
+        public string Fields => "A, B, C";
 
-            public string DefaultOrderBy => string.Empty;
+        public string DefaultOrderBy => string.Empty;
 
-            public string DefaultWhere => string.Empty;
-        }
+        public string DefaultWhere => string.Empty;
     }
 }

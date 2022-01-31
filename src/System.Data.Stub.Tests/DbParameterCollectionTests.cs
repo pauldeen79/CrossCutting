@@ -1,122 +1,117 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
-using Xunit;
+﻿namespace System.Data.Stub.Tests;
 
-namespace System.Data.Stub.Tests
+[ExcludeFromCodeCoverage]
+public class DbParameterCollectionTests
 {
-    [ExcludeFromCodeCoverage]
-    public class DbParameterCollectionTests
+    [Fact]
+    public void Can_Use_String_Indexer_To_Locate_Parameter()
     {
-        [Fact]
-        public void Can_Use_String_Indexer_To_Locate_Parameter()
+        // Arrange
+        var sut = new DbParameterCollection
         {
-            // Arrange
-            var sut = new DbParameterCollection
-            {
-                ["Parameter1"] = "value1"
-            };
+            ["Parameter1"] = "value1"
+        };
 
-            // Act
-            var actual = sut["Parameter1"];
+        // Act
+        var actual = sut["Parameter1"];
 
-            // Assert
-            actual.Should().Be("value1");
-        }
+        // Assert
+        actual.Should().Be("value1");
+    }
 
-        [Fact]
-        public void Can_Use_Int32_Indexer_To_Locate_Parameter()
+    [Fact]
+    public void Can_Use_Int32_Indexer_To_Locate_Parameter()
+    {
+        // Arrange
+        var sut = new DbParameterCollection
         {
-            // Arrange
-            var sut = new DbParameterCollection
-            {
-                ["Parameter1"] = "value1"
-            };
+            ["Parameter1"] = "value1"
+        };
 
-            // Act
-            var actual = sut[0];
+        // Act
+        var actual = sut[0];
 
-            // Assert
-            actual.Should().Be("value1");
-        }
+        // Assert
+        actual.Should().Be("value1");
+    }
 
-        [Fact]
-        public void Can_Count_Parameters()
+    [Fact]
+    public void Can_Count_Parameters()
+    {
+        // Arrange
+        var sut = new DbParameterCollection
         {
-            // Arrange
-            var sut = new DbParameterCollection
-            {
-                ["Parameter1"] = "value1"
-            };
+            ["Parameter1"] = "value1"
+        };
 
-            // Act
-            var actual = sut.Count;
+        // Act
+        var actual = sut.Count;
 
-            // Assert
-            actual.Should().Be(1);
-        }
+        // Assert
+        actual.Should().Be(1);
+    }
 
-        [Theory, InlineData("Parameter1", true), InlineData("NonExisiting", false)]
-        public void Can_Use_Contains_String(string parameterName, bool expectedResult)
+    [Theory, InlineData("Parameter1", true), InlineData("NonExisiting", false)]
+    public void Can_Use_Contains_String(string parameterName, bool expectedResult)
+    {
+        // Arrange
+        var sut = new DbParameterCollection
         {
-            // Arrange
-            var sut = new DbParameterCollection
-            {
-                ["Parameter1"] = "value1"
-            };
+            ["Parameter1"] = "value1"
+        };
 
-            // Act
-            var actual = sut.Contains(parameterName);
+        // Act
+        var actual = sut.Contains(parameterName);
 
-            // Assert
-            actual.Should().Be(expectedResult);
-        }
+        // Assert
+        actual.Should().Be(expectedResult);
+    }
 
-        [Theory, InlineData("value1", true), InlineData("NonExisiting", false)]
-        public void Can_Use_Contains_Object(object parameterValue, bool expectedResult)
+    [Theory, InlineData("value1", true), InlineData("NonExisiting", false)]
+    public void Can_Use_Contains_Object(object parameterValue, bool expectedResult)
+    {
+        // Arrange
+        var sut = new DbParameterCollection
         {
-            // Arrange
-            var sut = new DbParameterCollection
-            {
-                ["Parameter1"] = "value1"
-            };
+            ["Parameter1"] = "value1"
+        };
 
-            // Act
-            var actual = sut.Contains(parameterValue);
+        // Act
+        var actual = sut.Contains(parameterValue);
 
-            // Assert
-            actual.Should().Be(expectedResult);
-        }
+        // Assert
+        actual.Should().Be(expectedResult);
+    }
 
-        [Fact]
-        public void Add_Adds_Parameter()
+    [Fact]
+    public void Add_Adds_Parameter()
+    {
+        // Arrange
+        var sut = new DbParameterCollection
         {
-            // Arrange
-            var sut = new DbParameterCollection
-            {
-                ["Parameter1"] = "value1"
-            };
+            ["Parameter1"] = "value1"
+        };
 
-            // Act
-            sut.Add("value 2");
+        // Act
+        sut.Add("value 2");
 
-            // Assert
-            sut.Count.Should().Be(2);
-        }
+        // Assert
+        sut.Count.Should().Be(2);
+    }
 
-        [Fact]
-        public void Clear_Clears_All_Parameters()
+    [Fact]
+    public void Clear_Clears_All_Parameters()
+    {
+        // Arrange
+        var sut = new DbParameterCollection
         {
-            // Arrange
-            var sut = new DbParameterCollection
-            {
-                ["Parameter1"] = "value1"
-            };
+            ["Parameter1"] = "value1"
+        };
 
-            // Act
-            sut.Clear();
+        // Act
+        sut.Clear();
 
-            // Assert
-            sut.Count.Should().Be(0);
-        }
+        // Assert
+        sut.Count.Should().Be(0);
     }
 }

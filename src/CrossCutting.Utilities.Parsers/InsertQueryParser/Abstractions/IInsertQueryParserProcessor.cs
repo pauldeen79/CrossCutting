@@ -1,7 +1,6 @@
-﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions
+﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
+
+internal interface IInsertQueryParserProcessor
 {
-    internal interface IInsertQueryParserProcessor
-    {
-        ProcessResult Process(char character, InsertQueryParserState state);
-    }
+    ProcessResult Process(char character, InsertQueryParserState state);
 }

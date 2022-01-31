@@ -1,0 +1,12 @@
+﻿global using System;
+global using System.Collections;
+global using System.Collections.Generic;
+global using System.ComponentModel;
+global using System.Diagnostics.CodeAnalysis;
+global using CrossCutting.Utilities.ObjectDumper.Contracts;
+global using CrossCutting.Utilities.ObjectDumper.Extensions;
+global using CrossCutting.Utilities.ObjectDumper.Parts.Filters;
+global using CrossCutting.Utilities.ObjectDumper.Parts.Transforms;
+global using CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
+global using FluentAssertions;
+global using Xunit;

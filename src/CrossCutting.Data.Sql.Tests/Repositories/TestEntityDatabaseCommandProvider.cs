@@ -15,17 +15,13 @@ namespace CrossCutting.Data.Sql.Tests.Repositories
 
         public IDatabaseCommand Create(TestEntity source, DatabaseOperation operation)
         {
-            switch (operation)
+            return operation switch
             {
-                case DatabaseOperation.Insert:
-                    return new SqlTextCommand("INSERT INTO...", DatabaseOperation.Insert);
-                case DatabaseOperation.Update:
-                    return new SqlTextCommand("UPDATE...", DatabaseOperation.Update);
-                case DatabaseOperation.Delete:
-                    return new SqlTextCommand("DELETE...", DatabaseOperation.Delete);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(operation), $"Unsupported operation: {operation}");
-            }
+                DatabaseOperation.Insert => new SqlTextCommand("INSERT INTO...", DatabaseOperation.Insert),
+                DatabaseOperation.Update => new SqlTextCommand("UPDATE...", DatabaseOperation.Update),
+                DatabaseOperation.Delete => new SqlTextCommand("DELETE...", DatabaseOperation.Delete),
+                _ => throw new ArgumentOutOfRangeException(nameof(operation), $"Unsupported operation: {operation}"),
+            };
         }
     }
 }

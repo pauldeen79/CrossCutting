@@ -1,10 +1,9 @@
-﻿namespace CrossCutting.Data.Abstractions
+﻿namespace CrossCutting.Data.Abstractions;
+
+public interface IDatabaseEntityRetrieverSettings
 {
-    public interface IDatabaseEntityRetrieverSettings
-    {
-        string TableName { get; }
-        string Fields { get; }
-        string DefaultOrderBy { get; }
-        string DefaultWhere { get; }
-    }
+    string TableName { get; }
+    string Fields { get; }
+    string DefaultOrderBy { get; }
+    string DefaultWhere { get; }
 }

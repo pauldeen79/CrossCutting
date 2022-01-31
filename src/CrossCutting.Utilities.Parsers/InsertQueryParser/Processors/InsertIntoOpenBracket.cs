@@ -1,24 +1,21 @@
-﻿using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
+﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Processors;
 
-namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Processors
+internal class InsertIntoOpenBracket : IInsertQueryParserProcessor
 {
-    internal class InsertIntoOpenBracket : IInsertQueryParserProcessor
+    public ProcessResult Process(char character, InsertQueryParserState state)
     {
-        public ProcessResult Process(char character, InsertQueryParserState state)
+        if (character == '('
+            && state.InsertIntoFound
+            && !state.ValuesFound
+            && !state.SelectFound
+            && !state.InsertIntoOpenBracketFound)
         {
-            if (character == '('
-                && state.InsertIntoFound
-                && !state.ValuesFound
-                && !state.SelectFound
-                && !state.InsertIntoOpenBracketFound)
-            {
-                state.InsertIntoOpenBracketFound = true;
-                state.CurrentSection.Clear();
+            state.InsertIntoOpenBracketFound = true;
+            state.CurrentSection.Clear();
 
-                return ProcessResult.Success();
-            }
-
-            return ProcessResult.NotUnderstood();
+            return ProcessResult.Success();
         }
+
+        return ProcessResult.NotUnderstood();
     }
 }

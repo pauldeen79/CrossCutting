@@ -1,18 +1,15 @@
-﻿using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
+﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators;
 
-namespace CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators
+internal class ValuesOrSelectClauseNotFound : IInsertQueryParserResultGenerator
 {
-    internal class ValuesOrSelectClauseNotFound : IInsertQueryParserResultGenerator
+    public ProcessResult Process(InsertQueryParserState state)
     {
-        public ProcessResult Process(InsertQueryParserState state)
+        if (!state.ValuesFound
+            && !state.SelectFound)
         {
-            if (!state.ValuesFound
-                && !state.SelectFound)
-            {
-                return ProcessResult.Fail("VALUES or SELECT clause was not found");
-            }
-
-            return ProcessResult.NotUnderstood();
+            return ProcessResult.Fail("VALUES or SELECT clause was not found");
         }
+
+        return ProcessResult.NotUnderstood();
     }
 }

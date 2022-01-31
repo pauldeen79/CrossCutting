@@ -1,175 +1,131 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿namespace CrossCutting.Utilities.ObjectDumper.Extensions;
 
-namespace CrossCutting.Utilities.ObjectDumper.Extensions
+public static class StringExtensions
 {
-    public static class StringExtensions
+    public static string DumpTypeName(this string typeName) => string.Format(" [{0}]", typeName.FixTypeName() ?? "{NULL}");
+
+    public static string JsonQuote(this string instance)
     {
-        public static string DumpTypeName(this string typeName) => string.Format(" [{0}]", typeName.FixTypeName() ?? "{NULL}");
-
-        /// <summary>
-        /// Indicates whether the string instance ends with any of the specified values.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static bool EndsWithAny(this string instance, params string[] values)
-            => instance.EndsWithAny((IEnumerable<string>)values);
-
-        /// <summary>
-        /// Indicates whether the string instance ends with any of the specified values.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static bool EndsWithAny(this string instance, IEnumerable<string> values)
-            => values.Any(v => instance.EndsWith(v));
-
-        /// <summary>
-        /// Indicates whether the string instance ends any of the specified values.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="comparisonType">Type of the comparison.</param>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static bool EndsWithAny(this string instance, StringComparison comparisonType, params string[] values)
-            => instance.EndsWithAny(comparisonType, (IEnumerable<string>)values);
-
-        /// <summary>
-        /// Indicates whether the string instance ends any of the specified values.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="comparisonType">Type of the comparison.</param>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static bool EndsWithAny(this string instance, StringComparison comparisonType, IEnumerable<string> values)
-            => values.Any(v => instance.EndsWith(v, comparisonType));
-
-        public static string JsonQuote(this string instance)
+        if (string.IsNullOrEmpty(instance))
         {
-            if (string.IsNullOrEmpty(instance))
-            {
-                return "\"\"";
-            }
+            return "\"\"";
+        }
 
-            char c;
-            int i;
-            int len = instance.Length;
-            var sb = new StringBuilder(len + 4);
-            sb.Append('"');
-            for (i = 0; i < len; i++)
+        char c;
+        int i;
+        int len = instance.Length;
+        var sb = new StringBuilder(len + 4);
+        sb.Append('"');
+        for (i = 0; i < len; i++)
+        {
+            c = instance[i];
+            switch (c)
             {
-                c = instance[i];
-                switch (c)
-                {
-                    case '\\':
-                    case '"':
-                    case '/':
-                        sb.Append('\\');
+                case '\\':
+                case '"':
+                case '/':
+                    sb.Append('\\');
+                    sb.Append(c);
+                    break;
+                case '\b':
+                    sb.Append("\\b");
+                    break;
+                case '\t':
+                    sb.Append("\\t");
+                    break;
+                case '\n':
+                    sb.Append("\\n");
+                    break;
+                case '\f':
+                    sb.Append("\\f");
+                    break;
+                case '\r':
+                    sb.Append("\\r");
+                    break;
+                default:
+                    if (c < ' ')
+                    {
+                        var t = "000" + ((int)c).ToString("X");
+                        sb
+                            .Append("\\u")
+                            .Append(t, t.Length - 4, t.Length - 4);
+                    }
+                    else
+                    {
                         sb.Append(c);
-                        break;
-                    case '\b':
-                        sb.Append("\\b");
-                        break;
-                    case '\t':
-                        sb.Append("\\t");
-                        break;
-                    case '\n':
-                        sb.Append("\\n");
-                        break;
-                    case '\f':
-                        sb.Append("\\f");
-                        break;
-                    case '\r':
-                        sb.Append("\\r");
-                        break;
-                    default:
-                        if (c < ' ')
-                        {
-                            var t = "000" + ((int)c).ToString("X");
-                            sb
-                                .Append("\\u")
-                                .Append(t, t.Length - 4, t.Length - 4);
-                        }
-                        else
-                        {
-                            sb.Append(c);
-                        }
-                        break;
-                }
+                    }
+                    break;
             }
-            sb.Append('"');
-            return sb.ToString();
         }
+        sb.Append('"');
+        return sb.ToString();
+    }
 
-        /// <summary>
-        /// Fixes the name of the type.
-        /// </summary>
-        /// <param name="instance">The type name to fix.</param>
-        /// <returns></returns>
-        public static string FixTypeName(this string instance)
+    /// <summary>
+    /// Fixes the name of the type.
+    /// </summary>
+    /// <param name="instance">The type name to fix.</param>
+    /// <returns></returns>
+    public static string FixTypeName(this string instance)
+    {
+        int startIndex;
+        while (true)
         {
-            int startIndex;
-            while (true)
+            startIndex = instance.IndexOf(", ");
+            if (startIndex == -1)
             {
-                startIndex = instance.IndexOf(", ");
-                if (startIndex == -1)
-                {
-                    break;
-                }
-
-                int secondIndex = instance.IndexOf("]", startIndex + 1);
-                if (secondIndex == -1)
-                {
-                    break;
-                }
-
-                instance = instance.Substring(0, startIndex) + instance.Substring(secondIndex + 1);
+                break;
             }
 
-            while (true)
+            int secondIndex = instance.IndexOf("]", startIndex + 1);
+            if (secondIndex == -1)
             {
-                startIndex = instance.IndexOf("`");
-                if (startIndex == -1)
-                {
-                    break;
-                }
-
-                instance = instance.Substring(0, startIndex) + instance.Substring(startIndex + 2);
+                break;
             }
 
-            //remove assebmly name from type, e.g. System.String, mscorlib bla bla bla -> System.String
-            var index = instance.IndexOf(", ");
-            if (index > -1)
-            {
-                instance = instance.Substring(0, index);
-            }
-
-            return FixAnonymousTypeName(instance
-                .Replace("[[", "<")
-                .Replace(",[", ",")
-                .Replace(",]", ">" /*","*/)
-                .Replace("]", ">")
-                .Replace("[>", "[]") //hacking here! caused by the previous statements...
-                .Replace("System.Void", "void")
-                .Replace("+", ".")
-                .Replace("&", ""));
+            instance = instance.Substring(0, startIndex) + instance.Substring(secondIndex + 1);
         }
 
-        private static string FixAnonymousTypeName(string instance)
+        while (true)
         {
-            var isAnonymousType = instance.Contains("AnonymousType")
-                && (instance.Contains("<>") || instance.Contains("VB$"));
+            startIndex = instance.IndexOf("`");
+            if (startIndex == -1)
+            {
+                break;
+            }
 
-            var arraySuffix = instance.EndsWith("[]")
-                ? "[]"
-                : string.Empty;
-
-            return isAnonymousType
-                ? $"AnonymousType{arraySuffix}"
-                : instance;
+            instance = instance.Substring(0, startIndex) + instance.Substring(startIndex + 2);
         }
+
+        //remove assebmly name from type, e.g. System.String, mscorlib bla bla bla -> System.String
+        var index = instance.IndexOf(", ");
+        if (index > -1)
+        {
+            instance = instance.Substring(0, index);
+        }
+
+        return FixAnonymousTypeName(instance
+            .Replace("[[", "<")
+            .Replace(",[", ",")
+            .Replace(",]", ">" /*","*/)
+            .Replace("]", ">")
+            .Replace("[>", "[]") //hacking here! caused by the previous statements...
+            .Replace("System.Void", "void")
+            .Replace("+", ".")
+            .Replace("&", ""));
+    }
+
+    private static string FixAnonymousTypeName(string instance)
+    {
+        var isAnonymousType = instance.Contains("AnonymousType")
+            && (instance.Contains("<>") || instance.Contains("VB$"));
+
+        var arraySuffix = instance.EndsWith("[]")
+            ? "[]"
+            : string.Empty;
+
+        return isAnonymousType
+            ? $"AnonymousType{arraySuffix}"
+            : instance;
     }
 }

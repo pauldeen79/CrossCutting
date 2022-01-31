@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
+﻿namespace CrossCutting.Data.Abstractions;
 
-namespace CrossCutting.Data.Abstractions
+public interface IPagedResult<out T> : IReadOnlyCollection<T>
 {
-    public interface IPagedResult<out T> : IReadOnlyCollection<T>
-    {
-        int TotalRecordCount { get; }
-        int Offset { get; }
-        int PageSize { get; }
-    }
+    int TotalRecordCount { get; }
+    int Offset { get; }
+    int PageSize { get; }
 }

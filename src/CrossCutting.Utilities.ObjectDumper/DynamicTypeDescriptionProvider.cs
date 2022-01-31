@@ -1,29 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-
-namespace CrossCutting.Utilities.ObjectDumper
+﻿namespace CrossCutting.Utilities.ObjectDumper
 {
     public class DynamicTypeDescriptionProvider : TypeDescriptionProvider
     {
         private readonly TypeDescriptionProvider provider;
         private readonly List<PropertyDescriptor> properties = new List<PropertyDescriptor>();
 
-        public DynamicTypeDescriptionProvider(Type type)
-        {
-            provider = TypeDescriptor.GetProvider(type);
-        }
+        public DynamicTypeDescriptionProvider(Type type) => provider = TypeDescriptor.GetProvider(type);
 
-        public IList<PropertyDescriptor> Properties
-        {
-            get { return properties; }
-        }
+        public IList<PropertyDescriptor> Properties => properties;
 
         public override ICustomTypeDescriptor GetTypeDescriptor(Type objectType, object instance)
-        {
-            return new DynamicCustomTypeDescriptor(
-               this, provider.GetTypeDescriptor(objectType, instance));
-        }
+            => new DynamicCustomTypeDescriptor(this, provider.GetTypeDescriptor(objectType, instance));
 
         private sealed class DynamicCustomTypeDescriptor : CustomTypeDescriptor
         {
@@ -31,15 +18,9 @@ namespace CrossCutting.Utilities.ObjectDumper
 
             public DynamicCustomTypeDescriptor(DynamicTypeDescriptionProvider provider,
                ICustomTypeDescriptor descriptor)
-                  : base(descriptor)
-            {
-                this.provider = provider;
-            }
+                  : base(descriptor) => this.provider = provider;
 
-            public override PropertyDescriptorCollection GetProperties()
-            {
-                return GetProperties(Array.Empty<Attribute>());
-            }
+            public override PropertyDescriptorCollection GetProperties() => GetProperties(Array.Empty<Attribute>());
 
             public override PropertyDescriptorCollection GetProperties(Attribute[] attributes)
             {
