@@ -13,9 +13,9 @@ public sealed class DataReader : IDataReader
         CultureInfo = cultureInfo ?? CultureInfo.CurrentCulture;
     }
 
-    public object this[int i] { get => Dictionary[CurrentIndex][Dictionary[CurrentIndex].Keys.ElementAt(i)]; }
+    public object this[int i] => Dictionary[CurrentIndex][Dictionary[CurrentIndex].Keys.ElementAt(i)];
 
-    public object this[string name] { get => Dictionary[CurrentIndex][name]; }
+    public object this[string name] => Dictionary[CurrentIndex][name];
 
     public int Depth => 1;
 
