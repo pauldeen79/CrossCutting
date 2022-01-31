@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
 
-[ExcludeFromCodeCoverage]
 internal class TypeWithSetterProperty
 {
     public string? Name { get; set; }

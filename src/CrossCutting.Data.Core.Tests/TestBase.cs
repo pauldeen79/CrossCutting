@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Core.Tests;
 
-[ExcludeFromCodeCoverage]
 public abstract class TestBase<T>
 {
     protected IFixture Fixture { get; } = new Fixture().Customize(new AutoMoqCustomization());

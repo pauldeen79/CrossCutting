@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests;
 
-[ExcludeFromCodeCoverage]
 public sealed class IntegrationTests : IDisposable
 {
     private readonly TestRepository _repository;
@@ -118,8 +117,5 @@ public sealed class IntegrationTests : IDisposable
         actual.Should().BeEquivalentTo(expectedResult);
     }
 
-    public void Dispose()
-    {
-        _connection.Dispose();
-    }
+    public void Dispose() => _connection.Dispose();
 }

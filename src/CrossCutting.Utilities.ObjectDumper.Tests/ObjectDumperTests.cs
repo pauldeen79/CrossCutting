@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Tests;
 
-[ExcludeFromCodeCoverage]
 public class ObjectDumperTests
 {
     [Fact]

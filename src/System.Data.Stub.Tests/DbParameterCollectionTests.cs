@@ -1,6 +1,5 @@
 ﻿namespace System.Data.Stub.Tests;
 
-[ExcludeFromCodeCoverage]
 public class DbParameterCollectionTests
 {
     [Fact]

@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.CommandProviders;
 
-[ExcludeFromCodeCoverage]
 public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatabaseCommandProvider>
 {
     private Mock<IPagedDatabaseEntityRetrieverSettings> SettingsMock => Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettings>>();

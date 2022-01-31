@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Common.Tests;
 
-[ExcludeFromCodeCoverage]
 public class ValueCollectionTests
 {
     [Fact]

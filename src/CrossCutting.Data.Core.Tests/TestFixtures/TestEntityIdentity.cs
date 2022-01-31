@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Core.Tests.TestFixtures;
 
-[ExcludeFromCodeCoverage]
 public record TestEntityIdentity
 {
     public string Code { get; }

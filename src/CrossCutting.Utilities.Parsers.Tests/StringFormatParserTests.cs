@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
-[ExcludeFromCodeCoverage]
 public class StringFormatParserTests
 {
     [Fact]

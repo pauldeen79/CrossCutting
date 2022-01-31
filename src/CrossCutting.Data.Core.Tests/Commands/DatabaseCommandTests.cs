@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Core.Tests.Commands;
 
-[ExcludeFromCodeCoverage]
 public class DatabaseCommandTests
 {
     [Theory]

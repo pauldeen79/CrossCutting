@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Repositories;
 
-[ExcludeFromCodeCoverage]
 public class TestEntityDatabaseEntityRetrieverSettings : IPagedDatabaseEntityRetrieverSettings
 {
     public string TableName => "MyTable";

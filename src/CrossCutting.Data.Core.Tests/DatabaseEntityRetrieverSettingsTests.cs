@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Core.Tests;
 
-[ExcludeFromCodeCoverage]
 public class DatabaseEntityRetrieverSettingsTests
 {
     [Fact]

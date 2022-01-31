@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Repositories;
 
-[ExcludeFromCodeCoverage]
 public class TestEntityMapper : IDatabaseEntityMapper<TestEntity>
 {
     public TestEntity Map(IDataReader reader)

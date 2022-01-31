@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Repositories;
 
-[ExcludeFromCodeCoverage]
 public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>
 {
     public Func<TestEntityBuilder, DatabaseOperation, IDatabaseCommand> CommandDelegate

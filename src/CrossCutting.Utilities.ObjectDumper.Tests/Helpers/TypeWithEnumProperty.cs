@@ -2,7 +2,6 @@
 
 public enum MyEnumeration { A, B, C }
 
-[ExcludeFromCodeCoverage]
 public class TypeWithEnumProperty
 {
     public string? Property1 { get; set; }

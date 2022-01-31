@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.DataTableDumper.Tests;
 
-[ExcludeFromCodeCoverage]
 public class DataTableDumperTests
 {
     [Fact]
@@ -98,7 +97,6 @@ F	6	u"; //copied directly from Excel 8-)
 
     }
 
-    [ExcludeFromCodeCoverage]
     public class MyClass
     {
         public string? Name { get; set; }

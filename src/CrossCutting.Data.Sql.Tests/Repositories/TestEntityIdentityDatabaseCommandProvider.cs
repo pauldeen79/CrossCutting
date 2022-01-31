@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Repositories;
 
-[ExcludeFromCodeCoverage]
 public class TestEntityIdentityDatabaseCommandProvider : IdentityDatabaseCommandProviderBase<TestEntityIdentity>
 {
     public TestEntityIdentityDatabaseCommandProvider(TestEntityDatabaseEntityRetrieverSettings settings) : base(settings)

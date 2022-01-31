@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Abstractions.Tests.Extensions;
 
-[ExcludeFromCodeCoverage]
 public class ObjectExtensionsTests
 {
     [Theory]

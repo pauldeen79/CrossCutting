@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Core.Tests.TestFixtures;
 
-[ExcludeFromCodeCoverage]
 public record TestEntity
 {
     public bool IsExistingEntity { get; }

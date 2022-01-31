@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Extensions;
 
-[ExcludeFromCodeCoverage]
 public class DataReaderExtensionsTests
 {
     [Fact]
@@ -855,7 +854,6 @@ public class DataReaderExtensionsTests
             Property = reader.GetString("Property")
         };
 
-    [ExcludeFromCodeCoverage]
     private class MyEntity
     {
         public string? Property { get; set; }

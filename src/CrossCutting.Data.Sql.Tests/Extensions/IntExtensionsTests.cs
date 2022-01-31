@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Extensions;
 
-[ExcludeFromCodeCoverage]
 public class IntExtensionsTests
 {
     [Theory]

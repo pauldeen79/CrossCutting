@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
 
-[ExcludeFromCodeCoverage]
 public class MyImmutableType
 {
     public string Name { get; }

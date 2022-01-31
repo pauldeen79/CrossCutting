@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Core.Tests.CommandProviders;
 
-[ExcludeFromCodeCoverage]
 public class IdentityDatabaseCommandProviderBaseTests : IdentityDatabaseCommandProviderBase<TestEntityIdentity>
 {
     public IdentityDatabaseCommandProviderBaseTests() : base(new PagedDatabaseEntityRetrieverSettingsMock())
@@ -42,7 +41,6 @@ public class IdentityDatabaseCommandProviderBaseTests : IdentityDatabaseCommandP
         yield return new IdentityDatabaseCommandProviderField("Field2Alias", "Field2");
     }
 
-    [ExcludeFromCodeCoverage]
     private class PagedDatabaseEntityRetrieverSettingsMock : IPagedDatabaseEntityRetrieverSettings
     {
         public int? OverridePageSize => null;

@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Core.Tests.CommandProviders;
 
-[ExcludeFromCodeCoverage]
 public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommandProvider>
 {
     private Mock<IDatabaseEntityRetrieverSettings> SettingsMock => Fixture.Freeze<Mock<IDatabaseEntityRetrieverSettings>>();

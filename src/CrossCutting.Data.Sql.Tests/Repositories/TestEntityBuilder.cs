@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Repositories;
 
-[ExcludeFromCodeCoverage]
 public class TestEntityBuilder
 {
     public bool IsExistingEntity { get; set; }

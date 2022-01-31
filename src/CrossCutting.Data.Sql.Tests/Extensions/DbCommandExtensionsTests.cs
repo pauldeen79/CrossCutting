@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Extensions;
 
-[ExcludeFromCodeCoverage]
 public class DbCommandExtensionsTests
 {
     [Fact]
@@ -136,7 +135,6 @@ public class DbCommandExtensionsTests
         result.Last().Property.Should().Be("test2");
     }
 
-    [ExcludeFromCodeCoverage]
     public class MyDataObject
     {
         public string? Property { get; set; }

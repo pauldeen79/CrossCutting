@@ -4,7 +4,6 @@ global using System.ComponentModel.DataAnnotations;
 global using System.Data;
 global using System.Data.Stub;
 global using System.Data.Stub.Extensions;
-global using System.Diagnostics.CodeAnalysis;
 global using System.Linq;
 global using System.Text;
 global using AutoFixture;

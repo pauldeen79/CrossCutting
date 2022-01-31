@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.DataTableDumper.Tests.Extensions;
 
-[ExcludeFromCodeCoverage]
 public class StringExtensionsTests
 {
     [Theory,

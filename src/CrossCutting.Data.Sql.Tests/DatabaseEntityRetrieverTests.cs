@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests;
 
-[ExcludeFromCodeCoverage]
 public sealed class DatabaseEntityRetrieverTests : IDisposable
 {
     private DatabaseEntityRetriever<MyEntity> Sut { get; }
@@ -94,7 +93,6 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         Connection.Dispose();
     }
 
-    [ExcludeFromCodeCoverage]
     public class MyEntity
     {
         [Required]

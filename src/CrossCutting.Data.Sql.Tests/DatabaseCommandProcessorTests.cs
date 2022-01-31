@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests;
 
-[ExcludeFromCodeCoverage]
 public sealed class DatabaseCommandProcessorTests : IDisposable
 {
     private DatabaseCommandProcessor<MyEntity> Sut { get; }
@@ -193,7 +192,6 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         Connection.Dispose();
     }
 
-    [ExcludeFromCodeCoverage]
     public class MyEntity
     {
         [Required]

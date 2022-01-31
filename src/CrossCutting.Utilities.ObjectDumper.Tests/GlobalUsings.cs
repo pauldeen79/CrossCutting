@@ -2,7 +2,6 @@
 global using System.Collections;
 global using System.Collections.Generic;
 global using System.ComponentModel;
-global using System.Diagnostics.CodeAnalysis;
 global using CrossCutting.Utilities.ObjectDumper.Contracts;
 global using CrossCutting.Utilities.ObjectDumper.Extensions;
 global using CrossCutting.Utilities.ObjectDumper.Parts.Filters;

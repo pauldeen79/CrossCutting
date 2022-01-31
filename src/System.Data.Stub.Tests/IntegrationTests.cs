@@ -1,7 +1,6 @@
 ﻿namespace System.Data.Stub.Tests;
 
-[ExcludeFromCodeCoverage]
-public class IntegrationTests
+public sealed class IntegrationTests : IDisposable
 {
     private readonly DbConnection Connection;
     private readonly DbConnectionCallback _callback;
@@ -447,6 +446,8 @@ public class IntegrationTests
         result[1].Name.Should().Be("Milk");
         result[1].Amount.Should().Be(3);
     }
+
+    public void Dispose() => Connection.Dispose();
 
     private class MyRecord
     {

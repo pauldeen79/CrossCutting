@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Common.Tests.Extensions;
 
-[ExcludeFromCodeCoverage]
 public class ValidatableObjectExtensionsTests
 {
     [Fact]
@@ -137,7 +136,6 @@ public class ValidatableObjectExtensionsTests
              .Should().Throw<ValidationException>();
     }
 
-    [ExcludeFromCodeCoverage]
     private class MyValidatableClass : IValidatableObject
     {
         public string? Value { get; set; }
@@ -151,7 +149,6 @@ public class ValidatableObjectExtensionsTests
         }
     }
 
-    [ExcludeFromCodeCoverage]
     private class MyValidatableClassWithTwoProperties : IValidatableObject
     {
         public string? Value1 { get; set; }

@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Core.Tests;
 
-[ExcludeFromCodeCoverage]
 public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentity>>
 {
     private Mock<IDatabaseCommandProcessor<TestEntity>> CommandProcessorMock => Fixture.Freeze<Mock<IDatabaseCommandProcessor<TestEntity>>>();

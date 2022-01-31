@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Repositories;
 
-[ExcludeFromCodeCoverage]
 public class TestRepository : Repository<TestEntity, TestEntityIdentity>
 {
     public TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcessor,

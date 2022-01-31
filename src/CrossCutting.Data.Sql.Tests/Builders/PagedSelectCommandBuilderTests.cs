@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Builders;
 
-[ExcludeFromCodeCoverage]
 public class PagedSelectCommandBuilderTests
 {
     [Fact]

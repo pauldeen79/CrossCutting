@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Common.Tests.Extensions;
 
-[ExcludeFromCodeCoverage]
 public class EnumerableExtensionsTests
 {
     [Fact]

@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Data.Core.Tests.Builders;
 
-[ExcludeFromCodeCoverage]
 public class SelectCommandBuilderTests
 {
     [Fact]

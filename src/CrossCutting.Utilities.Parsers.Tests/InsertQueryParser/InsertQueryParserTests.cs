@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests.InsertQueryParser;
 
-[ExcludeFromCodeCoverage]
 public class InsertQueryParserTests
 {
     [Fact]

@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Common.Tests.Extensions;
 
-[ExcludeFromCodeCoverage]
 public class ObjectExtensionsTests
 {
     [Fact]
@@ -288,14 +287,12 @@ public class ObjectExtensionsTests
         actual.Should().BeSameAs(input);
     }
 
-    [ExcludeFromCodeCoverage]
     private class MyPocoClass
     {
         [Required]
         public string? Value { get; set; }
     }
 
-    [ExcludeFromCodeCoverage]
     private sealed class MyDisposableClass : IDisposable
     {
         public bool IsDisposed { get; private set; }
