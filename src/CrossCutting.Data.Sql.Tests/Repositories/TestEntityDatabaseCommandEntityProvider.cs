@@ -45,9 +45,9 @@ public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityPro
     private object AddParameters(TestEntityBuilder resultEntity)
         => new[]
         {
-                new KeyValuePair<string, object?>("@Code", resultEntity.Code),
-                new KeyValuePair<string, object?>("@CodeType", resultEntity.CodeType),
-                new KeyValuePair<string, object?>("@Description", resultEntity.Description),
+            new KeyValuePair<string, object?>("@Code", resultEntity.Code),
+            new KeyValuePair<string, object?>("@CodeType", resultEntity.CodeType),
+            new KeyValuePair<string, object?>("@Description", resultEntity.Description),
         };
 
     private TestEntityBuilder AddResultEntity(TestEntityBuilder resultEntity) => resultEntity;
@@ -66,9 +66,9 @@ public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityPro
     private object UpdateParameters(TestEntityBuilder resultEntity)
         => new[]
         {
-                new KeyValuePair<string, object?>("@Code", resultEntity.Code),
-                new KeyValuePair<string, object?>("@CodeType", resultEntity.CodeType),
-                new KeyValuePair<string, object?>("@Description", resultEntity.Description),
+            new KeyValuePair<string, object?>("@Code", resultEntity.Code),
+            new KeyValuePair<string, object?>("@CodeType", resultEntity.CodeType),
+            new KeyValuePair<string, object?>("@Description", resultEntity.Description),
         };
 
     private TestEntityBuilder UpdateResultEntity(TestEntityBuilder resultEntity) => resultEntity;
@@ -86,9 +86,9 @@ public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityPro
     private object DeleteParameters(TestEntityBuilder resultEntity)
         => new[]
         {
-                new KeyValuePair<string, object?>("@Code", resultEntity.Code),
-                new KeyValuePair<string, object?>("@CodeType", resultEntity.CodeType),
-                new KeyValuePair<string, object?>("@Description", resultEntity.Description),
+            new KeyValuePair<string, object?>("@Code", resultEntity.Code),
+            new KeyValuePair<string, object?>("@CodeType", resultEntity.CodeType),
+            new KeyValuePair<string, object?>("@Description", resultEntity.Description),
         };
 
     private TestEntityBuilder DeleteResultEntity(TestEntityBuilder resultEntity)

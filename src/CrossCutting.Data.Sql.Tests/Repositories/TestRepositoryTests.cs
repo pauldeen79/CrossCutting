@@ -40,8 +40,8 @@ public class TestRepositoryTests : TestBase<TestRepository>
         // Arrange
         var expected = new[]
         {
-                new TestEntity("code1", "codeType1", "description1"),
-                new TestEntity("code2", "codeType2", "description2")
+            new TestEntity("code1", "codeType1", "description1"),
+            new TestEntity("code2", "codeType2", "description2")
         };
         EntityRetrieverMock.Setup(x => x.FindMany(It.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select))).Returns(expected);
 
@@ -58,8 +58,8 @@ public class TestRepositoryTests : TestBase<TestRepository>
         // Arrange
         var expected = new[]
         {
-                new TestEntity("code1", "codeType1", "description1"),
-                new TestEntity("code2", "codeType2", "description2")
+            new TestEntity("code1", "codeType1", "description1"),
+            new TestEntity("code2", "codeType2", "description2")
         };
         EntityRetrieverMock.Setup(x => x.FindPaged(It.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select))).Returns(new PagedResult<TestEntity>(expected, 2, 0, 10));
 

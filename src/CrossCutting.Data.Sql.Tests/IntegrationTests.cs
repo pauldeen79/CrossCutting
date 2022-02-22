@@ -12,14 +12,14 @@ public sealed class IntegrationTests : IDisposable
         _connection = new DbConnection();
         _mapper = new TestEntityMapper();
         _repository = new TestRepository
-            (
-                new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(_connection, new TestEntityDatabaseCommandEntityProvider()),
-                new DatabaseEntityRetriever<TestEntity>(_connection, _mapper),
-                new TestEntityIdentityDatabaseCommandProvider(settings),
-                new PagedSelectDatabaseCommandProvider(settings),
-                new SelectDatabaseCommandProvider(settings),
-                new TestEntityDatabaseCommandProvider()
-            );
+        (
+            new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(_connection, new TestEntityDatabaseCommandEntityProvider()),
+            new DatabaseEntityRetriever<TestEntity>(_connection, _mapper),
+            new TestEntityIdentityDatabaseCommandProvider(settings),
+            new PagedSelectDatabaseCommandProvider(settings),
+            new SelectDatabaseCommandProvider(settings),
+            new TestEntityDatabaseCommandProvider()
+        );
     }
 
     [Fact]
