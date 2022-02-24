@@ -2,7 +2,7 @@
 
 public interface IDatabaseCommandProvider
 {
-    IDatabaseCommand Create(DatabaseOperation operation);
+    IDatabaseCommand Create<TSource>(DatabaseOperation operation);
 }
 
 public interface IDatabaseCommandProvider<in TSource>

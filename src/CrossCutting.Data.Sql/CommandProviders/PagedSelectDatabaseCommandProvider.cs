@@ -2,27 +2,39 @@
 
 public class PagedSelectDatabaseCommandProvider : IPagedDatabaseCommandProvider
 {
-    private IPagedDatabaseEntityRetrieverSettings Settings { get; }
+    private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders;
 
-    public PagedSelectDatabaseCommandProvider(IPagedDatabaseEntityRetrieverSettings settings)
-    {
-        Settings = settings;
-    }
+    public PagedSelectDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders)
+        => _settingsProviders = settingsProviders;
 
-    public IPagedDatabaseCommand CreatePaged(DatabaseOperation operation, int offset, int pageSize)
+    public IPagedDatabaseCommand CreatePaged<TSource>(DatabaseOperation operation, int offset, int pageSize)
     {
         if (operation != DatabaseOperation.Select)
         {
             throw new ArgumentOutOfRangeException(nameof(operation), "Only Select operation is supported");
         }
 
+        var settings = GetSettings<TSource>();
         return new PagedSelectCommandBuilder()
-            .Select(Settings.Fields)
-            .From(Settings.TableName)
-            .Where(Settings.DefaultWhere)
-            .OrderBy(Settings.DefaultOrderBy)
+            .Select(settings.Fields)
+            .From(settings.TableName)
+            .Where(settings.DefaultWhere)
+            .OrderBy(settings.DefaultOrderBy)
             .Skip(offset)
-            .Take(((int?)pageSize).IfNotGreaterThan(Settings.OverridePageSize))
+            .Take(((int?)pageSize).IfNotGreaterThan(settings.OverridePageSize))
             .Build();
+    }
+
+    private IPagedDatabaseEntityRetrieverSettings GetSettings<TSource>()
+    {
+        foreach (var settingsProvider in _settingsProviders)
+        {
+            if (settingsProvider.TryGet<TSource>(out var settings) && settings != null)
+            {
+                return settings;
+            }
+        }
+
+        throw new InvalidOperationException($"Could not obtain paged database entity retriever settings for type [{typeof(TSource).FullName}]");
     }
 }

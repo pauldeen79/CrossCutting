@@ -8,17 +8,17 @@ public sealed class IntegrationTests : IDisposable
 
     public IntegrationTests()
     {
-        var settings = new TestEntityDatabaseEntityRetrieverSettings();
+        var settingsProvider = new TestEntityDatabaseEntityRetrieverSettingsProvider();
         _connection = new DbConnection();
         _mapper = new TestEntityMapper();
         _repository = new TestRepository
         (
             new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(_connection, new TestEntityDatabaseCommandEntityProvider()),
             new DatabaseEntityRetriever<TestEntity>(_connection, _mapper),
-            new TestEntityIdentityDatabaseCommandProvider(settings),
-            new PagedSelectDatabaseCommandProvider(settings),
-            new SelectDatabaseCommandProvider(settings),
-            new TestEntityDatabaseCommandProvider()
+            new TestEntityIdentityDatabaseCommandProvider(new[] { settingsProvider }),
+            new PagedSelectDatabaseCommandProvider(new[] { settingsProvider }),
+            new SelectDatabaseCommandProvider(new[] { settingsProvider }),
+            new TestEntityDatabaseCommandProvider(new[] { settingsProvider })
         );
     }
 

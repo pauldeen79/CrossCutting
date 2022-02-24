@@ -19,10 +19,10 @@ public class Repository<TEntity, TIdentity> : IRepository<TEntity, TIdentity>
         => EntityRetriever.FindOne(IdentitySelectCommandProvider.Create(identity, DatabaseOperation.Select));
 
     public IReadOnlyCollection<TEntity> FindAll()
-        => EntityRetriever.FindMany(EntitySelectCommandProvider.Create(DatabaseOperation.Select));
+        => EntityRetriever.FindMany(EntitySelectCommandProvider.Create<TEntity>(DatabaseOperation.Select));
 
     public IPagedResult<TEntity> FindAllPaged(int offset, int pageSize)
-        => EntityRetriever.FindPaged(PagedEntitySelectCommandProvider.CreatePaged(DatabaseOperation.Select, offset, pageSize));
+        => EntityRetriever.FindPaged(PagedEntitySelectCommandProvider.CreatePaged<TEntity>(DatabaseOperation.Select, offset, pageSize));
 
     public Repository(IDatabaseCommandProcessor<TEntity> commandProcessor,
                       IDatabaseEntityRetriever<TEntity> entityRetriever,

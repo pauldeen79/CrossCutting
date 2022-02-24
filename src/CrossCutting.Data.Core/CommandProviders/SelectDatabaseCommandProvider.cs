@@ -2,25 +2,37 @@
 
 public class SelectDatabaseCommandProvider : IDatabaseCommandProvider
 {
-    private IDatabaseEntityRetrieverSettings Settings { get; }
+    private readonly IEnumerable<IDatabaseEntityRetrieverSettingsProvider> _settingsProviders;
 
-    public SelectDatabaseCommandProvider(IDatabaseEntityRetrieverSettings settings)
-    {
-        Settings = settings;
-    }
+    public SelectDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverSettingsProvider> settingsProviders)
+        => _settingsProviders = settingsProviders;
 
-    public IDatabaseCommand Create(DatabaseOperation operation)
+    public IDatabaseCommand Create<TSource>(DatabaseOperation operation)
     {
         if (operation != DatabaseOperation.Select)
         {
             throw new ArgumentOutOfRangeException(nameof(operation), "Only Select operation is supported");
         }
 
+        var settings = GetSettings<TSource>();
         return new SelectCommandBuilder()
-            .Select(Settings.Fields)
-            .From(Settings.TableName)
-            .Where(Settings.DefaultWhere)
-            .OrderBy(Settings.DefaultOrderBy)
+            .Select(settings.Fields)
+            .From(settings.TableName)
+            .Where(settings.DefaultWhere)
+            .OrderBy(settings.DefaultOrderBy)
             .Build();
+    }
+
+    private IDatabaseEntityRetrieverSettings GetSettings<TSource>()
+    {
+        foreach (var settingsProvider in _settingsProviders)
+        {
+            if (settingsProvider.TryGet<TSource>(out var settings) && settings != null)
+            {
+                return settings;
+            }
+        }
+
+        throw new InvalidOperationException($"Could not obtain database entity retriever settings for type [{typeof(TSource).FullName}]");
     }
 }

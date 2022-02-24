@@ -2,7 +2,8 @@
 
 public class TestEntityIdentityDatabaseCommandProvider : IdentityDatabaseCommandProviderBase<TestEntityIdentity>
 {
-    public TestEntityIdentityDatabaseCommandProvider(TestEntityDatabaseEntityRetrieverSettings settings) : base(settings)
+    public TestEntityIdentityDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders)
+        : base(settingsProviders)
     {
     }
 
