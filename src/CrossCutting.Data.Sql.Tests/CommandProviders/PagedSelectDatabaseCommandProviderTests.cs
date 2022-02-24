@@ -13,7 +13,8 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
     {
         // Act
         Sut.Invoking(x => x.CreatePaged<TestEntity>(operation, 1, 1))
-           .Should().ThrowExactly<ArgumentOutOfRangeException>().And.ParamName.Should().Be("operation");
+           .Should().ThrowExactly<ArgumentOutOfRangeException>()
+           .And.ParamName.Should().Be("operation");
     }
 
     [Fact]
@@ -36,7 +37,9 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.SetupGet(x => x.Fields).Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
         var settings = SettingsMock.Object;
-        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>().Setup(x => x.TryGet<object>(out settings)).Returns(true);
+        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>()
+               .Setup(x => x.TryGet<TestEntity>(out settings))
+               .Returns(true);
 
         // Act
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10);
@@ -57,7 +60,9 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.SetupGet(x => x.Fields).Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
         var settings = SettingsMock.Object;
-        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>().Setup(x => x.TryGet<object>(out settings)).Returns(true);
+        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>()
+               .Setup(x => x.TryGet<TestEntity>(out settings))
+               .Returns(true);
 
         // Act
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10);
@@ -77,7 +82,9 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.SetupGet(x => x.Fields).Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
         var settings = SettingsMock.Object;
-        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>().Setup(x => x.TryGet<object>(out settings)).Returns(true);
+        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>()
+               .Setup(x => x.TryGet<TestEntity>(out settings))
+               .Returns(true);
 
         // Act
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10);
@@ -94,7 +101,9 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
         SettingsMock.SetupGet(x => x.OverridePageSize).Returns(100);
         var settings = SettingsMock.Object;
-        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>().Setup(x => x.TryGet<object>(out settings)).Returns(true);
+        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>()
+               .Setup(x => x.TryGet<TestEntity>(out settings))
+               .Returns(true);
 
         // Act
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 1000);

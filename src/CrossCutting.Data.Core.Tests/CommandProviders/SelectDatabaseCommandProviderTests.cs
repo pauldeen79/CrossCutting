@@ -13,7 +13,8 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
     {
         // Act & Assert
         Sut.Invoking(x => x.Create<TestEntity>(operation))
-           .Should().ThrowExactly<ArgumentOutOfRangeException>().And.ParamName.Should().Be("operation");
+           .Should().ThrowExactly<ArgumentOutOfRangeException>()
+           .And.ParamName.Should().Be("operation");
     }
 
     [Fact]
