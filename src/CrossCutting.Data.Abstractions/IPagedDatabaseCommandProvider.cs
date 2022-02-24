@@ -2,7 +2,7 @@
 
 public interface IPagedDatabaseCommandProvider
 {
-    IPagedDatabaseCommand CreatePaged(DatabaseOperation operation, int offset, int pageSize);
+    IPagedDatabaseCommand CreatePaged<TSource>(DatabaseOperation operation, int offset, int pageSize);
 }
 
 public interface IPagedDatabaseCommandProvider<in TSource>

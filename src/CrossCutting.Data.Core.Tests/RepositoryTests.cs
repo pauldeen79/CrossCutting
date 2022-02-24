@@ -83,7 +83,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
     {
         // Arrange
         var expected = new[] { new TestEntity("code", "codeType", "description") };
-        EntitySelectCommandProviderMock.Setup(x => x.Create(DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
+        EntitySelectCommandProviderMock.Setup(x => x.Create<TestEntity>(DatabaseOperation.Select)).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
         EntityRetrieverMock.Setup(x => x.FindMany(It.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select))).Returns(expected);
 
         // Act
@@ -98,7 +98,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
     {
         // Arrange
         var expected = new PagedResult<TestEntity>(new[] { new TestEntity("code", "codeType", "description") }, 10, 1, 10);
-        PagedEntitySelectCommandProviderMock.Setup(x => x.CreatePaged(DatabaseOperation.Select, 1, 10)).Returns(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10));
+        PagedEntitySelectCommandProviderMock.Setup(x => x.CreatePaged<TestEntity>(DatabaseOperation.Select, 1, 10)).Returns(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10));
         EntityRetrieverMock.Setup(x => x.FindPaged(It.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select))).Returns(expected);
 
         // Act

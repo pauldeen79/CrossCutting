@@ -12,8 +12,18 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
     public void CreatePaged_Throws_On_Unsupported_DatabaseOperation(DatabaseOperation operation)
     {
         // Act
-        Sut.Invoking(x => x.CreatePaged(operation, 1, 1))
-           .Should().ThrowExactly<ArgumentOutOfRangeException>().And.ParamName.Should().Be("operation");
+        Sut.Invoking(x => x.CreatePaged<TestEntity>(operation, 1, 1))
+           .Should().ThrowExactly<ArgumentOutOfRangeException>()
+           .And.ParamName.Should().Be("operation");
+    }
+
+    [Fact]
+    public void CreatePaged_Throws_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
+    {
+        // Act & Assert
+        Sut.Invoking(x => x.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10))
+           .Should().ThrowExactly<InvalidOperationException>()
+           .WithMessage("Could not obtain paged database entity retriever settings for type [CrossCutting.Data.Sql.Tests.Repositories.TestEntity]");
     }
 
     [Fact]
@@ -26,9 +36,13 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.SetupGet(x => x.DefaultWhere).Returns("Active = 1");
         SettingsMock.SetupGet(x => x.Fields).Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
+        var settings = SettingsMock.Object;
+        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>()
+               .Setup(x => x.TryGet<TestEntity>(out settings))
+               .Returns(true);
 
         // Act
-        var actual = Sut.CreatePaged(DatabaseOperation.Select, 0, 10);
+        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10);
 
         // Assert
         actual.DataCommand.CommandText.Should().Be(CommandSql);
@@ -45,9 +59,13 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.SetupGet(x => x.DefaultWhere).Returns("Active = 1");
         SettingsMock.SetupGet(x => x.Fields).Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
+        var settings = SettingsMock.Object;
+        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>()
+               .Setup(x => x.TryGet<TestEntity>(out settings))
+               .Returns(true);
 
         // Act
-        var actual = Sut.CreatePaged(DatabaseOperation.Select, 10, 10);
+        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10);
 
         // Assert
         actual.DataCommand.CommandText.Should().Be(CommandSql);
@@ -63,9 +81,13 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.SetupGet(x => x.DefaultWhere).Returns("Active = 1");
         SettingsMock.SetupGet(x => x.Fields).Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
+        var settings = SettingsMock.Object;
+        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>()
+               .Setup(x => x.TryGet<TestEntity>(out settings))
+               .Returns(true);
 
         // Act
-        var actual = Sut.CreatePaged(DatabaseOperation.Select, 10, 10);
+        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10);
 
         // Assert
         actual.DataCommand.CommandText.Should().Be(CommandSql);
@@ -78,9 +100,13 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         // Arrange
         SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
         SettingsMock.SetupGet(x => x.OverridePageSize).Returns(100);
+        var settings = SettingsMock.Object;
+        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>()
+               .Setup(x => x.TryGet<TestEntity>(out settings))
+               .Returns(true);
 
         // Act
-        var actual = Sut.CreatePaged(DatabaseOperation.Select, 0, 1000);
+        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 1000);
 
         // Assert
         actual.PageSize.Should().Be(100);

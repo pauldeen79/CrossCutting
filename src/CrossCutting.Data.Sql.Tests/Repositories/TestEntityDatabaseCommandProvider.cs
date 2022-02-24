@@ -2,7 +2,8 @@
 
 public class TestEntityDatabaseCommandProvider : SelectDatabaseCommandProvider, IDatabaseCommandProvider<TestEntity>
 {
-    public TestEntityDatabaseCommandProvider() : base(new TestEntityDatabaseEntityRetrieverSettings())
+    public TestEntityDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverSettingsProvider> settingsProviders)
+        : base(settingsProviders)
     {
     }
 
