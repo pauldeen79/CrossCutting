@@ -2,24 +2,28 @@
 
 public sealed class IntegrationTests : IDisposable
 {
-    private readonly TestRepository _repository;
-    private readonly IDatabaseEntityMapper<TestEntity> _mapper;
+    private readonly ITestRepository _repository;
     private readonly DbConnection _connection;
+    private readonly ServiceProvider _serviceProvider;
 
     public IntegrationTests()
     {
-        var settingsProvider = new TestEntityDatabaseEntityRetrieverSettingsProvider();
         _connection = new DbConnection();
-        _mapper = new TestEntityMapper();
-        _repository = new TestRepository
-        (
-            new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(_connection, new TestEntityDatabaseCommandEntityProvider()),
-            new DatabaseEntityRetriever<TestEntity>(_connection, _mapper),
-            new TestEntityIdentityDatabaseCommandProvider(new[] { settingsProvider }),
-            new PagedSelectDatabaseCommandProvider(new[] { settingsProvider }),
-            new SelectDatabaseCommandProvider(new[] { settingsProvider }),
-            new TestEntityDatabaseCommandProvider(new[] { settingsProvider })
-        );
+        _serviceProvider = new ServiceCollection()
+            .AddCrossCuttingDataCore()
+            .AddCrossCuttingDataSql()
+            .AddSingleton<IDatabaseCommandProvider<TestEntity>, TestEntityDatabaseCommandProvider>()
+            .AddSingleton<IDatabaseCommandProvider<TestEntityIdentity>, TestEntityIdentityDatabaseCommandProvider>()
+            .AddSingleton<IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>, TestEntityDatabaseCommandEntityProvider>()
+            .AddSingleton<IDatabaseEntityRetrieverSettingsProvider, TestEntityDatabaseEntityRetrieverSettingsProvider>()
+            .AddSingleton<IPagedDatabaseEntityRetrieverSettingsProvider, TestEntityDatabaseEntityRetrieverSettingsProvider>()
+            .AddSingleton<IDatabaseEntityMapper<TestEntity>, TestEntityMapper>()
+            .AddScoped<IDbConnection>(_ => _connection)
+            .AddScoped<IDatabaseCommandProcessor<TestEntity>, DatabaseCommandProcessor<TestEntity, TestEntityBuilder>>()
+            .AddScoped<IDatabaseEntityRetriever<TestEntity>, DatabaseEntityRetriever<TestEntity>>()
+            .AddScoped<ITestRepository, TestRepository>()
+            .BuildServiceProvider();
+        _repository = _serviceProvider.GetRequiredService<ITestRepository>();
     }
 
     [Fact]
@@ -27,7 +31,8 @@ public sealed class IntegrationTests : IDisposable
     {
         // Arrange
         var entity = new TestEntity("A", "B", "C", false);
-        _connection.AddResultForDataReader(cmd => cmd.CommandText == "INSERT INTO...", new[] { new TestEntity("A", "B", "C", true) });
+        _connection.AddResultForDataReader(cmd => cmd.CommandText == "INSERT INTO...",
+                                           new[] { new TestEntity("A", "B", "C", true) });
 
         // Act
         var actual = _repository.Add(entity);
@@ -44,7 +49,8 @@ public sealed class IntegrationTests : IDisposable
     {
         // Arrange
         var entity = new TestEntity("A", "B", "C", true);
-        _connection.AddResultForDataReader(cmd => cmd.CommandText == "UPDATE...", new[] { new TestEntity("A1", "B1", "C1", true) });
+        _connection.AddResultForDataReader(cmd => cmd.CommandText == "UPDATE...",
+                                           new[] { new TestEntity("A1", "B1", "C1", true) });
 
         // Act
         var actual = _repository.Update(entity);
@@ -61,7 +67,8 @@ public sealed class IntegrationTests : IDisposable
     {
         // Arrange
         var entity = new TestEntity("A", "B", "C", true);
-        _connection.AddResultForDataReader(cmd => cmd.CommandText == "DELETE...", new[] { new TestEntity("A1", "B1", "C1", true) }); //suffixes get ignored because Delete does not read result
+        _connection.AddResultForDataReader(cmd => cmd.CommandText == "DELETE...",
+                                           new[] { new TestEntity("A1", "B1", "C1", true) }); //suffixes get ignored because Delete does not read result
 
         // Act
         var actual = _repository.Delete(entity);
@@ -79,7 +86,8 @@ public sealed class IntegrationTests : IDisposable
         // Arrange
         var expectedResult = new TestEntity("A", "B", "C", true);
         var identity = new TestEntityIdentity(expectedResult);
-        _connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT"), new[] { expectedResult });
+        _connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT"),
+                                           new[] { expectedResult });
 
         // Act
         var actual = _repository.Find(identity);
@@ -117,5 +125,9 @@ public sealed class IntegrationTests : IDisposable
         actual.Should().BeEquivalentTo(expectedResult);
     }
 
-    public void Dispose() => _connection.Dispose();
+    public void Dispose()
+    {
+        _serviceProvider.Dispose();
+        _connection.Dispose();
+    }
 }
