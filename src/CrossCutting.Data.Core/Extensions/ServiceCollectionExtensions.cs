@@ -3,5 +3,5 @@
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddCrossCuttingDataCore(this IServiceCollection instance)
-        => instance.AddSingleton<IDatabaseCommandProvider, SelectDatabaseCommandProvider>();
+        => instance.Chain(x => x.TryAddSingleton<IDatabaseCommandProvider, SelectDatabaseCommandProvider>());
 }

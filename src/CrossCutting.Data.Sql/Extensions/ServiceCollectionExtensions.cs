@@ -3,5 +3,6 @@
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddCrossCuttingDataSql(this IServiceCollection instance)
-        => instance.AddSingleton<IPagedDatabaseCommandProvider, PagedSelectDatabaseCommandProvider>();
+        => instance.AddCrossCuttingDataCore()
+                   .Chain(x => x.TryAddSingleton<IPagedDatabaseCommandProvider, PagedSelectDatabaseCommandProvider>());
 }

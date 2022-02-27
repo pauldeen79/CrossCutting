@@ -13,3 +13,4 @@ global using CrossCutting.Data.Sql.Builders;
 global using CrossCutting.Data.Sql.CommandProviders;
 global using CrossCutting.Data.Sql.Extensions;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.DependencyInjection.Extensions;

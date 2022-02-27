@@ -10,7 +10,6 @@ public sealed class IntegrationTests : IDisposable
     {
         _connection = new DbConnection();
         _serviceProvider = new ServiceCollection()
-            .AddCrossCuttingDataCore()
             .AddCrossCuttingDataSql()
             .AddSingleton<IDatabaseCommandProvider<TestEntity>, TestEntityDatabaseCommandProvider>()
             .AddSingleton<IDatabaseCommandProvider<TestEntityIdentity>, TestEntityIdentityDatabaseCommandProvider>()
