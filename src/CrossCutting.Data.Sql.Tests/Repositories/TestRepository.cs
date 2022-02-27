@@ -1,6 +1,13 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Repositories;
 
-public class TestRepository : Repository<TestEntity, TestEntityIdentity>
+public interface ITestRepository : IRepository<TestEntity, TestEntityIdentity>
+{
+    TestEntity? FindOne();
+    IReadOnlyCollection<TestEntity> FindMany(string value);
+    IPagedResult<TestEntity> FindPaged(int offset, int pageSize);
+}
+
+public class TestRepository : Repository<TestEntity, TestEntityIdentity>, ITestRepository
 {
     public TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcessor,
                           IDatabaseEntityRetriever<TestEntity> entityRetriever,

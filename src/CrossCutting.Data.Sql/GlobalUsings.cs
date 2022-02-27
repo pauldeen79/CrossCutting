@@ -10,4 +10,7 @@ global using CrossCutting.Data.Core;
 global using CrossCutting.Data.Core.Commands;
 global using CrossCutting.Data.Core.Extensions;
 global using CrossCutting.Data.Sql.Builders;
+global using CrossCutting.Data.Sql.CommandProviders;
 global using CrossCutting.Data.Sql.Extensions;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.DependencyInjection.Extensions;
