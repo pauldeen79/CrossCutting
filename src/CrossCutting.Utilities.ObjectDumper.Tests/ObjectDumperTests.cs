@@ -511,12 +511,12 @@ public class ObjectDumperTests
     public void CanDumpDictionaryBasedObject()
     {
         // Arrange
-        var input = new ContextClass("custom1", 23);
+        var input = new ContextDictionary("custom1", 23);
         input.Add("key1", "string value");
         input.Add("key2", 55);
 
         // Act
-        var actual = input.Dump(new ContextClassTypeHandler());
+        var actual = input.Dump(new ContextDictionaryHandler());
 
         // Assert
         actual.Should().Be(@"{
@@ -534,7 +534,7 @@ public class ObjectDumperTests
         ""key"": ""key2"" [System.String],
         ""value"": 55 [System.Int32]
     } [System.Collections.Generic.KeyValuePair<System.String,System.Object>]
-} [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.ContextClass]");
+} [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.ContextDictionary]");
     }
 
     [Fact]

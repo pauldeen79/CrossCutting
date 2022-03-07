@@ -183,10 +183,8 @@ public sealed class IntegrationTests : IDisposable
                 var isCommandValid = command.CommandText == "SELECT * FROM [Fridge] WHERE Amount = @amount";
                 if (isCommandValid)
                 {
-#pragma warning disable CS8605 // Unboxing a possibly null value.
-                        parameterValue = (int)command.Parameters.OfType<IDbDataParameter>().First().Value;
-#pragma warning restore CS8605 // Unboxing a possibly null value.
-                    }
+                    parameterValue = (int)command.Parameters.OfType<IDbDataParameter>().First().Value!;
+                }
                 return isCommandValid;
             },
             () => new[]

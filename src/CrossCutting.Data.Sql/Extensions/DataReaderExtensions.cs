@@ -11,9 +11,7 @@ public static class DataReaderExtensions
     /// <param name="skipUnknownColumn"></param>
     /// <exception cref="ArgumentOutOfRangeException">columnName</exception>
     public static T GetValue<T>(this IDataReader instance, string columnName, bool skipUnknownColumn = false)
-#pragma warning disable CS8604 // Possible null reference argument.
-            => instance.GetValue<T>(columnName, default, skipUnknownColumn);
-#pragma warning restore CS8604 // Possible null reference argument.
+        => instance.GetValue<T>(columnName, default!, skipUnknownColumn);
 
     /// <summary>
     /// Gets the value.

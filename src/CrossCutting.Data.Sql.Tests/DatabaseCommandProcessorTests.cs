@@ -46,9 +46,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-#pragma warning disable CS8603 // Possible null reference return.
-        ProviderMock.SetupGet(x => x.ResultEntityDelegate).Returns((_, _) => null);
-#pragma warning restore CS8603 // Possible null reference return.
+        ProviderMock.SetupGet(x => x.ResultEntityDelegate).Returns((_, _) => null!);
 
         // Act
         Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "filled" }))

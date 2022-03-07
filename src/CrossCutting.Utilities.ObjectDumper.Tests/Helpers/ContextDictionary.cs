@@ -1,13 +1,11 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
 
-#pragma warning disable CA1710 // Identifiers should have correct suffix
-public class ContextClass : IDictionary<string, object>
-#pragma warning restore CA1710 // Identifiers should have correct suffix
+public class ContextDictionary : IDictionary<string, object>
 {
     private readonly IDictionary<string, object> _state;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ContextClass"/> class.
+    /// Initializes a new instance of the <see cref="ContextDictionary"/> class.
     /// </summary>
     /// <param name="commandHandler">The command handler.</param>
     /// <param name="host">The host.</param>
@@ -16,7 +14,7 @@ public class ContextClass : IDictionary<string, object>
     /// or
     /// host
     /// </exception>
-    public ContextClass(string custom1, int custom2)
+    public ContextDictionary(string custom1, int custom2)
     {
         Custom1 = custom1;
         Custom2 = custom2;
@@ -59,9 +57,7 @@ public class ContextClass : IDictionary<string, object>
 
     public bool Remove(string key) => _state.Remove(key);
 
-#pragma warning disable CS8601 // Possible null reference assignment.
-    public bool TryGetValue(string key, out object value) => _state.TryGetValue(key, out value);
-#pragma warning restore CS8601 // Possible null reference assignment.
+    public bool TryGetValue(string key, out object value) => _state.TryGetValue(key, out value!);
 
     public void Add(KeyValuePair<string, object> item) => _state.Add(item);
 

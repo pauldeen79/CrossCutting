@@ -27,12 +27,7 @@ public class DynamicPropertyDescriptor<TTarget, TProperty> : PropertyDescriptor
 
     public override Type ComponentType => typeof(TTarget);
 
-    public override object GetValue(object component)
-    {
-#pragma warning disable CS8603 // Possible null reference return.
-        return getter((TTarget)component);
-#pragma warning restore CS8603 // Possible null reference return.
-    }
+    public override object GetValue(object component) => getter((TTarget)component)!;
 
     public override bool IsReadOnly => setter == null;
 

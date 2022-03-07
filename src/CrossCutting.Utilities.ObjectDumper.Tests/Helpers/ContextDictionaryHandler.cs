@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
 
-public class ContextClassTypeHandler : IObjectDumperPartWithCallback
+public class ContextDictionaryHandler : IObjectDumperPartWithCallback
 {
     public IObjectDumperCallback? Callback { get; set; }
 
@@ -8,17 +8,17 @@ public class ContextClassTypeHandler : IObjectDumperPartWithCallback
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
-        if (instance is ContextClass contextClass)
+        if (instance is ContextDictionary contextClass)
         {
             builder.BeginNesting(indent, instanceType);
             builder.BeginComplexType(indent, instanceType);
 
 
             builder.AddEnumerableItem(true, indent, true);
-            builder.AddName(indent, nameof(ContextClass.Custom1));
+            builder.AddName(indent, nameof(ContextDictionary.Custom1));
             Callback?.Process(contextClass.Custom1, typeof(string), builder, indent + 4, currentDepth + 1);
             builder.AddEnumerableItem(false, indent, true);
-            builder.AddName(indent, nameof(ContextClass.Custom2));
+            builder.AddName(indent, nameof(ContextDictionary.Custom2));
             Callback?.Process(contextClass.Custom2, typeof(int), builder, indent + 4, currentDepth + 1);
 
             foreach (var item in contextClass)
