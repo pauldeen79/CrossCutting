@@ -16,30 +16,7 @@ public sealed class ValueCollection<T> : Collection<T>, IEquatable<ValueCollecti
         => _equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
 
     public bool Equals(ValueCollection<T>? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, other))
-        {
-            return true;
-        }
-
-        using var enumerator1 = GetEnumerator();
-        using var enumerator2 = other.GetEnumerator();
-
-        while (enumerator1.MoveNext())
-        {
-            if (!enumerator2.MoveNext() || !(_equalityComparer!).Equals(enumerator1.Current, enumerator2.Current))
-            {
-                return false;
-            }
-        }
-
-        return !enumerator2.MoveNext(); //both enumerations reached the end
-    }
+        => ValueCollectionBase.Equals(this, other, _equalityComparer);
 
     public override bool Equals(object? obj)
         => obj is { } && (ReferenceEquals(this, obj) || obj is ValueCollection<T> coll && Equals(coll));
@@ -50,20 +27,7 @@ public sealed class ValueCollection<T> : Collection<T>, IEquatable<ValueCollecti
         ));
 
     public string ToString(string? format, IFormatProvider? formatProvider)
-        => "[" + string.Join(", ", this.Select(e => FormatValue(e, formatProvider))) + "]";
+        => "[" + string.Join(", ", this.Select(e => ValueCollectionBase.FormatValue(e, formatProvider))) + "]";
 
     public override string ToString() => ToString(null, CultureInfo.CurrentCulture);
-
-    private static string? FormatValue(object? value, IFormatProvider? formatProvider)
-        => value switch
-        {
-            null => "∅",
-            bool b => b ? "true" : "false",
-            string s => $"\"{s}\"",
-            char c => $"\'{c}\'",
-            DateTime dt => dt.ToString("o", formatProvider),
-            IFormattable @if => @if.ToString(null, formatProvider),
-            IEnumerable ie => "[" + string.Join(", ", ie.Cast<object>().Select(e => FormatValue(e, formatProvider))) + "]",
-            _ => value.ToString()
-        };
 }
