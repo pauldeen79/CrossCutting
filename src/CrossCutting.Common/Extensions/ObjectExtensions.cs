@@ -145,13 +145,17 @@ public static class ObjectExtensions
         return expandoObject;
     }
 
-    public static T Chain<T>(this T instance, Action action)
+    public static T Chain<T>(this T instance, Action action) => instance.Then(action);
+
+    public static T Chain<T>(this T instance, Action<T> action) => instance.With(action);
+
+    public static T Then<T>(this T instance, Action action)
     {
         action.Invoke();
         return instance;
     }
 
-    public static T Chain<T>(this T instance, Action<T> action)
+    public static T With<T>(this T instance, Action<T> action)
     {
         action.Invoke(instance);
         return instance;
