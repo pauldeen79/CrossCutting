@@ -1,20 +1,20 @@
 ﻿namespace CrossCutting.Common.Results;
 
-public record Result<T> : Result where T: class
+public record Result<T> : Result
 {
     private Result(T? value, ResultStatus status, string? errorMessage, IEnumerable<ValidationError> validationErrors)
         : base(status, errorMessage, validationErrors) => Value = value;
     public T? Value { get; }
     public static Result<T> Success(T value) => new Result<T>(value, ResultStatus.Ok, null, Enumerable.Empty<ValidationError>());
-    public static new Result<T> Error() => new Result<T>(null, ResultStatus.Error, null, Enumerable.Empty<ValidationError>());
-    public static new Result<T> Error(string? errorMessage) => new Result<T>(null, ResultStatus.Error, errorMessage, Enumerable.Empty<ValidationError>());
-    public static new Result<T> NotFound() => new Result<T>(null, ResultStatus.NotFound, null, Enumerable.Empty<ValidationError>());
-    public static new Result<T> NotFound(string? errorMessage) => new Result<T>(null, ResultStatus.NotFound, errorMessage, Enumerable.Empty<ValidationError>());
-    public static new Result<T> Invalid() => new Result<T>(null, ResultStatus.Invalid, null, Enumerable.Empty<ValidationError>());
-    public static new Result<T> Invalid(IEnumerable<ValidationError> validationErrors) => new Result<T>(null, ResultStatus.Invalid, null, validationErrors);
-    public static new Result<T> Invalid(string? errorMessage) => new Result<T>(null, ResultStatus.Invalid, errorMessage, Enumerable.Empty<ValidationError>());
-    public static new Result<T> Invalid(string? errorMessage, IEnumerable<ValidationError> validationErrors) => new Result<T>(null, ResultStatus.Invalid, errorMessage, validationErrors);
-    public static Result<T> FromExistingResult(Result existingResult) => new Result<T>(null, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
+    public static new Result<T> Error() => new Result<T>(default, ResultStatus.Error, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Error(string? errorMessage) => new Result<T>(default, ResultStatus.Error, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> NotFound() => new Result<T>(default, ResultStatus.NotFound, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> NotFound(string? errorMessage) => new Result<T>(default, ResultStatus.NotFound, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Invalid() => new Result<T>(default, ResultStatus.Invalid, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Invalid(IEnumerable<ValidationError> validationErrors) => new Result<T>(default, ResultStatus.Invalid, null, validationErrors);
+    public static new Result<T> Invalid(string? errorMessage) => new Result<T>(default, ResultStatus.Invalid, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Invalid(string? errorMessage, IEnumerable<ValidationError> validationErrors) => new Result<T>(default, ResultStatus.Invalid, errorMessage, validationErrors);
+    public static Result<T> FromExistingResult(Result existingResult) => new Result<T>(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
 
     public T GetValueOrThrow(string errorMessage)
     {

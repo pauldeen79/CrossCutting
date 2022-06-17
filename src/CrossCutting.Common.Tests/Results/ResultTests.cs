@@ -102,6 +102,21 @@ public class ResultTests
     }
 
     [Fact]
+    public void Success_Sets_Value_Correctly_With_ValueType()
+    {
+        // Act
+        var actual = Result<(string Name, string Address)>.Success(("name", "address"));
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Ok);
+        actual.IsSuccessful().Should().BeTrue();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Name.Should().Be("name");
+        actual.Value.Address.Should().Be("address");
+    }
+
+    [Fact]
     public void Can_Create_Invalid_Result_Without_ErrorMessage()
     {
         // Act
