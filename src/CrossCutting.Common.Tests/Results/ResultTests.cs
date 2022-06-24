@@ -88,7 +88,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Success_Sets_Value_Correctly()
+    public void Can_Create_Success_With_Correct_Value_Using_ReferenceType()
     {
         // Act
         var actual = Result<string>.Success("test");
@@ -102,7 +102,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Success_Sets_Value_Correctly_With_ValueType()
+    public void Can_Create_Success_With_Correct_Value_Using_ValueType()
     {
         // Act
         var actual = Result<(string Name, string Address)>.Success(("name", "address"));
@@ -114,6 +114,20 @@ public class ResultTests
         actual.ValidationErrors.Should().BeEmpty();
         actual.Value.Name.Should().Be("name");
         actual.Value.Address.Should().Be("address");
+    }
+
+    [Fact]
+    public void Can_Create_Success_Result_From_NonNull_Instance()
+    {
+        // Act
+        var actual = Result.FromInstance(this);
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Ok);
+        actual.IsSuccessful().Should().BeTrue();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeSameAs(this);
     }
 
     [Fact]
@@ -225,6 +239,34 @@ public class ResultTests
     }
 
     [Fact]
+    public void Can_Create_Invalid_Result_From_Null_Instance_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result.FromInstance<ResultTests>(null, new[] { new ValidationError("Error", new[] { "Name" }) });
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Invalid);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().ContainSingle();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_Invalid_Result_From_Null_Instance_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result.FromInstance<ResultTests>(null, "My error message", new[] { new ValidationError("Error", new[] { "Name" }) });
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Invalid);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("My error message");
+        actual.ValidationErrors.Should().ContainSingle();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
     public void Can_Create_Error_Result_Without_ErrorMessage()
     {
         // Act
@@ -330,5 +372,33 @@ public class ResultTests
         actual.IsSuccessful().Should().BeFalse();
         actual.ErrorMessage.Should().Be("NotFound");
         actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_NotFound_Result_From_Null_Instance_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result.FromInstance<ResultTests>(null);
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotFound);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_NotFound_Result_From_Null_Instance_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result.FromInstance<ResultTests>(null, "My error message");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotFound);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("My error message");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
     }
 }

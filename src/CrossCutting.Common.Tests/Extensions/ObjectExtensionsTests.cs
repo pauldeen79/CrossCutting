@@ -286,6 +286,50 @@ public class ObjectExtensionsTests
         // Assert
         actual.Should().BeSameAs(input);
     }
+    
+    [Fact]
+    public void Can_Convert_Object_To_Result_Success()
+    {
+        // Arrange
+        MyPocoClass? sut = new();
+
+        // Act
+        var actual = sut.ToResult();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Ok);
+        actual.Value.Should().BeSameAs(sut);
+    }
+
+    [Fact]
+    public void Can_Convert_Object_To_Result_NotFound_Without_ErrorMessage()
+    {
+        // Arrange
+        MyPocoClass? sut = default;
+
+        // Act
+        var actual = sut.ToResult();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotFound);
+        actual.Value.Should().BeNull();
+        actual.ErrorMessage.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Convert_Object_To_Result_NotFound_With_ErrorMessage()
+    {
+        // Arrange
+        MyPocoClass? sut = default;
+
+        // Act
+        var actual = sut.ToResult("My error message");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotFound);
+        actual.Value.Should().BeNull();
+        actual.ErrorMessage.Should().Be("My error message");
+    }
 
     private class MyPocoClass
     {
