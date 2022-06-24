@@ -117,10 +117,52 @@ public class ResultTests
     }
 
     [Fact]
-    public void Can_Create_Success_Result_From_NonNull_Instance()
+    public void Can_Create_Success_Result_From_NonNull_Instance_Without_ErrorMesssage_Provided()
     {
         // Act
         var actual = Result.FromInstance(this);
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Ok);
+        actual.IsSuccessful().Should().BeTrue();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeSameAs(this);
+    }
+
+    [Fact]
+    public void Can_Create_Success_Result_From_NonNull_Instance_With_ErrorMessage_Provided()
+    {
+        // Act
+        var actual = Result.FromInstance(this, "This gets ignored because the instance is not null");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Ok);
+        actual.IsSuccessful().Should().BeTrue();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeSameAs(this);
+    }
+
+    [Fact]
+    public void Can_Create_Success_Result_From_NonNull_Instance_With_ValidationErrors_Provided()
+    {
+        // Act
+        var actual = Result.FromInstance(this, new[] { new ValidationError("Ignored", new[] { "Member1" }) });
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Ok);
+        actual.IsSuccessful().Should().BeTrue();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeSameAs(this);
+    }
+
+    [Fact]
+    public void Can_Create_Success_Result_From_NonNull_Instance_With_ErrorMessage_And_ValidationErrors_Provided()
+    {
+        // Act
+        var actual = Result.FromInstance(this, "This gets ignored because the instance is not null", new[] { new ValidationError("Ignored", new[] { "Member1" }) });
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Ok);
@@ -400,5 +442,81 @@ public class ResultTests
         actual.ErrorMessage.Should().Be("My error message");
         actual.ValidationErrors.Should().BeEmpty();
         actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Chain_Three_Typed_Steps_That_Get_Executed_Entirely()
+    {
+        // Act
+        var command = new SomeCommand();
+        var result = Result<SomeResultValue>.Chain(command, OkStep, OkStep, OkStep);
+
+        // Assert
+        result.IsSuccessful().Should().BeTrue();
+        command.OkCount.Should().Be(3);
+        command.FailedCount.Should().Be(0);
+        result.Value.Should().BeOfType<SomeResultValue>();
+    }
+
+    [Fact]
+    public void Can_Chain_Three_Typed_Steps_That_Dont_Get_Executed_Entirely()
+    {
+        // Act
+        var command = new SomeCommand();
+        var result = Result<SomeResultValue>.Chain(command, OkStep, FailedStep, OkStep);
+
+        // Assert
+        result.IsSuccessful().Should().BeFalse();
+        command.OkCount.Should().Be(1);
+        command.FailedCount.Should().Be(1);
+        result.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Chain_Three_Unyped_Steps_That_Get_Executed_Entirely()
+    {
+        // Act
+        var command = new SomeCommand();
+        var result = Result.Chain(command, OkStep, OkStep, OkStep);
+
+        // Assert
+        result.IsSuccessful().Should().BeTrue();
+        command.OkCount.Should().Be(3);
+        command.FailedCount.Should().Be(0);
+    }
+
+    [Fact]
+    public void Can_Chain_Three_Unyped_Steps_That_Dont_Get_Executed_Entirely()
+    {
+        // Act
+        var command = new SomeCommand();
+        var result = Result.Chain(command, OkStep, FailedStep, OkStep);
+
+        // Assert
+        result.IsSuccessful().Should().BeFalse();
+        command.OkCount.Should().Be(1);
+        command.FailedCount.Should().Be(1);
+    }
+
+    private Result<SomeResultValue> OkStep(SomeCommand command)
+    {
+        command.OkCount++;
+        return Result<SomeResultValue>.Success(new SomeResultValue());
+    }
+
+    private Result<SomeResultValue> FailedStep(SomeCommand command)
+    {
+        command.FailedCount++;
+        return Result<SomeResultValue>.Error("Something went very wrong!");
+    }
+
+    private sealed class SomeCommand
+    {
+        public int OkCount { get; set; }
+        public int FailedCount { get; set; }
+    }
+
+    private sealed class SomeResultValue
+    {
     }
 }

@@ -23,7 +23,19 @@ public record Result<T> : Result
     public static new Result<T> Invalid(string errorMessage) => new Result<T>(default, ResultStatus.Invalid, errorMessage, Enumerable.Empty<ValidationError>());
     public static new Result<T> Invalid(string errorMessage, IEnumerable<ValidationError> validationErrors) => new Result<T>(default, ResultStatus.Invalid, errorMessage, validationErrors);
     public static Result<T> FromExistingResult(Result existingResult) => new Result<T>(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
-
+    public static Result<T> Chain<TCommand>(TCommand command, params Func<TCommand, Result<T>>[] steps)
+    {
+        var result = Invalid("Could not determine result because there are no steps defined");
+        foreach (var step in steps)
+        {
+            result = step.Invoke(command);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
+        }
+        return result;
+    }
     public T GetValueOrThrow(string errorMessage)
     {
         if (!IsSuccessful())
@@ -85,4 +97,17 @@ public record Result
             ? Result<TInstance>.Invalid(validationErrors)
             : Result<TInstance>.Success(instance);
 
+    public static Result Chain<TCommand>(TCommand command, params Func<TCommand, Result>[] steps)
+    {
+        var result = Invalid("Could not determine result because there are no steps defined");
+        foreach (var step in steps)
+        {
+            result = step.Invoke(command);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
+        }
+        return result;
+    }
 }
