@@ -162,14 +162,14 @@ public static class ObjectExtensions
     }
 
     public static Result<T> ToResult<T>(this T? instance) where T : class
-        => Result<T>.FromInstance(instance);
+        => Result.FromInstance(instance);
 
     public static Result<T> ToResult<T>(this T? instance, string errorMessage) where T : class
-        => Result<T>.FromInstance(instance, errorMessage);
+        => Result.FromInstance(instance, errorMessage);
 
     public static Result<T> ToResult<T>(this T? instance, IEnumerable<ValidationError> validationErrors) where T : class
-        => Result<T>.FromInstance(instance, validationErrors);
+        => Result.FromInstance(instance, validationErrors);
 
     public static Result<T> ToResult<T>(this T? instance, string errorMessage, IEnumerable<ValidationError> validationErrors) where T : class
-        => Result<T>.FromInstance(instance, errorMessage, validationErrors);
+        => Result.FromInstance(instance, errorMessage, validationErrors);
 }
