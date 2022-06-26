@@ -11,6 +11,7 @@ public class DataTableDumper<T> : IDataTableDumper<T>
         _columnNameProvider = columnNameProvider;
         _columnDataProvider = columnDataProvider;
     }
+
     public string Dump(IEnumerable<T> data)
     {
         var builder = new StringBuilder();

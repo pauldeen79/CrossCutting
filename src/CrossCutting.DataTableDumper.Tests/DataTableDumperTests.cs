@@ -18,10 +18,12 @@ public class DataTableDumperTests
 
         // Assert
         var lines = actual.GetLines();
-        lines.Should().HaveCount(3);
-        lines.Should().HaveElementAt(0, "| Name                        | Age |");
-        lines.Should().HaveElementAt(1, "| Person A                    | 42  |");
-        lines.Should().HaveElementAt(2, "| Person B with a longer name | 8   |");
+        lines.Should().BeEquivalentTo(new[]
+        {
+            "| Name                        | Age |",
+            "| Person A                    | 42  |",
+            "| Person B with a longer name | 8   |"
+        });
     }
 
     [Fact]
@@ -40,10 +42,12 @@ public class DataTableDumperTests
 
         // Assert
         var lines = actual.GetLines();
-        lines.Should().HaveCount(3);
-        lines.Should().HaveElementAt(0, "| Name                        | Age |");
-        lines.Should().HaveElementAt(1, "| Person_A                    | 42  |");
-        lines.Should().HaveElementAt(2, "| Person_B with a longer name | 8   |");
+        lines.Should().BeEquivalentTo(new[]
+        {
+            "| Name                        | Age |",
+            "| Person_A                    | 42  |",
+            "| Person_B with a longer name | 8   |"
+        });
     }
 
     [Fact]
@@ -67,14 +71,16 @@ F	6	u"; //copied directly from Excel 8-)
 
         // Assert
         var lines = actual.GetLines();
-        lines.Should().HaveCount(7);
-        lines.Should().HaveElementAt(0, "| Kolom A | Kolom B | Kolom C |");
-        lines.Should().HaveElementAt(1, "| A       | 1       | z       |");
-        lines.Should().HaveElementAt(2, "| B       | 2       | y       |");
-        lines.Should().HaveElementAt(3, "| C       | 3       | x       |");
-        lines.Should().HaveElementAt(4, "| D       | 4       | w       |");
-        lines.Should().HaveElementAt(5, "| E       | 5       | v       |");
-        lines.Should().HaveElementAt(6, "| F       | 6       | u       |");
+        lines.Should().BeEquivalentTo(new[]
+        {
+            "| Kolom A | Kolom B | Kolom C |",
+            "| A       | 1       | z       |",
+            "| B       | 2       | y       |",
+            "| C       | 3       | x       |",
+            "| D       | 4       | w       |",
+            "| E       | 5       | v       |",
+            "| F       | 6       | u       |"
+        });
     }
 
     [Fact]
@@ -92,9 +98,10 @@ F	6	u"; //copied directly from Excel 8-)
         var lines = dumpedString.GetLines().Skip(1).Select(x => x.UnescapePipes()).ToArray();
 
         // Assert
-        lines.Should().HaveCount(1);
-        lines.Should().HaveElementAt(0, "| Person|A | 42  |");
-
+        lines.Should().BeEquivalentTo(new[]
+        {
+            "| Person|A | 42  |"
+        });
     }
 
     public class MyClass
