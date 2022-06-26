@@ -11,7 +11,7 @@ public class DataTableDumperTests
             new MyClass { Name = "Person A", Age = 42 },
             new MyClass { Name = "Person B with a longer name", Age = 8 }
         };
-        var sut = new DataTableDumper<MyClass>(new ColumnNameProvider<MyClass>(), new ColumnDataProvider<MyClass>());
+        var sut = new DataTableDumper<MyClass>(new ColumnNameProvider(), new ColumnDataProvider<MyClass>());
 
         // Act
         var actual = sut.Dump(input);
@@ -33,7 +33,7 @@ public class DataTableDumperTests
             new MyClass { Name = "Person|A", Age = 42 },
             new MyClass { Name = "Person|B with a longer name", Age = 8 }
         };
-        var sut = new DataTableDumper<MyClass>(new ColumnNameProvider<MyClass>(), new ColumnDataProvider<MyClass>());
+        var sut = new DataTableDumper<MyClass>(new ColumnNameProvider(), new ColumnDataProvider<MyClass>());
 
         // Act
         var actual = sut.Dump(input);
@@ -85,7 +85,7 @@ F	6	u"; //copied directly from Excel 8-)
         {
             new MyClass { Name = "Person|A", Age = 42 },
         };
-        var sut = new DataTableDumper<MyClass>(new ColumnNameProvider<MyClass>(), new ColumnDataProvider<MyClass>());
+        var sut = new DataTableDumper<MyClass>(new ColumnNameProvider(), new ColumnDataProvider<MyClass>());
         var dumpedString = sut.Dump(input);
 
         // Act

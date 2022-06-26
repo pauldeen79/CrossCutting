@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.DataTableDumper.Abstractions;
 
-public interface IColumnNameProvider<in T>
-    where T : class
+public interface IColumnNameProvider
 {
-    IReadOnlyCollection<string> Get();
+    IReadOnlyCollection<string> Get<T>()
+        where T : class;
 }

@@ -1,9 +1,8 @@
 ﻿namespace CrossCutting.DataTableDumper.Default;
 
-public class ColumnNameProvider<T> : IColumnNameProvider<T>
-    where T : class
+public class ColumnNameProvider : IColumnNameProvider
 {
-    public IReadOnlyCollection<string> Get()
+    public IReadOnlyCollection<string> Get<T>() where T : class
     {
         var result = new List<string>();
         foreach (var property in TypeDescriptor.GetProperties(typeof(T)).Cast<PropertyDescriptor>())

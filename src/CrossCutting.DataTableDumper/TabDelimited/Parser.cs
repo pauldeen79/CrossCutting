@@ -19,14 +19,14 @@ public static class Parser
         return new ParseResult(new DataTableDumper<ExpandoObject>(new MyColumnNameProvider(split), new MyColumnDataProvider()), list);
     }
 
-    private sealed class MyColumnNameProvider : IColumnNameProvider<ExpandoObject>
+    private sealed class MyColumnNameProvider : IColumnNameProvider
     {
         private readonly IEnumerable<string[]> _data;
 
         public MyColumnNameProvider(IEnumerable<string[]> data)
             => _data = data;
 
-        public IReadOnlyCollection<string> Get()
+        public IReadOnlyCollection<string> Get<T>() where T : class
             => new List<string>(_data.First()).AsReadOnly();
     }
 

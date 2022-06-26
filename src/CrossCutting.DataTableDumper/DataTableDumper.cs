@@ -3,10 +3,10 @@
 public class DataTableDumper<T> : IDataTableDumper<T>
     where T : class
 {
-    private readonly IColumnNameProvider<T> _columnNameProvider;
+    private readonly IColumnNameProvider _columnNameProvider;
     private readonly IColumnDataProvider<T> _columnDataProvider;
 
-    public DataTableDumper(IColumnNameProvider<T> columnNameProvider, IColumnDataProvider<T> columnDataProvider)
+    public DataTableDumper(IColumnNameProvider columnNameProvider, IColumnDataProvider<T> columnDataProvider)
     {
         _columnNameProvider = columnNameProvider;
         _columnDataProvider = columnDataProvider;
@@ -14,7 +14,7 @@ public class DataTableDumper<T> : IDataTableDumper<T>
     public string Dump(IEnumerable<T> data)
     {
         var builder = new StringBuilder();
-        var columnNames = _columnNameProvider.Get();
+        var columnNames = _columnNameProvider.Get<T>();
         var columnLengths = GetColumnLengths(columnNames, data);
 
         builder.Append("|");
