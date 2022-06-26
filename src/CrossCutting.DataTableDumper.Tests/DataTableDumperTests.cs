@@ -51,7 +51,7 @@ public class DataTableDumperTests
     }
 
     [Fact]
-    public void Can_Parse_Dumped_DataTable()
+    public void Can_Parse_Dumped_DataTable_Into_StringArray()
     {
         // Arrange
         var input = new[]
@@ -71,7 +71,29 @@ public class DataTableDumperTests
         });
     }
 
-    public class MyClass
+    [Fact]
+    public void Can_Parse_Dumped_DataTable_Into_Typed_Array()
+    {
+        // Arrange
+        var input = new[]
+        {
+            new MyClass { Name = "Person|A", Age = 42 },
+        };
+        var sut = new DataTableDumper<MyClass>(new ColumnNameProvider(), new ColumnDataProvider<MyClass>());
+        var dumpedString = sut.Dump(input);
+
+        // Act
+        var lines = dumpedString.GetLines()
+            .Skip(1)
+            .Select(x => x.Split('|'))
+            .Select(x => new MyClass { Name = x[1].Trim().UnescapePipes(), Age = int.Parse(x[2].Trim()) })
+            .ToArray();
+
+        // Assert
+        lines.Should().BeEquivalentTo(input);
+    }
+
+    public record MyClass
     {
         public string? Name { get; set; }
         public int Age { get; set; }
