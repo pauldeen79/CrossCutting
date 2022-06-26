@@ -558,16 +558,39 @@ public class ResultTests
         actual.ErrorMessage.Should().Be("Could not determine result because there are no steps defined");
     }
 
+    [Fact]
+    public void Chain_With_Successful_Steps_Returns_Result_From_Last_Step()
+    {
+        // Arrange
+        var request = new SomeRequest();
+
+        // Act
+        var result = Result<SomeResultValue>.Chain(request, AnotherOkStep, OkStep, AnotherOkStep);
+
+        // Assert
+        result.IsSuccessful().Should().BeTrue();
+        request.OkCount.Should().Be(3);
+        request.FailedCount.Should().Be(0);
+        result.HasValue.Should().BeTrue();
+        result.Value.Should().BeOfType<SomeDerivedResultValue>();
+    }
+
     private Result<SomeResultValue> OkStep(SomeRequest request)
     {
         request.OkCount++;
-        return Result<SomeResultValue>.Success(new SomeResultValue());
+        return Result<SomeResultValue>.Success(new ());
     }
 
     private Result OkStep(SomeContext context)
     {
         context.Builder.Add();
         return Result.Success();
+    }
+
+    private Result<SomeResultValue> AnotherOkStep(SomeRequest request)
+    {
+        request.OkCount++;
+        return Result<SomeResultValue>.Success(new SomeDerivedResultValue());
     }
 
     private Result<SomeResultValue> FailedStep(SomeRequest request)
@@ -596,7 +619,11 @@ public class ResultTests
         }
     }
 
-    private sealed class SomeResultValue
+    private class SomeResultValue
+    {
+    }
+
+    private sealed class SomeDerivedResultValue : SomeResultValue
     {
     }
 

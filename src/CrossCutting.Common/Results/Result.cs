@@ -25,18 +25,12 @@ public record Result<T> : Result
     public static new Result<T> Invalid(string errorMessage, IEnumerable<ValidationError> validationErrors) => new Result<T>(default, ResultStatus.Invalid, errorMessage, validationErrors);
     public static Result<T> FromExistingResult(Result existingResult) => new Result<T>(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
     public static Result<T> Chain<TCommand>(TCommand command, params Func<TCommand, Result<T>>[] steps)
-    {
-        var result = Invalid("Could not determine result because there are no steps defined");
-        foreach (var step in steps)
-        {
-            result = step.Invoke(command);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-        }
-        return result;
-    }
+        => steps.Length == 0
+        ? Error("Could not determine result because there are no steps defined")
+        : steps.Select(step => step.Invoke(command))
+               .TakeWhileWithFirstNonMatching(result => result.IsSuccessful())
+               .Last();
+
     public T GetValueOrThrow(string errorMessage)
     {
         if (!IsSuccessful())
@@ -99,10 +93,9 @@ public record Result
             : Result<TInstance>.Success(instance);
 
     public static Result Chain<TCommand>(TCommand command, params Func<TCommand, Result>[] steps)
-        => steps.AggregateUntil
-        (
-            Error("Could not determine result because there are no steps defined"),
-            (_, step) => step.Invoke(command),
-            predicate: result => !result.IsSuccessful()
-        );
+        => steps.Length == 0
+        ? Error("Could not determine result because there are no steps defined")
+        : steps.Select(step => step.Invoke(command))
+               .TakeWhileWithFirstNonMatching(result => result.IsSuccessful())
+               .Last();
 }
