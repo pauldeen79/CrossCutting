@@ -24,12 +24,20 @@ public record Result<T> : Result
     public static new Result<T> Invalid(string errorMessage) => new Result<T>(default, ResultStatus.Invalid, errorMessage, Enumerable.Empty<ValidationError>());
     public static new Result<T> Invalid(string errorMessage, IEnumerable<ValidationError> validationErrors) => new Result<T>(default, ResultStatus.Invalid, errorMessage, validationErrors);
     public static Result<T> FromExistingResult(Result existingResult) => new Result<T>(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
+
     public static Result<T> Chain<TCommand>(TCommand command, params Func<TCommand, Result<T>>[] steps)
         => steps.Length == 0
-        ? Error("Could not determine result because there are no steps defined")
-        : steps.Select(step => step.Invoke(command))
-               .TakeWhileWithFirstNonMatching(result => result.IsSuccessful())
-               .Last();
+            ? Error("Could not determine result because there are no steps defined")
+            : steps.Select(step => step.Invoke(command))
+                   .TakeWhileWithFirstNonMatching(result => result.IsSuccessful())
+                   .Last();
+
+    public static Result<T> Chain<TCommand>(TCommand command, params Func<TCommand, Result<T>, Result<T>>[] steps)
+        => steps.Aggregate
+        (
+            Error("Could not determine result because there are no steps defined"),
+            (seed, step) => step.Invoke(command, seed)
+        );
 
     public T GetValueOrThrow(string errorMessage)
     {
@@ -94,8 +102,15 @@ public record Result
 
     public static Result Chain<TCommand>(TCommand command, params Func<TCommand, Result>[] steps)
         => steps.Length == 0
-        ? Error("Could not determine result because there are no steps defined")
-        : steps.Select(step => step.Invoke(command))
-               .TakeWhileWithFirstNonMatching(result => result.IsSuccessful())
-               .Last();
+            ? Error("Could not determine result because there are no steps defined")
+            : steps.Select(step => step.Invoke(command))
+                   .TakeWhileWithFirstNonMatching(result => result.IsSuccessful())
+                   .Last();
+
+    public static Result Chain<TCommand>(TCommand command, params Func<TCommand, Result, Result>[] steps)
+        => steps.Aggregate
+        (
+            Error("Could not determine result because there are no steps defined"),
+            (seed, step) => step.Invoke(command, seed)
+        );
 }

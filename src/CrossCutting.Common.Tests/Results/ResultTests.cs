@@ -544,13 +544,43 @@ public class ResultTests
     }
 
     [Fact]
-    public void Chain_Without_Steps_Returns_Error()
+    public void Chain_Untyped_Without_Steps_Returns_Error_No_Accumulator()
     {
         // Arrange
         var request = new SomeRequest();
 
         // Act
-        var actual = Result.Chain(request);
+        var actual = Result.Chain(request, Array.Empty<Func<SomeRequest, Result>>());
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Error);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Could not determine result because there are no steps defined");
+    }
+
+    [Fact]
+    public void Chain_Typed_Without_Steps_Returns_Error_No_Accumulator()
+    {
+        // Arrange
+        var request = new SomeRequest();
+
+        // Act
+        var actual = Result<SomeResultValue>.Chain(request, Array.Empty<Func<SomeRequest, Result<SomeResultValue>>>());
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Error);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Could not determine result because there are no steps defined");
+    }
+
+    [Fact]
+    public void Chain_Without_Steps_Returns_Error_Accumulator()
+    {
+        // Arrange
+        var request = new SomeRequest();
+
+        // Act
+        var actual = Result.Chain(request, Array.Empty<Func<SomeRequest, Result, Result>>());
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Error);
@@ -575,6 +605,36 @@ public class ResultTests
         result.Value.Should().BeOfType<SomeDerivedResultValue>();
     }
 
+    [Fact]
+    public void Can_Chain_Multiple_Untyped_Steps_With_Accumulator()
+    {
+        // Arrange
+        var request = new SomeRequest();
+
+        // Act
+        var result = Result.Chain(request, OkStepWithAccumulator, OkStepWithAccumulator, OkStepWithAccumulator);
+
+        // Assert
+        result.IsSuccessful().Should().BeTrue();
+        request.OkCount.Should().Be(3);
+        request.FailedCount.Should().Be(0);
+    }
+
+    [Fact]
+    public void Can_Chain_Multiple_Typed_Steps_With_Accumulator()
+    {
+        // Arrange
+        var context = new SomeContext(new SomeRequest());
+
+        // Act
+        var result = Result<SomeResultValue>.Chain(context, OkStepWithAccumulator, OkStepWithAccumulator, OkStepWithAccumulator);
+
+        // Assert
+        result.IsSuccessful().Should().BeTrue();
+        context.Request.OkCount.Should().Be(3);
+        context.Request.FailedCount.Should().Be(0);
+    }
+
     private Result<SomeResultValue> OkStep(SomeRequest request)
     {
         request.OkCount++;
@@ -584,6 +644,18 @@ public class ResultTests
     private Result OkStep(SomeContext context)
     {
         context.Builder.Add();
+        return Result.Success();
+    }
+
+    private Result<SomeResultValue> OkStepWithAccumulator(SomeContext context, Result<SomeResultValue> previousResult)
+    {
+        context.Request.OkCount++;
+        return Result<SomeResultValue>.Success(new());
+    }
+
+    private Result OkStepWithAccumulator(SomeRequest request, Result previousResult)
+    {
+        request.OkCount++;
         return Result.Success();
     }
 
