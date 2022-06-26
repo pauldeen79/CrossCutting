@@ -32,8 +32,8 @@ public static class Parser
 
     private sealed class MyColumnDataProvider : IColumnDataProvider<ExpandoObject>
     {
-        public IReadOnlyCollection<string> Get(ExpandoObject item)
-            => new List<string>((item as IDictionary<string, object>).Values.Select(x => x.ToString())).AsReadOnly();
+        public IReadOnlyCollection<string> Get(ExpandoObject item, string escapeValue)
+            => new List<string>((item as IDictionary<string, object>).Values.Select(x => x.ToString().EscapePipes(escapeValue).WhenNullOrEmpty(string.Empty))).AsReadOnly();
     }
 }
 

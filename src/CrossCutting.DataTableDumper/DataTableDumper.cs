@@ -12,11 +12,11 @@ public class DataTableDumper<T> : IDataTableDumper<T>
         _columnDataProvider = columnDataProvider;
     }
 
-    public string Dump(IEnumerable<T> data)
+    public string Dump(IEnumerable<T> data, string escapeValue)
     {
         var builder = new StringBuilder();
         var columnNames = _columnNameProvider.Get<T>();
-        var columnLengths = GetColumnLengths(columnNames, data);
+        var columnLengths = GetColumnLengths(columnNames, data, escapeValue);
 
         builder.Append("|");
         foreach (var column in columnNames.Select((x, index) => new { Length = columnLengths[index], Name = x }))
@@ -30,7 +30,7 @@ public class DataTableDumper<T> : IDataTableDumper<T>
         foreach (var item in data)
         {
             builder.Append("|");
-            var columnData = _columnDataProvider.Get(item);
+            var columnData = _columnDataProvider.Get(item, escapeValue);
             foreach (var column in columnData.Select((x, index) => new { Length = columnLengths[index], Value = x }))
             {
                 builder.Append(" ")
@@ -43,7 +43,7 @@ public class DataTableDumper<T> : IDataTableDumper<T>
         return builder.ToString();
     }
 
-    private int[] GetColumnLengths(IReadOnlyCollection<string> columnNames, IEnumerable<T> data)
+    private int[] GetColumnLengths(IReadOnlyCollection<string> columnNames, IEnumerable<T> data, string escapeValue)
     {
         var columnLengths = new int[columnNames.Count];
 
@@ -57,7 +57,7 @@ public class DataTableDumper<T> : IDataTableDumper<T>
 
         foreach (var item in data)
         {
-            var columnData = _columnDataProvider.Get(item);
+            var columnData = _columnDataProvider.Get(item, escapeValue);
             foreach (var column in columnData.Select((x, index) => new { Length = x?.Length ?? 0, Index = index }))
             {
                 if (column.Length > columnLengths[column.Index])
