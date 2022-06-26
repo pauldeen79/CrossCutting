@@ -445,78 +445,165 @@ public class ResultTests
     }
 
     [Fact]
-    public void Can_Chain_Three_Typed_Steps_That_Get_Executed_Entirely()
+    public void Can_Chain_Multiple_Typed_Steps_That_Get_Executed_Entirely()
     {
+        // Arrange
+        var request = new SomeRequest();
+
         // Act
-        var command = new SomeCommand();
-        var result = Result<SomeResultValue>.Chain(command, OkStep, OkStep, OkStep);
+        var result = Result<SomeResultValue>.Chain(request, OkStep, OkStep, OkStep);
 
         // Assert
         result.IsSuccessful().Should().BeTrue();
-        command.OkCount.Should().Be(3);
-        command.FailedCount.Should().Be(0);
+        request.OkCount.Should().Be(3);
+        request.FailedCount.Should().Be(0);
+        result.HasValue.Should().BeTrue();
         result.Value.Should().BeOfType<SomeResultValue>();
     }
 
     [Fact]
-    public void Can_Chain_Three_Typed_Steps_That_Dont_Get_Executed_Entirely()
+    public void Can_Chain_Multiple_Typed_Steps_That_Dont_Get_Executed_Entirely()
     {
+        // Arrange
+        var request = new SomeRequest();
+
         // Act
-        var command = new SomeCommand();
-        var result = Result<SomeResultValue>.Chain(command, OkStep, FailedStep, OkStep);
+        var result = Result<SomeResultValue>.Chain(request, OkStep, FailedStep, OkStep);
 
         // Assert
         result.IsSuccessful().Should().BeFalse();
-        command.OkCount.Should().Be(1);
-        command.FailedCount.Should().Be(1);
+        request.OkCount.Should().Be(1);
+        request.FailedCount.Should().Be(1);
+        result.HasValue.Should().BeFalse();
         result.Value.Should().BeNull();
     }
 
     [Fact]
-    public void Can_Chain_Three_Unyped_Steps_That_Get_Executed_Entirely()
+    public void Can_Chain_Multiple_Untyped_Steps_That_Get_Executed_Entirely()
     {
+        // Arrange
+        var request = new SomeRequest();
+
         // Act
-        var command = new SomeCommand();
-        var result = Result.Chain(command, OkStep, OkStep, OkStep);
+        var result = Result.Chain(request, OkStep, OkStep, OkStep);
 
         // Assert
         result.IsSuccessful().Should().BeTrue();
-        command.OkCount.Should().Be(3);
-        command.FailedCount.Should().Be(0);
+        request.OkCount.Should().Be(3);
+        request.FailedCount.Should().Be(0);
     }
 
     [Fact]
-    public void Can_Chain_Three_Unyped_Steps_That_Dont_Get_Executed_Entirely()
+    public void Can_Chain_Multiple_Untyped_Steps_That_Dont_Get_Executed_Entirely()
     {
+        // Arrange
+        var request = new SomeRequest();
+
         // Act
-        var command = new SomeCommand();
-        var result = Result.Chain(command, OkStep, FailedStep, OkStep);
+        var result = Result.Chain(request, OkStep, FailedStep, OkStep);
 
         // Assert
         result.IsSuccessful().Should().BeFalse();
-        command.OkCount.Should().Be(1);
-        command.FailedCount.Should().Be(1);
+        request.OkCount.Should().Be(1);
+        request.FailedCount.Should().Be(1);
     }
 
-    private Result<SomeResultValue> OkStep(SomeCommand command)
+    [Fact]
+    public void Can_Chain_Multiple_Untyped_Steps_With_A_Writable_Context_To_Build_A_Result_From_A_Request_Using_HappyFlow()
     {
-        command.OkCount++;
+        // Arrange
+        var request = new SomeRequest();
+        var context = new SomeContext(request);
+
+        // Act
+        var result = Result.Chain(context, OkStep, OkStep, OkStep);
+        var entity = context.Builder.Build(); // just an example how to get a composable entity from an untyped result
+
+        // Assert
+        result.IsSuccessful().Should().BeTrue();
+        result.Status.Should().Be(ResultStatus.Ok);
+        context.Builder.Count.Should().Be(3);
+        entity.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void Can_Chain_Multiple_Untyped_Steps_With_A_Writable_Context_To_Build_A_Result_From_A_Request_Using_UnhappyFlow()
+    {
+        // Arrange
+        var request = new SomeRequest();
+        var context = new SomeContext(request);
+
+        // Act
+        var result = Result.Chain(context, OkStep, FailedStep, OkStep);
+
+        // Assert
+        result.IsSuccessful().Should().BeFalse();
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Something went very wrong!");
+        context.Builder.Count.Should().Be(1);
+    }
+
+    [Fact]
+    public void Chain_Without_Steps_Returns_Error()
+    {
+        // Arrange
+        var request = new SomeRequest();
+
+        // Act
+        var actual = Result.Chain(request);
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Error);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Could not determine result because there are no steps defined");
+    }
+
+    private Result<SomeResultValue> OkStep(SomeRequest request)
+    {
+        request.OkCount++;
         return Result<SomeResultValue>.Success(new SomeResultValue());
     }
 
-    private Result<SomeResultValue> FailedStep(SomeCommand command)
+    private Result OkStep(SomeContext context)
     {
-        command.FailedCount++;
+        context.Builder.Add();
+        return Result.Success();
+    }
+
+    private Result<SomeResultValue> FailedStep(SomeRequest request)
+    {
+        request.FailedCount++;
         return Result<SomeResultValue>.Error("Something went very wrong!");
     }
 
-    private sealed class SomeCommand
+    private Result FailedStep(SomeContext context) => Result.Error("Something went very wrong!");
+
+    private sealed class SomeRequest
     {
         public int OkCount { get; set; }
         public int FailedCount { get; set; }
     }
 
+    private sealed class SomeContext
+    {
+        public SomeRequest Request { get; }
+        public SomeEntityBuilder Builder { get; }
+
+        public SomeContext(SomeRequest request)
+        {
+            Request = request;
+            Builder = new();
+        }
+    }
+
     private sealed class SomeResultValue
     {
+    }
+
+    private sealed class SomeEntityBuilder
+    {
+        public int Count { get; private set; }
+        public void Add() => Count++;
+        public SomeResultValue Build() => new SomeResultValue();
     }
 }

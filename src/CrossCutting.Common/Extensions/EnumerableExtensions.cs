@@ -28,4 +28,28 @@ public static class EnumerableExtensions
     /// </returns>
     public static IEnumerable<T> DefaultWhenNull<T>(this IEnumerable<T>? instance, IEnumerable<T>? valueWhenNull = null)
         => instance ?? valueWhenNull ?? Enumerable.Empty<T>();
+
+    public static TAccumulate AggregateUntil<TSource, TAccumulate>(
+        this IEnumerable<TSource> source,
+        TAccumulate seed,
+        Func<TAccumulate, TSource, TAccumulate> func,
+        Func<TAccumulate, bool> predicate)
+    {
+        if (source == null)
+            throw new ArgumentNullException(nameof(source));
+
+        if (func == null)
+            throw new ArgumentNullException(nameof(func));
+
+        if (predicate == null)
+            throw new ArgumentNullException(nameof(predicate));
+
+        var accumulate = seed;
+        foreach (var item in source)
+        {
+            accumulate = func(accumulate, item);
+            if (predicate(accumulate)) break;
+        }
+        return accumulate;
+    }
 }

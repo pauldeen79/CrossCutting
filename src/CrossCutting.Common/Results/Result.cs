@@ -13,6 +13,7 @@ public record Result<T> : Result
         => Value = value;
 
     public T? Value { get; }
+    public bool HasValue => Value != null;
     public static Result<T> Success(T value) => new Result<T>(value, ResultStatus.Ok, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> Error() => new Result<T>(default, ResultStatus.Error, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> Error(string errorMessage) => new Result<T>(default, ResultStatus.Error, errorMessage, Enumerable.Empty<ValidationError>());
@@ -98,16 +99,10 @@ public record Result
             : Result<TInstance>.Success(instance);
 
     public static Result Chain<TCommand>(TCommand command, params Func<TCommand, Result>[] steps)
-    {
-        var result = Invalid("Could not determine result because there are no steps defined");
-        foreach (var step in steps)
-        {
-            result = step.Invoke(command);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-        }
-        return result;
-    }
+        => steps.AggregateUntil
+        (
+            Error("Could not determine result because there are no steps defined"),
+            (_, step) => step.Invoke(command),
+            predicate: result => !result.IsSuccessful()
+        );
 }
