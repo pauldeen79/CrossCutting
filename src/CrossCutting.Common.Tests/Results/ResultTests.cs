@@ -445,6 +445,128 @@ public class ResultTests
     }
 
     [Fact]
+    public void Can_Create_Unauthorized_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.Unauthorized();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Unauthorized);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_Unauthorized_Void_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result.Unauthorized();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Unauthorized);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_Unauthorized_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.Unauthorized("Not authorized");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Unauthorized);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authorized");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_Unauthorized_Void_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result.Unauthorized("Not authorized");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Unauthorized);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authorized");
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_NotAuthenticated_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.NotAuthenticated();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotAuthenticated);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_NotAuthenticated_Void_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result.NotAuthenticated();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotAuthenticated);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_NotAuthenticated_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.NotAuthenticated("Not authenticated");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotAuthenticated);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_NotAuthenticated_Void_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result.NotAuthenticated("Not authenticated");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotAuthenticated);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_Redirect_Result()
+    {
+        // Act
+        var actual = Result<string>.Redirect("redirect address");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Redirect);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().Be("redirect address");
+    }
+
+    [Fact]
     public void Can_Chain_Multiple_Typed_Steps_That_Get_Executed_Entirely()
     {
         // Arrange

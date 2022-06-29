@@ -14,16 +14,21 @@ public record Result<T> : Result
 
     public T? Value { get; }
     public bool HasValue => Value != null;
-    public static Result<T> Success(T value) => new Result<T>(value, ResultStatus.Ok, null, Enumerable.Empty<ValidationError>());
-    public static new Result<T> Error() => new Result<T>(default, ResultStatus.Error, null, Enumerable.Empty<ValidationError>());
-    public static new Result<T> Error(string errorMessage) => new Result<T>(default, ResultStatus.Error, errorMessage, Enumerable.Empty<ValidationError>());
-    public static new Result<T> NotFound() => new Result<T>(default, ResultStatus.NotFound, null, Enumerable.Empty<ValidationError>());
-    public static new Result<T> NotFound(string errorMessage) => new Result<T>(default, ResultStatus.NotFound, errorMessage, Enumerable.Empty<ValidationError>());
-    public static new Result<T> Invalid() => new Result<T>(default, ResultStatus.Invalid, null, Enumerable.Empty<ValidationError>());
-    public static new Result<T> Invalid(IEnumerable<ValidationError> validationErrors) => new Result<T>(default, ResultStatus.Invalid, null, validationErrors);
+    public static Result<T> Success(T value) => new(value, ResultStatus.Ok, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Error() => new(default, ResultStatus.Error, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Error(string errorMessage) => new(default, ResultStatus.Error, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> NotFound() => new(default, ResultStatus.NotFound, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> NotFound(string errorMessage) => new(default, ResultStatus.NotFound, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Invalid() => new(default, ResultStatus.Invalid, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Invalid(IEnumerable<ValidationError> validationErrors) => new(default, ResultStatus.Invalid, null, validationErrors);
     public static new Result<T> Invalid(string errorMessage) => new Result<T>(default, ResultStatus.Invalid, errorMessage, Enumerable.Empty<ValidationError>());
-    public static new Result<T> Invalid(string errorMessage, IEnumerable<ValidationError> validationErrors) => new Result<T>(default, ResultStatus.Invalid, errorMessage, validationErrors);
-    public static Result<T> FromExistingResult(Result existingResult) => new Result<T>(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
+    public static new Result<T> Invalid(string errorMessage, IEnumerable<ValidationError> validationErrors) => new(default, ResultStatus.Invalid, errorMessage, validationErrors);
+    public static new Result<T> Unauthorized() => new(default, ResultStatus.Unauthorized, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Unauthorized(string errorMessage) => new(default, ResultStatus.Unauthorized, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> NotAuthenticated() => new(default, ResultStatus.NotAuthenticated, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> NotAuthenticated(string errorMessage) => new(default, ResultStatus.NotAuthenticated, errorMessage, Enumerable.Empty<ValidationError>());
+    public static Result<T> Redirect(T value) => new(value, ResultStatus.Redirect, null, Enumerable.Empty<ValidationError>());
+    public static Result<T> FromExistingResult(Result existingResult) => new(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
 
     public static Result<T> Chain<TCommand>(TCommand command, params Func<TCommand, Result<T>>[] steps)
         => steps.Length == 0
@@ -66,15 +71,19 @@ public record Result
     public ResultStatus Status { get; }
     public IReadOnlyCollection<ValidationError> ValidationErrors { get; }
 
-    public static Result Success() => new Result(ResultStatus.Ok, null, Enumerable.Empty<ValidationError>());
-    public static Result Error() => new Result(ResultStatus.Error, null, Enumerable.Empty<ValidationError>());
-    public static Result Error(string errorMessage) => new Result(ResultStatus.Error, errorMessage, Enumerable.Empty<ValidationError>());
-    public static Result NotFound() => new Result(ResultStatus.NotFound, null, Enumerable.Empty<ValidationError>());
-    public static Result NotFound(string errorMessage) => new Result(ResultStatus.NotFound, errorMessage, Enumerable.Empty<ValidationError>());
-    public static Result Invalid() => new Result(ResultStatus.Invalid, null, Enumerable.Empty<ValidationError>());
-    public static Result Invalid(IEnumerable<ValidationError> validationErrors) => new Result(ResultStatus.Invalid, null, validationErrors);
-    public static Result Invalid(string errorMessage) => new Result(ResultStatus.Invalid, errorMessage, Enumerable.Empty<ValidationError>());
-    public static Result Invalid(string errorMessage, IEnumerable<ValidationError> validationErrors) => new Result(ResultStatus.Invalid, errorMessage, validationErrors);
+    public static Result Success() => new(ResultStatus.Ok, null, Enumerable.Empty<ValidationError>());
+    public static Result Error() => new(ResultStatus.Error, null, Enumerable.Empty<ValidationError>());
+    public static Result Error(string errorMessage) => new(ResultStatus.Error, errorMessage, Enumerable.Empty<ValidationError>());
+    public static Result NotFound() => new(ResultStatus.NotFound, null, Enumerable.Empty<ValidationError>());
+    public static Result NotFound(string errorMessage) => new(ResultStatus.NotFound, errorMessage, Enumerable.Empty<ValidationError>());
+    public static Result Invalid() => new(ResultStatus.Invalid, null, Enumerable.Empty<ValidationError>());
+    public static Result Invalid(IEnumerable<ValidationError> validationErrors) => new(ResultStatus.Invalid, null, validationErrors);
+    public static Result Invalid(string errorMessage) => new(ResultStatus.Invalid, errorMessage, Enumerable.Empty<ValidationError>());
+    public static Result Invalid(string errorMessage, IEnumerable<ValidationError> validationErrors) => new(ResultStatus.Invalid, errorMessage, validationErrors);
+    public static Result Unauthorized() => new(ResultStatus.Unauthorized, null, Enumerable.Empty<ValidationError>());
+    public static Result Unauthorized(string errorMessage) => new(ResultStatus.Unauthorized, errorMessage, Enumerable.Empty<ValidationError>());
+    public static Result NotAuthenticated() => new(ResultStatus.NotAuthenticated, null, Enumerable.Empty<ValidationError>());
+    public static Result NotAuthenticated(string errorMessage) => new(ResultStatus.NotAuthenticated, errorMessage, Enumerable.Empty<ValidationError>());
 
     public static Result<TInstance> FromInstance<TInstance>(TInstance? instance)
         where TInstance : class
