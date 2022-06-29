@@ -757,6 +757,32 @@ public class ResultTests
         context.Request.FailedCount.Should().Be(0);
     }
 
+    [Fact]
+    public void GetValueOrThrow_Throws_When_Value_Is_Null()
+    {
+        // Arrange
+        var sut = Result<string>.Error();
+
+        // Act
+        var act = new Action(() => sut.GetValueOrThrow());
+
+        // Assert
+        act.Should().ThrowExactly<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void GetValueOrThrow_Returns_Value_When_Value_Is_Not_Null()
+    {
+        // Arrange
+        var sut = Result<string>.Success("yes!");
+
+        // Act
+        var value = sut.GetValueOrThrow();
+
+        // Assert
+        value.Should().Be(sut.Value);
+    }
+
     private Result<SomeResultValue> OkStep(SomeRequest request)
     {
         request.OkCount++;

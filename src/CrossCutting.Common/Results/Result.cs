@@ -46,7 +46,7 @@ public record Result<T> : Result
 
     public T GetValueOrThrow(string errorMessage)
     {
-        if (!IsSuccessful())
+        if (Value == null)
         {
             throw new InvalidOperationException(errorMessage);
         }
