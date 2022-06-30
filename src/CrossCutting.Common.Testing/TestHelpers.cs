@@ -11,8 +11,9 @@ namespace CrossCutting.Common.Testing;
 public static class TestHelpers
 {
     /// <summary>
-    /// Asserts that the specified type performs argument null checks on all arguments.
+    /// Asserts that the specified type performs argument null checks on all arguments in all (public) constructors.
     /// </summary>
+    /// <remarks>Note that this method throws an exeption when there is no public constructor.</remarks>
     /// <param name="type">The type to assert null argument checks for.</param>
     /// <param name="parameterPredicate">Optional predicate to apply to each parameter info. When the predicate returns false, then the parameter will be skipped.</param>
     /// <param name="parameterReplaceDelegate">Optional function to apply to a parameter info. When the predicate is not defined, then we will create a mock or value type.</param>
@@ -20,7 +21,14 @@ public static class TestHelpers
                                                                  Func<ParameterInfo, bool>? parameterPredicate = null,
                                                                  Func<ParameterInfo, object>? parameterReplaceDelegate = null)
     {
-        foreach (var constructor in type.GetConstructors())
+        var ctors = type.GetConstructors();
+        if (ctors == null || ctors.Length == 0)
+        {
+            false.Should().BeTrue($"There is no constructor on type {type.FullName}");
+            return;
+        }
+
+        foreach (var constructor in ctors)
         {
             var parameters = constructor.GetParameters().ToArray();
             var mocks = GetMocks(parameters, parameterReplaceDelegate);
@@ -52,18 +60,22 @@ public static class TestHelpers
         }
     }
 
-    private static object? FillParameter(ParameterInfo[] parameters, int i)
-        => parameters[i].ParameterType.IsValueType
-            ? Activator.CreateInstance(parameters[i].ParameterType)
-            : null;
-
-    private static bool ShouldSkipParameter(Func<ParameterInfo, bool>? parameterPredicate, ParameterInfo[] parameters, int i)
-        => parameterPredicate != null
-            && !parameterPredicate.Invoke(parameters[i]);
-
+    /// <summary>
+    /// Asserts that construction of a type works using all (public) constructors, and no exeptions are thrown.
+    /// </summary>
+    /// <remarks>Note that this method throws an exeption when there is no public constructor.</remarks>
+    /// <param name="type"></param>
+    /// <param name="parameterReplaceDelegate"></param>
     public static void ConstructorShouldConstruct(Type type, Func<ParameterInfo, object>? parameterReplaceDelegate = null)
     {
-        foreach (var constructor in type.GetConstructors())
+        var ctors = type.GetConstructors();
+        if (ctors == null || ctors.Length == 0)
+        {
+            false.Should().BeTrue($"There is no constructor on type {type.FullName}");
+            return;
+        }
+
+        foreach (var constructor in ctors)
         {
             var parameters = constructor.GetParameters();
             var mocks = GetMocks(parameters, parameterReplaceDelegate);
@@ -73,52 +85,10 @@ public static class TestHelpers
         }
     }
 
-    private static object?[] GetMocks(ParameterInfo[] parameters, Func<ParameterInfo, object>? parameterReplaceDelegate)
-        => parameters.Select
-        (
-            p =>
-            {
-                if (parameterReplaceDelegate != null)
-                {
-                    var returnValue = parameterReplaceDelegate.Invoke(p);
-                    if (returnValue != null)
-                    {
-                        return returnValue;
-                    }
-                }
-
-                if (p.ParameterType.IsValueType || p.ParameterType.IsArray || p.ParameterType == typeof(string))
-                {
-                    return null; //skip value types, arrays and strings
-                    }
-                var mockType = typeof(Mock<>).MakeGenericType(new[] { p.ParameterType });
-                var mock = (Mock)Activator.CreateInstance(mockType);
-                return mock.Object;
-            }
-        ).ToArray();
-
-    private static void FixStringsAndArrays(ParameterInfo[] parameters, int i, object?[] mocksCopy)
-    {
-        for (int j = 0; j < parameters.Length; j++)
-        {
-            if (j == i)
-            {
-                continue;
-            }
-            if (parameters[j].ParameterType.IsArray)
-            {
-                mocksCopy[j] = Activator.CreateInstance(parameters[j].ParameterType, new object[] { 1 });
-            }
-            else if (parameters[j].ParameterType == typeof(string))
-            {
-                mocksCopy[j] = string.Empty;
-            }
-        }
-    }
-
     /// <summary>
     /// Creates the object with the specified type using the specified dependency injection container.
     /// </summary>
+    /// <remarks>Note that this method throws an exeption when there is no public constructor, and uses the first constructor when more constructors are available.</remarks>
     /// <param name="typeTocreate">Type to create</param>
     /// <param name="provider">Optional dependency injection container to use</param>
     /// <returns>Instanciated controller.</returns>
@@ -152,5 +122,57 @@ public static class TestHelpers
                             : provider?.GetService(parameterInfo.ParameterType)
                     ).ToArray()
         );
+    }
+
+    private static object? FillParameter(ParameterInfo[] parameters, int i)
+        => parameters[i].ParameterType.IsValueType
+            ? Activator.CreateInstance(parameters[i].ParameterType)
+            : null;
+
+    private static bool ShouldSkipParameter(Func<ParameterInfo, bool>? parameterPredicate, ParameterInfo[] parameters, int i)
+        => parameterPredicate != null
+            && !parameterPredicate.Invoke(parameters[i]);
+
+    private static object?[] GetMocks(ParameterInfo[] parameters, Func<ParameterInfo, object>? parameterReplaceDelegate)
+        => parameters.Select
+        (
+            p =>
+            {
+                if (parameterReplaceDelegate != null)
+                {
+                    var returnValue = parameterReplaceDelegate.Invoke(p);
+                    if (returnValue != null)
+                    {
+                        return returnValue;
+                    }
+                }
+
+                if (p.ParameterType.IsValueType || p.ParameterType.IsArray || p.ParameterType == typeof(string))
+                {
+                    return null; //skip value types, arrays and strings
+                }
+                var mockType = typeof(Mock<>).MakeGenericType(new[] { p.ParameterType });
+                var mock = (Mock)Activator.CreateInstance(mockType);
+                return mock.Object;
+            }
+        ).ToArray();
+
+    private static void FixStringsAndArrays(ParameterInfo[] parameters, int i, object?[] mocksCopy)
+    {
+        for (int j = 0; j < parameters.Length; j++)
+        {
+            if (j == i)
+            {
+                continue;
+            }
+            if (parameters[j].ParameterType.IsArray)
+            {
+                mocksCopy[j] = Activator.CreateInstance(parameters[j].ParameterType, new object[] { 1 });
+            }
+            else if (parameters[j].ParameterType == typeof(string))
+            {
+                mocksCopy[j] = string.Empty;
+            }
+        }
     }
 }
