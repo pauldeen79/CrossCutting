@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -168,6 +169,12 @@ public static class TestHelpers
             if (parameters[j].ParameterType.IsArray)
             {
                 mocksCopy[j] = Activator.CreateInstance(parameters[j].ParameterType, new object[] { 1 });
+            }
+            else if (parameters[j].ParameterType.FullName?.StartsWith("System.Collections.Generic.IEnumerable") == true)
+            {
+                // note that for now, we only allow generic Enumerables to work.
+                // this needs to be extended to generic collections and lists of more types.
+                mocksCopy[j] = Activator.CreateInstance(typeof(List<>).MakeGenericType(parameters[j].ParameterType.GetGenericArguments()[0]));
             }
             else if (parameters[j].ParameterType == typeof(string))
             {
