@@ -6,14 +6,14 @@ public static class NamedString
         => Format(template, parameters, false);
 
     public static string Format(string template, object parameters, bool ignoreCase)
-    {
-        var parametersDictionary = parameters.ToExpandoObject() as IDictionary<string, object>;
+        => parameters.ToExpandoObject().Aggregate
+        (
+            template,
+            (previous, item) => Regex.Replace(previous, $"{{{item.Key}}}", item.Value.ToStringWithDefault(), CreateRegExOptions(ignoreCase))
+        );
 
-        foreach (var item in parametersDictionary)
-        {
-            template = Regex.Replace(template, $"{{{item.Key}}}", item.Value.ToStringWithDefault(), ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None);
-        }
-
-        return template;
-    }
+    private static RegexOptions CreateRegExOptions(bool ignoreCase)
+        => ignoreCase
+            ? RegexOptions.IgnoreCase
+            : RegexOptions.None;
 }
