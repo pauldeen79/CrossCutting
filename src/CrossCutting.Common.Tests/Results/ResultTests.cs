@@ -553,6 +553,60 @@ public class ResultTests
     }
 
     [Fact]
+    public void Can_Create_NotSupported_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.NotSupported();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotSupported);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_NotSupported_Void_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result.NotSupported();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotSupported);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_NotSupported_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.NotSupported("Not authenticated");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotSupported);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_NotSupported_Void_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result.NotSupported("Not authenticated");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotSupported);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
     public void Can_Create_Redirect_Result()
     {
         // Act

@@ -8,5 +8,6 @@ public enum ResultStatus
     NotFound,
     Redirect,
     Unauthorized,
-    NotAuthenticated
+    NotAuthenticated,
+    NotSupported
 }

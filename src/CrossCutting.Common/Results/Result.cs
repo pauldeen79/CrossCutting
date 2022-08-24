@@ -27,6 +27,8 @@ public record Result<T> : Result
     public static new Result<T> Unauthorized(string errorMessage) => new(default, ResultStatus.Unauthorized, errorMessage, Enumerable.Empty<ValidationError>());
     public static new Result<T> NotAuthenticated() => new(default, ResultStatus.NotAuthenticated, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> NotAuthenticated(string errorMessage) => new(default, ResultStatus.NotAuthenticated, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> NotSupported() => new(default, ResultStatus.NotSupported, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> NotSupported(string errorMessage) => new(default, ResultStatus.NotSupported, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result<T> Redirect(T value) => new(value, ResultStatus.Redirect, null, Enumerable.Empty<ValidationError>());
     public static Result<T> FromExistingResult(Result existingResult) => new(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
 
@@ -84,6 +86,8 @@ public record Result
     public static Result Unauthorized(string errorMessage) => new(ResultStatus.Unauthorized, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result NotAuthenticated() => new(ResultStatus.NotAuthenticated, null, Enumerable.Empty<ValidationError>());
     public static Result NotAuthenticated(string errorMessage) => new(ResultStatus.NotAuthenticated, errorMessage, Enumerable.Empty<ValidationError>());
+    public static Result NotSupported() => new(ResultStatus.NotSupported, null, Enumerable.Empty<ValidationError>());
+    public static Result NotSupported(string errorMessage) => new(ResultStatus.NotSupported, errorMessage, Enumerable.Empty<ValidationError>());
 
     public static Result<TInstance> FromInstance<TInstance>(TInstance? instance)
         where TInstance : class
