@@ -423,9 +423,9 @@ public sealed class IntegrationTests : IDisposable
         // Important to initialize datareader BEFORE creating the command! Else, the event won't fire
         Connection.AddResultForDataReader(new[]
         {
-                new MyRecord { Name = "Beer", Amount = 1 },
-                new MyRecord { Name = "Milk", Amount = 3 }
-            });
+            new MyRecord { Name = "Beer", Amount = 1 },
+            new MyRecord { Name = "Milk", Amount = 3 }
+        });
 
         // Act
         using var command = Connection.CreateCommand();
