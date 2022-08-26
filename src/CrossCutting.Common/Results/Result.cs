@@ -39,6 +39,7 @@ public record Result<T> : Result
     public static new Result<T> ResetContent(string errorMessage) => new(default, ResultStatus.ResetContent, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result<T> Redirect(T value) => new(value, ResultStatus.Redirect, null, Enumerable.Empty<ValidationError>());
     public static Result<T> FromExistingResult(Result existingResult) => new(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
+    public static Result<T> FromExistingResult(Result existingResult, T value) => new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
 
     public static Result<T> Chain<TCommand>(TCommand command, params Func<TCommand, Result<T>>[] steps)
         => steps.Length == 0

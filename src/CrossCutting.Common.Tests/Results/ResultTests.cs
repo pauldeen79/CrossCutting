@@ -85,6 +85,22 @@ public class ResultTests
         actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
         actual.Status.Should().Be(voidResult.Status);
         actual.ValidationErrors.Should().BeEquivalentTo(voidResult.ValidationErrors);
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void FromExistingResult_Copies_Values_From_Void_SuccessResult_And_Adds_Value()
+    {
+        // Arrange
+        var voidResult = Result.Success();
+        // Act
+        var actual = Result<string>.FromExistingResult(voidResult, "yes");
+
+        // Assert
+        actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
+        actual.Status.Should().Be(voidResult.Status);
+        actual.ValidationErrors.Should().BeEquivalentTo(voidResult.ValidationErrors);
+        actual.Value.Should().Be("yes");
     }
 
     [Fact]
