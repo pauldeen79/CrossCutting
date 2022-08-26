@@ -29,6 +29,14 @@ public record Result<T> : Result
     public static new Result<T> NotAuthenticated(string errorMessage) => new(default, ResultStatus.NotAuthenticated, errorMessage, Enumerable.Empty<ValidationError>());
     public static new Result<T> NotSupported() => new(default, ResultStatus.NotSupported, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> NotSupported(string errorMessage) => new(default, ResultStatus.NotSupported, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Unavailable() => new(default, ResultStatus.Unavailable, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Unavailable(string errorMessage) => new(default, ResultStatus.Unavailable, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> NotImplemented() => new(default, ResultStatus.NotImplemented, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> NotImplemented(string errorMessage) => new(default, ResultStatus.NotImplemented, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> NoContent() => new(default, ResultStatus.NoContent, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> NoContent(string errorMessage) => new(default, ResultStatus.NoContent, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> ResetContent() => new(default, ResultStatus.ResetContent, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> ResetContent(string errorMessage) => new(default, ResultStatus.ResetContent, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result<T> Redirect(T value) => new(value, ResultStatus.Redirect, null, Enumerable.Empty<ValidationError>());
     public static Result<T> FromExistingResult(Result existingResult) => new(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
 
@@ -88,6 +96,14 @@ public record Result
     public static Result NotAuthenticated(string errorMessage) => new(ResultStatus.NotAuthenticated, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result NotSupported() => new(ResultStatus.NotSupported, null, Enumerable.Empty<ValidationError>());
     public static Result NotSupported(string errorMessage) => new(ResultStatus.NotSupported, errorMessage, Enumerable.Empty<ValidationError>());
+    public static Result Unavailable() => new(ResultStatus.Unavailable, null, Enumerable.Empty<ValidationError>());
+    public static Result Unavailable(string errorMessage) => new(ResultStatus.Unavailable, errorMessage, Enumerable.Empty<ValidationError>());
+    public static Result NotImplemented() => new(ResultStatus.NotImplemented, null, Enumerable.Empty<ValidationError>());
+    public static Result NotImplemented(string errorMessage) => new(ResultStatus.NotImplemented, errorMessage, Enumerable.Empty<ValidationError>());
+    public static Result NoContent() => new(ResultStatus.NoContent, null, Enumerable.Empty<ValidationError>());
+    public static Result NoContent(string errorMessage) => new(ResultStatus.NoContent, errorMessage, Enumerable.Empty<ValidationError>());
+    public static Result ResetContent() => new(ResultStatus.ResetContent, null, Enumerable.Empty<ValidationError>());
+    public static Result ResetContent(string errorMessage) => new(ResultStatus.ResetContent, errorMessage, Enumerable.Empty<ValidationError>());
 
     public static Result<TInstance> FromInstance<TInstance>(TInstance? instance)
         where TInstance : class

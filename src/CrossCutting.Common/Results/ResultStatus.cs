@@ -9,5 +9,9 @@ public enum ResultStatus
     Redirect,
     Unauthorized,
     NotAuthenticated,
-    NotSupported
+    NotSupported,
+    Unavailable,
+    NotImplemented,
+    NoContent,
+    ResetContent
 }

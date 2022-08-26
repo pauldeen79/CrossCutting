@@ -607,6 +607,222 @@ public class ResultTests
     }
 
     [Fact]
+    public void Can_Create_Unavailable_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.Unavailable();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Unavailable);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_Unavailable_Void_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result.Unavailable();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Unavailable);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_Unavailable_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.Unavailable("Not authenticated");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Unavailable);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_Unavailable_Void_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result.Unavailable("Not authenticated");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Unavailable);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_NotImplemented_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.NotImplemented();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotImplemented);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_NotImplemented_Void_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result.NotImplemented();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotImplemented);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_NotImplemented_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.NotImplemented("Not authenticated");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotImplemented);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_NotImplemented_Void_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result.NotImplemented("Not authenticated");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NotImplemented);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_NoContent_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.NoContent();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NoContent);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_NoContent_Void_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result.NoContent();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NoContent);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_NoContent_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.NoContent("Not authenticated");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NoContent);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_NoContent_Void_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result.NoContent("Not authenticated");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.NoContent);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_ResetContent_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.ResetContent();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.ResetContent);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_ResetContent_Void_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result.ResetContent();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.ResetContent);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_ResetContent_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.ResetContent("Not authenticated");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.ResetContent);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_ResetContent_Void_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result.ResetContent("Not authenticated");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.ResetContent);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
     public void Can_Create_Redirect_Result()
     {
         // Act
