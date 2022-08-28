@@ -25,7 +25,20 @@ public class ResultTests
         var act = new Action(() => _ = sut.GetValueOrThrow());
 
         // Assert
-        act.Should().ThrowExactly<InvalidOperationException>();
+        act.Should().ThrowExactly<InvalidOperationException>().WithMessage("Result: Invalid");
+    }
+
+    [Fact]
+    public void GetValueOrThrow_Throws_When_Result_Is_Error_And_ErrorMessage_Is_Filled()
+    {
+        // Arrange
+        var sut = Result<string>.Error("Kaboom");
+
+        // Act
+        var act = new Action(() => _ = sut.GetValueOrThrow());
+
+        // Assert
+        act.Should().ThrowExactly<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom");
     }
 
     [Fact]

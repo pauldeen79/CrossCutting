@@ -57,13 +57,16 @@ public record Result<T> : Result
 
     public T GetValueOrThrow(string errorMessage)
     {
-        if (Value == null)
+        if (!IsSuccessful())
         {
             throw new InvalidOperationException(errorMessage);
         }
         return Value!;
     }
-    public T GetValueOrThrow() => GetValueOrThrow($"Result: {Status}");
+    public T GetValueOrThrow()
+        => GetValueOrThrow(string.IsNullOrEmpty(ErrorMessage)
+            ? $"Result: {Status}"
+            : $"Result: {Status}, ErrorMessage: {ErrorMessage}");
 }
 
 public record Result
