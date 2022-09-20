@@ -117,6 +117,34 @@ public class ResultTests
     }
 
     [Fact]
+    public void FromExistingResult_Copies_Error_From_Source_When_Not_Successful()
+    {
+        // Arrange
+        var source = Result<bool>.Error("Kaboom");
+
+        // Act
+        var actual = Result<object?>.FromExistingResult(source, x => x);
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Error);
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void FromExistingResult_Copies_Value_From_Source_When_Successful()
+    {
+        // Arrange
+        var source = Result<bool>.Success(true);
+
+        // Act
+        var actual = Result<object?>.FromExistingResult(source, x => x);
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Ok);
+        actual.Value.Should().BeEquivalentTo(true);
+    }
+
+    [Fact]
     public void Can_Create_Success_With_Correct_Value_Using_ReferenceType()
     {
         // Act
