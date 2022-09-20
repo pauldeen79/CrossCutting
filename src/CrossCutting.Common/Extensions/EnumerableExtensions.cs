@@ -40,4 +40,14 @@ public static class EnumerableExtensions
             }
         }
     }
+
+    public static IEnumerable<T> WhenEmpty<T>(this IEnumerable<T> instance, IEnumerable<T> whenEmpty)
+        => instance.Any()
+            ? instance
+            : whenEmpty;
+
+    public static IEnumerable<T> WhenEmpty<T>(this IEnumerable<T> instance, Func<IEnumerable<T>> whenEmpty)
+        => instance.Any()
+            ? instance
+            : whenEmpty();
 }
