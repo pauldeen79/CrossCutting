@@ -79,4 +79,56 @@ public class EnumerableExtensionsTests
         // Assert
         actual.Should().BeEquivalentTo(new[] { "a", "b", "c" });
     }
+
+    [Fact]
+    public void WhenEmpty_Takes_Source_When_Its_Not_Empty_Using_Enumerable()
+    {
+        // Arrange
+        var input = new[] { "1", "2", "3" };
+
+        // Act
+        var actual = input.WhenEmpty(new[] { "4", "5", "6" });
+
+        // Assert
+        actual.Should().BeEquivalentTo(input);
+    }
+
+    [Fact]
+    public void WhenEmpty_Takes_Source_When_Its_Not_Empty_Using_Enumerable_Delegate()
+    {
+        // Arrange
+        var input = new[] { "1", "2", "3" };
+
+        // Act
+        var actual = input.WhenEmpty(() => new[] { "4", "5", "6" });
+
+        // Assert
+        actual.Should().BeEquivalentTo(input);
+    }
+
+    [Fact]
+    public void WhenEmpty_Takes_Supplied_Value_When_Its_Not_Empty_Using_Enumerable()
+    {
+        // Arrange
+        var input = Enumerable.Empty<string>();
+
+        // Act
+        var actual = input.WhenEmpty(new[] { "4", "5", "6" });
+
+        // Assert
+        actual.Should().BeEquivalentTo(new[] { "4", "5", "6" });
+    }
+
+    [Fact]
+    public void WhenEmpty_Takes_Supplied_Value_When_Its_Not_Empty_Using_Enumerable_Delegate()
+    {
+        // Arrange
+        var input = Enumerable.Empty<string>();
+
+        // Act
+        var actual = input.WhenEmpty(() => new[] { "4", "5", "6" });
+
+        // Assert
+        actual.Should().BeEquivalentTo(new[] { "4", "5", "6" });
+    }
 }
