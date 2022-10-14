@@ -155,6 +155,9 @@ public static class ObjectExtensions
         return instance;
     }
 
+    public static TTarget Transform<TSource, TTarget>(this TSource instance, Func<TSource, TTarget> transformDelegate)
+        => transformDelegate(instance);
+
     public static T With<T>(this T instance, Action<T> action)
     {
         action.Invoke(instance);

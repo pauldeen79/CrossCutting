@@ -331,6 +331,19 @@ public class ObjectExtensionsTests
         actual.ErrorMessage.Should().Be("My error message");
     }
 
+    [Fact]
+    public void Can_Transform_Object_Using_ExtensionMethod()
+    {
+        // Arrange
+        var sut = true;
+
+        // Act
+        var actual = sut.Transform(x => x ? "true" : "false");
+
+        // Assert
+        actual.Should().Be("true");
+    }
+
     private class MyPocoClass
     {
         [Required]
