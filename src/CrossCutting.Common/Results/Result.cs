@@ -75,6 +75,23 @@ public record Result<T> : Result
         => GetValueOrThrow(string.IsNullOrEmpty(ErrorMessage)
             ? $"Result: {Status}"
             : $"Result: {Status}, ErrorMessage: {ErrorMessage}");
+
+    public Result<TCast> TryCast<TCast>(string? errorMessage = null)
+    {
+        if (!IsSuccessful())
+        {
+            return Result<TCast>.FromExistingResult(this);
+        }
+
+        if (Value is not TCast castValue)
+        {
+            return errorMessage == null
+                ? Result<TCast>.Invalid()
+                : Result<TCast>.Invalid(errorMessage);
+        }
+
+        return Result<TCast>.Success(castValue);
+    }
 }
 
 public record Result

@@ -5,6 +5,11 @@ public record ValidationError
     public string ErrorMessage { get; }
     public IReadOnlyCollection<string> MemberNames { get; }
 
+    public ValidationError(string errorMessage)
+        : this(errorMessage, Enumerable.Empty<string>())
+    {
+    }
+
     public ValidationError(string errorMessage, IEnumerable<string> memberNames)
     {
         ErrorMessage = errorMessage;

@@ -1110,6 +1110,78 @@ public class ResultTests
         value.Should().Be(sut.Value);
     }
 
+    [Fact]
+    public void TryCast_Returns_Invalid_Without_ErrorMessage_When_Value_Could_Not_Be_Cast()
+    {
+        // Arrange
+        var sut = Result<object?>.Success("test");
+
+        // Act
+        var result = sut.TryCast<bool>();
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().BeNull();
+    }
+
+    [Fact]
+    public void TryCast_Returns_Invalid_With_ErrorMessage_When_Value_Could_Not_Be_Cast()
+    {
+        // Arrange
+        var sut = Result<object?>.Success("test");
+
+        // Act
+        var result = sut.TryCast<bool>("my custom error message");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("my custom error message");
+    }
+
+    [Fact]
+    public void TryCast_Returns_Same_Properties_When_Status_Is_Error()
+    {
+        // Arrange
+        var sut = Result<object?>.Error("error");
+
+        // Act
+        var result = sut.TryCast<bool>();
+
+        // Assert
+        result.Status.Should().Be(sut.Status);
+        result.ErrorMessage.Should().Be(sut.ErrorMessage);
+    }
+
+    [Fact]
+    public void TryCast_Returns_Same_Properties_When_Status_Is_Invalid()
+    {
+        // Arrange
+        var sut = Result<object?>.Invalid("error", new[] { new ValidationError("validation error 1"), new ValidationError("validation error 2") });
+
+        // Act
+        var result = sut.TryCast<bool>();
+
+        // Assert
+        result.Status.Should().Be(sut.Status);
+        result.ErrorMessage.Should().Be(sut.ErrorMessage);
+        result.ValidationErrors.Should().BeEquivalentTo(sut.ValidationErrors);
+    }
+
+
+    [Fact]
+    public void TryCast_Returns_Success_With_Cast_Value_When_Possible()
+    {
+        // Arrange
+        var sut = Result<object?>.Success(true);
+
+        // Act
+        var result = sut.TryCast<bool>();
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeTrue();
+    }
+
     private Result<SomeResultValue> OkStep(SomeRequest request)
     {
         request.OkCount++;
