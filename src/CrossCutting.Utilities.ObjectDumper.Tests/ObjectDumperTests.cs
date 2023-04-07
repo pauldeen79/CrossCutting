@@ -3,6 +3,19 @@
 public class ObjectDumperTests
 {
     [Fact]
+    public void CanDumpSingle()
+    {
+        // Arrange
+        var input = 2.1f;
+
+        // Act
+        var actual = input.Dump();
+
+        // Assert
+        actual.Should().Be("2.1 [System.Single]");
+    }
+
+    [Fact]
     public void CanDumpSimpleObject()
     {
         // Arrange
