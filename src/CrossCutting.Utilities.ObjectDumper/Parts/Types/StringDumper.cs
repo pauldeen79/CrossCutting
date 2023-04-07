@@ -6,9 +6,9 @@ public class StringDumper : IObjectDumperPart
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
-        if (instance is string)
+        if (instance is string s)
         {
-            builder.AddSingleValue(instance.ToString(), instance.GetType());
+            builder.AddSingleValue(s, typeof(string));
 
             return true;
         }
