@@ -1,14 +1,14 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Parts.Types;
 
-public class StringDumper : IObjectDumperPart
+public class GuidDumper : IObjectDumperPart
 {
     public int Order => 20;
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
-        if (instance is string s)
+        if (instance is Guid guid)
         {
-            builder.AddSingleValue(s, typeof(string));
+            builder.AddSingleValue(guid.ToString(null, CultureInfo.InvariantCulture), typeof(Guid));
 
             return true;
         }

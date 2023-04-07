@@ -48,6 +48,10 @@ public class DefaultObjectDumperResultBuilder : IObjectDumperResultBuilder
         {
             _builder.Append(value.ToString().JsonQuote());
         }
+        else if (value is IFormattable f)
+        {
+            _builder.Append(f.ToString(null, CultureInfo.InvariantCulture));
+        }
         else
         {
             _builder.Append(value);

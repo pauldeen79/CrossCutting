@@ -3,6 +3,19 @@
 public class ObjectDumperTests
 {
     [Fact]
+    public void CanDumpSingle()
+    {
+        // Arrange
+        var input = 2.1f;
+
+        // Act
+        var actual = input.Dump();
+
+        // Assert
+        actual.Should().Be("2.1 [System.Single]");
+    }
+
+    [Fact]
     public void CanDumpSimpleObject()
     {
         // Arrange
@@ -10,7 +23,8 @@ public class ObjectDumperTests
         {
             Name = "John Doe",
             Age = 21,
-            Weight = 80.1
+            Weight = 80.1,
+            Id = Guid.Empty,
         };
 
         // Act
@@ -21,7 +35,8 @@ public class ObjectDumperTests
 @"{
     ""Name"": ""John Doe"" [System.String],
     ""Age"": 21 [System.Int32],
-    ""Weight"": 80.1 [System.Double]
+    ""Weight"": 80.1 [System.Double],
+    ""Id"": ""00000000-0000-0000-0000-000000000000"" [System.Guid]
 } [AnonymousType]");
     }
 
