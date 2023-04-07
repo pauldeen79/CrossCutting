@@ -48,9 +48,9 @@ public class DefaultObjectDumperResultBuilder : IObjectDumperResultBuilder
         {
             _builder.Append(value.ToString().JsonQuote());
         }
-        else if (value is double d)
+        else if (value is IFormattable f)
         {
-            _builder.Append(d.ToString(CultureInfo.InvariantCulture));
+            _builder.Append(f.ToString(null, CultureInfo.InvariantCulture));
         }
         else
         {
