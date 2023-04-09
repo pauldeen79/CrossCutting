@@ -177,6 +177,6 @@ public static class StringExtensions
         return result.ToArray();
     }
 
-    public static string NormalizeLineEndings(this string instance)
-        => Regex.Replace(instance, @"\r\n|\n\r|\n|\r", Environment.NewLine);
+    public static string NormalizeLineEndings(this string instance, int matchTimeoutInMilliseconds = 500)
+        => Regex.Replace(instance, @"\r\n|\n\r|\n|\r", Environment.NewLine, RegexOptions.None, TimeSpan.FromMilliseconds(matchTimeoutInMilliseconds));
 }

@@ -183,4 +183,17 @@ public class StringExtensionsTests
         actual_array.Should().BeFalse();
         actual_enumerable.Should().BeFalse();
     }
+
+    [Fact]
+    public void NormalizeLineEndings_Returns_Correct_Result()
+    {
+        // Arrange
+        const string input = "some\r\nmore\ndata";
+
+        // Act
+        var result = input.NormalizeLineEndings();
+
+        // Assert
+        result.Should().Be($"some{Environment.NewLine}more{Environment.NewLine}data");
+    }
 }
