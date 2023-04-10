@@ -158,14 +158,14 @@ public record Result
             ? Result<TInstance>.Invalid(validationErrors)
             : Result<TInstance>.Success(instance);
 
-    public static Result FromValidationResult(IEnumerable<ValidationError> validationResult)
-        => validationResult.Any()
-            ? Invalid(validationResult)
+    public static Result FromValidationErrors(IEnumerable<ValidationError> validationErrors)
+        => validationErrors.Any()
+            ? Invalid(validationErrors)
             : Success();
 
-    public static Result FromValidationResult(IEnumerable<ValidationError> validationResult, string errorMessage)
-        => validationResult.Any()
-            ? Invalid(errorMessage, validationResult)
+    public static Result FromValidationErrors(IEnumerable<ValidationError> validationErrors, string errorMessage)
+        => validationErrors.Any()
+            ? Invalid(errorMessage, validationErrors)
             : Success();
 
     public static Result Chain<TCommand>(TCommand command, params Func<TCommand, Result>[] steps)

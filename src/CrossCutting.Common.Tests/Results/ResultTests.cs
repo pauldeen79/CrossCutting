@@ -1188,7 +1188,7 @@ public class ResultTests
         var validationErrors = new[] { new ValidationError("It's invalid, yo") };
 
         // Act
-        var result = Result.FromValidationResult(validationErrors, "Kaboom");
+        var result = Result.FromValidationErrors(validationErrors, "Kaboom");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -1203,7 +1203,7 @@ public class ResultTests
         var validationErrors = new[] { new ValidationError("It's invalid, yo") };
 
         // Act
-        var result = Result.FromValidationResult(validationErrors);
+        var result = Result.FromValidationErrors(validationErrors);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -1218,7 +1218,7 @@ public class ResultTests
         var validationErrors = Array.Empty<ValidationError>();
 
         // Act
-        var result = Result.FromValidationResult(validationErrors, "Kaboom");
+        var result = Result.FromValidationErrors(validationErrors, "Kaboom");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -1232,7 +1232,7 @@ public class ResultTests
         var validationErrors = Array.Empty<ValidationError>();
 
         // Act
-        var result = Result.FromValidationResult(validationErrors);
+        var result = Result.FromValidationErrors(validationErrors);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
