@@ -1167,7 +1167,6 @@ public class ResultTests
         result.ValidationErrors.Should().BeEquivalentTo(sut.ValidationErrors);
     }
 
-
     [Fact]
     public void TryCast_Returns_Success_With_Cast_Value_When_Possible()
     {
@@ -1180,6 +1179,64 @@ public class ResultTests
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Can_Create_ValidationResult_With_ErrorMessage_From_ValidationErrors()
+    {
+        // Arrange
+        var validationErrors = new[] { new ValidationError("It's invalid, yo") };
+
+        // Act
+        var result = Result.FromValidationResult(validationErrors, "Kaboom");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Kaboom");
+        result.ValidationErrors.Select(x => x.ErrorMessage).Should().BeEquivalentTo("It's invalid, yo");
+    }
+
+    [Fact]
+    public void Can_Create_ValidationResult_Without_ErrorMessage_From_ValidationErrors()
+    {
+        // Arrange
+        var validationErrors = new[] { new ValidationError("It's invalid, yo") };
+
+        // Act
+        var result = Result.FromValidationResult(validationErrors);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().BeNull();
+        result.ValidationErrors.Select(x => x.ErrorMessage).Should().BeEquivalentTo("It's invalid, yo");
+    }
+
+    [Fact]
+    public void Can_Create_ValidationResult_With_ErrorMessage_From_Empty_ValidationErrors()
+    {
+        // Arrange
+        var validationErrors = Array.Empty<ValidationError>();
+
+        // Act
+        var result = Result.FromValidationResult(validationErrors, "Kaboom");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.ErrorMessage.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_ValidationResult_Without_ErrorMessage_From_EmptyValidationErrors()
+    {
+        // Arrange
+        var validationErrors = Array.Empty<ValidationError>();
+
+        // Act
+        var result = Result.FromValidationResult(validationErrors);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.ErrorMessage.Should().BeNull();
     }
 
     private Result<SomeResultValue> OkStep(SomeRequest request)

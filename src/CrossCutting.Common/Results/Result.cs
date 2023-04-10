@@ -158,6 +158,16 @@ public record Result
             ? Result<TInstance>.Invalid(validationErrors)
             : Result<TInstance>.Success(instance);
 
+    public static Result FromValidationResult(IEnumerable<ValidationError> validationResult)
+        => validationResult.Any()
+            ? Invalid(validationResult)
+            : Success();
+
+    public static Result FromValidationResult(IEnumerable<ValidationError> validationResult, string errorMessage)
+        => validationResult.Any()
+            ? Invalid(errorMessage, validationResult)
+            : Success();
+
     public static Result Chain<TCommand>(TCommand command, params Func<TCommand, Result>[] steps)
         => steps.Length == 0
             ? Error("Could not determine result because there are no steps defined")
