@@ -136,7 +136,7 @@ public class ValidatableObjectExtensionsTests
              .Should().Throw<ValidationException>();
     }
 
-    private class MyValidatableClass : IValidatableObject
+    private sealed class MyValidatableClass : IValidatableObject
     {
         public string? Value { get; set; }
 
@@ -149,7 +149,7 @@ public class ValidatableObjectExtensionsTests
         }
     }
 
-    private class MyValidatableClassWithTwoProperties : IValidatableObject
+    private sealed class MyValidatableClassWithTwoProperties : IValidatableObject
     {
         public string? Value1 { get; set; }
         public string? Value2 { get; set; }

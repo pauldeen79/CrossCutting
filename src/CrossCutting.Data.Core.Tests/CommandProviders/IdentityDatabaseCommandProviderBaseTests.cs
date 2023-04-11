@@ -43,7 +43,7 @@ public class IdentityDatabaseCommandProviderBaseTests
         actual.CommandText.Should().Be(@"SELECT A, B, C FROM Table WHERE [Field1] = @Field1 AND [Field2] = @Field2Alias");
     }
 
-    private class IdentityDatabaseCommandProviderMock : IdentityDatabaseCommandProviderBase<TestEntityIdentity>
+    private sealed class IdentityDatabaseCommandProviderMock : IdentityDatabaseCommandProviderBase<TestEntityIdentity>
     {
         public IdentityDatabaseCommandProviderMock(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders)
             : base(settingsProviders)
@@ -57,7 +57,7 @@ public class IdentityDatabaseCommandProviderBaseTests
         }
     }
 
-    private class PagedDatabaseEntityRetrieverSettingsProviderMock : IPagedDatabaseEntityRetrieverSettingsProvider
+    private sealed class PagedDatabaseEntityRetrieverSettingsProviderMock : IPagedDatabaseEntityRetrieverSettingsProvider
     {
         public bool TryGet<TSource>(out IPagedDatabaseEntityRetrieverSettings? settings)
         {
@@ -72,7 +72,7 @@ public class IdentityDatabaseCommandProviderBaseTests
         }
     }
 
-    private class PagedDatabaseEntityRetrieverSettingsMock : IPagedDatabaseEntityRetrieverSettings
+    private sealed class PagedDatabaseEntityRetrieverSettingsMock : IPagedDatabaseEntityRetrieverSettings
     {
         public int? OverridePageSize => null;
         public string TableName => "Table";

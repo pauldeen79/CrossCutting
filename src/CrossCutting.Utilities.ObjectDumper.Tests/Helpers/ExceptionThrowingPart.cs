@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
 
-internal class ExceptionThrowingPart : IObjectDumperPart
+internal sealed class ExceptionThrowingPart : IObjectDumperPart
 {
     public int Order => 1; //make sure this part takes over everything :)
 
