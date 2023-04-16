@@ -29,6 +29,19 @@ public class FlatTextParserTests
     }
 
     [Fact]
+    public void Can_Parse_FlatText_With_TextQualifier_But_Not_Present()
+    {
+        // Arrange
+        var input = "Value A Value B Value C";
+
+        // Act
+        var actual = FlatTextParser.Parse(input, ' ', '"');
+
+        // Assert
+        actual.Should().BeEquivalentTo("Value", "A", "Value", "B", "Value", "C");
+    }
+
+    [Fact]
     public void Can_Parse_Same_Text_As_SafeSplit()
     {
         // Arrange
