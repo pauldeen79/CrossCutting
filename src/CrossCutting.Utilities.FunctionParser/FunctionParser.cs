@@ -32,7 +32,7 @@ public static class FunctionParser
             AddArguments(results, stringArgumentsSplit, arguments);
 
             var found = $"{nameResult.Value}({stringArguments})";
-            remainder = remainder.Replace(found, $"##{results.Count}##");
+            remainder = remainder.Replace(found, FormattableString.Invariant($"##{results.Count}##"));
             results.Add(new FunctionParseResult(nameResult.Value!, arguments));
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
@@ -45,7 +45,7 @@ public static class FunctionParser
         {
             if (stringArgument.StartsWith("##") && stringArgument.EndsWith("##"))
             {
-                arguments.Add(new FunctionArgument(results[int.Parse(stringArgument.Substring(2, stringArgument.Length - 4))]));
+                arguments.Add(new FunctionArgument(results[int.Parse(stringArgument.Substring(2, stringArgument.Length - 4), CultureInfo.InvariantCulture)]));
                 continue;
             }
             var parseResult = Parse(stringArgument);
