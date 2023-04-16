@@ -36,7 +36,7 @@ public class DeleteCommandBuilderTests
         if (parameters != null)
         {
             parameters.Should().HaveCount(3);
-            parameters.Keys.Should().BeEquivalentTo(new[] { "Field1", "Field2", "Field3" });
+            parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");
             parameters.Values.Should().BeEquivalentTo(new[] { "Value1", "Value2", "Value3" });
         }
     }
