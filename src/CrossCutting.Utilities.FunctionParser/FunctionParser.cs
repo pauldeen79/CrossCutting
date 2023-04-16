@@ -72,12 +72,6 @@ public static class FunctionParser
             return Result<string>.Invalid("No function name found");
         }
 
-        var closeBracketIndex = input.LastIndexOf(")");
-        if (closeBracketIndex > -1)
-        {
-            return Result<string>.Success(input.Substring(closeBracketIndex + 1));
-        }
-
         var commaIndex = input.LastIndexOf(",");
         if (commaIndex > -1)
         {
