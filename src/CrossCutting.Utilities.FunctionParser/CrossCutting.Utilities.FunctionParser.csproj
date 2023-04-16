@@ -13,4 +13,8 @@
     <AdditionalFiles Include="..\..\.sonarlint\pauldeen79_crosscutting\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CrossCutting.Common\CrossCutting.Common.csproj" />
+  </ItemGroup>
+
 </Project>
