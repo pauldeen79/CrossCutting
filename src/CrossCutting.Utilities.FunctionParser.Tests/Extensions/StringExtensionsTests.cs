@@ -41,4 +41,17 @@ public class StringExtensionsTests
         // Assert
         actual.Should().BeEquivalentTo("a", "b,c", string.Empty);
     }
+
+    [Fact]
+    public void Empty_String_Results_In_Empty_Array()
+    {
+        // Arrange
+        var input = string.Empty;
+
+        // Act
+        var actual = input.SafeSplit(',', '\"', '\"');
+
+        // Assert
+        actual.Should().BeEmpty();
+    }
 }

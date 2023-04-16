@@ -58,11 +58,11 @@ public static class StringExtensions
 
     private static void AddRemainder(string value, List<string> lst, int lastSeparatorPostition)
     {
-        if (lastSeparatorPostition == value.Length - 1)
+        if (lastSeparatorPostition == value.Length - 1 && value.Length > 0)
         {
             lst.Add(string.Empty);
         }
-        else
+        else if (value.Length > 0)
         {
             lst.Add(value.Substring(lastSeparatorPostition + 1));
         }
