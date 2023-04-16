@@ -44,19 +44,12 @@ public static class StringExtensions
     }
 
     private static int GetNextNestedCountForUnequalSplitOpenAndCloseToken(int nestedCount, char current, char noSplitOpenToken, char noSplitCloseToken)
-    {
-        if (current == noSplitOpenToken)
+        => current switch
         {
-            return nestedCount + 1;
-        }
-
-        if (current == noSplitCloseToken)
-        {
-            return nestedCount - 1;
-        }
-
-        return nestedCount;
-    }
+            var value when value == noSplitOpenToken => nestedCount + 1,
+            var value when value == noSplitCloseToken => nestedCount - 1,
+            _ => nestedCount
+        };
 
     private static int GetNextNestedCountForEqualSplitOpenAndCloseToken(int nestedCount)
         => nestedCount == 0
@@ -65,23 +58,18 @@ public static class StringExtensions
 
     private static void AddRemainder(string value, List<string> lst, int lastSeparatorPostition)
     {
-        if (lastSeparatorPostition != value.Length - 1)
+        if (lastSeparatorPostition == value.Length - 1)
         {
-            lst.Add(value.Substring(lastSeparatorPostition + 1));
+            lst.Add(string.Empty);
         }
         else
         {
-            lst.Add(string.Empty);
+            lst.Add(value.Substring(lastSeparatorPostition + 1));
         }
     }
 
     private static string RemoveQuotes(string arg, char noSplitOpenToken, char noSplitCloseToken)
-    {
-        if (arg.StartsWith(noSplitOpenToken.ToString()) && arg.EndsWith(noSplitCloseToken.ToString()))
-        {
-            return arg.Substring(1, arg.Length - 2);
-        }
-
-        return arg;
-    }
+        => arg.StartsWith(noSplitOpenToken.ToString()) && arg.EndsWith(noSplitCloseToken.ToString())
+            ? arg.Substring(1, arg.Length - 2)
+            : arg;
 }
