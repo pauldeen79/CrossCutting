@@ -13,6 +13,7 @@ public static class FunctionParser
             {
                 return Result<FunctionParseResult>.Invalid("Could not find close bracket");
             }
+
             var openIndex = remainder.LastIndexOf("(", closeIndex);
             if (openIndex == -1)
             {
@@ -28,25 +29,7 @@ public static class FunctionParser
             var stringArguments = remainder.Substring(openIndex + 1, closeIndex - openIndex - 1);
             var stringArgumentsSplit = stringArguments.SafeSplit(',', '\\', '\\');
             var arguments = new List<FunctionParseResultArgument>();
-            foreach (var stringArgument in stringArgumentsSplit)
-            {
-                if (stringArgument.StartsWith("##") && stringArgument.EndsWith("##"))
-                {
-                    arguments.Add(new FunctionArgument(results[int.Parse(stringArgument.Substring(2, stringArgument.Length - 4))]));
-                }
-                else
-                {
-                    var parseResult = Parse(stringArgument);
-                    if (parseResult.IsSuccessful())
-                    {
-                        arguments.Add(new FunctionArgument(parseResult.Value!));
-                    }
-                    else
-                    {
-                        arguments.Add(new LiteralArgument(stringArgument));
-                    }
-                }
-            }
+            AddArguments(results, stringArgumentsSplit, arguments);
 
             var found = $"{nameResult.Value}({stringArguments})";
             remainder = remainder.Replace(found, $"##{results.Count}##");
@@ -54,6 +37,27 @@ public static class FunctionParser
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
         return Result<FunctionParseResult>.Success(results.Last());
+    }
+
+    private static void AddArguments(List<FunctionParseResult> results, string[] stringArgumentsSplit, List<FunctionParseResultArgument> arguments)
+    {
+        foreach (var stringArgument in stringArgumentsSplit)
+        {
+            if (stringArgument.StartsWith("##") && stringArgument.EndsWith("##"))
+            {
+                arguments.Add(new FunctionArgument(results[int.Parse(stringArgument.Substring(2, stringArgument.Length - 4))]));
+                continue;
+            }
+            var parseResult = Parse(stringArgument);
+            if (parseResult.IsSuccessful())
+            {
+                arguments.Add(new FunctionArgument(parseResult.Value!));
+            }
+            else
+            {
+                arguments.Add(new LiteralArgument(stringArgument));
+            }
+        }
     }
 
     private static Result<string> FindFunctionName(string input)
