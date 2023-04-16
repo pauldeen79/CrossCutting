@@ -12,10 +12,7 @@ public class StringExtensionsTests
         var actual = input.SafeSplit(',', '\'', '\'');
 
         // Assert
-        actual.Should().HaveCount(3);
-        actual.ElementAt(0).Should().Be("a");
-        actual.ElementAt(1).Should().Be("b,c");
-        actual.ElementAt(2).Should().Be("d");
+        actual.Should().BeEquivalentTo("a", "b,c", "d");
     }
 
     [Fact]
@@ -29,9 +26,7 @@ public class StringExtensionsTests
 
         // Assert
         actual.Should().HaveCount(3);
-        actual.ElementAt(0).Should().Be("a");
-        actual.ElementAt(1).Should().Be("b,c");
-        actual.ElementAt(2).Should().Be("d");
+        actual.Should().BeEquivalentTo("a", "b,c", "d");
     }
 
     [Fact]
@@ -44,9 +39,6 @@ public class StringExtensionsTests
         var actual = input.SafeSplit(',', '\"', '\"');
 
         // Assert
-        actual.Should().HaveCount(3);
-        actual.ElementAt(0).Should().Be("a");
-        actual.ElementAt(1).Should().Be("b,c");
-        actual.ElementAt(2).Should().BeEmpty();
+        actual.Should().BeEquivalentTo("a", "b,c", string.Empty);
     }
 }
