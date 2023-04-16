@@ -7,10 +7,14 @@ public static class FlatTextParser
         var result = new List<string>();
         var currentSection = new StringBuilder();
         var inText = false;
+        var lastDelimiter = -1;
+        var index = -1;
         foreach (var character in instance)
         {
+            index++;
             if (character == delimiter && !inText)
             {
+                lastDelimiter = index;
                 result.Add(currentSection.ToString());
                 currentSection.Clear();
             }
@@ -28,6 +32,10 @@ public static class FlatTextParser
         if (currentSection.Length > 0)
         {
             result.Add(currentSection.ToString());
+        }
+        else if (lastDelimiter + 1 == instance.Length)
+        {
+            result.Add(string.Empty);
         }
 
         return result.ToArray();
