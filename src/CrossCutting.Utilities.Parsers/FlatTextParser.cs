@@ -33,7 +33,7 @@ public static class FlatTextParser
         {
             result.Add(currentSection.ToString());
         }
-        else if (lastDelimiter + 1 == instance.Length && instance.Length > 0)
+        else if (lastDelimiter > -1 && lastDelimiter + 1 == instance.Length)
         {
             result.Add(string.Empty);
         }

@@ -48,7 +48,7 @@ public class FlatTextParserTests
         var input = string.Empty;
 
         // Act
-        var actual = FlatTextParser.Parse(input, ',', '"');
+        var actual = FlatTextParser.Parse(input, ',');
 
         // Assert
         actual.Should().BeEmpty();
@@ -58,10 +58,10 @@ public class FlatTextParserTests
     public void Can_Parse_FlatText_Without_TextQualifier_Using_Delimiter_At_The_End()
     {
         // Arrange
-        var input = "Value A\tValue B\tValue C\t";
+        var input = "Value A,Value B,Value C,";
 
         // Act
-        var actual = FlatTextParser.Parse(input, '\t');
+        var actual = FlatTextParser.Parse(input, ',');
 
         // Assert
         actual.Should().BeEquivalentTo("Value A", "Value B", "Value C", string.Empty);
