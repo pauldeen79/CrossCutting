@@ -41,7 +41,6 @@ public class FlatTextParserTests
         actual.Should().BeEquivalentTo("a", "b,c", string.Empty);
     }
 
-
     [Fact]
     public void Empty_String_Results_In_Empty_Array()
     {
@@ -53,5 +52,18 @@ public class FlatTextParserTests
 
         // Assert
         actual.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Parse_FlatText_Without_TextQualifier_Using_Delimiter_At_The_End()
+    {
+        // Arrange
+        var input = "Value A\tValue B\tValue C\t";
+
+        // Act
+        var actual = FlatTextParser.Parse(input, '\t');
+
+        // Assert
+        actual.Should().BeEquivalentTo("Value A", "Value B", "Value C", string.Empty);
     }
 }
