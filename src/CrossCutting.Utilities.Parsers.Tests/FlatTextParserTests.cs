@@ -40,4 +40,18 @@ public class FlatTextParserTests
         // Assert
         actual.Should().BeEquivalentTo("a", "b,c", string.Empty);
     }
+
+
+    [Fact]
+    public void Empty_String_Results_In_Empty_Array()
+    {
+        // Arrange
+        var input = string.Empty;
+
+        // Act
+        var actual = FlatTextParser.Parse(input, ',', '"');
+
+        // Assert
+        actual.Should().BeEmpty();
+    }
 }
