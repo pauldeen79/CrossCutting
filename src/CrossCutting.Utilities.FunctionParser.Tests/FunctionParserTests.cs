@@ -35,6 +35,22 @@ public class FunctionParserTests
     }
 
     [Fact]
+    public void Can_Parse_Single_Function_With_Only_Commas_As_Arguments()
+    {
+        // Arrange
+        var input = "MYFUNCTION(,,)";
+
+        // Act
+        var result = FunctionParser.Parse(input);
+
+        // Assert
+        result.Status.Should().Be(Common.Results.ResultStatus.Ok);
+        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value.Arguments.Should().HaveCount(3);
+        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().AllBe(string.Empty);
+    }
+
+    [Fact]
     public void Can_Parse_Nested_Function()
     {
         // Arrange
@@ -66,7 +82,6 @@ public class FunctionParserTests
         result.ErrorMessage.Should().Be("No function name found");
     }
 
-
     [Fact]
     public void Missing_OpenBracket_Returns_Invalid()
     {
@@ -81,7 +96,6 @@ public class FunctionParserTests
         result.ErrorMessage.Should().Be("Could not find open bracket");
     }
 
-
     [Fact]
     public void Missing_CloseBracket_Returns_Invalid()
     {
@@ -94,5 +108,19 @@ public class FunctionParserTests
         // Assert
         result.Status.Should().Be(Common.Results.ResultStatus.Invalid);
         result.ErrorMessage.Should().Be("Could not find close bracket");
+    }
+
+    [Fact]
+    public void Empty_String_Returns_Invalid()
+    {
+        // Arrange
+        var input = string.Empty;
+
+        // Act
+        var result = FunctionParser.Parse(input);
+
+        // Assert
+        result.Status.Should().Be(Common.Results.ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Input cannot be null or empty");
     }
 }

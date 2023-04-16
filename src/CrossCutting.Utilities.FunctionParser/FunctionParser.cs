@@ -4,6 +4,11 @@ public static class FunctionParser
 {
     public static Result<FunctionParseResult> Parse(string input)
     {
+        if (string.IsNullOrEmpty(input))
+        {
+            return Result<FunctionParseResult>.Invalid("Input cannot be null or empty");
+        }
+
         var results = new List<FunctionParseResult>();
         var remainder = input;
         do
