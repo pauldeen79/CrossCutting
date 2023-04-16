@@ -447,7 +447,7 @@ public sealed class IntegrationTests : IDisposable
 
     public void Dispose() => Connection.Dispose();
 
-    private class MyRecord
+    private sealed class MyRecord
     {
         public string? Name { get; set; }
         public int Amount { get; set; }

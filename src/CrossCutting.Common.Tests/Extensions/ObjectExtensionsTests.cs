@@ -344,7 +344,7 @@ public class ObjectExtensionsTests
         actual.Should().Be("true");
     }
 
-    private class MyPocoClass
+    private sealed class MyPocoClass
     {
         [Required]
         public string? Value { get; set; }

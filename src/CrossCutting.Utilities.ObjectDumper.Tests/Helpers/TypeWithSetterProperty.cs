@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
 
-internal class TypeWithSetterProperty
+internal sealed class TypeWithSetterProperty
 {
     public string? Name { get; set; }
 #pragma warning disable S2376 // Write-only properties should not be used

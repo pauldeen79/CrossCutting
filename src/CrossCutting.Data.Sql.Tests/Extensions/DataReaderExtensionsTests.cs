@@ -854,7 +854,7 @@ public class DataReaderExtensionsTests
             Property = reader.GetString("Property")
         };
 
-    private class MyEntity
+    private sealed class MyEntity
     {
         public string? Property { get; set; }
     }

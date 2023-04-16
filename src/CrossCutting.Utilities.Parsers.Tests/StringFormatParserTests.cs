@@ -128,7 +128,7 @@ public class StringFormatParserTests
         var input = "";
 
         // Act
-        var actual = StringFormatParser.Parse(input, new[] { "A" });
+        var actual = StringFormatParser.Parse(input, "A");
 
         // Assert
         actual.IsSuccessful.Should().BeFalse();

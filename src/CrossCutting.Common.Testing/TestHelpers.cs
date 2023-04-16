@@ -152,7 +152,7 @@ public static class TestHelpers
                 {
                     return null; //skip value types, arrays and strings
                 }
-                var mockType = typeof(Mock<>).MakeGenericType(new[] { p.ParameterType });
+                var mockType = typeof(Mock<>).MakeGenericType(p.ParameterType);
                 var mock = (Mock)Activator.CreateInstance(mockType);
                 return mock.Object;
             }
@@ -168,7 +168,7 @@ public static class TestHelpers
             }
             if (parameters[j].ParameterType.IsArray)
             {
-                mocksCopy[j] = Activator.CreateInstance(parameters[j].ParameterType, new object[] { 1 });
+                mocksCopy[j] = Activator.CreateInstance(parameters[j].ParameterType, 1);
             }
             else if (parameters[j].ParameterType.FullName?.StartsWith("System.Collections.Generic.IEnumerable") == true)
             {
