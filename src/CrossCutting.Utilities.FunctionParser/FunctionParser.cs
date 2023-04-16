@@ -53,15 +53,8 @@ public static class FunctionParser
                 arguments.Add(new FunctionArgument(results[int.Parse(stringArgument.Substring(2, stringArgument.Length - 4), CultureInfo.InvariantCulture)]));
                 continue;
             }
-            var parseResult = Parse(stringArgument);
-            if (parseResult.IsSuccessful())
-            {
-                arguments.Add(new FunctionArgument(parseResult.Value!));
-            }
-            else
-            {
-                arguments.Add(new LiteralArgument(stringArgument));
-            }
+
+            arguments.Add(new LiteralArgument(stringArgument));
         }
     }
 
