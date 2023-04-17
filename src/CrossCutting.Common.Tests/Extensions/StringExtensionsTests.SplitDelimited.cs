@@ -3,7 +3,7 @@
 public partial class StringExtensionsTests
 {
     [Fact]
-    public void Can_Parse_FlatText_Without_TextQualifier()
+    public void Can_Split_String_Without_TextQualifier()
     {
         // Arrange
         var input = "Value A\tValue B\tValue C";
@@ -16,7 +16,7 @@ public partial class StringExtensionsTests
     }
 
     [Fact]
-    public void Can_Parse_FlatText_With_TextQualifier()
+    public void Can_Split_String_With_TextQualifier()
     {
         // Arrange
         var input = "\"Value A\" \"Value B\" \"Value C\"";
@@ -29,7 +29,7 @@ public partial class StringExtensionsTests
     }
 
     [Fact]
-    public void Can_Parse_FlatText_With_TextQualifier_But_Not_Present()
+    public void Can_Split_String_With_TextQualifier_But_Not_Present()
     {
         // Arrange
         var input = "Value A Value B Value C";
@@ -42,7 +42,7 @@ public partial class StringExtensionsTests
     }
 
     [Fact]
-    public void Can_Parse_Same_Text_As_SafeSplit()
+    public void Can_Split_Same_Text_As_SafeSplit()
     {
         // Arrange
         var input = "a,\"b,c\",";
@@ -68,7 +68,7 @@ public partial class StringExtensionsTests
     }
 
     [Fact]
-    public void Can_Parse_FlatText_Without_TextQualifier_Using_Delimiter_At_The_End()
+    public void Can_Split_String_Without_TextQualifier_Using_Delimiter_At_The_End()
     {
         // Arrange
         var input = "Value A,Value B,Value C,";
@@ -78,5 +78,18 @@ public partial class StringExtensionsTests
 
         // Assert
         actual.Should().BeEquivalentTo("Value A", "Value B", "Value C", string.Empty);
+    }
+
+    [Fact]
+    public void Can_Split_String_Where_Delimiter_Is_Within_TextQualifiers()
+    {
+        // Arrange
+        var input = "\"A+B+C\"";
+
+        // Act
+        var actual = input.SplitDelimited('+', '"');
+
+        // Assert
+        actual.Should().BeEquivalentTo("A+B+C");
     }
 }
