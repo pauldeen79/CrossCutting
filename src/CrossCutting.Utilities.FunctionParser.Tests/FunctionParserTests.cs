@@ -110,7 +110,7 @@ public class FunctionParserTests
     }
 
     [Fact]
-    public void Missing_Function_Name_Returns_Invalid()
+    public void Missing_Function_Name_Returns_NotFound()
     {
         // Arrange
         var input = "()";
@@ -119,12 +119,12 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.Invalid);
+        result.Status.Should().Be(Common.Results.ResultStatus.NotFound);
         result.ErrorMessage.Should().Be("No function name found");
     }
 
     [Fact]
-    public void Missing_OpenBracket_Returns_Invalid()
+    public void Missing_OpenBracket_Returns_NotFound()
     {
         // Arrange
         var input = "MYFUNCTION)";
@@ -133,12 +133,12 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not find open bracket");
+        result.Status.Should().Be(Common.Results.ResultStatus.NotFound);
+        result.ErrorMessage.Should().Be("Missing open bracket");
     }
 
     [Fact]
-    public void Missing_CloseBracket_Returns_Invalid()
+    public void Missing_CloseBracket_Returns_NotFound()
     {
         // Arrange
         var input = "MYFUNCTION(";
@@ -147,12 +147,12 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not find close bracket");
+        result.Status.Should().Be(Common.Results.ResultStatus.NotFound);
+        result.ErrorMessage.Should().Be("Missing close bracket");
     }
 
     [Fact]
-    public void Empty_String_Returns_Invalid()
+    public void Empty_String_Returns_NotFound()
     {
         // Arrange
         var input = string.Empty;
@@ -161,7 +161,21 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.Invalid);
+        result.Status.Should().Be(Common.Results.ResultStatus.NotFound);
         result.ErrorMessage.Should().Be("Input cannot be null or empty");
+    }
+
+    [Fact]
+    public void String_Containing_TemporaryDelimiter_Returns_NotSupported()
+    {
+        // Arrange
+        var input = "This string contains the magic ^^ internal temporary delimiter. Don't ask why, we just don't support it. You're doomed if you try this.";
+
+        // Act
+        var result = FunctionParser.Parse(input);
+
+        // Assert
+        result.Status.Should().Be(Common.Results.ResultStatus.NotSupported);
+        result.ErrorMessage.Should().Be("Input cannot contain ^^, as this is used internally for formatting");
     }
 }

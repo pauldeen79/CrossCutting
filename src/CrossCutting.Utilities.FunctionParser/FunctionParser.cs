@@ -2,11 +2,18 @@
 
 public static class FunctionParser
 {
+    private const string TemporaryDelimiter = "^^";
+
     public static Result<FunctionParseResult> Parse(string input)
     {
         if (string.IsNullOrEmpty(input))
         {
-            return Result<FunctionParseResult>.Invalid("Input cannot be null or empty");
+            return Result<FunctionParseResult>.NotFound("Input cannot be null or empty");
+        }
+
+        if (input.Contains(TemporaryDelimiter))
+        {
+            return Result<FunctionParseResult>.NotSupported($"Input cannot contain {TemporaryDelimiter}, as this is used internally for formatting");
         }
 
         var results = new List<FunctionParseResult>();
@@ -16,13 +23,13 @@ public static class FunctionParser
             var closeIndex = remainder.IndexOf(")");
             if (closeIndex == -1)
             {
-                return Result<FunctionParseResult>.Invalid("Could not find close bracket");
+                return Result<FunctionParseResult>.NotFound("Missing close bracket");
             }
 
             var openIndex = remainder.LastIndexOf("(", closeIndex);
             if (openIndex == -1)
             {
-                return Result<FunctionParseResult>.Invalid("Could not find open bracket");
+                return Result<FunctionParseResult>.NotFound("Missing open bracket");
             }
 
             var nameResult = FindFunctionName(remainder.Substring(0, openIndex));
@@ -37,7 +44,7 @@ public static class FunctionParser
             AddArguments(results, stringArgumentsSplit, arguments);
 
             var found = $"{nameResult.Value}({stringArguments})";
-            remainder = remainder.Replace(found, FormattableString.Invariant($"##{results.Count}##"));
+            remainder = remainder.Replace(found, FormattableString.Invariant($"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"));
             results.Add(new FunctionParseResult(nameResult.Value!, arguments));
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
@@ -48,9 +55,9 @@ public static class FunctionParser
     {
         foreach (var stringArgument in stringArgumentsSplit)
         {
-            if (stringArgument.StartsWith("##") && stringArgument.EndsWith("##"))
+            if (stringArgument.StartsWith(TemporaryDelimiter) && stringArgument.EndsWith(TemporaryDelimiter))
             {
-                arguments.Add(new FunctionArgument(results[int.Parse(stringArgument.Substring(2, stringArgument.Length - 4), CultureInfo.InvariantCulture)]));
+                arguments.Add(new FunctionArgument(results[int.Parse(stringArgument.Substring(2, stringArgument.Length - (TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]));
                 continue;
             }
 
@@ -62,7 +69,7 @@ public static class FunctionParser
     {
         if (string.IsNullOrEmpty(input))
         {
-            return Result<string>.Invalid("No function name found");
+            return Result<string>.NotFound("No function name found");
         }
 
         var bracketIndex = input.LastIndexOf("(");
