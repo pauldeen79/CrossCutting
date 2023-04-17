@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
-public class FlatTextParserTests
+public partial class StringExtensionsTests
 {
     [Fact]
     public void Can_Parse_FlatText_Without_TextQualifier()
@@ -9,7 +9,7 @@ public class FlatTextParserTests
         var input = "Value A\tValue B\tValue C";
 
         // Act
-        var actual = FlatTextParser.Parse(input, '\t');
+        var actual = input.SplitDelimited('\t');
 
         // Assert
         actual.Should().BeEquivalentTo("Value A", "Value B", "Value C");
@@ -22,7 +22,7 @@ public class FlatTextParserTests
         var input = "\"Value A\" \"Value B\" \"Value C\"";
 
         // Act
-        var actual = FlatTextParser.Parse(input, ' ', '"');
+        var actual = input.SplitDelimited(' ', '"');
 
         // Assert
         actual.Should().BeEquivalentTo("Value A", "Value B", "Value C");
@@ -35,7 +35,7 @@ public class FlatTextParserTests
         var input = "Value A Value B Value C";
 
         // Act
-        var actual = FlatTextParser.Parse(input, ' ', '"');
+        var actual = input.SplitDelimited(' ', '"');
 
         // Assert
         actual.Should().BeEquivalentTo("Value", "A", "Value", "B", "Value", "C");
@@ -48,7 +48,7 @@ public class FlatTextParserTests
         var input = "a,\"b,c\",";
 
         // Act
-        var actual = FlatTextParser.Parse(input, ',', '"');
+        var actual = input.SplitDelimited(',', '"');
 
         // Assert
         actual.Should().BeEquivalentTo("a", "b,c", string.Empty);
@@ -61,7 +61,7 @@ public class FlatTextParserTests
         var input = string.Empty;
 
         // Act
-        var actual = FlatTextParser.Parse(input, ',');
+        var actual = input.SplitDelimited(',');
 
         // Assert
         actual.Should().BeEmpty();
@@ -74,7 +74,7 @@ public class FlatTextParserTests
         var input = "Value A,Value B,Value C,";
 
         // Act
-        var actual = FlatTextParser.Parse(input, ',');
+        var actual = input.SplitDelimited(',');
 
         // Assert
         actual.Should().BeEquivalentTo("Value A", "Value B", "Value C", string.Empty);

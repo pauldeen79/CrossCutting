@@ -32,7 +32,7 @@ public static class FunctionParser
             }
 
             var stringArguments = remainder.Substring(openIndex + 1, closeIndex - openIndex - 1);
-            var stringArgumentsSplit = stringArguments.SafeSplit(',', '\\', '\\');
+            var stringArgumentsSplit = stringArguments.SplitDelimited(',', '\"');
             var arguments = new List<FunctionParseResultArgument>();
             AddArguments(results, stringArgumentsSplit, arguments);
 

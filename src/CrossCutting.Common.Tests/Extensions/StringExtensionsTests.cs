@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Common.Tests.Extensions;
 
-public class StringExtensionsTests
+public partial class StringExtensionsTests
 {
     [Theory,
         InlineData("", "replaced"),

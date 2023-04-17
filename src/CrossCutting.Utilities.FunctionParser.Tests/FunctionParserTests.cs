@@ -20,6 +20,23 @@ public class FunctionParserTests
     }
 
     [Fact]
+    public void Can_Parse_Single_Function_With_Quoted_Arguments()
+    {
+        // Arrange
+        var input = "MYFUNCTION(\"a,b\",c)";
+
+        // Act
+        var result = FunctionParser.Parse(input);
+
+        // Assert
+        result.Status.Should().Be(Common.Results.ResultStatus.Ok);
+        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value.Arguments.Should().HaveCount(2);
+        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
+        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a,b", "c");
+    }
+
+    [Fact]
     public void Can_Parse_Single_Function_Without_Arguments()
     {
         // Arrange
