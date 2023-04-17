@@ -180,7 +180,7 @@ public static class StringExtensions
     public static string NormalizeLineEndings(this string instance, int matchTimeoutInMilliseconds = 500)
         => Regex.Replace(instance, @"\r\n|\n\r|\n|\r", Environment.NewLine, RegexOptions.None, TimeSpan.FromMilliseconds(matchTimeoutInMilliseconds));
 
-    public static string[] SplitDelimited(this string instance, char delimiter, char? textQualifier = null)
+    public static string[] SplitDelimited(this string instance, char delimiter, char? textQualifier = null, bool leaveTextQualifier = false)
     {
         var result = new List<string>();
         var currentSection = new StringBuilder();
@@ -200,6 +200,10 @@ public static class StringExtensions
             {
                 // skip this character
                 inText = !inText;
+                if (leaveTextQualifier)
+                {
+                    currentSection.Append(character);
+                }
             }
             else
             {

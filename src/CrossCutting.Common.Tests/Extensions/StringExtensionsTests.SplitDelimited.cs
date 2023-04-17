@@ -42,7 +42,7 @@ public partial class StringExtensionsTests
     }
 
     [Fact]
-    public void Can_Split_Same_Text_As_SafeSplit()
+    public void Can_Split_String_With_TextQualifier_Using_Delimiter_At_The_End()
     {
         // Arrange
         var input = "a,\"b,c\",";
@@ -52,19 +52,6 @@ public partial class StringExtensionsTests
 
         // Assert
         actual.Should().BeEquivalentTo("a", "b,c", string.Empty);
-    }
-
-    [Fact]
-    public void Empty_String_Results_In_Empty_Array()
-    {
-        // Arrange
-        var input = string.Empty;
-
-        // Act
-        var actual = input.SplitDelimited(',');
-
-        // Assert
-        actual.Should().BeEmpty();
     }
 
     [Fact]
@@ -91,5 +78,31 @@ public partial class StringExtensionsTests
 
         // Assert
         actual.Should().BeEquivalentTo("A+B+C");
+    }
+
+    [Fact]
+    public void Can_Split_String_With_Textqualifier_And_Leave_The_TextQualifier()
+    {
+        // Arrange
+        var input = "a,\"b,c\"";
+
+        // Act
+        var actual = input.SplitDelimited(',', '"', leaveTextQualifier: true);
+
+        // Assert
+        actual.Should().BeEquivalentTo("a", "\"b,c\"");
+    }
+
+    [Fact]
+    public void Empty_String_Results_In_Empty_Array()
+    {
+        // Arrange
+        var input = string.Empty;
+
+        // Act
+        var actual = input.SplitDelimited(',');
+
+        // Assert
+        actual.Should().BeEmpty();
     }
 }
