@@ -65,10 +65,13 @@ public static class FunctionParser
             return Result<string>.Invalid("No function name found");
         }
 
+        var bracketIndex = input.LastIndexOf("(");
         var commaIndex = input.LastIndexOf(",");
-        if (commaIndex > -1)
+        var greatestIndex = new[] { bracketIndex, commaIndex }.Max();
+
+        if (greatestIndex > -1)
         {
-            return Result<string>.Success(input.Substring(commaIndex + 1));
+            return Result<string>.Success(input.Substring(greatestIndex + 1));
         }
 
         return Result<string>.Success(input);

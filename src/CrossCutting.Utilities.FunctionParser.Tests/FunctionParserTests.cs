@@ -86,6 +86,30 @@ public class FunctionParserTests
     }
 
     [Fact]
+    public void Can_Parse_Double_Nested_Function()
+    {
+        // Arrange
+        var input = "MYFUNCTION(a,b,MYNESTEDFUNCTION(SUB1(c),SUB1(d),SUB1(SUB2(e))))";
+
+        // Act
+        var result = FunctionParser.Parse(input);
+
+        // Assert
+        result.Status.Should().Be(Common.Results.ResultStatus.Ok);
+        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Arguments.Should().HaveCount(3);
+        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b");
+        result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.FunctionName).Should().BeEquivalentTo("MYNESTEDFUNCTION");
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Should().HaveCount(3);
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Should().AllBeOfType<FunctionArgument>();
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().Select(x => x.Function.FunctionName).Should().BeEquivalentTo("SUB1", "SUB1", "SUB1");
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(LiteralArgument), nameof(LiteralArgument), nameof(FunctionArgument));
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.FunctionName.Should().Be("SUB2");
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(LiteralArgument));
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.OfType<LiteralArgument>().First().Value.Should().Be("e");
+    }
+
+    [Fact]
     public void Missing_Function_Name_Returns_Invalid()
     {
         // Arrange
