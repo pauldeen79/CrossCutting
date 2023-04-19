@@ -8,9 +8,11 @@ TODO
   { } splitting using double {{ }} to escape, and using delegates to process the formattable parts
   Should always return a string. When no formatters were found, then just the same. Otherwise, the formatted string.
 - Create integration test to combine MathematicExpressionParser, FormattableStringParser and FunctionParser.
-  When necessary, create convenience composition class or something (in other words: it should be easy to use)
-  @"Hello {1+1}" should be processed as Hello {mathematic expression result}
-  @"Hello {Name}" should be processed as Hello {get Name property of context}
+  When necessary, create convenience composition class or something (in other words: it should be easy to use) --> ExpressionParser
+  "Hello {1+1}" should be processed as Hello {mathematic expression result}
+  "Hello {Name}" should be processed as Hello {get Name property of context}
+  "Hello {MYFUNCTION("Name")}" should be processed as Hello {call MYFUNTION name with "Name" as argument}
   "Hello {1+1}" should be processed as a simple string - no formattable/interpolated string because it does not start with @
   "FUNCTION(\"a\")" should be processed as a function
-  order: FormattableString, Function, MathematicExpression
+  order: FormattableString, MathematicExpression, Function
+  "Hello {1+MYFUNCTION(argument)}" -> calculate mathematical expression from the formattable string, each part should be parsed as a function. if no function is found, try parsing as decimal/int/long.
