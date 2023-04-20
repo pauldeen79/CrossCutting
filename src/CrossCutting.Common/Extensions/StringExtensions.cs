@@ -254,16 +254,16 @@ public static class StringExtensions
         var inQuotes = false;
         var fieldStart = 0;
 
-        for (var i = 0; i < instance.Length; i++)
+        for (var index = 0; index < instance.Length; index++)
         {
-            if (instance[i] == '\"')
+            if (instance[index] == '\"')
             {
                 inQuotes = !inQuotes;
             }
-            else if (instance[i] == delimiter && !inQuotes)
+            else if (instance[index] == delimiter && !inQuotes)
             {
-                fields.Add(ParseCsvField(instance.Substring(fieldStart, i - fieldStart)));
-                fieldStart = i + 1;
+                fields.Add(ParseCsvField(instance.Substring(fieldStart, index - fieldStart)));
+                fieldStart = index + 1;
             }
         }
 
