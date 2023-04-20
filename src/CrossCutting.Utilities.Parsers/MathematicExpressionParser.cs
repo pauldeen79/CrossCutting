@@ -14,6 +14,44 @@ public static class MathematicExpressionParser
         { '-', Subtract },        // A
     };
 
+    /*
+    Er geldt tegenwoordig een nieuwe regel: 'Hoe Moeten Wij Van De Onvoldoendes Afkomen'.
+H = haakjes
+
+M = machtsverheffen
+W = worteltrekken
+
+V = vermenigvuldigen
+D = delen
+
+
+A = aftrekken
+
+Bij deze nieuwe regel geldt ook de stelling: ‘ze gaan zoals ze staan’, ofwel: bereken de som in die volgorde waarin hij wordt weergegeven (van links naar rechts).
+
+VOORBEELD
+
+Wij willen de nieuwe regel “hoe moeten wij van de onvoldoendes afkomen” laten zien middels het volgende voorbeeld:
+
+7 – 16 : 8 x 2 + 8=
+
+Het is belangrijk om eerst te kijken of er bewerkingen van : (delen) en x (vermenigvuldigen  óf  + (optellen) en – (aftrekken) bij elkaar staan. Is dit het geval, dan moeten deze stukken van de som berekend worden volgens de regel: ze gaan zoals ze staan.
+In deze som is dit ook het geval, namelijk 16 : 8 x 2 (delen en vermenigvuldigen staan in deze som bij elkaar).
+
+We moeten dan eerst berekenen:
+
+16 : 8 x 2
+
+Let hierbij goed op de regel: ze gaan zoals ze staan, ofwel: berekenen in de volgorde waarin het staat:
+
+16 : 8 = 2… x 2 = 4
+
+Nu we dit deel van de som eerst hebben berekend, kunnen we de som herschrijven:
+
+7 – 4 + 8 = 11
+
+Het antwoord op deze som is dus 11.
+     */
     public static Result<object> Parse(string input, Func<string, Result<object>> parseExpressionDelegate)
     {
         if (string.IsNullOrEmpty(input))

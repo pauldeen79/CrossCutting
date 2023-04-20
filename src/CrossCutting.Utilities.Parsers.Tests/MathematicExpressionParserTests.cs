@@ -270,6 +270,21 @@ public class MathematicExpressionParserTests
     }
 
     [Fact]
+    public void Handles_Order_Correctly()
+    {
+        // Arrange
+        //7 – 16 : 8 x 2 + 8
+        var input = "7-16/8*2+8";
+
+        // Act
+        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateDouble);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(11);
+    }
+
+    [Fact]
     public void Returns_Error_From_Left_Expression()
     {
         // Arrange
