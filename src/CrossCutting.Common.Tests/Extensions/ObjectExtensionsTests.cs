@@ -344,10 +344,45 @@ public class ObjectExtensionsTests
         actual.Should().Be("true");
     }
 
+    [Fact]
+    public void Can_Perform_Operation_On_All_Properties_Non_Lazy()
+    {
+        // Arrange
+        var sut = new MyPocoClassWithList();
+        sut.Items.Add(new MyPocoClass { Value = "item1" });
+        sut.Items.Add(new MyPocoClass { Value = "item2" });
+
+        // Act
+        var actual = sut.WithAll(sut.Items, x => x.Value = x.Value!.ToUpper(CultureInfo.CurrentCulture));
+
+        // Assert
+        actual.Items.Select(x => x.Value).Should().BeEquivalentTo("ITEM1", "ITEM2");
+    }
+
+    [Fact]
+    public void Can_Perform_Operation_On_All_Properties_Lazy()
+    {
+        // Arrange
+        var sut = new MyPocoClassWithList();
+        sut.Items.Add(new MyPocoClass { Value = "item1" });
+        sut.Items.Add(new MyPocoClass { Value = "item2" });
+
+        // Act
+        var actual = sut.WithAll(x => x.Items, x => x.Value = x.Value!.ToUpper(CultureInfo.CurrentCulture));
+
+        // Assert
+        actual.Items.Select(x => x.Value).Should().BeEquivalentTo("ITEM1", "ITEM2");
+    }
+
     private sealed class MyPocoClass
     {
         [Required]
         public string? Value { get; set; }
+    }
+
+    private sealed class MyPocoClassWithList
+    {
+        public List<MyPocoClass> Items { get; set; } = new();
     }
 
     private sealed class MyDisposableClass : IDisposable

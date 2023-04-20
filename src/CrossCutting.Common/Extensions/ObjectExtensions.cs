@@ -164,6 +164,26 @@ public static class ObjectExtensions
         return instance;
     }
 
+    public static T WithAll<T, TItem>(this T instance, IEnumerable<TItem> enumerable, Action<TItem> action)
+    {
+        foreach (var item in enumerable)
+        {
+            action.Invoke(item);
+        }
+
+        return instance;
+    }
+
+    public static T WithAll<T, TItem>(this T instance, Func<T, IEnumerable<TItem>> enumerable, Action<TItem> action)
+    {
+        foreach (var item in enumerable.Invoke(instance))
+        {
+            action.Invoke(item);
+        }
+
+        return instance;
+    }
+
     public static Result<T> ToResult<T>(this T? instance) where T : class
         => Result.FromInstance(instance);
 
