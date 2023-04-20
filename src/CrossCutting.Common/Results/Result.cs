@@ -37,6 +37,8 @@ public record Result<T> : Result
     public static new Result<T> NoContent(string errorMessage) => new(default, ResultStatus.NoContent, errorMessage, Enumerable.Empty<ValidationError>());
     public static new Result<T> ResetContent() => new(default, ResultStatus.ResetContent, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> ResetContent(string errorMessage) => new(default, ResultStatus.ResetContent, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Continue() => new(default, ResultStatus.Continue, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Continue(string errorMessage) => new(default, ResultStatus.Continue, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result<T> Redirect(T value) => new(value, ResultStatus.Redirect, null, Enumerable.Empty<ValidationError>());
     public static Result<T> FromExistingResult(Result existingResult) => new(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
     public static Result<T> FromExistingResult(Result existingResult, T value) => new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
@@ -105,7 +107,7 @@ public record Result
         ValidationErrors = new ValueCollection<ValidationError>(validationErrors);
     }
 
-    public bool IsSuccessful() => Status == ResultStatus.Ok;
+    public bool IsSuccessful() => Status == ResultStatus.Ok || Status == ResultStatus.NoContent || Status == ResultStatus.Continue;
     public string? ErrorMessage { get; }
     public ResultStatus Status { get; }
     public IReadOnlyCollection<ValidationError> ValidationErrors { get; }
@@ -133,6 +135,8 @@ public record Result
     public static Result NoContent(string errorMessage) => new(ResultStatus.NoContent, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result ResetContent() => new(ResultStatus.ResetContent, null, Enumerable.Empty<ValidationError>());
     public static Result ResetContent(string errorMessage) => new(ResultStatus.ResetContent, errorMessage, Enumerable.Empty<ValidationError>());
+    public static Result Continue() => new(ResultStatus.Continue, null, Enumerable.Empty<ValidationError>());
+    public static Result Continue(string errorMessage) => new(ResultStatus.Continue, errorMessage, Enumerable.Empty<ValidationError>());
 
     public static Result<TInstance> FromInstance<TInstance>(TInstance? instance)
         where TInstance : class
