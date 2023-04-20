@@ -57,7 +57,7 @@ public static class FunctionParser
         {
             if (stringArgument.StartsWith(TemporaryDelimiter) && stringArgument.EndsWith(TemporaryDelimiter))
             {
-                arguments.Add(new FunctionArgument(results[int.Parse(stringArgument.Substring(2, stringArgument.Length - (TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]));
+                arguments.Add(new FunctionArgument(results[int.Parse(stringArgument.Substring(TemporaryDelimiter.Length, stringArgument.Length - (TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]));
                 continue;
             }
 
