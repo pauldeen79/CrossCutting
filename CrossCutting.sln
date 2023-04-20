@@ -28,6 +28,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{370243F2-06A4-4875-AD69-91920DE3D9D6}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Data.Abstractions", "src\CrossCutting.Data.Abstractions\CrossCutting.Data.Abstractions.csproj", "{E7731E52-D20E-48B5-BB28-6265522156F6}"
@@ -42,9 +43,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Data.Sql", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Data.Sql.Tests", "src\CrossCutting.Data.Sql.Tests\CrossCutting.Data.Sql.Tests.csproj", "{650AE7F5-9330-440B-ADC3-9DF76333402B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.FunctionParser", "src\CrossCutting.Utilities.FunctionParser\CrossCutting.Utilities.FunctionParser.csproj", "{716C30B9-18DB-45E3-93F1-D40DBFA5D2C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.FunctionParser", "src\CrossCutting.Utilities.FunctionParser\CrossCutting.Utilities.FunctionParser.csproj", "{716C30B9-18DB-45E3-93F1-D40DBFA5D2C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.FunctionParser.Tests", "src\CrossCutting.Utilities.FunctionParser.Tests\CrossCutting.Utilities.FunctionParser.Tests.csproj", "{919EF412-D3CF-4D26-AE06-4F036B27CBF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.FunctionParser.Tests", "src\CrossCutting.Utilities.FunctionParser.Tests\CrossCutting.Utilities.FunctionParser.Tests.csproj", "{919EF412-D3CF-4D26-AE06-4F036B27CBF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
