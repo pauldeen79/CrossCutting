@@ -4,54 +4,16 @@ public static class MathematicExpressionParser
 {
     private const string TemporaryDelimiter = "``";
 
-    private static readonly Dictionary<char, Func<object, object, Result<object>>> _aggregators = new()
+    private static readonly Dictionary<char, Tuple<int, Func<object, object, Result<object>>>> _aggregators = new()
     {
-        { '^', Power },           // M
-        { '*', Multiply },        // V
-        { '/', Divide },          // D
+        { '^', new( 1, Power) },           // M
+        { '*', new( 2, Multiply) },        // V
+        { '/', new( 2, Divide) },          // D
         //{ '\u221A', SquareRoot }, // W
-        { '+', Add },             // O
-        { '-', Subtract },        // A
+        { '+', new (3, Add) },             // O
+        { '-', new (3, Subtract) },        // A
     };
 
-    /*
-    Er geldt tegenwoordig een nieuwe regel: 'Hoe Moeten Wij Van De Onvoldoendes Afkomen'.
-H = haakjes
-
-M = machtsverheffen
-W = worteltrekken
-
-V = vermenigvuldigen
-D = delen
-
-
-A = aftrekken
-
-Bij deze nieuwe regel geldt ook de stelling: ‘ze gaan zoals ze staan’, ofwel: bereken de som in die volgorde waarin hij wordt weergegeven (van links naar rechts).
-
-VOORBEELD
-
-Wij willen de nieuwe regel “hoe moeten wij van de onvoldoendes afkomen” laten zien middels het volgende voorbeeld:
-
-7 – 16 : 8 x 2 + 8=
-
-Het is belangrijk om eerst te kijken of er bewerkingen van : (delen) en x (vermenigvuldigen  óf  + (optellen) en – (aftrekken) bij elkaar staan. Is dit het geval, dan moeten deze stukken van de som berekend worden volgens de regel: ze gaan zoals ze staan.
-In deze som is dit ook het geval, namelijk 16 : 8 x 2 (delen en vermenigvuldigen staan in deze som bij elkaar).
-
-We moeten dan eerst berekenen:
-
-16 : 8 x 2
-
-Let hierbij goed op de regel: ze gaan zoals ze staan, ofwel: berekenen in de volgorde waarin het staat:
-
-16 : 8 = 2… x 2 = 4
-
-Nu we dit deel van de som eerst hebben berekend, kunnen we de som herschrijven:
-
-7 – 4 + 8 = 11
-
-Het antwoord op deze som is dus 11.
-     */
     public static Result<object> Parse(string input, Func<string, Result<object>> parseExpressionDelegate)
     {
         if (string.IsNullOrEmpty(input))
@@ -99,12 +61,22 @@ Het antwoord op deze som is dus 11.
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
         #endregion
 
-        foreach (var aggregator in _aggregators)
+        #region Handle non-recurive evaluation of operators
+        foreach (var aggregators in _aggregators.GroupBy(x => x.Value.Item1))
         {
             var index = -1;
             do
             {
-                index = remainder.IndexOf(aggregator.Key);
+                // Within an operator groups, the values should be evaluated from left to right.
+                var indexes = aggregators
+                    .Select(x => new { x.Key, Value = x.Value.Item2, Index = remainder.IndexOf(x.Key) })
+                    .Where(x => x.Index > -1)
+                    .OrderBy(x => x.Index)
+                    .ToArray();
+                index = indexes.Any()
+                    ? indexes.First().Index
+                    : - 1;
+
                 if (index == -1)
                 {
                     continue;
@@ -174,7 +146,7 @@ Het antwoord op deze som is dus 11.
                     }
                 }
 
-                var aggregateResult = aggregator.Value.Invoke(leftPartResult.Value!, rightPartResult.Value!);
+                var aggregateResult = indexes.First().Value.Invoke(leftPartResult.Value!, rightPartResult.Value!);
                 if (!aggregateResult.IsSuccessful())
                 {
                     return aggregateResult;
@@ -194,6 +166,7 @@ Het antwoord op deze som is dus 11.
 
             } while (index > -1);
         }
+        #endregion
 
         return results.Any()
             ? results.Last()

@@ -273,7 +273,6 @@ public class MathematicExpressionParserTests
     public void Handles_Order_Correctly()
     {
         // Arrange
-        //7 – 16 : 8 x 2 + 8
         var input = "7-16/8*2+8";
 
         // Act
