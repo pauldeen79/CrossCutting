@@ -1,17 +1,17 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-internal static class NumericAggregator
+public static class NumericAggregator
 {
 #pragma warning disable S107 // Methods should not have too many parameters
-    internal static Result<object> Evaluate(object firstExpression,
-                                             object secondExpression,
-                                             Func<byte, byte, object> byteAggregatorDelegate,
-                                             Func<short, short, object> shortAggregatorDelegate,
-                                             Func<int, int, object> intAggregatorDelegate,
-                                             Func<long, long, object> longAggregatorDelegate,
-                                             Func<float, float, object> singleAggregatorDelegate,
-                                             Func<decimal, decimal, object> decimalAggregatorDelegate,
-                                             Func<double, double, object> doubleAggregatorDelegate)
+    public static Result<object> Evaluate(object firstExpression,
+                                          object secondExpression,
+                                          Func<byte, byte, object> byteAggregatorDelegate,
+                                          Func<short, short, object> shortAggregatorDelegate,
+                                          Func<int, int, object> intAggregatorDelegate,
+                                          Func<long, long, object> longAggregatorDelegate,
+                                          Func<float, float, object> singleAggregatorDelegate,
+                                          Func<decimal, decimal, object> decimalAggregatorDelegate,
+                                          Func<double, double, object> doubleAggregatorDelegate)
 #pragma warning restore S107 // Methods should not have too many parameters
         => new Func<Result<object>>[]
         {
