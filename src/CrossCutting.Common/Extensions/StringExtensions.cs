@@ -177,9 +177,23 @@ public static class StringExtensions
         return result.ToArray();
     }
 
+    /// <summary>
+    /// Replaces line endings to the right format conform the current operating system
+    /// </summary>
+    /// <param name="instance">String instance to get the normalized line endings for</param>
+    /// <param name="matchTimeoutInMilliseconds">Time-out in milli secconds for the regular expression parsing</param>
+    /// <returns></returns>
     public static string NormalizeLineEndings(this string instance, int matchTimeoutInMilliseconds = 500)
         => Regex.Replace(instance, @"\r\n|\n\r|\n|\r", Environment.NewLine, RegexOptions.None, TimeSpan.FromMilliseconds(matchTimeoutInMilliseconds));
 
+    /// <summary>
+    /// Splits the line using a custom delimiter
+    /// </summary>
+    /// <param name="instance">String instance to split</param>
+    /// <param name="delimiter">Delimiter to use</param>
+    /// <param name="textQualifier">When filled, text qualifier to use</param>
+    /// <param name="leaveTextQualifier">If set to true and text qualifier is filled, then leave the text qualifiers in the string</param>
+    /// <returns></returns>
     public static string[] SplitDelimited(this string instance, char delimiter, char? textQualifier = null, bool leaveTextQualifier = false)
     {
         var result = new List<string>();
@@ -221,5 +235,48 @@ public static class StringExtensions
         }
 
         return result.ToArray();
+    }
+
+    /// <summary>
+    /// Splits the line using comma separated values (CSV) format
+    /// </summary>
+    /// <param name="instance">String instance to split</param>
+    /// <param name="delimiter">Delimiter to use (most commonly , or ;)</param>
+    /// <returns></returns>
+    public static string[] SplitCsv(this string instance, char delimiter = ',')
+    {
+        List<string> fields = new List<string>();
+        bool inQuotes = false;
+        int fieldStart = 0;
+
+        for (int i = 0; i < instance.Length; i++)
+        {
+            if (instance[i] == '\"')
+            {
+                inQuotes = !inQuotes;
+            }
+            else if (instance[i] == delimiter && !inQuotes)
+            {
+                fields.Add(ParseCsvField(instance.Substring(fieldStart, i - fieldStart)));
+                fieldStart = i + 1;
+            }
+        }
+
+        if (instance.Length > 0)
+        {
+            fields.Add(ParseCsvField(instance.Substring(fieldStart)));
+        }
+
+        return fields.ToArray();
+    }
+
+    private static string ParseCsvField(string field)
+    {
+        if (field.StartsWith("\"") && field.EndsWith("\""))
+        {
+            field = field.Substring(1, field.Length - 2);
+        }
+
+        return field.Replace("\"\"", "\"");
     }
 }
