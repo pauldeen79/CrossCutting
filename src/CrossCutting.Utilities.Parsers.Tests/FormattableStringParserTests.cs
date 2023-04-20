@@ -3,8 +3,9 @@
 public class FormattableStringParserTests
 {
     private const string ReplacedValue = "replaced name";
+
     [Fact]
-    public void Parse_Returns_NotSupported_When_Using_Nested_Open_Signs()
+    public void Parse_Returns_Invalid_When_Using_Nested_Open_Signs()
     {
         // Arrange
         var input = "Hello {Name {nested}} you are welcome";
@@ -13,7 +14,7 @@ public class FormattableStringParserTests
         var result = FormattableStringParser.Parse(input, ProcessPlaceholder);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.Status.Should().Be(ResultStatus.Invalid);
     }
 
     [Fact]
