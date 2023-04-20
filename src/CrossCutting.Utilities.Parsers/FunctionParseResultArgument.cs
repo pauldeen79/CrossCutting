@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.FunctionParser;
+﻿namespace CrossCutting.Utilities.Parsers;
 
 public abstract record FunctionParseResultArgument
 {

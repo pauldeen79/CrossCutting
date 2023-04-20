@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.FunctionParser.Tests;
+﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
 public class FunctionParserTests
 {
