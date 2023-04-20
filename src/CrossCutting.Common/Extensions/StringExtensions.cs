@@ -245,11 +245,16 @@ public static class StringExtensions
     /// <returns></returns>
     public static string[] SplitCsv(this string instance, char delimiter = ',')
     {
-        List<string> fields = new List<string>();
-        bool inQuotes = false;
-        int fieldStart = 0;
+        if (string.IsNullOrEmpty(instance))
+        {
+            return Array.Empty<string>();
+        }
 
-        for (int i = 0; i < instance.Length; i++)
+        var fields = new List<string>();
+        var inQuotes = false;
+        var fieldStart = 0;
+
+        for (var i = 0; i < instance.Length; i++)
         {
             if (instance[i] == '\"')
             {
@@ -262,10 +267,7 @@ public static class StringExtensions
             }
         }
 
-        if (instance.Length > 0)
-        {
-            fields.Add(ParseCsvField(instance.Substring(fieldStart)));
-        }
+        fields.Add(ParseCsvField(instance.Substring(fieldStart)));
 
         return fields.ToArray();
     }
