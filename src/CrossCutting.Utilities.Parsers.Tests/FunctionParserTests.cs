@@ -12,7 +12,7 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.FunctionName.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
         result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
@@ -29,7 +29,7 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.FunctionName.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(2);
         result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
@@ -46,7 +46,7 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.FunctionName.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().BeEmpty();
     }
@@ -61,7 +61,7 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.FunctionName.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
         result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().AllBe(string.Empty);
@@ -77,7 +77,7 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.FunctionName.Should().Be("MYFUNCTION");
         result.Value!.Arguments.Should().HaveCount(3);
         result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b");
@@ -95,7 +95,7 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.FunctionName.Should().Be("MYFUNCTION");
         result.Value!.Arguments.Should().HaveCount(3);
         result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b");
@@ -119,7 +119,7 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.NotFound);
+        result.Status.Should().Be(ResultStatus.NotFound);
         result.ErrorMessage.Should().Be("No function name found");
     }
 
@@ -133,7 +133,7 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.NotFound);
+        result.Status.Should().Be(ResultStatus.NotFound);
         result.ErrorMessage.Should().Be("Missing open bracket");
     }
 
@@ -147,7 +147,7 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.NotFound);
+        result.Status.Should().Be(ResultStatus.NotFound);
         result.ErrorMessage.Should().Be("Missing close bracket");
     }
 
@@ -161,7 +161,7 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.NotFound);
+        result.Status.Should().Be(ResultStatus.NotFound);
         result.ErrorMessage.Should().Be("Input cannot be null or empty");
     }
 
@@ -175,7 +175,7 @@ public class FunctionParserTests
         var result = FunctionParser.Parse(input);
 
         // Assert
-        result.Status.Should().Be(Common.Results.ResultStatus.NotSupported);
+        result.Status.Should().Be(ResultStatus.NotSupported);
         result.ErrorMessage.Should().Be("Input cannot contain ^^, as this is used internally for formatting");
     }
 }
