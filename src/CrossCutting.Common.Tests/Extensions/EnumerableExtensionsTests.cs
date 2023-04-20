@@ -38,7 +38,7 @@ public class EnumerableExtensionsTests
         var actual = input.NotNull(x => x.StartsWith("A"));
 
         // Assert
-        actual.Should().BeEquivalentTo(new[] { "A" });
+        actual.Should().BeEquivalentTo("A");
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class EnumerableExtensionsTests
         var actual = input.DefaultWhenNull(new[] { "a", "b", "c" });
 
         // Assert
-        actual.Should().BeEquivalentTo(new[] { "a", "b", "c" });
+        actual.Should().BeEquivalentTo("a", "b", "c");
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class EnumerableExtensionsTests
         var actual = input.DefaultWhenNull(new[] { "A", "B", "C" });
 
         // Assert
-        actual.Should().BeEquivalentTo(new[] { "a", "b", "c" });
+        actual.Should().BeEquivalentTo("a", "b", "c");
     }
 
     [Fact]
@@ -116,7 +116,7 @@ public class EnumerableExtensionsTests
         var actual = input.WhenEmpty(new[] { "4", "5", "6" });
 
         // Assert
-        actual.Should().BeEquivalentTo(new[] { "4", "5", "6" });
+        actual.Should().BeEquivalentTo("4", "5", "6");
     }
 
     [Fact]
@@ -129,6 +129,6 @@ public class EnumerableExtensionsTests
         var actual = input.WhenEmpty(() => new[] { "4", "5", "6" });
 
         // Assert
-        actual.Should().BeEquivalentTo(new[] { "4", "5", "6" });
+        actual.Should().BeEquivalentTo("4", "5", "6");
     }
 }

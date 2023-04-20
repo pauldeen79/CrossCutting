@@ -1349,11 +1349,15 @@ public class ResultTests
         }
     }
 
+#pragma warning disable S2094 // Classes should not be empty
     private class SomeResultValue
+#pragma warning restore S2094 // Classes should not be empty
     {
     }
 
+#pragma warning disable S2094 // Classes should not be empty
     private sealed class SomeDerivedResultValue : SomeResultValue
+#pragma warning restore S2094 // Classes should not be empty
     {
     }
 

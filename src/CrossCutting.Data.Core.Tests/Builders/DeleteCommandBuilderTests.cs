@@ -29,7 +29,7 @@ public class DeleteCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Delete);
+        actual.Operation.Should().Be(DatabaseOperation.Delete);
         actual.CommandText.Should().Be("DELETE FROM MyTable WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
@@ -51,7 +51,7 @@ public class DeleteCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Delete);
+        actual.Operation.Should().Be(DatabaseOperation.Delete);
         actual.CommandText.Should().Be("DELETE FROM MyTable");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
@@ -73,7 +73,7 @@ public class DeleteCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Delete);
+        actual.Operation.Should().Be(DatabaseOperation.Delete);
         actual.CommandText.Should().Be("DELETE FROM MyTable OUTPUT Field1, Field2 WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
     }
 
@@ -93,7 +93,7 @@ public class DeleteCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Delete);
+        actual.Operation.Should().Be(DatabaseOperation.Delete);
         actual.CommandText.Should().Be("DELETE FROM MyTable OUTPUT Field1, Field2 INTO @NewValues WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
     }
 
@@ -110,7 +110,7 @@ public class DeleteCommandBuilderTests
         var actual = input.Clear().From("MyTable2").Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Delete);
+        actual.Operation.Should().Be(DatabaseOperation.Delete);
         actual.CommandText.Should().Be("DELETE FROM MyTable2");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
