@@ -23,7 +23,7 @@ internal class Recursion : IMathematicExpressionProcessor
             state.Remainder = state.Remainder.Replace($"({found})", FormattableString.Invariant($"{MathematicExpressionParser.TemporaryDelimiter}{state.Results.Count}{MathematicExpressionParser.TemporaryDelimiter}"));
             state.Results.Add(subResult);
 
-        } while (state.Remainder.IndexOf("(") > -1 || state.Remainder.IndexOf(")") > -1);
+        } while (state.Remainder.IndexOf(")") > -1);
 
         return Result<MathematicExpressionState>.Success(state);
     }

@@ -37,9 +37,7 @@ internal class Operators : IMathematicExpressionProcessor
                 var previousIndexes = Aggregators.Keys.Select(x => new
                 {
                     Key = x,
-                    Index = index == 0
-                        ? -1
-                        : state.Remainder.LastIndexOf(x, index - 1)
+                    Index = state.Remainder.LastIndexOf(x, index - 1)
                 }).Where(x => x.Index > -1).OrderByDescending(x => x.Index).ToArray();
 
                 string leftPart;
@@ -55,9 +53,7 @@ internal class Operators : IMathematicExpressionProcessor
                 var nextIndexes = Aggregators.Keys.Select(x => new
                 {
                     Key = x,
-                    Index = index == state.Remainder.Length
-                        ? -1
-                        : state.Remainder.IndexOf(x, index + 1)
+                    Index = state.Remainder.IndexOf(x, index + 1)
                 }).Where(x => x.Index > -1).OrderBy(x => x.Index).ToArray();
 
                 string rightPart;
