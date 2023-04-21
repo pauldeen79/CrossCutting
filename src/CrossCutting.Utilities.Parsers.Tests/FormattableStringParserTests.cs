@@ -72,12 +72,7 @@ public class FormattableStringParserTests
     }
 
     private Result<string> ProcessPlaceholder(string arg)
-    {
-        if (arg == "Name")
-        {
-            return Result<string>.Success(ReplacedValue);
-        }
-
-        return Result<string>.Error($"Unsupported placeholder name: {arg}");
-    }
+        => arg == "Name"
+            ? Result<string>.Success(ReplacedValue)
+            : Result<string>.Error($"Unsupported placeholder name: {arg}");
 }

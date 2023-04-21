@@ -11,3 +11,4 @@ TODO
   =1+1 should be processed as mathematics
   order: ExpressionParser (outer), MathematicExpression, FormattableString (inner)
   ="Hello {1+MYFUNCTION(argument)}" -> calculate mathematical expression from the formattable string, each part should be parsed as a function. if no function is found, try parsing as decimal/int/long.
+- Create default implementation for parsing string to int/long/decimal/etc? Can be used when using MathematicExpressionParser, FunctionParser or ExpressionStringParser

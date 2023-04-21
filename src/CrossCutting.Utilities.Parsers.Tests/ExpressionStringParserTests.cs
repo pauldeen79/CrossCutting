@@ -1,0 +1,165 @@
+﻿namespace CrossCutting.Utilities.Parsers.Tests;
+
+public class ExpressionStringParserTests
+{
+    private const string ReplacedValue = "replaced name";
+
+    [Fact]
+    public void Parse_Returns_Success_With_Input_Value_On_Empty_String()
+    {
+        // Arrange
+        var input = string.Empty;
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(input);
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_When_Input_Only_Contains_Equals_Sign()
+    {
+        // Arrange
+        var input = "=";
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(input);
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_With_Input_Value_On_String_That_Does_Not_Start_With_Equals_Sign()
+    {
+        // Arrange
+        var input = "string that does not begin with =";
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(input);
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Mathematic_Expression_When_Found()
+    {
+        // Arrange
+        var input = "=1+1";
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(2);
+    }
+
+    [Fact]
+    public void Parse_Returns_Failure_From_Mathemetic_Expression_When_Found()
+    {
+        // Arrange
+        var input = "=1+error";
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("error");
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Formattable_String_When_Found()
+    {
+        // Arrange
+        var input = "=\"Hello {Name}!\"";
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("Hello replaced name!");
+    }
+
+    [Fact]
+    public void Parse_Returns_Failure_Result_From_Formattable_String_When_Found()
+    {
+        // Arrange
+        var input = "=\"Hello {Kaboom}!\"";
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Unsupported placeholder name: Kaboom");
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Function_When_Found()
+    {
+        // Arrange
+        var input = "=MYFUNCTION()";
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("result of MYFUNCTION function");
+    }
+
+    [Fact]
+    public void Parse_Returns_Failure_Result_From_Function_When_Found()
+    {
+        // Arrange
+        var input = "=error()";
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom");
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_With_Input_String_When_No_Mathematic_Expression_Or_Formattable_String_Or_Function_Was_Found()
+    {
+        // Arrange
+        var input = "some string that does not start with = sign";
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(input);
+    }
+
+    private Result<object> ParseExpressionDelegateInt32(string arg)
+        => arg switch
+        {
+            "error" => Result<object>.Error("error"),
+            _ => int.TryParse(arg, CultureInfo.InvariantCulture, out var result)
+                ? Result<object>.Success(result)
+                : Result<object>.NotFound()
+        };
+
+    private Result<string> ProcessPlaceholder(string arg)
+        => arg =="Name"
+            ? Result<string>.Success(ReplacedValue)
+            : Result<string>.Error($"Unsupported placeholder name: {arg}");
+
+    private Result<object> ParseFunction(FunctionParseResult result)
+        => result.FunctionName == "error"
+            ? Result<object>.Error("Kaboom")
+            : Result<object>.Success($"result of {result.FunctionName} function");
+}

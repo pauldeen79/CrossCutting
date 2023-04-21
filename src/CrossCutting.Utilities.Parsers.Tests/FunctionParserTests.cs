@@ -166,6 +166,20 @@ public class FunctionParserTests
     }
 
     [Fact]
+    public void Non_Function_String_Returns_NotFound()
+    {
+        // Arrange
+        var input = "some string that is not a function";
+
+        // Act
+        var result = FunctionParser.Parse(input);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+        result.ErrorMessage.Should().Be("Missing close bracket");
+    }
+
+    [Fact]
     public void String_Containing_TemporaryDelimiter_Returns_NotSupported()
     {
         // Arrange
