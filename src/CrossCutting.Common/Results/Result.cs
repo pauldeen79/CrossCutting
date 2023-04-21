@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Common.Results;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CrossCutting.Common.Results;
 
 public record Result<T> : Result
 {
@@ -64,6 +66,21 @@ public record Result<T> : Result
             Error("Could not determine result because there are no steps defined"),
             (seed, step) => step.Invoke(command, seed)
         );
+
+    public static Result<T> Pipe<TProcessor>(T seed, IEnumerable<TProcessor> processors, Func<Result<T>, TProcessor, Result<T>> processDelegate)
+    {
+        var result = Result<T>.Success(seed);
+        foreach (var processor in processors)
+        {
+            result = processDelegate.Invoke(result, processor);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
+        }
+
+        return result;
+    }
 
     public T GetValueOrThrow(string errorMessage)
     {

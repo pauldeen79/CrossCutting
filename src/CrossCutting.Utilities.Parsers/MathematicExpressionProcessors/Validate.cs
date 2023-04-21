@@ -13,11 +13,10 @@ internal partial class Validate : IMathematicExpressionProcessor
     };
 
     public Result<MathematicExpressionState> Process(MathematicExpressionState state)
-        => _validators.Aggregate
+        => Result<MathematicExpressionState>.Pipe
         (
-            Result<MathematicExpressionState>.Success(state),
-            (result, validator) => result.IsSuccessful()
-                ? validator.Validate(result.Value!)
-                : result
+            state,
+            _validators,
+            (result, validator) => validator.Validate(result.Value!)
         );
 }
