@@ -59,7 +59,8 @@ public class FormattableStringParserTests
 
     [Theory,
         InlineData("Hello {Name}!", $"Hello {ReplacedValue}!"),
-        InlineData("Hello {{Name}}!", "Hello {{Name}}!")]
+        InlineData("Hello {{Name}}!", "Hello {{Name}}!"),
+        InlineData("Data without accolades", "Data without accolades")]
     public void Parse_Returns_Success_On_Valid_Input(string input, string expectedValue)
     {
         // Act
