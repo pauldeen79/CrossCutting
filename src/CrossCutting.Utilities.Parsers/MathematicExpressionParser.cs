@@ -53,7 +53,7 @@ public static partial class MathematicExpressionParser
             return Result<object>.Success(value.Substring(1, value.Length - 2));
         }
 
-        if (isFloatingPoint.Value && decimal.TryParse(value, NumberStyles.AllowDecimalPoint, formatProvider, out var d))
+        if (isFloatingPoint.Value && value.Contains('.') && decimal.TryParse(value, NumberStyles.AllowDecimalPoint, formatProvider, out var d))
         {
             return Result<object>.Success(d);
         }
