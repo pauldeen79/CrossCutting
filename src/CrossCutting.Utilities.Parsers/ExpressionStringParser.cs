@@ -44,14 +44,10 @@ public static class ExpressionStringParser
         var functionResult = FunctionParser.Parse(input.Substring(1));
         return functionResult.Status switch
         {
-            ResultStatus.Ok => ParseFunction(functionResult, parseFunctionDelegate),
-            ResultStatus.NotFound => Result<object>.Success(input),
-            _ => Result<object>.FromExistingResult(functionResult)
+            ResultStatus.Ok => parseFunctionDelegate(functionResult.Value!),
+            //ResultStatus.NotFound => Result<object>.Success(input),
+            ResultStatus.NotSupported => Result<object>.FromExistingResult(functionResult),
+            _ => Result<object>.Success(input)
         };
     }
-
-    private static Result<object> ParseFunction(Result<FunctionParseResult> functionResult, Func<FunctionParseResult, Result<object>> parseFunctionDelegate)
-        => !functionResult.IsSuccessful()
-            ? Result<object>.FromExistingResult(functionResult)
-            : parseFunctionDelegate(functionResult.Value!);
 }

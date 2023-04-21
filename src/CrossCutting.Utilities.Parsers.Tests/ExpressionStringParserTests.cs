@@ -144,6 +144,34 @@ public class ExpressionStringParserTests
         result.Value.Should().Be(input);
     }
 
+    [Fact]
+    public void Parse_Returns_Success_With_Input_String_When_String_Starts_With_Equals_Sign_But_No_Other_Expressoin_Was_Found_After_This()
+    {
+        // Arrange
+        var input = "=some string that starts with = sign but does not contain any formattable string, function or mathematical expression";
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(input);
+    }
+
+    [Fact]
+    public void Parse_Returns_NotSupported_When_FunctionParser_Returns_NotSupported()
+    {
+        // Arrange
+        var input = "=somefunction(^^)";
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.ErrorMessage.Should().Be("Input cannot contain ^^, as this is used internally for formatting");
+    }
+
     private Result<object> ParseExpressionDelegateInt32(string arg)
         => arg switch
         {
