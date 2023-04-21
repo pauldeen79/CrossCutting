@@ -69,7 +69,7 @@ public class MathematicExpressionParserTests
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2 ^ 4);
+        result.Value.Should().BeEquivalentTo(Math.Pow(2, 4));
     }
 
     [Fact]

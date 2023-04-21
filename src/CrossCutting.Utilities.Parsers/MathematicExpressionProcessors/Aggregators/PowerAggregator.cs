@@ -4,13 +4,13 @@ public class PowerAggregator : Aggregator
 {
     public override Result<object> Aggregate(object value1, object value2)
         => NumericAggregator.Evaluate(value1, value2
-            , (x, y) => x ^ y
-            , (x, y) => x ^ y
-            , (x, y) => x ^ y
-            , (x, y) => x ^ y
-            , (x, y) => Math.Pow(x, y)
-            , (x, y) => Math.Pow(Convert.ToDouble(x), Convert.ToDouble(y))
-            , (x, y) => Math.Pow(x, y));
+            , (bas, exp) => Enumerable.Repeat(bas, exp).Aggregate(1, (a, b) => a * b)
+            , (bas, exp) => Enumerable.Repeat(bas, exp).Aggregate(1, (a, b) => a * b)
+            , (bas, exp) => Enumerable.Repeat(bas, exp).Aggregate(1, (a, b) => a * b)
+            , (bas, exp) => Enumerable.Repeat(bas, Convert.ToInt32(exp)).Aggregate(1L, (a, b) => a * b)
+            , (bas, exp) => Math.Pow(bas, exp)
+            , (bas, exp) => Enumerable.Repeat(bas, Convert.ToInt32(exp)).Aggregate((decimal)1, (a, b) => a * b)
+            , (bas, exp) => Math.Pow(bas, exp));
 
     public PowerAggregator() : base('^', 1) { }
 }
