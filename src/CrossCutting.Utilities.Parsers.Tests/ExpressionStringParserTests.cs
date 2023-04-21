@@ -11,7 +11,7 @@ public class ExpressionStringParserTests
         var input = string.Empty;
 
         // Act
-        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -25,7 +25,7 @@ public class ExpressionStringParserTests
         var input = "=";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -39,7 +39,7 @@ public class ExpressionStringParserTests
         var input = "string that does not begin with =";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -53,7 +53,7 @@ public class ExpressionStringParserTests
         var input = "=1+1";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -67,11 +67,11 @@ public class ExpressionStringParserTests
         var input = "=1+error";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("error");
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Unknown expression type found in fragment: error");
     }
 
     [Fact]
@@ -81,7 +81,7 @@ public class ExpressionStringParserTests
         var input = "=\"Hello {Name}!\"";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -95,7 +95,7 @@ public class ExpressionStringParserTests
         var input = "=\"Hello {Kaboom}!\"";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -109,7 +109,7 @@ public class ExpressionStringParserTests
         var input = "=MYFUNCTION()";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -123,7 +123,7 @@ public class ExpressionStringParserTests
         var input = "=error()";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -137,7 +137,7 @@ public class ExpressionStringParserTests
         var input = "some string that does not start with = sign";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -148,14 +148,14 @@ public class ExpressionStringParserTests
     public void Parse_Returns_Success_With_Input_String_When_String_Starts_With_Equals_Sign_But_No_Other_Expressoin_Was_Found_After_This()
     {
         // Arrange
-        var input = "=some string that starts with = sign but does not contain any formattable string, function or mathematical expression";
+        var input = "=\"some string that starts with = sign but does not contain any formattable string, function or mathematical expression\"";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(input);
+        result.Value.Should().Be(input.Substring(2, input.Length - 3));
     }
 
     [Fact]
@@ -165,21 +165,12 @@ public class ExpressionStringParserTests
         var input = "=somefunction(^^)";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, ParseExpressionDelegateInt32, ProcessPlaceholder, ParseFunction);
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotSupported);
         result.ErrorMessage.Should().Be("Input cannot contain ^^, as this is used internally for formatting");
     }
-
-    private Result<object> ParseExpressionDelegateInt32(string arg)
-        => arg switch
-        {
-            "error" => Result<object>.Error("error"),
-            _ => int.TryParse(arg, CultureInfo.InvariantCulture, out var result)
-                ? Result<object>.Success(result)
-                : Result<object>.NotFound()
-        };
 
     private Result<string> ProcessPlaceholder(string arg)
         => arg =="Name"

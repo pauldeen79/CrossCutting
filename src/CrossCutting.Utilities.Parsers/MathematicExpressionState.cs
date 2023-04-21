@@ -4,9 +4,10 @@ internal class MathematicExpressionState
 {
     internal string Input { get; }
     internal string Remainder { get; set; }
+    internal IFormatProvider FormatProvider { get; }
     internal List<Result<object>> Results { get; } = new();
-    internal Func<string, Result<object>> ParseExpressionDelegate { get; }
-    internal Func<string, Func<string, Result<object>>, Result<object>> ParseDelegate { get; }
+    internal Func<string, IFormatProvider, Result<object>> ParseExpressionDelegate { get; }
+    internal Func<string, IFormatProvider, Func<string, IFormatProvider, Result<object>>, Result<object>> ParseDelegate { get; }
 
     internal int Position { get; private set; }
     internal AggregatorInfo[] Indexes { get; private set; }
@@ -19,10 +20,12 @@ internal class MathematicExpressionState
 
     internal MathematicExpressionState(
         string input,
-        Func<string, Result<object>> parseExpressionDelegate,
-        Func<string, Func<string, Result<object>>, Result<object>> parseDelegate)
+        IFormatProvider formatProvider,
+        Func<string, IFormatProvider, Result<object>> parseExpressionDelegate,
+        Func<string, IFormatProvider, Func<string, IFormatProvider, Result<object>>, Result<object>> parseDelegate)
     {
         Input = input;
+        FormatProvider = formatProvider;
         Remainder = input;
         ParseExpressionDelegate = parseExpressionDelegate;
         ParseDelegate = parseDelegate;
@@ -109,5 +112,5 @@ internal class MathematicExpressionState
     private Result<object> GetPartResult(string part)
         => part.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && part.EndsWith(MathematicExpressionParser.TemporaryDelimiter)
             ? Results[int.Parse(part.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]
-            : ParseExpressionDelegate.Invoke(part);
+            : ParseExpressionDelegate.Invoke(part, FormatProvider);
 }

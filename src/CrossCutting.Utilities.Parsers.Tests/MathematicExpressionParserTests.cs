@@ -9,7 +9,7 @@ public class MathematicExpressionParserTests
         var input = "1 + 1";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -23,7 +23,7 @@ public class MathematicExpressionParserTests
         var input = "1 - 1";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -37,7 +37,7 @@ public class MathematicExpressionParserTests
         var input = "2 * 3";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -51,7 +51,7 @@ public class MathematicExpressionParserTests
         var input = "6 / 2";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -65,7 +65,7 @@ public class MathematicExpressionParserTests
         var input = "2 ^ 4";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -79,7 +79,7 @@ public class MathematicExpressionParserTests
         var input = "1 + 2 + 3";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -93,7 +93,7 @@ public class MathematicExpressionParserTests
         var input = "(1 + 2) * 3";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -107,7 +107,7 @@ public class MathematicExpressionParserTests
         var input = "1 + 2 * 3";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -121,7 +121,7 @@ public class MathematicExpressionParserTests
         var input = "1";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -135,7 +135,7 @@ public class MathematicExpressionParserTests
         var input = "1 + 2)";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -149,7 +149,7 @@ public class MathematicExpressionParserTests
         var input = "(1 + 2";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -163,7 +163,7 @@ public class MathematicExpressionParserTests
         var input = "+ 2";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -177,7 +177,7 @@ public class MathematicExpressionParserTests
         var input = "1 +";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -191,7 +191,7 @@ public class MathematicExpressionParserTests
         var input = "1 ++ 2";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -205,7 +205,7 @@ public class MathematicExpressionParserTests
         var input = "1 + + 2";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -219,7 +219,7 @@ public class MathematicExpressionParserTests
         var input = string.Empty;
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -233,7 +233,7 @@ public class MathematicExpressionParserTests
         var input = "This string contains the magic `` internal temporary delimiter. Don't ask why, we just don't support it. You're doomed if you try this.";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -247,7 +247,7 @@ public class MathematicExpressionParserTests
         var input = "1 + 1";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt64);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt64);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -261,7 +261,7 @@ public class MathematicExpressionParserTests
         var input = "3.5 + 3.6";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateDecimal);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateDecimal);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -275,7 +275,7 @@ public class MathematicExpressionParserTests
         var input = "1.4 + 1.3";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateSingle);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateSingle);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -290,7 +290,7 @@ public class MathematicExpressionParserTests
         var input = "1.7 + 1.4";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateDouble);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateDouble);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -304,7 +304,7 @@ public class MathematicExpressionParserTests
         var input = "1 + 1";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateByte);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateByte);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -318,7 +318,7 @@ public class MathematicExpressionParserTests
         var input = "1 + 1";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt16);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt16);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -332,7 +332,7 @@ public class MathematicExpressionParserTests
         var input = "7-16/8*2+8";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateDouble);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateDouble);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -346,7 +346,7 @@ public class MathematicExpressionParserTests
         var input = "fiets + 1";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -360,7 +360,7 @@ public class MathematicExpressionParserTests
         var input = "1 + fiets";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -374,7 +374,7 @@ public class MathematicExpressionParserTests
         var input = "(1 + fiets)";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -388,45 +388,143 @@ public class MathematicExpressionParserTests
         var input = "1 / 0";
 
         // Act
-        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
         result.ErrorMessage.Should().Be("Aggregation failed. Error message: Attempted to divide by zero.");
     }
 
-    private Result<object> ParseExpressionDelegateInt32(string arg)
-        => int.TryParse(arg, CultureInfo.InvariantCulture, out var result)
+    [Fact]
+    public void DefaultParseExpressionDelegate_Parses_true_Correctly()
+    {
+        // Arrange
+        var input = "true";
+
+        // Act
+        var result = MathematicExpressionParser.DefaultParseExpressionDelegate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(true);
+    }
+
+    [Fact]
+    public void DefaultParseExpressionDelegate_Parses_false_Correctly()
+    {
+        // Arrange
+        var input = "false";
+
+        // Act
+        var result = MathematicExpressionParser.DefaultParseExpressionDelegate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(false);
+    }
+
+    [Fact]
+    public void DefaultParseExpressionDelegate_Parses_decimal_Correctly()
+    {
+        // Arrange
+        var input = "1.5";
+
+        // Act
+        var result = MathematicExpressionParser.DefaultParseExpressionDelegate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(1.5M);
+    }
+
+    [Fact]
+    public void DefaultParseExpressionDelegate_Parses_int_Correctly()
+    {
+        // Arrange
+        var input = "2";
+
+        // Act
+        var result = MathematicExpressionParser.DefaultParseExpressionDelegate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(2);
+    }
+
+    [Fact]
+    public void DefaultParseExpressionDelegate_Parses_long_Correctly()
+    {
+        // Arrange
+        var input = "3147483647";
+
+        // Act
+        var result = MathematicExpressionParser.DefaultParseExpressionDelegate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(3147483647L);
+    }
+
+    [Fact]
+    public void DefaultParseExpressionDelegate_Parses_string_Correctly()
+    {
+        // Arrange
+        var input = "\"Hello world!\"";
+
+        // Act
+        var result = MathematicExpressionParser.DefaultParseExpressionDelegate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo("Hello world!");
+    }
+
+    [Fact]
+    public void DefaultParseExpressionDelegate_Parses_DateTime_Correctly()
+    {
+        // Arrange
+        var input = "01/02/2019";
+
+        // Act
+        var result = MathematicExpressionParser.DefaultParseExpressionDelegate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(new DateTime(2019, 1, 2));
+    }
+
+    private Result<object> ParseExpressionDelegateInt32(string arg, IFormatProvider formatProvider)
+        => int.TryParse(arg, formatProvider, out var result)
             ? Result<object>.Success(result)
             : Result<object>.Invalid($"Could not parse {arg} to integer");
 
-    private Result<object> ParseExpressionDelegateInt64(string arg)
-        => long.TryParse(arg, CultureInfo.InvariantCulture, out var result)
+    private Result<object> ParseExpressionDelegateInt64(string arg, IFormatProvider formatProvider)
+        => long.TryParse(arg, formatProvider, out var result)
             ? Result<object>.Success(result)
             : Result<object>.Invalid($"Could not parse {arg} to long");
 
-    private Result<object> ParseExpressionDelegateDouble(string arg)
-        => double.TryParse(arg, CultureInfo.InvariantCulture, out var result)
+    private Result<object> ParseExpressionDelegateDouble(string arg, IFormatProvider formatProvider)
+        => double.TryParse(arg, formatProvider, out var result)
             ? Result<object>.Success(result)
             : Result<object>.Invalid($"Could not parse {arg} to double");
 
-    private Result<object> ParseExpressionDelegateSingle(string arg)
-        => float.TryParse(arg, CultureInfo.InvariantCulture, out var result)
+    private Result<object> ParseExpressionDelegateSingle(string arg, IFormatProvider formatProvider)
+        => float.TryParse(arg, formatProvider, out var result)
             ? Result<object>.Success(result)
             : Result<object>.Invalid($"Could not parse {arg} to float");
 
-    private Result<object> ParseExpressionDelegateDecimal(string arg)
-        => decimal.TryParse(arg, CultureInfo.InvariantCulture, out var result)
+    private Result<object> ParseExpressionDelegateDecimal(string arg, IFormatProvider formatProvider)
+        => decimal.TryParse(arg, formatProvider, out var result)
             ? Result<object>.Success(result)
             : Result<object>.Invalid($"Could not parse {arg} to decimal");
 
-    private Result<object> ParseExpressionDelegateByte(string arg)
-        => byte.TryParse(arg, CultureInfo.InvariantCulture, out var result)
+    private Result<object> ParseExpressionDelegateByte(string arg, IFormatProvider formatProvider)
+        => byte.TryParse(arg, formatProvider, out var result)
             ? Result<object>.Success(result)
             : Result<object>.Invalid($"Could not parse {arg} to byte");
 
-    private Result<object> ParseExpressionDelegateInt16(string arg)
-        => short.TryParse(arg, CultureInfo.InvariantCulture, out var result)
+    private Result<object> ParseExpressionDelegateInt16(string arg, IFormatProvider formatProvider)
+        => short.TryParse(arg, formatProvider, out var result)
             ? Result<object>.Success(result)
             : Result<object>.Invalid($"Could not parse {arg} to short");
 }

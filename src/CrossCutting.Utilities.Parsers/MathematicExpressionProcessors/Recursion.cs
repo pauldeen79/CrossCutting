@@ -14,7 +14,7 @@ internal class Recursion : IMathematicExpressionProcessor
 
             var openIndex = state.Input.LastIndexOf("(", closeIndex);
             var found = state.Remainder.Substring(openIndex + 1, closeIndex - openIndex - 1);
-            var subResult = state.ParseDelegate(found, state.ParseExpressionDelegate);
+            var subResult = state.ParseDelegate(found, state.FormatProvider, state.ParseExpressionDelegate);
             if (!subResult.IsSuccessful())
             {
                 return Result<MathematicExpressionState>.FromExistingResult(subResult);

@@ -13,11 +13,12 @@ public static class ExpressionStringParser
 
     public static Result<object> Parse(
         string input,
-        Func<string, Result<object>> parseExpressionDelegate,
+        IFormatProvider formatProvider,
+        Func<string, IFormatProvider, Result<object>> parseExpressionDelegate,
         Func<string, Result<string>> placeholderDelegate,
         Func<FunctionParseResult, Result<object>> parseFunctionDelegate)
     {
-        var state = new ExpressionStringParserState(input, parseExpressionDelegate, placeholderDelegate, parseFunctionDelegate);
+        var state = new ExpressionStringParserState(input, formatProvider, parseExpressionDelegate, placeholderDelegate, parseFunctionDelegate);
         foreach (var processor in _nonSimpleExpressionProcessors)
         {
             var result = processor.Process(state);
