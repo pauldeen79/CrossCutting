@@ -7,7 +7,7 @@ TODO
   ="Hello {Name}" should be processed as Hello {get Name property of context}
   ="Hello {MYFUNCTION("Name")}" should be processed as Hello {call MYFUNTION name with "Name" as argument}
   ="Hello {1+1}" should be processed as a simple string - no formattable/interpolated string because it does not start with @
-  ="FUNCTION(\"a\")" should be processed as a function
+  =FUNCTION(\"a\") should be processed as a function
   =1+1 should be processed as mathematics
-  order: ExpressionParser (outer), MathematicExpression (inner)
-  "Hello {1+MYFUNCTION(argument)}" -> calculate mathematical expression from the formattable string, each part should be parsed as a function. if no function is found, try parsing as decimal/int/long.
+  order: ExpressionParser (outer), MathematicExpression, FormattableString (inner)
+  ="Hello {1+MYFUNCTION(argument)}" -> calculate mathematical expression from the formattable string, each part should be parsed as a function. if no function is found, try parsing as decimal/int/long.
