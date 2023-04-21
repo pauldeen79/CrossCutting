@@ -11,4 +11,5 @@ global using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
 global using CrossCutting.Utilities.Parsers.InsertQueryParser.Processors;
 global using CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators;
 global using CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
+global using CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Validators;
 global using CrossCutting.Utilities.Parsers.NumericAggregatorProcessors;

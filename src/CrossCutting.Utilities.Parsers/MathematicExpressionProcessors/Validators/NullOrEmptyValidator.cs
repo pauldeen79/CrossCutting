@@ -1,0 +1,14 @@
+﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Validators;
+
+internal class NullOrEmptyValidator : IMathematicExpressionValidator
+{
+    public Result<MathematicExpressionState> Validate(MathematicExpressionState state)
+    {
+        if (string.IsNullOrEmpty(state.Input))
+        {
+            return Result<MathematicExpressionState>.NotFound("Input cannot be null or empty");
+        }
+
+        return Result<MathematicExpressionState>.Continue();
+    }
+}
