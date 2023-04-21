@@ -50,14 +50,14 @@ internal class MathematicExpressionState
     {
         PreviousIndexes = aggregatorPositions;
         LeftPart = GetLeftPart();
-        LeftPartResult = GetLeftPartResult();
+        LeftPartResult = GetPartResult(LeftPart);
     }
 
     internal void SetNextIndexes(AggregatorPosition[] aggregatorPositions)
     {
         NextIndexes = aggregatorPositions;
         RightPart = GetRightPart();
-        RightPartResult = GetRightPartResult();
+        RightPartResult = GetPartResult(RightPart);
     }
 
     internal void AddResult(Result<object> aggregateResult)
@@ -103,27 +103,8 @@ internal class MathematicExpressionState
             ? Remainder.Substring(Position + 1, NextIndexes.First().Position - Position - 1).Trim()
             : Remainder.Substring(Position + 1).Trim();
 
-    private Result<object> GetLeftPartResult()
-    {
-        if (LeftPart.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && LeftPart.EndsWith(MathematicExpressionParser.TemporaryDelimiter))
-        {
-            return Results[int.Parse(LeftPart.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, LeftPart.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)];
-        }
-        else
-        {
-            return ParseExpressionDelegate.Invoke(LeftPart);
-        }
-    }
-
-    private Result<object> GetRightPartResult()
-    {
-        if (RightPart.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && RightPart.EndsWith(MathematicExpressionParser.TemporaryDelimiter))
-        {
-            return Results[int.Parse(RightPart.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, RightPart.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)];
-        }
-        else
-        {
-            return ParseExpressionDelegate.Invoke(RightPart);
-        }
-    }
+    private Result<object> GetPartResult(string part)
+        => part.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && part.EndsWith(MathematicExpressionParser.TemporaryDelimiter)
+            ? Results[int.Parse(part.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]
+            : ParseExpressionDelegate.Invoke(part);
 }
