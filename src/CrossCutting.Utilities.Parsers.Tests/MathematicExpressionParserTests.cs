@@ -157,6 +157,20 @@ public class MathematicExpressionParserTests
     }
 
     [Fact]
+    public void Missing_CloseBrackets_Returns_NotFound()
+    {
+        // Arrange
+        var input = "((1 + 2";
+
+        // Act
+        var result = MathematicExpressionParser.Parse(input, CultureInfo.InvariantCulture, ParseExpressionDelegateInt32);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+        result.ErrorMessage.Should().Be("Missing 2 close brackets");
+    }
+
+    [Fact]
     public void Expression_Starting_With_Operator_Returns_NotFound()
     {
         // Arrange
