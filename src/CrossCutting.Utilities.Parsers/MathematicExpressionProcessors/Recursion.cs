@@ -9,19 +9,10 @@ internal class Recursion : IMathematicExpressionProcessor
             var closeIndex = state.Input.IndexOf(")");
             if (closeIndex <= -1)
             {
-                if (state.Input.IndexOf("(") > -1)
-                {
-                    return Result<MathematicExpressionState>.NotFound("Missing close bracket");
-                }
                 continue;
             }
 
             var openIndex = state.Input.LastIndexOf("(", closeIndex);
-            if (openIndex == -1)
-            {
-                return Result<MathematicExpressionState>.NotFound("Missing open bracket");
-            }
-
             var found = state.Remainder.Substring(openIndex + 1, closeIndex - openIndex - 1);
             var subResult = state.ParseDelegate(found, state.ParseExpressionDelegate);
             if (!subResult.IsSuccessful())

@@ -139,7 +139,7 @@ public class MathematicExpressionParserTests
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Missing open bracket");
+        result.ErrorMessage.Should().Be("Too many closing brackets found");
     }
 
     [Fact]
@@ -153,7 +153,7 @@ public class MathematicExpressionParserTests
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Missing close bracket");
+        result.ErrorMessage.Should().Be("Missing 1 close bracket");
     }
 
     [Fact]
