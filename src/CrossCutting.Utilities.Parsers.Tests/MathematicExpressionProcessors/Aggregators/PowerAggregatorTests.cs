@@ -3,6 +3,17 @@
 public class PowerAggregatorTests
 {
     [Fact]
+    public void Aggregate_Returns_Correct_Result_On_Byte()
+    {
+        // Act
+        var result = new PowerAggregator().Aggregate((byte)2, (byte)4);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(16);
+    }
+
+    [Fact]
     public void Aggregate_Returns_Correct_Result_On_Short()
     {
         // Act

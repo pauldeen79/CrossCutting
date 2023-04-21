@@ -3,6 +3,17 @@
 public class DivideAggregatorTests
 {
     [Fact]
+    public void Aggregate_Returns_Correct_Result_On_Byte()
+    {
+        // Act
+        var result = new DivideAggregator().Aggregate((byte)4, (byte)2);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(2);
+    }
+
+    [Fact]
     public void Aggregate_Returns_Correct_Result_On_Short()
     {
         // Act

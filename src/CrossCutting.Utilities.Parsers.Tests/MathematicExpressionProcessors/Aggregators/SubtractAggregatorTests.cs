@@ -3,6 +3,17 @@
 public class SubtractAggregatorTests
 {
     [Fact]
+    public void Aggregate_Returns_Correct_Result_On_Byte()
+    {
+        // Act
+        var result = new SubtractAggregator().Aggregate((byte)5, (byte)3);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(2);
+    }
+
+    [Fact]
     public void Aggregate_Returns_Correct_Result_On_Short()
     {
         // Act

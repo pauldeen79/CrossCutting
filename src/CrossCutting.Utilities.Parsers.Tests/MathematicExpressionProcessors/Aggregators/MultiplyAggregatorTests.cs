@@ -3,6 +3,17 @@
 public class MultiplyAggregatorTests
 {
     [Fact]
+    public void Aggregate_Returns_Correct_Result_On_Byte()
+    {
+        // Act
+        var result = new MultiplyAggregator().Aggregate((byte)2, (byte)3);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(6);
+    }
+
+    [Fact]
     public void Aggregate_Returns_Correct_Result_On_Short()
     {
         // Act
