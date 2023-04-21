@@ -157,6 +157,62 @@ public class MathematicExpressionParserTests
     }
 
     [Fact]
+    public void Expression_Starting_With_Operator_Returns_NotFound()
+    {
+        // Arrange
+        var input = "+ 2";
+
+        // Act
+        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+        result.ErrorMessage.Should().Be("Input cannot start with an operator");
+    }
+
+    [Fact]
+    public void Expression_Ending_With_Operator_Returns_NotFound()
+    {
+        // Arrange
+        var input = "1 +";
+
+        // Act
+        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+        result.ErrorMessage.Should().Be("Input cannot end with an operator");
+    }
+
+    [Fact]
+    public void Expression_Containing_Two_Operators_Next_To_Each_Other_Returns_NotFound()
+    {
+        // Arrange
+        var input = "1 ++ 2";
+
+        // Act
+        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+        result.ErrorMessage.Should().Be("Input cannot contain operators without values between them");
+    }
+
+    [Fact]
+    public void Expression_Containing_Two_Operators_Next_To_Each_Other_Separated_By_Space_Returns_NotFound()
+    {
+        // Arrange
+        var input = "1 + + 2";
+
+        // Act
+        var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+        result.ErrorMessage.Should().Be("Input cannot contain operators without values between them");
+    }
+
+    [Fact]
     public void Empty_String_Returns_NotFound()
     {
         // Arrange
@@ -171,7 +227,7 @@ public class MathematicExpressionParserTests
     }
 
     [Fact]
-    public void String_Containing_TemporaryDelimiter_Returns_NotSupported()
+    public void String_Containing_TemporaryDelimiter_Returns_NotFound()
     {
         // Arrange
         var input = "This string contains the magic `` internal temporary delimiter. Don't ask why, we just don't support it. You're doomed if you try this.";
@@ -180,7 +236,7 @@ public class MathematicExpressionParserTests
         var result = MathematicExpressionParser.Parse(input, ParseExpressionDelegateInt32);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.Status.Should().Be(ResultStatus.NotFound);
         result.ErrorMessage.Should().Be("Input cannot contain ``, as this is used internally for formatting");
     }
 

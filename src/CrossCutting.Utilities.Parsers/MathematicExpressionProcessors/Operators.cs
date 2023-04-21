@@ -1,10 +1,8 @@
-﻿using CrossCutting.Common.Results;
-
-namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
+﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
 
 internal class Operators : IMathematicExpressionProcessor
 {
-    private static readonly Dictionary<char, Tuple<int, Func<object, object, Result<object>>>> _aggregators = new()
+    internal static readonly Dictionary<char, Tuple<int, Func<object, object, Result<object>>>> Aggregators = new()
     {
         { '^', new( 1, Power) },           // M
         { '*', new( 2, Multiply) },        // V
@@ -16,7 +14,7 @@ internal class Operators : IMathematicExpressionProcessor
 
     public Result<MathematicExpressionState> Process(MathematicExpressionState state)
     {
-        foreach (var aggregators in _aggregators.GroupBy(x => x.Value.Item1))
+        foreach (var aggregators in Aggregators.GroupBy(x => x.Value.Item1))
         {
             var index = -1;
             do
@@ -36,7 +34,7 @@ internal class Operators : IMathematicExpressionProcessor
                     continue;
                 }
 
-                var previousIndexes = _aggregators.Keys.Select(x => new
+                var previousIndexes = Aggregators.Keys.Select(x => new
                 {
                     Key = x,
                     Index = index == 0
@@ -54,7 +52,7 @@ internal class Operators : IMathematicExpressionProcessor
                     leftPart = state.Remainder.Substring(0, index).Trim();
                 }
 
-                var nextIndexes = _aggregators.Keys.Select(x => new
+                var nextIndexes = Aggregators.Keys.Select(x => new
                 {
                     Key = x,
                     Index = index == state.Remainder.Length
