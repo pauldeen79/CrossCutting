@@ -35,11 +35,8 @@ public static class ExpressionStringParser
     {
         // =something else, we can try function
         var functionResult = FunctionParser.Parse(state.Input.Substring(1));
-        return functionResult.Status switch
-        {
-            ResultStatus.Ok => state.ParseFunctionDelegate(functionResult.Value!),
-            ResultStatus.NotSupported => Result<object>.FromExistingResult(functionResult),
-            _ => Result<object>.Success(state.Input)
-        };
+        return functionResult.Status == ResultStatus.Ok
+            ? state.ParseFunctionDelegate(functionResult.Value!)
+            : Result<object>.FromExistingResult(functionResult);
     }
 }

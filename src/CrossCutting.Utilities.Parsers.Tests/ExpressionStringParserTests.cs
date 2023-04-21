@@ -172,6 +172,20 @@ public class ExpressionStringParserTests
         result.ErrorMessage.Should().Be("Input cannot contain ^^, as this is used internally for formatting");
     }
 
+    [Fact]
+    public void Parse_Returns_Failure_From_FunctionParser_When_FunctionName_Is_Missing()
+    {
+        // Arrange
+        var input = "=()";
+
+        // Act
+        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+        result.ErrorMessage.Should().Be("No function name found");
+    }
+
     private Result<string> ProcessPlaceholder(string arg)
         => arg =="Name"
             ? Result<string>.Success(ReplacedValue)
