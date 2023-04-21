@@ -9,6 +9,6 @@ internal class EndWithOperatorValidator : IMathematicExpressionValidator
             return Result<MathematicExpressionState>.NotFound($"Input cannot end with an operator");
         }
 
-        return Result<MathematicExpressionState>.Continue();
+        return Result<MathematicExpressionState>.Success(state);
     }
 }

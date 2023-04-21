@@ -9,6 +9,6 @@ internal class NullOrEmptyValidator : IMathematicExpressionValidator
             return Result<MathematicExpressionState>.NotFound("Input cannot be null or empty");
         }
 
-        return Result<MathematicExpressionState>.Continue();
+        return Result<MathematicExpressionState>.Success(state);
     }
 }

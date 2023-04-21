@@ -11,18 +11,13 @@ internal partial class Validate : IMathematicExpressionProcessor
         new EmptyValuePartValidator(),
         new BracketValidator(),
     };
-    
-    public Result<MathematicExpressionState> Process(MathematicExpressionState state)
-    {
-        foreach (var validator in _validators)
-        {
-            var result = validator.Validate(state);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-        }
 
-        return Result<MathematicExpressionState>.Success(state);
-    }
+    public Result<MathematicExpressionState> Process(MathematicExpressionState state)
+        => _validators.Aggregate
+        (
+            Result<MathematicExpressionState>.Success(state),
+            (result, validator) => result.IsSuccessful()
+                ? validator.Validate(result.Value!)
+                : result
+        );
 }

@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
+﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Validators;
 
 internal class EmptyValuePartValidator : IMathematicExpressionValidator
 {
@@ -9,6 +9,6 @@ internal class EmptyValuePartValidator : IMathematicExpressionValidator
             return Result<MathematicExpressionState>.NotFound($"Input cannot contain operators without values between them");
         }
 
-        return Result<MathematicExpressionState>.Continue();
+        return Result<MathematicExpressionState>.Success(state);
     }
 }
