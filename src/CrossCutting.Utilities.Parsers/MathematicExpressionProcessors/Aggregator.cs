@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
 
-internal abstract class Aggregator
+public abstract class Aggregator
 {
     public char Character { get; }
     public int Order { get; }
@@ -11,5 +11,5 @@ internal abstract class Aggregator
         Order = order;
     }
 
-    internal abstract Result<object> Aggregate(object value1, object value2);
+    public abstract Result<object> Aggregate(object value1, object value2);
 }

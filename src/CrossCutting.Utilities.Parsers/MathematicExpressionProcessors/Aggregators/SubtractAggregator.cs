@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Aggregators;
 
-internal class SubtractAggregator : Aggregator
+public class SubtractAggregator : Aggregator
 {
-    internal override Result<object> Aggregate(object value1, object value2)
+    public override Result<object> Aggregate(object value1, object value2)
         => NumericAggregator.Evaluate(value1, value2
             , (x, y) => x - y
             , (x, y) => x - y
@@ -12,5 +12,5 @@ internal class SubtractAggregator : Aggregator
             , (x, y) => x - y
             , (x, y) => x - y);
 
-    internal SubtractAggregator() : base('-', 3) { }
+    public SubtractAggregator() : base('-', 3) { }
 }
