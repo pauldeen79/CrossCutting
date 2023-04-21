@@ -60,7 +60,19 @@ internal class MathematicExpressionState
         RightPartResult = GetPartResult(RightPart);
     }
 
-    internal void AddResult(Result<object> aggregateResult)
+    internal Result<object> PerformAggregation()
+    {
+        var aggregateResult = Indexes.First().Aggregator.Aggregate(LeftPartResult.Value!, RightPartResult.Value!);
+
+        if (aggregateResult.IsSuccessful())
+        {
+            AddResult(aggregateResult);
+        }
+
+        return aggregateResult;
+    }
+
+    private void AddResult(Result<object> aggregateResult)
     {
         Remainder = string.Concat
         (
@@ -79,18 +91,6 @@ internal class MathematicExpressionState
             )
         );
         Results.Add(aggregateResult);
-    }
-
-    internal Result<object> PerformAggregation()
-    {
-        var aggregateResult = Indexes.First().Aggregator.Aggregate(LeftPartResult.Value!, RightPartResult.Value!);
-
-        if (aggregateResult.IsSuccessful())
-        {
-            AddResult(aggregateResult);
-        }
-
-        return aggregateResult;
     }
 
     private string GetLeftPart()
