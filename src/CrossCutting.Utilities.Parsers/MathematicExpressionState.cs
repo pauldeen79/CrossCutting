@@ -10,14 +10,17 @@ internal class MathematicExpressionState
 
     internal int Position { get; private set; }
     internal AggregatorInfo[] Indexes { get; private set; }
-    internal AggregatorPosition[] PreviousIndexes { get; private set; }
+    internal int[] PreviousIndexes { get; private set; }
     internal string LeftPart { get; private set; }
     internal Result<object> LeftPartResult { get; private set; }
-    internal AggregatorPosition[] NextIndexes { get; private set; }
+    internal int[] NextIndexes { get; private set; }
     internal string RightPart { get; private set; }
     internal Result<object> RightPartResult { get; private set; }
 
-    internal MathematicExpressionState(string input, Func<string, Result<object>> parseExpressionDelegate, Func<string, Func<string, Result<object>>, Result<object>> parseDelegate)
+    internal MathematicExpressionState(
+        string input,
+        Func<string, Result<object>> parseExpressionDelegate,
+        Func<string, Func<string, Result<object>>, Result<object>> parseDelegate)
     {
         Input = input;
         Remainder = input;
@@ -26,10 +29,10 @@ internal class MathematicExpressionState
 
         Position = -1;
         Indexes = Array.Empty<AggregatorInfo>();
-        PreviousIndexes = Array.Empty<AggregatorPosition>();
+        PreviousIndexes = Array.Empty<int>();
         LeftPart = string.Empty;
         LeftPartResult = Result<object>.NoContent();
-        NextIndexes = Array.Empty<AggregatorPosition>();
+        NextIndexes = Array.Empty<int>();
         RightPart = string.Empty;
         RightPartResult = Result<object>.NoContent();
     }
@@ -46,14 +49,14 @@ internal class MathematicExpressionState
             : -1;
     }
 
-    internal void SetPreviousIndexes(AggregatorPosition[] aggregatorPositions)
+    internal void SetPreviousIndexes(int[] aggregatorPositions)
     {
         PreviousIndexes = aggregatorPositions;
         LeftPart = GetLeftPart();
         LeftPartResult = GetPartResult(LeftPart);
     }
 
-    internal void SetNextIndexes(AggregatorPosition[] aggregatorPositions)
+    internal void SetNextIndexes(int[] aggregatorPositions)
     {
         NextIndexes = aggregatorPositions;
         RightPart = GetRightPart();
@@ -80,13 +83,13 @@ internal class MathematicExpressionState
             (
                 0,
                 PreviousIndexes.Any()
-                    ? PreviousIndexes.First().Position + 1
+                    ? PreviousIndexes.First() + 1
                     : 0
             ),
             FormattableString.Invariant($"{MathematicExpressionParser.TemporaryDelimiter}{Results.Count}{MathematicExpressionParser.TemporaryDelimiter}"),
             (
                 NextIndexes.Any()
-                    ? Remainder.Substring(NextIndexes.First().Position)
+                    ? Remainder.Substring(NextIndexes.First())
                     : string.Empty
             )
         );
@@ -95,12 +98,12 @@ internal class MathematicExpressionState
 
     private string GetLeftPart()
         => PreviousIndexes.Any()
-            ? Remainder.Substring(PreviousIndexes.First().Position + 1, Position - PreviousIndexes.First().Position - 1).Trim()
+            ? Remainder.Substring(PreviousIndexes.First() + 1, Position - PreviousIndexes.First() - 1).Trim()
             : Remainder.Substring(0, Position).Trim();
 
     private string GetRightPart()
         => NextIndexes.Any()
-            ? Remainder.Substring(Position + 1, NextIndexes.First().Position - Position - 1).Trim()
+            ? Remainder.Substring(Position + 1, NextIndexes.First() - Position - 1).Trim()
             : Remainder.Substring(Position + 1).Trim();
 
     private Result<object> GetPartResult(string part)

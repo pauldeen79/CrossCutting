@@ -26,15 +26,15 @@ internal class Operators : IMathematicExpressionProcessor
                 }
 
                 state.SetPreviousIndexes(Aggregators
-                    .Select(x => new AggregatorPosition(x.Character, state.Remainder.LastIndexOf(x.Character, state.Position - 1)))
-                    .Where(x => x.Position > -1)
-                    .OrderByDescending(x => x.Position)
+                    .Select(x => state.Remainder.LastIndexOf(x.Character, state.Position - 1))
+                    .Where(x => x > -1)
+                    .OrderByDescending(x => x)
                     .ToArray());
 
                 state.SetNextIndexes(Aggregators
-                    .Select(x => new AggregatorPosition(x.Character, state.Remainder.IndexOf(x.Character, state.Position + 1)))
-                    .Where(x => x.Position > -1)
-                    .OrderBy(x => x.Position)
+                    .Select(x => state.Remainder.IndexOf(x.Character, state.Position + 1))
+                    .Where(x => x > -1)
+                    .OrderBy(x => x)
                     .ToArray());
 
                 if (!state.LeftPartResult.IsSuccessful())
