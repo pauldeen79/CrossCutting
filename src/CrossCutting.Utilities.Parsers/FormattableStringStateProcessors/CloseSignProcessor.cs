@@ -16,8 +16,8 @@ public class CloseSignProcessor : IFormattableStringStateProcessor
             return Result<string>.NotSupported();
         }
 
-        if (FormattableStringParser.NextPositionIsSign(state.Input, state.Index, FormattableStringParser.CloseSign)
-            || FormattableStringParser.PreviousPositionIsSign(state.Input, state.Index, FormattableStringParser.CloseSign))
+        if (state.NextPositionIsSign(FormattableStringParser.CloseSign)
+            || state.PreviousPositionIsSign(FormattableStringParser.CloseSign))
         {
             return Result<string>.Continue();
         }

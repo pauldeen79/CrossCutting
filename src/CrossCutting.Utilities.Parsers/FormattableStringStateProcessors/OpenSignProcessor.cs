@@ -9,8 +9,8 @@ public class OpenSignProcessor : IFormattableStringStateProcessor
             return Result<string>.NotSupported();
         }
 
-        if (FormattableStringParser.NextPositionIsSign(state.Input, state.Index, FormattableStringParser.OpenSign)
-            || FormattableStringParser.PreviousPositionIsSign(state.Input, state.Index, FormattableStringParser.OpenSign))
+        if (state.NextPositionIsSign(FormattableStringParser.OpenSign)
+            || state.PreviousPositionIsSign(FormattableStringParser.OpenSign))
         {
             return Result<string>.Continue();
         }

@@ -14,4 +14,26 @@ public class FormattableStringParserState
     {
         Input = input;
     }
+
+    public bool NextPositionIsSign(char sign)
+    {
+        if (Index + 1 == Input.Length)
+        {
+            // We're at the end of the string, so this is not possible
+            return false;
+        }
+
+        return Input[Index + 1] == sign;
+    }
+
+    public bool PreviousPositionIsSign(char sign)
+    {
+        if (Index == 0)
+        {
+            // We're at the end of the string, so this is not possible
+            return false;
+        }
+
+        return Input[Index - 1] == sign;
+    }
 }

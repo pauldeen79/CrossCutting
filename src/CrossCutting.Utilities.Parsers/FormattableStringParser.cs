@@ -42,26 +42,4 @@ public class FormattableStringParser : IFormattableStringParser
 
         return Result<string>.Success(state.ResultBuilder.ToString());
     }
-
-    public static bool NextPositionIsSign(string input, int index, char sign)
-    {
-        if (index + 1 == input.Length)
-        {
-            // We're at the end of the string, so this is not possible
-            return false;
-        }
-
-        return input[index + 1] == sign;
-    }
-
-    public static bool PreviousPositionIsSign(string input, int index, char sign)
-    {
-        if (index == 0)
-        {
-            // We're at the end of the string, so this is not possible
-            return false;
-        }
-
-        return input[index - 1] == sign;
-    }
 }
