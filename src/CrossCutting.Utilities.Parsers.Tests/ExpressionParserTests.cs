@@ -1,7 +1,11 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
-public class ExpressionParserTests
+public sealed class ExpressionParserTests : IDisposable
 {
+    private readonly ServiceProvider _provider;
+
+    public ExpressionParserTests() => _provider = new ServiceCollection().AddParsers().BuildServiceProvider();
+
     [Fact]
     public void Parse_Parses_true_Correctly()
     {
@@ -9,7 +13,7 @@ public class ExpressionParserTests
         var input = "true";
 
         // Act
-        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -23,7 +27,7 @@ public class ExpressionParserTests
         var input = "false";
 
         // Act
-        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -37,7 +41,7 @@ public class ExpressionParserTests
         var input = "1.5";
 
         // Act
-        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -51,7 +55,7 @@ public class ExpressionParserTests
         var input = "2";
 
         // Act
-        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -65,7 +69,7 @@ public class ExpressionParserTests
         var input = "3147483647";
 
         // Act
-        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -79,7 +83,7 @@ public class ExpressionParserTests
         var input = "\"Hello world!\"";
 
         // Act
-        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -93,11 +97,14 @@ public class ExpressionParserTests
         var input = "01/02/2019";
 
         // Act
-        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().BeEquivalentTo(new DateTime(2019, 1, 2));
     }
 
+    public void Dispose() => _provider.Dispose();
+
+    private IExpressionParser CreateSut() => _provider.GetRequiredService<IExpressionParser>();
 }

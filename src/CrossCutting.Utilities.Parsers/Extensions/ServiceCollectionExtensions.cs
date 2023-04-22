@@ -5,6 +5,10 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddParsers(this IServiceCollection services)
         => services
         .AddSingleton<IExpressionParser, ExpressionParser>()
+        .AddSingleton<IExpressionParserProcessor, BooleanExpressionParserProcessor>()
+        .AddSingleton<IExpressionParserProcessor, StringExpressionParserProcessor>()
+        .AddSingleton<IExpressionParserProcessor, NumericExpressionParserProcessor>()
+        .AddSingleton<IExpressionParserProcessor, DateTimeExpressionParserProcessor>()
         .AddSingleton<IExpressionStringParser, ExpressionStringParser>()
         .AddSingleton<IExpressionStringParserProcessor, EmptyExpressionProcessor>()
         .AddSingleton<IExpressionStringParserProcessor, LiteralExpressionProcessor>()

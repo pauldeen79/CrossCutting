@@ -9,6 +9,7 @@ global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
 global using CrossCutting.Utilities.Parsers.Contracts;
+global using CrossCutting.Utilities.Parsers.ExpressionParserProcessors;
 global using CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
 global using CrossCutting.Utilities.Parsers.FormattableStringStateProcessors;
 global using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
