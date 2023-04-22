@@ -32,7 +32,7 @@ public class ValueCollectionTests
         var actual = new ValueCollection<string>(new[] { "a", "b", "c" });
 
         // Assert
-        actual.Should().BeEquivalentTo(new[] { "a", "b", "c" });
+        actual.Should().BeEquivalentTo("a", "b", "c");
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class ValueCollectionTests
         var actual = new ValueCollection<string>(new[] { "a", "b", "c" }, equalityComparerMock.Object);
 
         // Assert
-        actual.Should().BeEquivalentTo(new[] { "a", "b", "c" });
+        actual.Should().BeEquivalentTo("a", "b", "c");
     }
 
     [Fact]

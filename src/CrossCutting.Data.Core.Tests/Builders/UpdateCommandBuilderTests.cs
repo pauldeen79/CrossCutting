@@ -69,14 +69,14 @@ public class UpdateCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Update);
+        actual.Operation.Should().Be(DatabaseOperation.Update);
         actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = @Field1, Field2 = @Field2, Field3 = @Field3");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters != null)
         {
             parameters.Should().HaveCount(3);
-            parameters.Keys.Should().BeEquivalentTo(new[] { "Field1", "Field2", "Field3" });
+            parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");
             parameters.Values.Should().BeEquivalentTo(new[] { "Value1", "Value2", "Value3" });
         }
     }
@@ -97,7 +97,7 @@ public class UpdateCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Update);
+        actual.Operation.Should().Be(DatabaseOperation.Update);
         actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = \"Field1\", Field2 = \"Field2\", Field3 = \"Field3\" WHERE Field1 = \"OldValue1\" AND Field2 = \"OldValue2\" AND Field3 = \"OldValue3\"");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
@@ -121,7 +121,7 @@ public class UpdateCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Update);
+        actual.Operation.Should().Be(DatabaseOperation.Update);
         actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = \"Field1\", Field2 = \"Field2\", Field3 = \"Field3\" OUTPUT Field1, Field2 WHERE Field1 = \"OldValue1\" AND Field2 = \"OldValue2\" AND Field3 = \"OldValue3\"");
     }
 
@@ -143,7 +143,7 @@ public class UpdateCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Update);
+        actual.Operation.Should().Be(DatabaseOperation.Update);
         actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = \"Field1\", Field2 = \"Field2\", Field3 = \"Field3\" OUTPUT Field1, Field2 INTO @NewValues WHERE Field1 = \"OldValue1\" AND Field2 = \"OldValue2\" AND Field3 = \"OldValue3\"");
     }
 
@@ -161,14 +161,14 @@ public class UpdateCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Update);
+        actual.Operation.Should().Be(DatabaseOperation.Update);
         actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = @Field1");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters != null)
         {
             parameters.Should().HaveCount(1);
-            parameters.Keys.Should().BeEquivalentTo(new[] { "Field1" });
+            parameters.Keys.Should().BeEquivalentTo("Field1");
             parameters.Values.Should().BeEquivalentTo(new[] { "Value1" });
         }
     }
@@ -192,14 +192,14 @@ public class UpdateCommandBuilderTests
             .Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Update);
+        actual.Operation.Should().Be(DatabaseOperation.Update);
         actual.CommandText.Should().Be("UPDATE MyTable2 SET Field2 = @Field2");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters != null)
         {
             parameters.Should().HaveCount(1);
-            parameters.Keys.Should().BeEquivalentTo(new[] { "Field2" });
+            parameters.Keys.Should().BeEquivalentTo("Field2");
             parameters.Values.Should().BeEquivalentTo(new[] { "Value2" });
         }
     }

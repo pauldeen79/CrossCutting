@@ -42,7 +42,6 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-#pragma warning disable S2699 // Tests should include assertions
     public void CanStubCommandForExecuteReader()
     {
         ReaderTest(reader => new MyRecord
@@ -98,7 +97,6 @@ public sealed class IntegrationTests : IDisposable
             };
         });
     }
-#pragma warning restore S2699 // Tests should include assertions
 
     [Fact]
     public void CanGetFieldCountOnDataReader()

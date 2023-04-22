@@ -23,8 +23,7 @@ F	6	u"; //copied directly from Excel 8-)
 
         // Assert
         var lines = actual.GetLines();
-        lines.Should().BeEquivalentTo(new[]
-        {
+        lines.Should().BeEquivalentTo(
             "| Kolom A | Kolom B | Kolom C |",
             "| A       | 1       | z       |",
             "| B       | 2       | y       |",
@@ -32,6 +31,6 @@ F	6	u"; //copied directly from Excel 8-)
             "| D       | 4       | w       |",
             "| E       | 5       | v       |",
             "| F       | 6       | u       |"
-        });
+        );
     }
 }

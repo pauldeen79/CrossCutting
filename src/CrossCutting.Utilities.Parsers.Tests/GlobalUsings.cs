@@ -1,5 +1,13 @@
 ﻿global using System;
+global using System.Globalization;
 global using System.Linq;
+global using CrossCutting.Common.Results;
+global using CrossCutting.Utilities.Parsers.Contracts;
+global using CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
+global using CrossCutting.Utilities.Parsers.Extensions;
+global using CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Aggregators;
+global using CrossCutting.Utilities.Parsers.NumericAggregatorProcessors;
 global using FluentAssertions;
 global using FluentAssertions.Execution;
+global using Microsoft.Extensions.DependencyInjection;
 global using Xunit;

@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Common.Results;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CrossCutting.Common.Results;
 
 public record Result<T> : Result
 {
@@ -37,6 +39,7 @@ public record Result<T> : Result
     public static new Result<T> NoContent(string errorMessage) => new(default, ResultStatus.NoContent, errorMessage, Enumerable.Empty<ValidationError>());
     public static new Result<T> ResetContent() => new(default, ResultStatus.ResetContent, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> ResetContent(string errorMessage) => new(default, ResultStatus.ResetContent, errorMessage, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Continue() => new(default, ResultStatus.Continue, null, Enumerable.Empty<ValidationError>());
     public static Result<T> Redirect(T value) => new(value, ResultStatus.Redirect, null, Enumerable.Empty<ValidationError>());
     public static Result<T> FromExistingResult(Result existingResult) => new(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
     public static Result<T> FromExistingResult(Result existingResult, T value) => new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
@@ -62,6 +65,21 @@ public record Result<T> : Result
             Error("Could not determine result because there are no steps defined"),
             (seed, step) => step.Invoke(command, seed)
         );
+
+    public static Result<T> Pipe<TProcessor>(T seed, IEnumerable<TProcessor> processors, Func<Result<T>, TProcessor, Result<T>> processDelegate)
+    {
+        var result = Result<T>.Success(seed);
+        foreach (var processor in processors)
+        {
+            result = processDelegate.Invoke(result, processor);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
+        }
+
+        return result;
+    }
 
     public T GetValueOrThrow(string errorMessage)
     {
@@ -105,7 +123,7 @@ public record Result
         ValidationErrors = new ValueCollection<ValidationError>(validationErrors);
     }
 
-    public bool IsSuccessful() => Status == ResultStatus.Ok;
+    public bool IsSuccessful() => Status == ResultStatus.Ok || Status == ResultStatus.NoContent || Status == ResultStatus.Continue;
     public string? ErrorMessage { get; }
     public ResultStatus Status { get; }
     public IReadOnlyCollection<ValidationError> ValidationErrors { get; }
@@ -133,6 +151,7 @@ public record Result
     public static Result NoContent(string errorMessage) => new(ResultStatus.NoContent, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result ResetContent() => new(ResultStatus.ResetContent, null, Enumerable.Empty<ValidationError>());
     public static Result ResetContent(string errorMessage) => new(ResultStatus.ResetContent, errorMessage, Enumerable.Empty<ValidationError>());
+    public static Result Continue() => new(ResultStatus.Continue, null, Enumerable.Empty<ValidationError>());
 
     public static Result<TInstance> FromInstance<TInstance>(TInstance? instance)
         where TInstance : class

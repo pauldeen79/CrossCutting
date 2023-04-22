@@ -56,14 +56,14 @@ public class InsertSelectCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Insert);
+        actual.Operation.Should().Be(DatabaseOperation.Insert);
         actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) SELECT Field1, Field2, Field3 FROM SomeOtherTable WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters != null)
         {
             parameters.Should().HaveCount(3);
-            parameters.Keys.Should().BeEquivalentTo(new[] { "Field1", "Field2", "Field3" });
+            parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");
             parameters.Values.Should().BeEquivalentTo(new[] { "Value1", "Value2", "Value3" });
         }
     }
@@ -88,7 +88,7 @@ public class InsertSelectCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Insert);
+        actual.Operation.Should().Be(DatabaseOperation.Insert);
         actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) OUTPUT INSERTED.Field1, INSERTED.Field2, INSERTED.Field3 INTO @NewValues SELECT Field1, Field2, Field3 FROM SomeOtherTable WHERE Field1 = \"Value1\" AND Field2 = \"Value2\" AND Field3 = \"Value3\"");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
@@ -126,14 +126,14 @@ public class InsertSelectCommandBuilderTests
             .Build();
 
         // Assert
-        actual.Operation.Should().Be(Abstractions.DatabaseOperation.Insert);
+        actual.Operation.Should().Be(DatabaseOperation.Insert);
         actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) SELECT Field1, Field2, Field3 FROM SomeOtherTable WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters != null)
         {
             parameters.Should().HaveCount(3);
-            parameters.Keys.Should().BeEquivalentTo(new[] { "Field1", "Field2", "Field3" });
+            parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");
             parameters.Values.Should().BeEquivalentTo(new[] { "Value1", "Value2", "Value3" });
         }
     }

@@ -779,7 +779,7 @@ public class ResultTests
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NoContent);
-        actual.IsSuccessful().Should().BeFalse();
+        actual.IsSuccessful().Should().BeTrue();
         actual.ErrorMessage.Should().BeNull();
         actual.ValidationErrors.Should().BeEmpty();
         actual.Value.Should().BeNull();
@@ -793,7 +793,7 @@ public class ResultTests
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NoContent);
-        actual.IsSuccessful().Should().BeFalse();
+        actual.IsSuccessful().Should().BeTrue();
         actual.ErrorMessage.Should().BeNull();
         actual.ValidationErrors.Should().BeEmpty();
     }
@@ -806,7 +806,7 @@ public class ResultTests
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NoContent);
-        actual.IsSuccessful().Should().BeFalse();
+        actual.IsSuccessful().Should().BeTrue();
         actual.ErrorMessage.Should().Be("Not authenticated");
         actual.ValidationErrors.Should().BeEmpty();
         actual.Value.Should().BeNull();
@@ -820,7 +820,7 @@ public class ResultTests
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NoContent);
-        actual.IsSuccessful().Should().BeFalse();
+        actual.IsSuccessful().Should().BeTrue();
         actual.ErrorMessage.Should().Be("Not authenticated");
         actual.ValidationErrors.Should().BeEmpty();
     }
@@ -876,6 +876,33 @@ public class ResultTests
         actual.Status.Should().Be(ResultStatus.ResetContent);
         actual.IsSuccessful().Should().BeFalse();
         actual.ErrorMessage.Should().Be("Not authenticated");
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_Continue_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.Continue();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Continue);
+        actual.IsSuccessful().Should().BeTrue();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_Continue_Void_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result.Continue();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Continue);
+        actual.IsSuccessful().Should().BeTrue();
+        actual.ErrorMessage.Should().BeNull();
         actual.ValidationErrors.Should().BeEmpty();
     }
 
@@ -1295,11 +1322,15 @@ public class ResultTests
         }
     }
 
+#pragma warning disable S2094 // Classes should not be empty
     private class SomeResultValue
+#pragma warning restore S2094 // Classes should not be empty
     {
     }
 
+#pragma warning disable S2094 // Classes should not be empty
     private sealed class SomeDerivedResultValue : SomeResultValue
+#pragma warning restore S2094 // Classes should not be empty
     {
     }
 

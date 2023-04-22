@@ -13,5 +13,6 @@ public enum ResultStatus
     Unavailable,
     NotImplemented,
     NoContent,
-    ResetContent
+    ResetContent,
+    Continue
 }

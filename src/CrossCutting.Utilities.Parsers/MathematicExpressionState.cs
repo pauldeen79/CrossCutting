@@ -1,0 +1,113 @@
+﻿namespace CrossCutting.Utilities.Parsers;
+
+public class MathematicExpressionState
+{
+    public string Input { get; }
+    public string Remainder { get; set; }
+    public IFormatProvider FormatProvider { get; }
+    public List<Result<object>> Results { get; } = new();
+    public Func<string, IFormatProvider, Result<object>> ParseDelegate { get; }
+
+    public int Position { get; private set; }
+    public AggregatorInfo[] Indexes { get; private set; }
+    public int[] PreviousIndexes { get; private set; }
+    public string LeftPart { get; private set; }
+    public Result<object> LeftPartResult { get; private set; }
+    public int[] NextIndexes { get; private set; }
+    public string RightPart { get; private set; }
+    public Result<object> RightPartResult { get; private set; }
+
+    public MathematicExpressionState(
+        string input,
+        IFormatProvider formatProvider,
+        Func<string, IFormatProvider, Result<object>> parseDelegate)
+    {
+        Input = input;
+        FormatProvider = formatProvider;
+        Remainder = input;
+        ParseDelegate = parseDelegate;
+
+        Position = -1;
+        Indexes = Array.Empty<AggregatorInfo>();
+        PreviousIndexes = Array.Empty<int>();
+        LeftPart = string.Empty;
+        LeftPartResult = Result<object>.NoContent();
+        NextIndexes = Array.Empty<int>();
+        RightPart = string.Empty;
+        RightPartResult = Result<object>.NoContent();
+    }
+
+    internal void SetPosition(IGrouping<int, AggregatorBase> aggregators)
+    {
+        Indexes = aggregators
+            .Select(x => new AggregatorInfo(x, Remainder.IndexOf(x.Character)))
+            .Where(x => x.Index > -1)
+            .OrderBy(x => x.Index)
+            .ToArray();
+        Position = Indexes.Any()
+            ? Indexes.First().Index
+            : -1;
+    }
+
+    internal void SetPreviousIndexes(int[] aggregatorPositions, IExpressionParser expressionParser)
+    {
+        PreviousIndexes = aggregatorPositions;
+        LeftPart = GetLeftPart();
+        LeftPartResult = GetPartResult(LeftPart, expressionParser);
+    }
+
+    internal void SetNextIndexes(int[] aggregatorPositions, IExpressionParser expressionParser)
+    {
+        NextIndexes = aggregatorPositions;
+        RightPart = GetRightPart();
+        RightPartResult = GetPartResult(RightPart, expressionParser);
+    }
+
+    internal Result<object> PerformAggregation()
+    {
+        var aggregateResult = Indexes.First().Aggregator.Aggregate(LeftPartResult.Value!, RightPartResult.Value!);
+
+        if (aggregateResult.IsSuccessful())
+        {
+            AddResult(aggregateResult);
+        }
+
+        return aggregateResult;
+    }
+
+    private void AddResult(Result<object> aggregateResult)
+    {
+        Remainder = string.Concat
+        (
+            Remainder.Substring
+            (
+                0,
+                PreviousIndexes.Any()
+                    ? PreviousIndexes.First() + 1
+                    : 0
+            ),
+            FormattableString.Invariant($"{MathematicExpressionParser.TemporaryDelimiter}{Results.Count}{MathematicExpressionParser.TemporaryDelimiter}"),
+            (
+                NextIndexes.Any()
+                    ? Remainder.Substring(NextIndexes.First())
+                    : string.Empty
+            )
+        );
+        Results.Add(aggregateResult);
+    }
+
+    private string GetLeftPart()
+        => PreviousIndexes.Any()
+            ? Remainder.Substring(PreviousIndexes.First() + 1, Position - PreviousIndexes.First() - 1).Trim()
+            : Remainder.Substring(0, Position).Trim();
+
+    private string GetRightPart()
+        => NextIndexes.Any()
+            ? Remainder.Substring(Position + 1, NextIndexes.First() - Position - 1).Trim()
+            : Remainder.Substring(Position + 1).Trim();
+
+    private Result<object> GetPartResult(string part, IExpressionParser expressionParser)
+        => part.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && part.EndsWith(MathematicExpressionParser.TemporaryDelimiter)
+            ? Results[int.Parse(part.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]
+            : expressionParser.Parse(part, FormatProvider);
+}
