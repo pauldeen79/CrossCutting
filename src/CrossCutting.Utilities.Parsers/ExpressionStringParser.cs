@@ -13,19 +13,21 @@ public class ExpressionStringParser : IExpressionStringParser
 
     private readonly IFunctionResultParser _functionResultParser;
     private readonly IExpressionParser _expressionParser;
+    private readonly IPlaceholderProcessor _placeholderProcessor;
 
-    public ExpressionStringParser(IFunctionResultParser functionResultParser, IExpressionParser expressionParser)
+    public ExpressionStringParser(
+        IFunctionResultParser functionResultParser,
+        IExpressionParser expressionParser,
+        IPlaceholderProcessor placeholderProcessor)
     {
         _functionResultParser = functionResultParser;
         _expressionParser = expressionParser;
+        _placeholderProcessor = placeholderProcessor;
     }
 
-    public Result<object> Parse(
-        string input,
-        IFormatProvider formatProvider,
-        Func<string, Result<string>> placeholderDelegate)
+    public Result<object> Parse(string input, IFormatProvider formatProvider)
     {
-        var state = new ExpressionStringParserState(input, formatProvider, _expressionParser, placeholderDelegate, _functionResultParser);
+        var state = new ExpressionStringParserState(input, formatProvider, _expressionParser, _placeholderProcessor, _functionResultParser);
         foreach (var processor in _nonSimpleExpressionProcessors)
         {
             var result = processor.Process(state);

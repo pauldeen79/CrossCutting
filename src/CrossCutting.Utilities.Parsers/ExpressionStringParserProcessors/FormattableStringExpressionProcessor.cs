@@ -7,7 +7,7 @@ internal class FormattableStringExpressionProcessor : IExpressionStringParserPro
         if (state.Input.StartsWith("=\"") && state.Input.EndsWith("\""))
         {
             // ="string value" -> literal, no functions but formattable strings possible
-            var formattedStringResult = FormattableStringParser.Parse(state.Input.Substring(2, state.Input.Length - 3), state.PlaceholderDelegate);
+            var formattedStringResult = new FormattableStringParser(state.PlaceholderProcessor).Parse(state.Input.Substring(2, state.Input.Length - 3));
             return formattedStringResult.Status != ResultStatus.Ok
                 ? Result<object>.FromExistingResult(formattedStringResult)
                 : Result<object>.FromExistingResult(formattedStringResult, result => result);

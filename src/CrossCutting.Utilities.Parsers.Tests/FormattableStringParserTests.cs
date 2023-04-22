@@ -11,7 +11,7 @@ public class FormattableStringParserTests
         var input = "Hello {Name {nested}} you are welcome";
 
         // Act
-        var result = FormattableStringParser.Parse(input, ProcessPlaceholder);
+        var result = CreateSut().Parse(input);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -24,7 +24,7 @@ public class FormattableStringParserTests
         var input = "}";
 
         // Act
-        var result = FormattableStringParser.Parse(input, ProcessPlaceholder);
+        var result = CreateSut().Parse(input);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -37,7 +37,7 @@ public class FormattableStringParserTests
         var input = "{";
 
         // Act
-        var result = FormattableStringParser.Parse(input, ProcessPlaceholder);
+        var result = CreateSut().Parse(input);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -50,7 +50,7 @@ public class FormattableStringParserTests
         var input = "{Unsupported placeholder}";
 
         // Act
-        var result = FormattableStringParser.Parse(input, ProcessPlaceholder);
+        var result = CreateSut().Parse(input);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -64,15 +64,20 @@ public class FormattableStringParserTests
     public void Parse_Returns_Success_On_Valid_Input(string input, string expectedValue)
     {
         // Act
-        var result = FormattableStringParser.Parse(input, ProcessPlaceholder);
+        var result = CreateSut().Parse(input);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be(expectedValue);
     }
 
-    private Result<string> ProcessPlaceholder(string arg)
-        => arg == "Name"
-            ? Result<string>.Success(ReplacedValue)
-            : Result<string>.Error($"Unsupported placeholder name: {arg}");
+    private FormattableStringParser CreateSut() => new(new MyPlaceholderProcessor());
+
+    private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
+    {
+        public Result<string> Process(string value)
+            => value == "Name"
+                ? Result<string>.Success(ReplacedValue)
+                : Result<string>.Error($"Unsupported placeholder name: {value}");
+    }
 }

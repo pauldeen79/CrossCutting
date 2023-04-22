@@ -13,7 +13,7 @@ public class ExpressionStringParserTests
         var input = string.Empty;
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -27,7 +27,7 @@ public class ExpressionStringParserTests
         var input = "=";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -41,7 +41,7 @@ public class ExpressionStringParserTests
         var input = "string that does not begin with =";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -55,7 +55,7 @@ public class ExpressionStringParserTests
         var input = "=1+1";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -69,7 +69,7 @@ public class ExpressionStringParserTests
         var input = "=1+error";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -83,7 +83,7 @@ public class ExpressionStringParserTests
         var input = "=\"Hello {Name}!\"";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -97,7 +97,7 @@ public class ExpressionStringParserTests
         var input = "=\"Hello {Kaboom}!\"";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -111,7 +111,7 @@ public class ExpressionStringParserTests
         var input = "=MYFUNCTION()";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -125,7 +125,7 @@ public class ExpressionStringParserTests
         var input = "=error()";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -139,7 +139,7 @@ public class ExpressionStringParserTests
         var input = "some string that does not start with = sign";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -153,7 +153,7 @@ public class ExpressionStringParserTests
         var input = "=\"some string that starts with = sign but does not contain any formattable string, function or mathematical expression\"";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -167,7 +167,7 @@ public class ExpressionStringParserTests
         var input = "=somefunction(^^)";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotSupported);
@@ -181,19 +181,22 @@ public class ExpressionStringParserTests
         var input = "=()";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, ProcessPlaceholder);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
         result.ErrorMessage.Should().Be("No function name found");
     }
 
-    private ExpressionStringParser CreateSut() => new(new MyFunctionResultParser(), new DefaultExpressionParser());
+    private ExpressionStringParser CreateSut() => new(new MyFunctionResultParser(), new DefaultExpressionParser(), new MyPlaceholderProcessor());
 
-    private Result<string> ProcessPlaceholder(string arg)
-        => arg =="Name"
-            ? Result<string>.Success(ReplacedValue)
-            : Result<string>.Error($"Unsupported placeholder name: {arg}");
+    private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
+    {
+        public Result<string> Process(string value)
+            => value == "Name"
+                ? Result<string>.Success(ReplacedValue)
+                : Result<string>.Error($"Unsupported placeholder name: {value}");
+    }
 
     private sealed class MyFunctionResultParser : IFunctionResultParser
     {

@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public static class FormattableStringParser
+public class FormattableStringParser
 {
     private const char OpenSign = '{';
     private const char CloseSign = '}';
@@ -12,11 +12,17 @@ public static class FormattableStringParser
         new PlaceholderProcessor(),
         new ResultProcessor(),
     };
-    
-    //TODO: Refactor delegate to interface and use DI constructor injection
-    public static Result<string> Parse(string input, Func<string, Result<string>> placeholderDelegate)
+
+    private readonly IPlaceholderProcessor _placeholderProcessor;
+
+    public FormattableStringParser(IPlaceholderProcessor placeholderProcessor)
     {
-        var state = new FormattableStringState(input, placeholderDelegate);
+        _placeholderProcessor = placeholderProcessor;
+    }
+
+    public Result<string> Parse(string input)
+    {
+        var state = new FormattableStringState(input, _placeholderProcessor);
 
         for (var index = 0; index < input.Length; index++)
         {
@@ -70,7 +76,7 @@ public static class FormattableStringParser
     private sealed class FormattableStringState
     {
         public string Input { get; }
-        public Func<string, Result<string>> PlaceholderDelegate { get; }
+        public IPlaceholderProcessor PlaceholderProcessor { get; }
 
         public StringBuilder ResultBuilder { get; } = new();
         public StringBuilder PlaceholderBuilder { get; } = new();
@@ -78,10 +84,10 @@ public static class FormattableStringParser
         public char Current { get; set; }
         public int Index { get; set; }
 
-        public FormattableStringState(string input, Func<string, Result<string>> placeholderDelegate)
+        public FormattableStringState(string input, IPlaceholderProcessor placeholderProcessor)
         {
             Input = input;
-            PlaceholderDelegate = placeholderDelegate;
+            PlaceholderProcessor = placeholderProcessor;
         }
     }
 
@@ -134,7 +140,7 @@ public static class FormattableStringParser
                 return Result<string>.Invalid("Missing open sign '{'. To use the '}' character, you have to escape it with an additional '}' character");
             }
 
-            var placeholderResult = state.PlaceholderDelegate.Invoke(state.PlaceholderBuilder.ToString());
+            var placeholderResult = state.PlaceholderProcessor.Process(state.PlaceholderBuilder.ToString());
             if (!placeholderResult.IsSuccessful())
             {
                 return placeholderResult;
