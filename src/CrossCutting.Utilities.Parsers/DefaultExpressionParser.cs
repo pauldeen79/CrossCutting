@@ -2,7 +2,6 @@
 
 public class DefaultExpressionParser : IExpressionParser
 {
-    //TODO: Replace with simple "012345677890" and "01234567890." strings, using LINQ query
     private static readonly Regex _floatingPointRegEx = new(@"^[0-9]*(?:\.[0-9]*)?$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
     private static readonly Regex _wholeNumberRegEx = new("^[0-9]*$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
 
