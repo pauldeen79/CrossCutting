@@ -188,7 +188,6 @@ public class ExpressionStringParserTests
 
     private ExpressionStringParser CreateSut() => new(
         new MyFunctionResultParser(),
-        new MyPlaceholderProcessor(),
         new IExpressionStringParserProcessor[]
         {
             new EmptyExpressionProcessor(),
