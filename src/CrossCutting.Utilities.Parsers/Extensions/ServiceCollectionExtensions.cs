@@ -4,7 +4,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddParsers(this IServiceCollection services)
         => services
-        .AddSingleton<IExpressionParser, DefaultExpressionParser>()
+        .AddSingleton<IExpressionParser, ExpressionParser>()
         .AddSingleton<IExpressionStringParser, ExpressionStringParser>()
         .AddSingleton<IExpressionStringParserProcessor, EmptyExpressionProcessor>()
         .AddSingleton<IExpressionStringParserProcessor, LiteralExpressionProcessor>()

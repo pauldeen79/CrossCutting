@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
-public class DefaultExpressionParserTests
+public class ExpressionParserTests
 {
     [Fact]
     public void Parse_Parses_true_Correctly()
@@ -9,7 +9,7 @@ public class DefaultExpressionParserTests
         var input = "true";
 
         // Act
-        var result = new DefaultExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -23,7 +23,7 @@ public class DefaultExpressionParserTests
         var input = "false";
 
         // Act
-        var result = new DefaultExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -37,7 +37,7 @@ public class DefaultExpressionParserTests
         var input = "1.5";
 
         // Act
-        var result = new DefaultExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -51,7 +51,7 @@ public class DefaultExpressionParserTests
         var input = "2";
 
         // Act
-        var result = new DefaultExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -65,7 +65,7 @@ public class DefaultExpressionParserTests
         var input = "3147483647";
 
         // Act
-        var result = new DefaultExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -79,7 +79,7 @@ public class DefaultExpressionParserTests
         var input = "\"Hello world!\"";
 
         // Act
-        var result = new DefaultExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -93,7 +93,7 @@ public class DefaultExpressionParserTests
         var input = "01/02/2019";
 
         // Act
-        var result = new DefaultExpressionParser().Parse(input, CultureInfo.InvariantCulture);
+        var result = new ExpressionParser().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);

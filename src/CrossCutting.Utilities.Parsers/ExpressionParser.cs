@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public class DefaultExpressionParser : IExpressionParser
+public class ExpressionParser : IExpressionParser
 {
     private static readonly Regex _floatingPointRegEx = new(@"^[0-9]*(?:\.[0-9]*)?$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
     private static readonly Regex _wholeNumberRegEx = new("^[0-9]*$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
