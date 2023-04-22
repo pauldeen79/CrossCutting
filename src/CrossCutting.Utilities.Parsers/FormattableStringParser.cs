@@ -2,27 +2,23 @@
 
 public class FormattableStringParser : IFormattableStringParser
 {
-    private const char OpenSign = '{';
-    private const char CloseSign = '}';
-
-    private static readonly FormattableStringStateProcessor[] _processors = new FormattableStringStateProcessor[]
-    {
-        new OpenSignProcessor(),
-        new CloseSignProcessor(),
-        new PlaceholderProcessor(),
-        new ResultProcessor(),
-    };
+    public const char OpenSign = '{';
+    public const char CloseSign = '}';
 
     private readonly IPlaceholderProcessor _placeholderProcessor;
+    private readonly IEnumerable<IFormattableStringStateProcessor> _processors;
 
-    public FormattableStringParser(IPlaceholderProcessor placeholderProcessor)
+    public FormattableStringParser(
+        IPlaceholderProcessor placeholderProcessor,
+        IEnumerable<IFormattableStringStateProcessor> processors)
     {
         _placeholderProcessor = placeholderProcessor;
+        _processors = processors;
     }
 
     public Result<string> Parse(string input)
     {
-        var state = new FormattableStringState(input, _placeholderProcessor);
+        var state = new FormattableStringParserState(input, _placeholderProcessor);
 
         for (var index = 0; index < input.Length; index++)
         {
@@ -51,7 +47,7 @@ public class FormattableStringParser : IFormattableStringParser
         return Result<string>.Success(state.ResultBuilder.ToString());
     }
 
-    private static bool NextPositionIsSign(string input, int index, char sign)
+    public static bool NextPositionIsSign(string input, int index, char sign)
     {
         if (index + 1 == input.Length)
         {
@@ -62,7 +58,7 @@ public class FormattableStringParser : IFormattableStringParser
         return input[index + 1] == sign;
     }
 
-    private static bool PreviousPositionIsSign(string input, int index, char sign)
+    public static bool PreviousPositionIsSign(string input, int index, char sign)
     {
         if (index == 0)
         {
@@ -71,111 +67,5 @@ public class FormattableStringParser : IFormattableStringParser
         }
 
         return input[index - 1] == sign;
-    }
-
-    private sealed class FormattableStringState
-    {
-        public string Input { get; }
-        public IPlaceholderProcessor PlaceholderProcessor { get; }
-
-        public StringBuilder ResultBuilder { get; } = new();
-        public StringBuilder PlaceholderBuilder { get; } = new();
-        public bool InPlaceholder { get; set;  }
-        public char Current { get; set; }
-        public int Index { get; set; }
-
-        public FormattableStringState(string input, IPlaceholderProcessor placeholderProcessor)
-        {
-            Input = input;
-            PlaceholderProcessor = placeholderProcessor;
-        }
-    }
-
-    private abstract class FormattableStringStateProcessor
-    {
-        public abstract Result<string> Process(FormattableStringState state);
-    }
-
-    private sealed class OpenSignProcessor : FormattableStringStateProcessor
-    {
-        public override Result<string> Process(FormattableStringState state)
-        {
-            if (state.Current != OpenSign)
-            {
-                return Result<string>.NotSupported();
-            }
-
-            if (NextPositionIsSign(state.Input, state.Index, OpenSign) || PreviousPositionIsSign(state.Input, state.Index, OpenSign))
-            {
-                return Result<string>.Continue();
-            }
-
-            if (state.InPlaceholder)
-            {
-                return Result<string>.Invalid("Recursive placeholder detected, this is not supported");
-            }
-
-            state.InPlaceholder = true;
-
-            return Result<string>.NoContent();
-        }
-    }
-
-    private sealed class CloseSignProcessor : FormattableStringStateProcessor
-    {
-        public override Result<string> Process(FormattableStringState state)
-        {
-            if (state.Current != CloseSign)
-            {
-                return Result<string>.NotSupported();
-            }
-
-            if (NextPositionIsSign(state.Input, state.Index, CloseSign) || PreviousPositionIsSign(state.Input, state.Index, CloseSign))
-            {
-                return Result<string>.Continue();
-            }
-
-            if (!state.InPlaceholder)
-            {
-                return Result<string>.Invalid("Missing open sign '{'. To use the '}' character, you have to escape it with an additional '}' character");
-            }
-
-            var placeholderResult = state.PlaceholderProcessor.Process(state.PlaceholderBuilder.ToString());
-            if (!placeholderResult.IsSuccessful())
-            {
-                return placeholderResult;
-            }
-
-            state.InPlaceholder = false;
-            state.ResultBuilder.Append(placeholderResult.Value!);
-            state.PlaceholderBuilder.Clear();
-
-            return Result<string>.NoContent();
-        }
-    }
-
-    private sealed class PlaceholderProcessor : FormattableStringStateProcessor
-    {
-        public override Result<string> Process(FormattableStringState state)
-        {
-            if (!state.InPlaceholder)
-            {
-                return Result<string>.NotSupported();
-            }
-
-            state.PlaceholderBuilder.Append(state.Current);
-
-            return Result<string>.NoContent();
-        }
-    }
-
-    private sealed class ResultProcessor : FormattableStringStateProcessor
-    {
-        public override Result<string> Process(FormattableStringState state)
-        {
-            state.ResultBuilder.Append(state.Current);
-
-            return Result<string>.NoContent();
-        }
     }
 }

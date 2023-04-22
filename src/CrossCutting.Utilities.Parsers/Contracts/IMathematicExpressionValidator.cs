@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Contracts;
 
-internal interface IMathematicExpressionValidator
+public interface IMathematicExpressionValidator
 {
     Result<MathematicExpressionState> Validate(MathematicExpressionState state);
 }

@@ -1,7 +1,9 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
-public class FormattableStringParserTests
+public sealed class FormattableStringParserTests : IDisposable
 {
+    private ServiceProvider? _provider;
+
     private const string ReplacedValue = "replaced name";
 
     [Fact]
@@ -71,7 +73,16 @@ public class FormattableStringParserTests
         result.Value.Should().Be(expectedValue);
     }
 
-    private FormattableStringParser CreateSut() => new(new MyPlaceholderProcessor());
+    public void Dispose() => _provider?.Dispose();
+
+    private IFormattableStringParser CreateSut()
+    {
+        _provider = new ServiceCollection()
+        .AddParsers()
+            .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+            .BuildServiceProvider();
+        return _provider.GetRequiredService<IFormattableStringParser>();
+    }
 
     private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
     {

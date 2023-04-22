@@ -1,9 +1,9 @@
-﻿using CrossCutting.Utilities.Parsers.Contracts;
+﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
-namespace CrossCutting.Utilities.Parsers.Tests;
-
-public class MathematicExpressionParserTests
+public sealed class MathematicExpressionParserTests : IDisposable
 {
+    private ServiceProvider? _provider;
+
     [Fact]
     public void Can_Add_One_And_One()
     {
@@ -411,7 +411,14 @@ public class MathematicExpressionParserTests
         result.ErrorMessage.Should().Be("Aggregation failed. Error message: Attempted to divide by zero.");
     }
 
-    private MathematicExpressionParser CreateSut(Func<string, IFormatProvider, Result<object>> dlg) => new MathematicExpressionParser(new MyMathematicExpressionParser(dlg));
+    private IMathematicExpressionParser CreateSut(Func<string, IFormatProvider, Result<object>> dlg)
+    {
+        _provider = new ServiceCollection()
+            .AddParsers()
+            .AddSingleton<IExpressionParser>(new MyMathematicExpressionParser(dlg))
+            .BuildServiceProvider();
+        return _provider.GetRequiredService<IMathematicExpressionParser>();
+    }
 
     private Result<object> ParseExpressionDelegateInt32(string arg, IFormatProvider formatProvider)
         => int.TryParse(arg, formatProvider, out var result)
@@ -447,6 +454,8 @@ public class MathematicExpressionParserTests
         => short.TryParse(arg, formatProvider, out var result)
             ? Result<object>.Success(result)
             : Result<object>.Invalid($"Could not parse {arg} to short");
+
+    public void Dispose() => _provider?.Dispose();
 
     private sealed class MyMathematicExpressionParser : IExpressionParser
     {

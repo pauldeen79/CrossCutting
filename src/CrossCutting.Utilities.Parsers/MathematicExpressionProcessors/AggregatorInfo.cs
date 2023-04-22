@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
 
-internal sealed record AggregatorInfo
+public sealed record AggregatorInfo
 {
     public AggregatorBase Aggregator { get; }
     public int Index { get; }

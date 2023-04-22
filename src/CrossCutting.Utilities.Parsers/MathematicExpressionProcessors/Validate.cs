@@ -1,16 +1,13 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
 
-internal partial class Validate : IMathematicExpressionProcessor
+public partial class Validate : IMathematicExpressionProcessor
 {
-    private static readonly IMathematicExpressionValidator[] _validators = new IMathematicExpressionValidator[]
+    private readonly IEnumerable<IMathematicExpressionValidator> _validators;
+
+    public Validate(IEnumerable<IMathematicExpressionValidator> validators)
     {
-        new NullOrEmptyValidator(),
-        new TemporaryDelimiterValidator(),
-        new StartWithOperatorValidator(),
-        new EndWithOperatorValidator(),
-        new EmptyValuePartValidator(),
-        new BracketValidator(),
-    };
+        _validators = validators;
+    }
 
     public Result<MathematicExpressionState> Process(MathematicExpressionState state)
         => Result<MathematicExpressionState>.Pipe

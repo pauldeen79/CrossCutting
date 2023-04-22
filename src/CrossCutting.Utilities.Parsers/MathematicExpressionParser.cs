@@ -2,26 +2,21 @@
 
 public class MathematicExpressionParser : IMathematicExpressionParser
 {
-    internal const string TemporaryDelimiter = "``";
-
-    private static readonly IMathematicExpressionProcessor[] _expressionProcessors = new IMathematicExpressionProcessor[]
-    {
-        new Validate(),
-        new Recursion(),
-        new Operators(),
-    };
+    public const string TemporaryDelimiter = "``";
 
     private readonly IExpressionParser _expressionParser;
+    private readonly IEnumerable<IMathematicExpressionProcessor> _processors;
 
-    public MathematicExpressionParser(IExpressionParser expressionParser)
+    public MathematicExpressionParser(IExpressionParser expressionParser, IEnumerable<IMathematicExpressionProcessor> processors)
     {
         _expressionParser = expressionParser;
+        _processors = processors;
     }
 
     public Result<object> Parse(string input, IFormatProvider formatProvider)
     {
-        var state = new MathematicExpressionState(input, formatProvider, _expressionParser, Parse);
-        foreach (var processor in _expressionProcessors)
+        var state = new MathematicExpressionState(input, formatProvider, Parse);
+        foreach (var processor in _processors)
         {
             var result = processor.Process(state);
             if (!result.IsSuccessful())

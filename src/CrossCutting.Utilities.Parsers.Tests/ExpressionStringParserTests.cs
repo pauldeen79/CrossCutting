@@ -1,8 +1,18 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
-public class ExpressionStringParserTests
+public sealed class ExpressionStringParserTests : IDisposable
 {
     private const string ReplacedValue = "replaced name";
+    private readonly ServiceProvider _provider;
+
+    public ExpressionStringParserTests()
+    {
+        _provider = new ServiceCollection()
+            .AddParsers()
+            .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+            .AddSingleton<IFunctionResultParser, MyFunctionResultParser>()
+            .BuildServiceProvider();
+    }
 
     [Fact]
     public void Parse_Returns_Success_With_Input_Value_On_Empty_String()
@@ -186,17 +196,9 @@ public class ExpressionStringParserTests
         result.ErrorMessage.Should().Be("No function name found");
     }
 
-    private ExpressionStringParser CreateSut() => new(
-        new MyFunctionResultParser(),
-        new IExpressionStringParserProcessor[]
-        {
-            new EmptyExpressionProcessor(),
-            new LiteralExpressionProcessor(),
-            new OnlyEqualsExpressionProcessor(),
-            new FormattableStringExpressionProcessor(new FormattableStringParser(new MyPlaceholderProcessor())),
-            new MathematicExpressionProcessor(new MathematicExpressionParser(new DefaultExpressionParser()))
-        }
-    );
+    private IExpressionStringParser CreateSut() => _provider.GetRequiredService<IExpressionStringParser>();
+
+    public void Dispose() => _provider.Dispose();
 
     private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
     {

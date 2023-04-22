@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
 
-internal class Recursion : IMathematicExpressionProcessor
+public class Recursion : IMathematicExpressionProcessor
 {
     public Result<MathematicExpressionState> Process(MathematicExpressionState state)
     {

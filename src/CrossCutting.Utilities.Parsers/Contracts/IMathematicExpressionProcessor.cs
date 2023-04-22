@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Contracts;
 
-internal interface IMathematicExpressionProcessor
+public interface IMathematicExpressionProcessor
 {
     Result<MathematicExpressionState> Process(MathematicExpressionState state);
 }

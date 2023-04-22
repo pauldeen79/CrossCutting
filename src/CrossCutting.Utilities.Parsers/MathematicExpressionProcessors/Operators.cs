@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
 
-internal class Operators : IMathematicExpressionProcessor
+public class Operators : IMathematicExpressionProcessor
 {
     internal static readonly AggregatorBase[] Aggregators = new AggregatorBase[]
     {
@@ -10,6 +10,13 @@ internal class Operators : IMathematicExpressionProcessor
         new AddAggregator(),
         new SubtractAggregator(),
     };
+
+    private readonly IExpressionParser _expressionParser;
+
+    public Operators(IExpressionParser expressionParser)
+    {
+        _expressionParser = expressionParser;
+    }
 
     public Result<MathematicExpressionState> Process(MathematicExpressionState state)
     {
@@ -29,13 +36,13 @@ internal class Operators : IMathematicExpressionProcessor
                     .Select(x => state.Remainder.LastIndexOf(x.Character, state.Position - 1))
                     .Where(x => x > -1)
                     .OrderByDescending(x => x)
-                    .ToArray());
+                    .ToArray(), _expressionParser);
 
                 state.SetNextIndexes(Aggregators
                     .Select(x => state.Remainder.IndexOf(x.Character, state.Position + 1))
                     .Where(x => x > -1)
                     .OrderBy(x => x)
-                    .ToArray());
+                    .ToArray(), _expressionParser);
 
                 if (!state.LeftPartResult.IsSuccessful())
                 {
