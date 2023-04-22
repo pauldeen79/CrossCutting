@@ -12,7 +12,8 @@ public static class FormattableStringParser
         new PlaceholderProcessor(),
         new ResultProcessor(),
     };
-
+    
+    //TODO: Refactor delegate to interface and use DI constructor injection
     public static Result<string> Parse(string input, Func<string, Result<string>> placeholderDelegate)
     {
         var state = new FormattableStringState(input, placeholderDelegate);

@@ -188,14 +188,14 @@ public class ExpressionStringParserTests
         result.ErrorMessage.Should().Be("No function name found");
     }
 
-    private ExpressionStringParser CreateSut() => new(new MyFunctionParser(), new DefaultExpressionParser());
+    private ExpressionStringParser CreateSut() => new(new MyFunctionResultParser(), new DefaultExpressionParser());
 
     private Result<string> ProcessPlaceholder(string arg)
         => arg =="Name"
             ? Result<string>.Success(ReplacedValue)
             : Result<string>.Error($"Unsupported placeholder name: {arg}");
 
-    private sealed class MyFunctionParser : IFunctionParser
+    private sealed class MyFunctionResultParser : IFunctionResultParser
     {
         public Result<object> Parse(FunctionParseResult functionParseResult)
             => functionParseResult.FunctionName == "error"

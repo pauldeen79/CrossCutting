@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Contracts;
 
-public interface IFunctionParser
+public interface IFunctionResultParser
 {
     Result<object> Parse(FunctionParseResult functionParseResult);
 }

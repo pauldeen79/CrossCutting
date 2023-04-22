@@ -6,19 +6,19 @@ internal class ExpressionStringParserState
     internal IFormatProvider FormatProvider { get; }
     internal IExpressionParser ExpressionParser { get; } //TODO: Review if we can remove this by using DI everywhere
     internal Func<string, Result<string>> PlaceholderDelegate { get; }
-    internal IFunctionParser FunctionParser { get; }
+    internal IFunctionResultParser FunctionResultParser { get; } //TODO: Review if we can remove this by using DI everywhere
 
     internal ExpressionStringParserState(
         string input,
         IFormatProvider formatProvider,
         IExpressionParser expressionParser,
         Func<string, Result<string>> placeholderDelegate,
-        IFunctionParser functionParser)
+        IFunctionResultParser functionResultParser)
     {
         Input = input;
         FormatProvider = formatProvider;
         ExpressionParser = expressionParser;
         PlaceholderDelegate = placeholderDelegate;
-        FunctionParser = functionParser;
+        FunctionResultParser = functionResultParser;
     }
 }

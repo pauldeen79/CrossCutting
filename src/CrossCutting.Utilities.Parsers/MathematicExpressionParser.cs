@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public class MathematicExpressionParser
+public class MathematicExpressionParser : IMathematicExpressionParser
 {
     internal const string TemporaryDelimiter = "``";
 
