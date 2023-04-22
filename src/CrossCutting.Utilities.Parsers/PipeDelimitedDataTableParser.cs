@@ -21,7 +21,7 @@ public static class PipeDelimitedDataTableParser
     /// <param name="columnNames">Optional column names. When null is provided, column names will be generated. (Column 1...Column n)</param>
     /// <param name="transformFunction">Optional function for transforming values to desired output (first arument is column name, second is the value). When null is provided, no transformation will be performed, and data will probably contain leading and trailing spaces.</param>
     /// <returns>Parsed result</returns>
-    public static IEnumerable<ParseResult<string, object>> Parse(string input, int skipLinesForData, int skipColumnsLeft, int skipColumnsRight, int columnNamesLineNumber, IEnumerable<string>? columnNames, Func<string, string, object>? transformFunction)
+    public static IEnumerable<ParseResult<string, object>> Parse(string input, int skipLinesForData, int skipColumnsLeft, int skipColumnsRight, int columnNamesLineNumber, IEnumerable<string>? columnNames = null, Func<string, string, object>? transformFunction = null)
     {
         using (var sr = new StringReader(input))
         {

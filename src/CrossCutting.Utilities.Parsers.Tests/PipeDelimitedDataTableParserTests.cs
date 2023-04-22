@@ -24,7 +24,7 @@ public class PipeDelimitedDataTableParserTests
 Value 1|Value 2|Value 3";
 
         // Act
-        var actual = PipeDelimitedDataTableParser.Parse(input, 2, 0, 0, 0, null, null).ToArray();
+        var actual = PipeDelimitedDataTableParser.Parse(input, 2, 0, 0, 0).ToArray();
 
         // Assert
         AssertParseResult(actual);
@@ -38,7 +38,7 @@ Value 1|Value 2|Value 3";
 |Value 1|Value 2|Value 3|";
 
         // Act
-        var actual = PipeDelimitedDataTableParser.Parse(input, 1, 1, 1, 0, null, null).ToArray();
+        var actual = PipeDelimitedDataTableParser.Parse(input, 1, 1, 1, 0).ToArray();
 
         // Assert
         AssertParseResult(actual);
