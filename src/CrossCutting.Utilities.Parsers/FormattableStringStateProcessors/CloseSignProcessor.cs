@@ -2,6 +2,13 @@
 
 public class CloseSignProcessor : IFormattableStringStateProcessor
 {
+    private readonly IPlaceholderProcessor _processor;
+
+    public CloseSignProcessor(IPlaceholderProcessor processor)
+    {
+        _processor = processor;
+    }
+
     public Result<string> Process(FormattableStringParserState state)
     {
         if (state.Current != FormattableStringParser.CloseSign)
@@ -20,7 +27,7 @@ public class CloseSignProcessor : IFormattableStringStateProcessor
             return Result<string>.Invalid("Missing open sign '{'. To use the '}' character, you have to escape it with an additional '}' character");
         }
 
-        var placeholderResult = state.PlaceholderProcessor.Process(state.PlaceholderBuilder.ToString());
+        var placeholderResult = _processor.Process(state.PlaceholderBuilder.ToString());
         if (!placeholderResult.IsSuccessful())
         {
             return placeholderResult;

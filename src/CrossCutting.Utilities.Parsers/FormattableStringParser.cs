@@ -5,20 +5,16 @@ public class FormattableStringParser : IFormattableStringParser
     public const char OpenSign = '{';
     public const char CloseSign = '}';
 
-    private readonly IPlaceholderProcessor _placeholderProcessor;
     private readonly IEnumerable<IFormattableStringStateProcessor> _processors;
 
-    public FormattableStringParser(
-        IPlaceholderProcessor placeholderProcessor,
-        IEnumerable<IFormattableStringStateProcessor> processors)
+    public FormattableStringParser(IEnumerable<IFormattableStringStateProcessor> processors)
     {
-        _placeholderProcessor = placeholderProcessor;
         _processors = processors;
     }
 
     public Result<string> Parse(string input)
     {
-        var state = new FormattableStringParserState(input, _placeholderProcessor);
+        var state = new FormattableStringParserState(input);
 
         for (var index = 0; index < input.Length; index++)
         {

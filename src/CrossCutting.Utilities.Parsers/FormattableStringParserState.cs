@@ -3,7 +3,6 @@
 public class FormattableStringParserState
 {
     public string Input { get; }
-    public IPlaceholderProcessor PlaceholderProcessor { get; }
 
     public StringBuilder ResultBuilder { get; } = new();
     public StringBuilder PlaceholderBuilder { get; } = new();
@@ -11,9 +10,8 @@ public class FormattableStringParserState
     public char Current { get; set; }
     public int Index { get; set; }
 
-    public FormattableStringParserState(string input, IPlaceholderProcessor placeholderProcessor)
+    public FormattableStringParserState(string input)
     {
         Input = input;
-        PlaceholderProcessor = placeholderProcessor;
     }
 }
