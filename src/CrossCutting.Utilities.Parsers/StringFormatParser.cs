@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public static partial class StringFormatParser
+public static class StringFormatParser
 {
     public static ParseResult<string, object> Parse(string formatString, params object[] args)
         => Parse(formatString, (IEnumerable<object>)args);
