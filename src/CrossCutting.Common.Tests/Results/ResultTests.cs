@@ -907,33 +907,6 @@ public class ResultTests
     }
 
     [Fact]
-    public void Can_Create_Continue_Result_With_ErrorMessage()
-    {
-        // Act
-        var actual = Result<string>.Continue("Not authenticated");
-
-        // Assert
-        actual.Status.Should().Be(ResultStatus.Continue);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().Be("Not authenticated");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
-    }
-
-    [Fact]
-    public void Can_Create_Continue_Void_Result_With_ErrorMessage()
-    {
-        // Act
-        var actual = Result.Continue("Not authenticated");
-
-        // Assert
-        actual.Status.Should().Be(ResultStatus.Continue);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().Be("Not authenticated");
-        actual.ValidationErrors.Should().BeEmpty();
-    }
-
-    [Fact]
     public void Can_Create_Redirect_Result()
     {
         // Act

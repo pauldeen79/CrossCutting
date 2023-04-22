@@ -40,7 +40,6 @@ public record Result<T> : Result
     public static new Result<T> ResetContent() => new(default, ResultStatus.ResetContent, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> ResetContent(string errorMessage) => new(default, ResultStatus.ResetContent, errorMessage, Enumerable.Empty<ValidationError>());
     public static new Result<T> Continue() => new(default, ResultStatus.Continue, null, Enumerable.Empty<ValidationError>());
-    public static new Result<T> Continue(string errorMessage) => new(default, ResultStatus.Continue, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result<T> Redirect(T value) => new(value, ResultStatus.Redirect, null, Enumerable.Empty<ValidationError>());
     public static Result<T> FromExistingResult(Result existingResult) => new(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
     public static Result<T> FromExistingResult(Result existingResult, T value) => new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
@@ -153,7 +152,6 @@ public record Result
     public static Result ResetContent() => new(ResultStatus.ResetContent, null, Enumerable.Empty<ValidationError>());
     public static Result ResetContent(string errorMessage) => new(ResultStatus.ResetContent, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result Continue() => new(ResultStatus.Continue, null, Enumerable.Empty<ValidationError>());
-    public static Result Continue(string errorMessage) => new(ResultStatus.Continue, errorMessage, Enumerable.Empty<ValidationError>());
 
     public static Result<TInstance> FromInstance<TInstance>(TInstance? instance)
         where TInstance : class
