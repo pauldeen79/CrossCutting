@@ -1,6 +1,4 @@
-﻿using CrossCutting.Utilities.Parsers.Contracts;
-
-namespace CrossCutting.Utilities.Parsers.Tests;
+﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
 public class ExpressionStringParserTests
 {
@@ -188,7 +186,18 @@ public class ExpressionStringParserTests
         result.ErrorMessage.Should().Be("No function name found");
     }
 
-    private ExpressionStringParser CreateSut() => new(new MyFunctionResultParser(), new DefaultExpressionParser(), new MyPlaceholderProcessor());
+    private ExpressionStringParser CreateSut() => new(
+        new MyFunctionResultParser(),
+        new MyPlaceholderProcessor(),
+        new IExpressionStringParserProcessor[]
+        {
+            new EmptyExpressionProcessor(),
+            new LiteralExpressionProcessor(),
+            new OnlyEqualsExpressionProcessor(),
+            new FormattableStringExpressionProcessor(new FormattableStringParser(new MyPlaceholderProcessor())),
+            new MathematicExpressionProcessor(new MathematicExpressionParser(new DefaultExpressionParser()))
+        }
+    );
 
     private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
     {

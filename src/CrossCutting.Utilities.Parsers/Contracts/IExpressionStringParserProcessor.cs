@@ -1,6 +1,7 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Contracts;
 
-internal interface IExpressionStringParserProcessor
+public interface IExpressionStringParserProcessor
 {
+    int Order { get; }
     Result<object> Process(ExpressionStringParserState state);
 }

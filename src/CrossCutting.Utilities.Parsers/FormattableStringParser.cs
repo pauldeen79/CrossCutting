@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public class FormattableStringParser
+public class FormattableStringParser : IFormattableStringParser
 {
     private const char OpenSign = '{';
     private const char CloseSign = '}';

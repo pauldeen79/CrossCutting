@@ -1,13 +1,22 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
 
-internal class FormattableStringExpressionProcessor : IExpressionStringParserProcessor
+public class FormattableStringExpressionProcessor : IExpressionStringParserProcessor
 {
+    private readonly IFormattableStringParser _parser;
+
+    public FormattableStringExpressionProcessor(IFormattableStringParser parser)
+    {
+        _parser = parser;
+    }
+
+    public int Order => 40;
+
     public Result<object> Process(ExpressionStringParserState state)
     {
         if (state.Input.StartsWith("=\"") && state.Input.EndsWith("\""))
         {
             // ="string value" -> literal, no functions but formattable strings possible
-            var formattedStringResult = new FormattableStringParser(state.PlaceholderProcessor).Parse(state.Input.Substring(2, state.Input.Length - 3));
+            var formattedStringResult = _parser.Parse(state.Input.Substring(2, state.Input.Length - 3));
             return formattedStringResult.Status != ResultStatus.Ok
                 ? Result<object>.FromExistingResult(formattedStringResult)
                 : Result<object>.FromExistingResult(formattedStringResult, result => result);

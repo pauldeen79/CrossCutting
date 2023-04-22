@@ -17,3 +17,4 @@ global using CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
 global using CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Aggregators;
 global using CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Validators;
 global using CrossCutting.Utilities.Parsers.NumericAggregatorProcessors;
+global using Microsoft.Extensions.DependencyInjection;

@@ -1,7 +1,9 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
 
-internal class OnlyEqualsExpressionProcessor : IExpressionStringParserProcessor
+public class OnlyEqualsExpressionProcessor : IExpressionStringParserProcessor
 {
+    public int Order => 30;
+
     public Result<object> Process(ExpressionStringParserState state)
     {
         if (state.Input == "=")

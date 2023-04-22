@@ -2,33 +2,24 @@
 
 public class ExpressionStringParser : IExpressionStringParser
 {
-    private static readonly IExpressionStringParserProcessor[] _nonSimpleExpressionProcessors = new IExpressionStringParserProcessor[]
-    {
-        new EmptyExpressionProcessor(),
-        new LiteralExpressionProcessor(),
-        new OnlyEqualsExpressionProcessor(),
-        new FormattableStringExpressionProcessor(),
-        new MathematicExpressionProcessor(),
-    };
-
     private readonly IFunctionResultParser _functionResultParser;
-    private readonly IExpressionParser _expressionParser;
     private readonly IPlaceholderProcessor _placeholderProcessor;
+    private readonly IEnumerable<IExpressionStringParserProcessor> _processors;
 
     public ExpressionStringParser(
         IFunctionResultParser functionResultParser,
-        IExpressionParser expressionParser,
-        IPlaceholderProcessor placeholderProcessor)
+        IPlaceholderProcessor placeholderProcessor,
+        IEnumerable<IExpressionStringParserProcessor> processors)
     {
         _functionResultParser = functionResultParser;
-        _expressionParser = expressionParser;
         _placeholderProcessor = placeholderProcessor;
+        _processors = processors;
     }
 
     public Result<object> Parse(string input, IFormatProvider formatProvider)
     {
-        var state = new ExpressionStringParserState(input, formatProvider, _expressionParser, _placeholderProcessor, _functionResultParser);
-        foreach (var processor in _nonSimpleExpressionProcessors)
+        var state = new ExpressionStringParserState(input, formatProvider, _placeholderProcessor, _functionResultParser);
+        foreach (var processor in _processors.OrderBy(x => x.Order))
         {
             var result = processor.Process(state);
             if (result.Status != ResultStatus.Continue)
