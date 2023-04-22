@@ -6,19 +6,19 @@ internal class ExpressionStringParserState
     internal IFormatProvider FormatProvider { get; }
     internal Func<string, IFormatProvider, Result<object>> ParseExpressionDelegate { get; }
     internal Func<string, Result<string>> PlaceholderDelegate { get; }
-    internal Func<FunctionParseResult, Result<object>> ParseFunctionDelegate { get; }
+    internal IFunctionParser FunctionParser { get; }
 
     internal ExpressionStringParserState(
         string input,
         IFormatProvider formatProvider,
         Func<string, IFormatProvider, Result<object>> parseExpressionDelegate,
         Func<string, Result<string>> placeholderDelegate,
-        Func<FunctionParseResult, Result<object>> parseFunctionDelegate)
+        IFunctionParser functionParser)
     {
         Input = input;
         FormatProvider = formatProvider;
         ParseExpressionDelegate = parseExpressionDelegate;
         PlaceholderDelegate = placeholderDelegate;
-        ParseFunctionDelegate = parseFunctionDelegate;
+        FunctionParser = functionParser;
     }
 }

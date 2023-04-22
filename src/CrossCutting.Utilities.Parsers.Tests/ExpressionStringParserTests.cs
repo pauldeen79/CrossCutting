@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+﻿using CrossCutting.Utilities.Parsers.Contracts;
+
+namespace CrossCutting.Utilities.Parsers.Tests;
 
 public class ExpressionStringParserTests
 {
@@ -11,7 +13,7 @@ public class ExpressionStringParserTests
         var input = string.Empty;
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -25,7 +27,7 @@ public class ExpressionStringParserTests
         var input = "=";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -39,7 +41,7 @@ public class ExpressionStringParserTests
         var input = "string that does not begin with =";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -53,7 +55,7 @@ public class ExpressionStringParserTests
         var input = "=1+1";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -67,7 +69,7 @@ public class ExpressionStringParserTests
         var input = "=1+error";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -81,7 +83,7 @@ public class ExpressionStringParserTests
         var input = "=\"Hello {Name}!\"";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -95,7 +97,7 @@ public class ExpressionStringParserTests
         var input = "=\"Hello {Kaboom}!\"";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -109,7 +111,7 @@ public class ExpressionStringParserTests
         var input = "=MYFUNCTION()";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -123,7 +125,7 @@ public class ExpressionStringParserTests
         var input = "=error()";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -137,7 +139,7 @@ public class ExpressionStringParserTests
         var input = "some string that does not start with = sign";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -151,7 +153,7 @@ public class ExpressionStringParserTests
         var input = "=\"some string that starts with = sign but does not contain any formattable string, function or mathematical expression\"";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -165,7 +167,7 @@ public class ExpressionStringParserTests
         var input = "=somefunction(^^)";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotSupported);
@@ -179,20 +181,24 @@ public class ExpressionStringParserTests
         var input = "=()";
 
         // Act
-        var result = ExpressionStringParser.Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder, ParseFunction);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, MathematicExpressionParser.DefaultParseExpressionDelegate, ProcessPlaceholder);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
         result.ErrorMessage.Should().Be("No function name found");
     }
 
+    private ExpressionStringParser CreateSut() => new(new MyFunctionParser());
     private Result<string> ProcessPlaceholder(string arg)
         => arg =="Name"
             ? Result<string>.Success(ReplacedValue)
             : Result<string>.Error($"Unsupported placeholder name: {arg}");
 
-    private Result<object> ParseFunction(FunctionParseResult result)
-        => result.FunctionName == "error"
-            ? Result<object>.Error("Kaboom")
-            : Result<object>.Success($"result of {result.FunctionName} function");
+    private sealed class MyFunctionParser : IFunctionParser
+    {
+        public Result<object> Parse(FunctionParseResult functionParseResult)
+            => functionParseResult.FunctionName == "error"
+                ? Result<object>.Error("Kaboom")
+                : Result<object>.Success($"result of {functionParseResult.FunctionName} function");
+    }
 }

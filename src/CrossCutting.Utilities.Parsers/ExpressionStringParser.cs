@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public static class ExpressionStringParser
+public class ExpressionStringParser
 {
     private static readonly IExpressionStringParserProcessor[] _nonSimpleExpressionProcessors = new IExpressionStringParserProcessor[]
     {
@@ -11,14 +11,20 @@ public static class ExpressionStringParser
         new MathematicExpressionProcessor(),
     };
 
-    public static Result<object> Parse(
+    private readonly IFunctionParser _functionParser;
+
+    public ExpressionStringParser(IFunctionParser functionParser)
+    {
+        _functionParser = functionParser;
+    }
+
+    public Result<object> Parse(
         string input,
         IFormatProvider formatProvider,
         Func<string, IFormatProvider, Result<object>> parseExpressionDelegate,
-        Func<string, Result<string>> placeholderDelegate,
-        Func<FunctionParseResult, Result<object>> parseFunctionDelegate)
+        Func<string, Result<string>> placeholderDelegate)
     {
-        var state = new ExpressionStringParserState(input, formatProvider, parseExpressionDelegate, placeholderDelegate, parseFunctionDelegate);
+        var state = new ExpressionStringParserState(input, formatProvider, parseExpressionDelegate, placeholderDelegate, _functionParser);
         foreach (var processor in _nonSimpleExpressionProcessors)
         {
             var result = processor.Process(state);
@@ -36,7 +42,7 @@ public static class ExpressionStringParser
         // =something else, we can try function
         var functionResult = FunctionParser.Parse(state.Input.Substring(1));
         return functionResult.Status == ResultStatus.Ok
-            ? state.ParseFunctionDelegate(functionResult.Value!)
+            ? state.FunctionParser.Parse(functionResult.Value!)
             : Result<object>.FromExistingResult(functionResult);
     }
 }
