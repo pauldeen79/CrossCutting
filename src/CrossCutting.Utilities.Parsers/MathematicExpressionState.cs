@@ -6,8 +6,8 @@ internal class MathematicExpressionState
     internal string Remainder { get; set; }
     internal IFormatProvider FormatProvider { get; }
     internal List<Result<object>> Results { get; } = new();
-    internal Func<string, IFormatProvider, Result<object>> ParseExpressionDelegate { get; }
-    internal Func<string, IFormatProvider, Func<string, IFormatProvider, Result<object>>, Result<object>> ParseDelegate { get; }
+    internal IExpressionParser ExpressionParser { get; }
+    internal Func<string, IFormatProvider, Result<object>> ParseDelegate { get; }
 
     internal int Position { get; private set; }
     internal AggregatorInfo[] Indexes { get; private set; }
@@ -21,13 +21,13 @@ internal class MathematicExpressionState
     internal MathematicExpressionState(
         string input,
         IFormatProvider formatProvider,
-        Func<string, IFormatProvider, Result<object>> parseExpressionDelegate,
-        Func<string, IFormatProvider, Func<string, IFormatProvider, Result<object>>, Result<object>> parseDelegate)
+        IExpressionParser expressionParser,
+        Func<string, IFormatProvider, Result<object>> parseDelegate)
     {
         Input = input;
         FormatProvider = formatProvider;
         Remainder = input;
-        ParseExpressionDelegate = parseExpressionDelegate;
+        ExpressionParser = expressionParser;
         ParseDelegate = parseDelegate;
 
         Position = -1;
@@ -89,7 +89,7 @@ internal class MathematicExpressionState
                     ? PreviousIndexes.First() + 1
                     : 0
             ),
-            FormattableString.Invariant($"{MathematicExpressionParser.TemporaryDelimiter}{Results.Count}{MathematicExpressionParser.TemporaryDelimiter}"),
+            FormattableString.Invariant($"{Parsers.MathematicExpressionParser.TemporaryDelimiter}{Results.Count}{Parsers.MathematicExpressionParser.TemporaryDelimiter}"),
             (
                 NextIndexes.Any()
                     ? Remainder.Substring(NextIndexes.First())
@@ -110,7 +110,7 @@ internal class MathematicExpressionState
             : Remainder.Substring(Position + 1).Trim();
 
     private Result<object> GetPartResult(string part)
-        => part.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && part.EndsWith(MathematicExpressionParser.TemporaryDelimiter)
-            ? Results[int.Parse(part.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]
-            : ParseExpressionDelegate.Invoke(part, FormatProvider);
+        => part.StartsWith(Parsers.MathematicExpressionParser.TemporaryDelimiter) && part.EndsWith(Parsers.MathematicExpressionParser.TemporaryDelimiter)
+            ? Results[int.Parse(part.Substring(Parsers.MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (Parsers.MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]
+            : ExpressionParser.Parse(part, FormatProvider);
 }

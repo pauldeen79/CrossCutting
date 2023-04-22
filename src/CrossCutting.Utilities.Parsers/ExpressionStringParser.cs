@@ -12,19 +12,20 @@ public class ExpressionStringParser
     };
 
     private readonly IFunctionParser _functionParser;
+    private readonly IExpressionParser _expressionParser;
 
-    public ExpressionStringParser(IFunctionParser functionParser)
+    public ExpressionStringParser(IFunctionParser functionParser, IExpressionParser expressionParser)
     {
         _functionParser = functionParser;
+        _expressionParser = expressionParser;
     }
 
     public Result<object> Parse(
         string input,
         IFormatProvider formatProvider,
-        Func<string, IFormatProvider, Result<object>> parseExpressionDelegate,
         Func<string, Result<string>> placeholderDelegate)
     {
-        var state = new ExpressionStringParserState(input, formatProvider, parseExpressionDelegate, placeholderDelegate, _functionParser);
+        var state = new ExpressionStringParserState(input, formatProvider, _expressionParser, placeholderDelegate, _functionParser);
         foreach (var processor in _nonSimpleExpressionProcessors)
         {
             var result = processor.Process(state);
