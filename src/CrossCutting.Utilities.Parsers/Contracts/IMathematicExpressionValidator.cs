@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
+﻿namespace CrossCutting.Utilities.Parsers.Contracts;
 
 internal interface IMathematicExpressionValidator
 {

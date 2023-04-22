@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers;
+﻿namespace CrossCutting.Utilities.Parsers.Contracts;
 
 public interface INumericAggregatorProcessor<T>
 {

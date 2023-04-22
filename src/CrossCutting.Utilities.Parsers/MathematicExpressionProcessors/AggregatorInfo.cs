@@ -2,10 +2,10 @@
 
 internal sealed record AggregatorInfo
 {
-    public Aggregator Aggregator { get; }
+    public AggregatorBase Aggregator { get; }
     public int Index { get; }
 
-    public AggregatorInfo(Aggregator aggregator, int index)
+    public AggregatorInfo(AggregatorBase aggregator, int index)
     {
         Aggregator = aggregator;
         Index = index;

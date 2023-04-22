@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Aggregators;
 
-public class DivideAggregator : Aggregator
+public class DivideAggregator : AggregatorBase
 {
     public override Result<object> Aggregate(object value1, object value2)
         => NumericAggregator.Evaluate(value1, value2

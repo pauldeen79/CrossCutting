@@ -40,7 +40,7 @@ internal class MathematicExpressionState
         RightPartResult = Result<object>.NoContent();
     }
 
-    internal void SetPosition(IGrouping<int, Aggregator> aggregators)
+    internal void SetPosition(IGrouping<int, AggregatorBase> aggregators)
     {
         Indexes = aggregators
             .Select(x => new AggregatorInfo(x, Remainder.IndexOf(x.Character)))

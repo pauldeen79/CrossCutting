@@ -2,7 +2,7 @@
 
 internal class Operators : IMathematicExpressionProcessor
 {
-    internal static readonly Aggregator[] Aggregators = new Aggregator[]
+    internal static readonly AggregatorBase[] Aggregators = new AggregatorBase[]
     {
         new PowerAggregator(),
         new MultiplyAggregator(),
