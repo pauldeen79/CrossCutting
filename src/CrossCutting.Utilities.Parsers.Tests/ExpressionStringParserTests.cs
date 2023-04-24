@@ -196,6 +196,20 @@ public sealed class ExpressionStringParserTests : IDisposable
         result.ErrorMessage.Should().Be("No function name found");
     }
 
+    [Fact]
+    public void Can_Escape_Equals_Sign_To_Skip_ExpressionString_Parsing()
+    {
+        // Arrange
+        var input = "\'=error()";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("=error()");
+    }
+
     private IExpressionStringParser CreateSut() => _provider.GetRequiredService<IExpressionStringParser>();
 
     public void Dispose() => _provider.Dispose();
@@ -210,9 +224,9 @@ public sealed class ExpressionStringParserTests : IDisposable
 
     private sealed class MyFunctionResultParser : IFunctionResultParser
     {
-        public Result<object> Parse(FunctionParseResult functionParseResult)
+        public Result<object?> Parse(FunctionParseResult functionParseResult)
             => functionParseResult.FunctionName == "error"
-                ? Result<object>.Error("Kaboom")
-                : Result<object>.Success($"result of {functionParseResult.FunctionName} function");
+                ? Result<object?>.Error("Kaboom")
+                : Result<object?>.Success($"result of {functionParseResult.FunctionName} function");
     }
 }

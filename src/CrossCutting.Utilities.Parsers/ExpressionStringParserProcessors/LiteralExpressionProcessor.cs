@@ -6,8 +6,15 @@ public class LiteralExpressionProcessor : IExpressionStringParserProcessor
 
     public Result<object?> Process(ExpressionStringParserState state)
     {
+        if (state.Input.StartsWith("\'="))
+        {
+            // escaped expression string
+            return Result<object?>.Success(state.Input.Substring(1));
+        }
+
         if (!state.Input.StartsWith("="))
         {
+            // literal
             return Result<object?>.Success(state.Input);
         }
 
