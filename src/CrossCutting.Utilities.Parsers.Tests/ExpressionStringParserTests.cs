@@ -88,7 +88,7 @@ public sealed class ExpressionStringParserTests : IDisposable
     public void Parse_Returns_Success_Result_From_Formattable_String_When_Found()
     {
         // Arrange
-        var input = "=\"Hello {Name}!\"";
+        var input = "=@\"Hello {Name}!\"";
 
         // Act
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
@@ -102,7 +102,7 @@ public sealed class ExpressionStringParserTests : IDisposable
     public void Parse_Returns_Failure_Result_From_Formattable_String_When_Found()
     {
         // Arrange
-        var input = "=\"Hello {Kaboom}!\"";
+        var input = "=@\"Hello {Kaboom}!\"";
 
         // Act
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
@@ -110,6 +110,20 @@ public sealed class ExpressionStringParserTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
         result.ErrorMessage.Should().Be("Unsupported placeholder name: Kaboom");
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Literal_String_When_Found()
+    {
+        // Arrange
+        var input = "=\"Hello {Name}!\"";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("Hello {Name}!");
     }
 
     [Fact]
