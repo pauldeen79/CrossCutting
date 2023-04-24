@@ -3,5 +3,5 @@
 public interface IExpressionParserProcessor
 {
     int Order { get; }
-    Result<object> Parse(string value, IFormatProvider formatProvider);
+    Result<object?> Parse(string value, IFormatProvider formatProvider);
 }

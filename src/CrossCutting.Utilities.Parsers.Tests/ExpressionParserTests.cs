@@ -35,6 +35,20 @@ public sealed class ExpressionParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Parses_null_Correctly()
+    {
+        // Arrange
+        var input = "null";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeNull();
+    }
+
+    [Fact]
     public void Parse_Parses_decimal_Correctly()
     {
         // Arrange

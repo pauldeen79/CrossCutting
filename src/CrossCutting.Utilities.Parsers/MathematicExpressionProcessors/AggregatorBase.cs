@@ -11,5 +11,5 @@ public abstract class AggregatorBase : IAggregator
         Order = order;
     }
 
-    public abstract Result<object> Aggregate(object value1, object value2);
+    public abstract Result<object?> Aggregate(object value1, object value2);
 }

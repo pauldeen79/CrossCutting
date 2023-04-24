@@ -2,11 +2,11 @@
 
 public class Int32AggregatorProcessor : INumericAggregatorProcessor<int>
 {
-    public Result<object> Aggregate(object firstValue, object secondValue, Func<int, int, object> aggregatorDelegate)
+    public Result<object?> Aggregate(object firstValue, object secondValue, Func<int, int, object?> aggregatorDelegate)
     {
         if (firstValue is not int i1)
         {
-            return Result<object>.NotSupported();
+            return Result<object?>.NotSupported();
         }
 
         int i2;
@@ -16,16 +16,16 @@ public class Int32AggregatorProcessor : INumericAggregatorProcessor<int>
         }
         catch (Exception ex)
         {
-            return Result<object>.Invalid($"Could not convert SecondExpression to Int32. Error message: {ex.Message}");
+            return Result<object?>.Invalid($"Could not convert SecondExpression to Int32. Error message: {ex.Message}");
         }
 
         try
         {
-            return Result<object>.Success(aggregatorDelegate.Invoke(i1, i2));
+            return Result<object?>.Success(aggregatorDelegate.Invoke(i1, i2));
         }
         catch (Exception ex)
         {
-            return Result<object>.Error($"Aggregation failed. Error message: {ex.Message}");
+            return Result<object?>.Error($"Aggregation failed. Error message: {ex.Message}");
         }
     }
 }

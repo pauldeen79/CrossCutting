@@ -2,11 +2,11 @@
 
 public class DecimalAggregatorProcessor : INumericAggregatorProcessor<decimal>
 {
-    public Result<object> Aggregate(object firstValue, object secondValue, Func<decimal, decimal, object> aggregatorDelegate)
+    public Result<object?> Aggregate(object firstValue, object secondValue, Func<decimal, decimal, object?> aggregatorDelegate)
     {
         if (firstValue is not decimal d1)
         {
-            return Result<object>.NotSupported();
+            return Result<object?>.NotSupported();
         }
 
         decimal d2;
@@ -16,16 +16,16 @@ public class DecimalAggregatorProcessor : INumericAggregatorProcessor<decimal>
         }
         catch (Exception ex)
         {
-            return Result<object>.Invalid($"Could not convert SecondExpression to Decimal. Error message: {ex.Message}");
+            return Result<object?>.Invalid($"Could not convert SecondExpression to Decimal. Error message: {ex.Message}");
         }
 
         try
         {
-            return Result<object>.Success(aggregatorDelegate.Invoke(d1, d2));
+            return Result<object?>.Success(aggregatorDelegate.Invoke(d1, d2));
         }
         catch (Exception ex)
         {
-            return Result<object>.Error($"Aggregation failed. Error message: {ex.Message}");
+            return Result<object?>.Error($"Aggregation failed. Error message: {ex.Message}");
         }
     }
 }

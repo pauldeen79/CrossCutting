@@ -2,15 +2,15 @@
 
 public class StringExpressionParserProcessor : IExpressionParserProcessor
 {
-    public int Order => 20;
+    public int Order => 30;
 
-    public Result<object> Parse(string value, IFormatProvider formatProvider)
+    public Result<object?> Parse(string value, IFormatProvider formatProvider)
     {
         if (value.StartsWith("\"") && value.EndsWith("\""))
         {
-            return Result<object>.Success(value.Substring(1, value.Length - 2));
+            return Result<object?>.Success(value.Substring(1, value.Length - 2));
         }
 
-        return Result<object>.Continue();
+        return Result<object?>.Continue();
     }
 }

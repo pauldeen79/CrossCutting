@@ -11,7 +11,7 @@ public class MathematicExpressionProcessor : IExpressionStringParserProcessor
 
     public int Order => 50;
 
-    public Result<object> Process(ExpressionStringParserState state)
+    public Result<object?> Process(ExpressionStringParserState state)
     {
         // try =1+1 -> mathematic expression, no functions/formattable strings
         var mathResult = _parser.Parse(state.Input.Substring(1), state.FormatProvider);
@@ -21,6 +21,6 @@ public class MathematicExpressionProcessor : IExpressionStringParserProcessor
             return mathResult;
         }
 
-        return Result<object>.Continue();
+        return Result<object?>.Continue();
     }
 }

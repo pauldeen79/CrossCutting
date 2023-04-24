@@ -2,7 +2,7 @@
 
 public class PowerAggregator : AggregatorBase
 {
-    public override Result<object> Aggregate(object value1, object value2)
+    public override Result<object?> Aggregate(object value1, object value2)
         => NumericAggregator.Evaluate(value1, value2
             , (bas, exp) => Enumerable.Repeat(bas, exp).Aggregate(1, (a, b) => a * b)
             , (bas, exp) => Enumerable.Repeat(bas, exp).Aggregate(1, (a, b) => a * b)

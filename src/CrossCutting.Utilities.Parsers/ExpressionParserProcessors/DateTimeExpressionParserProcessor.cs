@@ -2,15 +2,15 @@
 
 public class DateTimeExpressionParserProcessor : IExpressionParserProcessor
 {
-    public int Order => 40;
+    public int Order => 50;
 
-    public Result<object> Parse(string value, IFormatProvider formatProvider)
+    public Result<object?> Parse(string value, IFormatProvider formatProvider)
     {
         if (DateTime.TryParse(value, formatProvider, DateTimeStyles.None, out var dt))
         {
-            return Result<object>.Success(dt);
+            return Result<object?>.Success(dt);
         }
 
-        return Result<object>.Continue();
+        return Result<object?>.Continue();
     }
 }

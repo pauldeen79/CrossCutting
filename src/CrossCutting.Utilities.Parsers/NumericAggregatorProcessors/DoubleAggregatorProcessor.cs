@@ -2,11 +2,11 @@
 
 public class DoubleAggregatorProcessor : INumericAggregatorProcessor<double>
 {
-    public Result<object> Aggregate(object firstValue, object secondValue, Func<double, double, object> aggregatorDelegate)
+    public Result<object?> Aggregate(object firstValue, object secondValue, Func<double, double, object?> aggregatorDelegate)
     {
         if (firstValue is not double d1)
         {
-            return Result<object>.NotSupported();
+            return Result<object?>.NotSupported();
         }
 
         double d2;
@@ -16,16 +16,16 @@ public class DoubleAggregatorProcessor : INumericAggregatorProcessor<double>
         }
         catch (Exception ex)
         {
-            return Result<object>.Invalid($"Could not convert SecondExpression to Double. Error message: {ex.Message}");
+            return Result<object?>.Invalid($"Could not convert SecondExpression to Double. Error message: {ex.Message}");
         }
 
         try
         {
-            return Result<object>.Success(aggregatorDelegate.Invoke(d1, d2));
+            return Result<object?>.Success(aggregatorDelegate.Invoke(d1, d2));
         }
         catch (Exception ex)
         {
-            return Result<object>.Error($"Aggregation failed. Error message: {ex.Message}");
+            return Result<object?>.Error($"Aggregation failed. Error message: {ex.Message}");
         }
     }
 }

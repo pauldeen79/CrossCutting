@@ -3,5 +3,5 @@
 public interface IExpressionStringParserProcessor
 {
     int Order { get; }
-    Result<object> Process(ExpressionStringParserState state);
+    Result<object?> Process(ExpressionStringParserState state);
 }

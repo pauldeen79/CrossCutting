@@ -2,5 +2,5 @@
 
 public interface IAggregator
 {
-    Result<object> Aggregate(object value1, object value2);
+    Result<object?> Aggregate(object value1, object value2);
 }

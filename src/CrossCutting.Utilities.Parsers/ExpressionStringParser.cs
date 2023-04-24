@@ -13,7 +13,7 @@ public class ExpressionStringParser : IExpressionStringParser
         _processors = processors;
     }
 
-    public Result<object> Parse(string input, IFormatProvider formatProvider)
+    public Result<object?> Parse(string input, IFormatProvider formatProvider)
     {
         var state = new ExpressionStringParserState(input, formatProvider);
         foreach (var processor in _processors.OrderBy(x => x.Order))
@@ -28,12 +28,12 @@ public class ExpressionStringParser : IExpressionStringParser
         return EvaluateSimpleExpression(state);
     }
 
-    private Result<object> EvaluateSimpleExpression(ExpressionStringParserState state)
+    private Result<object?> EvaluateSimpleExpression(ExpressionStringParserState state)
     {
         // =something else, we can try function
         var functionResult = FunctionParser.Parse(state.Input.Substring(1));
         return functionResult.Status == ResultStatus.Ok
             ? _functionResultParser.Parse(functionResult.Value!)
-            : Result<object>.FromExistingResult(functionResult);
+            : Result<object?>.FromExistingResult(functionResult);
     }
 }

@@ -13,7 +13,7 @@ public class MathematicExpressionParser : IMathematicExpressionParser
         _processors = processors;
     }
 
-    public Result<object> Parse(string input, IFormatProvider formatProvider)
+    public Result<object?> Parse(string input, IFormatProvider formatProvider)
     {
         var state = new MathematicExpressionState(input, formatProvider, Parse);
         foreach (var processor in _processors)
@@ -21,7 +21,7 @@ public class MathematicExpressionParser : IMathematicExpressionParser
             var result = processor.Process(state);
             if (!result.IsSuccessful())
             {
-                return Result<object>.FromExistingResult(result);
+                return Result<object?>.FromExistingResult(result);
             }
         }
 

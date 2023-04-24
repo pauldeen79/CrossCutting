@@ -2,11 +2,11 @@
 
 public class SingleAggregatorProcessor : INumericAggregatorProcessor<float>
 {
-    public Result<object> Aggregate(object firstValue, object secondValue, Func<float, float, object> aggregatorDelegate)
+    public Result<object?> Aggregate(object firstValue, object secondValue, Func<float, float, object?> aggregatorDelegate)
     {
         if (firstValue is not float f1)
         {
-            return Result<object>.NotSupported();
+            return Result<object?>.NotSupported();
         }
 
         float f2;
@@ -16,16 +16,16 @@ public class SingleAggregatorProcessor : INumericAggregatorProcessor<float>
         }
         catch (Exception ex)
         {
-            return Result<object>.Invalid($"Could not convert SecondExpression to Single. Error message: {ex.Message}");
+            return Result<object?>.Invalid($"Could not convert SecondExpression to Single. Error message: {ex.Message}");
         }
 
         try
         {
-            return Result<object>.Success(aggregatorDelegate.Invoke(f1, f2));
+            return Result<object?>.Success(aggregatorDelegate.Invoke(f1, f2));
         }
         catch (Exception ex)
         {
-            return Result<object>.Error($"Aggregation failed. Error message: {ex.Message}");
+            return Result<object?>.Error($"Aggregation failed. Error message: {ex.Message}");
         }
     }
 }

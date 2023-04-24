@@ -9,7 +9,7 @@ public class ExpressionParser : IExpressionParser
         _processors = processors;
     }
 
-    public Result<object> Parse(string value, IFormatProvider formatProvider)
+    public Result<object?> Parse(string value, IFormatProvider formatProvider)
     {
         foreach (var processor in _processors.OrderBy(x => x.Order))
         {
@@ -21,6 +21,6 @@ public class ExpressionParser : IExpressionParser
         }
 
         // In other cases, it's unknown
-        return Result<object>.Invalid($"Unknown expression type found in fragment: {value}");
+        return Result<object?>.Invalid($"Unknown expression type found in fragment: {value}");
     }
 }

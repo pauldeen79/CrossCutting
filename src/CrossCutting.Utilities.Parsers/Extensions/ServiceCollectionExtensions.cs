@@ -6,6 +6,7 @@ public static class ServiceCollectionExtensions
         => services
         .AddSingleton<IExpressionParser, ExpressionParser>()
         .AddSingleton<IExpressionParserProcessor, BooleanExpressionParserProcessor>()
+        .AddSingleton<IExpressionParserProcessor, NullExpressionParserProcessor>()
         .AddSingleton<IExpressionParserProcessor, StringExpressionParserProcessor>()
         .AddSingleton<IExpressionParserProcessor, NumericExpressionParserProcessor>()
         .AddSingleton<IExpressionParserProcessor, DateTimeExpressionParserProcessor>()
