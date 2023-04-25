@@ -6,7 +6,7 @@ public class DecimalAggregatorProcessor : INumericAggregatorProcessor<decimal>
     {
         if (firstValue is not decimal d1)
         {
-            return Result<object?>.NotSupported();
+            return Result<object?>.Continue();
         }
 
         decimal d2;

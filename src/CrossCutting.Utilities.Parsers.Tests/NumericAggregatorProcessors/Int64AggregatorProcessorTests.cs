@@ -3,13 +3,13 @@
 public class Int64AggregatorProcessorTests
 {
     [Fact]
-    public void Aggregate_Returns_NotSupported_When_FirstValue_Is_Not_Int64()
+    public void Aggregate_Returns_Continue_When_FirstValue_Is_Not_Int64()
     {
         // Act
         var result = new Int64AggregatorProcessor().Aggregate("no Int64", (long)2, (x, y) => x + y);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.Status.Should().Be(ResultStatus.Continue);
     }
 
     [Fact]

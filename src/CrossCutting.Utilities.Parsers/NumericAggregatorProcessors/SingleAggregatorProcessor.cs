@@ -6,7 +6,7 @@ public class SingleAggregatorProcessor : INumericAggregatorProcessor<float>
     {
         if (firstValue is not float f1)
         {
-            return Result<object?>.NotSupported();
+            return Result<object?>.Continue();
         }
 
         float f2;

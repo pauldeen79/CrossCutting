@@ -6,7 +6,7 @@ public class Int32AggregatorProcessor : INumericAggregatorProcessor<int>
     {
         if (firstValue is not int i1)
         {
-            return Result<object?>.NotSupported();
+            return Result<object?>.Continue();
         }
 
         int i2;

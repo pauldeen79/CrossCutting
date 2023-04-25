@@ -6,7 +6,7 @@ public class ByteAggregatorProcessor : INumericAggregatorProcessor<byte>
     {
         if (firstValue is not byte b1)
         {
-            return Result<object?>.NotSupported();
+            return Result<object?>.Continue();
         }
 
         byte b2;

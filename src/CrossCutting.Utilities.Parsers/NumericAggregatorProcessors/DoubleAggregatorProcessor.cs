@@ -6,7 +6,7 @@ public class DoubleAggregatorProcessor : INumericAggregatorProcessor<double>
     {
         if (firstValue is not double d1)
         {
-            return Result<object?>.NotSupported();
+            return Result<object?>.Continue();
         }
 
         double d2;

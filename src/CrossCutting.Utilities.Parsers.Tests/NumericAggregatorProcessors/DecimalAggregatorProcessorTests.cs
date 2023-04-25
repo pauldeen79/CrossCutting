@@ -3,13 +3,13 @@
 public class DecimalAggregatorProcessorTests
 {
     [Fact]
-    public void Aggregate_Returns_NotSupported_When_FirstValue_Is_Not_Decimal()
+    public void Aggregate_Returns_Continue_When_FirstValue_Is_Not_Decimal()
     {
         // Act
         var result = new DecimalAggregatorProcessor().Aggregate("no Decimal", (decimal)2, (x, y) => x + y);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.Status.Should().Be(ResultStatus.Continue);
     }
 
     [Fact]

@@ -3,13 +3,13 @@
 public class Int32AggregatorProcessorTests
 {
     [Fact]
-    public void Aggregate_Returns_NotSupported_When_FirstValue_Is_Not_Int32()
+    public void Aggregate_Returns_Continue_When_FirstValue_Is_Not_Int32()
     {
         // Act
         var result = new Int32AggregatorProcessor().Aggregate("no Int32", 2, (x, y) => x + y);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.Status.Should().Be(ResultStatus.Continue);
     }
 
     [Fact]

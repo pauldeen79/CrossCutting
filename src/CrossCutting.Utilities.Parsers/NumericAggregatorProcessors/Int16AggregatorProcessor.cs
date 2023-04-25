@@ -6,7 +6,7 @@ public class Int16AggregatorProcessor : INumericAggregatorProcessor<short>
     {
         if (firstValue is not short s1)
         {
-            return Result<object?>.NotSupported();
+            return Result<object?>.Continue();
         }
 
         short s2;

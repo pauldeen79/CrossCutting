@@ -3,13 +3,13 @@
 public class ByteAggregatorProcessorTests
 {
     [Fact]
-    public void Aggregate_Returns_NotSupported_When_FirstValue_Is_Not_Byte()
+    public void Aggregate_Returns_Continue_When_FirstValue_Is_Not_Byte()
     {
         // Act
         var result = new ByteAggregatorProcessor().Aggregate("no byte", (byte)2, (x, y) => x + y);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.Status.Should().Be(ResultStatus.Continue);
     }
 
     [Fact]

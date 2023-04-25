@@ -6,7 +6,7 @@ public class Int64AggregatorProcessor : INumericAggregatorProcessor<long>
     {
         if (firstValue is not long l1)
         {
-            return Result<object?>.NotSupported();
+            return Result<object?>.Continue();
         }
 
         long l2;

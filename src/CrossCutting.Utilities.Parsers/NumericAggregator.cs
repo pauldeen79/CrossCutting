@@ -23,5 +23,5 @@ public static class NumericAggregator
             () => new DoubleAggregatorProcessor().Aggregate(firstExpression, secondExpression, doubleAggregatorDelegate),
             () => new DecimalAggregatorProcessor().Aggregate(firstExpression, secondExpression, decimalAggregatorDelegate),
             () => Result<object?>.Invalid("First expression is not of a supported type")
-        }.Select(x => x.Invoke()).First(x => x.Status != ResultStatus.NotSupported);
+        }.Select(x => x.Invoke()).First(x => x.Status != ResultStatus.Continue);
 }
