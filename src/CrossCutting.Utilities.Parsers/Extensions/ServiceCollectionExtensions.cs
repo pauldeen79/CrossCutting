@@ -31,7 +31,8 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddFunctionParser(this IServiceCollection services)
         => services
         .AddSingleton<IFunctionParser, FunctionParser>()
-        .AddSingleton<IFunctionParserNameProcessor, DefaultFunctionParserNameProcessor>();
+        .AddSingleton<IFunctionParserNameProcessor, DefaultFunctionParserNameProcessor>()
+        .AddSingleton<IFunctionParserArgumentProcessor, FormattableStringFunctionParserArgumentProcessor>();
 
     private static IServiceCollection AddFormattableStringParser(this IServiceCollection services)
         => services
@@ -39,7 +40,8 @@ public static class ServiceCollectionExtensions
         .AddSingleton<IFormattableStringStateProcessor, OpenSignProcessor>()
         .AddSingleton<IFormattableStringStateProcessor, CloseSignProcessor>()
         .AddSingleton<IFormattableStringStateProcessor, PlaceholderProcessor>()
-        .AddSingleton<IFormattableStringStateProcessor, ResultProcessor>();
+        .AddSingleton<IFormattableStringStateProcessor, ResultProcessor>()
+        .AddSingleton<IPlaceholderProcessor, UnknownPlaceholderProcessor>(); // used by CloseSignProcessor
 
     private static IServiceCollection AddMathematicExpressionParser(this IServiceCollection services)
         => services

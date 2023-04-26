@@ -2,9 +2,14 @@
 
 public sealed class FunctionParserTests : IDisposable
 {
+    private const string ReplacedValue = "replaced name";
     private readonly ServiceProvider _provider;
 
-    public FunctionParserTests() => _provider = new ServiceCollection().AddParsers().BuildServiceProvider();
+    public FunctionParserTests()
+        => _provider = new ServiceCollection()
+            .AddParsers()
+            .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+            .BuildServiceProvider();
 
     [Fact]
     public void Can_Parse_Single_Function_With_Arguments()
@@ -38,6 +43,23 @@ public sealed class FunctionParserTests : IDisposable
         result.Value.Arguments.Should().HaveCount(2);
         result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
         result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a,b", "c");
+    }
+
+    [Fact]
+    public void Can_Parse_Single_Function_With_FormattableString_Argument()
+    {
+        // Arrange
+        var input = "MYFUNCTION(@\"Hello, {Name}!\",b,c)";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value.Arguments.Should().HaveCount(3);
+        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
+        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("Hello, replaced name!", "b", "c");
     }
 
     [Fact]
@@ -262,5 +284,15 @@ public sealed class FunctionParserTests : IDisposable
         public int Order => 1;
 
         public Result<string> Process(string input) => Result<string>.Error("Kaboom");
+    }
+
+    private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
+    {
+        public int Order => 10;
+
+        public Result<string> Process(string value, IFormatProvider formatProvider, object? context)
+            => value == "Name"
+                ? Result<string>.Success(ReplacedValue)
+                : Result<string>.Error($"Unsupported placeholder name: {value}");
     }
 }

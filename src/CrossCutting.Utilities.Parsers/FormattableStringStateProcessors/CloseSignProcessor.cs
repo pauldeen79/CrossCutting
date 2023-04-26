@@ -2,11 +2,11 @@
 
 public class CloseSignProcessor : IFormattableStringStateProcessor
 {
-    private readonly IPlaceholderProcessor _processor;
+    private readonly IEnumerable<IPlaceholderProcessor> _processors;
 
-    public CloseSignProcessor(IPlaceholderProcessor processor)
+    public CloseSignProcessor(IEnumerable<IPlaceholderProcessor> processors)
     {
-        _processor = processor;
+        _processors = processors;
     }
 
     public Result<string> Process(FormattableStringParserState state)
@@ -32,7 +32,12 @@ public class CloseSignProcessor : IFormattableStringStateProcessor
             return Result<string>.Invalid("Missing open sign '{'. To use the '}' character, you have to escape it with an additional '}' character");
         }
 
-        var placeholderResult = _processor.Process(state.PlaceholderBuilder.ToString(), state.FormatProvider, state.Context);
+        var placeholderResult = _processors
+            .OrderBy(x => x.Order)
+            .Select(x => x.Process(state.PlaceholderBuilder.ToString(), state.FormatProvider, state.Context))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result<string>.Invalid($"Unknown placeholder in value: {state.PlaceholderBuilder}");
+
         if (!placeholderResult.IsSuccessful())
         {
             return placeholderResult;
