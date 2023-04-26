@@ -131,4 +131,60 @@ public class EnumerableExtensionsTests
         // Assert
         actual.Should().BeEquivalentTo("4", "5", "6");
     }
+
+    [Fact]
+    public void Pipe_Return_Seed_When_No_Items_Are_Available()
+    {
+        // Arrange
+        var items = Array.Empty<string>();
+        var seed = Result.Success();
+
+        // Act
+        var result = items.Pipe(seed, (result, item) => Result.FromInstance(item), x => x.IsSuccessful());
+
+        // Assert
+        result.Should().BeSameAs(seed);
+    }
+
+    [Fact]
+    public void Pipe_Returns_Last_Result_When_No_Items_Satisfy_Predicate()
+    {
+        // Arrange
+        var items = new[] { "A", "B", "C" };
+        var seed = Result.FromInstance(string.Empty);
+
+        // Act
+        var result = items.Pipe(seed, (result, item) => item =="D" ? Result.FromInstance(item) : Result<string>.Continue(item), x => x.Status == ResultStatus.Continue);
+
+        // Assert
+        result.Value.Should().BeEquivalentTo("C");
+    }
+
+    [Fact]
+    public void Pipe_Returns_Default_When_No_Items_Are_Available_And_Default_Is_Specified()
+    {
+        // Arrange
+        var items = new[] { "A", "B", "C" };
+        var seed = Result.FromInstance(string.Empty);
+
+        // Act
+        var result = items.Pipe(seed, (result, item) => item == "D" ? Result.FromInstance(item) : Result<string>.Continue(), x => x.Status == ResultStatus.Continue, _ => Result.FromInstance("Default"));
+
+        // Assert
+        result.Value.Should().BeEquivalentTo("Default");
+    }
+
+    [Fact]
+    public void Pipe_Returns_First_Matching_Item_That_Satisfies_Predicate()
+    {
+        // Arrange
+        var items = new[] { "A", "B", "C" };
+        var seed = Result.FromInstance(string.Empty);
+
+        // Act
+        var result = items.Pipe(seed, (result, item) => item == "B" ? Result.FromInstance(item) : Result<string>.Continue(item), x => x.Status == ResultStatus.Continue);
+
+        // Assert
+        result.Value.Should().BeEquivalentTo("B");
+    }
 }

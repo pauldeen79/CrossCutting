@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace CrossCutting.Common.Results;
+﻿namespace CrossCutting.Common.Results;
 
 public record Result<T> : Result
 {
@@ -17,6 +15,7 @@ public record Result<T> : Result
     public T? Value { get; }
     public bool HasValue => Value != null;
     public static Result<T> Success(T value) => new(value, ResultStatus.Ok, null, Enumerable.Empty<ValidationError>());
+    public static Result<T> Continue(T value) => new(value, ResultStatus.Continue, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> Error() => new(default, ResultStatus.Error, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> Error(string errorMessage) => new(default, ResultStatus.Error, errorMessage, Enumerable.Empty<ValidationError>());
     public static new Result<T> NotFound() => new(default, ResultStatus.NotFound, null, Enumerable.Empty<ValidationError>());

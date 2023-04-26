@@ -51,7 +51,7 @@ public static class EnumerableExtensions
             ? instance
             : whenEmpty();
 
-    public static TResult Pipe<TProcessor, TResult>(this IEnumerable<TProcessor> processors, TResult seed, Func<TResult, TProcessor, TResult> processDelegate, Func<TResult, bool> predicate)
+    public static TResult Pipe<TProcessor, TResult>(this IEnumerable<TProcessor> processors, TResult seed, Func<TResult, TProcessor, TResult> processDelegate, Func<TResult, bool> predicate, Func<TResult, TResult>? defaultDelegate = null)
     {
         var result = seed;
         foreach (var processor in processors)
@@ -63,6 +63,8 @@ public static class EnumerableExtensions
             }
         }
 
-        return result;
+        return defaultDelegate == null
+            ? result
+            : defaultDelegate(result);
     }
 }
