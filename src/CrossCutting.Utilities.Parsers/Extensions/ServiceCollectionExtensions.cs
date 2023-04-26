@@ -52,5 +52,5 @@ public static class ServiceCollectionExtensions
         .AddSingleton<IMathematicExpressionValidator, StartWithOperatorValidator>()
         .AddSingleton<IMathematicExpressionValidator, EndWithOperatorValidator>()
         .AddSingleton<IMathematicExpressionValidator, EmptyValuePartValidator>()
-        .AddSingleton<IMathematicExpressionValidator, BracketValidator>();
+        .AddSingleton<IMathematicExpressionValidator, BraceValidator>();
 }

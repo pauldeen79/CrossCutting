@@ -245,7 +245,7 @@ public sealed class ExpressionStringParserTests : IDisposable
 
     private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
     {
-        public Result<string> Process(string value)
+        public Result<string> Process(string value, IFormatProvider formatProvider, object? context)
             => value == "Name"
                 ? Result<string>.Success(ReplacedValue)
                 : Result<string>.Error($"Unsupported placeholder name: {value}");

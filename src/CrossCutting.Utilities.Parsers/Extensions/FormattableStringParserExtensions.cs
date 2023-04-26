@@ -2,6 +2,6 @@
 
 public static class FormattableStringParserExtensions
 {
-    public static Result<string> Parse(this IFormattableStringParser instance, string input)
-        => instance.Parse(input, null);
+    public static Result<string> Parse(this IFormattableStringParser instance, string input, IFormatProvider formatProvider)
+        => instance.Parse(input, formatProvider, null);
 }
