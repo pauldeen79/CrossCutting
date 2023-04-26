@@ -197,7 +197,54 @@ public sealed class FunctionParserTests : IDisposable
         result.ErrorMessage.Should().Be("Input cannot contain ^^, as this is used internally for formatting");
     }
 
+    [Fact]
+    public void Parse_Returns_Error_When_ArgumentProcessor_Returns_Error()
+    {
+        // Arrange
+        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserArgumentProcessor, ErrorArgumentProcessor>().BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFunctionParser>();
+        var input = "MYFUNCTION(some argument)";
+
+        // Act
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom");
+    }
+
+    [Fact]
+    public void Parse_Returns_Error_When_NameProcessor_Returns_Error()
+    {
+        // Arrange
+        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserNameProcessor, ErrorNameProcessor>().BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFunctionParser>();
+        var input = "MYFUNCTION(some argument)";
+
+        // Act
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom");
+    }
+
     public void Dispose() => _provider.Dispose();
 
     private IFunctionParser CreateSut() => _provider.GetRequiredService<IFunctionParser>();
+
+    private sealed class ErrorArgumentProcessor : IFunctionParserArgumentProcessor
+    {
+        public int Order => 1;
+
+        public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context)
+            => Result<FunctionParseResultArgument>.Error("Kaboom");
+    }
+
+    private sealed class ErrorNameProcessor : IFunctionParserNameProcessor
+    {
+        public int Order => 1;
+
+        public Result<string> Process(string input) => Result<string>.Error("Kaboom");
+    }
 }
