@@ -14,7 +14,15 @@ public class Recursion : IMathematicExpressionProcessor
 
             var openIndex = state.Input.LastIndexOf("(", closeIndex);
             var found = state.Remainder.Substring(openIndex + 1, closeIndex - openIndex - 1);
-            var subResult = state.ParseDelegate(found, state.FormatProvider);
+            
+            if (!MathematicExpressionParser.IsMathematicExpression(found))
+            {
+                // for now, we exit recursion if it's not a mathematical expression.
+                // it's probably a function call like MYFUNCTION(bla)
+                break;
+            }
+            
+            var subResult = state.ParseDelegate(found, state.FormatProvider, state.Context);
             if (!subResult.IsSuccessful())
             {
                 return Result<MathematicExpressionState>.FromExistingResult(subResult);

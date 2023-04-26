@@ -2,5 +2,5 @@
 
 public interface IExpressionParser
 {
-    Result<object?> Parse(string value, IFormatProvider formatProvider);
+    Result<object?> Parse(string value, IFormatProvider formatProvider, object? context);
 }

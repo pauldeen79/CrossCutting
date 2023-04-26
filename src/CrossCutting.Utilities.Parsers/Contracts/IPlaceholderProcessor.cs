@@ -2,5 +2,5 @@
 
 public interface IPlaceholderProcessor
 {
-    Result<string> Process(string value);
+    Result<string> Process(string value, IFormatProvider formatProvider, object? context);
 }

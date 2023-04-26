@@ -1,7 +1,11 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
-public class FunctionParserTests
+public sealed class FunctionParserTests : IDisposable
 {
+    private readonly ServiceProvider _provider;
+
+    public FunctionParserTests() => _provider = new ServiceCollection().AddParsers().BuildServiceProvider();
+
     [Fact]
     public void Can_Parse_Single_Function_With_Arguments()
     {
@@ -9,7 +13,7 @@ public class FunctionParserTests
         var input = "MYFUNCTION(a,b,c)";
 
         // Act
-        var result = FunctionParser.Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -26,7 +30,7 @@ public class FunctionParserTests
         var input = "MYFUNCTION(\"a,b\",c)";
 
         // Act
-        var result = FunctionParser.Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -43,7 +47,7 @@ public class FunctionParserTests
         var input = "MYFUNCTION()";
 
         // Act
-        var result = FunctionParser.Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -58,7 +62,7 @@ public class FunctionParserTests
         var input = "MYFUNCTION(,,)";
 
         // Act
-        var result = FunctionParser.Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -74,7 +78,7 @@ public class FunctionParserTests
         var input = "MYFUNCTION(a,b,MYNESTEDFUNCTION(c,d,e))";
 
         // Act
-        var result = FunctionParser.Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -92,7 +96,7 @@ public class FunctionParserTests
         var input = "MYFUNCTION(a,b,MYNESTEDFUNCTION(SUB1(c),SUB1(d),SUB1(SUB2(e))))";
 
         // Act
-        var result = FunctionParser.Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -116,7 +120,23 @@ public class FunctionParserTests
         var input = "()";
 
         // Act
-        var result = FunctionParser.Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+        result.ErrorMessage.Should().Be("No function name found");
+    }
+
+    [Fact]
+    public void Error_In_FunctionName_Determination_Returns_NotFound()
+    {
+        // Arrange
+        using var provider = new ServiceCollection().AddSingleton<IFunctionParser, FunctionParser>().BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFunctionParser>();
+        var input = "MYFUNCTION(some argument)";
+
+        // Act
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -130,7 +150,7 @@ public class FunctionParserTests
         var input = "MYFUNCTION)";
 
         // Act
-        var result = FunctionParser.Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -144,7 +164,7 @@ public class FunctionParserTests
         var input = "MYFUNCTION(";
 
         // Act
-        var result = FunctionParser.Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -158,7 +178,7 @@ public class FunctionParserTests
         var input = string.Empty;
 
         // Act
-        var result = FunctionParser.Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -172,7 +192,7 @@ public class FunctionParserTests
         var input = "some string that is not a function";
 
         // Act
-        var result = FunctionParser.Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -186,10 +206,61 @@ public class FunctionParserTests
         var input = "This string contains the magic ^^ internal temporary delimiter. Don't ask why, we just don't support it. You're doomed if you try this.";
 
         // Act
-        var result = FunctionParser.Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotSupported);
         result.ErrorMessage.Should().Be("Input cannot contain ^^, as this is used internally for formatting");
+    }
+
+    [Fact]
+    public void Parse_Returns_Error_When_ArgumentProcessor_Returns_Error()
+    {
+        // Arrange
+        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserArgumentProcessor, ErrorArgumentProcessor>().BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFunctionParser>();
+        var input = "MYFUNCTION(some argument)";
+
+        // Act
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom");
+    }
+
+    [Fact]
+    public void Parse_Returns_Error_When_NameProcessor_Returns_Error()
+    {
+        // Arrange
+        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserNameProcessor, ErrorNameProcessor>().BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFunctionParser>();
+        var input = "MYFUNCTION(some argument)";
+
+        // Act
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom");
+    }
+
+    public void Dispose() => _provider.Dispose();
+
+    private IFunctionParser CreateSut() => _provider.GetRequiredService<IFunctionParser>();
+
+    private sealed class ErrorArgumentProcessor : IFunctionParserArgumentProcessor
+    {
+        public int Order => 1;
+
+        public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context)
+            => Result<FunctionParseResultArgument>.Error("Kaboom");
+    }
+
+    private sealed class ErrorNameProcessor : IFunctionParserNameProcessor
+    {
+        public int Order => 1;
+
+        public Result<string> Process(string input) => Result<string>.Error("Kaboom");
     }
 }

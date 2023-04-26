@@ -12,6 +12,7 @@ global using CrossCutting.Utilities.Parsers.Contracts;
 global using CrossCutting.Utilities.Parsers.ExpressionParserProcessors;
 global using CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
 global using CrossCutting.Utilities.Parsers.FormattableStringStateProcessors;
+global using CrossCutting.Utilities.Parsers.FunctionParserNameProcessors;
 global using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
 global using CrossCutting.Utilities.Parsers.InsertQueryParser.Processors;
 global using CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators;

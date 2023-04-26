@@ -2,5 +2,5 @@
 
 public interface IFormattableStringParser
 {
-    Result<string> Parse(string input);
+    Result<string> Parse(string input, IFormatProvider formatProvider, object? context);
 }

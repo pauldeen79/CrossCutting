@@ -5,8 +5,9 @@ public class MathematicExpressionState
     public string Input { get; }
     public string Remainder { get; set; }
     public IFormatProvider FormatProvider { get; }
+    public object? Context { get; }
     public List<Result<object?>> Results { get; } = new();
-    public Func<string, IFormatProvider, Result<object?>> ParseDelegate { get; }
+    public Func<string, IFormatProvider, object?, Result<object?>> ParseDelegate { get; }
 
     public int Position { get; private set; }
     public AggregatorInfo[] Indexes { get; private set; }
@@ -20,10 +21,12 @@ public class MathematicExpressionState
     public MathematicExpressionState(
         string input,
         IFormatProvider formatProvider,
-        Func<string, IFormatProvider, Result<object?>> parseDelegate)
+        object? context,
+        Func<string, IFormatProvider, object?, Result<object?>> parseDelegate)
     {
         Input = input;
         FormatProvider = formatProvider;
+        Context = context;
         Remainder = input;
         ParseDelegate = parseDelegate;
 
@@ -109,5 +112,5 @@ public class MathematicExpressionState
     private Result<object?> GetPartResult(string part, IExpressionParser expressionParser)
         => part.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && part.EndsWith(MathematicExpressionParser.TemporaryDelimiter)
             ? Results[int.Parse(part.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]
-            : expressionParser.Parse(part, FormatProvider);
+            : expressionParser.Parse(part, FormatProvider, Context);
 }

@@ -21,7 +21,7 @@ public static class StringFormatParser
                 state.BeginPlaceholder();
                 if (state.OpenBracketCount > 1)
                 {
-                    return ParseResult.Error<string, object>("Too many opening brackets found");
+                    return ParseResult.Error<string, object>("Too many open braces found");
                 }
                 else
                 {
@@ -33,7 +33,7 @@ public static class StringFormatParser
                 state.EndPlaceholder();
                 if (state.OpenBracketCount < 0)
                 {
-                    return ParseResult.Error<string, object>("Too many close brackets found");
+                    return ParseResult.Error<string, object>("Too many close braces found");
                 }
                 else
                 {

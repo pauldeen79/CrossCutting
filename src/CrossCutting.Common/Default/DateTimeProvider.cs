@@ -1,9 +1,6 @@
-﻿using CrossCutting.Common.Abstractions;
-
-namespace CrossCutting.Common.Default;
+﻿namespace CrossCutting.Common.Default;
 
 public class DateTimeProvider : IDateTimeProvider
 {
-    public DateTime GetCurrentDateTime() =>
-        DateTime.Now;
+    public DateTime GetCurrentDateTime() => DateTime.Now;
 }

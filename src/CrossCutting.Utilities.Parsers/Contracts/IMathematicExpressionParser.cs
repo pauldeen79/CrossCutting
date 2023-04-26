@@ -2,5 +2,5 @@
 
 public interface IMathematicExpressionParser
 {
-    Result<object?> Parse(string input, IFormatProvider formatProvider);
+    Result<object?> Parse(string input, IFormatProvider formatProvider, object? context);
 }

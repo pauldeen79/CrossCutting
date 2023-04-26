@@ -141,7 +141,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Too many closing brackets found");
+        result.ErrorMessage.Should().Be("Too many closing braces found");
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Missing 1 close bracket");
+        result.ErrorMessage.Should().Be("Missing 1 close brace");
     }
 
     [Fact]
@@ -169,7 +169,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Missing 2 close brackets");
+        result.ErrorMessage.Should().Be("Missing 2 close braces");
     }
 
     [Fact]
@@ -466,7 +466,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
             _dlg = dlg;
         }
 
-        public Result<object?> Parse(string value, IFormatProvider formatProvider)
+        public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
             => _dlg.Invoke(value, formatProvider);
     }
 }

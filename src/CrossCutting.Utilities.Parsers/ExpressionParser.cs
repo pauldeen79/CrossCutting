@@ -9,10 +9,11 @@ public class ExpressionParser : IExpressionParser
         _processors = processors;
     }
 
-    public Result<object?> Parse(string value, IFormatProvider formatProvider)
+    public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
         => _processors
             .OrderBy(x => x.Order)
-            .Select(x => x.Parse(value, formatProvider))
+            .Select(x => x.Parse(value, formatProvider, context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result<object?>.Invalid($"Unknown expression type found in fragment: {value}");
+
 }

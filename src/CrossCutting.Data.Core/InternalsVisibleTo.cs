@@ -1,3 +1,1 @@
-﻿using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("CrossCutting.Data.Sql")]
+﻿[assembly: InternalsVisibleTo("CrossCutting.Data.Sql")]

@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Validators;
 
-internal class BracketValidator : IMathematicExpressionValidator
+internal class BraceValidator : IMathematicExpressionValidator
 {
     public Result<MathematicExpressionState> Validate(MathematicExpressionState state)
     {
@@ -18,7 +18,7 @@ internal class BracketValidator : IMathematicExpressionValidator
                 bracketCount--;
                 if (bracketCount < 0)
                 {
-                    return Result<MathematicExpressionState>.NotFound($"Too many closing brackets found");
+                    return Result<MathematicExpressionState>.NotFound($"Too many closing braces found");
                 }
             }
         }
@@ -28,7 +28,7 @@ internal class BracketValidator : IMathematicExpressionValidator
             var suffix = bracketCount > 1
                 ? "s"
                 : string.Empty;
-            return Result<MathematicExpressionState>.NotFound($"Missing {bracketCount} close bracket{suffix}");
+            return Result<MathematicExpressionState>.NotFound($"Missing {bracketCount} close brace{suffix}");
         }
 
         return Result<MathematicExpressionState>.Success(state);

@@ -178,7 +178,7 @@ public class StringFormatParserTests
         // Assert
         actual.IsSuccessful.Should().BeFalse();
         actual.ErrorMessages.Should().HaveCount(1);
-        actual.ErrorMessages.First().Should().Be("Too many opening brackets found");
+        actual.ErrorMessages.First().Should().Be("Too many open braces found");
     }
 
     [Fact]
@@ -193,7 +193,7 @@ public class StringFormatParserTests
         // Assert
         actual.IsSuccessful.Should().BeFalse();
         actual.ErrorMessages.Should().HaveCount(1);
-        actual.ErrorMessages.First().Should().Be("Too many close brackets found");
+        actual.ErrorMessages.First().Should().Be("Too many close braces found");
     }
 
     [Fact]

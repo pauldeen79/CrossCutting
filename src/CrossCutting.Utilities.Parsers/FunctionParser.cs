@@ -1,10 +1,21 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public static class FunctionParser
+public class FunctionParser : IFunctionParser
 {
     private const string TemporaryDelimiter = "^^";
 
-    public static Result<FunctionParseResult> Parse(string input)
+    private readonly IEnumerable<IFunctionParserNameProcessor> _nameProcessors;
+    private readonly IEnumerable<IFunctionParserArgumentProcessor> _argumentProcessors;
+
+    public FunctionParser(
+        IEnumerable<IFunctionParserNameProcessor> nameProcessors,
+        IEnumerable<IFunctionParserArgumentProcessor> argumentProcessors)
+    {
+        _nameProcessors = nameProcessors;
+        _argumentProcessors = argumentProcessors;
+    }
+
+    public Result<FunctionParseResult> Parse(string input, IFormatProvider formatProvider, object? context)
     {
         if (string.IsNullOrEmpty(input))
         {
@@ -41,7 +52,11 @@ public static class FunctionParser
             var stringArguments = remainder.Substring(openIndex + 1, closeIndex - openIndex - 1);
             var stringArgumentsSplit = stringArguments.SplitDelimited(',', '\"');
             var arguments = new List<FunctionParseResultArgument>();
-            AddArguments(results, stringArgumentsSplit, arguments);
+            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, formatProvider, context);
+            if (!addArgumentsResult.IsSuccessful())
+            {
+                return addArgumentsResult;
+            }
 
             var found = $"{nameResult.Value}({stringArguments})";
             remainder = remainder.Replace(found, FormattableString.Invariant($"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"));
@@ -51,7 +66,7 @@ public static class FunctionParser
         return Result<FunctionParseResult>.Success(results.Last());
     }
 
-    private static void AddArguments(List<FunctionParseResult> results, string[] stringArgumentsSplit, List<FunctionParseResultArgument> arguments)
+    private Result<FunctionParseResult> AddArguments(List<FunctionParseResult> results, string[] stringArgumentsSplit, List<FunctionParseResultArgument> arguments, IFormatProvider formatProvider, object? context)
     {
         foreach (var stringArgument in stringArgumentsSplit)
         {
@@ -61,26 +76,32 @@ public static class FunctionParser
                 continue;
             }
 
-            arguments.Add(new LiteralArgument(stringArgument));
+            var processValueResult = _argumentProcessors
+                .OrderBy(x => x.Order)
+                .Select(x => x.Process(stringArgument, results, formatProvider, context))
+                .FirstOrDefault(x => x.Status != ResultStatus.Continue);
+            if (processValueResult != null)
+            {
+                if (!processValueResult.IsSuccessful())
+                {
+                    return Result<FunctionParseResult>.FromExistingResult(processValueResult);
+                }
+
+                arguments.Add(processValueResult.Value!);
+            }
+            else
+            {
+                arguments.Add(new LiteralArgument(stringArgument));
+            }
         }
+
+        return Result<FunctionParseResult>.Continue();
     }
 
-    private static Result<string> FindFunctionName(string input)
-    {
-        if (string.IsNullOrEmpty(input))
-        {
-            return Result<string>.NotFound("No function name found");
-        }
-
-        var bracketIndex = input.LastIndexOf("(");
-        var commaIndex = input.LastIndexOf(",");
-        var greatestIndex = new[] { bracketIndex, commaIndex }.Max();
-
-        if (greatestIndex > -1)
-        {
-            return Result<string>.Success(input.Substring(greatestIndex + 1));
-        }
-
-        return Result<string>.Success(input);
-    }
+    private Result<string> FindFunctionName(string input)
+        => _nameProcessors
+            .OrderBy(x => x.Order)
+            .Select(x => x.Process(input))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result<string>.NotFound("No function name found");
 }

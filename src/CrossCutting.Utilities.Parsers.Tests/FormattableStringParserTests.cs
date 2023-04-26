@@ -13,7 +13,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var input = "Hello {Name {nested}} you are welcome";
 
         // Act
-        var result = CreateSut().Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -26,7 +26,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var input = "}";
 
         // Act
-        var result = CreateSut().Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -39,7 +39,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var input = "{";
 
         // Act
-        var result = CreateSut().Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -52,7 +52,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var input = "{Unsupported placeholder}";
 
         // Act
-        var result = CreateSut().Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -61,12 +61,14 @@ public sealed class FormattableStringParserTests : IDisposable
 
     [Theory,
         InlineData("Hello {Name}!", $"Hello {ReplacedValue}!"),
-        InlineData("Hello {{Name}}!", "Hello {{Name}}!"),
-        InlineData("Data without accolades", "Data without accolades")]
+        InlineData("Hello {Context}!", $"Hello [value from context]!"),
+        InlineData("Hello {{Name}}!", "Hello {Name}!"),
+        InlineData("Data without accolades", "Data without accolades"),
+        InlineData("public class Bla {{ /* implementation goes here */ }}", "public class Bla { /* implementation goes here */ }")]
     public void Parse_Returns_Success_On_Valid_Input(string input, string expectedValue)
     {
         // Act
-        var result = CreateSut().Parse(input);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, "[value from context]");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -86,9 +88,19 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
     {
-        public Result<string> Process(string value)
-            => value == "Name"
-                ? Result<string>.Success(ReplacedValue)
-                : Result<string>.Error($"Unsupported placeholder name: {value}");
+        public Result<string> Process(string value, IFormatProvider formatProvider, object? context)
+        {
+            if (value == "Name")
+            {
+                return Result<string>.Success(ReplacedValue);
+            }
+
+            if (value == "Context")
+            {
+                return Result<string>.Success(context?.ToString() ?? string.Empty);
+            }
+            
+            return Result<string>.Error($"Unsupported placeholder name: {value}");
+        }
     }
 }
