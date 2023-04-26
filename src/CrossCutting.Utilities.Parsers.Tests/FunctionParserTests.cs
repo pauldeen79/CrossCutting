@@ -128,6 +128,22 @@ public sealed class FunctionParserTests : IDisposable
     }
 
     [Fact]
+    public void Error_In_FunctionName_Determination_Returns_NotFound()
+    {
+        // Arrange
+        using var provider = new ServiceCollection().AddSingleton<IFunctionParser, FunctionParser>().BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFunctionParser>();
+        var input = "MYFUNCTION(some argument)";
+
+        // Act
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+        result.ErrorMessage.Should().Be("No function name found");
+    }
+
+    [Fact]
     public void Missing_OpenBracket_Returns_NotFound()
     {
         // Arrange
