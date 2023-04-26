@@ -16,16 +16,10 @@ public class ExpressionStringParser : IExpressionStringParser
     public Result<object?> Parse(string input, IFormatProvider formatProvider)
     {
         var state = new ExpressionStringParserState(input, formatProvider);
-        foreach (var processor in _processors.OrderBy(x => x.Order))
-        {
-            var result = processor.Process(state);
-            if (result.Status != ResultStatus.Continue)
-            {
-                return result;
-            }
-        }
-
-        return EvaluateSimpleExpression(state);
+        return _processors
+            .Select(x => x.Process(state))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? EvaluateSimpleExpression(state);
     }
 
     private Result<object?> EvaluateSimpleExpression(ExpressionStringParserState state)

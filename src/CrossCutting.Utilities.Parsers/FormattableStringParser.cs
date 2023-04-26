@@ -18,8 +18,7 @@ public class FormattableStringParser : IFormattableStringParser
 
         for (var index = 0; index < input.Length; index++)
         {
-            state.Current = input[index];
-            state.Index = index;
+            state.Update(input[index], index);
 
             foreach (var processor in _processors)
             {

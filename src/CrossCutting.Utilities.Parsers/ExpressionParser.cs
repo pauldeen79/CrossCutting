@@ -10,17 +10,9 @@ public class ExpressionParser : IExpressionParser
     }
 
     public Result<object?> Parse(string value, IFormatProvider formatProvider)
-    {
-        foreach (var processor in _processors.OrderBy(x => x.Order))
-        {
-            var result = processor.Parse(value, formatProvider);
-            if (result.Status != ResultStatus.Continue)
-            {
-                return result;
-            }
-        }
-
-        // In other cases, it's unknown
-        return Result<object?>.Invalid($"Unknown expression type found in fragment: {value}");
-    }
+        => _processors
+            .OrderBy(x => x.Order)
+            .Select(x => x.Parse(value, formatProvider))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result<object?>.Invalid($"Unknown expression type found in fragment: {value}");
 }

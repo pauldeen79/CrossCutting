@@ -10,5 +10,10 @@ public partial class Validate : IMathematicExpressionProcessor
     }
 
     public Result<MathematicExpressionState> Process(MathematicExpressionState state)
-        => _validators.Pipe(Result.FromInstance(state), (current, validator) => validator.Validate(current.Value!), result => result.IsSuccessful());
+        => _validators.Pipe
+        (
+            Result.FromInstance(state),
+            (current, validator) => validator.Validate(current.Value!),
+            result => result.IsSuccessful()
+        );
 }

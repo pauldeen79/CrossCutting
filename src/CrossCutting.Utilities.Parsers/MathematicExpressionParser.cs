@@ -16,13 +16,13 @@ public class MathematicExpressionParser : IMathematicExpressionParser
     public Result<object?> Parse(string input, IFormatProvider formatProvider)
     {
         var state = new MathematicExpressionState(input, formatProvider, Parse);
-        foreach (var processor in _processors)
+        var error = _processors
+            .Select(x => x.Process(state))
+            .FirstOrDefault(x => !x.IsSuccessful());
+        
+        if (error != null)
         {
-            var result = processor.Process(state);
-            if (!result.IsSuccessful())
-            {
-                return Result<object?>.FromExistingResult(result);
-            }
+            return Result<object?>.FromExistingResult(error);
         }
 
         return state.Results.Any()
