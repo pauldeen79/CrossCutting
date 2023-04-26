@@ -11,6 +11,7 @@ public sealed class ExpressionStringParserTests : IDisposable
             .AddParsers()
             .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
             .AddSingleton<IFunctionResultParser, MyFunctionResultParser>()
+            .AddSingleton<IFunctionParserArgumentProcessor, MyFunctionParserArgumentProcessor>()
             .BuildServiceProvider();
     }
 
@@ -151,7 +152,7 @@ public sealed class ExpressionStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("result of MYFUNCTION2 function: @Hello {Name}!");
+        result.Value.Should().Be("result of MYFUNCTION2 function: replaced value from [@\"Hello {Name}!\"]");
     }
 
     [Fact]
@@ -265,6 +266,24 @@ public sealed class ExpressionStringParserTests : IDisposable
             }
 
             return Result<object?>.Success($"result of {functionParseResult.FunctionName} function");
+        }
+    }
+
+    private sealed class MyFunctionParserArgumentProcessor : IFunctionParserArgumentProcessor
+    {
+        public int Order => 10;
+
+        public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results)
+        {
+            if (stringArgument.StartsWith("@"))
+            {
+                // note that FunctionParser actually strips the double quotes here, so if we really want to use a formatted expression, we have to add them again!
+                stringArgument = $"@\"{stringArgument[1..]}\"";
+                var result = $"replaced value from [{stringArgument}]";
+                return Result<FunctionParseResultArgument>.Success(new LiteralArgument(result));
+            }
+
+            return Result<FunctionParseResultArgument>.Continue();
         }
     }
 }

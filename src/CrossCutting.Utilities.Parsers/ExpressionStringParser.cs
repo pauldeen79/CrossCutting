@@ -3,13 +3,16 @@
 public class ExpressionStringParser : IExpressionStringParser
 {
     private readonly IFunctionResultParser _functionResultParser;
+    private readonly IFunctionParser _functionParser;
     private readonly IEnumerable<IExpressionStringParserProcessor> _processors;
 
     public ExpressionStringParser(
         IFunctionResultParser functionResultParser,
+        IFunctionParser functionParser,
         IEnumerable<IExpressionStringParserProcessor> processors)
     {
         _functionResultParser = functionResultParser;
+        _functionParser = functionParser;
         _processors = processors;
     }
 
@@ -26,7 +29,7 @@ public class ExpressionStringParser : IExpressionStringParser
     private Result<object?> EvaluateSimpleExpression(ExpressionStringParserState state)
     {
         // =something else, we can try function
-        var functionResult = FunctionParser.Parse(state.Input.Substring(1));
+        var functionResult = _functionParser.Parse(state.Input.Substring(1), state.FormatProvider, state.Context);
         if (functionResult.Status == ResultStatus.NotFound)
         {
             return Result<object?>.FromExistingResult(functionResult);
