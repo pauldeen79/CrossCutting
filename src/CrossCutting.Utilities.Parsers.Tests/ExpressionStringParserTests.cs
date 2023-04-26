@@ -141,6 +141,20 @@ public sealed class ExpressionStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Returns_Success_Result_From_Function_With_Formattable_String_As_Argument()
+    {
+        // Arrange
+        var input = "=MYFUNCTION2(@\"Hello {Name}!\")";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("result of MYFUNCTION2 function: @Hello {Name}!");
+    }
+
+    [Fact]
     public void Parse_Returns_Failure_Result_From_Function_When_Found()
     {
         // Arrange
@@ -239,8 +253,18 @@ public sealed class ExpressionStringParserTests : IDisposable
     private sealed class MyFunctionResultParser : IFunctionResultParser
     {
         public Result<object?> Parse(FunctionParseResult functionParseResult)
-            => functionParseResult.FunctionName == "error"
-                ? Result<object?>.Error("Kaboom")
-                : Result<object?>.Success($"result of {functionParseResult.FunctionName} function");
+        {
+            if (functionParseResult.FunctionName == "error")
+            {
+                return Result<object?>.Error("Kaboom");
+            }
+
+            if (functionParseResult.Arguments.Any())
+            {
+                return Result<object?>.Success($"result of {functionParseResult.FunctionName} function: {string.Join(", ", functionParseResult.Arguments.OfType<LiteralArgument>().Select(x => x.Value))}");
+            }
+
+            return Result<object?>.Success($"result of {functionParseResult.FunctionName} function");
+        }
     }
 }

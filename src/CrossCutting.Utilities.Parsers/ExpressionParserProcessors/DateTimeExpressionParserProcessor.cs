@@ -2,9 +2,9 @@
 
 public class DateTimeExpressionParserProcessor : IExpressionParserProcessor
 {
-    public int Order => 50;
+    public int Order => 60;
 
-    public Result<object?> Parse(string value, IFormatProvider formatProvider)
+    public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
     {
         if (DateTime.TryParse(value, formatProvider, DateTimeStyles.None, out var dt))
         {

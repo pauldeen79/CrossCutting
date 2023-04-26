@@ -13,9 +13,12 @@ public class MathematicExpressionParser : IMathematicExpressionParser
         _processors = processors;
     }
 
-    public Result<object?> Parse(string input, IFormatProvider formatProvider)
+    internal static bool IsMathematicExpression(string found)
+        => Operators.Aggregators.Any(x => found.Contains(x.Character.ToString()));
+
+    public Result<object?> Parse(string input, IFormatProvider formatProvider, object? context)
     {
-        var state = new MathematicExpressionState(input, formatProvider, Parse);
+        var state = new MathematicExpressionState(input, formatProvider, context, Parse);
         var error = _processors
             .Select(x => x.Process(state))
             .FirstOrDefault(x => !x.IsSuccessful());
@@ -27,6 +30,10 @@ public class MathematicExpressionParser : IMathematicExpressionParser
 
         return state.Results.Any()
             ? state.Results.Last()
-            : _expressionParser.Parse(input, formatProvider);
+            : _expressionParser
+                .Parse(input, formatProvider, context)
+                .Transform(x => x.ErrorMessage?.StartsWith("Unknown expression type found in fragment: ") == true
+                    ? Result<object?>.NotFound()
+                    : x);
     }
 }

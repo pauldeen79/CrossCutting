@@ -5,9 +5,9 @@ public class NumericExpressionParserProcessor : IExpressionParserProcessor
     private static readonly Regex _floatingPointRegEx = new(@"^[0-9]*(?:\.[0-9]*)?$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
     private static readonly Regex _wholeNumberRegEx = new("^[0-9]*$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
 
-    public int Order => 40;
+    public int Order => 50;
 
-    public Result<object?> Parse(string value, IFormatProvider formatProvider)
+    public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
     {
         var isFloatingPoint = new Lazy<bool>(() => _floatingPointRegEx.IsMatch(value));
         var isWholeNumber = new Lazy<bool>(() => _wholeNumberRegEx.IsMatch(value));

@@ -466,7 +466,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
             _dlg = dlg;
         }
 
-        public Result<object?> Parse(string value, IFormatProvider formatProvider)
+        public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
             => _dlg.Invoke(value, formatProvider);
     }
 }

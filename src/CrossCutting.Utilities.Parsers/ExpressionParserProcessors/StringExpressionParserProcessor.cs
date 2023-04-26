@@ -4,7 +4,7 @@ public class StringExpressionParserProcessor : IExpressionParserProcessor
 {
     public int Order => 30;
 
-    public Result<object?> Parse(string value, IFormatProvider formatProvider)
+    public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
     {
         if (value.StartsWith("\"") && value.EndsWith("\""))
         {

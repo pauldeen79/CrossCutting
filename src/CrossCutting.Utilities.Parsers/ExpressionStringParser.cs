@@ -13,10 +13,11 @@ public class ExpressionStringParser : IExpressionStringParser
         _processors = processors;
     }
 
-    public Result<object?> Parse(string input, IFormatProvider formatProvider)
+    public Result<object?> Parse(string input, IFormatProvider formatProvider, object? context)
     {
-        var state = new ExpressionStringParserState(input, formatProvider);
+        var state = new ExpressionStringParserState(input, formatProvider, context);
         return _processors
+            .OrderBy(x => x.Order)
             .Select(x => x.Process(state))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? EvaluateSimpleExpression(state);
@@ -26,6 +27,11 @@ public class ExpressionStringParser : IExpressionStringParser
     {
         // =something else, we can try function
         var functionResult = FunctionParser.Parse(state.Input.Substring(1));
+        if (functionResult.Status == ResultStatus.NotFound)
+        {
+            return Result<object?>.FromExistingResult(functionResult);
+        }
+
         return functionResult.Status == ResultStatus.Ok
             ? _functionResultParser.Parse(functionResult.Value!)
             : Result<object?>.FromExistingResult(functionResult);

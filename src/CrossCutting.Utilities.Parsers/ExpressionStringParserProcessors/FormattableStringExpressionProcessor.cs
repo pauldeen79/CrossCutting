@@ -16,7 +16,7 @@ public class FormattableStringExpressionProcessor : IExpressionStringParserProce
         if (state.Input.StartsWith("=@\"") && state.Input.EndsWith("\""))
         {
             // =@"string value" -> literal, no functions but formattable strings possible
-            var formattedStringResult = _parser.Parse(state.Input.Substring(3, state.Input.Length - 4));
+            var formattedStringResult = _parser.Parse(state.Input.Substring(3, state.Input.Length - 4), state.Context);
             return formattedStringResult.Status != ResultStatus.Ok
                 ? Result<object?>.FromExistingResult(formattedStringResult)
                 : Result<object?>.FromExistingResult(formattedStringResult, result => result);

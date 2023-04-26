@@ -12,9 +12,9 @@ public class FormattableStringParser : IFormattableStringParser
         _processors = processors;
     }
 
-    public Result<string> Parse(string input)
+    public Result<string> Parse(string input, object? context)
     {
-        var state = new FormattableStringParserState(input);
+        var state = new FormattableStringParserState(input, context);
 
         for (var index = 0; index < input.Length; index++)
         {

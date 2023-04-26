@@ -3,7 +3,6 @@ global using System.Globalization;
 global using System.Linq;
 global using CrossCutting.Common.Results;
 global using CrossCutting.Utilities.Parsers.Contracts;
-global using CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
 global using CrossCutting.Utilities.Parsers.Extensions;
 global using CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Aggregators;
 global using CrossCutting.Utilities.Parsers.NumericAggregatorProcessors;
