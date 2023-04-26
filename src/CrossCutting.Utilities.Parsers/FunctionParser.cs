@@ -52,7 +52,7 @@ public class FunctionParser : IFunctionParser
             var stringArguments = remainder.Substring(openIndex + 1, closeIndex - openIndex - 1);
             var stringArgumentsSplit = stringArguments.SplitDelimited(',', '\"');
             var arguments = new List<FunctionParseResultArgument>();
-            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments);
+            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, formatProvider, context);
             if (!addArgumentsResult.IsSuccessful())
             {
                 return addArgumentsResult;
@@ -66,7 +66,7 @@ public class FunctionParser : IFunctionParser
         return Result<FunctionParseResult>.Success(results.Last());
     }
 
-    private Result<FunctionParseResult> AddArguments(List<FunctionParseResult> results, string[] stringArgumentsSplit, List<FunctionParseResultArgument> arguments)
+    private Result<FunctionParseResult> AddArguments(List<FunctionParseResult> results, string[] stringArgumentsSplit, List<FunctionParseResultArgument> arguments, IFormatProvider formatProvider, object? context)
     {
         foreach (var stringArgument in stringArgumentsSplit)
         {
@@ -78,7 +78,7 @@ public class FunctionParser : IFunctionParser
 
             var processValueResult = _argumentProcessors
                 .OrderBy(x => x.Order)
-                .Select(x => x.Process(stringArgument, results))
+                .Select(x => x.Process(stringArgument, results, formatProvider, context))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue);
             if (processValueResult != null)
             {

@@ -152,7 +152,7 @@ public sealed class ExpressionStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("result of MYFUNCTION2 function: replaced value from [Hello {Name}!]");
+        result.Value.Should().Be("result of MYFUNCTION2 function: Hello replaced name!");
     }
 
     [Fact]
@@ -269,16 +269,25 @@ public sealed class ExpressionStringParserTests : IDisposable
         }
     }
 
-    private sealed class MyFunctionParserArgumentProcessor : IFunctionParserArgumentProcessor
+    public sealed class MyFunctionParserArgumentProcessor : IFunctionParserArgumentProcessor
     {
+        private readonly IFormattableStringParser _parser;
+
         public int Order => 10;
 
-        public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results)
+        public MyFunctionParserArgumentProcessor(IFormattableStringParser parser)
+        {
+            _parser = parser;
+        }
+
+        public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context)
         {
             if (stringArgument.StartsWith("@"))
             {
-                var result = $"replaced value from [{stringArgument.Substring(1)}]";
-                return Result<FunctionParseResultArgument>.Success(new LiteralArgument(result));
+                var result = _parser.Parse(stringArgument.Substring(1), formatProvider);
+                return result.IsSuccessful()
+                    ? Result<FunctionParseResultArgument>.Success(new LiteralArgument(result.Value!))
+                    : Result<FunctionParseResultArgument>.FromExistingResult(result);
             }
 
             return Result<FunctionParseResultArgument>.Continue();

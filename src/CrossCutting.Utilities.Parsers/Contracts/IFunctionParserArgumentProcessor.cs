@@ -3,5 +3,5 @@
 public interface IFunctionParserArgumentProcessor
 {
     int Order { get; }
-    Result<FunctionParseResultArgument> Process(string stringArgument/*, IReadOnlyCollection<FunctionParseResultArgument> currentArguments*/, IReadOnlyCollection<FunctionParseResult> results);
+    Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context);
 }
