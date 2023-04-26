@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Common.Tests;
+﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
 public class NamedStringTests
 {
@@ -9,7 +9,7 @@ public class NamedStringTests
         const string Template = "Hello {Name}, you are {Age} years old. How do you feel?";
 
         // Act
-        var result = NamedString.Format(Template, new { Name = "John Doe", Age = 43 });
+        var result = NamedString.Format(Template, CultureInfo.InvariantCulture, new { Name = "John Doe", Age = 43 });
 
         // Assert
         result.Should().Be("Hello John Doe, you are 43 years old. How do you feel?");
@@ -22,7 +22,7 @@ public class NamedStringTests
         const string Template = "Hello {NAME}, you are {AGE} years old. How do you feel?";
 
         // Act
-        var result = NamedString.Format(Template, new { Name = "John Doe", Age = 43 }, ignoreCase: true);
+        var result = NamedString.Format(Template, CultureInfo.InvariantCulture, new { Name = "John Doe", Age = 43 }, ignoreCase: true);
 
         // Assert
         result.Should().Be("Hello John Doe, you are 43 years old. How do you feel?");
@@ -35,9 +35,22 @@ public class NamedStringTests
         const string Template = "Hello {NAME}, you are {AGE} years old. How do you feel?";
 
         // Act
-        var result = NamedString.Format(Template, new { Name = "John Doe", Age = 43 });
+        var result = NamedString.Format(Template, CultureInfo.InvariantCulture, new { Name = "John Doe", Age = 43 });
 
         // Assert
         result.Should().Be(Template); // no replacements were made
+    }
+
+    [Fact]
+    public void Can_Not_Escape_Braces()
+    {
+        // Arrange
+        const string Template = "Hello {Name}, you are {{Age}} years old. How do you feel?";
+
+        // Act
+        var result = NamedString.Format(Template, CultureInfo.InvariantCulture, new { Name = "John Doe", Age = 43 });
+
+        // Assert
+        result.Should().Be("Hello John Doe, you are {43} years old. How do you feel?");
     }
 }
