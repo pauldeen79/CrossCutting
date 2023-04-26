@@ -50,4 +50,19 @@ public static class EnumerableExtensions
         => instance.Any()
             ? instance
             : whenEmpty();
+
+    public static TResult Pipe<TProcessor, TResult>(this IEnumerable<TProcessor> processors, TResult seed, Func<TResult, TProcessor, TResult> processDelegate, Func<TResult, bool> predicate)
+    {
+        var result = seed;
+        foreach (var processor in processors)
+        {
+            result = processDelegate.Invoke(result, processor);
+            if (!predicate(result))
+            {
+                return result;
+            }
+        }
+
+        return result;
+    }
 }

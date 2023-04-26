@@ -44,51 +44,15 @@ public record Result<T> : Result
     public static Result<T> FromExistingResult(Result existingResult) => new(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
     public static Result<T> FromExistingResult(Result existingResult, T value) => new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
     public static Result<T> FromExistingResult<TSourceResult>(Result<TSourceResult> existingResult, Func<TSourceResult, T> convertDelegate)
-    {
-        if (!existingResult.IsSuccessful())
-        {
-            return Result<T>.FromExistingResult(existingResult);
-        }
-        return Result<T>.Success(convertDelegate(existingResult.Value!));
-    }
-
-    public static Result<T> Chain<TCommand>(TCommand command, params Func<TCommand, Result<T>>[] steps)
-        => steps.Length == 0
-            ? Error("Could not determine result because there are no steps defined")
-            : steps.Select(step => step.Invoke(command))
-                   .TakeWhileWithFirstNonMatching(result => result.IsSuccessful())
-                   .Last();
-
-    public static Result<T> Chain<TCommand>(TCommand command, params Func<TCommand, Result<T>, Result<T>>[] steps)
-        => steps.Aggregate
-        (
-            Error("Could not determine result because there are no steps defined"),
-            (seed, step) => step.Invoke(command, seed)
-        );
-
-    public static Result<T> Pipe<TProcessor>(T seed, IEnumerable<TProcessor> processors, Func<Result<T>, TProcessor, Result<T>> processDelegate)
-    {
-        var result = Result<T>.Success(seed);
-        foreach (var processor in processors)
-        {
-            result = processDelegate.Invoke(result, processor);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-        }
-
-        return result;
-    }
+        => existingResult.IsSuccessful()
+            ? Result<T>.Success(convertDelegate(existingResult.Value!))
+            : Result<T>.FromExistingResult(existingResult);
 
     public T GetValueOrThrow(string errorMessage)
-    {
-        if (!IsSuccessful())
-        {
-            throw new InvalidOperationException(errorMessage);
-        }
-        return Value!;
-    }
+        => !IsSuccessful() || Value is null
+            ? throw new InvalidOperationException(errorMessage)
+            : Value;
+
     public T GetValueOrThrow()
         => GetValueOrThrow(string.IsNullOrEmpty(ErrorMessage)
             ? $"Result: {Status}"
@@ -186,18 +150,4 @@ public record Result
         => validationErrors.Any()
             ? Invalid(errorMessage, validationErrors)
             : Success();
-
-    public static Result Chain<TCommand>(TCommand command, params Func<TCommand, Result>[] steps)
-        => steps.Length == 0
-            ? Error("Could not determine result because there are no steps defined")
-            : steps.Select(step => step.Invoke(command))
-                   .TakeWhileWithFirstNonMatching(result => result.IsSuccessful())
-                   .Last();
-
-    public static Result Chain<TCommand>(TCommand command, params Func<TCommand, Result, Result>[] steps)
-        => steps.Aggregate
-        (
-            Error("Could not determine result because there are no steps defined"),
-            (seed, step) => step.Invoke(command, seed)
-        );
 }
