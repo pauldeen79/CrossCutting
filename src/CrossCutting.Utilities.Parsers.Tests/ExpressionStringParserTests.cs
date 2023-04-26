@@ -152,7 +152,7 @@ public sealed class ExpressionStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("result of MYFUNCTION2 function: replaced value from [@\"Hello {Name}!\"]");
+        result.Value.Should().Be("result of MYFUNCTION2 function: replaced value from [Hello {Name}!]");
     }
 
     [Fact]
@@ -277,9 +277,7 @@ public sealed class ExpressionStringParserTests : IDisposable
         {
             if (stringArgument.StartsWith("@"))
             {
-                // note that FunctionParser actually strips the double quotes here, so if we really want to use a formatted expression, we have to add them again!
-                stringArgument = $"@\"{stringArgument[1..]}\"";
-                var result = $"replaced value from [{stringArgument}]";
+                var result = $"replaced value from [{stringArgument.Substring(1)}]";
                 return Result<FunctionParseResultArgument>.Success(new LiteralArgument(result));
             }
 
