@@ -11,7 +11,6 @@ public sealed class ExpressionStringParserTests : IDisposable
             .AddParsers()
             .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
             .AddSingleton<IFunctionResultParser, MyFunctionResultParser>()
-            .AddSingleton<IFunctionParserArgumentProcessor, MyFunctionParserArgumentProcessor>()
             .BuildServiceProvider();
     }
 
@@ -263,6 +262,8 @@ public sealed class ExpressionStringParserTests : IDisposable
 
     private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
     {
+        public int Order => 10;
+
         public Result<string> Process(string value, IFormatProvider formatProvider, object? context)
             => value == "Name"
                 ? Result<string>.Success(ReplacedValue)
@@ -284,31 +285,6 @@ public sealed class ExpressionStringParserTests : IDisposable
             }
 
             return Result<object?>.Success($"result of {functionParseResult.FunctionName} function");
-        }
-    }
-
-    public sealed class MyFunctionParserArgumentProcessor : IFunctionParserArgumentProcessor
-    {
-        private readonly IFormattableStringParser _parser;
-
-        public int Order => 10;
-
-        public MyFunctionParserArgumentProcessor(IFormattableStringParser parser)
-        {
-            _parser = parser;
-        }
-
-        public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context)
-        {
-            if (stringArgument.StartsWith("@"))
-            {
-                var result = _parser.Parse(stringArgument.Substring(1), formatProvider);
-                return result.IsSuccessful()
-                    ? Result<FunctionParseResultArgument>.Success(new LiteralArgument(result.Value!))
-                    : Result<FunctionParseResultArgument>.FromExistingResult(result);
-            }
-
-            return Result<FunctionParseResultArgument>.Continue();
         }
     }
 }

@@ -88,6 +88,8 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
     {
+        public int Order => 10;
+
         public Result<string> Process(string value, IFormatProvider formatProvider, object? context)
         {
             if (value == "Name")
