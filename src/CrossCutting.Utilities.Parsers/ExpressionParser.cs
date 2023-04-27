@@ -15,5 +15,4 @@ public class ExpressionParser : IExpressionParser
             .Select(x => x.Parse(value, formatProvider, context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result<object?>.NotSupported($"Unknown expression type found in fragment: {value}");
-
 }
