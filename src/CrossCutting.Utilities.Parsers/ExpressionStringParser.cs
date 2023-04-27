@@ -2,16 +2,16 @@
 
 public class ExpressionStringParser : IExpressionStringParser
 {
-    private readonly IFunctionResultParser _functionResultParser;
+    private readonly IEnumerable<IFunctionResultParser> _functionResultParsers;
     private readonly IFunctionParser _functionParser;
     private readonly IEnumerable<IExpressionStringParserProcessor> _processors;
 
     public ExpressionStringParser(
-        IFunctionResultParser functionResultParser,
         IFunctionParser functionParser,
+        IEnumerable<IFunctionResultParser> functionResultParsers,
         IEnumerable<IExpressionStringParserProcessor> processors)
     {
-        _functionResultParser = functionResultParser;
+        _functionResultParsers = functionResultParsers;
         _functionParser = functionParser;
         _processors = processors;
     }
@@ -35,8 +35,14 @@ public class ExpressionStringParser : IExpressionStringParser
             return Result<object?>.FromExistingResult(functionResult);
         }
 
-        return functionResult.Status == ResultStatus.Ok
-            ? _functionResultParser.Parse(functionResult.Value!)
-            : Result<object?>.FromExistingResult(functionResult);
+        if (!functionResult.IsSuccessful())
+        {
+            return Result<object?>.FromExistingResult(functionResult);
+        }
+
+        return _functionResultParsers
+            .Select(x => x.Parse(functionResult.Value!))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result<object?>.NotSupported($"Unknown function found: {functionResult.Value?.FunctionName}");
     }
 }

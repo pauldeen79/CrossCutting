@@ -60,7 +60,7 @@ public class FunctionParser : IFunctionParser
 
             var found = $"{nameResult.Value}({stringArguments})";
             remainder = remainder.Replace(found, FormattableString.Invariant($"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"));
-            results.Add(new FunctionParseResult(nameResult.Value!, arguments));
+            results.Add(new FunctionParseResult(nameResult.Value!, arguments, formatProvider, context));
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
         return remainder.EndsWith(TemporaryDelimiter)

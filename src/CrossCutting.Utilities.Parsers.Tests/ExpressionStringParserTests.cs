@@ -81,7 +81,7 @@ public sealed class ExpressionStringParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Status.Should().Be(ResultStatus.NotSupported);
         result.ErrorMessage.Should().Be("Unknown expression type found in fragment: error");
     }
 
@@ -223,6 +223,24 @@ public sealed class ExpressionStringParserTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
         result.ErrorMessage.Should().Be("No function name found");
+    }
+
+    [Fact]
+    public void Parse_Returns_NotSupported_When_FunctionParseResult_Could_Not_Be_Understood()
+    {
+        // Arrange
+        using var provider = new ServiceCollection()
+            .AddParsers()
+            .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+            .BuildServiceProvider();
+        var input = "=MYFUNCTION()";
+
+        // Act
+        var result = provider.GetRequiredService<IExpressionStringParser>().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.ErrorMessage.Should().Be("Unknown function found: MYFUNCTION");
     }
 
     [Fact]
