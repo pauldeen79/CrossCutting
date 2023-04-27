@@ -14,4 +14,9 @@ public record FunctionParseResult
     public ReadOnlyValueCollection<FunctionParseResultArgument> Arguments { get; }
     public IFormatProvider FormatProvider { get; }
     public object? Context { get; }
+
+    public Result<FunctionParseResultArgument> GetArgument(int index, string argumentName)
+        => index + 1 > Arguments.Count
+            ? Result<FunctionParseResultArgument>.Invalid($"Missing argument: {argumentName}")
+            : Result<FunctionParseResultArgument>.Success(Arguments[index]);
 }
