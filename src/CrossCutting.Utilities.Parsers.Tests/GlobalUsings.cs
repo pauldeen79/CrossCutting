@@ -10,4 +10,5 @@ global using CrossCutting.Utilities.Parsers.NumericAggregatorProcessors;
 global using FluentAssertions;
 global using FluentAssertions.Execution;
 global using Microsoft.Extensions.DependencyInjection;
+global using Moq;
 global using Xunit;

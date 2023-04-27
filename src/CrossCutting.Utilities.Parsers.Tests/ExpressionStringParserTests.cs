@@ -272,7 +272,7 @@ public sealed class ExpressionStringParserTests : IDisposable
 
     private sealed class MyFunctionResultParser : IFunctionResultParser
     {
-        public Result<object?> Parse(FunctionParseResult functionParseResult)
+        public Result<object?> Parse(FunctionParseResult functionParseResult, IFunctionParseResultEvaluator evaluator)
         {
             if (functionParseResult.FunctionName == "error")
             {

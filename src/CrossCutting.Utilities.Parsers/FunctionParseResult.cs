@@ -15,8 +15,8 @@ public record FunctionParseResult
     public IFormatProvider FormatProvider { get; }
     public object? Context { get; }
 
-    public Result<FunctionParseResultArgument> GetArgument(int index, string argumentName)
+    public Result<object?> GetArgumentValue(int index, string argumentName, IFunctionParseResultEvaluator evaluator)
         => index + 1 > Arguments.Count
-            ? Result<FunctionParseResultArgument>.Invalid($"Missing argument: {argumentName}")
-            : Result<FunctionParseResultArgument>.Success(Arguments[index]);
+            ? Result<object?>.Invalid($"Missing argument: {argumentName}")
+            : Arguments[index].GetValue(evaluator);
 }
