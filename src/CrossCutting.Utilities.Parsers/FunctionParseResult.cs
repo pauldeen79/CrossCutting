@@ -19,4 +19,15 @@ public record FunctionParseResult
         => index + 1 > Arguments.Count
             ? Result<object?>.Invalid($"Missing argument: {argumentName}")
             : Arguments[index].GetValue(evaluator);
+
+    public Result<int> GetArgumentValueInt32(int index, string argumentName, IFunctionParseResultEvaluator evaluator)
+        => index + 1 > Arguments.Count
+            ? Result<int>.Invalid($"Missing argument: {argumentName}")
+            : Arguments[index].GetValueInt32(argumentName, FormatProvider, evaluator);
+
+    public Result<string> GetArgumentValueString(int index, string argumentName, IFunctionParseResultEvaluator evaluator)
+        => index + 1 > Arguments.Count
+            ? Result<string>.Invalid($"Missing argument: {argumentName}")
+            : Arguments[index].GetValueString(argumentName, FormatProvider, evaluator);
+
 }
