@@ -63,7 +63,9 @@ public class FunctionParser : IFunctionParser
             results.Add(new FunctionParseResult(nameResult.Value!, arguments));
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
-        return Result<FunctionParseResult>.Success(results.Last());
+        return remainder.EndsWith(TemporaryDelimiter)
+            ? Result<FunctionParseResult>.Success(results.Last())
+            : Result<FunctionParseResult>.NotFound("Input has additional characters after last close bracket");
     }
 
     private Result<FunctionParseResult> AddArguments(List<FunctionParseResult> results, string[] stringArgumentsSplit, List<FunctionParseResultArgument> arguments, IFormatProvider formatProvider, object? context)

@@ -128,6 +128,20 @@ public sealed class FunctionParserTests : IDisposable
     }
 
     [Fact]
+    public void Not_Ending_With_Close_Bracket_Returns_NotFound()
+    {
+        // Arrange
+        var input = "SOMEFUNCTION() with a suffix";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+        result.ErrorMessage.Should().Be("Input has additional characters after last close bracket");
+    }
+
+    [Fact]
     public void Error_In_FunctionName_Determination_Returns_NotFound()
     {
         // Arrange
