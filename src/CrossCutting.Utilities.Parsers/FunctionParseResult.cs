@@ -164,16 +164,16 @@ public record FunctionParseResult
 
         if (argumentValueResult.Value is not string s)
         {
-            return Result<DateTime>.Invalid($"{argumentName} is not of type DateTime");
+            return Result<DateTime>.Invalid($"{argumentName} is not of type datetime");
         }
         var parseResult = parser.Parse(s, FormatProvider, Context);
         if (!parseResult.IsSuccessful())
         {
-            return Result<DateTime>.Invalid($"{argumentName} is not of type DateTime");
+            return Result<DateTime>.Invalid($"{argumentName} is not of type datetime");
         }
 
         return parseResult.Value is DateTime dt2
             ? Result<DateTime>.Success(dt2)
-            : Result<DateTime>.Invalid($"{argumentName} is not of type DateTime");
+            : Result<DateTime>.Invalid($"{argumentName} is not of type datetime");
     }
 }
