@@ -2,7 +2,7 @@
 
 public abstract record FunctionParseResultArgument
 {
-    public abstract Result<object?> GetValue(IFunctionParseResultEvaluator evaluator);
+    public abstract Result<object?> GetValue(object? context, IFunctionParseResultEvaluator evaluator);
 }
 
 public sealed record LiteralArgument : FunctionParseResultArgument
@@ -14,7 +14,7 @@ public sealed record LiteralArgument : FunctionParseResultArgument
 
     public string Value { get; }
 
-    public override Result<object?> GetValue(IFunctionParseResultEvaluator evaluator) => Result<object?>.Success(Value);
+    public override Result<object?> GetValue(object? context, IFunctionParseResultEvaluator evaluator) => Result<object?>.Success(Value);
 }
 
 public sealed record FunctionArgument : FunctionParseResultArgument
@@ -26,6 +26,6 @@ public sealed record FunctionArgument : FunctionParseResultArgument
 
     public FunctionParseResult Function { get; }
 
-    public override Result<object?> GetValue(IFunctionParseResultEvaluator evaluator)
-        => evaluator.Evaluate(Function);
+    public override Result<object?> GetValue(object? context, IFunctionParseResultEvaluator evaluator)
+        => evaluator.Evaluate(Function, context);
 }

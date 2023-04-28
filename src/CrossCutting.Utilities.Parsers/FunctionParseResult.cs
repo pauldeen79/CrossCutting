@@ -15,14 +15,14 @@ public record FunctionParseResult
     public IFormatProvider FormatProvider { get; }
     public object? Context { get; }
 
-    public Result<object?> GetArgumentValue(int index, string argumentName, IFunctionParseResultEvaluator evaluator)
+    public Result<object?> GetArgumentValue(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator)
         => index + 1 > Arguments.Count
             ? Result<object?>.Invalid($"Missing argument: {argumentName}")
-            : Arguments[index].GetValue(evaluator);
+            : Arguments[index].GetValue(context, evaluator);
 
-    public Result<string> GetArgumentStringValue(int index, string argumentName, IFunctionParseResultEvaluator evaluator)
+    public Result<string> GetArgumentStringValue(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator)
     {
-        var argumentValueResult = GetArgumentValue(index, argumentName, evaluator);
+        var argumentValueResult = GetArgumentValue(index, argumentName, context, evaluator);
         if (!argumentValueResult.IsSuccessful())
         {
             return Result<string>.FromExistingResult(argumentValueResult);
@@ -33,9 +33,9 @@ public record FunctionParseResult
             : Result<string>.Invalid($"{argumentName} is not of type string");
     }
 
-    public Result<int> GetArgumentInt32Value(int index, string argumentName, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<int> GetArgumentInt32Value(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
     {
-        var argumentValueResult = GetArgumentValue(index, argumentName, evaluator);
+        var argumentValueResult = GetArgumentValue(index, argumentName, context, evaluator);
         if (!argumentValueResult.IsSuccessful())
         {
             return Result<int>.FromExistingResult(argumentValueResult);
@@ -62,9 +62,9 @@ public record FunctionParseResult
             : Result<int>.Invalid($"{argumentName} is not of type integer");
     }
 
-    public Result<long> GetArgumentInt64Value(int index, string argumentName, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<long> GetArgumentInt64Value(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
     {
-        var argumentValueResult = GetArgumentValue(index, argumentName, evaluator);
+        var argumentValueResult = GetArgumentValue(index, argumentName, context, evaluator);
         if (!argumentValueResult.IsSuccessful())
         {
             return Result<long>.FromExistingResult(argumentValueResult);
@@ -91,9 +91,9 @@ public record FunctionParseResult
             : Result<long>.Invalid($"{argumentName} is not of type long integer");
     }
 
-    public Result<decimal> GetArgumentDecimalValue(int index, string argumentName, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<decimal> GetArgumentDecimalValue(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
     {
-        var argumentValueResult = GetArgumentValue(index, argumentName, evaluator);
+        var argumentValueResult = GetArgumentValue(index, argumentName, context, evaluator);
         if (!argumentValueResult.IsSuccessful())
         {
             return Result<decimal>.FromExistingResult(argumentValueResult);
@@ -120,9 +120,9 @@ public record FunctionParseResult
             : Result<decimal>.Invalid($"{argumentName} is not of type decimal");
     }
 
-    public Result<bool> GetArgumentBooleanValue(int index, string argumentName, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<bool> GetArgumentBooleanValue(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
     {
-        var argumentValueResult = GetArgumentValue(index, argumentName, evaluator);
+        var argumentValueResult = GetArgumentValue(index, argumentName, context, evaluator);
         if (!argumentValueResult.IsSuccessful())
         {
             return Result<bool>.FromExistingResult(argumentValueResult);
@@ -149,9 +149,9 @@ public record FunctionParseResult
             : Result<bool>.Invalid($"{argumentName} is not of type boolean");
     }
 
-    public Result<DateTime> GetArgumentDateTimeValue(int index, string argumentName, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<DateTime> GetArgumentDateTimeValue(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
     {
-        var argumentValueResult = GetArgumentValue(index, argumentName, evaluator);
+        var argumentValueResult = GetArgumentValue(index, argumentName, context, evaluator);
         if (!argumentValueResult.IsSuccessful())
         {
             return Result<DateTime>.FromExistingResult(argumentValueResult);
