@@ -82,11 +82,6 @@ public static class ObjectExtensions
             return defaultValue;
         }
 
-        if (value is string s)
-        {
-            return s;
-        }
-
         if (value is IFormattable f)
         {
             return f.ToString(null, formatProvider);
