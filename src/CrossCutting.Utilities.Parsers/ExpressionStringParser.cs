@@ -18,7 +18,7 @@ public class ExpressionStringParser : IExpressionStringParser
 
     public Result<object?> Parse(string input, IFormatProvider formatProvider, object? context)
     {
-        var state = new ExpressionStringParserState(input, formatProvider, context);
+        var state = new ExpressionStringParserState(input, formatProvider, context, this);
         return _processors
             .OrderBy(x => x.Order)
             .Select(x => x.Process(state))

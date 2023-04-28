@@ -47,7 +47,7 @@ public static class ObjectExtensions
     /// value.ToString() when the value is not null, string.Empty otherwise.
     /// </returns>
     public static string ToStringWithNullCheck(this object? value)
-        => value == null
+        => value is null
             ? string.Empty
             : value.ToString();
 
@@ -71,9 +71,29 @@ public static class ObjectExtensions
     /// value.ToString() when te value is not null, defaultValue otherwise.
     /// </returns>
     public static string ToStringWithDefault(this object? value, string defaultValue = "")
-        => value == null
+        => value is null
             ? defaultValue
             : value.ToString();
+
+    public static string ToString(this object? value, IFormatProvider formatProvider, string defaultValue = "")
+    {
+        if (value is null)
+        {
+            return defaultValue;
+        }
+
+        if (value is string s)
+        {
+            return s;
+        }
+
+        if (value is IFormattable f)
+        {
+            return f.ToString(null, formatProvider);
+        }
+
+        return value.ToString();
+    }
 
     /// <summary>
     /// Determines whether the specified instance is true.
