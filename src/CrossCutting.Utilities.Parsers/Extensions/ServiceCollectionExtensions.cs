@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         => services
         .AddSingleton<IExpressionParser, ExpressionParser>()
         .AddSingleton<IExpressionParserProcessor, BooleanExpressionParserProcessor>()
+        .AddSingleton<IExpressionParserProcessor, ContextExpressionParserProcessor>()
         .AddSingleton<IExpressionParserProcessor, NullExpressionParserProcessor>()
         .AddSingleton<IExpressionParserProcessor, StringExpressionParserProcessor>()
         .AddSingleton<IExpressionParserProcessor, NumericExpressionParserProcessor>()

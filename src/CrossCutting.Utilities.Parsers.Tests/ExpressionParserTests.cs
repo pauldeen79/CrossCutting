@@ -49,6 +49,20 @@ public sealed class ExpressionParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Parses_context_Correctly()
+    {
+        // Arrange
+        var input = "context";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, "context value");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo("context value");
+    }
+
+    [Fact]
     public void Parse_Parses_decimal_Correctly()
     {
         // Arrange
