@@ -9,9 +9,9 @@ public class FunctionParseResultEvaluator : IFunctionParseResultEvaluator
         _functionResultParsers = functionResultParsers;
     }
 
-    public Result<object?> Evaluate(FunctionParseResult functionResult)
+    public Result<object?> Evaluate(FunctionParseResult functionResult, object? context)
         => _functionResultParsers
-            .Select(x => x.Parse(functionResult, this))
+            .Select(x => x.Parse(functionResult, context, this))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result<object?>.NotSupported($"Unknown function found: {functionResult.FunctionName}");
 }

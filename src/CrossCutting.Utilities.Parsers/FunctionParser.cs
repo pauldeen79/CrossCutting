@@ -93,7 +93,7 @@ public class FunctionParser : IFunctionParser
             }
             else
             {
-                arguments.Add(new LiteralArgument(stringArgument));
+                arguments.Add(new LiteralArgument(stringArgument.Trim()));
             }
         }
 

@@ -95,6 +95,45 @@ public class ObjectExtensionsTests
         actual.Should().Be("non null value");
     }
 
+    [Fact]
+    public void ToString_Returns_DefaultValue_When_Input_Is_Null()
+    {
+        // Arrange
+        object? input = null;
+        
+        // Act
+        var result = input.ToString(CultureInfo.InvariantCulture, "default value");
+
+        // Assert
+        result.Should().Be("default value");
+    }
+
+    [Fact]
+    public void ToString_Returns_Formatted_Value_When_Input_Is_IFormattable()
+    {
+        // Arrange
+        object? input = 6.5M;
+
+        // Act
+        var result = input.ToString(CultureInfo.InvariantCulture, "default value");
+
+        // Assert
+        result.Should().Be("6.5");
+    }
+
+    [Fact]
+    public void ToString_Returns_ToString_Representation_When_Input_Is_Not_IFormattable()
+    {
+        // Arrange
+        object? input = "some string value";
+
+        // Act
+        var result = input.ToString(CultureInfo.InvariantCulture, "default value");
+
+        // Assert
+        result.Should().Be("some string value");
+    }
+
     [Theory,
         InlineData(true),
         InlineData(false)]

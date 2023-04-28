@@ -49,6 +49,20 @@ public sealed class ExpressionParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Parses_context_Correctly()
+    {
+        // Arrange
+        var input = "context";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, "context value");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo("context value");
+    }
+
+    [Fact]
     public void Parse_Parses_decimal_Correctly()
     {
         // Arrange
@@ -60,6 +74,20 @@ public sealed class ExpressionParserTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().BeEquivalentTo(1.5M);
+    }
+
+    [Fact]
+    public void Parse_Parses_forced_decimal_Correctly()
+    {
+        // Arrange
+        var input = "1M";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(1M);
     }
 
     [Fact]
@@ -88,6 +116,20 @@ public sealed class ExpressionParserTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().BeEquivalentTo(3147483647L);
+    }
+
+    [Fact]
+    public void Parse_Parses_forced_long_Correctly()
+    {
+        // Arrange
+        var input = "13L";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(13L);
     }
 
     [Fact]

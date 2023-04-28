@@ -127,6 +127,34 @@ public sealed class ExpressionStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Returns_Success_Result_From_Literal_String_With_Pipe_Sign_When_Found()
+    {
+        // Arrange
+        var input = "=\"Hello | {Name}!\"";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("Hello | {Name}!");
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Literal_String_With_Ampersand_When_Found()
+    {
+        // Arrange
+        var input = "=\"Hello & {Name}!\"";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("Hello & {Name}!");
+    }
+
+    [Fact]
     public void Parse_Returns_Success_Result_From_Function_When_Found()
     {
         // Arrange
@@ -194,6 +222,34 @@ public sealed class ExpressionStringParserTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be(input.Substring(2, input.Length - 3));
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Piped_Expression_When_Found()
+    {
+        // Arrange
+        var input = "=\"Hello {Name}!\" | ToUpper(context)";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("HELLO {NAME}!");
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Concatenated_Expression_When_Found()
+    {
+        // Arrange
+        var input = "=\"Hello \" & \"{Name}!\"";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("Hello {Name}!");
     }
 
     [Fact]
@@ -272,11 +328,16 @@ public sealed class ExpressionStringParserTests : IDisposable
 
     private sealed class MyFunctionResultParser : IFunctionResultParser
     {
-        public Result<object?> Parse(FunctionParseResult functionParseResult, IFunctionParseResultEvaluator evaluator)
+        public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator)
         {
             if (functionParseResult.FunctionName == "error")
             {
                 return Result<object?>.Error("Kaboom");
+            }
+
+            if (functionParseResult.FunctionName == "ToUpper")
+            {
+                return Result<object?>.Success(functionParseResult.Context?.ToString()?.ToUpperInvariant() ?? string.Empty);
             }
 
             if (functionParseResult.Arguments.Any())

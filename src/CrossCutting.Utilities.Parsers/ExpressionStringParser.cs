@@ -18,7 +18,7 @@ public class ExpressionStringParser : IExpressionStringParser
 
     public Result<object?> Parse(string input, IFormatProvider formatProvider, object? context)
     {
-        var state = new ExpressionStringParserState(input, formatProvider, context);
+        var state = new ExpressionStringParserState(input, formatProvider, context, this);
         return _processors
             .OrderBy(x => x.Order)
             .Select(x => x.Process(state))
@@ -40,6 +40,6 @@ public class ExpressionStringParser : IExpressionStringParser
             return Result<object?>.FromExistingResult(functionResult);
         }
 
-        return _evaluator.Evaluate(functionResult.Value!);
+        return _evaluator.Evaluate(functionResult.Value!, state.Context);
     }
 }

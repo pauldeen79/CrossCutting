@@ -2,7 +2,7 @@
 
 public class NullExpressionParserProcessor : IExpressionParserProcessor
 {
-    public int Order => 20;
+    public int Order => 30;
 
     public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
     {
