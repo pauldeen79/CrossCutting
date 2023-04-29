@@ -253,6 +253,20 @@ public sealed class ExpressionStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Returns_Success_Result_From_Concatenated_And_Piped_Expression_When_Found()
+    {
+        // Arrange
+        var input = "=\"Hello \" & \"{Name}!\" | ToUpper(context)";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("HELLO {NAME}!");
+    }
+
+    [Fact]
     public void Parse_Returns_NotSupported_When_FunctionParser_Returns_NotSupported()
     {
         // Arrange
