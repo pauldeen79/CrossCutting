@@ -281,6 +281,39 @@ public sealed class FunctionParserTests : IDisposable
         result.ErrorMessage.Should().Be("Kaboom");
     }
 
+    [Fact]
+    public void Parse_With_Spaces_In_FunctionName_Strips_Spaces()
+    {
+        // Arrange
+        var input = " MYFUNCTION (a,b,c)";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value.Arguments.Should().HaveCount(3);
+        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
+        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
+    }
+
+    [Fact]
+    public void Parse_With_Spaces_In_Arguments_Strips_Spaces()
+    {
+        // Arrange
+        var input = "MYFUNCTION(a , b , c)";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value.Arguments.Should().HaveCount(3);
+        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
+        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
+    }
     public void Dispose() => _provider.Dispose();
 
     private IFunctionParser CreateSut() => _provider.GetRequiredService<IFunctionParser>();

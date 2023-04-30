@@ -11,7 +11,7 @@ public class PipedExpressionProcessor : IExpressionStringParserProcessor
             return Result<object?>.Continue();
         }
 
-        var split = state.Input.Substring(1).SplitDelimited('|', '\"', true);
+        var split = state.Input.Substring(1).SplitDelimited('|', '\"', true, true);
         if (split.Length == 1)
         {
             // The pipe sign is within a string, so we need to continue
@@ -21,7 +21,7 @@ public class PipedExpressionProcessor : IExpressionStringParserProcessor
         var resultValue = state.Context;
         foreach (var item in split)
         {
-            var result = state.Parser.Parse($"={item.Trim()}", state.FormatProvider, resultValue);
+            var result = state.Parser.Parse($"={item}", state.FormatProvider, resultValue);
             if (!result.IsSuccessful())
             {
                 return result;

@@ -11,7 +11,7 @@ public class ConcatenateExpressionProcessor : IExpressionStringParserProcessor
             return Result<object?>.Continue();
         }
 
-        var split = state.Input.Substring(1).SplitDelimited('&', '\"', true);
+        var split = state.Input.Substring(1).SplitDelimited('&', '\"', true, true);
         if (split.Length == 1)
         {
             return Result<object?>.Continue();
@@ -20,7 +20,7 @@ public class ConcatenateExpressionProcessor : IExpressionStringParserProcessor
         var builder = new StringBuilder();
         foreach (var item in split)
         {
-            var result = state.Parser.Parse($"={item.Trim()}", state.FormatProvider, state.Context);
+            var result = state.Parser.Parse($"={item}", state.FormatProvider, state.Context);
             if (!result.IsSuccessful())
             {
                 return result;

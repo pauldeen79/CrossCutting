@@ -193,8 +193,9 @@ public static class StringExtensions
     /// <param name="delimiter">Delimiter to use</param>
     /// <param name="textQualifier">When filled, text qualifier to use</param>
     /// <param name="leaveTextQualifier">If set to true and text qualifier is filled, then leave the text qualifiers in the string</param>
+    /// <param name="trimItems">If set to true, then each will be trimmed</param>
     /// <returns></returns>
-    public static string[] SplitDelimited(this string instance, char delimiter, char? textQualifier = null, bool leaveTextQualifier = false)
+    public static string[] SplitDelimited(this string instance, char delimiter, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false)
     {
         var result = new List<string>();
         var currentSection = new StringBuilder();
@@ -234,7 +235,7 @@ public static class StringExtensions
             result.Add(string.Empty);
         }
 
-        return result.ToArray();
+        return result.Select(x => trimItems ? x.Trim() : x).ToArray();
     }
 
     /// <summary>

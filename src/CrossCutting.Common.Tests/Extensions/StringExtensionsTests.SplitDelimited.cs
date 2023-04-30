@@ -96,6 +96,19 @@ public partial class StringExtensionsTests
         }
 
         [Fact]
+        public void Can_Split_String_And_Trim_Each_Item()
+        {
+            // Arrange
+            var input = "Value A \t Value B \t Value C";
+
+            // Act
+            var actual = input.SplitDelimited('\t', trimItems: true);
+
+            // Assert
+            actual.Should().BeEquivalentTo("Value A", "Value B", "Value C");
+        }
+
+        [Fact]
         public void Empty_String_Results_In_Empty_Array()
         {
             // Arrange

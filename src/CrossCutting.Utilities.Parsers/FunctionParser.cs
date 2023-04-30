@@ -50,7 +50,7 @@ public class FunctionParser : IFunctionParser
             }
 
             var stringArguments = remainder.Substring(openIndex + 1, closeIndex - openIndex - 1);
-            var stringArgumentsSplit = stringArguments.SplitDelimited(',', '\"');
+            var stringArgumentsSplit = stringArguments.SplitDelimited(',', '\"', trimItems: true);
             var arguments = new List<FunctionParseResultArgument>();
             var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, formatProvider, context);
             if (!addArgumentsResult.IsSuccessful())
@@ -60,7 +60,7 @@ public class FunctionParser : IFunctionParser
 
             var found = $"{nameResult.Value}({stringArguments})";
             remainder = remainder.Replace(found, FormattableString.Invariant($"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"));
-            results.Add(new FunctionParseResult(nameResult.Value!, arguments, formatProvider, context));
+            results.Add(new FunctionParseResult(nameResult.Value!.Trim(), arguments, formatProvider, context));
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
         return remainder.EndsWith(TemporaryDelimiter)
@@ -93,7 +93,7 @@ public class FunctionParser : IFunctionParser
             }
             else
             {
-                arguments.Add(new LiteralArgument(stringArgument.Trim()));
+                arguments.Add(new LiteralArgument(stringArgument));
             }
         }
 
