@@ -7,17 +7,5 @@ public class GreaterOrEqualThanOperator : OperatorExpressionProcessorBase
     protected override string Sign => ">=";
 
     protected override Result<bool> PerformOperator(object? leftValue, object? rightValue)
-    {
-        try
-        {
-            return Result<bool>.Success(leftValue != null
-                && rightValue != null
-                && leftValue is IComparable c
-                && c.CompareTo(rightValue) >= 0);
-        }
-        catch (ArgumentException ex)
-        {
-            return Result<bool>.Invalid(ex.Message);
-        }
-    }
+        => GreaterOrEqual.Evaluate(leftValue, rightValue);
 }

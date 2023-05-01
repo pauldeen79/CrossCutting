@@ -7,5 +7,5 @@ public class NotEqualOperator : OperatorExpressionProcessorBase
     protected override string Sign => "!=";
 
     protected override Result<bool> PerformOperator(object? leftValue, object? rightValue)
-        => Result<bool>.Success(!EqualOperator.IsValid(leftValue, rightValue));
+        => NotEqual.Evaluate(leftValue, rightValue);
 }

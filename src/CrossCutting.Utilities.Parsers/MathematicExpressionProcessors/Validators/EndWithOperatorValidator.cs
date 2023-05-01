@@ -4,7 +4,7 @@ internal class EndWithOperatorValidator : IMathematicExpressionValidator
 {
     public Result<MathematicExpressionState> Validate(MathematicExpressionState state)
     {
-        if (state.Input.TrimEnd().EndsWithAny(Operators.Aggregators.Select(x => x.Character.ToString())))
+        if (state.Input.TrimEnd().EndsWithAny(MathematicOperators.Aggregators.Select(x => x.Character.ToString())))
         {
             return Result<MathematicExpressionState>.NotFound($"Input cannot end with an operator");
         }

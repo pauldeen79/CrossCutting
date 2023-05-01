@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>11.0</LangVersion>
     <Nullable>enable</Nullable>
-    <PackageId>pauldeen79.CrossCutting.Utilities.Parsers</PackageId>
+    <PackageId>pauldeen79.CrossCutting.Utilities.Operators</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
     <CodeAnalysisRuleSet>..\..\.sonarlint\pauldeen79_crosscuttingcsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -14,13 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CrossCutting.Common\CrossCutting.Common.csproj" />
-    <ProjectReference Include="..\CrossCutting.Utilities.Aggregators\CrossCutting.Utilities.Aggregators.csproj" />
-    <ProjectReference Include="..\CrossCutting.Utilities.Operators\CrossCutting.Utilities.Operators.csproj" />
   </ItemGroup>
 
 </Project>

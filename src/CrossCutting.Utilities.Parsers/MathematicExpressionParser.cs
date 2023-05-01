@@ -14,7 +14,7 @@ public class MathematicExpressionParser : IMathematicExpressionParser
     }
 
     internal static bool IsMathematicExpression(string found)
-        => Operators.Aggregators.Any(x => found.Contains(x.Character.ToString()));
+        => MathematicOperators.Aggregators.Any(x => found.Contains(x.Character.ToString()));
 
     public Result<object?> Parse(string input, IFormatProvider formatProvider, object? context)
     {
