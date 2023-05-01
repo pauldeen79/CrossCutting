@@ -1,10 +1,10 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors.Operators;
 
-public class GreaterThanOperator : OperatorExpressionProcessorBase
+public class SmallerThanOrEqualOperator : OperatorExpressionProcessorBase
 {
-    public override int Order => 104;
+    public override int Order => 105;
 
-    protected override string Sign => ">";
+    protected override string Sign => "<=";
 
     protected override Result<bool> PerformOperator(object? leftValue, object? rightValue)
     {
@@ -13,7 +13,7 @@ public class GreaterThanOperator : OperatorExpressionProcessorBase
             return Result<bool>.Success(leftValue != null
                 && rightValue != null
                 && leftValue is IComparable c
-                && c.CompareTo(rightValue) > 0);
+                && c.CompareTo(rightValue) <= 0);
         }
         catch (ArgumentException ex)
         {
