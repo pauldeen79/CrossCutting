@@ -58,7 +58,7 @@ public static class ServiceCollectionExtensions
         .AddSingleton<IMathematicExpressionParser, MathematicExpressionParser>()
         .AddSingleton<IMathematicExpressionProcessor, Validate>()
         .AddSingleton<IMathematicExpressionProcessor, Recursion>()
-        .AddSingleton<IMathematicExpressionProcessor, Operators>()
+        .AddSingleton<IMathematicExpressionProcessor, MathematicOperators>()
         .AddSingleton<IMathematicExpressionValidator, NullOrEmptyValidator>()
         .AddSingleton<IMathematicExpressionValidator, TemporaryDelimiterValidator>()
         .AddSingleton<IMathematicExpressionValidator, StartWithOperatorValidator>()

@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
 
-public class Operators : IMathematicExpressionProcessor
+public class MathematicOperators : IMathematicExpressionProcessor
 {
     internal static readonly AggregatorBase[] Aggregators = new AggregatorBase[]
     {
@@ -13,7 +13,7 @@ public class Operators : IMathematicExpressionProcessor
 
     private readonly IExpressionParser _expressionParser;
 
-    public Operators(IExpressionParser expressionParser)
+    public MathematicOperators(IExpressionParser expressionParser)
     {
         _expressionParser = expressionParser;
     }

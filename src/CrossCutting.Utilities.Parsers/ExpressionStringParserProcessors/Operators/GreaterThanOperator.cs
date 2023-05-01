@@ -7,20 +7,5 @@ public class GreaterThanOperator : OperatorExpressionProcessorBase
     protected override string Sign => ">";
 
     protected override Result<bool> PerformOperator(object? leftValue, object? rightValue)
-        => IsValid(leftValue, rightValue);
-
-    internal static Result<bool> IsValid(object? leftValue, object? rightValue)
-    {
-        try
-        {
-            return Result<bool>.Success(leftValue != null
-                && rightValue != null
-                && leftValue is IComparable c
-                && c.CompareTo(rightValue) > 0);
-        }
-        catch (ArgumentException ex)
-        {
-            return Result<bool>.Invalid(ex.Message);
-        }
-    }
+        => GreaterThan.Evaluate(leftValue, rightValue);
 }
