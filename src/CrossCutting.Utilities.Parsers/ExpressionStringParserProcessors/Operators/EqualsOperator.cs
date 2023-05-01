@@ -7,6 +7,9 @@ public class EqualsOperator : OperatorExpressionProcessorBase
     protected override string Sign => "==";
 
     protected override bool PerformOperator(object? leftValue, object? rightValue)
+        => IsValid(leftValue, rightValue);
+
+    internal static bool IsValid(object? leftValue, object? rightValue)
     {
         if (leftValue is null && rightValue is null)
         {

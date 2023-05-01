@@ -377,6 +377,20 @@ public sealed class ExpressionStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Returns_Success_Result_From_NotEquals_Operator_When_Found_With_String_Expressions()
+    {
+        // Arrange
+        var input = "=\"Hello\" != \"Hello\"";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(false);
+    }
+
+    [Fact]
     public void Parse_Returns_NotSupported_When_FunctionParser_Returns_NotSupported()
     {
         // Arrange
