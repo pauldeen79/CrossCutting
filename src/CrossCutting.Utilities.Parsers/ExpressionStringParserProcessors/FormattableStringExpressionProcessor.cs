@@ -9,7 +9,7 @@ public class FormattableStringExpressionProcessor : IExpressionStringParserProce
         _parser = parser;
     }
 
-    public int Order => 40;
+    public int Order => 400;
 
     public Result<object?> Process(ExpressionStringParserState state)
     {

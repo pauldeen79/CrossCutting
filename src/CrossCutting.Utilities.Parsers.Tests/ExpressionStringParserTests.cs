@@ -155,6 +155,20 @@ public sealed class ExpressionStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Returns_Success_Result_From_Literal_String_With_Equals_Operator_When_Found_More_Than_Two_Times()
+    {
+        // Arrange
+        var input = "=\"a\" == \"b\" == \"c\"";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("a\" == \"b\" == \"c");
+    }
+
+    [Fact]
     public void Parse_Returns_Success_Result_From_Function_When_Found()
     {
         // Arrange
@@ -264,6 +278,102 @@ public sealed class ExpressionStringParserTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be("HELLO {NAME}!");
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Equals_Operator_When_Found_With_String_Expressions()
+    {
+        // Arrange
+        var input = "=\"Hello\" == \"Hello\"";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(true);
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Equals_Operator_When_Found_With_Non_String_Expressions()
+    {
+        // Arrange
+        var input = "=1 == 2";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(false);
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Equals_Operator_When_Found_With_Left_Null()
+    {
+        // Arrange
+        var input = "=null == \"Hello\"";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(false);
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Equals_Operator_When_Found_With_Right_Null()
+    {
+        // Arrange
+        var input = "=\"Hello\" == null";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(false);
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Equals_Operator_When_Found_With_Left_And_Righ_Null()
+    {
+        // Arrange
+        var input = "=null == null";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(true);
+    }
+
+    [Fact]
+    public void Parse_Returns_Error_Result_From_Equals_Operator_On_Left_Expression_When_Found()
+    {
+        // Arrange
+        var input = "=error() == \"Hello\"";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+    }
+
+    [Fact]
+    public void Parse_Returns_Error_Result_From_Equals_Operator_On_Right_Expression_When_Found()
+    {
+        // Arrange
+        var input = "=\"Hello\" == error()";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
     }
 
     [Fact]
