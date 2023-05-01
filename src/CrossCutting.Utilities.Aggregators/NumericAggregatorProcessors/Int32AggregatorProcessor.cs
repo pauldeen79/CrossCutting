@@ -1,8 +1,8 @@
-﻿namespace CrossCutting.Utilities.Parsers.NumericAggregatorProcessors;
+﻿namespace CrossCutting.Utilities.Aggregators;
 
-public class Int32AggregatorProcessor : INumericAggregatorProcessor<int>
+public static class Int32AggregatorProcessor
 {
-    public Result<object?> Aggregate(object firstValue, object secondValue, Func<int, int, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<int, int, object?> aggregatorDelegate)
     {
         if (firstValue is not int i1)
         {
@@ -12,7 +12,7 @@ public class Int32AggregatorProcessor : INumericAggregatorProcessor<int>
         int i2;
         try
         {
-            i2 = Convert.ToInt32(secondValue, CultureInfo.InvariantCulture);
+            i2 = Convert.ToInt32(secondValue, formatProvider);
         }
         catch (Exception ex)
         {

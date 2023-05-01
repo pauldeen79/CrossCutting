@@ -1,8 +1,8 @@
-﻿namespace CrossCutting.Utilities.Parsers.NumericAggregatorProcessors;
+﻿namespace CrossCutting.Utilities.Aggregators;
 
-public class DecimalAggregatorProcessor : INumericAggregatorProcessor<decimal>
+public static class DecimalAggregatorProcessor
 {
-    public Result<object?> Aggregate(object firstValue, object secondValue, Func<decimal, decimal, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<decimal, decimal, object?> aggregatorDelegate)
     {
         if (firstValue is not decimal d1)
         {
@@ -12,7 +12,7 @@ public class DecimalAggregatorProcessor : INumericAggregatorProcessor<decimal>
         decimal d2;
         try
         {
-            d2 = Convert.ToDecimal(secondValue, CultureInfo.InvariantCulture);
+            d2 = Convert.ToDecimal(secondValue, formatProvider);
         }
         catch (Exception ex)
         {

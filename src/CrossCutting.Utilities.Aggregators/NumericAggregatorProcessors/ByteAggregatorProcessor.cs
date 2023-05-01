@@ -1,8 +1,8 @@
-﻿namespace CrossCutting.Utilities.Parsers.NumericAggregatorProcessors;
+﻿namespace CrossCutting.Utilities.Aggregators;
 
-public class ByteAggregatorProcessor : INumericAggregatorProcessor<byte>
+public static class ByteAggregatorProcessor
 {
-    public Result<object?> Aggregate(object firstValue, object secondValue, Func<byte, byte, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<byte, byte, object?> aggregatorDelegate)
     {
         if (firstValue is not byte b1)
         {
@@ -12,7 +12,7 @@ public class ByteAggregatorProcessor : INumericAggregatorProcessor<byte>
         byte b2;
         try
         {
-            b2 = Convert.ToByte(secondValue, CultureInfo.InvariantCulture);
+            b2 = Convert.ToByte(secondValue, formatProvider);
         }
         catch (Exception ex)
         {

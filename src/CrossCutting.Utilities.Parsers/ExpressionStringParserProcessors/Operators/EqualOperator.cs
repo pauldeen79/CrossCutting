@@ -7,25 +7,25 @@ public class EqualOperator : OperatorExpressionProcessorBase
     protected override string Sign => "==";
 
     protected override Result<bool> PerformOperator(object? leftValue, object? rightValue)
-        => Result<bool>.Success(IsValid(leftValue, rightValue));
+        => IsValid(leftValue, rightValue, StringComparison.CurrentCultureIgnoreCase);
 
-    internal static bool IsValid(object? leftValue, object? rightValue)
+    internal static Result<bool> IsValid(object? leftValue, object? rightValue, StringComparison stringComparison)
     {
         if (leftValue is null && rightValue is null)
         {
-            return true;
+            return Result<bool>.Success(true);
         }
 
         if (leftValue is null || rightValue is null)
         {
-            return false;
+            return Result<bool>.Success(false);
         }
 
         if (leftValue is string leftString && rightValue is string rightString)
         {
-            return leftString.Equals(rightString, StringComparison.CurrentCultureIgnoreCase);
+            return Result<bool>.Success(leftString.Equals(rightString, stringComparison));
         }
 
-        return leftValue.Equals(rightValue);
+        return Result<bool>.Success(leftValue.Equals(rightValue));
     }
 }

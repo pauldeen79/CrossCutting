@@ -6,7 +6,7 @@ public class MultiplyAggregatorTests
     public void Aggregate_Returns_Correct_Result_On_Byte()
     {
         // Act
-        var result = new MultiplyAggregator().Aggregate((byte)2, (byte)3);
+        var result = new MultiplyAggregator().Aggregate((byte)2, (byte)3, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -17,7 +17,7 @@ public class MultiplyAggregatorTests
     public void Aggregate_Returns_Correct_Result_On_Short()
     {
         // Act
-        var result = new MultiplyAggregator().Aggregate((short)2, (short)3);
+        var result = new MultiplyAggregator().Aggregate((short)2, (short)3, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -28,7 +28,7 @@ public class MultiplyAggregatorTests
     public void Aggregate_Returns_Correct_Result_On_Int()
     {
         // Act
-        var result = new MultiplyAggregator().Aggregate(2, 3);
+        var result = new MultiplyAggregator().Aggregate(2, 3, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -39,7 +39,7 @@ public class MultiplyAggregatorTests
     public void Aggregate_Returns_Correct_Result_On_Long()
     {
         // Act
-        var result = new MultiplyAggregator().Aggregate((long)2, (long)3);
+        var result = new MultiplyAggregator().Aggregate((long)2, (long)3, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -50,7 +50,7 @@ public class MultiplyAggregatorTests
     public void Aggregate_Returns_Correct_Result_On_Float()
     {
         // Act
-        var result = new MultiplyAggregator().Aggregate((float)1.5, (float)2);
+        var result = new MultiplyAggregator().Aggregate((float)1.5, (float)2, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -61,7 +61,7 @@ public class MultiplyAggregatorTests
     public void Aggregate_Returns_Correct_Result_On_Decimal()
     {
         // Act
-        var result = new MultiplyAggregator().Aggregate((decimal)1.5, (decimal)2);
+        var result = new MultiplyAggregator().Aggregate((decimal)1.5, (decimal)2, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -72,7 +72,7 @@ public class MultiplyAggregatorTests
     public void Aggregate_Returns_Correct_Result_On_Double()
     {
         // Act
-        var result = new MultiplyAggregator().Aggregate(1.5, 2);
+        var result = new MultiplyAggregator().Aggregate(1.5, 2, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);

@@ -1,8 +1,8 @@
-﻿namespace CrossCutting.Utilities.Parsers.NumericAggregatorProcessors;
+﻿namespace CrossCutting.Utilities.Aggregators;
 
-public class DoubleAggregatorProcessor : INumericAggregatorProcessor<double>
+public static class DoubleAggregatorProcessor
 {
-    public Result<object?> Aggregate(object firstValue, object secondValue, Func<double, double, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<double, double, object?> aggregatorDelegate)
     {
         if (firstValue is not double d1)
         {
@@ -12,7 +12,7 @@ public class DoubleAggregatorProcessor : INumericAggregatorProcessor<double>
         double d2;
         try
         {
-            d2 = Convert.ToDouble(secondValue, CultureInfo.InvariantCulture);
+            d2 = Convert.ToDouble(secondValue, formatProvider);
         }
         catch (Exception ex)
         {

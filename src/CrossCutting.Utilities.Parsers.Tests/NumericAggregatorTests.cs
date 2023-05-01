@@ -6,7 +6,7 @@ public class NumericAggregatorTests
     public void Evaluate_Returns_Invalid_When_Type_Is_Not_Supported()
     {
         // Act
-        var result = NumericAggregator.Evaluate("apple", "pear"
+        var result = NumericAggregator.Evaluate("apple", "pear", CultureInfo.InvariantCulture
             , (_, _) => new object()
             , (_, _) => new object()
             , (_, _) => new object()

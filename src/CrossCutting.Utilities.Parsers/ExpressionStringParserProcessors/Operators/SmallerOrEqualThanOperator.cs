@@ -7,6 +7,9 @@ public class SmallerOrEqualThanOperator : OperatorExpressionProcessorBase
     protected override string Sign => "<=";
 
     protected override Result<bool> PerformOperator(object? leftValue, object? rightValue)
+        => IsValid(leftValue, rightValue);
+
+    internal static Result<bool> IsValid(object? leftValue, object? rightValue)
     {
         try
         {

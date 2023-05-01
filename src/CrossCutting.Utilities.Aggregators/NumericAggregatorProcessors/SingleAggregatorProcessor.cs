@@ -1,8 +1,8 @@
-﻿namespace CrossCutting.Utilities.Parsers.NumericAggregatorProcessors;
+﻿namespace CrossCutting.Utilities.Aggregators;
 
-public class SingleAggregatorProcessor : INumericAggregatorProcessor<float>
+public static class SingleAggregatorProcessor
 {
-    public Result<object?> Aggregate(object firstValue, object secondValue, Func<float, float, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<float, float, object?> aggregatorDelegate)
     {
         if (firstValue is not float f1)
         {
@@ -12,7 +12,7 @@ public class SingleAggregatorProcessor : INumericAggregatorProcessor<float>
         float f2;
         try
         {
-            f2 = Convert.ToSingle(secondValue, CultureInfo.InvariantCulture);
+            f2 = Convert.ToSingle(secondValue, formatProvider);
         }
         catch (Exception ex)
         {

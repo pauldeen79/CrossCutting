@@ -1,8 +1,8 @@
-﻿namespace CrossCutting.Utilities.Parsers.NumericAggregatorProcessors;
+﻿namespace CrossCutting.Utilities.Aggregators;
 
-public class Int16AggregatorProcessor : INumericAggregatorProcessor<short>
+public static class Int16AggregatorProcessor
 {
-    public Result<object?> Aggregate(object firstValue, object secondValue, Func<short, short, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<short, short, object?> aggregatorDelegate)
     {
         if (firstValue is not short s1)
         {
@@ -12,7 +12,7 @@ public class Int16AggregatorProcessor : INumericAggregatorProcessor<short>
         short s2;
         try
         {
-            s2 = Convert.ToInt16(secondValue, CultureInfo.InvariantCulture);
+            s2 = Convert.ToInt16(secondValue, formatProvider);
         }
         catch (Exception ex)
         {

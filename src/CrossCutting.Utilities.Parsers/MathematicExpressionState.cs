@@ -68,7 +68,7 @@ public class MathematicExpressionState
 
     internal Result<object?> PerformAggregation()
     {
-        var aggregateResult = Indexes.First().Aggregator.Aggregate(LeftPartResult.Value!, RightPartResult.Value!);
+        var aggregateResult = Indexes.First().Aggregator.Aggregate(LeftPartResult.Value!, RightPartResult.Value!, FormatProvider);
 
         if (aggregateResult.IsSuccessful())
         {
