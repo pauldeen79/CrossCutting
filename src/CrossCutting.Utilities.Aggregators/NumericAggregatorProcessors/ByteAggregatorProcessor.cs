@@ -9,23 +9,7 @@ public static class ByteAggregatorProcessor
             return Result<object?>.Continue();
         }
 
-        byte b2;
-        try
-        {
-            b2 = Convert.ToByte(secondValue, formatProvider);
-        }
-        catch (Exception ex)
-        {
-            return Result<object?>.Invalid($"Could not convert SecondExpression to Byte. Error message: {ex.Message}");
-        }
-
-        try
-        {
-            return Result<object?>.Success(aggregatorDelegate.Invoke(b1, b2));
-        }
-        catch (Exception ex)
-        {
-            return Result<object?>.Error($"Aggregation failed. Error message: {ex.Message}");
-        }
+        var b2 = Convert.ToByte(secondValue, formatProvider);
+        return Result<object?>.Success(aggregatorDelegate.Invoke(b1, b2));
     }
 }

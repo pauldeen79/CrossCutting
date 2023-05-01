@@ -9,23 +9,7 @@ public static class Int64AggregatorProcessor
             return Result<object?>.Continue();
         }
 
-        long l2;
-        try
-        {
-            l2 = Convert.ToInt64(secondValue, formatProvider);
-        }
-        catch (Exception ex)
-        {
-            return Result<object?>.Invalid($"Could not convert SecondExpression to Int64. Error message: {ex.Message}");
-        }
-
-        try
-        {
-            return Result<object?>.Success(aggregatorDelegate.Invoke(l1, l2));
-        }
-        catch (Exception ex)
-        {
-            return Result<object?>.Error($"Aggregation failed. Error message: {ex.Message}");
-        }
+        var l2 = Convert.ToInt64(secondValue, formatProvider);
+        return Result<object?>.Success(aggregatorDelegate.Invoke(l1, l2));
     }
 }

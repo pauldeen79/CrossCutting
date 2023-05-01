@@ -9,23 +9,8 @@ public static class DecimalAggregatorProcessor
             return Result<object?>.Continue();
         }
 
-        decimal d2;
-        try
-        {
-            d2 = Convert.ToDecimal(secondValue, formatProvider);
-        }
-        catch (Exception ex)
-        {
-            return Result<object?>.Invalid($"Could not convert SecondExpression to Decimal. Error message: {ex.Message}");
-        }
 
-        try
-        {
-            return Result<object?>.Success(aggregatorDelegate.Invoke(d1, d2));
-        }
-        catch (Exception ex)
-        {
-            return Result<object?>.Error($"Aggregation failed. Error message: {ex.Message}");
-        }
+        var d2 = Convert.ToDecimal(secondValue, formatProvider);
+        return Result<object?>.Success(aggregatorDelegate.Invoke(d1, d2));
     }
 }

@@ -9,23 +9,7 @@ public static class Int16AggregatorProcessor
             return Result<object?>.Continue();
         }
 
-        short s2;
-        try
-        {
-            s2 = Convert.ToInt16(secondValue, formatProvider);
-        }
-        catch (Exception ex)
-        {
-            return Result<object?>.Invalid($"Could not convert SecondExpression to Int32. Error message: {ex.Message}");
-        }
-
-        try
-        {
-            return Result<object?>.Success(aggregatorDelegate.Invoke(s1, s2));
-        }
-        catch (Exception ex)
-        {
-            return Result<object?>.Error($"Aggregation failed. Error message: {ex.Message}");
-        }
+        var s2 = Convert.ToInt16(secondValue, formatProvider);
+        return Result<object?>.Success(aggregatorDelegate.Invoke(s1, s2));
     }
 }

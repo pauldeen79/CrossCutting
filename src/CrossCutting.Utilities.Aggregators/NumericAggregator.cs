@@ -34,7 +34,7 @@ public static class NumericAggregator
         }
         catch (Exception ex)
         {
-            return Result<object?>.Invalid(ex.Message);
+            return Result<object?>.Error($"Aggregation failed. Error message: {ex.Message}");
         }
     }
 }

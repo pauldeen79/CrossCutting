@@ -9,23 +9,7 @@ public static class DoubleAggregatorProcessor
             return Result<object?>.Continue();
         }
 
-        double d2;
-        try
-        {
-            d2 = Convert.ToDouble(secondValue, formatProvider);
-        }
-        catch (Exception ex)
-        {
-            return Result<object?>.Invalid($"Could not convert SecondExpression to Double. Error message: {ex.Message}");
-        }
-
-        try
-        {
-            return Result<object?>.Success(aggregatorDelegate.Invoke(d1, d2));
-        }
-        catch (Exception ex)
-        {
-            return Result<object?>.Error($"Aggregation failed. Error message: {ex.Message}");
-        }
+        var d2 = Convert.ToDouble(secondValue, formatProvider);
+        return Result<object?>.Success(aggregatorDelegate.Invoke(d1, d2));
     }
 }
