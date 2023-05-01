@@ -109,6 +109,63 @@ public partial class StringExtensionsTests
         }
 
         [Fact]
+        public void Can_Not_Split_String_With_Null_Delimiter()
+        {
+            // Arrange
+            var input = "Value A \t Value B \t Value C";
+
+            // Act
+            input.Invoking(x => x.SplitDelimited(null!)).Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Can_Not_Split_String_With_Three_Character_Delimiter()
+        {
+            // Arrange
+            var input = "Value A \t Value B \t Value C";
+
+            // Act
+            input.Invoking(x => x.SplitDelimited("===")).Should().Throw<ArgumentOutOfRangeException>();
+        }
+
+        [Fact]
+        public void Can_Split_String_With_Two_Character_Delimiter_And_Trim_Items()
+        {
+            // Arrange
+            var input = "\"My value with ==\" == \"My other value with ==\"";
+
+            // Act
+            var result = input.SplitDelimited("==", '\"', true, trimItems: true);
+            // Assert
+            result.Should().BeEquivalentTo("\"My value with ==\"", "\"My other value with ==\"");
+        }
+
+        [Fact]
+        public void Can_Split_String_With_Two_Character_Delimiter_No_Trimmed_Items()
+        {
+            // Arrange
+            var input = "\"My value with ==\" == \"My other value with ==\"";
+
+            // Act
+            var result = input.SplitDelimited("==", '\"', true, trimItems: false);
+
+            // Assert
+            result.Should().BeEquivalentTo("\"My value with ==\" ", " \"My other value with ==\"");
+        }
+
+        [Fact]
+        public void Can_Split_String_With_Two_Character_Delimiter_And_String_Ends_With_Delimiter()
+        {
+            // Arrange
+            var input = "\"My value with ==\" == \"My other value with ==\" =";
+
+            // Act
+            var result = input.SplitDelimited("==", '\"', true, trimItems: true);
+            // Assert
+            result.Should().BeEquivalentTo("\"My value with ==\"", "\"My other value with ==\" =");
+        }
+
+        [Fact]
         public void Empty_String_Results_In_Empty_Array()
         {
             // Arrange

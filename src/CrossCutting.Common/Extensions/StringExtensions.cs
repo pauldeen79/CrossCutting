@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Common.Extensions;
+﻿using System.ComponentModel.Design.Serialization;
+
+namespace CrossCutting.Common.Extensions;
 
 public static class StringExtensions
 {
@@ -196,16 +198,39 @@ public static class StringExtensions
     /// <param name="trimItems">If set to true, then each will be trimmed</param>
     /// <returns></returns>
     public static string[] SplitDelimited(this string instance, char delimiter, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false)
+        => instance.SplitDelimited(delimiter.ToString(), textQualifier, leaveTextQualifier, trimItems);
+
+    /// <summary>
+    /// Splits the line using a custom delimiter
+    /// </summary>
+    /// <param name="instance">String instance to split</param>
+    /// <param name="delimiter">Delimiter to use (either 1 or 2 characters)</param>
+    /// <param name="textQualifier">When filled, text qualifier to use</param>
+    /// <param name="leaveTextQualifier">If set to true and text qualifier is filled, then leave the text qualifiers in the string</param>
+    /// <param name="trimItems">If set to true, then each will be trimmed</param>
+    /// <returns></returns>
+    public static string[] SplitDelimited(this string instance, string delimiter, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false)
     {
+        if (delimiter == null)
+        {
+            throw new ArgumentNullException(nameof(delimiter));
+        }
+
+        if (delimiter.Length != 1 && delimiter.Length != 2)
+        {
+            throw new ArgumentOutOfRangeException(nameof(delimiter), "Delimiter can only be 1 or 2 characters");
+        }
+
         var result = new List<string>();
         var currentSection = new StringBuilder();
         var inText = false;
         var lastDelimiter = -1;
         var index = -1;
+        char? previousCharacter = null;
         foreach (var character in instance)
         {
             index++;
-            if (character == delimiter && !inText)
+            if (IsDelimiter(delimiter, character, previousCharacter) && !inText)
             {
                 lastDelimiter = index;
                 result.Add(currentSection.ToString());
@@ -220,12 +245,41 @@ public static class StringExtensions
                     currentSection.Append(character);
                 }
             }
-            else
+            else if (!IsStartOfNextDelimiter(index, instance, delimiter, inText))
             {
                 currentSection.Append(character);
             }
+
+            previousCharacter = character;
         }
 
+        AddRemainder(instance, result, currentSection, lastDelimiter);
+
+        return result.Select(x => trimItems ? x.Trim() : x).ToArray();
+    }
+
+    private static bool IsStartOfNextDelimiter(int index, string instance, string delimiter, bool inText)
+    {
+        if (delimiter.Length == 1)
+        {
+            return false;
+        }
+
+        if (index + 1 == instance.Length)
+        {
+            return false;
+        }
+
+        if (inText)
+        {
+            return false;
+        }
+
+        return instance[index] == delimiter[0] && instance[index + 1] == delimiter[1];
+    }
+
+    private static void AddRemainder(string instance, List<string> result, StringBuilder currentSection, int lastDelimiter)
+    {
         if (currentSection.Length > 0)
         {
             result.Add(currentSection.ToString());
@@ -234,8 +288,21 @@ public static class StringExtensions
         {
             result.Add(string.Empty);
         }
+    }
 
-        return result.Select(x => trimItems ? x.Trim() : x).ToArray();
+    private static bool IsDelimiter(string delimiter, char character, char? previousCharacter)
+    {
+        if (delimiter.Length == 1)
+        {
+            return character == delimiter[0];
+        }
+
+        if (previousCharacter == null)
+        {
+            return false;
+        }
+
+        return character == delimiter[1] && previousCharacter == delimiter[0];
     }
 
     /// <summary>
