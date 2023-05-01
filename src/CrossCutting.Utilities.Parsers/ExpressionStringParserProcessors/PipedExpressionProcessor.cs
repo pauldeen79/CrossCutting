@@ -2,7 +2,7 @@
 
 public class PipedExpressionProcessor : IExpressionStringParserProcessor
 {
-    public int Order => 18;
+    public int Order => 180;
 
     public Result<object?> Process(ExpressionStringParserState state)
     {

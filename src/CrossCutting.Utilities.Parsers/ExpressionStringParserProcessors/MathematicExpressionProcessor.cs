@@ -9,7 +9,7 @@ public class MathematicExpressionProcessor : IExpressionStringParserProcessor
         _parser = parser;
     }
 
-    public int Order => 50;
+    public int Order => 500;
 
     public Result<object?> Process(ExpressionStringParserState state)
     {

@@ -2,7 +2,7 @@
 
 public class EmptyExpressionProcessor : IExpressionStringParserProcessor
 {
-    public int Order => 10;
+    public int Order => 100;
 
     public Result<object?> Process(ExpressionStringParserState state)
     {

@@ -2,7 +2,7 @@
 
 public class OnlyEqualsExpressionProcessor : IExpressionStringParserProcessor
 {
-    public int Order => 30;
+    public int Order => 300;
 
     public Result<object?> Process(ExpressionStringParserState state)
     {

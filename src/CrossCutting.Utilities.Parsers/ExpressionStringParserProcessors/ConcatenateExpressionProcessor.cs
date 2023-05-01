@@ -2,7 +2,7 @@
 
 public class ConcatenateExpressionProcessor : IExpressionStringParserProcessor
 {
-    public int Order => 19;
+    public int Order => 190;
 
     public Result<object?> Process(ExpressionStringParserState state)
     {

@@ -2,7 +2,7 @@
 
 public class LiteralExpressionProcessor : IExpressionStringParserProcessor
 {
-    public int Order => 20;
+    public int Order => 200;
 
     public Result<object?> Process(ExpressionStringParserState state)
     {
