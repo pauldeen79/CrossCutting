@@ -31,7 +31,8 @@ public static class ServiceCollectionExtensions
         .AddSingleton<IExpressionStringParserProcessor, FormattableStringExpressionProcessor>()
         .AddSingleton<IExpressionStringParserProcessor, MathematicExpressionProcessor>()
         .AddSingleton<IExpressionStringParserProcessor, EqualsOperator>()
-        .AddSingleton<IExpressionStringParserProcessor, NotEqualsOperator>();
+        .AddSingleton<IExpressionStringParserProcessor, NotEqualsOperator>()
+        .AddSingleton<IExpressionStringParserProcessor, GreaterThanOperator>();
 
     private static IServiceCollection AddFunctionParser(this IServiceCollection services)
         => services

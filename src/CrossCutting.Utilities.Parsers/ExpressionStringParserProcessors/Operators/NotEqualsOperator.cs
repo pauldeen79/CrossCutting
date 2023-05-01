@@ -6,6 +6,6 @@ public class NotEqualsOperator : OperatorExpressionProcessorBase
 
     protected override string Sign => "!=";
 
-    protected override bool PerformOperator(object? leftValue, object? rightValue)
-        => !EqualsOperator.IsValid(leftValue, rightValue);
+    protected override Result<bool> PerformOperator(object? leftValue, object? rightValue)
+        => Result<bool>.Success(!EqualsOperator.IsValid(leftValue, rightValue));
 }

@@ -6,8 +6,8 @@ public class EqualsOperator : OperatorExpressionProcessorBase
 
     protected override string Sign => "==";
 
-    protected override bool PerformOperator(object? leftValue, object? rightValue)
-        => IsValid(leftValue, rightValue);
+    protected override Result<bool> PerformOperator(object? leftValue, object? rightValue)
+        => Result<bool>.Success(IsValid(leftValue, rightValue));
 
     internal static bool IsValid(object? leftValue, object? rightValue)
     {

@@ -391,6 +391,63 @@ public sealed class ExpressionStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Returns_Success_Result_From_Greater_Than_Operator_When_Found_With_Left_Null()
+    {
+        // Arrange
+        var input = "=null > 2";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(false);
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Greater_Than_Operator_When_Found_With_Right_Null()
+    {
+        // Arrange
+        var input = "=2 > null";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(false);
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Greater_Than_Operator_When_Found_With_No_Nulls_Same_Type()
+    {
+        // Arrange
+        var input = "=3 > 2";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(true);
+    }
+
+
+    [Fact]
+    public void Parse_Returns_Success_Result_From_Greater_Than_Operator_When_Found_With_No_Nulls_Different_Type()
+    {
+        // Arrange
+        var input = "=\"hello\" > 2";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Object must be of type String.");
+    }
+
+    [Fact]
     public void Parse_Returns_NotSupported_When_FunctionParser_Returns_NotSupported()
     {
         // Arrange
