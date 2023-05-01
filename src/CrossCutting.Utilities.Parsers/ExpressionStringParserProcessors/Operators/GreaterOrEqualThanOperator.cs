@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors.Operators;
 
-public class GreaterThanOrEqualOperator : OperatorExpressionProcessorBase
+public class GreaterOrEqualThanOperator : OperatorExpressionProcessorBase
 {
     public override int Order => 103;
 
