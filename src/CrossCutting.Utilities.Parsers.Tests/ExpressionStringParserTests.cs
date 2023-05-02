@@ -690,7 +690,7 @@ public sealed class ExpressionStringParserTests : IDisposable
 
     private sealed class MyFunctionResultParser : IFunctionResultParser
     {
-        public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator)
+        public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, IFormatProvider formatProvider)
         {
             if (functionParseResult.FunctionName == "error")
             {
@@ -704,7 +704,7 @@ public sealed class ExpressionStringParserTests : IDisposable
 
             if (functionParseResult.Arguments.Any())
             {
-                return Result<object?>.Success($"result of {functionParseResult.FunctionName} function: {string.Join(", ", functionParseResult.Arguments.OfType<LiteralArgument>().Select(x => x.Value))}");
+                return Result<object?>.Success($"result of {functionParseResult.FunctionName} function: {string.Join(", ", functionParseResult.Arguments.OfType<LiteralArgument>().Select(x => x.GetValueResult(context, evaluator, parser, formatProvider).GetValueOrThrow()))}");
             }
 
             return Result<object?>.Success($"result of {functionParseResult.FunctionName} function");

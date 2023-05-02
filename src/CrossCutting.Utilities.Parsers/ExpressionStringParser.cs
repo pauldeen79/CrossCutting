@@ -3,15 +3,18 @@
 public class ExpressionStringParser : IExpressionStringParser
 {
     private readonly IFunctionParser _functionParser;
+    private readonly IExpressionParser _expressionParser;
     private readonly IFunctionParseResultEvaluator _evaluator;
     private readonly IEnumerable<IExpressionStringParserProcessor> _processors;
 
     public ExpressionStringParser(
         IFunctionParser functionParser,
+        IExpressionParser expressionParser,
         IFunctionParseResultEvaluator evaluator,
         IEnumerable<IExpressionStringParserProcessor> processors)
     {
         _functionParser = functionParser;
+        _expressionParser = expressionParser;
         _evaluator = evaluator;
         _processors = processors;
     }
@@ -40,6 +43,6 @@ public class ExpressionStringParser : IExpressionStringParser
             return Result<object?>.FromExistingResult(functionResult);
         }
 
-        return _evaluator.Evaluate(functionResult.Value!, state.Context);
+        return _evaluator.Evaluate(functionResult.Value!, _expressionParser, state.FormatProvider, state.Context);
     }
 }
