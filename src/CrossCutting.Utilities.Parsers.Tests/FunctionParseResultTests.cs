@@ -196,6 +196,20 @@ public sealed class FunctionParseResultTests : IDisposable
     }
 
     [Fact]
+    public void GetArgumentInt32Value_Returns_Success_With_DefaultValue_When_ArgumentValue_Is_Not_Found_And_DefaultValue_Is_Supplied()
+    {
+        // Arrange
+        var argument = new FunctionParseResult("Test", Enumerable.Empty<FunctionParseResultArgument>(), CultureInfo.InvariantCulture, default);
+
+        // Act
+        var result = argument.GetArgumentInt32Value(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>(), 13);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(13);
+    }
+
+    [Fact]
     public void GetArgumentInt64Value_Returns_Invalid_When_ArgumentValue_Is_Invalid()
     {
         // Arrange
@@ -273,6 +287,20 @@ public sealed class FunctionParseResultTests : IDisposable
 
         // Act
         var result = argument.GetArgumentInt64Value(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(13L);
+    }
+
+    [Fact]
+    public void GetArgumentInt64Value_Returns_Success_With_DefaultValue_When_ArgumentValue_Is_Not_Found_And_DefaultValue_Is_Supplied()
+    {
+        // Arrange
+        var argument = new FunctionParseResult("Test", Enumerable.Empty<FunctionParseResultArgument>(), CultureInfo.InvariantCulture, default);
+
+        // Act
+        var result = argument.GetArgumentInt64Value(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>(), 13L);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -364,6 +392,20 @@ public sealed class FunctionParseResultTests : IDisposable
     }
 
     [Fact]
+    public void GetArgumentDecimalValue_Returns_Success_With_DefaultValue_When_ArgumentValue_Is_Not_Found_And_DefaultValue_Is_Supplied()
+    {
+        // Arrange
+        var argument = new FunctionParseResult("Test", Enumerable.Empty<FunctionParseResultArgument>(), CultureInfo.InvariantCulture, default);
+
+        // Act
+        var result = argument.GetArgumentDecimalValue(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>(), 13.5M);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(13.5M);
+    }
+
+    [Fact]
     public void GetArgumentBooleanValue_Returns_Invalid_When_ArgumentValue_Is_Invalid()
     {
         // Arrange
@@ -448,6 +490,20 @@ public sealed class FunctionParseResultTests : IDisposable
     }
 
     [Fact]
+    public void GetArgumentBooleanValue_Returns_Success_With_DefaultValue_When_ArgumentValue_Is_Not_Found_And_DefaultValue_Is_Supplied()
+    {
+        // Arrange
+        var argument = new FunctionParseResult("Test", Enumerable.Empty<FunctionParseResultArgument>(), CultureInfo.InvariantCulture, default);
+
+        // Act
+        var result = argument.GetArgumentBooleanValue(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>(), true);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeTrue();
+    }
+
+    [Fact]
     public void GetArgumentDateTimeValue_Returns_Invalid_When_ArgumentValue_Is_Invalid()
     {
         // Arrange
@@ -529,6 +585,21 @@ public sealed class FunctionParseResultTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be(DateTime.Today);
+    }
+
+    [Fact]
+    public void GetArgumentDateTimeValue_Returns_Success_With_DefaultValue_When_ArgumentValue_Is_Not_Found_And_DefaultValue_Is_Supplied()
+    {
+        // Arrange
+        var argument = new FunctionParseResult("Test", Enumerable.Empty<FunctionParseResultArgument>(), CultureInfo.InvariantCulture, default);
+        var dt = DateTime.Now;
+
+        // Act
+        var result = argument.GetArgumentDateTimeValue(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>(), dt);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(dt);
     }
 
     public void Dispose() => _provider.Dispose();
