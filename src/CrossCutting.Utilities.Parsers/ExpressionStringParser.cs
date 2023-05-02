@@ -43,6 +43,6 @@ public class ExpressionStringParser : IExpressionStringParser
             return Result<object?>.FromExistingResult(functionResult);
         }
 
-        return _evaluator.Evaluate(functionResult.Value!, _expressionParser, state.FormatProvider, state.Context);
+        return _evaluator.Evaluate(functionResult.Value!, _expressionParser, state.Context);
     }
 }

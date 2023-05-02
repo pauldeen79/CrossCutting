@@ -28,5 +28,5 @@ public sealed record FunctionArgument : FunctionParseResultArgument
     public FunctionParseResult Function { get; }
 
     public override Result<object?> GetValueResult(object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, IFormatProvider formatProvider)
-        => evaluator.Evaluate(Function, parser, formatProvider, context);
+        => evaluator.Evaluate(Function, parser, context);
 }

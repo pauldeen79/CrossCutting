@@ -7,8 +7,8 @@ public sealed class FunctionParseResultTests : IDisposable
 
     public FunctionParseResultTests()
     {
-        _evaluatorMock.Setup(x => x.Evaluate(It.IsAny<FunctionParseResult>(), It.IsAny<IExpressionParser>(), It.IsAny<IFormatProvider>(), It.IsAny<object?>()))
-                      .Returns<FunctionParseResult, IExpressionParser, IFormatProvider, object?>((result, _, _, _) => result.FunctionName switch
+        _evaluatorMock.Setup(x => x.Evaluate(It.IsAny<FunctionParseResult>(), It.IsAny<IExpressionParser>(), It.IsAny<object?>()))
+                      .Returns<FunctionParseResult, IExpressionParser, object?>((result, _, _) => result.FunctionName switch
                         {
                             "MyNestedFunction" => Result<object?>.Success("Evaluated result"),
                             "NumericFunction" => Result<object?>.Success(1),
