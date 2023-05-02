@@ -42,7 +42,7 @@ public static class ServiceCollectionExtensions
         .AddSingleton<IFunctionParser, FunctionParser>()
         .AddSingleton<IFunctionParserNameProcessor, DefaultFunctionParserNameProcessor>()
         .AddSingleton<IFunctionParserArgumentProcessor, FormattableStringFunctionParserArgumentProcessor>()
-        .AddSingleton<IFunctionParseResultEvaluator, FunctionParseResultEvaluator>();
+        .AddSingleton<IFunctionParseResultEvaluator, DefaultFunctionParseResultEvaluator>();
 
     private static IServiceCollection AddFormattableStringParser(this IServiceCollection services)
         => services
