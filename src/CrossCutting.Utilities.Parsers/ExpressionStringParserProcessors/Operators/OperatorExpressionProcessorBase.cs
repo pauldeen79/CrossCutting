@@ -30,7 +30,7 @@ public abstract class OperatorExpressionProcessorBase : IExpressionStringParserP
             return rightResult;
         }
 
-        return Result<object?>.FromExistingResult(PerformOperator(leftResult.Value, rightResult.Value), value => value);
+        return Result<object?>.FromExistingResult(PerformOperator(leftResult.Value, rightResult.Value));
     }
 
     protected abstract Result<bool> PerformOperator(object? leftValue, object? rightValue);
