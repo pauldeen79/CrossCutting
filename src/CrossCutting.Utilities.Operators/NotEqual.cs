@@ -2,6 +2,6 @@
 
 public static class NotEqual
 {
-    public static Result<bool> Evaluate(object? leftValue, object? rightValue)
-        => Result<bool>.FromExistingResult(Equal.Evaluate(leftValue, rightValue, StringComparison.CurrentCultureIgnoreCase), value => !value);
+    public static Result<bool> Evaluate(object? leftValue, object? rightValue, StringComparison stringComparison)
+        => Result<bool>.FromExistingResult(Equal.Evaluate(leftValue, rightValue, stringComparison), value => !value);
 }
