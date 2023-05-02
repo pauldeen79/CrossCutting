@@ -90,7 +90,8 @@ public class ResultTests
     public void FromExistingResult_Copies_Values_From_Void_SuccessResult()
     {
         // Arrange
-        var voidResult = Result.Success();
+        var voidResult = Result<string>.Success("success value");
+
         // Act
         var actual = Result<string>.FromExistingResult(voidResult);
 
@@ -98,7 +99,7 @@ public class ResultTests
         actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
         actual.Status.Should().Be(voidResult.Status);
         actual.ValidationErrors.Should().BeEquivalentTo(voidResult.ValidationErrors);
-        actual.Value.Should().BeNull();
+        actual.Value.Should().Be("success value");
     }
 
     [Fact]
@@ -106,6 +107,7 @@ public class ResultTests
     {
         // Arrange
         var voidResult = Result.Success();
+
         // Act
         var actual = Result<string>.FromExistingResult(voidResult, "yes");
 
@@ -127,7 +129,7 @@ public class ResultTests
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Error);
-        actual.Value.Should().BeNull();
+        actual.Value.Should().Be(default(bool));
     }
 
     [Fact]

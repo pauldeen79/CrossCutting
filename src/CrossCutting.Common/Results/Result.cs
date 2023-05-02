@@ -12,6 +12,8 @@ public record Result<T> : Result
             validationErrors)
         => Value = value;
 
+    internal override object? GetValue() => Value;
+
     public T? Value { get; }
     public bool HasValue => Value != null;
     public static Result<T> Success(T value) => new(value, ResultStatus.Ok, null, Enumerable.Empty<ValidationError>());
@@ -40,7 +42,7 @@ public record Result<T> : Result
     public static new Result<T> Continue() => new(default, ResultStatus.Continue, null, Enumerable.Empty<ValidationError>());
     public static Result<T> Continue(T value) => new(value, ResultStatus.Continue, null, Enumerable.Empty<ValidationError>());
     public static Result<T> Redirect(T value) => new(value, ResultStatus.Redirect, null, Enumerable.Empty<ValidationError>());
-    public static Result<T> FromExistingResult(Result existingResult) => new(default, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
+    public static Result<T> FromExistingResult(Result existingResult) => new(TryGetValue(existingResult), existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
     public static Result<T> FromExistingResult(Result existingResult, T value) => new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
     public static Result<T> FromExistingResult<TSourceResult>(Result<TSourceResult> existingResult, Func<TSourceResult, T> convertDelegate)
         => existingResult.IsSuccessful()
@@ -73,6 +75,10 @@ public record Result<T> : Result
 
         return Result<TCast>.Success(castValue);
     }
+
+    private static T? TryGetValue(Result existingResult) => existingResult.GetValue() is T t
+        ? t
+        : default;
 }
 
 public record Result
@@ -85,6 +91,8 @@ public record Result
         ErrorMessage = errorMessage;
         ValidationErrors = new ValueCollection<ValidationError>(validationErrors);
     }
+
+    internal virtual object? GetValue() => null;
 
     public bool IsSuccessful() => Status == ResultStatus.Ok || Status == ResultStatus.NoContent || Status == ResultStatus.Continue;
     public string? ErrorMessage { get; }
