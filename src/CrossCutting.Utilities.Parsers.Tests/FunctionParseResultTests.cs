@@ -34,7 +34,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = new FunctionParseResult("Test", new[] { new LiteralArgument("some value") }, CultureInfo.InvariantCulture, default);
 
         // Act
-        var result = argument.GetArgumentValue(1, "SomeName", null, _evaluatorMock.Object);
+        var result = argument.GetArgumentValue(1, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -42,17 +42,31 @@ public sealed class FunctionParseResultTests : IDisposable
     }
 
     [Fact]
-    public void GetArgumentValue_Returns_Success_When_Argument_Is_Present_And_Literal()
+    public void GetArgumentValue_Returns_Success_When_Argument_Is_Present_And_Literal_String()
     {
         // Arrange
         var argument = new FunctionParseResult("Test", new[] { new LiteralArgument("some value") }, CultureInfo.InvariantCulture, default);
 
         // Act
-        var result = argument.GetArgumentValue(0, "SomeName", null, _evaluatorMock.Object);
+        var result = argument.GetArgumentValue(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be("some value");
+    }
+
+    [Fact]
+    public void GetArgumentValue_Returns_Success_When_Argument_Is_Present_And_Literal_Int32()
+    {
+        // Arrange
+        var argument = new FunctionParseResult("Test", new[] { new LiteralArgument("13") }, CultureInfo.InvariantCulture, default);
+
+        // Act
+        var result = argument.GetArgumentValue(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(13);
     }
 
     [Fact]
@@ -62,7 +76,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = new FunctionParseResult("Test", new[] { new LiteralArgument("some value") }, CultureInfo.InvariantCulture, default);
 
         // Act
-        var result = argument.GetArgumentValue(0, "SomeName", null, _evaluatorMock.Object, "ignored");
+        var result = argument.GetArgumentValue(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>(), "ignored");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -76,7 +90,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = new FunctionParseResult("Test", new[] { new FunctionArgument(new FunctionParseResult("MyNestedFunction", Enumerable.Empty<FunctionParseResultArgument>(), CultureInfo.InvariantCulture, default)) }, CultureInfo.InvariantCulture, default);
 
         // Act
-        var result = argument.GetArgumentValue(0, "SomeName", null, _evaluatorMock.Object);
+        var result = argument.GetArgumentValue(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -90,7 +104,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = new FunctionParseResult("Test", Enumerable.Empty<FunctionParseResultArgument>(), CultureInfo.InvariantCulture, default);
 
         // Act
-        var result = argument.GetArgumentValue(0, "SomeName", null, _evaluatorMock.Object, "some value");
+        var result = argument.GetArgumentValue(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>(), "some value");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -104,7 +118,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = new FunctionParseResult("Test", new[] { new LiteralArgument("some value") }, CultureInfo.InvariantCulture, default);
 
         // Act
-        var result = argument.GetArgumentStringValue(1, "SomeName", null, _evaluatorMock.Object);
+        var result = argument.GetArgumentStringValue(1, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -118,7 +132,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = new FunctionParseResult("Test", new[] { new FunctionArgument(new FunctionParseResult("NumericFunction", Enumerable.Empty<FunctionParseResultArgument>(), CultureInfo.InvariantCulture, null)) }, CultureInfo.InvariantCulture, default);
 
         // Act
-        var result = argument.GetArgumentStringValue(0, "SomeName", null, _evaluatorMock.Object);
+        var result = argument.GetArgumentStringValue(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -132,7 +146,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = new FunctionParseResult("Test", new[] { new LiteralArgument("some value") }, CultureInfo.InvariantCulture, default);
 
         // Act
-        var result = argument.GetArgumentStringValue(0, "SomeName", null, _evaluatorMock.Object);
+        var result = argument.GetArgumentStringValue(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -146,7 +160,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = new FunctionParseResult("Test", Enumerable.Empty<FunctionParseResultArgument>(), CultureInfo.InvariantCulture, default);
 
         // Act
-        var result = argument.GetArgumentStringValue(0, "SomeName", null, _evaluatorMock.Object, "default value");
+        var result = argument.GetArgumentStringValue(0, "SomeName", null, _evaluatorMock.Object, _provider.GetRequiredService<IExpressionParser>(), "default value");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
