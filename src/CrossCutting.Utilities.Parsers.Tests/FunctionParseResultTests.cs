@@ -56,6 +56,20 @@ public sealed class FunctionParseResultTests : IDisposable
     }
 
     [Fact]
+    public void GetArgumentValue_Returns_Success_When_Argument_Is_Present_And_Literal_And_Ignores_DefaultValue()
+    {
+        // Arrange
+        var argument = new FunctionParseResult("Test", new[] { new LiteralArgument("some value") }, CultureInfo.InvariantCulture, default);
+
+        // Act
+        var result = argument.GetArgumentValue(0, "SomeName", null, _evaluatorMock.Object, "ignored");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("some value");
+    }
+
+    [Fact]
     public void GetArgumentValue_Returns_Success_When_Argument_Is_Present_And_Function()
     {
         // Arrange
@@ -67,6 +81,20 @@ public sealed class FunctionParseResultTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be("Evaluated result");
+    }
+
+    [Fact]
+    public void GetArgumentValue_Returns_Success_With_DefaultValue_When_Argument_Is_Not_Present_But_DefaultValue_Is_Supplied()
+    {
+        // Arrange
+        var argument = new FunctionParseResult("Test", Enumerable.Empty<FunctionParseResultArgument>(), CultureInfo.InvariantCulture, default);
+
+        // Act
+        var result = argument.GetArgumentValue(0, "SomeName", null, _evaluatorMock.Object, "some value");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("some value");
     }
 
     [Fact]
@@ -109,6 +137,20 @@ public sealed class FunctionParseResultTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be("some value");
+    }
+
+    [Fact]
+    public void GetArgumentStringValue_Returns_Success_With_DefaultValue_When_ArgumentValue_Is_Not_Found_And_DefaultValue_Is_Supplied()
+    {
+        // Arrange
+        var argument = new FunctionParseResult("Test", Enumerable.Empty<FunctionParseResultArgument>(), CultureInfo.InvariantCulture, default);
+
+        // Act
+        var result = argument.GetArgumentStringValue(0, "SomeName", null, _evaluatorMock.Object, "default value");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("default value");
     }
 
     [Fact]
