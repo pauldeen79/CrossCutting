@@ -314,6 +314,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
         result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
     }
+
     public void Dispose() => _provider.Dispose();
 
     private IFunctionParser CreateSut() => _provider.GetRequiredService<IFunctionParser>();
