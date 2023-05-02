@@ -2,7 +2,7 @@
 
 public static class Power
 {
-    public static Result<object?> Evaluate(object value1, object value2, IFormatProvider formatProvider)
+    public static Result<object?> Evaluate(object? value1, object? value2, IFormatProvider formatProvider)
         => NumericAggregator.Evaluate(value1, value2, formatProvider
             , (bas, exp) => Enumerable.Repeat(bas, exp).Aggregate(1, (a, b) => a * b)
             , (bas, exp) => Enumerable.Repeat(bas, exp).Aggregate(1, (a, b) => a * b)

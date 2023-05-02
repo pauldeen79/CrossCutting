@@ -2,7 +2,7 @@
 
 public static class Int16AggregatorProcessor
 {
-    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<short, short, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object? firstValue, object? secondValue, IFormatProvider formatProvider, Func<short, short, object?> aggregatorDelegate)
     {
         if (firstValue is not short s1)
         {

@@ -2,7 +2,7 @@
 
 public static class ByteAggregatorProcessor
 {
-    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<byte, byte, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object? firstValue, object? secondValue, IFormatProvider formatProvider, Func<byte, byte, object?> aggregatorDelegate)
     {
         if (firstValue is not byte b1)
         {

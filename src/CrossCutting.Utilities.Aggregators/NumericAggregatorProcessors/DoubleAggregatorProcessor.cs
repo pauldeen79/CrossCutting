@@ -2,7 +2,7 @@
 
 public static class DoubleAggregatorProcessor
 {
-    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<double, double, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object? firstValue, object? secondValue, IFormatProvider formatProvider, Func<double, double, object?> aggregatorDelegate)
     {
         if (firstValue is not double d1)
         {

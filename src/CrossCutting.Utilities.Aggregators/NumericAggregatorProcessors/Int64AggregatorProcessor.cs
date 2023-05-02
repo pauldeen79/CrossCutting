@@ -2,7 +2,7 @@
 
 public static class Int64AggregatorProcessor
 {
-    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<long, long, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object? firstValue, object? secondValue, IFormatProvider formatProvider, Func<long, long, object?> aggregatorDelegate)
     {
         if (firstValue is not long l1)
         {

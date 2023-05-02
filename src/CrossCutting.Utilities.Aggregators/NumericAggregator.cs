@@ -3,8 +3,8 @@
 public static class NumericAggregator
 {
 #pragma warning disable S107 // Methods should not have too many parameters
-    public static Result<object?> Evaluate(object firstExpression,
-                                           object secondExpression,
+    public static Result<object?> Evaluate(object? firstExpression,
+                                           object? secondExpression,
                                            IFormatProvider formatProvider,
                                            Func<byte, byte, object> byteAggregatorDelegate,
                                            Func<short, short, object> shortAggregatorDelegate,

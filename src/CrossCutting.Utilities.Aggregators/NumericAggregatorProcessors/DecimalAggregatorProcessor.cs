@@ -2,7 +2,7 @@
 
 public static class DecimalAggregatorProcessor
 {
-    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<decimal, decimal, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object? firstValue, object? secondValue, IFormatProvider formatProvider, Func<decimal, decimal, object?> aggregatorDelegate)
     {
         if (firstValue is not decimal d1)
         {

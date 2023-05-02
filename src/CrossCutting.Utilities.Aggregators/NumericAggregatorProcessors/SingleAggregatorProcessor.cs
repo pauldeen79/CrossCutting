@@ -2,7 +2,7 @@
 
 public static class SingleAggregatorProcessor
 {
-    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<float, float, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object? firstValue, object? secondValue, IFormatProvider formatProvider, Func<float, float, object?> aggregatorDelegate)
     {
         if (firstValue is not float f1)
         {

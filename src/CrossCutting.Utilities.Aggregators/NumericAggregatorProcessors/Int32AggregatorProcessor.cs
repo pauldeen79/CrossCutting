@@ -2,7 +2,7 @@
 
 public static class Int32AggregatorProcessor
 {
-    public static Result<object?> Aggregate(object firstValue, object secondValue, IFormatProvider formatProvider, Func<int, int, object?> aggregatorDelegate)
+    public static Result<object?> Aggregate(object? firstValue, object? secondValue, IFormatProvider formatProvider, Func<int, int, object?> aggregatorDelegate)
     {
         if (firstValue is not int i1)
         {
