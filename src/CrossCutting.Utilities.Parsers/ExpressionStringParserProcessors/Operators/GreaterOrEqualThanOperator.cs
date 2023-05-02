@@ -7,5 +7,5 @@ public class GreaterOrEqualThanOperator : OperatorExpressionProcessorBase
     protected override string Sign => ">=";
 
     protected override Result<bool> PerformOperator(object? leftValue, object? rightValue)
-        => GreaterOrEqual.Evaluate(leftValue, rightValue);
+        => GreaterOrEqualThan.Evaluate(leftValue, rightValue);
 }
