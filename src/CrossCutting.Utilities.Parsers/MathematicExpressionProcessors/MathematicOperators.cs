@@ -7,6 +7,7 @@ public class MathematicOperators : IMathematicExpressionProcessor
         new PowerAggregator(),
         new MultiplyAggregator(),
         new DivideAggregator(),
+        new ModulusAggregator(),
         new AddAggregator(),
         new SubtractAggregator(),
     };

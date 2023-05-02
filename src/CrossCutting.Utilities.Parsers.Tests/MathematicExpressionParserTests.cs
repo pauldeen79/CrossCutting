@@ -75,6 +75,20 @@ public sealed class MathematicExpressionParserTests : IDisposable
     }
 
     [Fact]
+    public void Can_Use_Modulus()
+    {
+        // Arrange
+        var input = "5 % 2";
+
+        // Act
+        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(5 % 2);
+    }
+
+    [Fact]
     public void Can_Add_One_And_Two_And_Three()
     {
         // Arrange
