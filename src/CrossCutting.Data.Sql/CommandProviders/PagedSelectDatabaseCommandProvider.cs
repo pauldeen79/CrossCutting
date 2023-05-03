@@ -29,7 +29,7 @@ public class PagedSelectDatabaseCommandProvider : IPagedDatabaseCommandProvider
     {
         foreach (var settingsProvider in _settingsProviders)
         {
-            if (settingsProvider.TryGet<TSource>(out var settings) && settings != null)
+            if (settingsProvider.TryGet<TSource>(out var settings) && settings is not null)
             {
                 return settings;
             }

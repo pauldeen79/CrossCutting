@@ -82,7 +82,7 @@ public class FunctionParser : IFunctionParser
                 .OrderBy(x => x.Order)
                 .Select(x => x.Process(stringArgument, results, formatProvider, context))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue);
-            if (processValueResult != null)
+            if (processValueResult is not null)
             {
                 if (!processValueResult.IsSuccessful())
                 {

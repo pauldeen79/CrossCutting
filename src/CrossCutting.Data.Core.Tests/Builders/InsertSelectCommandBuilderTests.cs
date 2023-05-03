@@ -60,7 +60,7 @@ public class InsertSelectCommandBuilderTests
         actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) SELECT Field1, Field2, Field3 FROM SomeOtherTable WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters.Should().HaveCount(3);
             parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");
@@ -130,7 +130,7 @@ public class InsertSelectCommandBuilderTests
         actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) SELECT Field1, Field2, Field3 FROM SomeOtherTable WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters.Should().HaveCount(3);
             parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");

@@ -27,7 +27,7 @@ public class SelectDatabaseCommandProvider : IDatabaseCommandProvider
     {
         foreach (var settingsProvider in _settingsProviders)
         {
-            if (settingsProvider.TryGet<TSource>(out var settings) && settings != null)
+            if (settingsProvider.TryGet<TSource>(out var settings) && settings is not null)
             {
                 return settings;
             }

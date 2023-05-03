@@ -29,8 +29,8 @@ public sealed class DbCommand : IDbCommand
 
     public int ExecuteNonQuery()
     {
-        if (ExecuteNonQueryResultDelegate != null
-            && (ExecuteNonQueryResultPredicate == null || ExecuteNonQueryResultPredicate(this)))
+        if (ExecuteNonQueryResultDelegate is not null
+            && (ExecuteNonQueryResultPredicate is null || ExecuteNonQueryResultPredicate(this)))
         {
             return ExecuteNonQueryResultDelegate(this);
         }
@@ -53,8 +53,8 @@ public sealed class DbCommand : IDbCommand
 
     public object? ExecuteScalar()
     {
-        if (ExecuteScalarResultDelegate != null
-            && (ExecuteScalarResultPredicate == null || ExecuteScalarResultPredicate(this)))
+        if (ExecuteScalarResultDelegate is not null
+            && (ExecuteScalarResultPredicate is null || ExecuteScalarResultPredicate(this)))
         {
             return ExecuteScalarResultDelegate(this);
         }

@@ -25,7 +25,7 @@ public class SqlDatabaseCommandTests
         actual.CommandParameters.Should().NotBeNull();
         var parameters = actual.CommandParameters.ToExpandoObject() as IDictionary<string, object>;
         parameters.Should().NotBeNull();
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters["Parameter"].Should().Be("Value");
         }

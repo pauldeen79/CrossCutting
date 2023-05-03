@@ -25,7 +25,7 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
 
         // Assert
         actual.Should().NotBeNull();
-        if (actual != null)
+        if (actual is not null)
         {
             actual.Property.Should().Be("test");
         }

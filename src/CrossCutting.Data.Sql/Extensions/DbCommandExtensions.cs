@@ -32,7 +32,7 @@ public static class DbCommandExtensions
     {
         command.CommandText = commandText;
         command.CommandType = commandType.ToCommandType();
-        if (commandParameters != null)
+        if (commandParameters is not null)
         {
             foreach (var param in commandParameters.ToExpandoObject())
             {

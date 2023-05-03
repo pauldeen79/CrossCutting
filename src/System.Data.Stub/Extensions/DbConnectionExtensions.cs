@@ -29,7 +29,7 @@ public static class DbConnectionExtensions
         {
             args.DbCommand.DataReaderCreated += (sender2, args2) =>
             {
-                if (predicate == null || predicate((DbCommand)sender2))
+                if (predicate is null || predicate((DbCommand)sender2))
                 {
                     foreach (var obj in data())
                     {

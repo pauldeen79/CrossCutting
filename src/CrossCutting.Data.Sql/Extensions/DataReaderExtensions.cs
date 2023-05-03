@@ -439,7 +439,7 @@ public static class DataReaderExtensions
             return Array.Empty<byte>();
         }
 
-        if (length == null)
+        if (length is null)
         {
             return (byte[])instance.GetValue(ordinal);
         }

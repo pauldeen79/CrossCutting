@@ -147,7 +147,7 @@ public class SelectCommandBuilder
         {
             builder.Append("DISTINCT ");
         }
-        if (Top != null)
+        if (Top is not null)
         {
             builder.Append("TOP ")
                    .Append(Top.Value)

@@ -12,7 +12,7 @@ public static class EnumerableExtensions
     public static IEnumerable<T> NotNull<T>(this IEnumerable<T>? instance, Func<T, bool>? predicate = null)
     {
         var notNull = instance ?? Enumerable.Empty<T>();
-        return predicate == null
+        return predicate is null
             ? notNull
             : notNull.Where(predicate);
     }
@@ -63,7 +63,7 @@ public static class EnumerableExtensions
             }
         }
 
-        return defaultDelegate == null
+        return defaultDelegate is null
             ? result
             : defaultDelegate(result);
     }

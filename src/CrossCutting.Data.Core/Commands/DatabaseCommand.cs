@@ -35,7 +35,7 @@ public class DatabaseCommand<T> : IDatabaseCommand
     public DatabaseOperation Operation { get; }
 
     public object? CommandParameters
-        => _commandParametersDelegate == null
+        => _commandParametersDelegate is null
             ? null
             : _commandParametersDelegate(_instance);
 }

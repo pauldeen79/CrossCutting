@@ -29,7 +29,7 @@ public class DynamicPropertyDescriptor<TTarget, TProperty> : PropertyDescriptor
 
     public override object GetValue(object component) => getter((TTarget)component)!;
 
-    public override bool IsReadOnly => setter == null;
+    public override bool IsReadOnly => setter is null;
 
     public override Type PropertyType => typeof(TProperty);
 

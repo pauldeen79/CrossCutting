@@ -140,7 +140,7 @@ public static class ObjectExtensions
     {
         var expandoObject = new ExpandoObject();
 
-        if (instance != null)
+        if (instance is not null)
         {
             var dictionary = (IDictionary<string, object>)expandoObject;
             if (instance is IEnumerable<KeyValuePair<string, object>> kvpEnum)

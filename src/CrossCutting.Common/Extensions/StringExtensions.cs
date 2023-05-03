@@ -15,7 +15,7 @@ public static class StringExtensions
     /// <returns></returns>
     public static string WhenNullOrEmpty(this string? instance, string whenNullOrEmpty)
     {
-        if (instance == null || string.IsNullOrEmpty(instance))
+        if (instance is null || string.IsNullOrEmpty(instance))
         {
             return whenNullOrEmpty;
         }
@@ -31,7 +31,7 @@ public static class StringExtensions
     /// <returns></returns>
     public static string WhenNullOrEmpty(this string? instance, Func<string> whenNullOrEmptyDelegate)
     {
-        if (instance == null || string.IsNullOrEmpty(instance))
+        if (instance is null || string.IsNullOrEmpty(instance))
         {
             return whenNullOrEmptyDelegate();
         }
@@ -47,7 +47,7 @@ public static class StringExtensions
     /// <returns></returns>
     public static string WhenNullOrWhitespace(this string? instance, string whenNullOrWhiteSpace)
     {
-        if (instance == null || string.IsNullOrWhiteSpace(instance))
+        if (instance is null || string.IsNullOrWhiteSpace(instance))
         {
             return whenNullOrWhiteSpace;
         }
@@ -63,7 +63,7 @@ public static class StringExtensions
     /// <returns></returns>
     public static string WhenNullOrWhitespace(this string? instance, Func<string> whenNullOrWhiteSpaceDelegate)
     {
-        if (instance == null || string.IsNullOrWhiteSpace(instance))
+        if (instance is null || string.IsNullOrWhiteSpace(instance))
         {
             return whenNullOrWhiteSpaceDelegate();
         }
@@ -77,7 +77,7 @@ public static class StringExtensions
     /// <param name="instance">The instance.</param>
     /// <returns></returns>
     public static bool IsTrue(this string? instance)
-        => instance != null
+        => instance is not null
             && _trueKeywords.Any(s => s.Equals(instance, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
@@ -86,7 +86,7 @@ public static class StringExtensions
     /// <param name="instance">The instance.</param>
     /// <returns></returns>
     public static bool IsFalse(this string? instance)
-        => instance != null
+        => instance is not null
             && _falseKeywords.Any(s => s.Equals(instance, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
@@ -171,7 +171,7 @@ public static class StringExtensions
         using (var reader = new StringReader(instance))
         {
             string line;
-            while ((line = reader.ReadLine()) != null)
+            while ((line = reader.ReadLine()) is not null)
             {
                 result.Add(line);
             }
@@ -211,7 +211,7 @@ public static class StringExtensions
     /// <returns></returns>
     public static string[] SplitDelimited(this string instance, string delimiter, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false)
     {
-        if (delimiter == null)
+        if (delimiter is null)
         {
             throw new ArgumentNullException(nameof(delimiter));
         }
@@ -236,7 +236,7 @@ public static class StringExtensions
                 result.Add(currentSection.ToString());
                 currentSection.Clear();
             }
-            else if (textQualifier != null && character == textQualifier)
+            else if (textQualifier is not null && character == textQualifier)
             {
                 // skip this character
                 inText = !inText;
@@ -297,7 +297,7 @@ public static class StringExtensions
             return character == delimiter[0];
         }
 
-        if (previousCharacter == null)
+        if (previousCharacter is null)
         {
             return false;
         }

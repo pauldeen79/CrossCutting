@@ -47,8 +47,8 @@ public class PropertyNameFilter : IObjectDumperPart
 
     public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor)
         => _includePropertyNames.Contains(propertyDescriptor.Name)
-            && (_typeName == null || propertyDescriptor.ComponentType.FullName == _typeName)
-            && (_typeFilter == null || _typeFilter(propertyDescriptor.ComponentType));
+            && (_typeName is null || propertyDescriptor.ComponentType.FullName == _typeName)
+            && (_typeFilter is null || _typeFilter(propertyDescriptor.ComponentType));
 
     public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
 }

@@ -101,11 +101,11 @@ public sealed class DataReader : IDataReader
         return Dictionary.Count;
     }
 
-    public bool IsDBNull(int i) => this[i] == null || this[i] == DBNull.Value;
+    public bool IsDBNull(int i) => this[i] is null || this[i] == DBNull.Value;
 
     public bool NextResult()
     {
-        if (NextResultCalled == null)
+        if (NextResultCalled is null)
         {
             return false;
         }

@@ -37,21 +37,21 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
         }
         else
         {
-            builder = _provider.CreateBuilderDelegate != null
+            builder = _provider.CreateBuilderDelegate is not null
                 ? _provider.CreateBuilderDelegate.Invoke(instance)
                 : default;
         }
 
-        if (builder == null)
+        if (builder is null)
         {
             throw new InvalidOperationException("Builder instance was not constructed, create builder delegate should deliver an instance");
         }
 
-        var resultEntity = _provider.ResultEntityDelegate == null
+        var resultEntity = _provider.ResultEntityDelegate is null
             ? builder
             : _provider.ResultEntityDelegate.Invoke(builder, command.Operation);
 
-        if (resultEntity == null)
+        if (resultEntity is null)
         {
             throw new InvalidOperationException("Instance should be supplied, or result entity delegate should deliver an instance");
         }
@@ -63,7 +63,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
         {
             cmd.FillCommand(command.CommandText, command.CommandType, command.CommandParameters);
 
-            if (_provider.AfterReadDelegate == null)
+            if (_provider.AfterReadDelegate is null)
             {
                 //Use ExecuteNonQuery
                 return ExecuteNonQuery(cmd, resultEntity);
@@ -91,7 +91,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
 
     private TEntity CreateEntityFromBuilder(TBuilder result)
     {
-        if (_provider.CreateEntityDelegate != null)
+        if (_provider.CreateEntityDelegate is not null)
         {
             return _provider.CreateEntityDelegate.Invoke(result);
         }

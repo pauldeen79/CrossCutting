@@ -31,8 +31,8 @@ public class PropertyNameExclusionFilter : IObjectDumperPart
 
     public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor)
         => propertyDescriptor.Name != _skipPropertyName
-                      && (_typeName == null || propertyDescriptor.ComponentType.FullName == _typeName)
-                      && (_typeFilter == null || _typeFilter(propertyDescriptor.ComponentType));
+                      && (_typeName is null || propertyDescriptor.ComponentType.FullName == _typeName)
+                      && (_typeFilter is null || _typeFilter(propertyDescriptor.ComponentType));
 
     public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
 }

@@ -36,7 +36,7 @@ public static class PipeDelimitedDataTableParser
             int lineNumber = 0;
             string[]? columnNamesArray = columnNames?.ToArray();
 
-            while ((line = sr.ReadLine()) != null)
+            while ((line = sr.ReadLine()) is not null)
             {
                 lineNumber++;
 
@@ -73,7 +73,7 @@ public static class PipeDelimitedDataTableParser
 
         for (var column = skipColumnsLeft; column < split.Length - skipColumnsRight; column++)
         {
-            var value = formatFunction == null
+            var value = formatFunction is null
                 ? split[column]
                 : formatFunction(CreateColumnName(columnNamesArray, columnIndex), split[column]);
 
@@ -85,7 +85,7 @@ public static class PipeDelimitedDataTableParser
     }
 
     private static string CreateColumnName(string[]? columnNamesArray, int columnIndex)
-        => columnNamesArray == null
+        => columnNamesArray is null
             ? $"{columnIndex}"
             : columnNamesArray[columnIndex - 1] ?? $"{columnIndex}";
 }

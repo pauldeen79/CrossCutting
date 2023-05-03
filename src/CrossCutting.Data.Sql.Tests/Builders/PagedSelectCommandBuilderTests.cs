@@ -20,7 +20,7 @@ public class PagedSelectCommandBuilderTests
         actual.CommandText.Should().Be("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters.Should().HaveCount(1);
             parameters.First().Key.Should().Be("field1");
@@ -46,7 +46,7 @@ public class PagedSelectCommandBuilderTests
         actual.CommandText.Should().Be("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters.Should().HaveCount(1);
             parameters.First().Key.Should().Be("field1");
@@ -73,7 +73,7 @@ public class PagedSelectCommandBuilderTests
         actual.CommandText.Should().Be("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1 AND Field2 IS NOT NULL");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters.Should().HaveCount(1);
             parameters.First().Key.Should().Be("field1");
@@ -100,7 +100,7 @@ public class PagedSelectCommandBuilderTests
         actual.CommandText.Should().Be("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1 OR Field2 IS NOT NULL");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters.Should().HaveCount(1);
             parameters.First().Key.Should().Be("field1");

@@ -40,7 +40,7 @@ public class DefaultObjectDumperResultBuilder : IObjectDumperResultBuilder
 
     public void AddSingleValue(object? value, Type instanceType)
     {
-        if (value == null)
+        if (value is null)
         {
             _builder.Append("NULL");
         }

@@ -130,7 +130,7 @@ Value 1|Value 2|Value 3";
 
     private static void AssertParseResult(ParseResult<string, object>[] actual, string[]? columnNames = null)
     {
-        if (columnNames == null)
+        if (columnNames is null)
         {
             columnNames = new[] { "1", "2", "3" };
         }
@@ -140,7 +140,7 @@ Value 1|Value 2|Value 3";
         var firstRow = actual.FirstOrDefault();
 
         firstRow.Should().NotBeNull();
-        if (firstRow != null)
+        if (firstRow is not null)
         {
             firstRow.IsSuccessful.Should().BeTrue();
             firstRow.ErrorMessages.Should().BeEmpty();

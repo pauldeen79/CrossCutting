@@ -23,7 +23,7 @@ public static class TestHelpers
                                                                  Func<ParameterInfo, object>? parameterReplaceDelegate = null)
     {
         var ctors = type.GetConstructors();
-        if (ctors == null || ctors.Length == 0)
+        if (ctors is null || ctors.Length == 0)
         {
             false.Should().BeTrue($"There is no constructor on type {type.FullName}");
             return;
@@ -70,7 +70,7 @@ public static class TestHelpers
     public static void ConstructorShouldConstruct(Type type, Func<ParameterInfo, object>? parameterReplaceDelegate = null)
     {
         var ctors = type.GetConstructors();
-        if (ctors == null || ctors.Length == 0)
+        if (ctors is null || ctors.Length == 0)
         {
             false.Should().BeTrue($"There is no constructor on type {type.FullName}");
             return;
@@ -98,7 +98,7 @@ public static class TestHelpers
         // First try using dependency injection container
         var firstAttempt = provider?.GetService(typeTocreate);
 
-        if (firstAttempt != null)
+        if (firstAttempt is not null)
         {
             return firstAttempt;
         }
@@ -131,7 +131,7 @@ public static class TestHelpers
             : null;
 
     private static bool ShouldSkipParameter(Func<ParameterInfo, bool>? parameterPredicate, ParameterInfo[] parameters, int i)
-        => parameterPredicate != null
+        => parameterPredicate is not null
             && !parameterPredicate.Invoke(parameters[i]);
 
     private static object?[] GetMocks(ParameterInfo[] parameters, Func<ParameterInfo, object>? parameterReplaceDelegate)
@@ -139,10 +139,10 @@ public static class TestHelpers
         (
             p =>
             {
-                if (parameterReplaceDelegate != null)
+                if (parameterReplaceDelegate is not null)
                 {
                     var returnValue = parameterReplaceDelegate.Invoke(p);
-                    if (returnValue != null)
+                    if (returnValue is not null)
                     {
                         return returnValue;
                     }

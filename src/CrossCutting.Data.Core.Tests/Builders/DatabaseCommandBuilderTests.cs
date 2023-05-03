@@ -18,7 +18,7 @@ public class DatabaseCommandBuilderTests
         actual.CommandText.Should().Be("SELECT * FROM Fridge WHERE Alcohol > @percentage");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters.Should().HaveCount(1);
             parameters.First().Key.Should().Be("percentage");
@@ -42,7 +42,7 @@ public class DatabaseCommandBuilderTests
         actual.CommandText.Should().Be("test");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters.Should().HaveCount(0);
         }

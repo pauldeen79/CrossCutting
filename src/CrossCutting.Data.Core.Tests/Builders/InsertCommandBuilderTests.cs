@@ -69,7 +69,7 @@ public class InsertCommandBuilderTests
         actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) VALUES(@Field1, @Field2, @Field3)");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters.Should().HaveCount(3);
             parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");

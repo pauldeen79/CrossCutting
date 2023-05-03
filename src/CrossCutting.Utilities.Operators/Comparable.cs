@@ -6,8 +6,8 @@ internal static class Comparable
     {
         try
         {
-            return Result<bool>.Success(leftValue != null
-                && rightValue != null
+            return Result<bool>.Success(leftValue is not null
+                && rightValue is not null
                 && leftValue is IComparable c
                 && compareResultDelegate(c.CompareTo(rightValue)));
         }

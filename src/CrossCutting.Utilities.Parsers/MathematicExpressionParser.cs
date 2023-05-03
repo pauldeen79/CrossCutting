@@ -23,7 +23,7 @@ public class MathematicExpressionParser : IMathematicExpressionParser
             .Select(x => x.Process(state))
             .FirstOrDefault(x => !x.IsSuccessful());
         
-        if (error != null)
+        if (error is not null)
         {
             return Result<object?>.FromExistingResult(error);
         }

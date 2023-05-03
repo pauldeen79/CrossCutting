@@ -46,7 +46,7 @@ public class TestEntityDatabaseCommandEntityProviderTests
 
         // Act
         sut.ResultEntityDelegate.Should().NotBeNull();
-        if (sut.ResultEntityDelegate != null)
+        if (sut.ResultEntityDelegate is not null)
         {
             var actual = sut.ResultEntityDelegate.Invoke(entity, operation);
 
@@ -66,7 +66,7 @@ public class TestEntityDatabaseCommandEntityProviderTests
 
         // Act
         sut.ResultEntityDelegate.Should().NotBeNull();
-        if (sut.ResultEntityDelegate != null)
+        if (sut.ResultEntityDelegate is not null)
         {
             sut.Invoking(x => x.ResultEntityDelegate?.Invoke(entity, operation))
                .Should().Throw<ArgumentOutOfRangeException>()
@@ -115,7 +115,7 @@ public class TestEntityDatabaseCommandEntityProviderTests
 
         // Act
         sut.AfterReadDelegate.Should().NotBeNull();
-        if (sut.AfterReadDelegate != null)
+        if (sut.AfterReadDelegate is not null)
         {
             var actual = sut.AfterReadDelegate.Invoke(entity, operation, readerMock.Object);
 
@@ -142,7 +142,7 @@ public class TestEntityDatabaseCommandEntityProviderTests
 
         // Act
         sut.AfterReadDelegate.Should().NotBeNull();
-        if (sut.AfterReadDelegate != null)
+        if (sut.AfterReadDelegate is not null)
         {
             sut.Invoking(x => x.AfterReadDelegate?.Invoke(entity, operation, readerMock.Object))
                .Should().Throw<ArgumentOutOfRangeException>()
@@ -159,7 +159,7 @@ public class TestEntityDatabaseCommandEntityProviderTests
 
         // Act
         sut.CreateBuilderDelegate.Should().NotBeNull();
-        if (sut.CreateBuilderDelegate != null)
+        if (sut.CreateBuilderDelegate is not null)
         {
             var actual = sut.CreateBuilderDelegate.Invoke(entity);
 
@@ -180,7 +180,7 @@ public class TestEntityDatabaseCommandEntityProviderTests
 
         // Act
         sut.CreateEntityDelegate.Should().NotBeNull();
-        if (sut.CreateEntityDelegate != null)
+        if (sut.CreateEntityDelegate is not null)
         {
             var actual = sut.CreateEntityDelegate.Invoke(builder);
 

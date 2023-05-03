@@ -108,7 +108,7 @@ public class DbCommandExtensionsTests
 
         // Assert
         result.Should().NotBeNull();
-        if (result != null)
+        if (result is not null)
         {
             result.Property.Should().Be("test");
         }

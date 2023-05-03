@@ -6,7 +6,7 @@ public class DatabaseCommandResult<T> : IDatabaseCommandResult<T>
     public bool Success { get; }
     public T? Data { get; }
 
-    public DatabaseCommandResult(T? data) : this(data != null, data)
+    public DatabaseCommandResult(T? data) : this(data is not null, data)
     {
     }
 

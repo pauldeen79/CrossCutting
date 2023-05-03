@@ -15,7 +15,7 @@ public record Result<T> : Result
     internal override object? GetValue() => Value;
 
     public T? Value { get; }
-    public bool HasValue => Value != null;
+    public bool HasValue => Value is not null;
     public static Result<T> Success(T value) => new(value, ResultStatus.Ok, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> Error() => new(default, ResultStatus.Error, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> Error(string errorMessage) => new(default, ResultStatus.Error, errorMessage, Enumerable.Empty<ValidationError>());
@@ -68,7 +68,7 @@ public record Result<T> : Result
 
         if (Value is not TCast castValue)
         {
-            return errorMessage == null
+            return errorMessage is null
                 ? Result<TCast>.Invalid()
                 : Result<TCast>.Invalid(errorMessage);
         }

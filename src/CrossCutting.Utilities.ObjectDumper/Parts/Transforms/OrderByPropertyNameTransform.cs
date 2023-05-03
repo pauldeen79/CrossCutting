@@ -23,12 +23,12 @@ public class OrderByPropertyNameTransform : IObjectDumperPartWithCallback
     {
         var shouldTransform = false;
 
-        if (_typeName != null && source.Any() && source.First().ComponentType.FullName == _typeName)
+        if (_typeName is not null && source.Any() && source.First().ComponentType.FullName == _typeName)
         {
             shouldTransform = true;
         }
 
-        if (_typeFilter != null && source.Any() && _typeFilter(source.First().ComponentType))
+        if (_typeFilter is not null && source.Any() && _typeFilter(source.First().ComponentType))
         {
             shouldTransform = true;
         }

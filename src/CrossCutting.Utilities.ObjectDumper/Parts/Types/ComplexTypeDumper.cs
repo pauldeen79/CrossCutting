@@ -8,7 +8,7 @@ public class ComplexTypeDumper : IObjectDumperPartWithCallback
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
-        if (instance == null)
+        if (instance is null)
         {
             return false;
         }

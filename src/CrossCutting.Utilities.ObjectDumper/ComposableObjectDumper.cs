@@ -16,7 +16,7 @@ public class ComposableObjectDumper : IObjectDumperCallback
         {
             foreach (var part in _parts)
             {
-                if (part is IObjectDumperPartWithCallback initializer && initializer.Callback == null)
+                if (part is IObjectDumperPartWithCallback initializer && initializer.Callback is null)
                 {
                     initializer.Callback = this;
                 }
@@ -28,7 +28,7 @@ public class ComposableObjectDumper : IObjectDumperCallback
                 return true;
             }
 
-            return Array.Find(_parts, part => part.Process(instance, instanceType, builder, indent, currentDepth)) != null;
+            return Array.Find(_parts, part => part.Process(instance, instanceType, builder, indent, currentDepth)) is not null;
         }
         catch (Exception ex)
         {

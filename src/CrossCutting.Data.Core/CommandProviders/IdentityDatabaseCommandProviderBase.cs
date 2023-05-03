@@ -27,7 +27,7 @@ public abstract class IdentityDatabaseCommandProviderBase<T> : IDatabaseCommandP
     {
         foreach (var settingsProvider in _settingsProviders)
         {
-            if (settingsProvider.TryGet<T>(out var settings) && settings != null)
+            if (settingsProvider.TryGet<T>(out var settings) && settings is not null)
             {
                 return settings;
             }

@@ -73,7 +73,7 @@ public class UpdateCommandBuilderTests
         actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = @Field1, Field2 = @Field2, Field3 = @Field3");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters.Should().HaveCount(3);
             parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");
@@ -165,7 +165,7 @@ public class UpdateCommandBuilderTests
         actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = @Field1");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters.Should().HaveCount(1);
             parameters.Keys.Should().BeEquivalentTo("Field1");
@@ -196,7 +196,7 @@ public class UpdateCommandBuilderTests
         actual.CommandText.Should().Be("UPDATE MyTable2 SET Field2 = @Field2");
         actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters != null)
+        if (parameters is not null)
         {
             parameters.Should().HaveCount(1);
             parameters.Keys.Should().BeEquivalentTo("Field2");
