@@ -12,7 +12,7 @@ public record Result<T> : Result
             validationErrors)
         => Value = value;
 
-    internal override object? GetValue() => Value;
+    public override object? GetValue() => Value;
 
     public T? Value { get; }
     public bool HasValue => Value is not null;
@@ -92,7 +92,7 @@ public record Result
         ValidationErrors = new ValueCollection<ValidationError>(validationErrors);
     }
 
-    internal virtual object? GetValue() => null;
+    public virtual object? GetValue() => null;
 
     public bool IsSuccessful() => Status == ResultStatus.Ok || Status == ResultStatus.NoContent || Status == ResultStatus.Continue;
     public string? ErrorMessage { get; }

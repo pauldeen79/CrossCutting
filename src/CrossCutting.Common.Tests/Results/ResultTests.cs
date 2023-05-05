@@ -1076,4 +1076,17 @@ public class ResultTests
         result.Status.Should().Be(ResultStatus.Ok);
         result.ErrorMessage.Should().BeNull();
     }
+
+    [Fact]
+    public void Can_Create_Untyped_Result_From_Typed_Result_And_Then_Read_The_Value_Untyped()
+    {
+        // Arrange
+        Result typed = Result<int>.Success(13);
+
+        // Act
+        var result = typed.GetValue();
+
+        // Assert
+        result.Should().BeEquivalentTo(13);
+    }
 }
