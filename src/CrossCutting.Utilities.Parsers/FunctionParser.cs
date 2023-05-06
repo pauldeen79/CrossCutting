@@ -31,25 +31,26 @@ public class FunctionParser : IFunctionParser
         var remainder = input;
         do
         {
-            var closeIndex = remainder.IndexOf(")");
-            if (closeIndex == -1)
+            var quoteMap = BuildQuoteMap(remainder);
+            var closeIndex = remainder.Select((character, index) => new { character, index }).FirstOrDefault(x => x.character == ')' && !IsInQuoteMap(x.index, quoteMap))?.index;
+            if (closeIndex is null)
             {
                 return Result<FunctionParseResult>.NotFound("Missing close bracket");
             }
 
-            var openIndex = remainder.LastIndexOf("(", closeIndex);
-            if (openIndex == -1)
+            var openIndex = remainder.Select((character, index) => new { character, index }).LastOrDefault(x => x.index < closeIndex.Value && x.character == '(' && !IsInQuoteMap(x.index, quoteMap))?.index;
+            if (openIndex is null)
             {
                 return Result<FunctionParseResult>.NotFound("Missing open bracket");
             }
 
-            var nameResult = FindFunctionName(remainder.Substring(0, openIndex));
+            var nameResult = FindFunctionName(remainder.Substring(0, openIndex.Value));
             if (!nameResult.IsSuccessful())
             {
                 return Result<FunctionParseResult>.FromExistingResult(nameResult);
             }
 
-            var stringArguments = remainder.Substring(openIndex + 1, closeIndex - openIndex - 1);
+            var stringArguments = remainder.Substring(openIndex.Value + 1, closeIndex.Value - openIndex.Value - 1);
             var stringArgumentsSplit = stringArguments.SplitDelimited(',', '\"', trimItems: true);
             var arguments = new List<FunctionParseResultArgument>();
             var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, formatProvider, context);
@@ -66,6 +67,33 @@ public class FunctionParser : IFunctionParser
         return remainder.EndsWith(TemporaryDelimiter)
             ? Result<FunctionParseResult>.Success(results.Last())
             : Result<FunctionParseResult>.NotFound("Input has additional characters after last close bracket");
+    }
+
+    private bool IsInQuoteMap(int index, IEnumerable<(int StartIndex, int EndIndex)> quoteMap)
+        => quoteMap.Any(x => x.StartIndex < index && x.EndIndex > index);
+
+    private IEnumerable<(int StartIndex, int EndIndex)> BuildQuoteMap(string value)
+    {
+        var inText = false;
+        var index = -1;
+        var lastQuote = -1;
+        
+        foreach (var character in value)
+        {
+            index++;
+            if (character == '\"')
+            {
+                inText = !inText;
+                if (inText)
+                {
+                    lastQuote = index;
+                }
+                else
+                {
+                    yield return new(lastQuote, index);
+                }
+            }
+        }
     }
 
     private Result<FunctionParseResult> AddArguments(List<FunctionParseResult> results, string[] stringArgumentsSplit, List<FunctionParseResultArgument> arguments, IFormatProvider formatProvider, object? context)

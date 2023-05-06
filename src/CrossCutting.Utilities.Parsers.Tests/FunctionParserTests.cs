@@ -94,6 +94,23 @@ public sealed class FunctionParserTests : IDisposable
     }
 
     [Fact]
+    public void Can_Parse_Single_Function_With_Round_Brackets_In_Arguments()
+    {
+        // Arrange
+        var input = "MYFUNCTION(\"FN1(a)\",\"FN2(b)\",\"FN3(c)\")";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value.Arguments.Should().HaveCount(3);
+        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
+        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("FN1(a)", "FN2(b)", "FN3(c)");
+    }
+
+    [Fact]
     public void Can_Parse_Nested_Function()
     {
         // Arrange
