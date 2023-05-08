@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>11.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <PackageId>pauldeen79.CrossCutting.Utilities.Parsers.Builders</PackageId>
+    <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
+    <CodeAnalysisRuleSet>..\..\.sonarlint\pauldeen79_crosscuttingcsharp.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\.sonarlint\pauldeen79_crosscutting\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrossCutting.Utilities.Parsers\CrossCutting.Utilities.Parsers.csproj" />
+  </ItemGroup>
+
+</Project>

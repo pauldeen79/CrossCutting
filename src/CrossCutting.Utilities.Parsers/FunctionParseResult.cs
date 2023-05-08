@@ -1,29 +1,16 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public record FunctionParseResult
+public partial record FunctionParseResult
 {
-    public FunctionParseResult(string functionName, IEnumerable<FunctionParseResultArgument> arguments, IFormatProvider formatProvider, object? context)
-    {
-        FunctionName = functionName;
-        Arguments = new ReadOnlyValueCollection<FunctionParseResultArgument>(arguments);
-        FormatProvider = formatProvider;
-        Context = context;
-    }
-
-    public string FunctionName { get; }
-    public ReadOnlyValueCollection<FunctionParseResultArgument> Arguments { get; }
-    public IFormatProvider FormatProvider { get; }
-    public object? Context { get; }
-
     public Result<object?> GetArgumentValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
         => index + 1 > Arguments.Count
             ? Result<object?>.Invalid($"Missing argument: {argumentName}")
-            : Arguments[index].GetValueResult(context, evaluator, parser, FormatProvider);
+            : Arguments.ElementAt(index).GetValueResult(context, evaluator, parser, FormatProvider);
 
     public Result<object?> GetArgumentValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, object? defaultValue)
         => index + 1 > Arguments.Count
             ? Result<object?>.Success(defaultValue)
-            : Arguments[index].GetValueResult(context, evaluator, parser, FormatProvider);
+            : Arguments.ElementAt(index).GetValueResult(context, evaluator, parser, FormatProvider);
 
     public Result<string> GetArgumentStringValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
         => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
