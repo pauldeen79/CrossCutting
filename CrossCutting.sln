@@ -14,6 +14,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.ObjectDumper.Tests", "src\CrossCutting.Utilities.ObjectDumper.Tests\CrossCutting.Utilities.ObjectDumper.Tests.csproj", "{A2695F1C-7ED9-42AD-B95E-60797BF71DF3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Parsers", "src\CrossCutting.Utilities.Parsers\CrossCutting.Utilities.Parsers.csproj", "{FD75CF75-DB0E-4FED-8C55-DC1957C5E4BA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{74D196D2-8DB3-456B-8F04-55CFF28E9AC7} = {74D196D2-8DB3-456B-8F04-55CFF28E9AC7}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Parsers.Tests", "src\CrossCutting.Utilities.Parsers.Tests\CrossCutting.Utilities.Parsers.Tests.csproj", "{AF036C40-3147-4EA2-99DE-586DF27405F0}"
 EndProject
@@ -44,9 +47,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Data.Sql", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Data.Sql.Tests", "src\CrossCutting.Data.Sql.Tests\CrossCutting.Data.Sql.Tests.csproj", "{650AE7F5-9330-440B-ADC3-9DF76333402B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.Aggregators", "src\CrossCutting.Utilities.Aggregators\CrossCutting.Utilities.Aggregators.csproj", "{0E97FF01-6472-4853-A200-1D76DE6A5BE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Aggregators", "src\CrossCutting.Utilities.Aggregators\CrossCutting.Utilities.Aggregators.csproj", "{0E97FF01-6472-4853-A200-1D76DE6A5BE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.Operators", "src\CrossCutting.Utilities.Operators\CrossCutting.Utilities.Operators.csproj", "{CEDC360E-4DF9-49F1-B100-701ED854F192}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Operators", "src\CrossCutting.Utilities.Operators\CrossCutting.Utilities.Operators.csproj", "{CEDC360E-4DF9-49F1-B100-701ED854F192}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Parsers.Builders", "src\CrossCutting.Utilities.Parsers.Builders\CrossCutting.Utilities.Parsers.Builders.csproj", "{F4B9EADD-45A2-412B-8765-302766B0CA38}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.CodeGeneration", "src\CrossCutting.CodeGeneration\CrossCutting.CodeGeneration.csproj", "{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -130,6 +137,14 @@ Global
 		{CEDC360E-4DF9-49F1-B100-701ED854F192}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEDC360E-4DF9-49F1-B100-701ED854F192}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEDC360E-4DF9-49F1-B100-701ED854F192}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4B9EADD-45A2-412B-8765-302766B0CA38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4B9EADD-45A2-412B-8765-302766B0CA38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4B9EADD-45A2-412B-8765-302766B0CA38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4B9EADD-45A2-412B-8765-302766B0CA38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -19,6 +19,8 @@ jobs:
       - name: Fetch origin/main
         run: |
           git fetch --no-tags --prune --depth=1 origin main
+      - name: Force first-time run of code generation
+        run: dotnet run --project src/CrossCutting.CodeGeneration/CrossCutting.CodeGeneration.csproj
       - name: sonarscan-dotnet
         uses: highbyte/sonarscan-dotnet@v2.2.2
         with:
