@@ -9,10 +9,7 @@ public static class ObjectExtensions
     /// <exception cref="ValidationException">
     /// </exception>
     public static void Validate(this object instance)
-    {
-        var context = new ValidationContext(instance, null, null);
-        Validator.ValidateObject(instance, context, true);
-    }
+        => Validator.ValidateObject(instance, new ValidationContext(instance, null, null), true);
 
     /// <summary>
     /// Validate the object.
@@ -22,10 +19,7 @@ public static class ObjectExtensions
     /// <exception cref="ValidationException">
     /// </exception>
     public static bool TryValidate(this object instance, ICollection<ValidationResult> validationResults)
-    {
-        var context = new ValidationContext(instance, null, null);
-        return Validator.TryValidateObject(instance, context, validationResults, true);
-    }
+        => Validator.TryValidateObject(instance, new ValidationContext(instance, null, null), validationResults, true);
 
     /// <summary>
     /// Disposes this object, when it implements IDisposable.
