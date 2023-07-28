@@ -28,9 +28,4 @@ public abstract class CrossCuttingCSharpClassBase : CSharpClassBase
             base.FixImmutableBuilderProperty(property, typeName);
         }
     }
-
-    public CodeGenerationSettings GetSettings(CodeGenerationSettings settings)
-        => string.IsNullOrEmpty(LastGeneratedFilesFileName)
-            ? settings.ForScaffolding()
-            : settings.ForGeneration();
 }

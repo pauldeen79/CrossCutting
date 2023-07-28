@@ -21,7 +21,7 @@ internal static class Program
 
         // Generate code
         var expressionFrameworkGenerators = typeof(CrossCuttingCSharpClassBase).Assembly.GetExportedTypes().Where(x => x.BaseType == typeof(CrossCuttingCSharpClassBase) && !x.IsAbstract).ToArray();
-        _ = expressionFrameworkGenerators.Select(x => (CrossCuttingCSharpClassBase)Activator.CreateInstance(x)!).Select(x => GenerateCode.For(x.GetSettings(settings), multipleContentBuilder, x)).ToArray();
+        _ = expressionFrameworkGenerators.Select(x => (CrossCuttingCSharpClassBase)Activator.CreateInstance(x)!).Select(x => GenerateCode.For(settings, multipleContentBuilder, x)).ToArray();
 
         // Log output to console
         if (string.IsNullOrEmpty(basePath))
