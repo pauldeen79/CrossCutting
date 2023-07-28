@@ -909,6 +909,60 @@ public class ResultTests
     }
 
     [Fact]
+    public void Can_Create_Conflict_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.Conflict();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Conflict);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_Conflict_Void_Result_Without_ErrorMessage()
+    {
+        // Act
+        var actual = Result.Conflict();
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Conflict);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().BeNull();
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_Conflict_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result<string>.Conflict("There is a huge conflict");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Conflict);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("There is a huge conflict");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Can_Create_Conflict_Void_Result_With_ErrorMessage()
+    {
+        // Act
+        var actual = Result.Conflict("There is a huge conflict");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Conflict);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("There is a huge conflict");
+        actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
     public void Can_Create_Redirect_Result()
     {
         // Act

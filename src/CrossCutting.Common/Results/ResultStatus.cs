@@ -14,5 +14,6 @@ public enum ResultStatus
     NotImplemented,
     NoContent,
     ResetContent,
-    Continue
+    Continue,
+    Conflict
 }

@@ -41,6 +41,8 @@ public record Result<T> : Result
     public static new Result<T> ResetContent(string errorMessage) => new(default, ResultStatus.ResetContent, errorMessage, Enumerable.Empty<ValidationError>());
     public static new Result<T> Continue() => new(default, ResultStatus.Continue, null, Enumerable.Empty<ValidationError>());
     public static Result<T> Continue(T value) => new(value, ResultStatus.Continue, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Conflict() => new(default, ResultStatus.Conflict, null, Enumerable.Empty<ValidationError>());
+    public static new Result<T> Conflict(string errorMessage) => new(default, ResultStatus.Conflict, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result<T> Redirect(T value) => new(value, ResultStatus.Redirect, null, Enumerable.Empty<ValidationError>());
     public static Result<T> FromExistingResult(Result existingResult) => new(TryGetValue(existingResult), existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
     public static Result<T> FromExistingResult(Result existingResult, T value) => new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
@@ -123,6 +125,8 @@ public record Result
     public static Result ResetContent() => new(ResultStatus.ResetContent, null, Enumerable.Empty<ValidationError>());
     public static Result ResetContent(string errorMessage) => new(ResultStatus.ResetContent, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result Continue() => new(ResultStatus.Continue, null, Enumerable.Empty<ValidationError>());
+    public static Result Conflict() => new(ResultStatus.Conflict, null, Enumerable.Empty<ValidationError>());
+    public static Result Conflict(string errorMessage) => new(ResultStatus.Conflict, errorMessage, Enumerable.Empty<ValidationError>());
 
     public static Result<TInstance> FromInstance<TInstance>(TInstance? instance)
         where TInstance : class
