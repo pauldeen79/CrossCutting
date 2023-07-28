@@ -22,7 +22,7 @@ public class EnumerableExtensionsTests
         IEnumerable<string>? input = null;
 
         // Act
-        var actual = input.NotNull(x => x.StartsWith("A"));
+        var actual = input.NotNull(x => x.StartsWith('A'));
 
         // Assert
         actual.Should().BeEmpty();
@@ -35,7 +35,7 @@ public class EnumerableExtensionsTests
         IEnumerable<string> input = new[] { "A", "B", "C" };
 
         // Act
-        var actual = input.NotNull(x => x.StartsWith("A"));
+        var actual = input.NotNull(x => x.StartsWith('A'));
 
         // Assert
         actual.Should().BeEquivalentTo("A");

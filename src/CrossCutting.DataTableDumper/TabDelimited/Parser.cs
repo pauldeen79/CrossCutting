@@ -10,7 +10,7 @@ public static class Parser
         {
             var target = new ExpandoObject();
             var dict = target as IDictionary<string, object>;
-            foreach (var column in item.Select((x, index) => new { Value = x, Name = split.First().ElementAt(index) }))
+            foreach (var column in item.Select((x, index) => new { Value = x, Name = split.First()[index] }))
             {
                 dict[column.Name] = column.Value;
             }

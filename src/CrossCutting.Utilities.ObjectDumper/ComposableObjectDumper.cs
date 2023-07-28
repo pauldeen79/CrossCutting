@@ -23,7 +23,7 @@ public class ComposableObjectDumper : IObjectDumperCallback
                 instance = part.Transform(instance, builder, indent, currentDepth);
             }
 
-            if (!_parts.All(part => part.ShouldProcess(instance, builder, indent, currentDepth)))
+            if (!Array.TrueForAll(_parts, part => part.ShouldProcess(instance, builder, indent, currentDepth)))
             {
                 return true;
             }
@@ -57,5 +57,5 @@ public class ComposableObjectDumper : IObjectDumperCallback
         => TypeDescriptor
             .GetProperties(instance)
             .Cast<PropertyDescriptor>()
-            .Where(prop => _parts.All(part => part.ShouldProcessProperty(instance, prop)));
+            .Where(prop => Array.TrueForAll(_parts, part => part.ShouldProcessProperty(instance, prop)));
 }

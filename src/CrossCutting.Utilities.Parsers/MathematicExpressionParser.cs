@@ -14,7 +14,7 @@ public class MathematicExpressionParser : IMathematicExpressionParser
     }
 
     internal static bool IsMathematicExpression(string found)
-        => MathematicOperators.Aggregators.Any(x => found.Contains(x.Character.ToString()));
+        => Array.Exists(MathematicOperators.Aggregators, x => found.Contains(x.Character.ToString()));
 
     public Result<object?> Parse(string input, IFormatProvider formatProvider, object? context)
     {
@@ -29,7 +29,7 @@ public class MathematicExpressionParser : IMathematicExpressionParser
         }
 
         return state.Results.Any()
-            ? state.Results.Last()
+            ? state.Results[state.Results.Count - 1]
             : _expressionParser
                 .Parse(input, formatProvider, context)
                 .Transform(x => x.ErrorMessage?.StartsWith("Unknown expression type found in fragment: ") == true

@@ -48,7 +48,7 @@ public class MathematicExpressionState
             .OrderBy(x => x.Index)
             .ToArray();
         Position = Indexes.Any()
-            ? Indexes.First().Index
+            ? Indexes[0].Index
             : -1;
     }
 
@@ -68,7 +68,7 @@ public class MathematicExpressionState
 
     internal Result<object?> PerformAggregation()
     {
-        var aggregateResult = Indexes.First().Aggregator.Aggregate(LeftPartResult.Value!, RightPartResult.Value!, FormatProvider);
+        var aggregateResult = Indexes[0].Aggregator.Aggregate(LeftPartResult.Value!, RightPartResult.Value!, FormatProvider);
 
         if (aggregateResult.IsSuccessful())
         {
@@ -86,13 +86,13 @@ public class MathematicExpressionState
             (
                 0,
                 PreviousIndexes.Any()
-                    ? PreviousIndexes.First() + 1
+                    ? PreviousIndexes[0] + 1
                     : 0
             ),
             FormattableString.Invariant($"{MathematicExpressionParser.TemporaryDelimiter}{Results.Count}{MathematicExpressionParser.TemporaryDelimiter}"),
             (
                 NextIndexes.Any()
-                    ? Remainder.Substring(NextIndexes.First())
+                    ? Remainder.Substring(NextIndexes[0])
                     : string.Empty
             )
         );
@@ -101,12 +101,12 @@ public class MathematicExpressionState
 
     private string GetLeftPart()
         => PreviousIndexes.Any()
-            ? Remainder.Substring(PreviousIndexes.First() + 1, Position - PreviousIndexes.First() - 1).Trim()
+            ? Remainder.Substring(PreviousIndexes[0] + 1, Position - PreviousIndexes[0] - 1).Trim()
             : Remainder.Substring(0, Position).Trim();
 
     private string GetRightPart()
         => NextIndexes.Any()
-            ? Remainder.Substring(Position + 1, NextIndexes.First() - Position - 1).Trim()
+            ? Remainder.Substring(Position + 1, NextIndexes[0] - Position - 1).Trim()
             : Remainder.Substring(Position + 1).Trim();
 
     private Result<object?> GetPartResult(string part, IExpressionParser expressionParser)

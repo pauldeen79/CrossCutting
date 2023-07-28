@@ -128,7 +128,7 @@ public static class ObjectExtensions
     /// true when found, otherwise false.
     /// </returns>
     public static bool In<T>(this T value, params T[] values)
-        => values.Any(i => i?.Equals(value) == true);
+        => Array.Exists(values, i => i?.Equals(value) == true);
 
     public static ExpandoObject ToExpandoObject(this object? instance)
     {

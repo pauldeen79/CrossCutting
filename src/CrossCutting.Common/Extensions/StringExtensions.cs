@@ -78,7 +78,7 @@ public static class StringExtensions
     /// <returns></returns>
     public static bool IsTrue(this string? instance)
         => instance is not null
-            && _trueKeywords.Any(s => s.Equals(instance, StringComparison.OrdinalIgnoreCase));
+            && Array.Exists(_trueKeywords, s => s.Equals(instance, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
     /// Determines whether the specified instance is false.
@@ -87,7 +87,7 @@ public static class StringExtensions
     /// <returns></returns>
     public static bool IsFalse(this string? instance)
         => instance is not null
-            && _falseKeywords.Any(s => s.Equals(instance, StringComparison.OrdinalIgnoreCase));
+            && Array.Exists(_falseKeywords, s => s.Equals(instance, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
     /// Indicates whether the string instance starts with any of the specified values.
