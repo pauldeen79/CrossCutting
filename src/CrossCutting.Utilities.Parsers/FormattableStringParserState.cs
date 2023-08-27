@@ -42,7 +42,7 @@ public class FormattableStringParserState
         return Input[Index - 1] == sign;
     }
 
-    public FormattableStringParserState Update(char current, int index)
+    internal FormattableStringParserState Update(char current, int index)
     {
         Current = current;
         Index = index;
