@@ -64,7 +64,8 @@ public sealed class FormattableStringParserTests : IDisposable
         InlineData("Hello {Context}!", $"Hello [value from context]!"),
         InlineData("Hello {{Name}}!", "Hello {Name}!"),
         InlineData("Data without accolades", "Data without accolades"),
-        InlineData("public class Bla {{ /* implementation goes here */ }}", "public class Bla { /* implementation goes here */ }")]
+        InlineData("public class Bla {{ /* implementation goes here */ }}", "public class Bla { /* implementation goes here */ }"),
+        InlineData("public class Bla {{ {Name} }}", $"public class Bla {{ {ReplacedValue} }}")]
     public void Parse_Returns_Success_On_Valid_Input(string input, string expectedValue)
     {
         // Act
@@ -73,6 +74,30 @@ public sealed class FormattableStringParserTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be(expectedValue);
+    }
+
+    [Fact]
+    public void Parse_Works_With_MultiLine_Template()
+    {
+        // Arrange
+        const string Input = @"        [Fact]
+        public void {Name}()
+        {{
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.{Context}();
+
+            // Assert
+            //TODO
+        }}";
+
+        // Act
+        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture, "[value from context]");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
     }
 
     public void Dispose() => _provider?.Dispose();
