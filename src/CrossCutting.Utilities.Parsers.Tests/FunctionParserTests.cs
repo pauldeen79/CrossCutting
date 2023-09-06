@@ -270,8 +270,9 @@ public sealed class FunctionParserTests : IDisposable
     public void Parse_Returns_Error_When_ArgumentProcessor_Returns_Error()
     {
         // Arrange
-        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserArgumentProcessor, ErrorArgumentProcessor>().BuildServiceProvider();
-        var sut = provider.GetRequiredService<IFunctionParser>();
+        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserArgumentProcessor, ErrorArgumentProcessor>().BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<IFunctionParser>();
         var input = "MYFUNCTION(some argument)";
 
         // Act
@@ -286,8 +287,9 @@ public sealed class FunctionParserTests : IDisposable
     public void Parse_Returns_Error_When_NameProcessor_Returns_Error()
     {
         // Arrange
-        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserNameProcessor, ErrorNameProcessor>().BuildServiceProvider();
-        var sut = provider.GetRequiredService<IFunctionParser>();
+        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserNameProcessor, ErrorNameProcessor>().BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<IFunctionParser>();
         var input = "MYFUNCTION(some argument)";
 
         // Act
