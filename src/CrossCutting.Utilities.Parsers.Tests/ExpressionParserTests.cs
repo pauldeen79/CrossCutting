@@ -3,8 +3,13 @@
 public sealed class ExpressionParserTests : IDisposable
 {
     private readonly ServiceProvider _provider;
+    private readonly IServiceScope _scope;
 
-    public ExpressionParserTests() => _provider = new ServiceCollection().AddParsers().BuildServiceProvider();
+    public ExpressionParserTests()
+    {
+        _provider = new ServiceCollection().AddParsers().BuildServiceProvider(true);
+        _scope = _provider.CreateScope();
+    }
 
     [Fact]
     public void Parse_Parses_true_Correctly()
@@ -157,10 +162,14 @@ public sealed class ExpressionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(new DateTime(2019, 1, 2));
+        result.Value.Should().BeEquivalentTo(new DateTime(2019, 1, 2, 0, 0, 0, DateTimeKind.Unspecified));
     }
 
-    public void Dispose() => _provider.Dispose();
+    public void Dispose()
+    {
+        _scope.Dispose();
+        _provider.Dispose();
+    }
 
-    private IExpressionParser CreateSut() => _provider.GetRequiredService<IExpressionParser>();
+    private IExpressionParser CreateSut() => _scope.ServiceProvider.GetRequiredService<IExpressionParser>();
 }

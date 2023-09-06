@@ -60,7 +60,7 @@ public class StringFormatParserTests
     {
         // Arrange
         const string FormatString = "Hello {0}{1} on {2:dd-MM-yyyy}";
-        var args = new object[] { "world", "!", new DateTime(2018, 1, 1) }.ToArray();
+        var args = new object[] { "world", "!", new DateTime(2018, 1, 1, 0, 0, 0, DateTimeKind.Unspecified) }.ToArray();
 
         // Act
         var actual = StringFormatParser.Parse(FormatString, args);
@@ -69,7 +69,7 @@ public class StringFormatParserTests
         actual.IsSuccessful.Should().BeTrue();
         actual.ErrorMessages.Should().BeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be($"0;world|1;!|2;{new DateTime(2018, 1, 1)}");
+        contents.Should().Be($"0;world|1;!|2;{new DateTime(2018, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)}");
     }
 
     [Fact]

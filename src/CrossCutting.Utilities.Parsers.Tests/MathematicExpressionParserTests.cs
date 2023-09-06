@@ -3,6 +3,7 @@
 public sealed class MathematicExpressionParserTests : IDisposable
 {
     private ServiceProvider? _provider;
+    private IServiceScope? _scope;
 
     [Fact]
     public void Can_Add_One_And_One()
@@ -430,8 +431,9 @@ public sealed class MathematicExpressionParserTests : IDisposable
         _provider = new ServiceCollection()
             .AddParsers()
             .AddSingleton<IExpressionParser>(new MyMathematicExpressionParser(dlg))
-            .BuildServiceProvider();
-        return _provider.GetRequiredService<IMathematicExpressionParser>();
+            .BuildServiceProvider(true);
+        _scope = _provider.CreateScope();
+        return _scope.ServiceProvider.GetRequiredService<IMathematicExpressionParser>();
     }
 
     private Result<object?> ParseExpressionDelegateInt32(string arg, IFormatProvider formatProvider)
@@ -469,7 +471,11 @@ public sealed class MathematicExpressionParserTests : IDisposable
             ? Result<object?>.Success(result)
             : Result<object?>.Invalid($"Could not parse {arg} to short");
 
-    public void Dispose() => _provider?.Dispose();
+    public void Dispose()
+    {
+        _scope?.Dispose();
+        _provider?.Dispose();
+    }
 
     private sealed class MyMathematicExpressionParser : IExpressionParser
     {

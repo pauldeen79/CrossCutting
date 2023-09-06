@@ -4,6 +4,7 @@ public sealed class ExpressionStringParserTests : IDisposable
 {
     private const string ReplacedValue = "replaced name";
     private readonly ServiceProvider _provider;
+    private readonly IServiceScope _scope;
 
     public ExpressionStringParserTests()
     {
@@ -11,7 +12,8 @@ public sealed class ExpressionStringParserTests : IDisposable
             .AddParsers()
             .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
             .AddSingleton<IFunctionResultParser, MyFunctionResultParser>()
-            .BuildServiceProvider();
+            .BuildServiceProvider(true);
+        _scope = _provider.CreateScope();
     }
 
     [Fact]
@@ -649,11 +651,12 @@ public sealed class ExpressionStringParserTests : IDisposable
         using var provider = new ServiceCollection()
             .AddParsers()
             .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
-            .BuildServiceProvider();
+            .BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
         var input = "=MYFUNCTION()";
 
         // Act
-        var result = provider.GetRequiredService<IExpressionStringParser>().Parse(input, CultureInfo.InvariantCulture);
+        var result = scope.ServiceProvider.GetRequiredService<IExpressionStringParser>().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotSupported);
@@ -674,9 +677,13 @@ public sealed class ExpressionStringParserTests : IDisposable
         result.Value.Should().Be("=error()");
     }
 
-    private IExpressionStringParser CreateSut() => _provider.GetRequiredService<IExpressionStringParser>();
+    private IExpressionStringParser CreateSut() => _scope.ServiceProvider.GetRequiredService<IExpressionStringParser>();
 
-    public void Dispose() => _provider.Dispose();
+    public void Dispose()
+    {
+        _scope.Dispose();
+        _provider.Dispose();
+    }
 
     private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
     {

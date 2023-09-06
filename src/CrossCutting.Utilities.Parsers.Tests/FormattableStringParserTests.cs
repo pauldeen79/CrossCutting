@@ -3,7 +3,7 @@
 public sealed class FormattableStringParserTests : IDisposable
 {
     private ServiceProvider? _provider;
-
+    private IServiceScope? _scope;
     private const string ReplacedValue = "replaced name";
 
     [Fact]
@@ -100,15 +100,20 @@ public sealed class FormattableStringParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
     }
 
-    public void Dispose() => _provider?.Dispose();
+    public void Dispose()
+    {
+        _scope?.Dispose();
+        _provider?.Dispose();
+    }
 
     private IFormattableStringParser CreateSut()
     {
         _provider = new ServiceCollection()
         .AddParsers()
             .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
-            .BuildServiceProvider();
-        return _provider.GetRequiredService<IFormattableStringParser>();
+            .BuildServiceProvider(true);
+        _scope = _provider.CreateScope();
+        return _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>();
     }
 
     private sealed class MyPlaceholderProcessor : IPlaceholderProcessor

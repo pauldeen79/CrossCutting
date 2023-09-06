@@ -5,6 +5,7 @@ public sealed class IntegrationTests : IDisposable
     private readonly ITestRepository _repository;
     private readonly DbConnection _connection;
     private readonly ServiceProvider _serviceProvider;
+    private readonly IServiceScope _scope;
 
     public IntegrationTests()
     {
@@ -21,8 +22,9 @@ public sealed class IntegrationTests : IDisposable
             .AddScoped<IDatabaseCommandProcessor<TestEntity>, DatabaseCommandProcessor<TestEntity, TestEntityBuilder>>()
             .AddScoped<IDatabaseEntityRetriever<TestEntity>, DatabaseEntityRetriever<TestEntity>>()
             .AddScoped<ITestRepository, TestRepository>()
-            .BuildServiceProvider();
-        _repository = _serviceProvider.GetRequiredService<ITestRepository>();
+            .BuildServiceProvider(true);
+        _scope = _serviceProvider.CreateScope();
+        _repository = _scope.ServiceProvider.GetRequiredService<ITestRepository>();
     }
 
     [Fact]
@@ -126,6 +128,7 @@ public sealed class IntegrationTests : IDisposable
 
     public void Dispose()
     {
+        _scope.Dispose();
         _serviceProvider.Dispose();
         _connection.Dispose();
     }

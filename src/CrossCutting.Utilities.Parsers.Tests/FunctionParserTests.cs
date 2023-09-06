@@ -4,12 +4,16 @@ public sealed class FunctionParserTests : IDisposable
 {
     private const string ReplacedValue = "replaced name";
     private readonly ServiceProvider _provider;
+    private readonly IServiceScope _scope;
 
     public FunctionParserTests()
-        => _provider = new ServiceCollection()
+    {
+        _provider = new ServiceCollection()
             .AddParsers()
             .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
-            .BuildServiceProvider();
+            .BuildServiceProvider(true);
+        _scope = _provider.CreateScope();
+    }
 
     [Fact]
     public void Can_Parse_Single_Function_With_Arguments()
@@ -184,8 +188,9 @@ public sealed class FunctionParserTests : IDisposable
     public void Error_In_FunctionName_Determination_Returns_NotFound()
     {
         // Arrange
-        using var provider = new ServiceCollection().AddSingleton<IFunctionParser, FunctionParser>().BuildServiceProvider();
-        var sut = provider.GetRequiredService<IFunctionParser>();
+        using var provider = new ServiceCollection().AddSingleton<IFunctionParser, FunctionParser>().BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<IFunctionParser>();
         var input = "MYFUNCTION(some argument)";
 
         // Act
@@ -270,8 +275,9 @@ public sealed class FunctionParserTests : IDisposable
     public void Parse_Returns_Error_When_ArgumentProcessor_Returns_Error()
     {
         // Arrange
-        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserArgumentProcessor, ErrorArgumentProcessor>().BuildServiceProvider();
-        var sut = provider.GetRequiredService<IFunctionParser>();
+        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserArgumentProcessor, ErrorArgumentProcessor>().BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<IFunctionParser>();
         var input = "MYFUNCTION(some argument)";
 
         // Act
@@ -286,8 +292,9 @@ public sealed class FunctionParserTests : IDisposable
     public void Parse_Returns_Error_When_NameProcessor_Returns_Error()
     {
         // Arrange
-        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserNameProcessor, ErrorNameProcessor>().BuildServiceProvider();
-        var sut = provider.GetRequiredService<IFunctionParser>();
+        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserNameProcessor, ErrorNameProcessor>().BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<IFunctionParser>();
         var input = "MYFUNCTION(some argument)";
 
         // Act
@@ -332,9 +339,13 @@ public sealed class FunctionParserTests : IDisposable
         result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
     }
 
-    public void Dispose() => _provider.Dispose();
+    public void Dispose()
+    {
+        _scope.Dispose();
+        _provider.Dispose();
+    }
 
-    private IFunctionParser CreateSut() => _provider.GetRequiredService<IFunctionParser>();
+    private IFunctionParser CreateSut() => _scope.ServiceProvider.GetRequiredService<IFunctionParser>();
 
     private sealed class ErrorArgumentProcessor : IFunctionParserArgumentProcessor
     {
