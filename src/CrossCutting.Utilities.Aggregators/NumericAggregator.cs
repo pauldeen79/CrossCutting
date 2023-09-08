@@ -28,6 +28,7 @@ public static class NumericAggregator
 
     private static Result<object?> FailSafe(Func<Result<object?>> x)
     {
+#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
             return x.Invoke();
@@ -36,5 +37,6 @@ public static class NumericAggregator
         {
             return Result<object?>.Error($"Aggregation failed. Error message: {ex.Message}");
         }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 }

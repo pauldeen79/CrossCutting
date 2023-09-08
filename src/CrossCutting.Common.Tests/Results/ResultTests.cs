@@ -409,6 +409,21 @@ public class ResultTests
     }
 
     [Fact]
+    public void Can_Create_Error_Result_With_ErrorMessage_And_Exception()
+    {
+        // Act
+        var actual = Result<string>.Error(new InvalidOperationException("Kaboom"), "Error");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Error);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Error");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+        actual.Exception.Should().BeOfType<InvalidOperationException>().And.Match<InvalidOperationException>(x => x.Message == "Kaboom");
+    }
+
+    [Fact]
     public void Can_Create_Error_Void_Result_With_ErrorMessage()
     {
         // Act
@@ -419,6 +434,20 @@ public class ResultTests
         actual.IsSuccessful().Should().BeFalse();
         actual.ErrorMessage.Should().Be("Error");
         actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_Error_Void_Result_With_ErrorMessage_And_Exception()
+    {
+        // Act
+        var actual = Result.Error(new InvalidOperationException("Kaboom"), "Error");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Error);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Error");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Exception.Should().BeOfType<InvalidOperationException>().And.Match<InvalidOperationException>(x => x.Message == "Kaboom");
     }
 
     [Fact]

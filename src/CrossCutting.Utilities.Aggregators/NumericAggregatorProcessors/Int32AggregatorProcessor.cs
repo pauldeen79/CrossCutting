@@ -4,6 +4,8 @@ public static class Int32AggregatorProcessor
 {
     public static Result<object?> Aggregate(object? firstValue, object? secondValue, IFormatProvider formatProvider, Func<int, int, object?> aggregatorDelegate)
     {
+        aggregatorDelegate = ArgumentGuard.IsNotNull(aggregatorDelegate, nameof(aggregatorDelegate));
+
         if (firstValue is not int i1)
         {
             return Result<object?>.Continue();
