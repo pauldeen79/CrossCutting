@@ -6,28 +6,23 @@ public class ConcatenateExpressionProcessor : IExpressionStringParserProcessor
 
     public Result<object?> Process(ExpressionStringParserState state)
     {
-        if (state.Input.IndexOf('&') == -1)
-        {
-            return Result<object?>.Continue();
-        }
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        var split = state.Input.Substring(1).SplitDelimited('&', '\"', true, true);
-        if (split.Length == 1)
+        return BaseProcessor.SplitDelimited(state, '&', split =>
         {
-            return Result<object?>.Continue();
-        }
 
-        var builder = new StringBuilder();
-        foreach (var item in split)
-        {
-            var result = state.Parser.Parse($"={item}", state.FormatProvider, state.Context);
-            if (!result.IsSuccessful())
+            var builder = new StringBuilder();
+            foreach (var item in split)
             {
-                return result;
+                var result = state.Parser.Parse($"={item}", state.FormatProvider, state.Context);
+                if (!result.IsSuccessful())
+                {
+                    return result;
+                }
+                builder.Append(result.Value.ToString(state.FormatProvider));
             }
-            builder.Append(result.Value.ToString(state.FormatProvider));
-        }
 
-        return Result<object?>.Success(builder.ToString());
+            return Result<object?>.Success(builder.ToString());
+        });
     }
 }

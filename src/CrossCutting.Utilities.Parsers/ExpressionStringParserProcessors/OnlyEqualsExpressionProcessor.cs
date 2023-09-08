@@ -6,6 +6,8 @@ public class OnlyEqualsExpressionProcessor : IExpressionStringParserProcessor
 
     public Result<object?> Process(ExpressionStringParserState state)
     {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
         if (state.Input == "=")
         {
             return Result<object?>.Success(state.Input);

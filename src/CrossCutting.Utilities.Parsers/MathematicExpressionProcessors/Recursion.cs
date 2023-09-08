@@ -4,6 +4,8 @@ public class Recursion : IMathematicExpressionProcessor
 {
     public Result<MathematicExpressionState> Process(MathematicExpressionState state)
     {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
         do
         {
             var closeIndex = state.Input.IndexOf(")");

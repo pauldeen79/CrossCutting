@@ -13,6 +13,8 @@ public class MathematicExpressionProcessor : IExpressionStringParserProcessor
 
     public Result<object?> Process(ExpressionStringParserState state)
     {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
         // try =1+1 -> mathematic expression, no functions/formattable strings
         var mathResult = _parser.Parse(state.Input.Substring(1), state.FormatProvider, state.Context);
         if (mathResult.Status == ResultStatus.Ok || mathResult.Status != ResultStatus.NotFound)

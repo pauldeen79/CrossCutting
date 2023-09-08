@@ -13,6 +13,8 @@ public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserA
 
     public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context)
     {
+        stringArgument = ArgumentGuard.IsNotNull(stringArgument, nameof(stringArgument));
+
         if (stringArgument.StartsWith("@"))
         {
             var result = _parser.Parse(stringArgument.Substring(1), formatProvider, context);

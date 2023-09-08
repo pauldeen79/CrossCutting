@@ -69,10 +69,10 @@ public class FunctionParser : IFunctionParser
             : Result<FunctionParseResult>.NotFound("Input has additional characters after last close bracket");
     }
 
-    private bool IsInQuoteMap(int index, IEnumerable<(int StartIndex, int EndIndex)> quoteMap)
+    private static bool IsInQuoteMap(int index, IEnumerable<(int StartIndex, int EndIndex)> quoteMap)
         => quoteMap.Any(x => x.StartIndex < index && x.EndIndex > index);
 
-    private IEnumerable<(int StartIndex, int EndIndex)> BuildQuoteMap(string value)
+    private static IEnumerable<(int StartIndex, int EndIndex)> BuildQuoteMap(string value)
     {
         var inText = false;
         var index = -1;

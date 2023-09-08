@@ -13,6 +13,8 @@ public class FormattableStringExpressionProcessor : IExpressionStringParserProce
 
     public Result<object?> Process(ExpressionStringParserState state)
     {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
         if (state.Input.StartsWith("=@\"") && state.Input.EndsWith("\""))
         {
             // =@"string value" -> literal, no functions but formattable strings possible

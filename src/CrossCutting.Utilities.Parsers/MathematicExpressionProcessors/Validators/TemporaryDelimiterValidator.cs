@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Validators;
 
-internal class TemporaryDelimiterValidator : IMathematicExpressionValidator
+internal sealed class TemporaryDelimiterValidator : IMathematicExpressionValidator
 {
     public Result<MathematicExpressionState> Validate(MathematicExpressionState state)
     {

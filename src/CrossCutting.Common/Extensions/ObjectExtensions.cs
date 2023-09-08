@@ -54,7 +54,7 @@ public static class ObjectExtensions
     /// value.ToString() when te value is not null, defaultValueDelegate result otherwise.
     /// </returns>
     public static string ToStringWithDefault(this object? value, Func<string> defaultValueDelegate)
-        => value.ToStringWithDefault(defaultValueDelegate());
+        => value.ToStringWithDefault(ArgumentGuard.IsNotNull(defaultValueDelegate, nameof(defaultValueDelegate)).Invoke());
 
     /// <summary>
     /// Converts an object value to string with default value if null.
@@ -160,21 +160,30 @@ public static class ObjectExtensions
 
     public static T Then<T>(this T instance, Action action)
     {
+        ArgumentGuard.IsNotNull(action, nameof(action));
+
         action.Invoke();
+        
         return instance;
     }
 
     public static TTarget Transform<TSource, TTarget>(this TSource instance, Func<TSource, TTarget> transformDelegate)
-        => transformDelegate(instance);
+        => ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate)).Invoke(instance);
 
     public static T With<T>(this T instance, Action<T> action)
     {
+        ArgumentGuard.IsNotNull(action, nameof(action));
+
         action.Invoke(instance);
+        
         return instance;
     }
 
     public static T WithAll<T, TItem>(this T instance, IEnumerable<TItem> enumerable, Action<TItem> action)
     {
+        ArgumentGuard.IsNotNull(enumerable, nameof(enumerable));
+        ArgumentGuard.IsNotNull(action, nameof(action));
+
         foreach (var item in enumerable)
         {
             action.Invoke(item);
@@ -185,6 +194,9 @@ public static class ObjectExtensions
 
     public static T WithAll<T, TItem>(this T instance, Func<T, IEnumerable<TItem>> enumerable, Action<TItem> action)
     {
+        ArgumentGuard.IsNotNull(enumerable, nameof(enumerable));
+        ArgumentGuard.IsNotNull(action, nameof(action));
+
         foreach (var item in enumerable.Invoke(instance))
         {
             action.Invoke(item);

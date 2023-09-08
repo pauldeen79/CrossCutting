@@ -227,7 +227,7 @@ public sealed class ExpressionStringParserTests : IDisposable
     }
 
     [Fact]
-    public void Parse_Returns_Success_With_Input_String_When_String_Starts_With_Equals_Sign_But_No_Other_Expressoin_Was_Found_After_This()
+    public void Parse_Returns_Success_With_Input_String_When_String_Starts_With_Equals_Sign_But_No_Other_Expression_Was_Found_After_This()
     {
         // Arrange
         var input = "=\"some string that starts with = sign but does not contain any formattable string, function or mathematical expression\"";

@@ -14,6 +14,8 @@ public class FormattableStringParser : IFormattableStringParser
 
     public Result<string> Parse(string input, IFormatProvider formatProvider, object? context)
     {
+        input = ArgumentGuard.IsNotNull(input, nameof(input));
+
         var state = new FormattableStringParserState(input, formatProvider, context);
 
         for (var index = 0; index < input.Length; index++)

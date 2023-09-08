@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators;
 
-internal class ValuesOrSelectClauseNotFound : IInsertQueryParserResultGenerator
+internal sealed class ValuesOrSelectClauseNotFound : IInsertQueryParserResultGenerator
 {
     public ProcessResult Process(InsertQueryParserState state)
     {

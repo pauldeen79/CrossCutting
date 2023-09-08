@@ -12,6 +12,9 @@ public class NumericExpressionParserProcessor : IExpressionParserProcessor
 
     public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
     {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+
         var isFloatingPoint = new Lazy<bool>(() => _floatingPointRegEx.IsMatch(value));
         var isWholeNumber = new Lazy<bool>(() => _wholeNumberRegEx.IsMatch(value));
         var isLongNumber = new Lazy<bool>(() => _longNumberRegEx.IsMatch(value));

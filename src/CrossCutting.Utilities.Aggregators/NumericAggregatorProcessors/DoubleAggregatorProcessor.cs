@@ -4,6 +4,8 @@ public static class DoubleAggregatorProcessor
 {
     public static Result<object?> Aggregate(object? firstValue, object? secondValue, IFormatProvider formatProvider, Func<double, double, object?> aggregatorDelegate)
     {
+        aggregatorDelegate = ArgumentGuard.IsNotNull(aggregatorDelegate, nameof(aggregatorDelegate));
+
         if (firstValue is not double d1)
         {
             return Result<object?>.Continue();

@@ -29,7 +29,7 @@ public class MathematicExpressionParser : IMathematicExpressionParser
         }
 
         return state.Results.Any()
-            ? state.Results[state.Results.Count - 1]
+            ? state.Results.ElementAt(state.Results.Count - 1)
             : _expressionParser
                 .Parse(input, formatProvider, context)
                 .Transform(x => x.ErrorMessage?.StartsWith("Unknown expression type found in fragment: ") == true

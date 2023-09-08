@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators;
 
-internal class Ok : IInsertQueryParserResultGenerator
+internal sealed class Ok : IInsertQueryParserResultGenerator
 {
     public ProcessResult Process(InsertQueryParserState state)
         => ProcessResult.Success(ParseResult.Success(state.ColumnNames

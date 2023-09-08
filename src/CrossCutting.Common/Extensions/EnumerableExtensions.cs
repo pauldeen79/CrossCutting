@@ -31,6 +31,8 @@ public static class EnumerableExtensions
 
     public static IEnumerable<T> TakeWhileWithFirstNonMatching<T>(this IEnumerable<T> instance, Func<T, bool> predicate)
     {
+        ArgumentGuard.IsNotNull(predicate, nameof(predicate));
+
         foreach (var item in instance)
         {
             yield return item;
@@ -47,12 +49,19 @@ public static class EnumerableExtensions
             : whenEmpty;
 
     public static IEnumerable<T> WhenEmpty<T>(this IEnumerable<T> instance, Func<IEnumerable<T>> whenEmpty)
-        => instance.Any()
+    {
+        ArgumentGuard.IsNotNull(whenEmpty, nameof(whenEmpty));
+
+        return instance.Any()
             ? instance
-            : whenEmpty();
+            : whenEmpty.Invoke();
+    }
 
     public static TResult Pipe<TProcessor, TResult>(this IEnumerable<TProcessor> processors, TResult seed, Func<TResult, TProcessor, TResult> processDelegate, Func<TResult, bool> predicate, Func<TResult, TResult>? defaultDelegate = null)
     {
+        ArgumentGuard.IsNotNull(processDelegate, nameof(processDelegate));
+        ArgumentGuard.IsNotNull(predicate, nameof(predicate));
+
         var result = seed;
         foreach (var processor in processors)
         {

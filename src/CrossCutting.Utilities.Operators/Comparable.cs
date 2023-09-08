@@ -1,9 +1,11 @@
 ﻿namespace CrossCutting.Utilities.Operators;
 
-internal static class Comparable
+public static class Comparable
 {
-    internal static Result<bool> Evaluate(object? leftValue, object? rightValue, Func<int, bool> compareResultDelegate)
+    public static Result<bool> Evaluate(object? leftValue, object? rightValue, Func<int, bool> compareResultDelegate)
     {
+        compareResultDelegate = ArgumentGuard.IsNotNull(compareResultDelegate, nameof(compareResultDelegate));
+
         try
         {
             return Result<bool>.Success(leftValue is not null
