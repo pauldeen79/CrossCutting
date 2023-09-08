@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Validators;
 
-internal class BraceValidator : IMathematicExpressionValidator
+internal sealed class BraceValidator : IMathematicExpressionValidator
 {
     public Result<MathematicExpressionState> Validate(MathematicExpressionState state)
     {

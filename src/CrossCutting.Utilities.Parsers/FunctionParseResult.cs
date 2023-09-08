@@ -19,34 +19,74 @@ public partial record FunctionParseResult
         => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
 
     public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
-        => ProcessInt32ArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
+    {
+        parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
+
+        return ProcessInt32ArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
+    }
 
     public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, int defaultValue)
-        => ProcessInt32ArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
+    {
+        parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
+
+        return ProcessInt32ArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
+    }
 
     public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
-        => ProcessInt64ArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
+    {
+        parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
+
+        return ProcessInt64ArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
+    }
 
     public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, long defaultValue)
-        => ProcessInt64ArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
+    {
+        parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
+
+        return ProcessInt64ArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
+    }
 
     public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
-        => ProcessDecimalArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
+    {
+        parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
+
+        return ProcessDecimalArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
+    }
 
     public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, decimal defaultValue)
-        => ProcessDecimalArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
+    {
+        parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
+
+        return ProcessDecimalArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
+    }
 
     public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
-        => ProcessBooleanArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
+    {
+        parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
+
+        return ProcessBooleanArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
+    }
 
     public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, bool defaultValue)
-        => ProcessBooleanArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
+    {
+        parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
+
+        return ProcessBooleanArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
+    }
 
     public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
-        => ProcessDateTimeArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
+    {
+        parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
+
+        return ProcessDateTimeArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
+    }
 
     public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, DateTime defaultValue)
-        => ProcessDateTimeArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
+    {
+        parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
+
+        return ProcessDateTimeArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
+    }
 
     private Result<int> ProcessInt32ArgumentResult(string argumentName, IExpressionParser parser, Result<object?> argumentValueResult)
     {
@@ -187,7 +227,7 @@ public partial record FunctionParseResult
             : Result<DateTime>.Invalid($"{argumentName} is not of type datetime");
     }
 
-    private Result<string> ProcessStringArgumentResult(string argumentName, Result<object?> argumentValueResult)
+    private static Result<string> ProcessStringArgumentResult(string argumentName, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {

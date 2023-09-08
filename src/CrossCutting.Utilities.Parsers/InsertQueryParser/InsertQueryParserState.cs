@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser;
 
-internal class InsertQueryParserState
+internal sealed class InsertQueryParserState
 {
     public StringBuilder CurrentSection { get; } = new StringBuilder();
     public bool InsertIntoFound { get; set; }

@@ -126,13 +126,27 @@ dotnet_diagnostic.CA1305.severity = silent
 dotnet_diagnostic.CA1310.severity = silent
 dotnet_diagnostic.CA1707.severity = silent
 dotnet_diagnostic.CA1716.severity = silent
+# Warning CA1721 The property name 'Value' is confusing given the existence of method 'GetValue'. Rename or remove one of these members. CrossCutting.Common D:\Git\CrossCutting\src\CrossCutting.Common\Results\Result.cs 17 Active
+dotnet_diagnostic.CA1721.severity = silent
+# Warning CA1724 The type name InsertQueryParser conflicts in whole or in part with the namespace name 'CrossCutting.Utilities.Parsers.InsertQueryParser'. Change either name to eliminate the conflict. 
+dotnet_diagnostic.CA1724.severity = silent
+# Warning CA1812 'BraceValidator' is an internal class that is apparently never instantiated. If so, remove the code from the assembly. If this class is intended to contain only static members, make it 'static' (Module in Visual Basic). 
+dotnet_diagnostic.CA1812.severity = silent
 dotnet_diagnostic.CA1834.severity = silent
+# Do not use CA1062 (validate public arguments) on extension methods
+dotnet_code_quality.CA1062.exclude_extension_method_this_parameter = true
+
+[*Test*.cs]
+# Warning CA1034 Do not nest type SplitCsv. Alternatively, change its accessibility so that it is not externally visible. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1034) CrossCutting.Common.Tests 
+dotnet_diagnostic.CA1034.severity = silent
+# Warning CA1052 Type 'StringExtensionsTests' is a static holder type but is neither static nor NotInheritable (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1052) CrossCutting.Common.Tests 
+dotnet_diagnostic.CA1052.severity = silent
+# Warning CA1822 Member 'Error' does not access instance data and can be marked as static (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1822) CrossCutting.Utilities.ObjectDumper.Tests 
+dotnet_diagnostic.CA1822.severity = silent
 
 # Set specific code analysis rules to warning (none by default)
 # Do not hide base class methods
 dotnet_diagnostic.CA1061.severity = warning
-# Validate arguments of public methods, not needed after enabling nullable reference types
-dotnet_diagnostic.CA1062.severity = none
 # Implement IDisposable Correctly
 dotnet_diagnostic.CA1063.severity = warning
 #Avoid excessive complexity

@@ -7,6 +7,8 @@ public abstract class OperatorExpressionProcessorBase : IExpressionStringParserP
 
     public Result<object?> Process(ExpressionStringParserState state)
     {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
         if (state.Input.IndexOf(Sign) == -1)
         {
             return Result<object?>.Continue();

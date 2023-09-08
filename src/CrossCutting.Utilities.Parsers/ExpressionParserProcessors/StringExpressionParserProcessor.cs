@@ -6,6 +6,8 @@ public class StringExpressionParserProcessor : IExpressionParserProcessor
 
     public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
     {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
         if (value.StartsWith("\"") && value.EndsWith("\""))
         {
             return Result<object?>.Success(value.Substring(1, value.Length - 2));

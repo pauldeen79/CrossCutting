@@ -6,15 +6,15 @@ public class MathematicExpressionState
     public string Remainder { get; set; }
     public IFormatProvider FormatProvider { get; }
     public object? Context { get; }
-    public List<Result<object?>> Results { get; } = new();
+    public ICollection<Result<object?>> Results { get; } = new List<Result<object?>>();
     public Func<string, IFormatProvider, object?, Result<object?>> ParseDelegate { get; }
 
     public int Position { get; private set; }
-    public AggregatorInfo[] Indexes { get; private set; }
-    public int[] PreviousIndexes { get; private set; }
+    public IReadOnlyCollection<AggregatorInfo> Indexes { get; private set; }
+    public IReadOnlyCollection<int> PreviousIndexes { get; private set; }
     public string LeftPart { get; private set; }
     public Result<object?> LeftPartResult { get; private set; }
-    public int[] NextIndexes { get; private set; }
+    public IReadOnlyCollection<int> NextIndexes { get; private set; }
     public string RightPart { get; private set; }
     public Result<object?> RightPartResult { get; private set; }
 
@@ -48,7 +48,7 @@ public class MathematicExpressionState
             .OrderBy(x => x.Index)
             .ToArray();
         Position = Indexes.Any()
-            ? Indexes[0].Index
+            ? Indexes.First().Index
             : -1;
     }
 
@@ -68,7 +68,7 @@ public class MathematicExpressionState
 
     internal Result<object?> PerformAggregation()
     {
-        var aggregateResult = Indexes[0].Aggregator.Aggregate(LeftPartResult.Value!, RightPartResult.Value!, FormatProvider);
+        var aggregateResult = Indexes.First().Aggregator.Aggregate(LeftPartResult.Value!, RightPartResult.Value!, FormatProvider);
 
         if (aggregateResult.IsSuccessful())
         {
@@ -86,13 +86,13 @@ public class MathematicExpressionState
             (
                 0,
                 PreviousIndexes.Any()
-                    ? PreviousIndexes[0] + 1
+                    ? PreviousIndexes.First() + 1
                     : 0
             ),
             FormattableString.Invariant($"{MathematicExpressionParser.TemporaryDelimiter}{Results.Count}{MathematicExpressionParser.TemporaryDelimiter}"),
             (
                 NextIndexes.Any()
-                    ? Remainder.Substring(NextIndexes[0])
+                    ? Remainder.Substring(NextIndexes.First())
                     : string.Empty
             )
         );
@@ -101,16 +101,16 @@ public class MathematicExpressionState
 
     private string GetLeftPart()
         => PreviousIndexes.Any()
-            ? Remainder.Substring(PreviousIndexes[0] + 1, Position - PreviousIndexes[0] - 1).Trim()
+            ? Remainder.Substring(PreviousIndexes.First() + 1, Position - PreviousIndexes.First() - 1).Trim()
             : Remainder.Substring(0, Position).Trim();
 
     private string GetRightPart()
         => NextIndexes.Any()
-            ? Remainder.Substring(Position + 1, NextIndexes[0] - Position - 1).Trim()
+            ? Remainder.Substring(Position + 1, NextIndexes.First() - Position - 1).Trim()
             : Remainder.Substring(Position + 1).Trim();
 
     private Result<object?> GetPartResult(string part, IExpressionParser expressionParser)
         => part.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && part.EndsWith(MathematicExpressionParser.TemporaryDelimiter)
-            ? Results[int.Parse(part.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]
+            ? Results.ElementAt(int.Parse(part.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture))
             : expressionParser.Parse(part, FormatProvider, Context);
 }

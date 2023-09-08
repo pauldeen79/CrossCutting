@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.ResultGenerators;
 
-internal class NoColumnValues : IInsertQueryParserResultGenerator
+internal sealed class NoColumnValues : IInsertQueryParserResultGenerator
 {
     public ProcessResult Process(InsertQueryParserState state)
     {

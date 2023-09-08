@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser.Processors;
 
-internal class From : IInsertQueryParserProcessor
+internal sealed class From : IInsertQueryParserProcessor
 {
     public ProcessResult Process(char character, InsertQueryParserState state)
     {

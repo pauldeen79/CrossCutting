@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser;
 
-internal class ProcessResult
+internal sealed class ProcessResult
 {
     internal bool Understood { get; }
     internal ParseResult<string, string> Outcome { get; }

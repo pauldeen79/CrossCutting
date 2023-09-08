@@ -16,6 +16,7 @@ public record Result<T> : Result
 
     public T? Value { get; }
     public bool HasValue => Value is not null;
+#pragma warning disable CA1000 // Do not declare static members on generic types
     public static Result<T> Success(T value) => new(value, ResultStatus.Ok, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> Error() => new(default, ResultStatus.Error, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> Error(string errorMessage) => new(default, ResultStatus.Error, errorMessage, Enumerable.Empty<ValidationError>());
@@ -44,12 +45,18 @@ public record Result<T> : Result
     public static new Result<T> Conflict() => new(default, ResultStatus.Conflict, null, Enumerable.Empty<ValidationError>());
     public static new Result<T> Conflict(string errorMessage) => new(default, ResultStatus.Conflict, errorMessage, Enumerable.Empty<ValidationError>());
     public static Result<T> Redirect(T value) => new(value, ResultStatus.Redirect, null, Enumerable.Empty<ValidationError>());
-    public static Result<T> FromExistingResult(Result existingResult) => new(TryGetValue(existingResult), existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
-    public static Result<T> FromExistingResult(Result existingResult, T value) => new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
+    public static Result<T> FromExistingResult(Result existingResult) => new(TryGetValue(ArgumentGuard.IsNotNull(existingResult, nameof(existingResult))), existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
+    public static Result<T> FromExistingResult(Result existingResult, T value) => new(value, ArgumentGuard.IsNotNull(existingResult, nameof(existingResult)).Status, existingResult.ErrorMessage, existingResult.ValidationErrors);
     public static Result<T> FromExistingResult<TSourceResult>(Result<TSourceResult> existingResult, Func<TSourceResult, T> convertDelegate)
-        => existingResult.IsSuccessful()
+    {
+        ArgumentGuard.IsNotNull(existingResult, nameof(existingResult));
+        ArgumentGuard.IsNotNull(convertDelegate, nameof(convertDelegate));
+
+        return existingResult.IsSuccessful()
             ? Result<T>.Success(convertDelegate(existingResult.Value!))
             : Result<T>.FromExistingResult(existingResult);
+    }
+#pragma warning restore CA1000 // Do not declare static members on generic types
 
     public T GetValueOrThrow(string errorMessage)
         => !IsSuccessful() || Value is null

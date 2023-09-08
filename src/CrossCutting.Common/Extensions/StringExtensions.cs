@@ -31,6 +31,8 @@ public static class StringExtensions
     /// <returns></returns>
     public static string WhenNullOrEmpty(this string? instance, Func<string> whenNullOrEmptyDelegate)
     {
+        ArgumentGuard.IsNotNull(whenNullOrEmptyDelegate, nameof(whenNullOrEmptyDelegate));
+
         if (instance is null || string.IsNullOrEmpty(instance))
         {
             return whenNullOrEmptyDelegate();
@@ -63,6 +65,8 @@ public static class StringExtensions
     /// <returns></returns>
     public static string WhenNullOrWhitespace(this string? instance, Func<string> whenNullOrWhiteSpaceDelegate)
     {
+        ArgumentGuard.IsNotNull(whenNullOrWhiteSpaceDelegate, nameof(whenNullOrWhiteSpaceDelegate));
+
         if (instance is null || string.IsNullOrWhiteSpace(instance))
         {
             return whenNullOrWhiteSpaceDelegate();
@@ -211,10 +215,7 @@ public static class StringExtensions
     /// <returns></returns>
     public static string[] SplitDelimited(this string instance, string delimiter, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false)
     {
-        if (delimiter is null)
-        {
-            throw new ArgumentNullException(nameof(delimiter));
-        }
+        ArgumentGuard.IsNotNull(delimiter, nameof(delimiter));
 
         if (delimiter.Length != 1 && delimiter.Length != 2)
         {

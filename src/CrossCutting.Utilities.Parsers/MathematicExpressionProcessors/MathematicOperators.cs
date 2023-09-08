@@ -21,6 +21,8 @@ public class MathematicOperators : IMathematicExpressionProcessor
 
     public Result<MathematicExpressionState> Process(MathematicExpressionState state)
     {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
         foreach (var aggregators in Aggregators.GroupBy(x => x.Order))
         {
             do
