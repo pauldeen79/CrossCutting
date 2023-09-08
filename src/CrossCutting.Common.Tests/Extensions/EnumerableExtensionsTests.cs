@@ -187,4 +187,41 @@ public class EnumerableExtensionsTests
         // Assert
         result.Value.Should().BeEquivalentTo("B");
     }
+
+    [Fact]
+    public void TakeWhileWithFirstNonMatching_Throws_On_Null_Predicate()
+    {
+        // Arrange
+        var sequence = new[] { 1, 2, 3 };
+
+        // Act & Assert
+        sequence.Invoking(x => x.TakeWhileWithFirstNonMatching(predicate: null!).ToArray())
+                .Should().Throw<ArgumentNullException>().WithParameterName("predicate");
+    }
+
+    [Fact]
+    public void TakeWhileWithFirstNonMatching_Returns_Matching_Items_And_The_First_Non_Matching_When_Non_Matching_Exists()
+    {
+        // Arrange
+        var sequence = new[] { 1, 2, 3 };
+
+        // Act
+        var result = sequence.TakeWhileWithFirstNonMatching(x => x < 2).ToArray();
+
+        // Assert
+        result.Should().BeEquivalentTo(new[] { 1, 2 });
+    }
+
+    [Fact]
+    public void TakeWhileWithFirstNonMatching_Returns_Everything_When_Non_Matching_Does_Not_Exist()
+    {
+        // Arrange
+        var sequence = new[] { 1, 2, 3 };
+
+        // Act
+        var result = sequence.TakeWhileWithFirstNonMatching(x => x < 100).ToArray();
+
+        // Assert
+        result.Should().BeEquivalentTo(new[] { 1, 2, 3 });
+    }
 }
