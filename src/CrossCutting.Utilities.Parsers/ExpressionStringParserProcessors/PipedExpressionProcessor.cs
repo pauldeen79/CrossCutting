@@ -19,7 +19,7 @@ public class PipedExpressionProcessor : IExpressionStringParserProcessor
             // The pipe sign is within a string, so we need to continue
             return Result<object?>.Continue();
         }
-        
+
         var resultValue = state.Context;
         foreach (var item in split)
         {
