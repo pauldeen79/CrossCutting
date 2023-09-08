@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design.Serialization;
-
-namespace CrossCutting.Common.Extensions;
+﻿namespace CrossCutting.Common.Extensions;
 
 public static class StringExtensions
 {
