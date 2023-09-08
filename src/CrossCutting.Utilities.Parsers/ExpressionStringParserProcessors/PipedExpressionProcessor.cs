@@ -8,29 +8,20 @@ public class PipedExpressionProcessor : IExpressionStringParserProcessor
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (state.Input.IndexOf('|') == -1)
+        return BaseProcessor.SplitDelimited(state, '|', split =>
         {
-            return Result<object?>.Continue();
-        }
-
-        var split = state.Input.Substring(1).SplitDelimited('|', '\"', true, true);
-        if (split.Length == 1)
-        {
-            // The pipe sign is within a string, so we need to continue
-            return Result<object?>.Continue();
-        }
-
-        var resultValue = state.Context;
-        foreach (var item in split)
-        {
-            var result = state.Parser.Parse($"={item}", state.FormatProvider, resultValue);
-            if (!result.IsSuccessful())
+            var resultValue = state.Context;
+            foreach (var item in split)
             {
-                return result;
+                var result = state.Parser.Parse($"={item}", state.FormatProvider, resultValue);
+                if (!result.IsSuccessful())
+                {
+                    return result;
+                }
+                resultValue = result.Value;
             }
-            resultValue = result.Value;
-        }
 
-        return Result<object?>.Success(resultValue);
+            return Result<object?>.Success(resultValue);
+        });
     }
 }
