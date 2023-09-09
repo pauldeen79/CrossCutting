@@ -2,13 +2,6 @@
 
 public class FormattableStringExpressionProcessor : IExpressionStringParserProcessor
 {
-    private readonly IFormattableStringParser _parser;
-
-    public FormattableStringExpressionProcessor(IFormattableStringParser parser)
-    {
-        _parser = parser;
-    }
-
     public int Order => 400;
 
     public Result<object?> Process(ExpressionStringParserState state)
@@ -18,7 +11,9 @@ public class FormattableStringExpressionProcessor : IExpressionStringParserProce
         if (state.Input.StartsWith("=@\"") && state.Input.EndsWith("\""))
         {
             // =@"string value" -> literal, no functions but formattable strings possible
-            return Result<object?>.FromExistingResult(_parser.Parse(state.Input.Substring(3, state.Input.Length - 4), state.FormatProvider, state.Context));
+            return state.FormattableStringParser is not null
+                ? Result<object?>.FromExistingResult(state.FormattableStringParser.Parse(state.Input.Substring(3, state.Input.Length - 4), state.FormatProvider, state.Context))
+                : Result<object?>.Success(state.Input.Substring(3, state.Input.Length - 4));
         }
         else if (state.Input.StartsWith("=\"") && state.Input.EndsWith("\""))
         {

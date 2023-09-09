@@ -8,7 +8,7 @@ public class PlaceholderProcessor : IFormattableStringStateProcessor
 
         if (!state.InPlaceholder)
         {
-            return Result<string>.NotSupported();
+            return Result<string>.Continue();
         }
 
         state.PlaceholderBuilder.Append(state.Current);

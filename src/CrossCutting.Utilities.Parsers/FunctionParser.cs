@@ -15,7 +15,7 @@ public class FunctionParser : IFunctionParser
         _argumentProcessors = argumentProcessors;
     }
 
-    public Result<FunctionParseResult> Parse(string input, IFormatProvider formatProvider, object? context)
+    public Result<FunctionParseResult> Parse(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
         if (string.IsNullOrEmpty(input))
         {
@@ -53,7 +53,7 @@ public class FunctionParser : IFunctionParser
             var stringArguments = remainder.Substring(openIndex.Value + 1, closeIndex.Value - openIndex.Value - 1);
             var stringArgumentsSplit = stringArguments.SplitDelimited(',', '\"', trimItems: true);
             var arguments = new List<FunctionParseResultArgument>();
-            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, formatProvider, context);
+            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, formatProvider, context, formattableStringParser);
             if (!addArgumentsResult.IsSuccessful())
             {
                 return addArgumentsResult;
@@ -96,7 +96,7 @@ public class FunctionParser : IFunctionParser
         }
     }
 
-    private Result<FunctionParseResult> AddArguments(List<FunctionParseResult> results, string[] stringArgumentsSplit, List<FunctionParseResultArgument> arguments, IFormatProvider formatProvider, object? context)
+    private Result<FunctionParseResult> AddArguments(List<FunctionParseResult> results, string[] stringArgumentsSplit, List<FunctionParseResultArgument> arguments, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
         foreach (var stringArgument in stringArgumentsSplit)
         {
@@ -108,7 +108,7 @@ public class FunctionParser : IFunctionParser
 
             var processValueResult = _argumentProcessors
                 .OrderBy(x => x.Order)
-                .Select(x => x.Process(stringArgument, results, formatProvider, context))
+                .Select(x => x.Process(stringArgument, results, formatProvider, context, formattableStringParser))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue);
             if (processValueResult is not null)
             {

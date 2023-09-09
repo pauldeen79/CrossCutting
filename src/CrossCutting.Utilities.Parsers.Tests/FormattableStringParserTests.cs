@@ -94,10 +94,38 @@ public sealed class FormattableStringParserTests : IDisposable
         }}";
 
         // Act
-        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture, "[value from context]");
+        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Parse_Works_With_ExpressionString()
+    {
+        // Arrange
+        const string Input = "Hello {MyFunction()}!";
+
+        // Act
+        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("Hello function result!");
+    }
+
+    [Fact]
+    public void Parse_Returns_NotSupported_On_Unknown_Placeholder()
+    {
+        // Arrange
+        var input = "{Unknown placeholder}";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.ErrorMessage.Should().Be("Unknown placeholder in value: Unknown placeholder");
     }
 
     public void Dispose()
@@ -109,8 +137,9 @@ public sealed class FormattableStringParserTests : IDisposable
     private IFormattableStringParser CreateSut()
     {
         _provider = new ServiceCollection()
-        .AddParsers()
+            .AddParsers()
             .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+            .AddSingleton<IFunctionResultParser, MyFunctionResultParser>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
         return _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>();
@@ -120,7 +149,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         public int Order => 10;
 
-        public Result<string> Process(string value, IFormatProvider formatProvider, object? context)
+        public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
         {
             if (value == "Name")
             {
@@ -131,8 +160,26 @@ public sealed class FormattableStringParserTests : IDisposable
             {
                 return Result<string>.Success(context?.ToString() ?? string.Empty);
             }
-            
-            return Result<string>.Error($"Unsupported placeholder name: {value}");
+
+            if (value == "Unsupported placeholder")
+            {
+                return Result<string>.Error($"Unsupported placeholder name: {value}");
+            }
+
+            return Result<string>.Continue();
+        }
+    }
+
+    private sealed class MyFunctionResultParser : IFunctionResultParser
+    {
+        public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+        {
+            if (functionParseResult.FunctionName != "MyFunction")
+            {
+                return Result<object?>.Continue();
+            }
+
+            return Result<object?>.Success("function result");
         }
     }
 }

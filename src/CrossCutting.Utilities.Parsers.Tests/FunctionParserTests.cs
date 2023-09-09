@@ -56,7 +56,7 @@ public sealed class FunctionParserTests : IDisposable
         var input = "MYFUNCTION(@\"Hello, {Name}!\",b,c)";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -351,7 +351,7 @@ public sealed class FunctionParserTests : IDisposable
     {
         public int Order => 1;
 
-        public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context)
+        public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
             => Result<FunctionParseResultArgument>.Error("Kaboom");
     }
 
@@ -366,7 +366,7 @@ public sealed class FunctionParserTests : IDisposable
     {
         public int Order => 10;
 
-        public Result<string> Process(string value, IFormatProvider formatProvider, object? context)
+        public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result<string>.Success(ReplacedValue)
                 : Result<string>.Error($"Unsupported placeholder name: {value}");

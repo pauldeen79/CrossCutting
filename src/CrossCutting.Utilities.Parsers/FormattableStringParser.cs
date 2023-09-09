@@ -16,7 +16,7 @@ public class FormattableStringParser : IFormattableStringParser
     {
         input = ArgumentGuard.IsNotNull(input, nameof(input));
 
-        var state = new FormattableStringParserState(input, formatProvider, context);
+        var state = new FormattableStringParserState(input, formatProvider, context, this);
 
         for (var index = 0; index < input.Length; index++)
         {
@@ -25,7 +25,7 @@ public class FormattableStringParser : IFormattableStringParser
             foreach (var processor in _processors)
             {
                 var processorResult = processor.Process(state);
-                if (processorResult.Status != ResultStatus.NotSupported && !processorResult.IsSuccessful())
+                if (!processorResult.IsSuccessful())
                 {
                     return processorResult;
                 }

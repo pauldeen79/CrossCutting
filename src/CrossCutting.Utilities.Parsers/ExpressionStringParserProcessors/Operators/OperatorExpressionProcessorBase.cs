@@ -20,13 +20,13 @@ public abstract class OperatorExpressionProcessorBase : IExpressionStringParserP
             return Result<object?>.Continue();
         }
 
-        var leftResult = state.Parser.Parse($"={split[0]}", state.FormatProvider, state.Context);
+        var leftResult = state.Parser.Parse($"={split[0]}", state.FormatProvider, state.Context, state.FormattableStringParser);
         if (!leftResult.IsSuccessful())
         {
             return leftResult;
         }
 
-        var rightResult = state.Parser.Parse($"={split[1]}", state.FormatProvider, state.Context);
+        var rightResult = state.Parser.Parse($"={split[1]}", state.FormatProvider, state.Context, state.FormattableStringParser);
         if (!rightResult.IsSuccessful())
         {
             return rightResult;

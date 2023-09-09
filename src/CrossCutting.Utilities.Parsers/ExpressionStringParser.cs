@@ -19,9 +19,9 @@ public class ExpressionStringParser : IExpressionStringParser
         _processors = processors;
     }
 
-    public Result<object?> Parse(string input, IFormatProvider formatProvider, object? context)
+    public Result<object?> Parse(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
-        var state = new ExpressionStringParserState(input, formatProvider, context, this);
+        var state = new ExpressionStringParserState(input, formatProvider, context, this, formattableStringParser);
         return _processors
             .OrderBy(x => x.Order)
             .Select(x => x.Process(state))
@@ -32,7 +32,7 @@ public class ExpressionStringParser : IExpressionStringParser
     private Result<object?> EvaluateSimpleExpression(ExpressionStringParserState state)
     {
         // =something else, we can try function
-        var functionResult = _functionParser.Parse(state.Input.Substring(1), state.FormatProvider, state.Context);
+        var functionResult = _functionParser.Parse(state.Input.Substring(1), state.FormatProvider, state.Context, state.FormattableStringParser);
         if (functionResult.Status == ResultStatus.NotFound)
         {
             return Result<object?>.FromExistingResult(functionResult);

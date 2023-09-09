@@ -87,7 +87,21 @@ public sealed class ExpressionStringParserTests : IDisposable
     }
 
     [Fact]
-    public void Parse_Returns_Success_Result_From_Formattable_String_When_Found()
+    public void Parse_Returns_Success_Result_From_Formattable_String_When_Found_And_FormattableStringProcessor_Is_Not_Null()
+    {
+        // Arrange
+        var input = "=@\"Hello {Name}!\"";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("Hello replaced name!");
+    }
+
+    [Fact]
+    public void Parse_Returns_Formattable_String_Unprocessed_When_Found_And_FormattableStringProcessor_Is_Null()
     {
         // Arrange
         var input = "=@\"Hello {Name}!\"";
@@ -97,7 +111,7 @@ public sealed class ExpressionStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("Hello replaced name!");
+        result.Value.Should().Be("Hello {Name}!");
     }
 
     [Fact]
@@ -107,7 +121,7 @@ public sealed class ExpressionStringParserTests : IDisposable
         var input = "=@\"Hello {Kaboom}!\"";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -191,7 +205,7 @@ public sealed class ExpressionStringParserTests : IDisposable
         var input = "=MYFUNCTION2(@\"Hello {Name}!\")";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -275,7 +289,7 @@ public sealed class ExpressionStringParserTests : IDisposable
         var input = "=\"Hello \" & @\"{Name}!\"";
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -703,7 +717,7 @@ public sealed class ExpressionStringParserTests : IDisposable
     {
         public int Order => 10;
 
-        public Result<string> Process(string value, IFormatProvider formatProvider, object? context)
+        public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result<string>.Success(ReplacedValue)
                 : Result<string>.Error($"Unsupported placeholder name: {value}");
