@@ -705,6 +705,41 @@ public sealed class ExpressionStringParserTests : IDisposable
         result.Value.Should().Be("=error()");
     }
 
+    [Theory,
+        InlineData("=ToUpperCase(\"  space  \")"),
+        InlineData("=ToUpperCase(@\"  space  \")")]
+    public void Function_With_String_Argument_Preserves_WhiteSpace(string input)
+    {
+        // Arrange
+        var functionResultParserMock = new Mock<IFunctionResultParser>();
+        functionResultParserMock
+            .Setup(x => x.Parse(It.IsAny<FunctionParseResult>(), It.IsAny<object?>(), It.IsAny<IFunctionParseResultEvaluator>(), It.IsAny<IExpressionParser>()))
+            .Returns<FunctionParseResult, object?, IFunctionParseResultEvaluator, IExpressionParser>((functionParseResult, context, evaluator, parser) =>
+            {
+                if (functionParseResult.FunctionName != "ToUpperCase")
+                {
+                    return Result<object?>.Continue();
+                }
+
+                return Result<object?>.Success(functionParseResult.GetArgumentStringValueResult(0, "expression", context, evaluator, parser).GetValueOrThrow().ToUpperInvariant());
+            });
+        using var provider = new ServiceCollection()
+            .AddParsers()
+            .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+            .AddSingleton(functionResultParserMock.Object)
+            .BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+
+        var parser = scope.ServiceProvider.GetRequiredService<IExpressionStringParser>();
+
+        // Act
+        var result = parser.Parse(input, CultureInfo.InvariantCulture, scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo("  SPACE  ");
+    }
+
     private IExpressionStringParser CreateSut() => _scope.ServiceProvider.GetRequiredService<IExpressionStringParser>();
 
     public void Dispose()

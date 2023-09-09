@@ -50,6 +50,23 @@ public sealed class FunctionParserTests : IDisposable
     }
 
     [Fact]
+    public void Can_Parse_Single_Function_With_Quoted_Arguments_That_Are_Surrounded_With_Spaces()
+    {
+        // Arrange
+        var input = "MYFUNCTION(\"  a,b  \",c)";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value.Arguments.Should().HaveCount(2);
+        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
+        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("  a,b  ", "c");
+    }
+
+    [Fact]
     public void Can_Parse_Single_Function_With_FormattableString_Argument()
     {
         // Arrange
@@ -64,6 +81,23 @@ public sealed class FunctionParserTests : IDisposable
         result.Value.Arguments.Should().HaveCount(3);
         result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
         result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("Hello, replaced name!", "b", "c");
+    }
+
+    [Fact]
+    public void Can_Parse_Single_Function_With_FormattableString_Argument_That_Are_Surrounded_With_Spaces()
+    {
+        // Arrange
+        var input = "MYFUNCTION(@\"  Hello, {Name}!  \",b,c)";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value.Arguments.Should().HaveCount(3);
+        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
+        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("  Hello, replaced name!  ", "b", "c");
     }
 
     [Fact]
@@ -337,6 +371,23 @@ public sealed class FunctionParserTests : IDisposable
         result.Value.Arguments.Should().HaveCount(3);
         result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
         result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
+    }
+
+    [Fact]
+    public void Parse_With_Spaces_In_Quoted_Arguments_Does_Not_Strip_Spaces()
+    {
+        // Arrange
+        var input = "MYFUNCTION(\"a \",\" b \",\" c\")";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value.Arguments.Should().HaveCount(3);
+        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
+        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a ", " b ", " c");
     }
 
     public void Dispose()
