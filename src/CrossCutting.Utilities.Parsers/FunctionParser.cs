@@ -56,7 +56,10 @@ public class FunctionParser : IFunctionParser
             }
 
             var stringArguments = remainder.Substring(openIndex.Value + 1, closeIndex.Value - openIndex.Value - 1);
-            var stringArgumentsSplit = stringArguments.SplitDelimited(',', '\"', trimItems: true);
+            var stringArgumentsSplit = stringArguments
+                .SplitDelimited(',', '\"', trimItems: true, leaveTextQualifier: true)
+                .Select(RemoveStringQualifiers);
+
             var arguments = new List<FunctionParseResultArgument>();
             var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, formatProvider, context, formattableStringParser);
             if (!addArgumentsResult.IsSuccessful())
@@ -72,6 +75,21 @@ public class FunctionParser : IFunctionParser
         return remainder.EndsWith(TemporaryDelimiter)
             ? Result<FunctionParseResult>.Success(results[results.Count - 1])
             : Result<FunctionParseResult>.NotFound("Input has additional characters after last close bracket");
+    }
+
+    private static string RemoveStringQualifiers(string value)
+    {
+        if (value.StartsWith("\"") && value.EndsWith("\""))
+        {
+            return value.Substring(1, value.Length - 2);
+        }
+
+        if (value.StartsWith("@\"") && value.EndsWith("\""))
+        {
+            return "@" + value.Substring(2, value.Length - 3);
+        }
+
+        return value;
     }
 
     private static bool IsInQuoteMap(int index, IEnumerable<(int StartIndex, int EndIndex)> quoteMap)
@@ -101,7 +119,7 @@ public class FunctionParser : IFunctionParser
         }
     }
 
-    private Result<FunctionParseResult> AddArguments(List<FunctionParseResult> results, string[] stringArgumentsSplit, List<FunctionParseResultArgument> arguments, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    private Result<FunctionParseResult> AddArguments(List<FunctionParseResult> results, IEnumerable<string> stringArgumentsSplit, List<FunctionParseResultArgument> arguments, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
         foreach (var stringArgument in stringArgumentsSplit)
         {
