@@ -16,6 +16,8 @@ internal sealed class StringFormatParserState
 
     public StringFormatParserState(IEnumerable<object> args)
     {
+        ArgumentGuard.IsNotNull(args, nameof(args));
+
         FormatValues = new List<object>(args.ToList());
     }
 

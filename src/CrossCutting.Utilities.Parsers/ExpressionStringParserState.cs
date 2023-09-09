@@ -15,6 +15,10 @@ public class ExpressionStringParserState
         IExpressionStringParser parser,
         IFormattableStringParser? formattableStringParser)
     {
+        ArgumentGuard.IsNotNull(input, nameof(input));
+        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+        ArgumentGuard.IsNotNull(parser, nameof(parser));
+
         Input = input;
         FormatProvider = formatProvider;
         Context = context;

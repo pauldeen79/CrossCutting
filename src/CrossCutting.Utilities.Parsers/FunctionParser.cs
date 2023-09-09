@@ -11,12 +11,17 @@ public class FunctionParser : IFunctionParser
         IEnumerable<IFunctionParserNameProcessor> nameProcessors,
         IEnumerable<IFunctionParserArgumentProcessor> argumentProcessors)
     {
+        ArgumentGuard.IsNotNull(nameProcessors, nameof(nameProcessors));
+        ArgumentGuard.IsNotNull(argumentProcessors, nameof(argumentProcessors));
+
         _nameProcessors = nameProcessors;
         _argumentProcessors = argumentProcessors;
     }
 
     public Result<FunctionParseResult> Parse(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
+        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+
         if (string.IsNullOrEmpty(input))
         {
             return Result<FunctionParseResult>.NotFound("Input cannot be null or empty");

@@ -24,6 +24,10 @@ public class MathematicExpressionState
         object? context,
         Func<string, IFormatProvider, object?, Result<object?>> parseDelegate)
     {
+        ArgumentGuard.IsNotNull(input, nameof(input));
+        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+        ArgumentGuard.IsNotNull(parseDelegate, nameof(parseDelegate));
+
         Input = input;
         FormatProvider = formatProvider;
         Context = context;

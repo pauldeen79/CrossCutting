@@ -30,6 +30,8 @@ public static class PipeDelimitedDataTableParser
         IEnumerable<string>? columnNames = null,
         Func<string, string, object>? transformFunction = null)
     {
+        ArgumentGuard.IsNotNull(input, nameof(input));
+
         using (var sr = new StringReader(input))
         {
             string line;

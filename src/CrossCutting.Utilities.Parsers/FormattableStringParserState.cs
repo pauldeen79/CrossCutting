@@ -16,6 +16,10 @@ public class FormattableStringParserState
 
     public FormattableStringParserState(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser parser)
     {
+        ArgumentGuard.IsNotNull(input, nameof(input));
+        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+        ArgumentGuard.IsNotNull(parser, nameof(parser));
+
         Input = input;
         FormatProvider = formatProvider;
         Context = context;
@@ -59,6 +63,8 @@ public class FormattableStringParserState
 
     public void ClosePlaceholder(string value)
     {
+        ArgumentGuard.IsNotNull(value, nameof(value));
+
         InPlaceholder = false;
         ResultBuilder.Append(value);
         PlaceholderBuilder.Clear();

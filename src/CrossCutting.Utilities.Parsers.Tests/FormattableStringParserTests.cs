@@ -101,7 +101,7 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
-    public void Parse_Works_With_ExpressionString()
+    public void Parse_Works_With_ExpressionString_Containing_Function()
     {
         // Arrange
         const string Input = "Hello {MyFunction()}!";
@@ -112,6 +112,20 @@ public sealed class FormattableStringParserTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be("Hello function result!");
+    }
+
+    [Fact]
+    public void Parse_Works_With_ExpressionString()
+    {
+        // Arrange
+        const string Input = "I can add 1 to 2, this results in {1 + 1}";
+
+        // Act
+        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("I can add 1 to 2, this results in 2");
     }
 
     [Fact]
