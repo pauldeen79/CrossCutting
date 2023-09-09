@@ -11,12 +11,17 @@ public class FunctionParser : IFunctionParser
         IEnumerable<IFunctionParserNameProcessor> nameProcessors,
         IEnumerable<IFunctionParserArgumentProcessor> argumentProcessors)
     {
+        ArgumentGuard.IsNotNull(nameProcessors, nameof(nameProcessors));
+        ArgumentGuard.IsNotNull(argumentProcessors, nameof(argumentProcessors));
+
         _nameProcessors = nameProcessors;
         _argumentProcessors = argumentProcessors;
     }
 
-    public Result<FunctionParseResult> Parse(string input, IFormatProvider formatProvider, object? context)
+    public Result<FunctionParseResult> Parse(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
+        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+
         if (string.IsNullOrEmpty(input))
         {
             return Result<FunctionParseResult>.NotFound("Input cannot be null or empty");
@@ -53,7 +58,7 @@ public class FunctionParser : IFunctionParser
             var stringArguments = remainder.Substring(openIndex.Value + 1, closeIndex.Value - openIndex.Value - 1);
             var stringArgumentsSplit = stringArguments.SplitDelimited(',', '\"', trimItems: true);
             var arguments = new List<FunctionParseResultArgument>();
-            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, formatProvider, context);
+            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, formatProvider, context, formattableStringParser);
             if (!addArgumentsResult.IsSuccessful())
             {
                 return addArgumentsResult;
@@ -96,7 +101,7 @@ public class FunctionParser : IFunctionParser
         }
     }
 
-    private Result<FunctionParseResult> AddArguments(List<FunctionParseResult> results, string[] stringArgumentsSplit, List<FunctionParseResultArgument> arguments, IFormatProvider formatProvider, object? context)
+    private Result<FunctionParseResult> AddArguments(List<FunctionParseResult> results, string[] stringArgumentsSplit, List<FunctionParseResultArgument> arguments, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
         foreach (var stringArgument in stringArgumentsSplit)
         {
@@ -108,7 +113,7 @@ public class FunctionParser : IFunctionParser
 
             var processValueResult = _argumentProcessors
                 .OrderBy(x => x.Order)
-                .Select(x => x.Process(stringArgument, results, formatProvider, context))
+                .Select(x => x.Process(stringArgument, results, formatProvider, context, formattableStringParser))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue);
             if (processValueResult is not null)
             {

@@ -2,22 +2,15 @@
 
 public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserArgumentProcessor
 {
-    private readonly IFormattableStringParser _parser;
-
     public int Order => 10;
 
-    public FormattableStringFunctionParserArgumentProcessor(IFormattableStringParser parser)
-    {
-        _parser = parser;
-    }
-
-    public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context)
+    public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
         stringArgument = ArgumentGuard.IsNotNull(stringArgument, nameof(stringArgument));
 
-        if (stringArgument.StartsWith("@"))
+        if (stringArgument.StartsWith("@") && formattableStringParser is not null)
         {
-            var result = _parser.Parse(stringArgument.Substring(1), formatProvider, context);
+            var result = formattableStringParser.Parse(stringArgument.Substring(1), formatProvider, context);
             return result.IsSuccessful()
                 ? Result<FunctionParseResultArgument>.Success(new LiteralArgument(result.Value!))
                 : Result<FunctionParseResultArgument>.FromExistingResult(result);

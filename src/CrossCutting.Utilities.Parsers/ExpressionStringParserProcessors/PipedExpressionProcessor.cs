@@ -13,7 +13,7 @@ public class PipedExpressionProcessor : IExpressionStringParserProcessor
             var resultValue = state.Context;
             foreach (var item in split)
             {
-                var result = state.Parser.Parse($"={item}", state.FormatProvider, resultValue);
+                var result = state.Parser.Parse($"={item}", state.FormatProvider, resultValue, state.FormattableStringParser);
                 if (!result.IsSuccessful())
                 {
                     return result;

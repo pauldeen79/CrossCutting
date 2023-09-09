@@ -14,7 +14,7 @@ public class ConcatenateExpressionProcessor : IExpressionStringParserProcessor
             var builder = new StringBuilder();
             foreach (var item in split)
             {
-                var result = state.Parser.Parse($"={item}", state.FormatProvider, state.Context);
+                var result = state.Parser.Parse($"={item}", state.FormatProvider, state.Context, state.FormattableStringParser);
                 if (!result.IsSuccessful())
                 {
                     return result;

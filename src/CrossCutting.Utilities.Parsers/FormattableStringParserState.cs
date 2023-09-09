@@ -5,6 +5,7 @@ public class FormattableStringParserState
     public string Input { get; }
     public IFormatProvider FormatProvider { get; }
     public object? Context { get; }
+    public IFormattableStringParser Parser { get; }
 
     public StringBuilder ResultBuilder { get; } = new();
     public StringBuilder PlaceholderBuilder { get; } = new();
@@ -13,11 +14,16 @@ public class FormattableStringParserState
     public int Index { get; private set; }
     public bool IsEscaped { get; private set; }
 
-    public FormattableStringParserState(string input, IFormatProvider formatProvider, object? context)
+    public FormattableStringParserState(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser parser)
     {
+        ArgumentGuard.IsNotNull(input, nameof(input));
+        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+        ArgumentGuard.IsNotNull(parser, nameof(parser));
+
         Input = input;
         FormatProvider = formatProvider;
         Context = context;
+        Parser = parser;
     }
 
     public bool NextPositionIsSign(char sign)
@@ -57,6 +63,8 @@ public class FormattableStringParserState
 
     public void ClosePlaceholder(string value)
     {
+        ArgumentGuard.IsNotNull(value, nameof(value));
+
         InPlaceholder = false;
         ResultBuilder.Append(value);
         PlaceholderBuilder.Clear();

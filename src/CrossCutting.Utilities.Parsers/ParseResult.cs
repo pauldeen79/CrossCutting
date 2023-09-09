@@ -28,6 +28,9 @@ public class ParseResult<TKey, TValue>
 
     internal ParseResult(bool isSuccessful, IEnumerable<string> errorMessages, IEnumerable<KeyValuePair<TKey, TValue>> values)
     {
+        ArgumentGuard.IsNotNull(errorMessages, nameof(errorMessages));
+        ArgumentGuard.IsNotNull(values, nameof(values));
+
         IsSuccessful = isSuccessful;
         ErrorMessages = errorMessages;
         Values = values;

@@ -8,7 +8,7 @@ public class OpenSignProcessor : IFormattableStringStateProcessor
 
         if (state.Current != FormattableStringParser.OpenSign)
         {
-            return Result<string>.NotSupported();
+            return Result<string>.Continue();
         }
 
         if (state.NextPositionIsSign(FormattableStringParser.OpenSign)

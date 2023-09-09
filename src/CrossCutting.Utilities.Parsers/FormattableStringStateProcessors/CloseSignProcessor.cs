@@ -15,7 +15,7 @@ public class CloseSignProcessor : IFormattableStringStateProcessor
 
         if (state.Current != FormattableStringParser.CloseSign)
         {
-            return Result<string>.NotSupported();
+            return Result<string>.Continue();
         }
 
         if (state.NextPositionIsSign(FormattableStringParser.CloseSign)
@@ -36,7 +36,7 @@ public class CloseSignProcessor : IFormattableStringStateProcessor
 
         var placeholderResult = _processors
             .OrderBy(x => x.Order)
-            .Select(x => x.Process(state.PlaceholderBuilder.ToString(), state.FormatProvider, state.Context))
+            .Select(x => x.Process(state.PlaceholderBuilder.ToString(), state.FormatProvider, state.Context, state.Parser))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result<string>.Invalid($"Unknown placeholder in value: {state.PlaceholderBuilder}");
 

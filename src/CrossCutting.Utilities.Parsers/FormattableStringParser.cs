@@ -9,14 +9,17 @@ public class FormattableStringParser : IFormattableStringParser
 
     public FormattableStringParser(IEnumerable<IFormattableStringStateProcessor> processors)
     {
+        ArgumentGuard.IsNotNull(processors, nameof(processors));
+
         _processors = processors;
     }
 
     public Result<string> Parse(string input, IFormatProvider formatProvider, object? context)
     {
         input = ArgumentGuard.IsNotNull(input, nameof(input));
+        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
 
-        var state = new FormattableStringParserState(input, formatProvider, context);
+        var state = new FormattableStringParserState(input, formatProvider, context, this);
 
         for (var index = 0; index < input.Length; index++)
         {
@@ -25,7 +28,7 @@ public class FormattableStringParser : IFormattableStringParser
             foreach (var processor in _processors)
             {
                 var processorResult = processor.Process(state);
-                if (processorResult.Status != ResultStatus.NotSupported && !processorResult.IsSuccessful())
+                if (!processorResult.IsSuccessful())
                 {
                     return processorResult;
                 }
