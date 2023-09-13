@@ -83,10 +83,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         // Arrange
         var sut = new TestEntityDatabaseCommandEntityProvider();
         var entity = new TestEntityBuilder(new TestEntity("", "", ""));
-        var readerMock = new Mock<IDataReader>();
-        readerMock.SetupGet(x => x.FieldCount).Returns(3);
-        readerMock.Setup(x => x.GetName(It.IsAny<int>())).Returns<int>(index =>
-            index switch
+        var readerMock = Substitute.For<IDataReader>();
+        readerMock.FieldCount.Returns(3);
+        readerMock.GetName(Arg.Any<int>()).Returns(x =>
+            x.ArgAt<int>(0) switch
             {
                 0 => "Code",
                 1 => "CodeType",
@@ -94,8 +94,8 @@ public class TestEntityDatabaseCommandEntityProviderTests
                 _ => string.Empty,
             }
         );
-        readerMock.Setup(x => x.GetOrdinal(It.IsAny<string>())).Returns<string>(name =>
-            name switch
+        readerMock.GetOrdinal(Arg.Any<string>()).Returns(x =>
+            x.ArgAt<string>(0) switch
             {
                 "Code" => 0,
                 "CodeType" => 1,
@@ -103,8 +103,8 @@ public class TestEntityDatabaseCommandEntityProviderTests
                 _ => -1,
             }
         );
-        readerMock.Setup(x => x.GetString(It.IsAny<int>())).Returns<int>(index =>
-            index switch
+        readerMock.GetString(Arg.Any<int>()).Returns(x =>
+            x.ArgAt<int>(0) switch
             {
                 0 => "new code",
                 1 => "new code type",
@@ -117,7 +117,7 @@ public class TestEntityDatabaseCommandEntityProviderTests
         sut.AfterReadDelegate.Should().NotBeNull();
         if (sut.AfterReadDelegate is not null)
         {
-            var actual = sut.AfterReadDelegate.Invoke(entity, operation, readerMock.Object);
+            var actual = sut.AfterReadDelegate.Invoke(entity, operation, readerMock);
 
             // Assert
             actual.Should().Be(entity);
@@ -138,13 +138,13 @@ public class TestEntityDatabaseCommandEntityProviderTests
         // Arrange
         var sut = new TestEntityDatabaseCommandEntityProvider();
         var entity = new TestEntityBuilder(new TestEntity("", "", ""));
-        var readerMock = new Mock<IDataReader>();
+        var readerMock = Substitute.For<IDataReader>();
 
         // Act
         sut.AfterReadDelegate.Should().NotBeNull();
         if (sut.AfterReadDelegate is not null)
         {
-            sut.Invoking(x => x.AfterReadDelegate?.Invoke(entity, operation, readerMock.Object))
+            sut.Invoking(x => x.AfterReadDelegate?.Invoke(entity, operation, readerMock))
                .Should().Throw<ArgumentOutOfRangeException>()
                .And.ParamName.Should().Be("operation");
         }

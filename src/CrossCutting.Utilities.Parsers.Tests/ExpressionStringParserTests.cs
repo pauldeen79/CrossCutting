@@ -711,22 +711,21 @@ public sealed class ExpressionStringParserTests : IDisposable
     public void Function_With_String_Argument_Preserves_WhiteSpace(string input)
     {
         // Arrange
-        var functionResultParserMock = new Mock<IFunctionResultParser>();
-        functionResultParserMock
-            .Setup(x => x.Parse(It.IsAny<FunctionParseResult>(), It.IsAny<object?>(), It.IsAny<IFunctionParseResultEvaluator>(), It.IsAny<IExpressionParser>()))
-            .Returns<FunctionParseResult, object?, IFunctionParseResultEvaluator, IExpressionParser>((functionParseResult, context, evaluator, parser) =>
+        var functionResultParserMock = Substitute.For<IFunctionResultParser>();
+        functionResultParserMock.Parse(Arg.Any<FunctionParseResult>(), Arg.Any<object?>(), Arg.Any<IFunctionParseResultEvaluator>(), Arg.Any<IExpressionParser>())
+            .Returns(x =>
             {
-                if (functionParseResult.FunctionName != "ToUpperCase")
+                if (x.ArgAt<FunctionParseResult>(0).FunctionName != "ToUpperCase")
                 {
                     return Result<object?>.Continue();
                 }
 
-                return Result<object?>.Success(functionParseResult.GetArgumentStringValueResult(0, "expression", context, evaluator, parser).GetValueOrThrow().ToUpperInvariant());
+                return Result<object?>.Success(x.ArgAt<FunctionParseResult>(0).GetArgumentStringValueResult(0, "expression", x.ArgAt<object?>(1), x.ArgAt<IFunctionParseResultEvaluator>(2), x.ArgAt<IExpressionParser>(3)).GetValueOrThrow().ToUpperInvariant());
             });
         using var provider = new ServiceCollection()
             .AddParsers()
             .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
-            .AddSingleton(functionResultParserMock.Object)
+            .AddSingleton(functionResultParserMock)
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
 

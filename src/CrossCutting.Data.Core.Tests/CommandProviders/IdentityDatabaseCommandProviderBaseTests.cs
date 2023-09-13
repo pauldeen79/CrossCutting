@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Data.Core.Tests.CommandProviders;
+namespace CrossCutting.Data.Core.Tests.CommandProviders;
 
 public class IdentityDatabaseCommandProviderBaseTests
 {
@@ -22,7 +22,7 @@ public class IdentityDatabaseCommandProviderBaseTests
     public void Create_Throws_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
     {
         // Arrange
-        var sut = new IdentityDatabaseCommandProviderMock(new[] { new Mock<IPagedDatabaseEntityRetrieverSettingsProvider>().Object });
+        var sut = new IdentityDatabaseCommandProviderMock(new[] { Substitute.For<IPagedDatabaseEntityRetrieverSettingsProvider>() });
 
         // Act & Assert
         sut.Invoking(x => x.Create(new TestEntityIdentity("NOTIMPLEMENTED", "NOTIMPLEMENTED"), DatabaseOperation.Select))

@@ -2,8 +2,8 @@
 
 public class ExpressionStringParserExtensionsTests
 {
-    private Mock<IExpressionStringParser> SutMock { get; } = new();
-    private Mock<IFormattableStringParser> FormattableStringParserMock { get; } = new();
+    private IExpressionStringParser SutMock { get; } = Substitute.For<IExpressionStringParser>();
+    private IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
     private const string Input = "Some input";
     private object Context { get; } = new object();
     private IFormatProvider FormatProvider { get; } = CultureInfo.InvariantCulture;
@@ -12,29 +12,29 @@ public class ExpressionStringParserExtensionsTests
     public void Parse_Without_Context_And_FormattableStringParser_Gets_Processed_Correctly()
     {
         // Act
-        _ = SutMock.Object.Parse(Input, FormatProvider);
+        _ = SutMock.Parse(Input, FormatProvider);
 
         // Assert
-        SutMock.Verify(x => x.Parse(Input, FormatProvider, null, null), Times.Once);
+        SutMock.Received().Parse(Input, FormatProvider, null, null);
     }
 
     [Fact]
     public void Parse_Without_Context_Gets_Processed_Correctly()
     {
         // Act
-        _ = SutMock.Object.Parse(Input, FormatProvider, FormattableStringParserMock.Object);
+        _ = SutMock.Parse(Input, FormatProvider, FormattableStringParserMock);
 
         // Assert
-        SutMock.Verify(x => x.Parse(Input, FormatProvider, null, FormattableStringParserMock.Object), Times.Once);
+        SutMock.Received().Parse(Input, FormatProvider, null, FormattableStringParserMock);
     }
 
     [Fact]
     public void Parse_Without_FormattableStringParser_Gets_Processed_Correctly()
     {
         // Act
-        _ = SutMock.Object.Parse(Input, FormatProvider, Context);
+        _ = SutMock.Parse(Input, FormatProvider, Context);
 
         // Assert
-        SutMock.Verify(x => x.Parse(Input, FormatProvider, Context, null), Times.Once);
+        SutMock.Received().Parse(Input, FormatProvider, Context, null);
     }
 }

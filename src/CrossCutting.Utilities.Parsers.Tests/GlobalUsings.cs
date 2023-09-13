@@ -13,5 +13,5 @@ global using CrossCutting.Utilities.Parsers.MathematicExpressionProcessors.Aggre
 global using FluentAssertions;
 global using FluentAssertions.Execution;
 global using Microsoft.Extensions.DependencyInjection;
-global using Moq;
+global using NSubstitute;
 global using Xunit;

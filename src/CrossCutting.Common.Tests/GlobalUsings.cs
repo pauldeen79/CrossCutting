@@ -7,5 +7,5 @@ global using System.Linq;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
 global using FluentAssertions;
-global using Moq;
+global using NSubstitute;
 global using Xunit;

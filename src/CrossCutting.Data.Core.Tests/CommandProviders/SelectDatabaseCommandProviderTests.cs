@@ -2,7 +2,7 @@
 
 public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommandProvider>
 {
-    private Mock<IDatabaseEntityRetrieverSettings> SettingsMock => Fixture.Freeze<Mock<IDatabaseEntityRetrieverSettings>>();
+    private IDatabaseEntityRetrieverSettings SettingsMock => Fixture.Freeze<IDatabaseEntityRetrieverSettings>();
 
     [Theory]
     [InlineData(DatabaseOperation.Delete)]
@@ -31,14 +31,13 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
     {
         // Arrange
         const string Sql = "SELECT Id, Active, Field1, Field2, Field3 FROM MyTable WHERE Active = 1 ORDER BY Field1";
-        SettingsMock.SetupGet(x => x.DefaultOrderBy).Returns("Field1");
-        SettingsMock.SetupGet(x => x.DefaultWhere).Returns("Active = 1");
-        SettingsMock.SetupGet(x => x.Fields).Returns("Id, Active, Field1, Field2, Field3");
-        SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
-        var settings = SettingsMock.Object;
-        Fixture.Freeze<Mock<IDatabaseEntityRetrieverSettingsProvider>>()
-               .Setup(x => x.TryGet<TestEntity>(out settings))
-               .Returns(true);
+        SettingsMock.DefaultOrderBy.Returns("Field1");
+        SettingsMock.DefaultWhere.Returns("Active = 1");
+        SettingsMock.Fields.Returns("Id, Active, Field1, Field2, Field3");
+        SettingsMock.TableName.Returns("MyTable");
+        Fixture.Freeze<IDatabaseEntityRetrieverSettingsProvider>()
+               .TryGet<TestEntity>(out Arg.Any<IDatabaseEntityRetrieverSettings?>())
+               .Returns(x => { x[0] = SettingsMock; return true; });
 
         // Act
         var actual = Sut.Create<TestEntity>(DatabaseOperation.Select);

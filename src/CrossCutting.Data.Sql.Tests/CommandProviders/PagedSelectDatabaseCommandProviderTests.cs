@@ -2,7 +2,7 @@
 
 public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatabaseCommandProvider>
 {
-    private Mock<IPagedDatabaseEntityRetrieverSettings> SettingsMock => Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettings>>();
+    private IPagedDatabaseEntityRetrieverSettings SettingsMock => Fixture.Freeze<IPagedDatabaseEntityRetrieverSettings>();
 
     [Theory]
     [InlineData(DatabaseOperation.Delete)]
@@ -32,14 +32,13 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         // Arrange
         const string CommandSql = "SELECT TOP 10 Id, Active, Field1, Field2, Field3 FROM MyTable WHERE Active = 1 ORDER BY Field1";
         const string RecordCountSql = "SELECT COUNT(*) FROM MyTable WHERE Active = 1";
-        SettingsMock.SetupGet(x => x.DefaultOrderBy).Returns("Field1");
-        SettingsMock.SetupGet(x => x.DefaultWhere).Returns("Active = 1");
-        SettingsMock.SetupGet(x => x.Fields).Returns("Id, Active, Field1, Field2, Field3");
-        SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
-        var settings = SettingsMock.Object;
-        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>()
-               .Setup(x => x.TryGet<TestEntity>(out settings))
-               .Returns(true);
+        SettingsMock.DefaultOrderBy.Returns("Field1");
+        SettingsMock.DefaultWhere.Returns("Active = 1");
+        SettingsMock.Fields.Returns("Id, Active, Field1, Field2, Field3");
+        SettingsMock.TableName.Returns("MyTable");
+        Fixture.Freeze<IPagedDatabaseEntityRetrieverSettingsProvider>()
+               .TryGet<TestEntity>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings?>())
+               .Returns(x => { x[0] = SettingsMock; return true; });
 
         // Act
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10);
@@ -55,14 +54,14 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         // Arrange
         const string CommandSql = "SELECT Id, Active, Field1, Field2, Field3 FROM (SELECT Id, Active, Field1, Field2, Field3, ROW_NUMBER() OVER (ORDER BY Field1) as sq_row_number FROM MyTable WHERE Active = 1) sq WHERE sq.sq_row_number BETWEEN 11 and 20;";
         const string RecordCountSql = "SELECT COUNT(*) FROM MyTable WHERE Active = 1";
-        SettingsMock.SetupGet(x => x.DefaultOrderBy).Returns("Field1");
-        SettingsMock.SetupGet(x => x.DefaultWhere).Returns("Active = 1");
-        SettingsMock.SetupGet(x => x.Fields).Returns("Id, Active, Field1, Field2, Field3");
-        SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
-        var settings = SettingsMock.Object;
-        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>()
-               .Setup(x => x.TryGet<TestEntity>(out settings))
-               .Returns(true);
+        SettingsMock.DefaultOrderBy.Returns("Field1");
+        SettingsMock.DefaultWhere.Returns("Active = 1");
+        SettingsMock.Fields.Returns("Id, Active, Field1, Field2, Field3");
+        SettingsMock.TableName.Returns("MyTable");
+        Fixture.Freeze<IPagedDatabaseEntityRetrieverSettingsProvider>()
+               .TryGet<TestEntity>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings?>())
+               .Returns(x => { x[0] = SettingsMock; return true; });
+
 
         // Act
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10);
@@ -78,13 +77,12 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         // Arrange
         const string CommandSql = "SELECT Id, Active, Field1, Field2, Field3 FROM (SELECT TOP 10 Id, Active, Field1, Field2, Field3, ROW_NUMBER() OVER (ORDER BY (SELECT 0)) as sq_row_number FROM MyTable WHERE Active = 1) sq WHERE sq.sq_row_number BETWEEN 11 and 20;";
         const string RecordCountSql = "SELECT COUNT(*) FROM MyTable WHERE Active = 1";
-        SettingsMock.SetupGet(x => x.DefaultWhere).Returns("Active = 1");
-        SettingsMock.SetupGet(x => x.Fields).Returns("Id, Active, Field1, Field2, Field3");
-        SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
-        var settings = SettingsMock.Object;
-        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>()
-               .Setup(x => x.TryGet<TestEntity>(out settings))
-               .Returns(true);
+        SettingsMock.DefaultWhere.Returns("Active = 1");
+        SettingsMock.Fields.Returns("Id, Active, Field1, Field2, Field3");
+        SettingsMock.TableName.Returns("MyTable");
+        Fixture.Freeze<IPagedDatabaseEntityRetrieverSettingsProvider>()
+               .TryGet<TestEntity>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings?>())
+               .Returns(x => { x[0] = SettingsMock; return true; });
 
         // Act
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10);
@@ -98,12 +96,11 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
     public void CreatePaged_Limits_PageSize_Based_On_Settings()
     {
         // Arrange
-        SettingsMock.SetupGet(x => x.TableName).Returns("MyTable");
-        SettingsMock.SetupGet(x => x.OverridePageSize).Returns(100);
-        var settings = SettingsMock.Object;
-        Fixture.Freeze<Mock<IPagedDatabaseEntityRetrieverSettingsProvider>>()
-               .Setup(x => x.TryGet<TestEntity>(out settings))
-               .Returns(true);
+        SettingsMock.TableName.Returns("MyTable");
+        SettingsMock.OverridePageSize.Returns(100);
+        Fixture.Freeze<IPagedDatabaseEntityRetrieverSettingsProvider>()
+               .TryGet<TestEntity>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings?>())
+               .Returns(x => { x[0] = SettingsMock; return true; });
 
         // Act
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 1000);
