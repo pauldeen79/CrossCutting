@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests.FunctionParseResultArguments;
+namespace CrossCutting.Utilities.Parsers.Tests.FunctionParseResultArguments;
 
 public class FunctionArgumentBaseTests
 {
@@ -9,7 +9,7 @@ public class FunctionArgumentBaseTests
         var sut = new FunctionArgumentBase(new FunctionParseResultBuilder().WithFunctionName("Test").Build());
 
         // Act & assert
-        sut.Invoking(x => x.GetValueResult(null, new Mock<IFunctionParseResultEvaluator>().Object, new Mock<IExpressionParser>().Object, CultureInfo.InvariantCulture))
+        sut.Invoking(x => x.GetValueResult(null, Substitute.For<IFunctionParseResultEvaluator>(), Substitute.For<IExpressionParser>(), CultureInfo.InvariantCulture))
            .Should().Throw<NotSupportedException>();
     }
 }

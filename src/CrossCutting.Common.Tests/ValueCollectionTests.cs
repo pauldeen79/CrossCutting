@@ -16,10 +16,10 @@ public class ValueCollectionTests
     public void Can_Construct_Empty_ValueCollection_With_Custom_EqualityComparer()
     {
         // Arrange
-        var equalityComparerMock = new Mock<IEqualityComparer<string>>();
+        var equalityComparerMock = Substitute.For<IEqualityComparer<string>>();
 
         // Act
-        var actual = new ValueCollection<string>(equalityComparerMock.Object);
+        var actual = new ValueCollection<string>(equalityComparerMock);
 
         // Assert
         actual.Should().BeEmpty();
@@ -39,12 +39,12 @@ public class ValueCollectionTests
     public void Can_Construct_Prefilled_ValueCollection_With_Custom_EqualityComparer()
     {
         // Arrange
-        var equalityComparerMock = new Mock<IEqualityComparer<string>>();
-        equalityComparerMock.Setup(x => x.Equals(It.IsAny<string>(), It.IsAny<string>()))
-                            .Returns<string, string>((x, y) => x.ToUpperInvariant() == y.ToUpperInvariant());
+        var equalityComparerMock = Substitute.For<IEqualityComparer<string>>();
+        equalityComparerMock.Equals(Arg.Any<string>(), Arg.Any<string>())
+                            .Returns(x => x.ArgAt<string>(0).ToUpperInvariant() == x.ArgAt<string>(1).ToUpperInvariant());
 
         // Act
-        var actual = new ValueCollection<string>(new[] { "a", "b", "c" }, equalityComparerMock.Object);
+        var actual = new ValueCollection<string>(new[] { "a", "b", "c" }, equalityComparerMock);
 
         // Assert
         actual.Should().BeEquivalentTo("a", "b", "c");
@@ -96,11 +96,11 @@ public class ValueCollectionTests
     public void Can_Compare_Two_ValueCollections_With_Custom_EqualityComparer()
     {
         // Arrange
-        var equalityComparerMock = new Mock<IEqualityComparer<string>>();
-        equalityComparerMock.Setup(x => x.Equals(It.IsAny<string>(), It.IsAny<string>()))
-                            .Returns<string, string>((x, y) => x.ToUpperInvariant() == y.ToUpperInvariant());
-        var value1 = new ValueCollection<string>(new[] { "a", "b", "C" }, equalityComparerMock.Object);
-        var value2 = new ValueCollection<string>(new[] { "A", "b", "c" }, equalityComparerMock.Object);
+        var equalityComparerMock = Substitute.For<IEqualityComparer<string>>();
+        equalityComparerMock.Equals(Arg.Any<string>(), Arg.Any<string>())
+                            .Returns(x => x.ArgAt<string>(0).ToUpperInvariant() == x.ArgAt<string>(1).ToUpperInvariant());
+        var value1 = new ValueCollection<string>(new[] { "a", "b", "C" }, equalityComparerMock);
+        var value2 = new ValueCollection<string>(new[] { "A", "b", "c" }, equalityComparerMock);
 
         // Act
         var actual = value1.Equals(value2);
@@ -231,7 +231,7 @@ public class ValueCollectionTests
     public void ToString_Gives_Correct_Result_On_DateTime_Value()
     {
         // Arrange
-        var value = new ValueCollection<DateTime>(new[] { new DateTime(2020, 2, 1) });
+        var value = new ValueCollection<DateTime>(new[] { new DateTime(2020, 2, 1, 0, 0, 0, DateTimeKind.Unspecified) });
 
         // Act
         var actual = value.ToString(null, CultureInfo.InvariantCulture);

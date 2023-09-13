@@ -4,13 +4,13 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
 {
     private DatabaseEntityRetriever<MyEntity> Sut { get; }
     private DbConnection Connection { get; }
-    private Mock<IDatabaseEntityMapper<MyEntity>> MapperMock { get; }
+    private IDatabaseEntityMapper<MyEntity> MapperMock { get; }
 
     public DatabaseEntityRetrieverTests()
     {
         Connection = new DbConnection();
-        MapperMock = new Mock<IDatabaseEntityMapper<MyEntity>>();
-        Sut = new DatabaseEntityRetriever<MyEntity>(Connection, MapperMock.Object);
+        MapperMock = Substitute.For<IDatabaseEntityMapper<MyEntity>>();
+        Sut = new DatabaseEntityRetriever<MyEntity>(Connection, MapperMock);
     }
 
     [Fact]
@@ -85,8 +85,8 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
 
     private void InitializeMapper()
     {
-        MapperMock.Setup(x => x.Map(It.IsAny<IDataReader>()))
-                  .Returns<IDataReader>(reader => new MyEntity { Property = reader.GetString("Property") });
+        MapperMock.Map(Arg.Any<IDataReader>())
+                  .Returns(x => new MyEntity { Property = x.ArgAt<IDataReader>(0).GetString("Property") });
     }
     public void Dispose()
     {

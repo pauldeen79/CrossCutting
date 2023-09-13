@@ -2,14 +2,15 @@
 
 public sealed class FunctionParseResultTests : IDisposable
 {
-    private readonly Mock<IFunctionParseResultEvaluator> _evaluatorMock = new();
+    private readonly IFunctionParseResultEvaluator _evaluatorMock = Substitute.For<IFunctionParseResultEvaluator>();
     private readonly ServiceProvider _provider;
     private readonly IServiceScope _scope;
 
     public FunctionParseResultTests()
     {
-        _evaluatorMock.Setup(x => x.Evaluate(It.IsAny<FunctionParseResult>(), It.IsAny<IExpressionParser>(), It.IsAny<object?>()))
-                      .Returns<FunctionParseResult, IExpressionParser, object?>((result, _, _) => result.FunctionName switch
+        _evaluatorMock.Evaluate(Arg.Any<FunctionParseResult>(), Arg.Any<IExpressionParser>(), Arg.Any<object?>())
+                      //<FunctionParseResult, IExpressionParser, object?>((result, _, _)
+                      .Returns(x => x.ArgAt<FunctionParseResult>(0).FunctionName switch
                         {
                             "MyNestedFunction" => Result<object?>.Success("Evaluated result"),
                             "NumericFunction" => Result<object?>.Success(1),
@@ -36,7 +37,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithLiteralArgument();
 
         // Act
-        var result = argument.GetArgumentValueResult(1, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentValueResult(1, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -50,7 +51,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithLiteralArgument();
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -64,7 +65,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithLiteralArgument();
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), "ignored");
+        var result = argument.GetArgumentValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), "ignored");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -78,7 +79,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("MyNestedFunction");
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -92,7 +93,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithoutArguments();
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), "some value");
+        var result = argument.GetArgumentValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), "some value");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -106,7 +107,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithLiteralArgument();
 
         // Act
-        var result = argument.GetArgumentStringValueResult(1, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentStringValueResult(1, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -120,7 +121,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("NumericFunction");
 
         // Act
-        var result = argument.GetArgumentStringValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentStringValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -134,7 +135,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithLiteralArgument();
 
         // Act
-        var result = argument.GetArgumentStringValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentStringValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -148,7 +149,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithoutArguments();
 
         // Act
-        var result = argument.GetArgumentStringValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), "default value");
+        var result = argument.GetArgumentStringValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), "default value");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -162,7 +163,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithLiteralArgument();
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(1, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentInt32ValueResult(1, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -176,7 +177,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("NumericFunction");
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -190,7 +191,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunction");
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -204,7 +205,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("UnknownExpressionString");
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -218,7 +219,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunctionAsString");
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -232,7 +233,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("NumericFunctionAsString");
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -246,7 +247,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithoutArguments();
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), 13);
+        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), 13);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -260,7 +261,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithLiteralArgument();
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(1, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentInt64ValueResult(1, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -274,7 +275,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("LongFunction");
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -288,7 +289,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunction");
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -302,7 +303,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("UnknownExpressionString");
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -316,7 +317,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunctionAsString");
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -330,7 +331,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("LongFunctionAsString");
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -344,7 +345,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithoutArguments();
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), 13L);
+        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), 13L);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -358,7 +359,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithLiteralArgument();
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(1, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentDecimalValueResult(1, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -372,7 +373,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("DecimalFunction");
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -386,7 +387,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunction");
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -400,7 +401,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("UnknownExpressionString");
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -414,7 +415,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunctionAsString");
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -428,7 +429,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("DecimalFunctionAsString");
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -442,7 +443,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithoutArguments();
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), 13.5M);
+        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), 13.5M);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -456,7 +457,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithLiteralArgument();
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(1, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentBooleanValueResult(1, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -470,7 +471,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("BooleanFunction");
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -484,7 +485,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunction");
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -498,7 +499,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("UnknownExpressionString");
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -512,7 +513,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunctionAsString");
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -526,7 +527,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("BooleanFunctionAsString");
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -540,7 +541,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithoutArguments();
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), true);
+        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), true);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -554,7 +555,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithLiteralArgument();
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(1, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentDateTimeValueResult(1, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -568,7 +569,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunction");
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -582,7 +583,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("NumericFunction");
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -596,7 +597,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("UnknownExpressionString");
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -610,7 +611,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("NumericFunctionAsString");
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -624,7 +625,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunctionAsString");
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
+        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -639,7 +640,7 @@ public sealed class FunctionParseResultTests : IDisposable
         var dt = DateTime.Now;
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", null, _evaluatorMock.Object, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), dt);
+        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionParser>(), dt);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
