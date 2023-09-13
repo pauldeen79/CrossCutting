@@ -14,3 +14,27 @@ This repository consists of the following packages:
 | CrossCutting.Utilities.ObjectDumper   | Produces readable flat-text representation from objects, for use in logging                                                                                         |
 | CrossCutting.Utilities.Parsers        | Parser for pipe-delmited data table strings, TSQL INSERT INTO statements, function strings, math expressions and formattable strings (dynamic interpolated strings) |
 | System.Data.Stub                      | Stubs for System.Data interfaces like IDbConnection, IDbCommand and IDataReader                                                                                     |
+
+# Using NSubstitute or Moq as mock factory for CrossCutting.Common.Testing
+
+To use NSubstitute as a mock factory for the code in CrossCutting.Common.Testing, create a test helper project within your solution, and add the following code:
+
+```C#
+    public static void ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
+        this Type type,
+        Func<ParameterInfo, bool>? parameterPredicate = null,
+        Func<ParameterInfo, object?>? parameterReplaceDelegate = null,
+        Func<ConstructorInfo, bool>? constructorPredicate = null)
+        => ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
+            type,
+            t => CreateInstance(t, parameterType => Substitute.For(new[] { parameterType }, Array.Empty<object>()), parameterReplaceDelegate, constructorPredicate),
+            parameterPredicate,
+            parameterReplaceDelegate,
+            constructorPredicate);
+```
+
+You can easily replace NSubstitute with Moq, if you want, by changing the factory delegate argument to this:
+
+```C#
+t => CreateInstance(t, parameterType => ((Mock)Activator.CreateInstance(typeof(Mock<>).MakeGenericType(parameterType))).Object, parameterReplaceDelegate, constructorPredicate),
+```
