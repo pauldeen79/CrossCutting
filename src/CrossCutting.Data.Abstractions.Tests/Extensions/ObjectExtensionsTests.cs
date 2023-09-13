@@ -33,7 +33,7 @@ public class ObjectExtensionsTests
                 new object?[] { "test", "test" },
                 new object?[] { 1, 1 },
                 new object?[] { false, false },
-                new object?[] { new DateTime(1900, 1,1), new DateTime(1900, 1, 1) },
+                new object?[] { new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified) },
         };
 
     public static IEnumerable<object?[]> FixNullData
@@ -44,6 +44,6 @@ public class ObjectExtensionsTests
                 new object?[] { "test", "test" },
                 new object?[] { 1, 1 },
                 new object?[] { false, false },
-                new object?[] { new DateTime(1900, 1,1), new DateTime(1900, 1, 1) },
+                new object?[] { new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified) },
         };
 }
