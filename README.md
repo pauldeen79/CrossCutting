@@ -27,7 +27,7 @@ To use NSubstitute as a mock factory for the code in CrossCutting.Common.Testing
         Func<ConstructorInfo, bool>? constructorPredicate = null)
         => ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
             type,
-            t => CreateInstance(t, parameterType => Substitute.For(new[] { parameterType }, Array.Empty<object>()), parameterReplaceDelegate, constructorPredicate),
+            t => t.CreateInstance(parameterType => Substitute.For(new[] { parameterType }, Array.Empty<object>()), parameterReplaceDelegate, constructorPredicate),
             parameterPredicate,
             parameterReplaceDelegate,
             constructorPredicate);
@@ -36,5 +36,5 @@ To use NSubstitute as a mock factory for the code in CrossCutting.Common.Testing
 You can easily replace NSubstitute with Moq, if you want, by changing the factory delegate argument to this:
 
 ```C#
-t => CreateInstance(t, parameterType => ((Mock)Activator.CreateInstance(typeof(Mock<>).MakeGenericType(parameterType))).Object, parameterReplaceDelegate, constructorPredicate),
+t => t.CreateInstance(parameterType => ((Mock)Activator.CreateInstance(typeof(Mock<>).MakeGenericType(parameterType))).Object, parameterReplaceDelegate, constructorPredicate),
 ```
