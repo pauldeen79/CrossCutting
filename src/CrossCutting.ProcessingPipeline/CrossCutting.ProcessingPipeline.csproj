@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>11.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <AnalysisLevel>latest-All</AnalysisLevel>
+    <PackageId>pauldeen79.CrossCutting.ProcessingPipeline</PackageId>
+    <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrossCutting.Common\CrossCutting.Common.csproj" />
+  </ItemGroup>
+
+</Project>
