@@ -9,28 +9,17 @@ public class ProofOfConceptTests
         var builder = new ProcessingPipelineBuilder();
 
         // Act
-        var pipeline = builder.AddFeatures(new MyFeature()).Build();
+        var pipeline = builder.AddFeatures(new MyFeature(1)).Build();
 
         // Assert
         pipeline.Features.Should().ContainSingle();
-        pipeline.Features.Single().Should().BeOfType<MyFeatureImplementation>();
+        pipeline.Features.Single().Should().BeOfType<MyFeature>();
     }
 
-    private sealed class MyFeature : PipelineFeatureBuilder
+    private class MyFeature : PipelineFeature
     {
-        public override PipelineFeature Build() => new MyFeatureImplementation(Order);
-    }
-
-    private sealed record MyFeatureImplementation : PipelineFeature
-    {
-        public MyFeatureImplementation(PipelineFeature original) : base(original)
+        public MyFeature(int order) : base(order)
         {
         }
-
-        public MyFeatureImplementation(int order) : base(order)
-        {
-        }
-
-        public override PipelineFeatureBuilder ToBuilder() => new MyFeature();
     }
 }

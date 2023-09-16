@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.ProcessingPipeline.Entities;
 
-public partial record PipelineFeatureBase
+public class PipelineFeatureBase
 {
     public int Order
     {
