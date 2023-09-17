@@ -2,7 +2,11 @@
 
 public partial class ProcessingPipelineBuilder : IValidatableObject
 {
-    public IEnumerable<Entities.PipelineFeature> Features
+#pragma warning disable CA1002 // Do not expose generic lists
+#pragma warning disable CA2227 // Collection properties should be read only
+    public List<Entities.IPipelineFeature> Features
+#pragma warning restore CA2227 // Collection properties should be read only
+#pragma warning restore CA1002 // Do not expose generic lists
     {
         get;
         set;
@@ -21,27 +25,31 @@ public partial class ProcessingPipelineBuilder : IValidatableObject
         return results;
     }
 
-    public ProcessingPipelineBuilder AddFeatures(IEnumerable<Entities.PipelineFeature> features)
+    public ProcessingPipelineBuilder AddFeatures(IEnumerable<Entities.IPipelineFeature> features)
     {
-        features = ArgumentGuard.IsNotNull(features, nameof(features));
-        return AddFeatures(features.ToArray());
+        return AddFeatures(ArgumentGuard.IsNotNull(features, nameof(features)).ToArray());
     }
 
-    public ProcessingPipelineBuilder AddFeatures(params Entities.PipelineFeature[] features)
+    public ProcessingPipelineBuilder AddFeatures(params Entities.IPipelineFeature[] features)
     {
-        features = ArgumentGuard.IsNotNull(features, nameof(features));
-        Features = Features.Concat(features);
+        Features.AddRange(ArgumentGuard.IsNotNull(features, nameof(features)));
+        return this;
+    }
+
+    public ProcessingPipelineBuilder AddFeature(Entities.IPipelineFeature feature)
+    {
+        Features.Add(ArgumentGuard.IsNotNull(feature, nameof(feature)));
         return this;
     }
 
     public ProcessingPipelineBuilder()
     {
-        Features = Enumerable.Empty<Entities.PipelineFeature>();
+        Features = new();
     }
 
     public ProcessingPipelineBuilder(Entities.ProcessingPipeline source)
     {
         source = ArgumentGuard.IsNotNull(source, nameof(source));
-        Features = source.Features;
+        Features = source.Features.ToList();
     }
 }
