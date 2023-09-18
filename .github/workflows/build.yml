@@ -79,7 +79,7 @@ jobs:
           VERSION="${VERSION//v}"
           echo Clean Version: $VERSION
           dotnet run --project src/CrossCutting.CodeGeneration/CrossCutting.CodeGeneration.csproj
-          dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -p:Version=$VERSION -o nupkg
+          dotnet pack -v normal -c Release --include-symbols --include-source -o nupkg
       - name: Push to GitHub Feed
         run: |
           for f in ./nupkg/*.nupkg
