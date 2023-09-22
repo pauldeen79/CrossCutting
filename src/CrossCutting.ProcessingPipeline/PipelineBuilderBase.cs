@@ -31,22 +31,22 @@ public abstract class PipelineBuilderBase<T, TResult>
     }
 
     public TResult ReplaceFeature<TOriginal>(T newFeature)
-    {
-        newFeature = newFeature.IsNotNull(nameof(newFeature));
+        => RemoveFeature<TOriginal>().AddFeature(newFeature.IsNotNull(nameof(newFeature)));
 
-        foreach (var feature in Features.Where(x => x?.GetType() == typeof(TOriginal)).ToArray())
+    public TResult RemoveFeature<TRemove>()
+    {
+        foreach (var feature in Features.Where(x => x?.GetType() == typeof(TRemove)).ToArray())
         {
             Features.Remove(feature);
         }
 
-        AddFeature(newFeature);
         return (TResult)this;
     }
 
     protected IEnumerable<ValidationResult> Validate(object instance)
     {
         var results = new List<ValidationResult>();
-        Validator.TryValidateObject(instance, new ValidationContext(instance, null, null), results, true);
+        Validator.TryValidateObject(instance.IsNotNull(nameof(instance)), new ValidationContext(instance, null, null), results, true);
         return results;
     }
 

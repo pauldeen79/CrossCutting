@@ -70,6 +70,22 @@ public class ProofOfConceptTests
         }
 
         [Fact]
+        public void Can_Remove_Feature_On_Pipeline()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?, object?>()
+                .AddFeature(new MyFeatureWithContext());
+
+            // Act
+            var pipeline = builder
+                .RemoveFeature<MyFeatureWithContext>()
+                .Build();
+
+            // Assert
+            pipeline.Features.Should().BeEmpty();
+        }
+
+        [Fact]
         public void Can_Validate_PipelineBuilder()
         {
             // Arrange
@@ -180,6 +196,22 @@ public class ProofOfConceptTests
             // Assert
             pipeline.Features.Should().ContainSingle();
             pipeline.Features.Single().Should().BeOfType<MyReplacedContextlessFeature>();
+        }
+
+        [Fact]
+        public void Can_Remove_Feature_On_Pipeline()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?>()
+                .AddFeature(new MyContextlessFeature());
+
+            // Act
+            var pipeline = builder
+                .RemoveFeature<MyContextlessFeature>()
+                .Build();
+
+            // Assert
+            pipeline.Features.Should().BeEmpty();
         }
 
         [Fact]
