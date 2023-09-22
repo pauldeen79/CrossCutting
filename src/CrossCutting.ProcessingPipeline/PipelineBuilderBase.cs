@@ -4,17 +4,17 @@ public abstract class PipelineBuilderBase<T, TResult>
     where TResult : PipelineBuilderBase<T, TResult>
 {
 #pragma warning disable CA2227 // Collection properties should be read only
-    public IList<T> Features
+    public IList<IBuilder<T>> Features
 #pragma warning restore CA2227 // Collection properties should be read only
     {
         get;
         set;
     }
 
-    public TResult AddFeatures(IEnumerable<T> features)
+    public TResult AddFeatures(IEnumerable<IBuilder<T>> features)
         => AddFeatures(features.IsNotNull(nameof(features)).ToArray());
 
-    public TResult AddFeatures(params T[] features)
+    public TResult AddFeatures(params IBuilder<T>[] features)
     {
         foreach (var feature in features.IsNotNull(nameof(features)))
         {
@@ -24,13 +24,13 @@ public abstract class PipelineBuilderBase<T, TResult>
         return (TResult)this;
     }
 
-    public TResult AddFeature(T feature)
+    public TResult AddFeature(IBuilder<T> feature)
     {
         Features.Add(feature.IsNotNull(nameof(feature)));
         return (TResult)this;
     }
 
-    public TResult ReplaceFeature<TOriginal>(T newFeature)
+    public TResult ReplaceFeature<TOriginal>(IBuilder<T> newFeature)
         => RemoveFeature<TOriginal>().AddFeature(newFeature.IsNotNull(nameof(newFeature)));
 
     public TResult RemoveFeature<TRemove>()
@@ -51,8 +51,8 @@ public abstract class PipelineBuilderBase<T, TResult>
     }
 
     protected PipelineBuilderBase()
-        => Features = new List<T>();
+        => Features = new List<IBuilder<T>>();
 
-    protected PipelineBuilderBase(IEnumerable<T> features)
+    protected PipelineBuilderBase(IEnumerable<IBuilder<T>> features)
         => Features = features.ToList();
 }
