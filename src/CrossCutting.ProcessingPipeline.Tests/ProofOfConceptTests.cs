@@ -86,7 +86,7 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Can_Validate_PipelineBuilder()
+        public void Can_Validate_PipelineBuilder_With_Null_Features_List()
         {
             // Arrange
             var builder = new PipelineBuilder<object?, object?> { Features = null! };
@@ -96,6 +96,32 @@ public class ProofOfConceptTests
 
             // Assert
             validationResults.Should().ContainSingle();
+        }
+
+        [Fact]
+        public void Can_Validate_PipelineBuilder_With_Empty_Features_List()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?, object?> { Features = new List<IBuilder<IPipelineFeature<object?, object?>>>() };
+
+            // Act
+            var validationResults = builder.Validate(new(builder));
+
+            // Assert
+            validationResults.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Can_Validate_PipelineBuilder_With_NonEmpty_Features_List()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?, object?> { Features = new List<IBuilder<IPipelineFeature<object?, object?>>>(new[] { new MyFeatureWithContextBuilder() }) };
+
+            // Act
+            var validationResults = builder.Validate(new(builder));
+
+            // Assert
+            validationResults.Should().BeEmpty();
         }
 
         [Fact]
@@ -215,7 +241,7 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Can_Validate_PipelineBuilder()
+        public void Can_Validate_PipelineBuilder_With_Null_Features_List()
         {
             // Arrange
             var builder = new PipelineBuilder<object?> { Features = null! };
@@ -225,6 +251,33 @@ public class ProofOfConceptTests
 
             // Assert
             validationResults.Should().ContainSingle();
+        }
+
+        [Fact]
+        public void Can_Validate_PipelineBuilder_With_Empty_Features_List()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?> { Features = new List<IBuilder<IPipelineFeature<object?>>>() };
+
+            // Act
+            var validationResults = builder.Validate(new(builder));
+
+            // Assert
+            validationResults.Should().BeEmpty();
+        }
+
+
+        [Fact]
+        public void Can_Validate_PipelineBuilder_With_NonEmpty_Features_List()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?> { Features = new List<IBuilder<IPipelineFeature<object?>>>(new[] { new MyContextlessFeatureBuilder() }) };
+
+            // Act
+            var validationResults = builder.Validate(new(builder));
+
+            // Assert
+            validationResults.Should().BeEmpty();
         }
 
         [Fact]
