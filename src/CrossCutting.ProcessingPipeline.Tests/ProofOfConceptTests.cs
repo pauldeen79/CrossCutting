@@ -118,7 +118,7 @@ public class ProofOfConceptTests
             PipelineContext<object?, object?>? context = null;
             Action<PipelineContext<object?, object?>> processCallback = new(ctx => { context = ctx; });
             var sut = new PipelineBuilder<object?, object?>()
-                .AddFeature(new MyFeatureWithContextBuilder { ProcessCallback = processCallback })
+                .AddFeature(new MyFeatureWithContextBuilder().WithProcessCallback(processCallback))
                 .Build();
 
             // Act
@@ -247,7 +247,7 @@ public class ProofOfConceptTests
             PipelineContext<object?>? context = null;
             Action<PipelineContext<object?>> processCallback = new(ctx => { context = ctx; });
             var sut = new PipelineBuilder<object?>()
-                .AddFeature(new MyContextlessFeatureBuilder { ProcessCallback = processCallback })
+                .AddFeature(new MyContextlessFeatureBuilder().WithProcessCallback(processCallback))
                 .Build();
 
             // Act
@@ -279,6 +279,12 @@ public class ProofOfConceptTests
     private sealed class MyContextlessFeatureBuilder : IPipelineFeatureBuilder<object?>
     {
         public Action<PipelineContext<object?>> ProcessCallback { get; set; } = new(_ => { });
+
+        public MyContextlessFeatureBuilder WithProcessCallback(Action<PipelineContext<object?>> processCallback)
+        {
+            ProcessCallback = processCallback;
+            return this;
+        }
 
         public IPipelineFeature<object?> Build()
             => new MyContextlessFeature(ProcessCallback);
@@ -321,6 +327,12 @@ public class ProofOfConceptTests
     private sealed class MyFeatureWithContextBuilder : IPipelineFeatureBuilder<object?, object?>
     {
         public Action<PipelineContext<object?, object?>> ProcessCallback { get; set; } = new(_ => { });
+
+        public MyFeatureWithContextBuilder WithProcessCallback(Action<PipelineContext<object?, object?>> processCallback)
+        {
+            ProcessCallback = processCallback;
+            return this;
+        }
 
         public IPipelineFeature<object?, object?> Build()
             => new MyFeatureWithContext(ProcessCallback);
