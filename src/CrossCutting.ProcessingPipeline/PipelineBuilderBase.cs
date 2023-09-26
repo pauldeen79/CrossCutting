@@ -4,17 +4,17 @@ public abstract class PipelineBuilderBase<T, TResult>
     where TResult : PipelineBuilderBase<T, TResult>
 {
 #pragma warning disable CA2227 // Collection properties should be read only
-    public IList<T> Features
+    public IList<IBuilder<T>> Features
 #pragma warning restore CA2227 // Collection properties should be read only
     {
         get;
         set;
     }
 
-    public TResult AddFeatures(IEnumerable<T> features)
+    public TResult AddFeatures(IEnumerable<IBuilder<T>> features)
         => AddFeatures(features.IsNotNull(nameof(features)).ToArray());
 
-    public TResult AddFeatures(params T[] features)
+    public TResult AddFeatures(params IBuilder<T>[] features)
     {
         foreach (var feature in features.IsNotNull(nameof(features)))
         {
@@ -24,35 +24,35 @@ public abstract class PipelineBuilderBase<T, TResult>
         return (TResult)this;
     }
 
-    public TResult AddFeature(T feature)
+    public TResult AddFeature(IBuilder<T> feature)
     {
         Features.Add(feature.IsNotNull(nameof(feature)));
         return (TResult)this;
     }
 
-    public TResult ReplaceFeature<TOriginal>(T newFeature)
-    {
-        newFeature = newFeature.IsNotNull(nameof(newFeature));
+    public TResult ReplaceFeature<TOriginal>(IBuilder<T> newFeature)
+        => RemoveFeature<TOriginal>().AddFeature(newFeature.IsNotNull(nameof(newFeature)));
 
-        foreach (var feature in Features.Where(x => x?.GetType() == typeof(TOriginal)).ToArray())
+    public TResult RemoveFeature<TRemove>()
+    {
+        foreach (var feature in Features.Where(x => x?.GetType() == typeof(TRemove)).ToArray())
         {
             Features.Remove(feature);
         }
 
-        AddFeature(newFeature);
         return (TResult)this;
     }
 
     protected IEnumerable<ValidationResult> Validate(object instance)
     {
         var results = new List<ValidationResult>();
-        Validator.TryValidateObject(instance, new ValidationContext(instance, null, null), results, true);
+        Validator.TryValidateObject(instance.IsNotNull(nameof(instance)), new ValidationContext(instance, null, null), results, true);
         return results;
     }
 
     protected PipelineBuilderBase()
-        => Features = new List<T>();
+        => Features = new List<IBuilder<T>>();
 
-    protected PipelineBuilderBase(IEnumerable<T> features)
+    protected PipelineBuilderBase(IEnumerable<IBuilder<T>> features)
         => Features = features.ToList();
 }

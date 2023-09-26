@@ -12,7 +12,7 @@ public class ProofOfConceptTests
 
             // Act
             var pipeline = builder
-                .AddFeature(new MyFeatureWithContext())
+                .AddFeature(new MyFeatureWithContextBuilder())
                 .Build();
 
             // Assert
@@ -28,7 +28,7 @@ public class ProofOfConceptTests
 
             // Act
             var pipeline = builder
-                .AddFeatures(new MyFeatureWithContext(), new MyFeatureWithContext())
+                .AddFeatures(new MyFeatureWithContextBuilder(), new MyFeatureWithContextBuilder())
                 .Build();
 
             // Assert
@@ -44,7 +44,7 @@ public class ProofOfConceptTests
 
             // Act
             var pipeline = builder
-                .AddFeatures(new[] { new MyFeatureWithContext(), new MyFeatureWithContext() }.AsEnumerable())
+                .AddFeatures(new[] { new MyFeatureWithContextBuilder(), new MyFeatureWithContextBuilder() }.AsEnumerable())
                 .Build();
 
             // Assert
@@ -57,11 +57,11 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?, object?>()
-                .AddFeature(new MyFeatureWithContext());
+                .AddFeature(new MyFeatureWithContextBuilder());
 
             // Act
             var pipeline = builder
-                .ReplaceFeature<MyFeatureWithContext>(new MyReplacedFeatureWithContext())
+                .ReplaceFeature<MyFeatureWithContextBuilder>(new MyReplacedFeatureWithContextBuilder())
                 .Build();
 
             // Assert
@@ -70,7 +70,23 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Can_Validate_PipelineBuilder()
+        public void Can_Remove_Feature_On_Pipeline()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?, object?>()
+                .AddFeature(new MyFeatureWithContextBuilder());
+
+            // Act
+            var pipeline = builder
+                .RemoveFeature<MyFeatureWithContextBuilder>()
+                .Build();
+
+            // Assert
+            pipeline.Features.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Can_Validate_PipelineBuilder_With_Null_Features_List()
         {
             // Arrange
             var builder = new PipelineBuilder<object?, object?> { Features = null! };
@@ -83,6 +99,32 @@ public class ProofOfConceptTests
         }
 
         [Fact]
+        public void Can_Validate_PipelineBuilder_With_Empty_Features_List()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?, object?> { Features = new List<IBuilder<IPipelineFeature<object?, object?>>>() };
+
+            // Act
+            var validationResults = builder.Validate(new(builder));
+
+            // Assert
+            validationResults.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Can_Validate_PipelineBuilder_With_NonEmpty_Features_List()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?, object?> { Features = new List<IBuilder<IPipelineFeature<object?, object?>>>(new[] { new MyFeatureWithContextBuilder() }) };
+
+            // Act
+            var validationResults = builder.Validate(new(builder));
+
+            // Assert
+            validationResults.Should().BeEmpty();
+        }
+
+        [Fact]
         public void Can_Construct_Builder_From_Existing_Pipeline_Instance()
         {
             // Arrange
@@ -92,7 +134,7 @@ public class ProofOfConceptTests
             var builder = new PipelineBuilder<object?, object?>(existingInstance);
 
             // Assert
-            builder.Features.Should().BeEquivalentTo(existingInstance.Features);
+            builder.Features.Select(x => x.GetType()).Should().BeEquivalentTo(existingInstance.Features.Select(x => x.ToBuilder().GetType()));
         }
 
         [Fact]
@@ -102,7 +144,7 @@ public class ProofOfConceptTests
             PipelineContext<object?, object?>? context = null;
             Action<PipelineContext<object?, object?>> processCallback = new(ctx => { context = ctx; });
             var sut = new PipelineBuilder<object?, object?>()
-                .AddFeature(new MyFeatureWithContext(processCallback))
+                .AddFeature(new MyFeatureWithContextBuilder().WithProcessCallback(processCallback))
                 .Build();
 
             // Act
@@ -125,7 +167,7 @@ public class ProofOfConceptTests
 
             // Act
             var pipeline = builder
-                .AddFeature(new MyContextlessFeature())
+                .AddFeature(new MyContextlessFeatureBuilder())
                 .Build();
 
             // Assert
@@ -141,7 +183,7 @@ public class ProofOfConceptTests
 
             // Act
             var pipeline = builder
-                .AddFeatures(new MyContextlessFeature(), new MyContextlessFeature())
+                .AddFeatures(new MyContextlessFeatureBuilder(), new MyContextlessFeatureBuilder())
                 .Build();
 
             // Assert
@@ -157,7 +199,7 @@ public class ProofOfConceptTests
 
             // Act
             var pipeline = builder
-                .AddFeatures(new[] { new MyContextlessFeature(), new MyContextlessFeature() }.AsEnumerable())
+                .AddFeatures(new[] { new MyContextlessFeatureBuilder(), new MyContextlessFeatureBuilder() }.AsEnumerable())
                 .Build();
 
             // Assert
@@ -170,11 +212,11 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?>()
-                .AddFeature(new MyContextlessFeature());
+                .AddFeature(new MyContextlessFeatureBuilder());
 
             // Act
             var pipeline = builder
-                .ReplaceFeature<MyContextlessFeature>(new MyReplacedContextlessFeature())
+                .ReplaceFeature<MyContextlessFeatureBuilder>(new MyReplacedContextlessFeatureBuilder())
                 .Build();
 
             // Assert
@@ -183,7 +225,23 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Can_Validate_PipelineBuilder()
+        public void Can_Remove_Feature_On_Pipeline()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?>()
+                .AddFeature(new MyContextlessFeatureBuilder());
+
+            // Act
+            var pipeline = builder
+                .RemoveFeature<MyContextlessFeatureBuilder>()
+                .Build();
+
+            // Assert
+            pipeline.Features.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Can_Validate_PipelineBuilder_With_Null_Features_List()
         {
             // Arrange
             var builder = new PipelineBuilder<object?> { Features = null! };
@@ -196,6 +254,33 @@ public class ProofOfConceptTests
         }
 
         [Fact]
+        public void Can_Validate_PipelineBuilder_With_Empty_Features_List()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?> { Features = new List<IBuilder<IPipelineFeature<object?>>>() };
+
+            // Act
+            var validationResults = builder.Validate(new(builder));
+
+            // Assert
+            validationResults.Should().BeEmpty();
+        }
+
+
+        [Fact]
+        public void Can_Validate_PipelineBuilder_With_NonEmpty_Features_List()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?> { Features = new List<IBuilder<IPipelineFeature<object?>>>(new[] { new MyContextlessFeatureBuilder() }) };
+
+            // Act
+            var validationResults = builder.Validate(new(builder));
+
+            // Assert
+            validationResults.Should().BeEmpty();
+        }
+
+        [Fact]
         public void Can_Construct_Builder_From_Existing_Pipeline_Instance()
         {
             // Arrange
@@ -205,7 +290,7 @@ public class ProofOfConceptTests
             var builder = new PipelineBuilder<object?>(existingInstance);
 
             // Assert
-            builder.Features.Should().BeEquivalentTo(existingInstance.Features);
+            builder.Features.Select(x => x.GetType()).Should().BeEquivalentTo(existingInstance.Features.Select(x => x.ToBuilder().GetType()));
         }
 
         [Fact]
@@ -215,7 +300,7 @@ public class ProofOfConceptTests
             PipelineContext<object?>? context = null;
             Action<PipelineContext<object?>> processCallback = new(ctx => { context = ctx; });
             var sut = new PipelineBuilder<object?>()
-                .AddFeature(new MyContextlessFeature(processCallback))
+                .AddFeature(new MyContextlessFeatureBuilder().WithProcessCallback(processCallback))
                 .Build();
 
             // Act
@@ -229,16 +314,33 @@ public class ProofOfConceptTests
 
     private sealed class MyContextlessFeature : IPipelineFeature<object?>
     {
-        private readonly Action<PipelineContext<object?>> _processCallback;
+        public Action<PipelineContext<object?>> ProcessCallback { get; }
 
         public MyContextlessFeature()
-            => _processCallback = new Action<PipelineContext<object?>>(_ => { });
+            => ProcessCallback = new Action<PipelineContext<object?>>(_ => { });
 
         public MyContextlessFeature(Action<PipelineContext<object?>> processCallback)
-            => _processCallback = processCallback;
+            => ProcessCallback = processCallback;
 
         public void Process(PipelineContext<object?> context)
-            => _processCallback.Invoke(context);
+            => ProcessCallback.Invoke(context);
+
+        public IBuilder<IPipelineFeature<object?>> ToBuilder()
+            => new MyContextlessFeatureBuilder { ProcessCallback = ProcessCallback };
+    }
+
+    private sealed class MyContextlessFeatureBuilder : IPipelineFeatureBuilder<object?>
+    {
+        public Action<PipelineContext<object?>> ProcessCallback { get; set; } = new(_ => { });
+
+        public MyContextlessFeatureBuilder WithProcessCallback(Action<PipelineContext<object?>> processCallback)
+        {
+            ProcessCallback = processCallback;
+            return this;
+        }
+
+        public IPipelineFeature<object?> Build()
+            => new MyContextlessFeature(ProcessCallback);
     }
 
     private sealed class MyReplacedContextlessFeature : IPipelineFeature<object?>
@@ -247,20 +349,46 @@ public class ProofOfConceptTests
         {
             throw new NotImplementedException();
         }
+
+        public IBuilder<IPipelineFeature<object?>> ToBuilder()
+            => new MyReplacedContextlessFeatureBuilder();
+    }
+
+    private sealed class MyReplacedContextlessFeatureBuilder : IPipelineFeatureBuilder<object?>
+    {
+        public IPipelineFeature<object?> Build()
+            => new MyReplacedContextlessFeature();
     }
 
     private sealed class MyFeatureWithContext : IPipelineFeature<object?, object?>
     {
-        private readonly Action<PipelineContext<object?, object?>> _processCallback;
+        public Action<PipelineContext<object?, object?>> ProcessCallback { get; }
 
         public MyFeatureWithContext()
-            => _processCallback = new Action<PipelineContext<object?, object?>>(_ => { });
+            => ProcessCallback = new Action<PipelineContext<object?, object?>>(_ => { });
 
         public MyFeatureWithContext(Action<PipelineContext<object?, object?>> processCallback)
-            => _processCallback = processCallback;
+            => ProcessCallback = processCallback;
 
         public void Process(PipelineContext<object?, object?> context)
-            => _processCallback.Invoke(context);
+            => ProcessCallback.Invoke(context);
+
+        public IBuilder<IPipelineFeature<object?, object?>> ToBuilder()
+            => new MyFeatureWithContextBuilder { ProcessCallback = ProcessCallback };
+    }
+
+    private sealed class MyFeatureWithContextBuilder : IPipelineFeatureBuilder<object?, object?>
+    {
+        public Action<PipelineContext<object?, object?>> ProcessCallback { get; set; } = new(_ => { });
+
+        public MyFeatureWithContextBuilder WithProcessCallback(Action<PipelineContext<object?, object?>> processCallback)
+        {
+            ProcessCallback = processCallback;
+            return this;
+        }
+
+        public IPipelineFeature<object?, object?> Build()
+            => new MyFeatureWithContext(ProcessCallback);
     }
 
     private sealed class MyReplacedFeatureWithContext : IPipelineFeature<object?, object?>
@@ -269,5 +397,14 @@ public class ProofOfConceptTests
         {
             throw new NotImplementedException();
         }
+
+        public IBuilder<IPipelineFeature<object?, object?>> ToBuilder()
+            => new MyReplacedFeatureWithContextBuilder();
+    }
+
+    private sealed class MyReplacedFeatureWithContextBuilder : IPipelineFeatureBuilder<object?, object?>
+    {
+        public IPipelineFeature<object?, object?> Build()
+            => new MyReplacedFeatureWithContext();
     }
 }
