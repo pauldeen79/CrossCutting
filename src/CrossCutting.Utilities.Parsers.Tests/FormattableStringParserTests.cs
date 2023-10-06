@@ -7,6 +7,28 @@ public sealed class FormattableStringParserTests : IDisposable
     private const string ReplacedValue = "replaced name";
 
     [Fact]
+    public void Parse_Throws_On_Null_Input()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act & Assert
+        sut.Invoking(x => x.Parse(input: null!, CultureInfo.InvariantCulture))
+           .Should().Throw<ArgumentNullException>().WithParameterName("input");
+    }
+
+    [Fact]
+    public void Parse_Throws_On_Null_FormatProvider()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act & Assert
+        sut.Invoking(x => x.Parse("some input", formatProvider: null!))
+           .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
+    }
+
+    [Fact]
     public void Parse_Returns_Invalid_When_Using_Nested_Open_Signs()
     {
         // Arrange
@@ -129,7 +151,7 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
-    public void Parse_Returns_NotSupported_On_Unknown_Placeholder()
+    public void Parse_Returns_Invalid_On_Unknown_Placeholder()
     {
         // Arrange
         var input = "{Unknown placeholder}";
@@ -138,8 +160,29 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.Status.Should().Be(ResultStatus.Invalid);
         result.ErrorMessage.Should().Be("Unknown placeholder in value: Unknown placeholder");
+    }
+
+    [Fact]
+    public void Create_Throws_On_Null_Processors()
+    {
+        // Act & Assert
+        this.Invoking(_ => FormattableStringParser.Create(processors: null!))
+            .Should().Throw<ArgumentNullException>().WithParameterName("processors");
+    }
+
+    [Fact]
+    public void Create_Returns_New_Instance_With_Correct_Configuration()
+    {
+        // Arrange
+        _ = CreateSut();
+
+        // Act
+        var result = FormattableStringParser.Create(new MyPlaceholderProcessor());
+
+        // Assert
+        result.Should().BeOfType<FormattableStringParser>();
     }
 
     public void Dispose()

@@ -4,7 +4,7 @@ public class PipelineContext<TModel>
 {
     public PipelineContext(TModel model)
     {
-        Model = ArgumentGuard.IsNotNull(model, nameof(model));
+        Model = model.IsNotNull(nameof(model));
     }
 
     public TModel Model { get; }
@@ -14,7 +14,7 @@ public class PipelineContext<TModel, TContext> : PipelineContext<TModel>
 {
     public PipelineContext(TModel model, TContext context) : base(model)
     {
-        Context = ArgumentGuard.IsNotNull(context, nameof(context));
+        Context = context.IsNotNull(nameof(context));
     }
 
     public TContext Context { get; }

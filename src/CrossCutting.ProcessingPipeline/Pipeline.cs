@@ -3,7 +3,9 @@
 public class Pipeline<TModel> : PipelineBase<TModel>
 {
     public Pipeline(IEnumerable<IPipelineFeature<TModel>> features) : base(features)
-        => Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
+    {
+        ArgumentGuard.IsNotNull(features, nameof(features));
+    }
 
     public void Process(TModel model)
     {
@@ -19,11 +21,13 @@ public class Pipeline<TModel> : PipelineBase<TModel>
 public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>
 {
     public Pipeline(IEnumerable<IPipelineFeature<TModel, TContext>> features) : base(features)
-        => Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
+    {
+        ArgumentGuard.IsNotNull(features, nameof(features));
+    }
 
     public void Process(TModel model, TContext context)
     {
-        var pipelineContext = new PipelineContext<TModel, TContext>(ArgumentGuard.IsNotNull(model, nameof(model)), ArgumentGuard.IsNotNull(context, nameof(context)));
+        var pipelineContext = new PipelineContext<TModel, TContext>(model.IsNotNull(nameof(model)), context.IsNotNull(nameof(context)));
 
         foreach (var feature in Features)
         {

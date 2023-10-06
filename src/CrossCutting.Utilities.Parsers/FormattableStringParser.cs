@@ -9,15 +9,29 @@ public class FormattableStringParser : IFormattableStringParser
 
     public FormattableStringParser(IEnumerable<IFormattableStringStateProcessor> processors)
     {
-        ArgumentGuard.IsNotNull(processors, nameof(processors));
+        processors = processors.IsNotNull(nameof(processors));
 
         _processors = processors;
     }
 
+    public static IFormattableStringParser Create(params IPlaceholderProcessor[] processors)
+    {
+        processors = processors.IsNotNull(nameof(processors));
+
+        return new FormattableStringParser(
+            new IFormattableStringStateProcessor[]
+            {
+                new OpenSignProcessor(),
+                new CloseSignProcessor(processors),
+                new PlaceholderProcessor(),
+                new ResultProcessor()
+            });
+    }
+
     public Result<string> Parse(string input, IFormatProvider formatProvider, object? context)
     {
-        input = ArgumentGuard.IsNotNull(input, nameof(input));
-        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+        input = input.IsNotNull(nameof(input));
+        formatProvider = formatProvider.IsNotNull(nameof(formatProvider));
 
         var state = new FormattableStringParserState(input, formatProvider, context, this);
 
