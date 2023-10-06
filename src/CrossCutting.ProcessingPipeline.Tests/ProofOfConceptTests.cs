@@ -155,6 +155,14 @@ public class ProofOfConceptTests
             context!.Model.Should().BeEquivalentTo(1);
             context.Context.Should().BeEquivalentTo(2);
         }
+
+        [Fact]
+        public void Constructing_Pipeline_Using_Null_Argument_Throws_ArgumentNullException()
+        {
+            // Act & Assert
+            this.Invoking(_ => new Pipeline<object?>(features: null!))
+                .Should().Throw<ArgumentNullException>().WithParameterName("features");
+        }
     }
 
     public class Pipeline_Without_Context
@@ -266,7 +274,6 @@ public class ProofOfConceptTests
             validationResults.Should().BeEmpty();
         }
 
-
         [Fact]
         public void Can_Validate_PipelineBuilder_With_NonEmpty_Features_List()
         {
@@ -309,6 +316,14 @@ public class ProofOfConceptTests
             // Assert
             context.Should().NotBeNull();
             context!.Model.Should().BeEquivalentTo(1);
+        }
+
+        [Fact]
+        public void Constructing_Pipeline_Using_Null_Argument_Throws_ArgumentNullException()
+        {
+            // Act & Assert
+            this.Invoking(_ => new Pipeline<object?, object?>(features: null!))
+                .Should().Throw<ArgumentNullException>().WithParameterName("features");
         }
     }
 
