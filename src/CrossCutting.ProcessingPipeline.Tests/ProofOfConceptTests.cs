@@ -327,6 +327,26 @@ public class ProofOfConceptTests
         }
     }
 
+    public class Pipeline_With_Dependencies
+    {
+        [Fact]
+        public void Can_Use_Dependency_Injection_To_Allow_Features_To_Have_Dependencies()
+        {
+            // Arrange
+            using var provider = new ServiceCollection()
+                .AddScoped<IMyService, MyService>()
+                .AddScoped<IPipelineFeatureBuilderWithDependencies, PipelineFeatureBuilderWithDependencies>()
+                .BuildServiceProvider();
+            using var scope = provider.CreateScope();
+
+            // Act
+            var sut = scope.ServiceProvider.GetRequiredService<IPipelineFeatureBuilderWithDependencies>();
+
+            // Assert
+            sut.MyService.Should().NotBeNull();
+        }
+    }
+
     private sealed class MyContextlessFeature : IPipelineFeature<object?>
     {
         public Action<PipelineContext<object?>> ProcessCallback { get; }
@@ -421,5 +441,37 @@ public class ProofOfConceptTests
     {
         public IPipelineFeature<object?, object?> Build()
             => new MyReplacedFeatureWithContext();
+    }
+
+    private interface IPipelineFeatureBuilderWithDependencies : IPipelineFeatureBuilder<object?>
+    {
+        IMyService MyService { get; }
+    }
+
+    public sealed class PipelineFeatureBuilderWithDependencies : IPipelineFeatureBuilderWithDependencies
+    {
+        private readonly IMyService _myService;
+
+        public PipelineFeatureBuilderWithDependencies(IMyService myService)
+        {
+            _myService = myService;
+        }
+
+        public IPipelineFeature<object?> Build()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMyService MyService => _myService;
+    }
+
+    public interface IMyService
+    {
+        void DoSomething();
+    }
+
+    private sealed class MyService : IMyService
+    {
+        public void DoSomething() => throw new NotImplementedException();
     }
 }
