@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public class PipelineBuilder<TModel> : PipelineBuilderBase<IPipelineFeature<TModel>, PipelineBuilder<TModel>>, IValidatableObject
+public class PipelineBuilder<TModel> : PipelineBuilderBase<IPipelineFeature<TModel>, PipelineBuilder<TModel>>, IPipelineBuilder<TModel>
 {
     public PipelineBuilder()
     {
@@ -17,7 +17,7 @@ public class PipelineBuilder<TModel> : PipelineBuilderBase<IPipelineFeature<TMod
         => Validate(new PipelineBase<TModel>(Features?.Select(x => x.Build())));
 }
 
-public class PipelineBuilder<TModel, TContext> : PipelineBuilderBase<IPipelineFeature<TModel, TContext>, PipelineBuilder<TModel, TContext>>, IValidatableObject
+public class PipelineBuilder<TModel, TContext> : PipelineBuilderBase<IPipelineFeature<TModel, TContext>, PipelineBuilder<TModel, TContext>>, IPipelineBuilder<TModel, TContext>
 {
     public PipelineBuilder()
     {
