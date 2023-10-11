@@ -11,10 +11,15 @@ public class PipelineBuilder<TModel> : PipelineBuilderBase<IPipelineFeature<TMod
     }
 
     public Pipeline<TModel> Build()
-        => new Pipeline<TModel>(Features.Select(x => x.Build()));
+        => new Pipeline<TModel>(Initialize, Features.Select(x => x.Build()));
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         => Validate(new PipelineBase<TModel>(Features?.Select(x => x.Build())));
+
+
+    protected virtual void Initialize(TModel model, PipelineContext<TModel> pipelineContext)
+    {
+    }
 }
 
 public class PipelineBuilder<TModel, TContext> : PipelineBuilderBase<IPipelineFeature<TModel, TContext>, PipelineBuilder<TModel, TContext>>, IPipelineBuilder<TModel, TContext>
@@ -28,8 +33,12 @@ public class PipelineBuilder<TModel, TContext> : PipelineBuilderBase<IPipelineFe
     }
 
     public Pipeline<TModel, TContext> Build()
-        => new Pipeline<TModel, TContext>(Features.Select(x => x.Build()));
+        => new Pipeline<TModel, TContext>(Initialize, Features.Select(x => x.Build()));
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         => Validate(new PipelineBase<TModel, TContext>(Features?.Select(x => x.Build())));
+
+    protected virtual void Initialize(TModel model, PipelineContext<TModel, TContext> pipelineContext)
+    {
+    }
 }

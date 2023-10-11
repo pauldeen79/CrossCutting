@@ -2,8 +2,11 @@
 
 public class Pipeline<TModel> : PipelineBase<TModel>
 {
-    public Pipeline(IEnumerable<IPipelineFeature<TModel>> features) : base(features)
+    private readonly Action<TModel, PipelineContext<TModel>> _validationDelegate;
+
+    public Pipeline(Action<TModel, PipelineContext<TModel>> validationDelegate, IEnumerable<IPipelineFeature<TModel>> features) : base(features)
     {
+        _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
         ArgumentGuard.IsNotNull(features, nameof(features));
     }
 
@@ -11,23 +14,22 @@ public class Pipeline<TModel> : PipelineBase<TModel>
     {
         var pipelineContext = new PipelineContext<TModel>(ArgumentGuard.IsNotNull(model, nameof(model)));
 
-        Initialize(model, pipelineContext);
+        _validationDelegate(model, pipelineContext);
 
         foreach (var feature in Features)
         {
             feature.Process(pipelineContext);
         }
     }
-
-    protected virtual void Initialize(TModel model, PipelineContext<TModel> pipelineContext)
-    {
-    }
 }
 
 public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>
 {
-    public Pipeline(IEnumerable<IPipelineFeature<TModel, TContext>> features) : base(features)
+    private readonly Action<TModel, PipelineContext<TModel, TContext>> _validationDelegate;
+
+    public Pipeline(Action<TModel, PipelineContext<TModel, TContext>> validationDelegate, IEnumerable<IPipelineFeature<TModel, TContext>> features) : base(features)
     {
+        _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
         ArgumentGuard.IsNotNull(features, nameof(features));
     }
 
@@ -35,15 +37,11 @@ public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>
     {
         var pipelineContext = new PipelineContext<TModel, TContext>(model.IsNotNull(nameof(model)), context.IsNotNull(nameof(context)));
 
-        Initialize(model, pipelineContext);
+        _validationDelegate(model, pipelineContext);
 
         foreach (var feature in Features)
         {
             feature.Process(pipelineContext);
         }
-    }
-
-    protected virtual void Initialize(TModel model, PipelineContext<TModel, TContext> pipelineContext)
-    {
     }
 }

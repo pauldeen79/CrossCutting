@@ -128,7 +128,7 @@ public class ProofOfConceptTests
         public void Can_Construct_Builder_From_Existing_Pipeline_Instance()
         {
             // Arrange
-            var existingInstance = new Pipeline<object?, object?>(new[] { new MyFeatureWithContext() });
+            var existingInstance = new Pipeline<object?, object?>((_, _) => { }, new[] { new MyFeatureWithContext() });
 
             // Act
             var builder = new PipelineBuilder<object?, object?>(existingInstance);
@@ -157,10 +157,18 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Constructing_Pipeline_Using_Null_Argument_Throws_ArgumentNullException()
+        public void Constructing_Pipeline_Using_Null_ValidationDelegate_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?>(features: null!))
+            this.Invoking(_ => new Pipeline<object?>(validationDelegate: null!, features: Enumerable.Empty<IPipelineFeature<object?>>()))
+                .Should().Throw<ArgumentNullException>().WithParameterName("validationDelegate");
+        }
+
+        [Fact]
+        public void Constructing_Pipeline_Using_Null_Features_Throws_ArgumentNullException()
+        {
+            // Act & Assert
+            this.Invoking(_ => new Pipeline<object?>((_, _) => { }, features: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("features");
         }
     }
@@ -291,7 +299,7 @@ public class ProofOfConceptTests
         public void Can_Construct_Builder_From_Existing_Pipeline_Instance()
         {
             // Arrange
-            var existingInstance = new Pipeline<object?>(new[] { new MyContextlessFeature() });
+            var existingInstance = new Pipeline<object?>((_, _) => { }, new[] { new MyContextlessFeature() });
 
             // Act
             var builder = new PipelineBuilder<object?>(existingInstance);
@@ -319,10 +327,18 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Constructing_Pipeline_Using_Null_Argument_Throws_ArgumentNullException()
+        public void Constructing_Pipeline_Using_Null_ValidationDelegate_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?, object?>(features: null!))
+            this.Invoking(_ => new Pipeline<object?, object?>(validationDelegate: null!, features: Enumerable.Empty<IPipelineFeature<object?, object?>>()))
+                .Should().Throw<ArgumentNullException>().WithParameterName("validationDelegate");
+        }
+
+        [Fact]
+        public void Constructing_Pipeline_Using_Null_Features_Throws_ArgumentNullException()
+        {
+            // Act & Assert
+            this.Invoking(_ => new Pipeline<object?, object?>((_, _) => { }, features: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("features");
         }
     }
