@@ -135,6 +135,8 @@ dotnet_diagnostic.CA1812.severity = silent
 dotnet_diagnostic.CA1834.severity = silent
 # Do not use CA1062 (validate public arguments) on extension methods
 dotnet_code_quality.CA1062.exclude_extension_method_this_parameter = true
+# S2583 gives false positive on my code. It says condition is always false, but I have unit tests for both paths!
+dotnet_diagnostic.S2583.severity = silent
 
 [*Test*.cs]
 # Warning CA1034 Do not nest type SplitCsv. Alternatively, change its accessibility so that it is not externally visible. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1034) CrossCutting.Common.Tests 
