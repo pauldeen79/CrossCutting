@@ -11,10 +11,16 @@ public class Pipeline<TModel> : PipelineBase<TModel>
     {
         var pipelineContext = new PipelineContext<TModel>(ArgumentGuard.IsNotNull(model, nameof(model)));
 
+        Initialize(model, pipelineContext);
+
         foreach (var feature in Features)
         {
             feature.Process(pipelineContext);
         }
+    }
+
+    protected virtual void Initialize(TModel model, PipelineContext<TModel> pipelineContext)
+    {
     }
 }
 
@@ -29,9 +35,15 @@ public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>
     {
         var pipelineContext = new PipelineContext<TModel, TContext>(model.IsNotNull(nameof(model)), context.IsNotNull(nameof(context)));
 
+        Initialize(model, pipelineContext);
+
         foreach (var feature in Features)
         {
             feature.Process(pipelineContext);
         }
+    }
+
+    protected virtual void Initialize(TModel model, PipelineContext<TModel, TContext> pipelineContext)
+    {
     }
 }
