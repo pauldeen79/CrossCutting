@@ -151,6 +151,20 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Works_With_Placeholder_That_Returns_Another_Placeholder()
+    {
+        // Arrange
+        const string Input = "Hello {ReplaceWithPlaceholder}!";
+
+        // Act
+        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be($"Hello {ReplacedValue}!");
+    }
+
+    [Fact]
     public void Parse_Returns_Invalid_On_Unknown_Placeholder()
     {
         // Arrange
@@ -208,22 +222,14 @@ public sealed class FormattableStringParserTests : IDisposable
 
         public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
         {
-            if (value == "Name")
+            return value switch
             {
-                return Result<string>.Success(ReplacedValue);
-            }
-
-            if (value == "Context")
-            {
-                return Result<string>.Success(context?.ToString() ?? string.Empty);
-            }
-
-            if (value == "Unsupported placeholder")
-            {
-                return Result<string>.Error($"Unsupported placeholder name: {value}");
-            }
-
-            return Result<string>.Continue();
+                "Name" => Result<string>.Success(ReplacedValue),
+                "Context" => Result<string>.Success(context?.ToString() ?? string.Empty),
+                "Unsupported placeholder" => Result<string>.Error($"Unsupported placeholder name: {value}"),
+                "ReplaceWithPlaceholder" => Result<string>.Success("{Name}"),
+                _ => Result<string>.Continue()
+            };
         }
     }
 
