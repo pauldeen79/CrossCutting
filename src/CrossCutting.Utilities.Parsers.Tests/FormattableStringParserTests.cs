@@ -155,9 +155,11 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "Hello {ReplaceWithPlaceholder}!";
+        var sut = CreateSut();
 
         // Act
-        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(Input, CultureInfo.InvariantCulture);
+        result = sut.Parse(result.GetValueOrThrow(), CultureInfo.InvariantCulture); // have to parse the result, because it contains a new placeholder...
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
