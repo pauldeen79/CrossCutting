@@ -10,9 +10,9 @@ public class EmptyExpressionProcessor : IExpressionStringParserProcessor
 
         if (string.IsNullOrEmpty(state.Input))
         {
-            return Result<object?>.Success(string.Empty);
+            return Result.Success<object?>(string.Empty);
         }
 
-        return Result<object?>.Continue();
+        return Result.Continue<object?>();
     }
 }

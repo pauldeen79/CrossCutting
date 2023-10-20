@@ -22,7 +22,7 @@ public class ConcatenateExpressionProcessor : IExpressionStringParserProcessor
                 builder.Append(result.Value.ToString(state.FormatProvider));
             }
 
-            return Result<object?>.Success(builder.ToString());
+            return Result.Success<object?>(builder.ToString());
         });
     }
 }

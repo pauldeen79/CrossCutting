@@ -8,10 +8,10 @@ public static class Int64AggregatorProcessor
 
         if (firstValue is not long l1)
         {
-            return Result<object?>.Continue();
+            return Result.Continue<object?>();
         }
 
         var l2 = Convert.ToInt64(secondValue, formatProvider);
-        return Result<object?>.Success(aggregatorDelegate.Invoke(l1, l2));
+        return Result.Success(aggregatorDelegate.Invoke(l1, l2));
     }
 }

@@ -24,12 +24,12 @@ public class FunctionParser : IFunctionParser
 
         if (string.IsNullOrEmpty(input))
         {
-            return Result<FunctionParseResult>.NotFound("Input cannot be null or empty");
+            return Result.NotFound<FunctionParseResult>("Input cannot be null or empty");
         }
 
         if (input.Contains(TemporaryDelimiter))
         {
-            return Result<FunctionParseResult>.NotSupported($"Input cannot contain {TemporaryDelimiter}, as this is used internally for formatting");
+            return Result.NotSupported<FunctionParseResult>($"Input cannot contain {TemporaryDelimiter}, as this is used internally for formatting");
         }
 
         var results = new List<FunctionParseResult>();
@@ -40,19 +40,19 @@ public class FunctionParser : IFunctionParser
             var closeIndex = remainder.Select((character, index) => new { character, index }).FirstOrDefault(x => x.character == ')' && !IsInQuoteMap(x.index, quoteMap))?.index;
             if (closeIndex is null)
             {
-                return Result<FunctionParseResult>.NotFound("Missing close bracket");
+                return Result.NotFound<FunctionParseResult>("Missing close bracket");
             }
 
             var openIndex = remainder.Select((character, index) => new { character, index }).LastOrDefault(x => x.index < closeIndex.Value && x.character == '(' && !IsInQuoteMap(x.index, quoteMap))?.index;
             if (openIndex is null)
             {
-                return Result<FunctionParseResult>.NotFound("Missing open bracket");
+                return Result.NotFound<FunctionParseResult>("Missing open bracket");
             }
 
             var nameResult = FindFunctionName(remainder.Substring(0, openIndex.Value));
             if (!nameResult.IsSuccessful())
             {
-                return Result<FunctionParseResult>.FromExistingResult(nameResult);
+                return Result.FromExistingResult<FunctionParseResult>(nameResult);
             }
 
             var stringArguments = remainder.Substring(openIndex.Value + 1, closeIndex.Value - openIndex.Value - 1);
@@ -73,8 +73,8 @@ public class FunctionParser : IFunctionParser
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
         return remainder.EndsWith(TemporaryDelimiter)
-            ? Result<FunctionParseResult>.Success(results[results.Count - 1])
-            : Result<FunctionParseResult>.NotFound("Input has additional characters after last close bracket");
+            ? Result.Success(results[results.Count - 1])
+            : Result.NotFound<FunctionParseResult>("Input has additional characters after last close bracket");
     }
 
     private static string RemoveStringQualifiers(string value)
@@ -100,7 +100,7 @@ public class FunctionParser : IFunctionParser
         var inText = false;
         var index = -1;
         var lastQuote = -1;
-        
+
         foreach (var character in value)
         {
             index++;
@@ -137,7 +137,7 @@ public class FunctionParser : IFunctionParser
             {
                 if (!processValueResult.IsSuccessful())
                 {
-                    return Result<FunctionParseResult>.FromExistingResult(processValueResult);
+                    return Result.FromExistingResult<FunctionParseResult>(processValueResult);
                 }
 
                 arguments.Add(processValueResult.Value!);
@@ -148,7 +148,7 @@ public class FunctionParser : IFunctionParser
             }
         }
 
-        return Result<FunctionParseResult>.Continue();
+        return Result.Continue<FunctionParseResult>();
     }
 
     private Result<string> FindFunctionName(string input)
@@ -156,5 +156,5 @@ public class FunctionParser : IFunctionParser
             .OrderBy(x => x.Order)
             .Select(x => x.Process(input))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result<string>.NotFound("No function name found");
+                ?? Result.NotFound<string>("No function name found");
 }

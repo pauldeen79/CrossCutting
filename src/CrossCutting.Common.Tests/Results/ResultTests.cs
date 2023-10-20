@@ -6,7 +6,7 @@ public class ResultTests
     public void GetValueOrThrow_Gets_Value_When_Result_Is_Success()
     {
         // Arrange
-        var sut = Result<string>.Success("ok");
+        var sut = Result.Success("ok");
 
         // Act
         var actual = sut.GetValueOrThrow();
@@ -19,7 +19,7 @@ public class ResultTests
     public void GetValueOrThrow_Throws_When_Result_Is_Invalid()
     {
         // Arrange
-        var sut = Result<string>.Invalid();
+        var sut = Result.Invalid<string>();
 
         // Act
         var act = new Action(() => _ = sut.GetValueOrThrow());
@@ -32,7 +32,7 @@ public class ResultTests
     public void GetValueOrThrow_Throws_When_Result_Is_Error_And_ErrorMessage_Is_Filled()
     {
         // Arrange
-        var sut = Result<string>.Error("Kaboom");
+        var sut = Result.Error<string>("Kaboom");
 
         // Act
         var act = new Action(() => _ = sut.GetValueOrThrow());
@@ -48,7 +48,7 @@ public class ResultTests
         var voidResult = Result.Invalid("Failed", new[] { new ValidationError("v1", new[] { "m1" }) });
 
         // Act
-        var actual = Result<string>.FromExistingResult(voidResult);
+        var actual = Result.FromExistingResult<string>(voidResult);
 
         // Assert
         actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
@@ -63,7 +63,7 @@ public class ResultTests
         var voidResult = Result.NotFound("Failed");
 
         // Act
-        var actual = Result<string>.FromExistingResult(voidResult);
+        var actual = Result.FromExistingResult<string>(voidResult);
 
         // Assert
         actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
@@ -78,7 +78,7 @@ public class ResultTests
         var voidResult = Result.Error("Failed");
 
         // Act
-        var actual = Result<string>.FromExistingResult(voidResult);
+        var actual = Result.FromExistingResult<string>(voidResult);
 
         // Assert
         actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
@@ -90,10 +90,10 @@ public class ResultTests
     public void FromExistingResult_Copies_Values_From_Void_SuccessResult()
     {
         // Arrange
-        var voidResult = Result<string>.Success("success value");
+        var voidResult = Result.Success("success value");
 
         // Act
-        var actual = Result<string>.FromExistingResult(voidResult);
+        var actual = Result.FromExistingResult<string>(voidResult);
 
         // Assert
         actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
@@ -109,7 +109,7 @@ public class ResultTests
         var voidResult = Result.Success();
 
         // Act
-        var actual = Result<string>.FromExistingResult(voidResult, "yes");
+        var actual = Result.FromExistingResult(voidResult, "yes");
 
         // Assert
         actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
@@ -122,10 +122,10 @@ public class ResultTests
     public void FromExistingResult_Copies_Error_From_Source_When_Not_Successful()
     {
         // Arrange
-        var source = Result<bool>.Error("Kaboom");
+        var source = Result.Error<bool>("Kaboom");
 
         // Act
-        var actual = Result<object?>.FromExistingResult(source, x => x);
+        var actual = Result.FromExistingResult<bool, object?>(source, x => x);
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Error);
@@ -136,10 +136,10 @@ public class ResultTests
     public void FromExistingResult_Copies_Value_From_Source_When_Successful()
     {
         // Arrange
-        var source = Result<bool>.Success(true);
+        var source = Result.Success(true);
 
         // Act
-        var actual = Result<object?>.FromExistingResult(source, x => x);
+        var actual = Result.FromExistingResult<bool, object?>(source, x => x);
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Ok);
@@ -150,7 +150,7 @@ public class ResultTests
     public void Can_Create_Success_With_Correct_Value_Using_ReferenceType()
     {
         // Act
-        var actual = Result<string>.Success("test");
+        var actual = Result.Success("test");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Ok);
@@ -164,7 +164,7 @@ public class ResultTests
     public void Can_Create_Success_With_Correct_Value_Using_ValueType()
     {
         // Act
-        var actual = Result<(string Name, string Address)>.Success(("name", "address"));
+        var actual = Result.Success<(string Name, string Address)>(("name", "address"));
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Ok);
@@ -235,7 +235,7 @@ public class ResultTests
     public void Can_Create_Invalid_Result_Without_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.Invalid();
+        var actual = Result.Invalid<string>();
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Invalid);
@@ -262,7 +262,7 @@ public class ResultTests
     public void Can_Create_Invalid_Result_With_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.Invalid("Error");
+        var actual = Result.Invalid<string>("Error");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Invalid);
@@ -289,7 +289,7 @@ public class ResultTests
     public void Can_Create_Invalid_Result_With_ValidationErrors()
     {
         // Act
-        var actual = Result<string>.Invalid(new[] { new ValidationError("x", new[] { "m1", "m2" }) });
+        var actual = Result.Invalid<string>(new[] { new ValidationError("x", new[] { "m1", "m2" }) });
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Invalid);
@@ -316,7 +316,7 @@ public class ResultTests
     public void Can_Create_Invalid_Result_With_ValidationErrors_And_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.Invalid("Error", new[] { new ValidationError("x", new[] { "m1", "m2" }) });
+        var actual = Result.Invalid<string>("Error", new[] { new ValidationError("x", new[] { "m1", "m2" }) });
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Invalid);
@@ -371,7 +371,7 @@ public class ResultTests
     public void Can_Create_Error_Result_Without_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.Error();
+        var actual = Result.Error<string>();
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Error);
@@ -398,7 +398,7 @@ public class ResultTests
     public void Can_Create_Error_Result_With_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.Error("Error");
+        var actual = Result.Error<string>("Error");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Error);
@@ -412,7 +412,7 @@ public class ResultTests
     public void Can_Create_Error_Result_With_ErrorMessage_And_Exception()
     {
         // Act
-        var actual = Result<string>.Error(new InvalidOperationException("Kaboom"), "Error");
+        var actual = Result.Error<string>(new InvalidOperationException("Kaboom"), "Error");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Error);
@@ -454,7 +454,7 @@ public class ResultTests
     public void Can_Create_NotFound_Result_Without_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.NotFound();
+        var actual = Result.NotFound<string>();
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NotFound);
@@ -481,7 +481,7 @@ public class ResultTests
     public void Can_Create_NotFound_Result_With_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.NotFound("NotFound");
+        var actual = Result.NotFound<string>("NotFound");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NotFound);
@@ -536,7 +536,7 @@ public class ResultTests
     public void Can_Create_Unauthorized_Result_Without_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.Unauthorized();
+        var actual = Result.Unauthorized<string>();
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Unauthorized);
@@ -563,7 +563,7 @@ public class ResultTests
     public void Can_Create_Unauthorized_Result_With_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.Unauthorized("Not authorized");
+        var actual = Result.Unauthorized<string>("Not authorized");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Unauthorized);
@@ -590,7 +590,7 @@ public class ResultTests
     public void Can_Create_NotAuthenticated_Result_Without_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.NotAuthenticated();
+        var actual = Result.NotAuthenticated<string>();
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NotAuthenticated);
@@ -617,7 +617,7 @@ public class ResultTests
     public void Can_Create_NotAuthenticated_Result_With_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.NotAuthenticated("Not authenticated");
+        var actual = Result.NotAuthenticated<string>("Not authenticated");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NotAuthenticated);
@@ -644,7 +644,7 @@ public class ResultTests
     public void Can_Create_NotSupported_Result_Without_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.NotSupported();
+        var actual = Result.NotSupported<string>();
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NotSupported);
@@ -671,7 +671,7 @@ public class ResultTests
     public void Can_Create_NotSupported_Result_With_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.NotSupported("Not supported");
+        var actual = Result.NotSupported<string>("Not supported");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NotSupported);
@@ -698,7 +698,7 @@ public class ResultTests
     public void Can_Create_Unavailable_Result_Without_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.Unavailable();
+        var actual = Result.Unavailable<string>();
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Unavailable);
@@ -725,7 +725,7 @@ public class ResultTests
     public void Can_Create_Unavailable_Result_With_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.Unavailable("Not available");
+        var actual = Result.Unavailable<string>("Not available");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Unavailable);
@@ -752,7 +752,7 @@ public class ResultTests
     public void Can_Create_NotImplemented_Result_Without_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.NotImplemented();
+        var actual = Result.NotImplemented<string>();
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NotImplemented);
@@ -779,7 +779,7 @@ public class ResultTests
     public void Can_Create_NotImplemented_Result_With_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.NotImplemented("Not implemented");
+        var actual = Result.NotImplemented<string>("Not implemented");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NotImplemented);
@@ -806,7 +806,7 @@ public class ResultTests
     public void Can_Create_NoContent_Result_Without_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.NoContent();
+        var actual = Result.NoContent<string>();
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NoContent);
@@ -833,7 +833,7 @@ public class ResultTests
     public void Can_Create_NoContent_Result_With_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.NoContent("No content");
+        var actual = Result.NoContent<string>("No content");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.NoContent);
@@ -860,7 +860,7 @@ public class ResultTests
     public void Can_Create_ResetContent_Result_Without_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.ResetContent();
+        var actual = Result.ResetContent<string>();
 
         // Assert
         actual.Status.Should().Be(ResultStatus.ResetContent);
@@ -887,7 +887,7 @@ public class ResultTests
     public void Can_Create_ResetContent_Result_With_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.ResetContent("Reset");
+        var actual = Result.ResetContent<string>("Reset");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.ResetContent);
@@ -914,7 +914,7 @@ public class ResultTests
     public void Can_Create_Continue_Result_Without_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.Continue();
+        var actual = Result.Continue<string>();
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Continue);
@@ -941,7 +941,7 @@ public class ResultTests
     public void Can_Create_Conflict_Result_Without_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.Conflict();
+        var actual = Result.Conflict<string>();
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Conflict);
@@ -968,7 +968,7 @@ public class ResultTests
     public void Can_Create_Conflict_Result_With_ErrorMessage()
     {
         // Act
-        var actual = Result<string>.Conflict("There is a huge conflict");
+        var actual = Result.Conflict<string>("There is a huge conflict");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Conflict);
@@ -995,7 +995,7 @@ public class ResultTests
     public void Can_Create_Redirect_Result()
     {
         // Act
-        var actual = Result<string>.Redirect("redirect address");
+        var actual = Result.Redirect("redirect address");
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Redirect);
@@ -1009,7 +1009,7 @@ public class ResultTests
     public void GetValueOrThrow_Throws_When_Value_Is_Null()
     {
         // Arrange
-        var sut = Result<string>.Error();
+        var sut = Result.Error<string>();
 
         // Act
         var act = new Action(() => sut.GetValueOrThrow());
@@ -1022,7 +1022,7 @@ public class ResultTests
     public void GetValueOrThrow_Returns_Value_When_Value_Is_Not_Null()
     {
         // Arrange
-        var sut = Result<string>.Success("yes!");
+        var sut = Result.Success("yes!");
 
         // Act
         var value = sut.GetValueOrThrow();
@@ -1035,7 +1035,7 @@ public class ResultTests
     public void TryCast_Returns_Invalid_Without_ErrorMessage_When_Value_Could_Not_Be_Cast()
     {
         // Arrange
-        var sut = Result<object?>.Success("test");
+        var sut = Result.Success<object?>("test");
 
         // Act
         var result = sut.TryCast<bool>();
@@ -1049,7 +1049,7 @@ public class ResultTests
     public void TryCast_Returns_Invalid_With_ErrorMessage_When_Value_Could_Not_Be_Cast()
     {
         // Arrange
-        var sut = Result<object?>.Success("test");
+        var sut = Result.Success<object?>("test");
 
         // Act
         var result = sut.TryCast<bool>("my custom error message");
@@ -1063,7 +1063,7 @@ public class ResultTests
     public void TryCast_Returns_Same_Properties_When_Status_Is_Error()
     {
         // Arrange
-        var sut = Result<object?>.Error("error");
+        var sut = Result.Error<object?>("error");
 
         // Act
         var result = sut.TryCast<bool>();
@@ -1077,7 +1077,7 @@ public class ResultTests
     public void TryCast_Returns_Same_Properties_When_Status_Is_Invalid()
     {
         // Arrange
-        var sut = Result<object?>.Invalid("error", new[] { new ValidationError("validation error 1"), new ValidationError("validation error 2") });
+        var sut = Result.Invalid<object?>("error", new[] { new ValidationError("validation error 1"), new ValidationError("validation error 2") });
 
         // Act
         var result = sut.TryCast<bool>();
@@ -1092,7 +1092,7 @@ public class ResultTests
     public void TryCast_Returns_Success_With_Cast_Value_When_Possible()
     {
         // Arrange
-        var sut = Result<object?>.Success(true);
+        var sut = Result.Success<object?>(true);
 
         // Act
         var result = sut.TryCast<bool>();
@@ -1164,7 +1164,7 @@ public class ResultTests
     public void Can_Create_Untyped_Result_From_Typed_Result_And_Then_Read_The_Value_Untyped()
     {
         // Arrange
-        Result typed = Result<int>.Success(13);
+        Result typed = Result.Success(13);
 
         // Act
         var result = typed.GetValue();

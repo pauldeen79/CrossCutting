@@ -8,10 +8,10 @@ public static class Int32AggregatorProcessor
 
         if (firstValue is not int i1)
         {
-            return Result<object?>.Continue();
+            return Result.Continue<object?>();
         }
 
         var i2 = Convert.ToInt32(secondValue, formatProvider);
-        return Result<object?>.Success(aggregatorDelegate.Invoke(i1, i2));
+        return Result.Success(aggregatorDelegate.Invoke(i1, i2));
     }
 }

@@ -8,7 +8,7 @@ public class OpenSignProcessor : IFormattableStringStateProcessor
 
         if (state.Current != FormattableStringParser.OpenSign)
         {
-            return Result<string>.Continue();
+            return Result.Continue<string>();
         }
 
         if (state.NextPositionIsSign(FormattableStringParser.OpenSign)
@@ -19,16 +19,16 @@ public class OpenSignProcessor : IFormattableStringStateProcessor
                 state.Escape();
             }
 
-            return Result<string>.Continue();
+            return Result.Continue<string>();
         }
 
         if (state.InPlaceholder)
         {
-            return Result<string>.Invalid("Recursive placeholder detected, this is not supported");
+            return Result.Invalid<string>("Recursive placeholder detected, this is not supported");
         }
 
         state.StartPlaceholder();
 
-        return Result<string>.NoContent();
+        return Result.NoContent<string>();
     }
 }

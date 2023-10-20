@@ -20,6 +20,6 @@ public class ExpressionParser : IExpressionParser
             .OrderBy(x => x.Order)
             .Select(x => x.Parse(value, formatProvider, context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result<object?>.NotSupported($"Unknown expression type found in fragment: {value}");
+                ?? Result.NotSupported<object?>($"Unknown expression type found in fragment: {value}");
     }
 }

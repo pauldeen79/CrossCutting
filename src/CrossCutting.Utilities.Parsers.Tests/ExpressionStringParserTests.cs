@@ -717,10 +717,10 @@ public sealed class ExpressionStringParserTests : IDisposable
             {
                 if (x.ArgAt<FunctionParseResult>(0).FunctionName != "ToUpperCase")
                 {
-                    return Result<object?>.Continue();
+                    return Result.Continue<object?>();
                 }
 
-                return Result<object?>.Success(x.ArgAt<FunctionParseResult>(0).GetArgumentStringValueResult(0, "expression", x.ArgAt<object?>(1), x.ArgAt<IFunctionParseResultEvaluator>(2), x.ArgAt<IExpressionParser>(3)).GetValueOrThrow().ToUpperInvariant());
+                return Result.Success<object?>(x.ArgAt<FunctionParseResult>(0).GetArgumentStringValueResult(0, "expression", x.ArgAt<object?>(1), x.ArgAt<IFunctionParseResultEvaluator>(2), x.ArgAt<IExpressionParser>(3)).GetValueOrThrow().ToUpperInvariant());
             });
         using var provider = new ServiceCollection()
             .AddParsers()
@@ -753,8 +753,8 @@ public sealed class ExpressionStringParserTests : IDisposable
 
         public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
-                ? Result<string>.Success(ReplacedValue)
-                : Result<string>.Error($"Unsupported placeholder name: {value}");
+                ? Result.Success(ReplacedValue)
+                : Result.Error<string>($"Unsupported placeholder name: {value}");
     }
 
     private sealed class MyFunctionResultParser : IFunctionResultParser
@@ -763,20 +763,20 @@ public sealed class ExpressionStringParserTests : IDisposable
         {
             if (functionParseResult.FunctionName == "error")
             {
-                return Result<object?>.Error("Kaboom");
+                return Result.Error<object?>("Kaboom");
             }
 
             if (functionParseResult.FunctionName == "ToUpper")
             {
-                return Result<object?>.Success(functionParseResult.Context?.ToString()?.ToUpperInvariant() ?? string.Empty);
+                return Result.Success<object?>(functionParseResult.Context?.ToString()?.ToUpperInvariant() ?? string.Empty);
             }
 
             if (functionParseResult.Arguments.Any())
             {
-                return Result<object?>.Success($"result of {functionParseResult.FunctionName} function: {string.Join(", ", functionParseResult.Arguments.OfType<LiteralArgument>().Select(x => x.GetValueResult(context, evaluator, parser, functionParseResult.FormatProvider).GetValueOrThrow()))}");
+                return Result.Success<object?>($"result of {functionParseResult.FunctionName} function: {string.Join(", ", functionParseResult.Arguments.OfType<LiteralArgument>().Select(x => x.GetValueResult(context, evaluator, parser, functionParseResult.FormatProvider).GetValueOrThrow()))}");
             }
 
-            return Result<object?>.Success($"result of {functionParseResult.FunctionName} function");
+            return Result.Success<object?>($"result of {functionParseResult.FunctionName} function");
         }
     }
 }

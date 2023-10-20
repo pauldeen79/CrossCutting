@@ -12,10 +12,10 @@ public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserA
         {
             var result = formattableStringParser.Parse(stringArgument.Substring(1), formatProvider, context);
             return result.IsSuccessful()
-                ? Result<FunctionParseResultArgument>.Success(new LiteralArgument(result.Value!))
-                : Result<FunctionParseResultArgument>.FromExistingResult(result);
+                ? Result.Success<FunctionParseResultArgument>(new LiteralArgument(result.Value!))
+                : Result.FromExistingResult<FunctionParseResultArgument>(result);
         }
 
-        return Result<FunctionParseResultArgument>.Continue();
+        return Result.Continue<FunctionParseResultArgument>();
     }
 }

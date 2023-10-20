@@ -6,19 +6,19 @@ public static class Equal
     {
         if (leftValue is null && rightValue is null)
         {
-            return Result<bool>.Success(true);
+            return Result.Success(true);
         }
 
         if (leftValue is null || rightValue is null)
         {
-            return Result<bool>.Success(false);
+            return Result.Success(false);
         }
 
         if (leftValue is string leftString && rightValue is string rightString)
         {
-            return Result<bool>.Success(leftString.Equals(rightString, stringComparison));
+            return Result.Success(leftString.Equals(rightString, stringComparison));
         }
 
-        return Result<bool>.Success(leftValue.Equals(rightValue));
+        return Result.Success(leftValue.Equals(rightValue));
     }
 }

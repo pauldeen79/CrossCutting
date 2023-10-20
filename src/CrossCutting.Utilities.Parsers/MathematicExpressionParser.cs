@@ -32,10 +32,10 @@ public class MathematicExpressionParser : IMathematicExpressionParser
         var error = _processors
             .Select(x => x.Process(state))
             .FirstOrDefault(x => !x.IsSuccessful());
-        
+
         if (error is not null)
         {
-            return Result<object?>.FromExistingResult(error);
+            return Result.FromExistingResult<object?>(error);
         }
 
         return state.Results.Any()
@@ -43,7 +43,7 @@ public class MathematicExpressionParser : IMathematicExpressionParser
             : _expressionParser
                 .Parse(input, formatProvider, context)
                 .Transform(x => x.ErrorMessage?.StartsWith("Unknown expression type found in fragment: ") == true
-                    ? Result<object?>.NotFound()
+                    ? Result.NotFound<object?>()
                     : x);
     }
 }

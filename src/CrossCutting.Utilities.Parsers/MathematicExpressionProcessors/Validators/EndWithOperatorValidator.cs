@@ -6,9 +6,9 @@ internal sealed class EndWithOperatorValidator : IMathematicExpressionValidator
     {
         if (state.Input.TrimEnd().EndsWithAny(MathematicOperators.Aggregators.Select(x => x.Character.ToString())))
         {
-            return Result<MathematicExpressionState>.NotFound($"Input cannot end with an operator");
+            return Result.NotFound<MathematicExpressionState>($"Input cannot end with an operator");
         }
 
-        return Result<MathematicExpressionState>.Success(state);
+        return Result.Success(state);
     }
 }

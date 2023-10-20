@@ -226,11 +226,11 @@ public sealed class FormattableStringParserTests : IDisposable
         {
             return value switch
             {
-                "Name" => Result<string>.Success(ReplacedValue),
-                "Context" => Result<string>.Success(context?.ToString() ?? string.Empty),
-                "Unsupported placeholder" => Result<string>.Error($"Unsupported placeholder name: {value}"),
-                "ReplaceWithPlaceholder" => Result<string>.Success("{Name}"),
-                _ => Result<string>.Continue()
+                "Name" => Result.Success(ReplacedValue),
+                "Context" => Result.Success(context?.ToString() ?? string.Empty),
+                "Unsupported placeholder" => Result.Error<string>($"Unsupported placeholder name: {value}"),
+                "ReplaceWithPlaceholder" => Result.Success("{Name}"),
+                _ => Result.Continue<string>()
             };
         }
     }
@@ -241,10 +241,10 @@ public sealed class FormattableStringParserTests : IDisposable
         {
             if (functionParseResult.FunctionName != "MyFunction")
             {
-                return Result<object?>.Continue();
+                return Result.Continue<object?>();
             }
 
-            return Result<object?>.Success("function result");
+            return Result.Success<object?>("function result");
         }
     }
 }

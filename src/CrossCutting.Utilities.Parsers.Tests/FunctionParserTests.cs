@@ -403,14 +403,14 @@ public sealed class FunctionParserTests : IDisposable
         public int Order => 1;
 
         public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
-            => Result<FunctionParseResultArgument>.Error("Kaboom");
+            => Result.Error<FunctionParseResultArgument>("Kaboom");
     }
 
     private sealed class ErrorNameProcessor : IFunctionParserNameProcessor
     {
         public int Order => 1;
 
-        public Result<string> Process(string input) => Result<string>.Error("Kaboom");
+        public Result<string> Process(string input) => Result.Error<string>("Kaboom");
     }
 
     private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
@@ -419,7 +419,7 @@ public sealed class FunctionParserTests : IDisposable
 
         public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
-                ? Result<string>.Success(ReplacedValue)
-                : Result<string>.Error($"Unsupported placeholder name: {value}");
+                ? Result.Success(ReplacedValue)
+                : Result.Error<string>($"Unsupported placeholder name: {value}");
     }
 }

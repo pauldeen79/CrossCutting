@@ -8,10 +8,10 @@ public static class ByteAggregatorProcessor
 
         if (firstValue is not byte b1)
         {
-            return Result<object?>.Continue();
+            return Result.Continue<object?>();
         }
 
         var b2 = Convert.ToByte(secondValue, formatProvider);
-        return Result<object?>.Success(aggregatorDelegate.Invoke(b1, b2));
+        return Result.Success(aggregatorDelegate.Invoke(b1, b2));
     }
 }

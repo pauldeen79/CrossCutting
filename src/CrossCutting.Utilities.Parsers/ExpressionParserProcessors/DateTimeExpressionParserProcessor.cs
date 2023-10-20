@@ -8,9 +8,9 @@ public class DateTimeExpressionParserProcessor : IExpressionParserProcessor
     {
         if (DateTime.TryParse(value, formatProvider, DateTimeStyles.None, out var dt))
         {
-            return Result<object?>.Success(dt);
+            return Result.Success<object?>(dt);
         }
 
-        return Result<object?>.Continue();
+        return Result.Continue<object?>();
     }
 }

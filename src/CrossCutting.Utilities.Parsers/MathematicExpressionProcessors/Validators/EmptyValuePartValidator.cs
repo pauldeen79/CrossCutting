@@ -6,9 +6,9 @@ internal sealed class EmptyValuePartValidator : IMathematicExpressionValidator
     {
         if (MathematicOperators.Aggregators.Select(x => $"{x.Character}{x.Character}").Any(x => state.Input.Replace(" ", string.Empty).Contains(x)))
         {
-            return Result<MathematicExpressionState>.NotFound($"Input cannot contain operators without values between them");
+            return Result.NotFound<MathematicExpressionState>($"Input cannot contain operators without values between them");
         }
 
-        return Result<MathematicExpressionState>.Success(state);
+        return Result.Success(state);
     }
 }

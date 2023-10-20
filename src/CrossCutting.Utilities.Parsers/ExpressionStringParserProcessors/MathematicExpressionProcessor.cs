@@ -24,6 +24,6 @@ public class MathematicExpressionProcessor : IExpressionStringParserProcessor
             return mathResult;
         }
 
-        return Result<object?>.Continue();
+        return Result.Continue<object?>();
     }
 }

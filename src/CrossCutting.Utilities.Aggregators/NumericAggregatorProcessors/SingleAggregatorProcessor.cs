@@ -8,10 +8,10 @@ public static class SingleAggregatorProcessor
 
         if (firstValue is not float f1)
         {
-            return Result<object?>.Continue();
+            return Result.Continue<object?>();
         }
 
         var f2 = Convert.ToSingle(secondValue, formatProvider);
-        return Result<object?>.Success(aggregatorDelegate.Invoke(f1, f2));
+        return Result.Success(aggregatorDelegate.Invoke(f1, f2));
     }
 }

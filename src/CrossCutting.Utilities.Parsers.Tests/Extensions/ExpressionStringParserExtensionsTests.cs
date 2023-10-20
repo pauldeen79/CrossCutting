@@ -7,7 +7,7 @@ public class ExpressionStringParserExtensionsTests
     private const string Input = "Some input";
     private object Context { get; } = new object();
     private IFormatProvider FormatProvider { get; } = CultureInfo.InvariantCulture;
-    
+
     [Fact]
     public void Parse_Without_Context_And_FormattableStringParser_Gets_Processed_Correctly()
     {

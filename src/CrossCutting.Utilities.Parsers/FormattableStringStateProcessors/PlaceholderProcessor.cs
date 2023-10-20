@@ -8,11 +8,11 @@ public class PlaceholderProcessor : IFormattableStringStateProcessor
 
         if (!state.InPlaceholder)
         {
-            return Result<string>.Continue();
+            return Result.Continue<string>();
         }
 
         state.PlaceholderBuilder.Append(state.Current);
 
-        return Result<string>.NoContent();
+        return Result.NoContent<string>();
     }
 }

@@ -12,19 +12,19 @@ public sealed class FunctionParseResultTests : IDisposable
                       //<FunctionParseResult, IExpressionParser, object?>((result, _, _)
                       .Returns(x => x.ArgAt<FunctionParseResult>(0).FunctionName switch
                         {
-                            "MyNestedFunction" => Result<object?>.Success("Evaluated result"),
-                            "NumericFunction" => Result<object?>.Success(1),
-                            "NumericFunctionAsString" => Result<object?>.Success("13"),
-                            "LongFunction" => Result<object?>.Success(1L),
-                            "LongFunctionAsString" => Result<object?>.Success("13L"),
-                            "DecimalFunction" => Result<object?>.Success(1M),
-                            "DecimalFunctionAsString" => Result<object?>.Success("13M"),
-                            "DateTimeFunctionAsString" => Result<object?>.Success(DateTime.Today.ToString(CultureInfo.InvariantCulture)),
-                            "DateTimeFunction" => Result<object?>.Success(DateTime.Today),
-                            "BooleanFunction" => Result<object?>.Success(true),
-                            "BooleanFunctionAsString" => Result<object?>.Success("true"),
-                            "UnknownExpressionString" => Result<object?>.Success("%#$&"),
-                            _ => Result<object?>.NotSupported("Only Parsed result function is supported")
+                            "MyNestedFunction" => Result.Success<object?>("Evaluated result"),
+                            "NumericFunction" => Result.Success<object?>(1),
+                            "NumericFunctionAsString" => Result.Success<object?>("13"),
+                            "LongFunction" => Result.Success<object?>(1L),
+                            "LongFunctionAsString" => Result.Success<object?>("13L"),
+                            "DecimalFunction" => Result.Success<object?>(1M),
+                            "DecimalFunctionAsString" => Result.Success<object?>("13M"),
+                            "DateTimeFunctionAsString" => Result.Success<object?>(DateTime.Today.ToString(CultureInfo.InvariantCulture)),
+                            "DateTimeFunction" => Result.Success<object?>(DateTime.Today),
+                            "BooleanFunction" => Result.Success<object?>(true),
+                            "BooleanFunctionAsString" => Result.Success<object?>("true"),
+                            "UnknownExpressionString" => Result.Success<object?>("%#$&"),
+                            _ => Result.NotSupported<object?>("Only Parsed result function is supported")
                         });
         _provider = new ServiceCollection().AddParsers().BuildServiceProvider(true);
         _scope = _provider.CreateScope();
@@ -652,7 +652,7 @@ public sealed class FunctionParseResultTests : IDisposable
         _scope.Dispose();
         _provider.Dispose();
     }
-    
+
     private static FunctionParseResult CreateFunctionParseResultWithoutArguments()
         => new FunctionParseResultBuilder()
             .WithFunctionName("Test")

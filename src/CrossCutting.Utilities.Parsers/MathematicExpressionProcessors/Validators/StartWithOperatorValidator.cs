@@ -6,9 +6,9 @@ internal sealed class StartWithOperatorValidator : IMathematicExpressionValidato
     {
         if (state.Input.TrimStart().StartsWithAny(MathematicOperators.Aggregators.Select(x => x.Character.ToString())))
         {
-            return Result<MathematicExpressionState>.NotFound($"Input cannot start with an operator");
+            return Result.NotFound<MathematicExpressionState>($"Input cannot start with an operator");
         }
 
-        return Result<MathematicExpressionState>.Success(state);
+        return Result.Success(state);
     }
 }

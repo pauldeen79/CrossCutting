@@ -438,38 +438,38 @@ public sealed class MathematicExpressionParserTests : IDisposable
 
     private Result<object?> ParseExpressionDelegateInt32(string arg, IFormatProvider formatProvider)
         => int.TryParse(arg, formatProvider, out var result)
-            ? Result<object?>.Success(result)
-            : Result<object?>.Invalid($"Could not parse {arg} to integer");
+            ? Result.Success<object?>(result)
+            : Result.Invalid<object?>($"Could not parse {arg} to integer");
 
     private Result<object?> ParseExpressionDelegateInt64(string arg, IFormatProvider formatProvider)
         => long.TryParse(arg, formatProvider, out var result)
-            ? Result<object?>.Success(result)
-            : Result<object?>.Invalid($"Could not parse {arg} to long");
+            ? Result.Success<object?>(result)
+            : Result.Invalid<object?>($"Could not parse {arg} to long");
 
     private Result<object?> ParseExpressionDelegateDouble(string arg, IFormatProvider formatProvider)
         => double.TryParse(arg, formatProvider, out var result)
-            ? Result<object?>.Success(result)
-            : Result<object?>.Invalid($"Could not parse {arg} to double");
+            ? Result.Success<object?>(result)
+            : Result.Invalid<object?>($"Could not parse {arg} to double");
 
     private Result<object?> ParseExpressionDelegateSingle(string arg, IFormatProvider formatProvider)
         => float.TryParse(arg, formatProvider, out var result)
-            ? Result<object?>.Success(result)
-            : Result<object?>.Invalid($"Could not parse {arg} to float");
+            ? Result.Success<object?>(result)
+            : Result.Invalid<object?>($"Could not parse {arg} to float");
 
     private Result<object?> ParseExpressionDelegateDecimal(string arg, IFormatProvider formatProvider)
         => decimal.TryParse(arg, formatProvider, out var result)
-            ? Result<object?>.Success(result)
-            : Result<object?>.Invalid($"Could not parse {arg} to decimal");
+            ? Result.Success<object?>(result)
+            : Result.Invalid<object?>($"Could not parse {arg} to decimal");
 
     private Result<object?> ParseExpressionDelegateByte(string arg, IFormatProvider formatProvider)
         => byte.TryParse(arg, formatProvider, out var result)
-            ? Result<object?>.Success(result)
-            : Result<object?>.Invalid($"Could not parse {arg} to byte");
+            ? Result.Success<object?>(result)
+            : Result.Invalid<object?>($"Could not parse {arg} to byte");
 
     private Result<object?> ParseExpressionDelegateInt16(string arg, IFormatProvider formatProvider)
         => short.TryParse(arg, formatProvider, out var result)
-            ? Result<object?>.Success(result)
-            : Result<object?>.Invalid($"Could not parse {arg} to short");
+            ? Result.Success<object?>(result)
+            : Result.Invalid<object?>($"Could not parse {arg} to short");
 
     public void Dispose()
     {
