@@ -10,7 +10,7 @@ public class Pipeline<TModel> : PipelineBase<TModel>
         ArgumentGuard.IsNotNull(features, nameof(features));
     }
 
-    public void Process(TModel model)
+    public Result Process(TModel model)
     {
         var pipelineContext = new PipelineContext<TModel>(ArgumentGuard.IsNotNull(model, nameof(model)));
 
@@ -18,8 +18,14 @@ public class Pipeline<TModel> : PipelineBase<TModel>
 
         foreach (var feature in Features)
         {
-            feature.Process(pipelineContext);
+            var result = feature.Process(pipelineContext);
+            if (result.Status != ResultStatus.Continue)
+            {
+                return result;
+            }
         }
+
+        return Result.Success();
     }
 }
 
@@ -33,7 +39,7 @@ public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>
         ArgumentGuard.IsNotNull(features, nameof(features));
     }
 
-    public void Process(TModel model, TContext context)
+    public Result<TContext> Process(TModel model, TContext context)
     {
         var pipelineContext = new PipelineContext<TModel, TContext>(model.IsNotNull(nameof(model)), context.IsNotNull(nameof(context)));
 
@@ -41,7 +47,13 @@ public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>
 
         foreach (var feature in Features)
         {
-            feature.Process(pipelineContext);
+            var result = feature.Process(pipelineContext);
+            if (result.Status != ResultStatus.Continue)
+            {
+                return result;
+            }
         }
+
+        return Result.Success(context);
     }
 }

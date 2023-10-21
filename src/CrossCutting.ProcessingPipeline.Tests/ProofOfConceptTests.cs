@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.ProcessingPipeline.Tests;
+﻿using CrossCutting.Common.Results;
+
+namespace CrossCutting.ProcessingPipeline.Tests;
 
 public class ProofOfConceptTests
 {
@@ -142,15 +144,16 @@ public class ProofOfConceptTests
         {
             // Arrange
             PipelineContext<object?, object?>? context = null;
-            Action<PipelineContext<object?, object?>> processCallback = new(ctx => { context = ctx; });
+            Func<PipelineContext<object?, object?>, Result<object?>> processCallback = new(ctx => { context = ctx; return Result.NoContent<object?>(); });
             var sut = new PipelineBuilder<object?, object?>()
                 .AddFeature(new MyFeatureWithContextBuilder().WithProcessCallback(processCallback))
                 .Build();
 
             // Act
-            sut.Process(model: 1, context: 2);
+            var result = sut.Process(model: 1, context: 2);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.NoContent);
             context.Should().NotBeNull();
             context!.Model.Should().BeEquivalentTo(1);
             context.Context.Should().BeEquivalentTo(2);
@@ -313,15 +316,16 @@ public class ProofOfConceptTests
         {
             // Arrange
             PipelineContext<object?>? context = null;
-            Action<PipelineContext<object?>> processCallback = new(ctx => { context = ctx; });
+            Func<PipelineContext<object?>, Result<object?>> processCallback = new(ctx => { context = ctx; return Result.NoContent<object?>(); });
             var sut = new PipelineBuilder<object?>()
                 .AddFeature(new MyContextlessFeatureBuilder().WithProcessCallback(processCallback))
                 .Build();
 
             // Act
-            sut.Process(model: 1);
+            var result = sut.Process(model: 1);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.NoContent);
             context.Should().NotBeNull();
             context!.Model.Should().BeEquivalentTo(1);
         }
@@ -365,15 +369,15 @@ public class ProofOfConceptTests
 
     private sealed class MyContextlessFeature : IPipelineFeature<object?>
     {
-        public Action<PipelineContext<object?>> ProcessCallback { get; }
+        public Func<PipelineContext<object?>, Result> ProcessCallback { get; }
 
         public MyContextlessFeature()
-            => ProcessCallback = new Action<PipelineContext<object?>>(_ => { });
+            => ProcessCallback = new Func<PipelineContext<object?>, Result>(_ => Result.NoContent());
 
-        public MyContextlessFeature(Action<PipelineContext<object?>> processCallback)
+        public MyContextlessFeature(Func<PipelineContext<object?>, Result> processCallback)
             => ProcessCallback = processCallback;
 
-        public void Process(PipelineContext<object?> context)
+        public Result Process(PipelineContext<object?> context)
             => ProcessCallback.Invoke(context);
 
         public IBuilder<IPipelineFeature<object?>> ToBuilder()
@@ -382,9 +386,9 @@ public class ProofOfConceptTests
 
     private sealed class MyContextlessFeatureBuilder : IPipelineFeatureBuilder<object?>
     {
-        public Action<PipelineContext<object?>> ProcessCallback { get; set; } = new(_ => { });
+        public Func<PipelineContext<object?>, Result> ProcessCallback { get; set; } = new(_ => Result.Success());
 
-        public MyContextlessFeatureBuilder WithProcessCallback(Action<PipelineContext<object?>> processCallback)
+        public MyContextlessFeatureBuilder WithProcessCallback(Func<PipelineContext<object?>, Result> processCallback)
         {
             ProcessCallback = processCallback;
             return this;
@@ -396,9 +400,9 @@ public class ProofOfConceptTests
 
     private sealed class MyReplacedContextlessFeature : IPipelineFeature<object?>
     {
-        public void Process(PipelineContext<object?> context)
+        public Result Process(PipelineContext<object?> context)
         {
-            throw new NotImplementedException();
+            return Result.NotImplemented();
         }
 
         public IBuilder<IPipelineFeature<object?>> ToBuilder()
@@ -413,15 +417,15 @@ public class ProofOfConceptTests
 
     private sealed class MyFeatureWithContext : IPipelineFeature<object?, object?>
     {
-        public Action<PipelineContext<object?, object?>> ProcessCallback { get; }
+        public Func<PipelineContext<object?, object?>, Result<object?>> ProcessCallback { get; }
 
         public MyFeatureWithContext()
-            => ProcessCallback = new Action<PipelineContext<object?, object?>>(_ => { });
+            => ProcessCallback = new Func<PipelineContext<object?, object?>, Result<object?>>(_ => Result.NoContent<object?>());
 
-        public MyFeatureWithContext(Action<PipelineContext<object?, object?>> processCallback)
+        public MyFeatureWithContext(Func<PipelineContext<object?, object?>, Result<object?>> processCallback)
             => ProcessCallback = processCallback;
 
-        public void Process(PipelineContext<object?, object?> context)
+        public Result<object?> Process(PipelineContext<object?, object?> context)
             => ProcessCallback.Invoke(context);
 
         public IBuilder<IPipelineFeature<object?, object?>> ToBuilder()
@@ -430,9 +434,9 @@ public class ProofOfConceptTests
 
     private sealed class MyFeatureWithContextBuilder : IPipelineFeatureBuilder<object?, object?>
     {
-        public Action<PipelineContext<object?, object?>> ProcessCallback { get; set; } = new(_ => { });
+        public Func<PipelineContext<object?, object?>, Result<object?>> ProcessCallback { get; set; } = new(_ => Result.NoContent<object?>());
 
-        public MyFeatureWithContextBuilder WithProcessCallback(Action<PipelineContext<object?, object?>> processCallback)
+        public MyFeatureWithContextBuilder WithProcessCallback(Func<PipelineContext<object?, object?>, Result<object?>> processCallback)
         {
             ProcessCallback = processCallback;
             return this;
@@ -444,9 +448,9 @@ public class ProofOfConceptTests
 
     private sealed class MyReplacedFeatureWithContext : IPipelineFeature<object?, object?>
     {
-        public void Process(PipelineContext<object?, object?> context)
+        public Result<object?> Process(PipelineContext<object?, object?> context)
         {
-            throw new NotImplementedException();
+            return Result.NotImplemented<object?>();
         }
 
         public IBuilder<IPipelineFeature<object?, object?>> ToBuilder()
