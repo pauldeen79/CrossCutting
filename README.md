@@ -38,3 +38,15 @@ You can easily replace NSubstitute with Moq, if you want, by changing the factor
 ```C#
 t => t.CreateInstance(parameterType => ((Mock)Activator.CreateInstance(typeof(Mock<>).MakeGenericType(parameterType))).Object, parameterReplaceDelegate, constructorPredicate),
 ```
+
+# Upgrade from 2.x to 3.0
+There has been a breaking change in the Result class, which lead to a new major version.
+To port the old code, you can fix most errors by replace this:
+```regex
+Result<([^>]+)>\.([^(]+)\(
+```
+
+With this:
+```regex
+Result.$2<$1>(
+```
