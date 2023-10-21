@@ -16,6 +16,6 @@ public class DefaultFunctionParseResultEvaluator : IFunctionParseResultEvaluator
         return _functionResultParsers
             .Select(x => x.Parse(functionResult, context, this, parser))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result<object?>.NotSupported($"Unknown function found: {functionResult.FunctionName}");
+                ?? Result.NotSupported<object?>($"Unknown function found: {functionResult.FunctionName}");
     }
 }

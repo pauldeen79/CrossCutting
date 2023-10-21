@@ -15,6 +15,6 @@ public class ResultProcessor : IFormattableStringStateProcessor
             state.ResultBuilder.Append(state.Current);
         }
 
-        return Result<string>.NoContent();
+        return Result.NoContent<string>();
     }
 }

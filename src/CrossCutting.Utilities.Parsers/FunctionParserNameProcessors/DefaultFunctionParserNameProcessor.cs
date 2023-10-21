@@ -8,7 +8,7 @@ public class DefaultFunctionParserNameProcessor : IFunctionParserNameProcessor
     {
         if (string.IsNullOrEmpty(input))
         {
-            return Result<string>.NotFound("No function name found");
+            return Result.NotFound<string>("No function name found");
         }
 
         var bracketIndex = input.LastIndexOf("(");
@@ -17,9 +17,9 @@ public class DefaultFunctionParserNameProcessor : IFunctionParserNameProcessor
 
         if (greatestIndex > -1)
         {
-            return Result<string>.Success(input.Substring(greatestIndex + 1));
+            return Result.Success(input.Substring(greatestIndex + 1));
         }
 
-        return Result<string>.Success(input);
+        return Result.Success(input);
     }
 }

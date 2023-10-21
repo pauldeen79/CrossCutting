@@ -100,7 +100,7 @@ public class ObjectExtensionsTests
     {
         // Arrange
         object? input = null;
-        
+
         // Act
         var result = input.ToString(CultureInfo.InvariantCulture, "default value");
 
@@ -325,7 +325,7 @@ public class ObjectExtensionsTests
         // Assert
         actual.Should().BeSameAs(input);
     }
-    
+
     [Fact]
     public void Can_Convert_Object_To_Result_Success()
     {

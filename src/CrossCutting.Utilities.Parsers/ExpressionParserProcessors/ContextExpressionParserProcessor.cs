@@ -8,9 +8,9 @@ public class ContextExpressionParserProcessor : IExpressionParserProcessor
     {
         if (value == "context")
         {
-            return Result<object?>.Success(context);
+            return Result.Success(context);
         }
 
-        return Result<object?>.Continue();
+        return Result.Continue<object?>();
     }
 }

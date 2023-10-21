@@ -44,12 +44,12 @@ public class ExpressionStringParser : IExpressionStringParser
         var functionResult = _functionParser.Parse(state.Input.Substring(1), state.FormatProvider, state.Context, state.FormattableStringParser);
         if (functionResult.Status == ResultStatus.NotFound)
         {
-            return Result<object?>.FromExistingResult(functionResult);
+            return Result.FromExistingResult<object?>(functionResult);
         }
 
         if (!functionResult.IsSuccessful())
         {
-            return Result<object?>.FromExistingResult(functionResult);
+            return Result.FromExistingResult<object?>(functionResult);
         }
 
         return _evaluator.Evaluate(functionResult.Value!, _expressionParser, state.Context);

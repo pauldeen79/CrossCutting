@@ -10,9 +10,9 @@ public class StringExpressionParserProcessor : IExpressionParserProcessor
 
         if (value.StartsWith("\"") && value.EndsWith("\""))
         {
-            return Result<object?>.Success(value.Substring(1, value.Length - 2));
+            return Result.Success<object?>(value.Substring(1, value.Length - 2));
         }
 
-        return Result<object?>.Continue();
+        return Result.Continue<object?>();
     }
 }

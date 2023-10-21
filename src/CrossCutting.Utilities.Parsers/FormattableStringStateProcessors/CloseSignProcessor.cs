@@ -15,7 +15,7 @@ public class CloseSignProcessor : IFormattableStringStateProcessor
 
         if (state.Current != FormattableStringParser.CloseSign)
         {
-            return Result<string>.Continue();
+            return Result.Continue<string>();
         }
 
         if (state.NextPositionIsSign(FormattableStringParser.CloseSign)
@@ -26,19 +26,19 @@ public class CloseSignProcessor : IFormattableStringStateProcessor
                 state.Escape();
             }
 
-            return Result<string>.Continue();
+            return Result.Continue<string>();
         }
 
         if (!state.InPlaceholder)
         {
-            return Result<string>.Invalid("Missing open sign '{'. To use the '}' character, you have to escape it with an additional '}' character");
+            return Result.Invalid<string>("Missing open sign '{'. To use the '}' character, you have to escape it with an additional '}' character");
         }
 
         var placeholderResult = _processors
             .OrderBy(x => x.Order)
             .Select(x => x.Process(state.PlaceholderBuilder.ToString(), state.FormatProvider, state.Context, state.Parser))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result<string>.Invalid($"Unknown placeholder in value: {state.PlaceholderBuilder}");
+                ?? Result.Invalid<string>($"Unknown placeholder in value: {state.PlaceholderBuilder}");
 
         if (!placeholderResult.IsSuccessful())
         {
@@ -47,6 +47,6 @@ public class CloseSignProcessor : IFormattableStringStateProcessor
 
         state.ClosePlaceholder(placeholderResult.Value!);
 
-        return Result<string>.NoContent();
+        return Result.NoContent<string>();
     }
 }

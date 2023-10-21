@@ -10,9 +10,9 @@ public class OnlyEqualsExpressionProcessor : IExpressionStringParserProcessor
 
         if (state.Input == "=")
         {
-            return Result<object?>.Success(state.Input);
+            return Result.Success<object?>(state.Input);
         }
 
-        return Result<object?>.Continue();
+        return Result.Continue<object?>();
     }
 }

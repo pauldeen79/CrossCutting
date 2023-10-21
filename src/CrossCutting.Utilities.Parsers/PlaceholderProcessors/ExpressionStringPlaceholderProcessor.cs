@@ -19,10 +19,10 @@ public class ExpressionStringPlaceholderProcessor : IPlaceholderProcessor
 
         if (result.Status == ResultStatus.NotFound)
         {
-            return Result<string>.Continue();
+            return Result.Continue<string>();
         }
 
-        return Result<string>.FromExistingResult(
+        return Result.FromExistingResult(
             result,
             value => value.ToString(formatProvider, string.Empty));
     }

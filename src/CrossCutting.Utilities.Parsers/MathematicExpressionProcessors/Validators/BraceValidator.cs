@@ -18,7 +18,7 @@ internal sealed class BraceValidator : IMathematicExpressionValidator
                 bracketCount--;
                 if (bracketCount < 0)
                 {
-                    return Result<MathematicExpressionState>.NotFound($"Too many closing braces found");
+                    return Result.NotFound<MathematicExpressionState>($"Too many closing braces found");
                 }
             }
         }
@@ -28,9 +28,9 @@ internal sealed class BraceValidator : IMathematicExpressionValidator
             var suffix = bracketCount > 1
                 ? "s"
                 : string.Empty;
-            return Result<MathematicExpressionState>.NotFound($"Missing {bracketCount} close brace{suffix}");
+            return Result.NotFound<MathematicExpressionState>($"Missing {bracketCount} close brace{suffix}");
         }
 
-        return Result<MathematicExpressionState>.Success(state);
+        return Result.Success(state);
     }
 }

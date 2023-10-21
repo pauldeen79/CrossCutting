@@ -8,9 +8,9 @@ public class NullExpressionParserProcessor : IExpressionParserProcessor
     {
         if (value == "null")
         {
-            return Result<object?>.Success(null);
+            return Result.Success<object?>(null);
         }
 
-        return Result<object?>.Continue();
+        return Result.Continue<object?>();
     }
 }

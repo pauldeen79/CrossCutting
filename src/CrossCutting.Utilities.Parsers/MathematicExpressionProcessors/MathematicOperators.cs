@@ -49,22 +49,22 @@ public class MathematicOperators : IMathematicExpressionProcessor
 
                 if (!state.LeftPartResult.IsSuccessful())
                 {
-                    return Result<MathematicExpressionState>.FromExistingResult(state.LeftPartResult);
+                    return Result.FromExistingResult<MathematicExpressionState>(state.LeftPartResult);
                 }
 
                 if (!state.RightPartResult.IsSuccessful())
                 {
-                    return Result<MathematicExpressionState>.FromExistingResult(state.RightPartResult);
+                    return Result.FromExistingResult<MathematicExpressionState>(state.RightPartResult);
                 }
 
                 var aggregateResult = state.PerformAggregation();
                 if (!aggregateResult.IsSuccessful())
                 {
-                    return Result<MathematicExpressionState>.FromExistingResult(aggregateResult);
+                    return Result.FromExistingResult<MathematicExpressionState>(aggregateResult);
                 }
             } while (state.Position > -1);
         }
 
-        return Result<MathematicExpressionState>.Success(state);
+        return Result.Success(state);
     }
 }

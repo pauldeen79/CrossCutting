@@ -23,29 +23,29 @@ public class NumericExpressionParserProcessor : IExpressionParserProcessor
 
         if (isWholeNumber.Value && int.TryParse(value, NumberStyles.AllowDecimalPoint, formatProvider, out var i))
         {
-            return Result<object?>.Success(i);
+            return Result.Success<object?>(i);
         }
 
         if (isWholeNumber.Value && long.TryParse(value, NumberStyles.AllowDecimalPoint, formatProvider, out var l1))
         {
-            return Result<object?>.Success(l1);
+            return Result.Success<object?>(l1);
         }
 
         if (isLongNumber.Value && long.TryParse(value.Substring(0, value.Length - 1), NumberStyles.AllowDecimalPoint, formatProvider, out var l2))
         {
-            return Result<object?>.Success(l2);
+            return Result.Success<object?>(l2);
         }
 
         if (isFloatingPoint.Value && value.Contains('.') && decimal.TryParse(value, NumberStyles.AllowDecimalPoint, formatProvider, out var d1))
         {
-            return Result<object?>.Success(d1);
+            return Result.Success<object?>(d1);
         }
 
         if ((isWholeDecimal.Value || isFloatingPointDecimal.Value) && decimal.TryParse(value.Substring(0, value.Length - 1), NumberStyles.AllowDecimalPoint, formatProvider, out var d2))
         {
-            return Result<object?>.Success(d2);
+            return Result.Success<object?>(d2);
         }
 
-        return Result<object?>.Continue();
+        return Result.Continue<object?>();
     }
 }

@@ -21,7 +21,7 @@ public class PipedExpressionProcessor : IExpressionStringParserProcessor
                 resultValue = result.Value;
             }
 
-            return Result<object?>.Success(resultValue);
+            return Result.Success(resultValue);
         });
     }
 }

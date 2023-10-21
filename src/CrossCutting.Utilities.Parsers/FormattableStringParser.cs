@@ -55,9 +55,9 @@ public class FormattableStringParser : IFormattableStringParser
 
         if (state.InPlaceholder)
         {
-            return Result<string>.Invalid("Missing close sign '}'. To use the '{' character, you have to escape it with an additional '{' character");
+            return Result.Invalid<string>("Missing close sign '}'. To use the '{' character, you have to escape it with an additional '{' character");
         }
 
-        return Result<string>.Success(state.ResultBuilder.ToString());
+        return Result.Success(state.ResultBuilder.ToString());
     }
 }

@@ -38,10 +38,10 @@ public class MathematicExpressionState
         Indexes = Array.Empty<AggregatorInfo>();
         PreviousIndexes = Array.Empty<int>();
         LeftPart = string.Empty;
-        LeftPartResult = Result<object?>.NoContent();
+        LeftPartResult = Result.NoContent<object?>();
         NextIndexes = Array.Empty<int>();
         RightPart = string.Empty;
-        RightPartResult = Result<object?>.NoContent();
+        RightPartResult = Result.NoContent<object?>();
     }
 
     internal void SetPosition(IGrouping<int, AggregatorBase> aggregators)

@@ -8,10 +8,10 @@ public static class DoubleAggregatorProcessor
 
         if (firstValue is not double d1)
         {
-            return Result<object?>.Continue();
+            return Result.Continue<object?>();
         }
 
         var d2 = Convert.ToDouble(secondValue, formatProvider);
-        return Result<object?>.Success(aggregatorDelegate.Invoke(d1, d2));
+        return Result.Success(aggregatorDelegate.Invoke(d1, d2));
     }
 }

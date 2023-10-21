@@ -12,15 +12,15 @@ public class FormattableStringExpressionProcessor : IExpressionStringParserProce
         {
             // =@"string value" -> literal, no functions but formattable strings possible
             return state.FormattableStringParser is not null
-                ? Result<object?>.FromExistingResult(state.FormattableStringParser.Parse(state.Input.Substring(3, state.Input.Length - 4), state.FormatProvider, state.Context))
-                : Result<object?>.Success(state.Input.Substring(3, state.Input.Length - 4));
+                ? Result.FromExistingResult<object?>(state.FormattableStringParser.Parse(state.Input.Substring(3, state.Input.Length - 4), state.FormatProvider, state.Context))
+                : Result.Success<object?>(state.Input.Substring(3, state.Input.Length - 4));
         }
         else if (state.Input.StartsWith("=\"") && state.Input.EndsWith("\""))
         {
             // ="string value" -> literal, no functions and no formattable strings possible
-            return Result<object?>.Success(state.Input.Substring(2, state.Input.Length - 3));
+            return Result.Success<object?>(state.Input.Substring(2, state.Input.Length - 3));
         }
 
-        return Result<object?>.Continue();
+        return Result.Continue<object?>();
     }
 }

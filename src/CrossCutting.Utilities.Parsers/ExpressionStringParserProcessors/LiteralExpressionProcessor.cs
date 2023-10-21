@@ -11,15 +11,15 @@ public class LiteralExpressionProcessor : IExpressionStringParserProcessor
         if (state.Input.StartsWith("\'="))
         {
             // escaped expression string
-            return Result<object?>.Success(state.Input.Substring(1));
+            return Result.Success<object?>(state.Input.Substring(1));
         }
 
         if (!state.Input.StartsWith("="))
         {
             // literal
-            return Result<object?>.Success(state.Input);
+            return Result.Success<object?>(state.Input);
         }
 
-        return Result<object?>.Continue();
+        return Result.Continue<object?>();
     }
 }

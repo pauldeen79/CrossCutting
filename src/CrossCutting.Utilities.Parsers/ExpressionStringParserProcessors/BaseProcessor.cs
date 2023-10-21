@@ -6,13 +6,13 @@ internal static class BaseProcessor
     {
         if (state.Input.IndexOf(splitDelimiter) == -1)
         {
-            return Result<object?>.Continue();
+            return Result.Continue<object?>();
         }
 
         var split = state.Input.Substring(1).SplitDelimited(splitDelimiter, '\"', true, true);
         if (split.Length == 1)
         {
-            return Result<object?>.Continue();
+            return Result.Continue<object?>();
         }
 
         return validDelegate(split);

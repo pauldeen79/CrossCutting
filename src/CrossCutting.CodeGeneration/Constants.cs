@@ -3,7 +3,7 @@
 public static class Constants
 {
     public const string ProjectName = "CrossCutting";
-    
+
     public static class Namespaces
     {
         public const string UtilitiesParsers = "CrossCutting.Utilities.Parsers";

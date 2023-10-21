@@ -9,7 +9,7 @@ public partial record LiteralArgument
         var result = parser.Parse(Value, formatProvider, context);
 
         return result.Status == ResultStatus.NotSupported
-            ? Result<object?>.Success(Value)
+            ? Result.Success<object?>(Value)
             : result;
     }
 }

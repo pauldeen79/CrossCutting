@@ -8,10 +8,10 @@ public static class Int16AggregatorProcessor
 
         if (firstValue is not short s1)
         {
-            return Result<object?>.Continue();
+            return Result.Continue<object?>();
         }
 
         var s2 = Convert.ToInt16(secondValue, formatProvider);
-        return Result<object?>.Success(aggregatorDelegate.Invoke(s1, s2));
+        return Result.Success(aggregatorDelegate.Invoke(s1, s2));
     }
 }

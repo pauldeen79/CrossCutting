@@ -154,7 +154,7 @@ public class EnumerableExtensionsTests
         var seed = Result.FromInstance(string.Empty);
 
         // Act
-        var result = items.Pipe(seed, (result, item) => item =="D" ? Result.FromInstance(item) : Result<string>.Continue(item), x => x.Status == ResultStatus.Continue);
+        var result = items.Pipe(seed, (result, item) => item == "D" ? Result.FromInstance(item) : Result.Continue(item), x => x.Status == ResultStatus.Continue);
 
         // Assert
         result.Value.Should().BeEquivalentTo("C");
@@ -168,7 +168,7 @@ public class EnumerableExtensionsTests
         var seed = Result.FromInstance(string.Empty);
 
         // Act
-        var result = items.Pipe(seed, (result, item) => item == "D" ? Result.FromInstance(item) : Result<string>.Continue(), x => x.Status == ResultStatus.Continue, _ => Result.FromInstance("Default"));
+        var result = items.Pipe(seed, (result, item) => item == "D" ? Result.FromInstance(item) : Result.Continue<string>(), x => x.Status == ResultStatus.Continue, _ => Result.FromInstance("Default"));
 
         // Assert
         result.Value.Should().BeEquivalentTo("Default");
@@ -182,7 +182,7 @@ public class EnumerableExtensionsTests
         var seed = Result.FromInstance(string.Empty);
 
         // Act
-        var result = items.Pipe(seed, (result, item) => item == "B" ? Result.FromInstance(item) : Result<string>.Continue(item), x => x.Status == ResultStatus.Continue);
+        var result = items.Pipe(seed, (result, item) => item == "B" ? Result.FromInstance(item) : Result.Continue(item), x => x.Status == ResultStatus.Continue);
 
         // Assert
         result.Value.Should().BeEquivalentTo("B");

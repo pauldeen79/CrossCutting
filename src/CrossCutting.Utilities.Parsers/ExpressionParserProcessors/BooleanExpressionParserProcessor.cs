@@ -8,14 +8,14 @@ public class BooleanExpressionParserProcessor : IExpressionParserProcessor
     {
         if (value == "true")
         {
-            return Result<object?>.Success(true);
+            return Result.Success<object?>(true);
         }
 
         if (value == "false")
         {
-            return Result<object?>.Success(false);
+            return Result.Success<object?>(false);
         }
 
-        return Result<object?>.Continue();
+        return Result.Continue<object?>();
     }
 }

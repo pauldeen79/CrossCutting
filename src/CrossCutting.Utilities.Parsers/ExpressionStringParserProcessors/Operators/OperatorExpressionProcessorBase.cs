@@ -11,13 +11,13 @@ public abstract class OperatorExpressionProcessorBase : IExpressionStringParserP
 
         if (state.Input.IndexOf(Sign) == -1)
         {
-            return Result<object?>.Continue();
+            return Result.Continue<object?>();
         }
 
         var split = state.Input.Substring(1).SplitDelimited(Sign, '\"', true, true);
         if (split.Length != 2)
         {
-            return Result<object?>.Continue();
+            return Result.Continue<object?>();
         }
 
         var leftResult = state.Parser.Parse($"={split[0]}", state.FormatProvider, state.Context, state.FormattableStringParser);
@@ -32,7 +32,7 @@ public abstract class OperatorExpressionProcessorBase : IExpressionStringParserP
             return rightResult;
         }
 
-        return Result<object?>.FromExistingResult(PerformOperator(leftResult.Value, rightResult.Value));
+        return Result.FromExistingResult<object?>(PerformOperator(leftResult.Value, rightResult.Value));
     }
 
     protected abstract Result<bool> PerformOperator(object? leftValue, object? rightValue);

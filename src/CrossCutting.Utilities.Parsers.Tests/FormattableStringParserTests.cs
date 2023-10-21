@@ -151,6 +151,22 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Works_With_Placeholder_That_Returns_Another_Placeholder()
+    {
+        // Arrange
+        const string Input = "Hello {ReplaceWithPlaceholder}!";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(Input, CultureInfo.InvariantCulture);
+        result = sut.Parse(result.GetValueOrThrow(), CultureInfo.InvariantCulture); // have to parse the result, because it contains a new placeholder...
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be($"Hello {ReplacedValue}!");
+    }
+
+    [Fact]
     public void Parse_Returns_Invalid_On_Unknown_Placeholder()
     {
         // Arrange
@@ -208,22 +224,14 @@ public sealed class FormattableStringParserTests : IDisposable
 
         public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
         {
-            if (value == "Name")
+            return value switch
             {
-                return Result<string>.Success(ReplacedValue);
-            }
-
-            if (value == "Context")
-            {
-                return Result<string>.Success(context?.ToString() ?? string.Empty);
-            }
-
-            if (value == "Unsupported placeholder")
-            {
-                return Result<string>.Error($"Unsupported placeholder name: {value}");
-            }
-
-            return Result<string>.Continue();
+                "Name" => Result.Success(ReplacedValue),
+                "Context" => Result.Success(context?.ToString() ?? string.Empty),
+                "Unsupported placeholder" => Result.Error<string>($"Unsupported placeholder name: {value}"),
+                "ReplaceWithPlaceholder" => Result.Success("{Name}"),
+                _ => Result.Continue<string>()
+            };
         }
     }
 
@@ -233,10 +241,10 @@ public sealed class FormattableStringParserTests : IDisposable
         {
             if (functionParseResult.FunctionName != "MyFunction")
             {
-                return Result<object?>.Continue();
+                return Result.Continue<object?>();
             }
 
-            return Result<object?>.Success("function result");
+            return Result.Success<object?>("function result");
         }
     }
 }

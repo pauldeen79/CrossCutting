@@ -163,7 +163,7 @@ public static class ObjectExtensions
         ArgumentGuard.IsNotNull(action, nameof(action));
 
         action.Invoke();
-        
+
         return instance;
     }
 
@@ -175,7 +175,7 @@ public static class ObjectExtensions
         ArgumentGuard.IsNotNull(action, nameof(action));
 
         action.Invoke(instance);
-        
+
         return instance;
     }
 
