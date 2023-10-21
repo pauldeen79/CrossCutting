@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public class Pipeline<TModel> : PipelineBase<TModel>
+public class Pipeline<TModel> : PipelineBase<TModel>, IPipeline<TModel>
 {
     private readonly Action<TModel, PipelineContext<TModel>> _validationDelegate;
 
@@ -29,7 +29,7 @@ public class Pipeline<TModel> : PipelineBase<TModel>
     }
 }
 
-public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>
+public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>, IPipeline<TModel, TContext>
 {
     private readonly Action<TModel, PipelineContext<TModel, TContext>> _validationDelegate;
 
