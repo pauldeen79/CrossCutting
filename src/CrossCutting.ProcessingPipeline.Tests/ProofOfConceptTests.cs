@@ -144,7 +144,7 @@ public class ProofOfConceptTests
         {
             // Arrange
             PipelineContext<object?, object?>? context = null;
-            Func<PipelineContext<object?, object?>, Result<object?>> processCallback = new(ctx => { context = ctx; return Result.NoContent<object?>(); });
+            Func<PipelineContext<object?, object?>, Result<object?>> processCallback = new(ctx => { context = ctx; return Result.Continue<object?>(); });
             var sut = new PipelineBuilder<object?, object?>()
                 .AddFeature(new MyFeatureWithContextBuilder().WithProcessCallback(processCallback))
                 .Build();
@@ -153,10 +153,27 @@ public class ProofOfConceptTests
             var result = sut.Process(model: 1, context: 2);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NoContent);
+            result.Status.Should().Be(ResultStatus.Ok);
             context.Should().NotBeNull();
             context!.Model.Should().BeEquivalentTo(1);
             context.Context.Should().BeEquivalentTo(2);
+        }
+
+        [Fact]
+        public void Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status()
+        {
+            // Arrange
+            Func<PipelineContext<object?, object?>, Result<object?>> processCallback = new(_ => Result.Error<object?>("Kaboom"));
+            var sut = new PipelineBuilder<object?, object?>()
+                .AddFeature(new MyFeatureWithContextBuilder().WithProcessCallback(processCallback))
+                .Build();
+
+            // Act
+            var result = sut.Process(model: 1, context: 2);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
         }
 
         [Fact]
@@ -316,7 +333,7 @@ public class ProofOfConceptTests
         {
             // Arrange
             PipelineContext<object?>? context = null;
-            Func<PipelineContext<object?>, Result<object?>> processCallback = new(ctx => { context = ctx; return Result.NoContent<object?>(); });
+            Func<PipelineContext<object?>, Result<object?>> processCallback = new(ctx => { context = ctx; return Result.Continue<object?>(); });
             var sut = new PipelineBuilder<object?>()
                 .AddFeature(new MyContextlessFeatureBuilder().WithProcessCallback(processCallback))
                 .Build();
@@ -325,9 +342,26 @@ public class ProofOfConceptTests
             var result = sut.Process(model: 1);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NoContent);
+            result.Status.Should().Be(ResultStatus.Ok);
             context.Should().NotBeNull();
             context!.Model.Should().BeEquivalentTo(1);
+        }
+
+        [Fact]
+        public void Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status()
+        {
+            // Arrange
+            Func<PipelineContext<object?>, Result<object?>> processCallback = new(_ => Result.Error<object?>("Kaboom"));
+            var sut = new PipelineBuilder<object?>()
+                .AddFeature(new MyContextlessFeatureBuilder().WithProcessCallback(processCallback))
+                .Build();
+
+            // Act
+            var result = sut.Process(model: 1);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
         }
 
         [Fact]
