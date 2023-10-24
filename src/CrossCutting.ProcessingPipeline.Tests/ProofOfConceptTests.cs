@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Results;
-
-namespace CrossCutting.ProcessingPipeline.Tests;
+﻿namespace CrossCutting.ProcessingPipeline.Tests;
 
 public class ProofOfConceptTests
 {
@@ -403,15 +401,15 @@ public class ProofOfConceptTests
 
     private sealed class MyContextlessFeature : IPipelineFeature<object?>
     {
-        public Func<PipelineContext<object?>, Result> ProcessCallback { get; }
+        public Func<PipelineContext<object?>, Result<object?>> ProcessCallback { get; }
 
         public MyContextlessFeature()
-            => ProcessCallback = new Func<PipelineContext<object?>, Result>(_ => Result.NoContent());
+            => ProcessCallback = new Func<PipelineContext<object?>, Result<object?>>(_ => Result.NoContent<object?>());
 
-        public MyContextlessFeature(Func<PipelineContext<object?>, Result> processCallback)
+        public MyContextlessFeature(Func<PipelineContext<object?>, Result<object?>> processCallback)
             => ProcessCallback = processCallback;
 
-        public Result Process(PipelineContext<object?> context)
+        public Result<object?> Process(PipelineContext<object?> context)
             => ProcessCallback.Invoke(context);
 
         public IBuilder<IPipelineFeature<object?>> ToBuilder()
@@ -420,9 +418,9 @@ public class ProofOfConceptTests
 
     private sealed class MyContextlessFeatureBuilder : IPipelineFeatureBuilder<object?>
     {
-        public Func<PipelineContext<object?>, Result> ProcessCallback { get; set; } = new(_ => Result.Success());
+        public Func<PipelineContext<object?>, Result<object?>> ProcessCallback { get; set; } = new(_ => Result.NoContent<object?>());
 
-        public MyContextlessFeatureBuilder WithProcessCallback(Func<PipelineContext<object?>, Result> processCallback)
+        public MyContextlessFeatureBuilder WithProcessCallback(Func<PipelineContext<object?>, Result<object?>> processCallback)
         {
             ProcessCallback = processCallback;
             return this;
@@ -434,9 +432,9 @@ public class ProofOfConceptTests
 
     private sealed class MyReplacedContextlessFeature : IPipelineFeature<object?>
     {
-        public Result Process(PipelineContext<object?> context)
+        public Result<object?> Process(PipelineContext<object?> context)
         {
-            return Result.NotImplemented();
+            return Result.NotImplemented<object?>();
         }
 
         public IBuilder<IPipelineFeature<object?>> ToBuilder()

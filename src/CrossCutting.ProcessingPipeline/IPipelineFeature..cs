@@ -2,10 +2,10 @@
 
 public interface IPipelineFeature<TModel> : IBuilderSource<IPipelineFeature<TModel>>
 {
-    Result Process(PipelineContext<TModel> context);
+    Result<TModel> Process(PipelineContext<TModel> context);
 }
 
 public interface IPipelineFeature<TModel, TContext> : IBuilderSource<IPipelineFeature<TModel, TContext>>
 {
-    Result<TContext> Process(PipelineContext<TModel, TContext> context);
+    Result<TModel> Process(PipelineContext<TModel, TContext> context);
 }
