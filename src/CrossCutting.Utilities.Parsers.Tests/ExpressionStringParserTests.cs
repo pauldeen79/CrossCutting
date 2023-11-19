@@ -771,7 +771,7 @@ public sealed class ExpressionStringParserTests : IDisposable
                 return Result.Success<object?>(functionParseResult.Context?.ToString()?.ToUpperInvariant() ?? string.Empty);
             }
 
-            if (functionParseResult.Arguments.Any())
+            if (functionParseResult.Arguments.Count > 0)
             {
                 return Result.Success<object?>($"result of {functionParseResult.FunctionName} function: {string.Join(", ", functionParseResult.Arguments.OfType<LiteralArgument>().Select(x => x.GetValueResult(context, evaluator, parser, functionParseResult.FormatProvider).GetValueOrThrow()))}");
             }

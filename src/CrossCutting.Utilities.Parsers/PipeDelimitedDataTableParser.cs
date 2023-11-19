@@ -62,7 +62,7 @@ public static class PipeDelimitedDataTableParser
         }
     }
 
-    private static IList<object> ParseLine(
+    private static List<object> ParseLine(
         int skipColumnsLeft,
         int skipColumnsRight,
         Func<string, string, object>? formatFunction,

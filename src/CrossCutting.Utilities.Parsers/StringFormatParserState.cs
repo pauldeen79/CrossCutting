@@ -14,6 +14,8 @@ internal sealed class StringFormatParserState
     private bool FormatPlaceholderCountUnequalToFormatValueCount
         => FormatPlaceholders.Count > 0 && FormatValues.Count < FormatPlaceholders.Count;
 
+    private static readonly string[] noFormatPlaceholdersWereFound = new[] { "No format placeholders were found" };
+
     public StringFormatParserState(IEnumerable<object> args)
     {
         ArgumentGuard.IsNotNull(args, nameof(args));
@@ -84,7 +86,7 @@ internal sealed class StringFormatParserState
         }
         else if (FormatPlaceholders.Count == 0)
         {
-            return ParseResult.Error(ValidationErrors.Concat(new[] { "No format placeholders were found" }), Array.Empty<KeyValuePair<string, object>>());
+            return ParseResult.Error(ValidationErrors.Concat(noFormatPlaceholdersWereFound), Array.Empty<KeyValuePair<string, object>>());
         }
 
         return ParseResult.Create(ValidationErrors.Count == 0, FormatPlaceholders.Zip(FormatValues, (name, value) => new KeyValuePair<string, object>(name, value)), ValidationErrors);
