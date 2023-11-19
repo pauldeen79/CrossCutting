@@ -4,10 +4,9 @@ public class Pipeline<TModel> : PipelineBase<TModel>, IPipeline<TModel>
 {
     private readonly Action<TModel, PipelineContext<TModel>> _validationDelegate;
 
-    public Pipeline(Action<TModel, PipelineContext<TModel>> validationDelegate, IEnumerable<IPipelineFeature<TModel>> features) : base(features)
+    public Pipeline(Action<TModel, PipelineContext<TModel>> validationDelegate, IEnumerable<IPipelineFeature<TModel>> features) : base(features.IsNotNull(nameof(features)))
     {
         _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
-        ArgumentGuard.IsNotNull(features, nameof(features));
     }
 
     public Result<TModel> Process(TModel model)
@@ -33,10 +32,9 @@ public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>, IPipel
 {
     private readonly Action<TModel, PipelineContext<TModel, TContext>> _validationDelegate;
 
-    public Pipeline(Action<TModel, PipelineContext<TModel, TContext>> validationDelegate, IEnumerable<IPipelineFeature<TModel, TContext>> features) : base(features)
+    public Pipeline(Action<TModel, PipelineContext<TModel, TContext>> validationDelegate, IEnumerable<IPipelineFeature<TModel, TContext>> features) : base(features.IsNotNull(nameof(features)))
     {
         _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
-        ArgumentGuard.IsNotNull(features, nameof(features));
     }
 
     public Result<TModel> Process(TModel model, TContext context)
