@@ -51,7 +51,7 @@ public class MathematicExpressionState
             .Where(x => x.Index > -1)
             .OrderBy(x => x.Index)
             .ToArray();
-        Position = Indexes.Any()
+        Position = Indexes.Count > 0
             ? Indexes.First().Index
             : -1;
     }
@@ -89,13 +89,13 @@ public class MathematicExpressionState
             Remainder.Substring
             (
                 0,
-                PreviousIndexes.Any()
+                PreviousIndexes.Count > 0
                     ? PreviousIndexes.First() + 1
                     : 0
             ),
             FormattableString.Invariant($"{MathematicExpressionParser.TemporaryDelimiter}{Results.Count}{MathematicExpressionParser.TemporaryDelimiter}"),
             (
-                NextIndexes.Any()
+                NextIndexes.Count > 0
                     ? Remainder.Substring(NextIndexes.First())
                     : string.Empty
             )
@@ -104,12 +104,12 @@ public class MathematicExpressionState
     }
 
     private string GetLeftPart()
-        => PreviousIndexes.Any()
+        => PreviousIndexes.Count > 0
             ? Remainder.Substring(PreviousIndexes.First() + 1, Position - PreviousIndexes.First() - 1).Trim()
             : Remainder.Substring(0, Position).Trim();
 
     private string GetRightPart()
-        => NextIndexes.Any()
+        => NextIndexes.Count > 0
             ? Remainder.Substring(Position + 1, NextIndexes.First() - Position - 1).Trim()
             : Remainder.Substring(Position + 1).Trim();
 

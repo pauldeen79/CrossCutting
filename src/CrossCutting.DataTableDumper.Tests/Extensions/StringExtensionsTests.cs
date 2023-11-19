@@ -7,7 +7,7 @@ public class StringExtensionsTests
         InlineData("", ""),
         InlineData("value without pipe", "value without pipe"),
         InlineData("value with |", "value with _")]
-    public void EscapePipes_Returns_Correct_Value(string input, string expectedOutput)
+    public void EscapePipes_Returns_Correct_Value(string? input, string? expectedOutput)
     {
         // Act
         var actual = input.EscapePipes();
@@ -21,7 +21,7 @@ public class StringExtensionsTests
         InlineData("", ""),
         InlineData("value without pipe", "value without pipe"),
         InlineData("value with _", "value with |")]
-    public void UnescapePipes_Returns_Correct_Value(string input, string expectedOutput)
+    public void UnescapePipes_Returns_Correct_Value(string? input, string? expectedOutput)
     {
         // Act
         var actual = input.UnescapePipes();

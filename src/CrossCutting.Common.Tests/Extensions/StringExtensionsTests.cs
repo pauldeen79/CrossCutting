@@ -41,7 +41,7 @@ public partial class StringExtensionsTests
         InlineData("1", true),
         InlineData("other value", false),
         InlineData(null, false)]
-    public void IsTrue_Returns_Correct_Result(string input, bool expectedResult)
+    public void IsTrue_Returns_Correct_Result(string? input, bool expectedResult)
     {
         // Act
         var actual = input.IsTrue();
@@ -57,7 +57,7 @@ public partial class StringExtensionsTests
         InlineData("0", true),
         InlineData("other value", false),
         InlineData(null, false)]
-    public void IsFalse_Returns_Correct_Result(string input, bool expectedResult)
+    public void IsFalse_Returns_Correct_Result(string? input, bool expectedResult)
     {
         // Act
         var actual = input.IsFalse();

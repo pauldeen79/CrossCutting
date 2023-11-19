@@ -38,7 +38,7 @@ public class MathematicExpressionParser : IMathematicExpressionParser
             return Result.FromExistingResult<object?>(error);
         }
 
-        return state.Results.Any()
+        return state.Results.Count > 0
             ? state.Results.ElementAt(state.Results.Count - 1)
             : _expressionParser
                 .Parse(input, formatProvider, context)

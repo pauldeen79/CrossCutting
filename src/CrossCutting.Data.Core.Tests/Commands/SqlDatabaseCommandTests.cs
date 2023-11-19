@@ -5,9 +5,9 @@ public class SqlDatabaseCommandTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void Ctor_Throws_On_CommandText(string commandText)
+    public void Ctor_Throws_On_CommandText(string? commandText)
     {
-        this.Invoking(_ => new SqlDatabaseCommand(commandText, DatabaseCommandType.Text))
+        this.Invoking(_ => new SqlDatabaseCommand(commandText!, DatabaseCommandType.Text))
             .Should().Throw<ArgumentOutOfRangeException>()
             .And.ParamName.Should().Be("commandText");
     }

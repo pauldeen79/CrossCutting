@@ -56,7 +56,7 @@ public class ObjectExtensionsTests
         InlineData("", ""),
         InlineData(null, ""),
         InlineData("a", "a")]
-    public void ToStringWithNullCheck_Returns_Correct_Result(string input, string expectedOutput)
+    public void ToStringWithNullCheck_Returns_Correct_Result(string? input, string expectedOutput)
     {
         // Act
         var actual = input.ToStringWithNullCheck();
@@ -151,7 +151,7 @@ public class ObjectExtensionsTests
         InlineData("False", false),
         InlineData("", false),
         InlineData(null, false)]
-    public void IsTrue_Returns_StringValue_Correctly(string input, bool expectedOutput)
+    public void IsTrue_Returns_StringValue_Correctly(string? input, bool expectedOutput)
     {
         // Act
         var actual = input.IsTrue();
@@ -177,7 +177,7 @@ public class ObjectExtensionsTests
         InlineData("False", true),
         InlineData("", false),
         InlineData(null, false)]
-    public void IsFalse_Returns_StringValue_Correctly(string input, bool expectedOutput)
+    public void IsFalse_Returns_StringValue_Correctly(string? input, bool expectedOutput)
     {
         // Act
         var actual = input.IsFalse();

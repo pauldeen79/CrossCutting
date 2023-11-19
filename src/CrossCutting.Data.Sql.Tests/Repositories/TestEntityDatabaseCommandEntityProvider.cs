@@ -42,7 +42,7 @@ public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityPro
 
     public Func<TestEntityBuilder, TestEntity>? CreateEntityDelegate => builder => builder.Build();
 
-    private object AddParameters(TestEntityBuilder resultEntity)
+    private KeyValuePair<string, object?>[] AddParameters(TestEntityBuilder resultEntity)
         => new[]
         {
             new KeyValuePair<string, object?>("@Code", resultEntity.Code),
@@ -63,7 +63,7 @@ public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityPro
         return resultEntity;
     }
 
-    private object UpdateParameters(TestEntityBuilder resultEntity)
+    private KeyValuePair<string, object?>[] UpdateParameters(TestEntityBuilder resultEntity)
         => new[]
         {
             new KeyValuePair<string, object?>("@Code", resultEntity.Code),
@@ -83,7 +83,7 @@ public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityPro
         return resultEntity;
     }
 
-    private object DeleteParameters(TestEntityBuilder resultEntity)
+    private KeyValuePair<string, object?>[] DeleteParameters(TestEntityBuilder resultEntity)
         => new[]
         {
             new KeyValuePair<string, object?>("@Code", resultEntity.Code),
