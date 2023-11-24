@@ -163,6 +163,20 @@ public class ValueCollectionTests
     }
 
     [Fact]
+    public void Equals_Object_Different_Other_Type_Returns_False()
+    {
+        // Arrange
+        var value1 = new ValueCollection<string>(new[] { "a", "b", "c" });
+        var value2 = "wrong type";
+
+        // Act
+        var actual = value1.Equals((object)value2);
+
+        // Assert
+        actual.Should().BeFalse();
+    }
+
+    [Fact]
     public void Equals_Object_Returns_True_On_Same_Reference()
     {
         // Arrange
@@ -238,5 +252,18 @@ public class ValueCollectionTests
 
         // Assert
         actual.Should().Be("[2020-02-01T00:00:00.0000000]");
+    }
+
+    [Fact]
+    public void GetHashCode_Returns_Value()
+    {
+        // Arrange
+        var value = new ValueCollection<string>(new[] { "a", "b", "C" });
+
+        // Act
+        var actual = value.GetHashCode();
+
+        // Assert
+        actual.Should().NotBe(default);
     }
 }
