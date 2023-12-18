@@ -2,10 +2,10 @@
 
 public interface IPipelineBuilder<TModel> : IValidatableObject
 {
-    public Pipeline<TModel> Build();
+    public IPipeline<TModel> Build();
 }
 
 public interface IPipelineBuilder<TModel, TContext> : IValidatableObject
 {
-    public Pipeline<TModel, TContext> Build();
+    public IPipeline<TModel, TContext> Build();
 }
