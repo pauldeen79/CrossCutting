@@ -6,7 +6,7 @@ public class PipelineBuilder<TModel> : PipelineBuilderBase<IPipelineFeature<TMod
     {
     }
 
-    public PipelineBuilder(Pipeline<TModel> source) : base(ArgumentGuard.IsNotNull(source, nameof(source)).Features.Select(x => x.ToBuilder()))
+    public PipelineBuilder(IPipeline<TModel> source) : base(ArgumentGuard.IsNotNull(source, nameof(source)).Features.Select(x => x.ToBuilder()))
     {
     }
 
@@ -28,7 +28,7 @@ public class PipelineBuilder<TModel, TContext> : PipelineBuilderBase<IPipelineFe
     {
     }
 
-    public PipelineBuilder(Pipeline<TModel, TContext> source) : base(ArgumentGuard.IsNotNull(source, nameof(source)).Features.Select(x => x.ToBuilder()))
+    public PipelineBuilder(IPipeline<TModel, TContext> source) : base(ArgumentGuard.IsNotNull(source, nameof(source)).Features.Select(x => x.ToBuilder()))
     {
     }
 
