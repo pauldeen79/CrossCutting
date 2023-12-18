@@ -4,10 +4,10 @@ public class ObjectExtensionsTests
 {
     [Theory]
     [MemberData(nameof(FixDbNullData))]
-    public void FixDbNull_Returns_Correct_Value(object input, object expectedOutput)
+    public void FixDbNull_Returns_Correct_Value(object? input, object? expectedOutput)
     {
         // Act
-        var actual = input.FixDbNull();
+        var actual = input!.FixDbNull();
 
         // Asset
         actual.Should().Be(expectedOutput);
@@ -15,7 +15,7 @@ public class ObjectExtensionsTests
 
     [Theory]
     [MemberData(nameof(FixNullData))]
-    public void FixNull_Returns_Correct_Value(object input, object expectedOutput)
+    public void FixNull_Returns_Correct_Value(object? input, object expectedOutput)
     {
         // Act
         var actual = input.FixNull();
@@ -24,26 +24,26 @@ public class ObjectExtensionsTests
         actual.Should().Be(expectedOutput);
     }
 
-    public static IEnumerable<object?[]> FixDbNullData
-        => new List<object?[]>
+    public static TheoryData<object?, object?> FixDbNullData
+        => new TheoryData<object?, object?>
         {
-                new object?[] { DBNull.Value, null },
-                new object?[] { null, null },
-                new object?[] { "", "" },
-                new object?[] { "test", "test" },
-                new object?[] { 1, 1 },
-                new object?[] { false, false },
-                new object?[] { new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified) },
+            { DBNull.Value, null },
+            { null, null }, // note that according to the interface, you can't send null. but it will not crash 8-)
+            { "", "" },
+            { "test", "test" },
+            { 1, 1 },
+            { false, false },
+            { new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified) },
         };
 
-    public static IEnumerable<object?[]> FixNullData
-        => new List<object?[]>
+    public static TheoryData<object?, object> FixNullData
+        => new TheoryData<object?, object>
         {
-                new object?[] { null, DBNull.Value },
-                new object?[] { "", "" },
-                new object?[] { "test", "test" },
-                new object?[] { 1, 1 },
-                new object?[] { false, false },
-                new object?[] { new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified) },
+            { null, DBNull.Value },
+            { "", "" },
+            { "test", "test" },
+            { 1, 1 },
+            { false, false },
+            { new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified) },
         };
 }

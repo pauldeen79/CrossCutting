@@ -10,7 +10,7 @@ public class PipelineBuilder<TModel> : PipelineBuilderBase<IPipelineFeature<TMod
     {
     }
 
-    public Pipeline<TModel> Build()
+    public IPipeline<TModel> Build()
         => new Pipeline<TModel>(Initialize, Features.Select(x => x.Build()));
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -32,7 +32,7 @@ public class PipelineBuilder<TModel, TContext> : PipelineBuilderBase<IPipelineFe
     {
     }
 
-    public Pipeline<TModel, TContext> Build()
+    public IPipeline<TModel, TContext> Build()
         => new Pipeline<TModel, TContext>(Initialize, Features.Select(x => x.Build()));
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
