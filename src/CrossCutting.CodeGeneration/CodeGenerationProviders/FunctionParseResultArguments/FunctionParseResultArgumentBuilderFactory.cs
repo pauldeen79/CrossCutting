@@ -6,7 +6,7 @@ public class FunctionParseResultArgumentBuilderFactory : CrossCuttingCSharpClass
     public override string Path => CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsersBuilders;
 
     public override object CreateModel()
-        => CreateBuilderFactoryModels(
+        => CreateBuilderFactories(
             GetOverrideModels(typeof(IFunctionParseResultArgument)),
             new(
                 CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsersBuilders,
