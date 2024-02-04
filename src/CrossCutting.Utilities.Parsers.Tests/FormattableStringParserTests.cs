@@ -181,6 +181,21 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Can_Parse_String_And_Defer_Specific_Placeholder()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var preparsedResult = sut.Parse("Hello {Name}, you are called {{Name}}", CultureInfo.InvariantCulture);
+
+        // Act
+        var result = sut.Parse(preparsedResult.GetValueOrThrow(), CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
+    }
+
+    [Fact]
     public void Create_Throws_On_Null_Processors()
     {
         // Act & Assert
