@@ -4,6 +4,7 @@ global using System.Collections.ObjectModel;
 global using System.ComponentModel.DataAnnotations;
 global using System.Globalization;
 global using System.Linq;
+global using CrossCutting.Common.DataAnnotations;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
 global using FluentAssertions;
