@@ -42,6 +42,7 @@ public class MinCountAttributeTests
 
         // Assert
         results.Should().ContainSingle();
+        results.Single().ErrorMessage.Should().Be("The field MyProperty must be a collection type with a minimum length of '1'.");
     }
 
     [Fact]
@@ -56,6 +57,31 @@ public class MinCountAttributeTests
 
         // Assert
         results.Should().ContainSingle();
+        results.Single().ErrorMessage.Should().Be("The field MyProperty must be a collection type with a minimum length of '1'.");
+    }
+
+    [Fact]
+    public void Does_Not_Throw_When_MinimumCount_Is_Zero()
+    {
+        // Arrange
+        var sut = new MyClassWithCountZero();
+        var results = new List<ValidationResult>();
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.TryValidate(results))
+           .Should().NotThrow<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Throws_When_MinimumCount_Is_Lower_Than_Zero()
+    {
+        // Arrange
+        var sut = new MyClassWithCountMinusOne();
+        var results = new List<ValidationResult>();
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.TryValidate(results))
+           .Should().Throw<InvalidOperationException>().WithMessage("MinCountAttribute must have a Count value that is zero or greater.");
     }
 
     private sealed class MyClass
@@ -68,5 +94,17 @@ public class MinCountAttributeTests
     {
         [MinCount(1)]
         public int MyProperty { get; set; }
+    }
+
+    private sealed class MyClassWithCountZero
+    {
+        [MinCount(0)]
+        public List<int> MyProperty { get; set; } = default!;
+    }
+
+    private sealed class MyClassWithCountMinusOne
+    {
+        [MinCount(-1)]
+        public List<int> MyProperty { get; set; } = default!;
     }
 }
