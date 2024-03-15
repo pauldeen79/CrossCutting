@@ -42,6 +42,7 @@ public class CountAttributeTests
 
         // Assert
         results.Should().ContainSingle();
+        results.Single().ErrorMessage.Should().Be("The field MyProperty must be a collection with a minimum count of 1 and a maximum count of 10.");
     }
 
     [Fact]
@@ -56,6 +57,7 @@ public class CountAttributeTests
 
         // Assert
         results.Should().ContainSingle();
+        results.Single().ErrorMessage.Should().Be("The field MyProperty must be a collection with a minimum count of 1 and a maximum count of 10.");
     }
 
     [Fact]
@@ -70,6 +72,31 @@ public class CountAttributeTests
 
         // Assert
         results.Should().ContainSingle();
+        results.Single().ErrorMessage.Should().Be("The field MyProperty must be a collection with a minimum count of 1 and a maximum count of 10.");
+    }
+
+    [Fact]
+    public void Throws_When_MaximumCount_Is_Lower_Than_Zero()
+    {
+        // Arrange
+        var sut = new MyClassWithMaximumCountLowerThanZero();
+        var results = new List<ValidationResult>();
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.TryValidate(results))
+           .Should().Throw<InvalidOperationException>().WithMessage("The maximum count must be a nonnegative integer.");
+    }
+
+    [Fact]
+    public void Throws_When_MaximumCount_Is_Lower_Than_MinimumCount()
+    {
+        // Arrange
+        var sut = new MyClassWithMaximumCountLowerThanMinimumCount();
+        var results = new List<ValidationResult>();
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.TryValidate(results))
+           .Should().Throw<InvalidOperationException>().WithMessage("The maximum value '1' must be greater than or equal to the minimum value '10'.");
     }
 
     private sealed class MyClass
@@ -82,5 +109,17 @@ public class CountAttributeTests
     {
         [Count(1, 10)]
         public int MyProperty { get; set; }
+    }
+
+    private sealed class MyClassWithMaximumCountLowerThanZero
+    {
+        [Count(1, -1)]
+        public List<int> MyProperty { get; set; } = default!;
+    }
+
+    private sealed class MyClassWithMaximumCountLowerThanMinimumCount
+    {
+        [Count(10, 1)]
+        public List<int> MyProperty { get; set; } = default!;
     }
 }
