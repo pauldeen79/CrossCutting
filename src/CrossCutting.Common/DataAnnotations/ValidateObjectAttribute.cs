@@ -3,8 +3,39 @@
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
 public sealed class ValidateObjectAttribute : ValidationAttribute
 {
+    public bool DetailedErrorMessages { get; set; }
+
+    public override bool IsValid(object value)
+    {
+        if (value is null)
+        {
+            // Let RequiredValidation handle this
+            return true;
+        }
+
+        var validationResults = new List<ValidationResult>();
+
+        if (value is not string && value is IEnumerable e)
+        {
+            foreach (var item in e.OfType<object?>().Where(x => x is not null))
+            {
+                if (!item!.TryValidate(validationResults)) return false;
+            }
+            return true;
+        }
+        else
+        {
+            return value.TryValidate(validationResults);
+        }
+    }
+
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
+        if (!DetailedErrorMessages)
+        {
+            return base.IsValid(value, validationContext);
+        }
+
         if (value is null)
         {
             // Let RequiredValidationAttribute handle this
