@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Common.Extensions;
+﻿using System;
+
+namespace CrossCutting.Common.Extensions;
 
 public static class ObjectExtensions
 {
@@ -116,7 +118,11 @@ public static class ObjectExtensions
     /// true when found, otherwise false.
     /// </returns>
     public static bool In<T>(this T value, IEnumerable<T> values)
-        => values.Any(i => i?.Equals(value) == true);
+    {
+        ArgumentGuard.IsNotNull(values, nameof(values));
+
+        return values.Any(i => i?.Equals(value) == true);
+    }
 
     /// <summary>
     /// Determines whether the specified value is contained within the specified sequence.
@@ -128,7 +134,11 @@ public static class ObjectExtensions
     /// true when found, otherwise false.
     /// </returns>
     public static bool In<T>(this T value, params T[] values)
-        => Array.Exists(values, i => i?.Equals(value) == true);
+    {
+        ArgumentGuard.IsNotNull(values, nameof(values));
+
+        return Array.Exists(values, i => i?.Equals(value) == true);
+    }
 
     public static ExpandoObject ToExpandoObject(this object? instance)
     {

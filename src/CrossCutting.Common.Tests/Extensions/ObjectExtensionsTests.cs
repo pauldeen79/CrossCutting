@@ -268,6 +268,58 @@ public class ObjectExtensionsTests
     }
 
     [Fact]
+    public void In_Returns_False_When_Instance_Is_Null_ParamArray()
+    {
+        // Arrange
+        string? instance = default;
+
+        // Act
+        var result = instance.In("A", "B", "C");
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public void In_Returns_False_When_Instance_Is_Null_Enumerable()
+    {
+        // Arrange
+        string? instance = default;
+
+        // Act
+        var result = instance.In(new List<string> { "A", "B", "C" });
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public void In_Throws_On_Null_Values_ParamArray()
+    {
+        // Arrange
+        string instance = "A";
+        string[] values = default!;
+
+        // Act
+        instance.Invoking(x => _ = x.In(values))
+                .Should().Throw<ArgumentNullException>()
+                .WithParameterName("values");
+    }
+
+    [Fact]
+    public void In_Throws_On_Null_Values_Enumerable()
+    {
+        // Arrange
+        string instance = "A";
+        IEnumerable<string> values = default!;
+
+        // Act
+        instance.Invoking(x => _ = x.In(values))
+                .Should().Throw<ArgumentNullException>()
+                .WithParameterName("values");
+    }
+
+    [Fact]
     public void Can_Convert_Class_To_ExpandoObject()
     {
         // Arrange
