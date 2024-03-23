@@ -81,7 +81,7 @@ public static class ValidatableObjectExtensions
         {
             if (sb.Length > 0)
             {
-                sb.Append("\r\n");
+                sb.Append(Environment.NewLine);
             }
 
             sb.Append(error.ErrorMessage);
