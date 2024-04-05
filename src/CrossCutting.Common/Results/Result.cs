@@ -175,4 +175,17 @@ public record Result
     private static T? TryGetValue<T>(Result existingResult) => existingResult.GetValue() is T t
         ? t
         : default;
+
+    public void ThrowIfInvalid(string errorMessage)
+    {
+        if (!IsSuccessful())
+        {
+            throw new InvalidOperationException(errorMessage);
+        }
+    }
+
+    public void ThrowIfInvalid()
+        => ThrowIfInvalid(string.IsNullOrEmpty(ErrorMessage)
+            ? $"Result: {Status}"
+            : $"Result: {Status}, ErrorMessage: {ErrorMessage}");
 }

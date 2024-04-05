@@ -1172,4 +1172,41 @@ public class ResultTests
         // Assert
         result.Should().BeEquivalentTo(13);
     }
+
+    [Fact]
+    public void ThrowIfInvalid_Does_Not_Throw_When_Result_Is_Success()
+    {
+        // Arrange
+        var sut = Result.Success("ok");
+
+        // Act & Assert
+        sut.Invoking(x => x.ThrowIfInvalid()).Should().NotThrow();
+    }
+
+    [Fact]
+    public void ThrowIfInvalid_Throws_When_Result_Is_Invalid()
+    {
+        // Arrange
+        var sut = Result.Invalid<string>();
+
+        // Act
+        var act = new Action(() => sut.ThrowIfInvalid());
+
+        // Assert
+        act.Should().ThrowExactly<InvalidOperationException>().WithMessage("Result: Invalid");
+    }
+
+    [Fact]
+    public void ThrowIfInvalid_Throws_When_Result_Is_Error_And_ErrorMessage_Is_Filled()
+    {
+        // Arrange
+        var sut = Result.Error<string>("Kaboom");
+
+        // Act
+        var act = new Action(() => sut.ThrowIfInvalid());
+
+        // Assert
+        act.Should().ThrowExactly<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom");
+    }
+
 }
