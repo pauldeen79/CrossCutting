@@ -2,14 +2,14 @@
 
 public interface IPipeline<TModel>
 {
-    IReadOnlyCollection<IPipelineFeature<TModel>> Features { get; }
+    IReadOnlyCollection<IPipelineComponent<TModel>> Components { get; }
     
     Result<TModel> Process(TModel model);
 }
 
 public interface IPipeline<TModel, TContext>
 {
-    IReadOnlyCollection<IPipelineFeature<TModel, TContext>> Features { get; }
+    IReadOnlyCollection<IPipelineComponent<TModel, TContext>> Components { get; }
 
     Result<TModel> Process(TModel model, TContext context);
 }

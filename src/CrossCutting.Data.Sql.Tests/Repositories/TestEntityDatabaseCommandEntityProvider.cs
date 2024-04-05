@@ -43,12 +43,12 @@ public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityPro
     public Func<TestEntityBuilder, TestEntity>? CreateEntityDelegate => builder => builder.Build();
 
     private KeyValuePair<string, object?>[] AddParameters(TestEntityBuilder resultEntity)
-        => new[]
-        {
+        =>
+        [
             new KeyValuePair<string, object?>("@Code", resultEntity.Code),
             new KeyValuePair<string, object?>("@CodeType", resultEntity.CodeType),
             new KeyValuePair<string, object?>("@Description", resultEntity.Description),
-        };
+        ];
 
     private TestEntityBuilder AddResultEntity(TestEntityBuilder resultEntity) => resultEntity;
 
@@ -64,12 +64,12 @@ public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityPro
     }
 
     private KeyValuePair<string, object?>[] UpdateParameters(TestEntityBuilder resultEntity)
-        => new[]
-        {
+        =>
+        [
             new KeyValuePair<string, object?>("@Code", resultEntity.Code),
             new KeyValuePair<string, object?>("@CodeType", resultEntity.CodeType),
             new KeyValuePair<string, object?>("@Description", resultEntity.Description),
-        };
+        ];
 
     private TestEntityBuilder UpdateResultEntity(TestEntityBuilder resultEntity) => resultEntity;
 
@@ -84,12 +84,12 @@ public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityPro
     }
 
     private KeyValuePair<string, object?>[] DeleteParameters(TestEntityBuilder resultEntity)
-        => new[]
-        {
+        =>
+        [
             new KeyValuePair<string, object?>("@Code", resultEntity.Code),
             new KeyValuePair<string, object?>("@CodeType", resultEntity.CodeType),
             new KeyValuePair<string, object?>("@Description", resultEntity.Description),
-        };
+        ];
 
     private TestEntityBuilder DeleteResultEntity(TestEntityBuilder resultEntity)
         => resultEntity;

@@ -14,24 +14,54 @@ internal static class Program
             var x when x.EndsWith($"{Constants.ProjectName}.CodeGeneration") => Path.Combine(currentDirectory, @"../"),
             _ => Path.Combine(currentDirectory, @"../../../../")
         };
-        var generateMultipleFiles = true;
         var dryRun = false;
-        var multipleContentBuilder = new MultipleContentBuilder { BasePath = basePath };
-        var settings = new CodeGenerationSettings(basePath, generateMultipleFiles, dryRun);
+        var codeGenerationSettings = new CodeGenerationSettings(basePath, "GeneratedCode.cs", dryRun);
+        var services = new ServiceCollection()
+            .AddParsers()
+            .AddPipelines()
+            .AddTemplateFramework()
+            .AddTemplateFrameworkChildTemplateProvider()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddCsharpExpressionDumper()
+        .AddClassFrameworkTemplates()
+            .AddScoped<IAssemblyInfoContextService, MyAssemblyInfoContextService>();
+
+        var generators = typeof(Program).Assembly.GetExportedTypes()
+            .Where(x => !x.IsAbstract && x.BaseType == typeof(CrossCuttingCSharpClassBase))
+            .ToArray();
+
+        foreach (var type in generators)
+        {
+            services.AddScoped(type);
+        }
+
+        using var serviceProvider = services.BuildServiceProvider();
+        using var scope = serviceProvider.CreateScope();
+        var instances = generators
+            .Select(x => (ICodeGenerationProvider)scope.ServiceProvider.GetRequiredService(x))
+            .ToArray();
+        var engine = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
 
         // Generate code
-        var expressionFrameworkGenerators = typeof(CrossCuttingCSharpClassBase).Assembly.GetExportedTypes().Where(x => x.BaseType == typeof(CrossCuttingCSharpClassBase) && !x.IsAbstract).ToArray();
-        _ = expressionFrameworkGenerators.Select(x => (CrossCuttingCSharpClassBase)Activator.CreateInstance(x)!).Select(x => GenerateCode.For(settings, multipleContentBuilder, x)).ToArray();
+        var count = 0;
+        foreach (var instance in instances)
+        {
+            var generationEnvironment = new MultipleContentBuilderEnvironment();
+            engine.Generate(instance, generationEnvironment, codeGenerationSettings);
+            count += generationEnvironment.Builder.Contents.Count();
+
+            if (string.IsNullOrEmpty(basePath))
+            {
+                Console.WriteLine(generationEnvironment.Builder.ToString());
+            }
+        }
 
         // Log output to console
-        if (string.IsNullOrEmpty(basePath))
-        {
-            Console.WriteLine(multipleContentBuilder.ToString());
-        }
-        else
+        if (!string.IsNullOrEmpty(basePath))
         {
             Console.WriteLine($"Code generation completed, check the output in {basePath}");
-            Console.WriteLine($"Generated files: {multipleContentBuilder.Contents.Count()}");
+            Console.WriteLine($"Generated files: {count}");
         }
     }
 }

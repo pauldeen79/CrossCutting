@@ -24,10 +24,10 @@ public class DbCommandExtensionsTests
         // Arrange
         using var command = new DbCommand();
         var parameters = new List<KeyValuePair<string, object?>>
-            {
-                new KeyValuePair<string, object?>("param1", "value1"),
-                new KeyValuePair<string, object?>("param2", null),
-            };
+        {
+            new KeyValuePair<string, object?>("param1", "value1"),
+            new KeyValuePair<string, object?>("param2", null),
+        };
 
         // Act
         command.AddParameters(parameters);
@@ -42,16 +42,30 @@ public class DbCommandExtensionsTests
     }
 
     [Fact]
-    public void FillCommand_Fills_CommandText_Correctly()
+    public void FillCommand_Fills_CommandText_Correctly_From_String()
     {
         // Arrange
         using var command = new DbCommand();
 
         // Act
-        command.FillCommand("Test", DatabaseCommandType.Text);
+        command.FillCommand($"Test", DatabaseCommandType.Text);
 
         // Assert
         command.CommandText.Should().Be("Test");
+    }
+
+    [Fact]
+    public void FillCommand_Fills_CommandText_Correctly_From_FormattableString()
+    {
+        // Arrange
+        using var command = new DbCommand();
+        var value = "sql injection safe!";
+
+        // Act
+        command.FillCommand($"SELECT * FROM Table WHERE Field = {value}", DatabaseCommandType.Text);
+
+        // Assert
+        command.CommandText.Should().Be("SELECT * FROM Table WHERE Field = @p0");
     }
 
     [Theory]
@@ -63,22 +77,22 @@ public class DbCommandExtensionsTests
         using var command = new DbCommand();
 
         // Act
-        command.FillCommand("Test", dbCommandType);
+        command.FillCommand($"Test", dbCommandType);
 
         // Assert
         command.CommandType.Should().Be(expectedCommandType);
     }
 
     [Fact]
-    public void FillCommand_Fills_Parameters_Correctly()
+    public void FillCommand_Fills_Parameters_Correctly_From_Parameters()
     {
         // Arrange
         using var command = new DbCommand();
         var parameters = new List<KeyValuePair<string, object?>>
-            {
-                new KeyValuePair<string, object?>("param1", "value1"),
-                new KeyValuePair<string, object?>("param2", null),
-            };
+        {
+            new KeyValuePair<string, object?>("param1", "value1"),
+            new KeyValuePair<string, object?>("param2", null),
+        };
 
         // Act
         command.FillCommand("Test", DatabaseCommandType.Text, parameters);
@@ -93,25 +107,39 @@ public class DbCommandExtensionsTests
     }
 
     [Fact]
+    public void FillCommand_Fills_Parameters_Correctly_From_FormattableString()
+    {
+        // Arrange
+        using var command = new DbCommand();
+        var value = "sql injection safe!";
+
+        // Act
+        command.FillCommand($"SELECT * FROM Table WHERE Field = {value}", DatabaseCommandType.Text);
+
+        // Assert
+        var result = command.Parameters.Cast<IDbDataParameter>();
+        result.Should().ContainSingle();
+        result.First().ParameterName.Should().Be("p0");
+        result.First().Value.Should().Be("sql injection safe!");
+    }
+
+    [Fact]
     public void FindOne_Returns_Correct_Result()
     {
         // Arrange
         using var connection = new DbConnection();
         connection.AddResultForDataReader(new[]
         {
-                new MyDataObject { Property = "test" }
-            });
+            new MyDataObject { Property = "test" }
+        });
         var command = connection.CreateCommand();
 
         // Act
-        var result = command.FindOne("SELECT TOP 1 * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, reader => new MyDataObject { Property = reader.GetString("Property") });
+        var result = command.FindOne($"SELECT TOP 1 * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, reader => new MyDataObject { Property = reader.GetString("Property") });
 
         // Assert
         result.Should().NotBeNull();
-        if (result is not null)
-        {
-            result.Property.Should().Be("test");
-        }
+        result?.Property.Should().Be("test");
     }
 
     [Fact]
@@ -127,7 +155,7 @@ public class DbCommandExtensionsTests
         var command = connection.CreateCommand();
 
         // Act
-        var result = command.FindMany("SELECT * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, reader => new MyDataObject { Property = reader.GetString("Property") });
+        var result = command.FindMany($"SELECT * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, reader => new MyDataObject { Property = reader.GetString("Property") });
 
         // Assert
         result.Should().NotBeNull().And.HaveCount(2);

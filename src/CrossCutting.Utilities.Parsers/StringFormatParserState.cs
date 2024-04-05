@@ -14,7 +14,7 @@ internal sealed class StringFormatParserState
     private bool FormatPlaceholderCountUnequalToFormatValueCount
         => FormatPlaceholders.Count > 0 && FormatValues.Count < FormatPlaceholders.Count;
 
-    private static readonly string[] noFormatPlaceholdersWereFound = new[] { "No format placeholders were found" };
+    private static readonly string[] noFormatPlaceholdersWereFound = ["No format placeholders were found"];
 
     public StringFormatParserState(IEnumerable<object> args)
     {
@@ -74,13 +74,13 @@ internal sealed class StringFormatParserState
     {
         if (FormatValueCountUnequalToFormatPlaceholderCount)
         {
-            var result = ParseResult.Error(ValidationErrors.Concat(new[] { $"Format values count ({FormatValues.Count}) is not equal to column placeholders count ({FormatPlaceholders.Count}), see #MISSING# in format placeholders list (keys)" }), FormatPlaceholders.Zip(FormatValues, (name, value) => new KeyValuePair<string, object>(name, value)));
+            var result = ParseResult.Error(ValidationErrors.Concat([$"Format values count ({FormatValues.Count}) is not equal to column placeholders count ({FormatPlaceholders.Count}), see #MISSING# in format placeholders list (keys)"]), FormatPlaceholders.Zip(FormatValues, (name, value) => new KeyValuePair<string, object>(name, value)));
             FormatPlaceholders.AddRange(Enumerable.Range(1, FormatValues.Count - FormatPlaceholders.Count).Select(_ => "#MISSING#"));
             return result;
         }
         else if (FormatPlaceholderCountUnequalToFormatValueCount)
         {
-            var result = ParseResult.Error(ValidationErrors.Concat(new[] { $"Format placeholders count ({FormatPlaceholders.Count}) is not equal to column values count ({FormatValues.Count}), see #MISSING# in format values list (values)" }), FormatPlaceholders.Zip(FormatValues, (name, value) => new KeyValuePair<string, object>(name, value)));
+            var result = ParseResult.Error(ValidationErrors.Concat([$"Format placeholders count ({FormatPlaceholders.Count}) is not equal to column values count ({FormatValues.Count}), see #MISSING# in format values list (values)"]), FormatPlaceholders.Zip(FormatValues, (name, value) => new KeyValuePair<string, object>(name, value)));
             FormatValues.AddRange(Enumerable.Range(1, FormatPlaceholders.Count - FormatValues.Count).Select(_ => "#MISSING#"));
             return result;
         }

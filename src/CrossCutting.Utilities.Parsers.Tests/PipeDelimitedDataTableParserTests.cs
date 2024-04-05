@@ -132,7 +132,7 @@ Value 1|Value 2|Value 3";
     {
         if (columnNames is null)
         {
-            columnNames = new[] { "1", "2", "3" };
+            columnNames = ["1", "2", "3"];
         }
 
         actual.Should().NotBeNull().And.HaveCount(1);

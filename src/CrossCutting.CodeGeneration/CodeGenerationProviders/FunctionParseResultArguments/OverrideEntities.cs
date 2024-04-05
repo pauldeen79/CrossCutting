@@ -3,12 +3,16 @@
 [ExcludeFromCodeCoverage]
 public class OverrideEntities : CrossCuttingCSharpClassBase
 {
+    public OverrideEntities(ICsharpExpressionDumper csharpExpressionDumper, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper, builderPipeline, builderExtensionPipeline, entityPipeline, reflectionPipeline, interfacePipeline)
+    {
+    }
+
     public override string Path => CrossCutting.CodeGeneration.Constants.Paths.FunctionParseResultArguments;
 
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;
-    protected override IClass? BaseClass => CreateBaseclass(typeof(IFunctionParseResultArgument), CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsers);
+    protected override Class? BaseClass => CreateBaseclass(typeof(IFunctionParseResultArgument), CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsers);
 
-    public override object CreateModel()
-        => GetImmutableClasses(GetOverrideModels(typeof(IFunctionParseResultArgument)), CurrentNamespace);
+    public override IEnumerable<TypeBase> Model
+        => GetEntities(GetOverrideModels(typeof(IFunctionParseResultArgument)), CurrentNamespace);
 }

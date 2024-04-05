@@ -30,6 +30,6 @@ public static class Constants
     {
         public const string FunctionParseResultArguments = $"{Namespaces.UtilitiesParsers}/{nameof(FunctionParseResultArguments)}";
 
-        public const string FunctionParseResultArgumentBuilders = $"{Namespaces.UtilitiesParsersBuilders}/{nameof(FunctionParseResultArguments)}";
+        public const string FunctionParseResultArgumentBuilders = $"{Namespaces.UtilitiesParsers}/Builders/{nameof(FunctionParseResultArguments)}";
     }
 }

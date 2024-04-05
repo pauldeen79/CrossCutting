@@ -4,7 +4,7 @@ public class Pipeline<TModel> : PipelineBase<TModel>, IPipeline<TModel>
 {
     private readonly Action<TModel, PipelineContext<TModel>> _validationDelegate;
 
-    public Pipeline(Action<TModel, PipelineContext<TModel>> validationDelegate, IEnumerable<IPipelineFeature<TModel>> features) : base(features.IsNotNull(nameof(features)))
+    public Pipeline(Action<TModel, PipelineContext<TModel>> validationDelegate, IEnumerable<IPipelineComponent<TModel>> features) : base(features.IsNotNull(nameof(features)))
     {
         _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
     }
@@ -15,7 +15,7 @@ public class Pipeline<TModel> : PipelineBase<TModel>, IPipeline<TModel>
 
         _validationDelegate(model, pipelineContext);
 
-        foreach (var feature in Features)
+        foreach (var feature in Components)
         {
             var result = feature.Process(pipelineContext);
             if (result.Status != ResultStatus.Continue)
@@ -32,7 +32,7 @@ public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>, IPipel
 {
     private readonly Action<TModel, PipelineContext<TModel, TContext>> _validationDelegate;
 
-    public Pipeline(Action<TModel, PipelineContext<TModel, TContext>> validationDelegate, IEnumerable<IPipelineFeature<TModel, TContext>> features) : base(features.IsNotNull(nameof(features)))
+    public Pipeline(Action<TModel, PipelineContext<TModel, TContext>> validationDelegate, IEnumerable<IPipelineComponent<TModel, TContext>> features) : base(features.IsNotNull(nameof(features)))
     {
         _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
     }
@@ -43,7 +43,7 @@ public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>, IPipel
 
         _validationDelegate(model, pipelineContext);
 
-        foreach (var feature in Features)
+        foreach (var feature in Components)
         {
             var result = feature.Process(pipelineContext);
             if (result.Status != ResultStatus.Continue)

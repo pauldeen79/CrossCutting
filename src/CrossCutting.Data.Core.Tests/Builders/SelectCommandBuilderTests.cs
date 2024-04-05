@@ -309,7 +309,7 @@ public class SelectCommandBuilderTests
         // Act
         var actual = command.Clear()
             .From("Table")
-            .Select(new List<string>(new[] { "Field1", "Field2", "Field3" })) // use enumerable, works as well
+            .Select(new List<string>(["Field1", "Field2", "Field3"])) // use enumerable, works as well
             .Build();
 
         // Assert

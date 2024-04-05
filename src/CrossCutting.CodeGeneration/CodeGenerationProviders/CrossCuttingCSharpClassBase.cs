@@ -1,31 +1,45 @@
-﻿namespace CrossCutting.CodeGeneration.CodeGenerationProviders.FunctionParseResultArguments;
+﻿namespace CrossCutting.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public abstract class CrossCuttingCSharpClassBase : CSharpClassBase
+public abstract class CrossCuttingCSharpClassBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
 {
-    public override bool RecurseOnDeleteGeneratedFiles => false;
-    public override string DefaultFileName => string.Empty;
-
-    protected override bool CreateCodeGenerationHeader => true;
-    protected override bool EnableNullableContext => true;
-    protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
-    protected override Type RecordConcreteCollectionType => typeof(ReadOnlyValueCollection<>);
-    protected override string ProjectName => Constants.ProjectName;
-    protected override string RootNamespace => Constants.Namespaces.UtilitiesParsers; // standard implementation thinks we're using the project name concatenated with '.Domain'
-    protected override Type BuilderClassCollectionType => typeof(IEnumerable<>);
-    protected override bool AddBackingFieldsForCollectionProperties => true;
-    protected override bool AddPrivateSetters => true;
-    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
-
-    protected override void FixImmutableBuilderProperty(ClassPropertyBuilder property, string typeName)
+    protected CrossCuttingCSharpClassBase(ICsharpExpressionDumper csharpExpressionDumper, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper, builderPipeline, builderExtensionPipeline, entityPipeline, reflectionPipeline, interfacePipeline)
     {
-        if (typeName == typeof(IFormatProvider).FullName)
+    }
+
+    public override bool RecurseOnDeleteGeneratedFiles => false;
+    public override string LastGeneratedFilesFilename => string.Empty;
+    public override Encoding Encoding => Encoding.UTF8;
+
+    protected override Type EntityCollectionType => typeof(IReadOnlyCollection<>);
+    protected override Type EntityConcreteCollectionType => typeof(ReadOnlyValueCollection<>);
+    protected override Type BuilderCollectionType => typeof(List<>);
+    protected override string ProjectName => Constants.ProjectName;
+    protected override string CoreNamespace => Constants.Namespaces.UtilitiesParsers; // standard implementation thinks we're using the project name concatenated with '.Domain'
+    protected override bool CopyAttributes => true;
+    protected override bool CreateRecord => true;
+
+    protected override bool IsAbstractType(Type type)
+    {
+        type = type.IsNotNull(nameof(type));
+
+        if (type.IsInterface && type.Namespace == $"{CodeGenerationRootNamespace}.Models" && type.Name.Substring(1) == Constants.Types.FunctionParseResultArgument)
         {
-            property.SetDefaultValueForBuilderClassConstructor(new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"));
+            return true;
         }
-        else
-        {
-            base.FixImmutableBuilderProperty(property, typeName);
-        }
+        return base.IsAbstractType(type);
+    }
+
+    protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
+    {
+        yield return new TypenameMappingBuilder()
+            .WithSourceType(typeof(IFormatProvider))
+            .WithTargetType(typeof(IFormatProvider))
+            .AddMetadata
+            (
+                new MetadataBuilder()
+                    .WithValue(new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}", null))
+                    .WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue)
+            );
     }
 }

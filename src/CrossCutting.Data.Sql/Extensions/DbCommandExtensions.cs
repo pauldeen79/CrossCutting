@@ -28,7 +28,7 @@ public static class DbCommandExtensions
     public static IDbCommand FillCommand(this IDbCommand command,
                                          string commandText,
                                          DatabaseCommandType commandType,
-                                         object? commandParameters = null)
+                                         object? commandParameters)
     {
         command.CommandText = commandText;
         command.CommandType = commandType.ToCommandType();
@@ -42,21 +42,52 @@ public static class DbCommandExtensions
         return command;
     }
 
+    public static IDbCommand FillCommand(this IDbCommand command,
+                                         FormattableString commandText,
+                                         DatabaseCommandType commandType)
+    {
+        command.CommandText = commandText.Format;
+        command.CommandType = commandType.ToCommandType();
+        var index = 0;
+        foreach (var arg in commandText.GetArguments())
+        {
+            command.AddParameter($"p{index}", arg);
+            command.CommandText = command.CommandText.Replace("{" + index + "}", $"@p{index}");
+            index++;
+        }
+        return command;
+    }
+
     public static T? FindOne<T>(this IDbCommand command,
                                 string commandText,
                                 DatabaseCommandType commandType,
                                 Func<IDataReader, T> mapFunction,
-                                object? commandParameters = null)
+                                object? commandParameters)
         where T : class
         => command.FillCommand(commandText, commandType, commandParameters)
+                  .FindOne(mapFunction);
+
+    public static T? FindOne<T>(this IDbCommand command,
+                                FormattableString commandText,
+                                DatabaseCommandType commandType,
+                                Func<IDataReader, T> mapFunction)
+        where T : class
+        => command.FillCommand(commandText, commandType)
                   .FindOne(mapFunction);
 
     public static IReadOnlyCollection<T> FindMany<T>(this IDbCommand command,
                                                      string commandText,
                                                      DatabaseCommandType commandType,
                                                      Func<IDataReader, T> mapFunction,
-                                                     object? commandParameters = null)
+                                                     object? commandParameters)
         => command.FillCommand(commandText, commandType, commandParameters)
+                  .FindMany(mapFunction);
+
+    public static IReadOnlyCollection<T> FindMany<T>(this IDbCommand command,
+                                                     FormattableString commandText,
+                                                     DatabaseCommandType commandType,
+                                                     Func<IDataReader, T> mapFunction)
+        => command.FillCommand(commandText, commandType)
                   .FindMany(mapFunction);
 
     private static KeyValuePair<string, object> CreateParameter(string name, object? value)

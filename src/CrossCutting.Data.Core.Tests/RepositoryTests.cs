@@ -97,7 +97,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
     public void Can_FindAll_Paged()
     {
         // Arrange
-        var expected = new PagedResult<TestEntity>(new[] { new TestEntity("code", "codeType", "description") }, 10, 1, 10);
+        var expected = new PagedResult<TestEntity>([new TestEntity("code", "codeType", "description")], 10, 1, 10);
         PagedEntitySelectCommandProviderMock.CreatePaged<TestEntity>(DatabaseOperation.Select, 1, 10).Returns(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10));
         EntityRetrieverMock.FindPaged(Arg.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select)).Returns(expected);
 

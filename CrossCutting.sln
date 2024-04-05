@@ -51,13 +51,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Aggr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Operators", "src\CrossCutting.Utilities.Operators\CrossCutting.Utilities.Operators.csproj", "{CEDC360E-4DF9-49F1-B100-701ED854F192}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Parsers.Builders", "src\CrossCutting.Utilities.Parsers.Builders\CrossCutting.Utilities.Parsers.Builders.csproj", "{F4B9EADD-45A2-412B-8765-302766B0CA38}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.CodeGeneration", "src\CrossCutting.CodeGeneration\CrossCutting.CodeGeneration.csproj", "{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.ProcessingPipeline", "src\CrossCutting.ProcessingPipeline\CrossCutting.ProcessingPipeline.csproj", "{CAC749E5-3235-4331-9808-9061022EDE18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.ProcessingPipeline", "src\CrossCutting.ProcessingPipeline\CrossCutting.ProcessingPipeline.csproj", "{CAC749E5-3235-4331-9808-9061022EDE18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.ProcessingPipeline.Tests", "src\CrossCutting.ProcessingPipeline.Tests\CrossCutting.ProcessingPipeline.Tests.csproj", "{E4126E36-573F-4964-9D69-D50AC6B8DF84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.ProcessingPipeline.Tests", "src\CrossCutting.ProcessingPipeline.Tests\CrossCutting.ProcessingPipeline.Tests.csproj", "{E4126E36-573F-4964-9D69-D50AC6B8DF84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -141,10 +139,6 @@ Global
 		{CEDC360E-4DF9-49F1-B100-701ED854F192}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEDC360E-4DF9-49F1-B100-701ED854F192}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEDC360E-4DF9-49F1-B100-701ED854F192}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4B9EADD-45A2-412B-8765-302766B0CA38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4B9EADD-45A2-412B-8765-302766B0CA38}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4B9EADD-45A2-412B-8765-302766B0CA38}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4B9EADD-45A2-412B-8765-302766B0CA38}.Release|Any CPU.Build.0 = Release|Any CPU
 		{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}.Release|Any CPU.ActiveCfg = Release|Any CPU

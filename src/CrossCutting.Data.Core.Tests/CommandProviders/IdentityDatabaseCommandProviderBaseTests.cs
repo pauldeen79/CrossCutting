@@ -22,7 +22,7 @@ public class IdentityDatabaseCommandProviderBaseTests
     public void Create_Throws_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
     {
         // Arrange
-        var sut = new IdentityDatabaseCommandProviderMock(new[] { Substitute.For<IPagedDatabaseEntityRetrieverSettingsProvider>() });
+        var sut = new IdentityDatabaseCommandProviderMock([Substitute.For<IPagedDatabaseEntityRetrieverSettingsProvider>()]);
 
         // Act & Assert
         sut.Invoking(x => x.Create(new TestEntityIdentity("NOTIMPLEMENTED", "NOTIMPLEMENTED"), DatabaseOperation.Select))

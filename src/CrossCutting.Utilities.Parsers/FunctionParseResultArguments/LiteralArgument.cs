@@ -13,9 +13,3 @@ public partial record LiteralArgument
             : result;
     }
 }
-
-public partial record LiteralArgumentBase
-{
-    public override Result<object?> GetValueResult(object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, IFormatProvider formatProvider)
-        => throw new NotSupportedException();
-}

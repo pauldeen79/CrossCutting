@@ -1,20 +1,16 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public class PipelineBuilder<TModel> : PipelineBuilderBase<IPipelineFeature<TModel>, PipelineBuilder<TModel>>, IPipelineBuilder<TModel>
+public class PipelineBuilder<TModel> : PipelineBuilderBase<IPipelineComponent<TModel>, PipelineBuilder<TModel>>, IPipelineBuilder<TModel>
 {
     public PipelineBuilder()
     {
     }
 
-    public PipelineBuilder(IPipeline<TModel> source) : base(ArgumentGuard.IsNotNull(source, nameof(source)).Features.Select(x => x.ToBuilder()))
-    {
-    }
-
     public IPipeline<TModel> Build()
-        => new Pipeline<TModel>(Initialize, Features.Select(x => x.Build()));
+        => new Pipeline<TModel>(Initialize, Components.Select(x => x.Build()));
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        => Validate(new PipelineBase<TModel>(Features?.Select(x => x.Build())));
+        => Validate(new PipelineBase<TModel>(Components?.Select(x => x.Build())));
 
 
     protected virtual void Initialize(TModel model, PipelineContext<TModel> pipelineContext)
@@ -22,21 +18,17 @@ public class PipelineBuilder<TModel> : PipelineBuilderBase<IPipelineFeature<TMod
     }
 }
 
-public class PipelineBuilder<TModel, TContext> : PipelineBuilderBase<IPipelineFeature<TModel, TContext>, PipelineBuilder<TModel, TContext>>, IPipelineBuilder<TModel, TContext>
+public class PipelineBuilder<TModel, TContext> : PipelineBuilderBase<IPipelineComponent<TModel, TContext>, PipelineBuilder<TModel, TContext>>, IPipelineBuilder<TModel, TContext>
 {
     public PipelineBuilder()
     {
     }
 
-    public PipelineBuilder(IPipeline<TModel, TContext> source) : base(ArgumentGuard.IsNotNull(source, nameof(source)).Features.Select(x => x.ToBuilder()))
-    {
-    }
-
     public IPipeline<TModel, TContext> Build()
-        => new Pipeline<TModel, TContext>(Initialize, Features.Select(x => x.Build()));
+        => new Pipeline<TModel, TContext>(Initialize, Components.Select(x => x.Build()));
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        => Validate(new PipelineBase<TModel, TContext>(Features?.Select(x => x.Build())));
+        => Validate(new PipelineBase<TModel, TContext>(Components?.Select(x => x.Build())));
 
     protected virtual void Initialize(TModel model, PipelineContext<TModel, TContext> pipelineContext)
     {

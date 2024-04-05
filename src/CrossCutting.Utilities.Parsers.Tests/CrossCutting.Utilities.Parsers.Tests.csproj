@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CrossCutting.Utilities.Parsers.Builders\CrossCutting.Utilities.Parsers.Builders.csproj" />
     <ProjectReference Include="..\CrossCutting.Utilities.Parsers\CrossCutting.Utilities.Parsers.csproj" />
   </ItemGroup>
 

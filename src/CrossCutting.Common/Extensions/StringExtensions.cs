@@ -2,8 +2,8 @@
 
 public static class StringExtensions
 {
-    private static readonly string[] _trueKeywords = new[] { "true", "t", "1", "y", "yes", "ja", "j" };
-    private static readonly string[] _falseKeywords = new[] { "false", "f", "0", "n", "no", "nee" };
+    private static readonly string[] _trueKeywords = ["true", "t", "1", "y", "yes", "ja", "j"];
+    private static readonly string[] _falseKeywords = ["false", "f", "0", "n", "no", "nee"];
 
     /// <summary>
     /// Performs a is null or empty check, and returns another value when this evaluates to true.
