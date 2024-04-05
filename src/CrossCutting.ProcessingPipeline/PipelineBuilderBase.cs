@@ -4,40 +4,40 @@ public abstract class PipelineBuilderBase<T, TResult>
     where TResult : PipelineBuilderBase<T, TResult>
 {
 #pragma warning disable CA2227 // Collection properties should be read only
-    public IList<IBuilder<T>> Features
+    public IList<IBuilder<T>> Components
 #pragma warning restore CA2227 // Collection properties should be read only
     {
         get;
         set;
     }
 
-    public TResult AddFeatures(IEnumerable<IBuilder<T>> features)
-        => AddFeatures(features.IsNotNull(nameof(features)).ToArray());
+    public TResult AddComponente(IEnumerable<IBuilder<T>> components)
+        => AddComponents(components.IsNotNull(nameof(components)).ToArray());
 
-    public TResult AddFeatures(params IBuilder<T>[] features)
+    public TResult AddComponents(params IBuilder<T>[] components)
     {
-        foreach (var feature in features.IsNotNull(nameof(features)))
+        foreach (var component in components.IsNotNull(nameof(components)))
         {
-            Features.Add(feature);
+            Components.Add(component);
         }
 
         return (TResult)this;
     }
 
-    public TResult AddFeature(IBuilder<T> feature)
+    public TResult AddComponent(IBuilder<T> component)
     {
-        Features.Add(feature.IsNotNull(nameof(feature)));
+        Components.Add(component.IsNotNull(nameof(component)));
         return (TResult)this;
     }
 
-    public TResult ReplaceFeature<TOriginal>(IBuilder<T> newFeature)
-        => RemoveFeature<TOriginal>().AddFeature(newFeature.IsNotNull(nameof(newFeature)));
+    public TResult ReplaceComponent<TOriginal>(IBuilder<T> newComponent)
+        => RemoveComponent<TOriginal>().AddComponent(newComponent.IsNotNull(nameof(newComponent)));
 
-    public TResult RemoveFeature<TRemove>()
+    public TResult RemoveComponent<TRemove>()
     {
-        foreach (var feature in Features.Where(x => x?.GetType() == typeof(TRemove)).ToArray())
+        foreach (var component in Components.Where(x => x?.GetType() == typeof(TRemove)).ToArray())
         {
-            Features.Remove(feature);
+            Components.Remove(component);
         }
 
         return (TResult)this;
@@ -51,8 +51,8 @@ public abstract class PipelineBuilderBase<T, TResult>
     }
 
     protected PipelineBuilderBase()
-        => Features = new List<IBuilder<T>>();
+        => Components = new List<IBuilder<T>>();
 
-    protected PipelineBuilderBase(IEnumerable<IBuilder<T>> features)
-        => Features = features.ToList();
+    protected PipelineBuilderBase(IEnumerable<IBuilder<T>> components)
+        => Components = components.ToList();
 }

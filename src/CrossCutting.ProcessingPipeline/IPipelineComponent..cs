@@ -1,11 +1,11 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public interface IPipelineFeature<TModel>
+public interface IPipelineComponent<TModel>
 {
     Result<TModel> Process(PipelineContext<TModel> context);
 }
 
-public interface IPipelineFeature<TModel, TContext>
+public interface IPipelineComponent<TModel, TContext>
 {
     Result<TModel> Process(PipelineContext<TModel, TContext> context);
 }
