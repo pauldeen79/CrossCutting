@@ -2,6 +2,5 @@
 
 public interface IFunctionArgument : IFunctionParseResultArgument
 {
-    [Required]
-    IFunctionParseResult Function { get; }
+    [Required][ValidateObject] IFunctionParseResult Function { get; }
 }

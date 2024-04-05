@@ -3,15 +3,19 @@
 [ExcludeFromCodeCoverage]
 public class AbstractBuilders : CrossCuttingCSharpClassBase
 {
-    public override string Path => Constants.Namespaces.UtilitiesParsersBuilders;
+    public AbstractBuilders(ICsharpExpressionDumper csharpExpressionDumper, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper, builderPipeline, builderExtensionPipeline, entityPipeline, reflectionPipeline, interfacePipeline)
+    {
+    }
+
+    public override string Path => $"{Constants.Namespaces.UtilitiesParsers}/Builders";
 
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;
     protected override bool IsAbstract => true;
 
-    public override object CreateModel()
-        => GetImmutableBuilderClasses(
+    public override IEnumerable<TypeBase> Model
+        => GetBuilders(
             GetAbstractModels(),
-            Constants.Namespaces.UtilitiesParsers,
-            Constants.Namespaces.UtilitiesParsersBuilders);
+            CurrentNamespace,
+            Constants.Namespaces.UtilitiesParsers);
 }
