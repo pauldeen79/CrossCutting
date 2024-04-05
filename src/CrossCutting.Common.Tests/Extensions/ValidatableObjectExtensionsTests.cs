@@ -144,7 +144,7 @@ public class ValidatableObjectExtensionsTests
         {
             if (string.IsNullOrEmpty(Value))
             {
-                yield return new ValidationResult("Value is required", new[] { nameof(Value) });
+                yield return new ValidationResult("Value is required", [nameof(Value)]);
             }
         }
     }
@@ -158,11 +158,11 @@ public class ValidatableObjectExtensionsTests
         {
             if (string.IsNullOrEmpty(Value1))
             {
-                yield return new ValidationResult("Value1 is required", new[] { nameof(Value1) });
+                yield return new ValidationResult("Value1 is required", [nameof(Value1)]);
             }
             if (string.IsNullOrEmpty(Value2))
             {
-                yield return new ValidationResult("Value2 is required", new[] { nameof(Value2) });
+                yield return new ValidationResult("Value2 is required", [nameof(Value2)]);
             }
         }
     }

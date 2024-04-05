@@ -9,7 +9,7 @@ public class CollectionExtensionsTests
         var input = new Collection<string>();
 
         // Act
-        input.AddRange(new[] { "a", "b", "c" });
+        input.AddRange(["a", "b", "c"]);
 
         // Assert
         input.Should().BeEquivalentTo("a", "b", "c");

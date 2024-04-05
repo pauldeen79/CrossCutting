@@ -6,17 +6,17 @@ public class PropertyNameFilter : IObjectDumperPart
     private readonly string? _typeName;
     private readonly Func<Type, bool>? _typeFilter;
 
-    public PropertyNameFilter(string includePropertyName) => _includePropertyNames = new[] { includePropertyName };
+    public PropertyNameFilter(string includePropertyName) => _includePropertyNames = [includePropertyName];
 
     public PropertyNameFilter(string includePropertyName, string typeName)
     {
-        _includePropertyNames = new[] { includePropertyName };
+        _includePropertyNames = [includePropertyName];
         _typeName = typeName;
     }
 
     public PropertyNameFilter(string includePropertyName, Func<Type, bool> typeFilter)
     {
-        _includePropertyNames = new[] { includePropertyName };
+        _includePropertyNames = [includePropertyName];
         _typeFilter = typeFilter;
     }
 

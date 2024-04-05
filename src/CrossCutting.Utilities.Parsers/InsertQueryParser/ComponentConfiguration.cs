@@ -3,8 +3,8 @@
     internal static class ComponentConfiguration
     {
         internal static IInsertQueryParserResultGenerator[] GetResultGenerators()
-            => new IInsertQueryParserResultGenerator[]
-            {
+            =>
+            [
                 new InsertIntoNotFound(),
                 new ValuesOrSelectClauseNotFound(),
                 new MissingColumnNames(),
@@ -12,11 +12,11 @@
                 new NoColumnNames(),
                 new NoColumnValues(),
                 new Ok()
-            };
+            ];
 
         internal static IInsertQueryParserProcessor[] GetProcessors()
-            => new IInsertQueryParserProcessor[]
-            {
+            =>
+            [
                 new OpenBracket(),
                 new CloseBracket(),
                 new InsertInto(),
@@ -32,6 +32,6 @@
                 new Comma(),
                 new Quote(),
                 new NormalCharacter()
-            };
+            ];
     }
 }

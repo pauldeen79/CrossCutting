@@ -2,15 +2,15 @@
 
 public class MathematicOperators : IMathematicExpressionProcessor
 {
-    internal static readonly AggregatorBase[] Aggregators = new AggregatorBase[]
-    {
+    internal static readonly AggregatorBase[] Aggregators =
+    [
         new PowerAggregator(),
         new MultiplyAggregator(),
         new DivideAggregator(),
         new ModulusAggregator(),
         new AddAggregator(),
         new SubtractAggregator(),
-    };
+    ];
 
     private readonly IExpressionParser _expressionParser;
 

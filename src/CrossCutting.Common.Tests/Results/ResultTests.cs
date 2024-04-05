@@ -45,7 +45,7 @@ public class ResultTests
     public void FromExistingResult_Copies_Values_From_Void_InvalidResult()
     {
         // Arrange
-        var voidResult = Result.Invalid("Failed", new[] { new ValidationError("v1", new[] { "m1" }) });
+        var voidResult = Result.Invalid("Failed", [new ValidationError("v1", ["m1"])]);
 
         // Act
         var actual = Result.FromExistingResult<string>(voidResult);
@@ -207,7 +207,7 @@ public class ResultTests
     public void Can_Create_Success_Result_From_NonNull_Instance_With_ValidationErrors_Provided()
     {
         // Act
-        var actual = Result.FromInstance(this, new[] { new ValidationError("Ignored", new[] { "Member1" }) });
+        var actual = Result.FromInstance(this, new[] { new ValidationError("Ignored", ["Member1"]) });
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Ok);
@@ -221,7 +221,7 @@ public class ResultTests
     public void Can_Create_Success_Result_From_NonNull_Instance_With_ErrorMessage_And_ValidationErrors_Provided()
     {
         // Act
-        var actual = Result.FromInstance(this, "This gets ignored because the instance is not null", new[] { new ValidationError("Ignored", new[] { "Member1" }) });
+        var actual = Result.FromInstance(this, "This gets ignored because the instance is not null", [new ValidationError("Ignored", ["Member1"])]);
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Ok);
@@ -289,13 +289,13 @@ public class ResultTests
     public void Can_Create_Invalid_Result_With_ValidationErrors()
     {
         // Act
-        var actual = Result.Invalid<string>(new[] { new ValidationError("x", new[] { "m1", "m2" }) });
+        var actual = Result.Invalid<string>(new[] { new ValidationError("x", ["m1", "m2"]) });
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Invalid);
         actual.IsSuccessful().Should().BeFalse();
         actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEquivalentTo(new[] { new ValidationError("x", new[] { "m1", "m2" }) });
+        actual.ValidationErrors.Should().BeEquivalentTo(new[] { new ValidationError("x", ["m1", "m2"]) });
         actual.Value.Should().BeNull();
     }
 
@@ -303,26 +303,26 @@ public class ResultTests
     public void Can_Create_Invalid_Void_Result_With_ValidationErrors()
     {
         // Act
-        var actual = Result.Invalid(new[] { new ValidationError("x", new[] { "m1", "m2" }) });
+        var actual = Result.Invalid(new[] { new ValidationError("x", ["m1", "m2"]) });
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Invalid);
         actual.IsSuccessful().Should().BeFalse();
         actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEquivalentTo(new[] { new ValidationError("x", new[] { "m1", "m2" }) });
+        actual.ValidationErrors.Should().BeEquivalentTo(new[] { new ValidationError("x", ["m1", "m2"]) });
     }
 
     [Fact]
     public void Can_Create_Invalid_Result_With_ValidationErrors_And_ErrorMessage()
     {
         // Act
-        var actual = Result.Invalid<string>("Error", new[] { new ValidationError("x", new[] { "m1", "m2" }) });
+        var actual = Result.Invalid<string>("Error", [new ValidationError("x", ["m1", "m2"])]);
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Invalid);
         actual.IsSuccessful().Should().BeFalse();
         actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEquivalentTo(new[] { new ValidationError("x", new[] { "m1", "m2" }) });
+        actual.ValidationErrors.Should().BeEquivalentTo(new[] { new ValidationError("x", ["m1", "m2"]) });
         actual.Value.Should().BeNull();
     }
 
@@ -330,20 +330,20 @@ public class ResultTests
     public void Can_Create_Invalid_Void_Result_With_ValidationErrors_And_ErrorMessage()
     {
         // Act
-        var actual = Result.Invalid("Error", new[] { new ValidationError("x", new[] { "m1", "m2" }) });
+        var actual = Result.Invalid("Error", [new ValidationError("x", ["m1", "m2"])]);
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Invalid);
         actual.IsSuccessful().Should().BeFalse();
         actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEquivalentTo(new[] { new ValidationError("x", new[] { "m1", "m2" }) });
+        actual.ValidationErrors.Should().BeEquivalentTo(new[] { new ValidationError("x", ["m1", "m2"]) });
     }
 
     [Fact]
     public void Can_Create_Invalid_Result_From_Null_Instance_Without_ErrorMessage()
     {
         // Act
-        var actual = Result.FromInstance<ResultTests>(null, new[] { new ValidationError("Error", new[] { "Name" }) });
+        var actual = Result.FromInstance<ResultTests>(null, new[] { new ValidationError("Error", ["Name"]) });
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Invalid);
@@ -357,7 +357,7 @@ public class ResultTests
     public void Can_Create_Invalid_Result_From_Null_Instance_With_ErrorMessage()
     {
         // Act
-        var actual = Result.FromInstance<ResultTests>(null, "My error message", new[] { new ValidationError("Error", new[] { "Name" }) });
+        var actual = Result.FromInstance<ResultTests>(null, "My error message", [new ValidationError("Error", ["Name"])]);
 
         // Assert
         actual.Status.Should().Be(ResultStatus.Invalid);
@@ -1077,7 +1077,7 @@ public class ResultTests
     public void TryCast_Returns_Same_Properties_When_Status_Is_Invalid()
     {
         // Arrange
-        var sut = Result.Invalid<object?>("error", new[] { new ValidationError("validation error 1"), new ValidationError("validation error 2") });
+        var sut = Result.Invalid<object?>("error", [new ValidationError("validation error 1"), new ValidationError("validation error 2")]);
 
         // Act
         var result = sut.TryCast<bool>();

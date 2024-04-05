@@ -19,13 +19,12 @@ public class FormattableStringParser : IFormattableStringParser
         processors = processors.IsNotNull(nameof(processors));
 
         return new FormattableStringParser(
-            new IFormattableStringStateProcessor[]
-            {
+            [
                 new OpenSignProcessor(),
                 new CloseSignProcessor(processors),
                 new PlaceholderProcessor(),
                 new ResultProcessor()
-            });
+            ]);
     }
 
     public Result<string> Parse(string input, IFormatProvider formatProvider, object? context)

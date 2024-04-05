@@ -32,7 +32,7 @@ public class EnumerableExtensionsTests
     public void Can_Use_NotNull_With_Predicate_On_NonNull_Enumerable_To_Work_With_Null_Easily()
     {
         // Arrange
-        IEnumerable<string> input = new[] { "A", "B", "C" };
+        IEnumerable<string> input = ["A", "B", "C"];
 
         // Act
         var actual = input.NotNull(x => x.StartsWith('A'));
@@ -71,7 +71,7 @@ public class EnumerableExtensionsTests
     public void Can_Use_DefaultWhenNull_On_NonNull_Enumerable_With_DefaultValue_To_Work_With_Null_Easily()
     {
         // Arrange
-        IEnumerable<string> input = new[] { "a", "b", "c" };
+        IEnumerable<string> input = ["a", "b", "c"];
 
         // Act
         var actual = input.DefaultWhenNull(new[] { "A", "B", "C" });
@@ -100,7 +100,7 @@ public class EnumerableExtensionsTests
         var input = new[] { "1", "2", "3" };
 
         // Act
-        var actual = input.WhenEmpty(() => new[] { "4", "5", "6" });
+        var actual = input.WhenEmpty(() => ["4", "5", "6"]);
 
         // Assert
         actual.Should().BeEquivalentTo(input);
@@ -126,7 +126,7 @@ public class EnumerableExtensionsTests
         var input = Enumerable.Empty<string>();
 
         // Act
-        var actual = input.WhenEmpty(() => new[] { "4", "5", "6" });
+        var actual = input.WhenEmpty(() => ["4", "5", "6"]);
 
         // Assert
         actual.Should().BeEquivalentTo("4", "5", "6");

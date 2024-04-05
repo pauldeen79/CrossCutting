@@ -29,7 +29,7 @@ public class ObservableValueCollectionTests
     public void Can_Construct_Prefilled_ValueCollection_With_Default_EqualityComparer()
     {
         // Act
-        var actual = new ObservableValueCollection<string>(new[] { "a", "b", "c" });
+        var actual = new ObservableValueCollection<string>(["a", "b", "c"]);
 
         // Assert
         actual.Should().BeEquivalentTo("a", "b", "c");
@@ -44,7 +44,7 @@ public class ObservableValueCollectionTests
                             .Returns(x => x.ArgAt<string>(0).ToUpperInvariant() == x.ArgAt<string>(1).ToUpperInvariant());
 
         // Act
-        var actual = new ObservableValueCollection<string>(new[] { "a", "b", "c" }, equalityComparerMock);
+        var actual = new ObservableValueCollection<string>(["a", "b", "c"], equalityComparerMock);
 
         // Assert
         actual.Should().BeEquivalentTo("a", "b", "c");
@@ -54,8 +54,8 @@ public class ObservableValueCollectionTests
     public void Can_Compare_Two_Value_Equal_ObservableCollections_With_Default_EqualityComparer()
     {
         // Arrange
-        var value1 = new ObservableValueCollection<string>(new[] { "a", "b", "c" });
-        var value2 = new ObservableValueCollection<string>(new[] { "a", "b", "c" });
+        var value1 = new ObservableValueCollection<string>(["a", "b", "c"]);
+        var value2 = new ObservableValueCollection<string>(["a", "b", "c"]);
 
         // Act
         var actual = value1.Equals(value2);
@@ -68,8 +68,8 @@ public class ObservableValueCollectionTests
     public void Can_Compare_Two_Different_ObservableCollections_With_Default_EqualityComparer_1()
     {
         // Arrange
-        var value1 = new ObservableValueCollection<string>(new[] { "a", "b", "c" });
-        var value2 = new ObservableValueCollection<string>(new[] { "a", "b" });
+        var value1 = new ObservableValueCollection<string>(["a", "b", "c"]);
+        var value2 = new ObservableValueCollection<string>(["a", "b"]);
 
         // Act
         var actual = value1.Equals(value2);
@@ -82,8 +82,8 @@ public class ObservableValueCollectionTests
     public void Can_Compare_Two_Different_ObservableCollections_With_Default_EqualityComparer_2()
     {
         // Arrange
-        var value1 = new ObservableValueCollection<string>(new[] { "a", "b" });
-        var value2 = new ObservableValueCollection<string>(new[] { "a", "b", "c" });
+        var value1 = new ObservableValueCollection<string>(["a", "b"]);
+        var value2 = new ObservableValueCollection<string>(["a", "b", "c"]);
 
         // Act
         var actual = value1.Equals(value2);
@@ -99,8 +99,8 @@ public class ObservableValueCollectionTests
         var equalityComparerMock = Substitute.For<IEqualityComparer<string>>();
         equalityComparerMock.Equals(Arg.Any<string>(), Arg.Any<string>())
                             .Returns(x => x.ArgAt<string>(0).ToUpperInvariant() == x.ArgAt<string>(1).ToUpperInvariant());
-        var value1 = new ObservableValueCollection<string>(new[] { "a", "b", "C" }, equalityComparerMock);
-        var value2 = new ObservableValueCollection<string>(new[] { "A", "b", "c" }, equalityComparerMock);
+        var value1 = new ObservableValueCollection<string>(["a", "b", "C"], equalityComparerMock);
+        var value2 = new ObservableValueCollection<string>(["A", "b", "c"], equalityComparerMock);
 
         // Act
         var actual = value1.Equals(value2);
@@ -113,7 +113,7 @@ public class ObservableValueCollectionTests
     public void Equals_Returns_False_When_Other_Is_Null()
     {
         // Arrange
-        var value = new ObservableValueCollection<string>(new[] { "a", "b", "C" });
+        var value = new ObservableValueCollection<string>(["a", "b", "C"]);
 
         // Act
         var actual = value.Equals(null);
@@ -126,7 +126,7 @@ public class ObservableValueCollectionTests
     public void Equals_Returns_True_On_Same_Reference()
     {
         // Arrange
-        var value = new ObservableValueCollection<string>(new[] { "a", "b", "C" });
+        var value = new ObservableValueCollection<string>(["a", "b", "C"]);
 
         // Act
         var actual = value.Equals(value);
@@ -139,8 +139,8 @@ public class ObservableValueCollectionTests
     public void Equals_Object_Two_ObservableCollections_Returns_True_When_Value_Equal()
     {
         // Arrange
-        var value1 = new ObservableValueCollection<string>(new[] { "a", "b", "c" });
-        var value2 = new ObservableValueCollection<string>(new[] { "a", "b", "c" });
+        var value1 = new ObservableValueCollection<string>(["a", "b", "c"]);
+        var value2 = new ObservableValueCollection<string>(["a", "b", "c"]);
 
         // Act
         var actual = value1.Equals((object)value2);
@@ -153,7 +153,7 @@ public class ObservableValueCollectionTests
     public void Equals_Object_Returns_False_When_Other_Is_Null()
     {
         // Arrange
-        var value = new ObservableValueCollection<string>(new[] { "a", "b", "C" });
+        var value = new ObservableValueCollection<string>(["a", "b", "C"]);
 
         // Act
         var actual = value.Equals((object?)null);
@@ -166,7 +166,7 @@ public class ObservableValueCollectionTests
     public void Equals_Object_Returns_True_On_Same_Reference()
     {
         // Arrange
-        var value = new ObservableValueCollection<string>(new[] { "a", "b", "C" });
+        var value = new ObservableValueCollection<string>(["a", "b", "C"]);
 
         // Act
         var actual = value.Equals((object)value);
@@ -179,7 +179,7 @@ public class ObservableValueCollectionTests
     public void Equals_Object_Different_Other_Type_Returns_False()
     {
         // Arrange
-        var value1 = new ObservableValueCollection<string>(new[] { "a", "b", "c" });
+        var value1 = new ObservableValueCollection<string>(["a", "b", "c"]);
         var value2 = "wrong type";
 
         // Act
@@ -193,7 +193,7 @@ public class ObservableValueCollectionTests
     public void ToString_Gives_Correct_Result_On_Null_Value()
     {
         // Arrange
-        var value = new ObservableValueCollection<string?>(new string?[] { null, null });
+        var value = new ObservableValueCollection<string?>([null, null]);
 
         // Act
         var actual = value.ToString();
@@ -206,7 +206,7 @@ public class ObservableValueCollectionTests
     public void ToString_Gives_Correct_Result_On_Bool_Value()
     {
         // Arrange
-        var value = new ObservableValueCollection<bool>(new[] { true, false });
+        var value = new ObservableValueCollection<bool>([true, false]);
 
         // Act
         var actual = value.ToString();
@@ -219,7 +219,7 @@ public class ObservableValueCollectionTests
     public void ToString_Gives_Correct_Result_On_String_Value()
     {
         // Arrange
-        var value = new ObservableValueCollection<string>(new[] { "a", "b" });
+        var value = new ObservableValueCollection<string>(["a", "b"]);
 
         // Act
         var actual = value.ToString();
@@ -232,7 +232,7 @@ public class ObservableValueCollectionTests
     public void ToString_Gives_Correct_Result_On_Char_Value()
     {
         // Arrange
-        var value = new ObservableValueCollection<char>(new[] { 'a', 'b' });
+        var value = new ObservableValueCollection<char>(['a', 'b']);
 
         // Act
         var actual = value.ToString();
@@ -245,7 +245,7 @@ public class ObservableValueCollectionTests
     public void ToString_Gives_Correct_Result_On_DateTime_Value()
     {
         // Arrange
-        var value = new ObservableValueCollection<DateTime>(new[] { new DateTime(2020, 2, 1, 0, 0, 0, DateTimeKind.Unspecified) });
+        var value = new ObservableValueCollection<DateTime>([new DateTime(2020, 2, 1, 0, 0, 0, DateTimeKind.Unspecified)]);
 
         // Act
         var actual = value.ToString(null, CultureInfo.InvariantCulture);
@@ -258,7 +258,7 @@ public class ObservableValueCollectionTests
     public void GetHashCode_Returns_Value()
     {
         // Arrange
-        var value = new ObservableValueCollection<string>(new[] { "a", "b", "C" });
+        var value = new ObservableValueCollection<string>(["a", "b", "C"]);
 
         // Act
         var actual = value.GetHashCode();
