@@ -52,7 +52,7 @@ public static class DbCommandExtensions
         foreach (var arg in commandText.GetArguments())
         {
             command.AddParameter($"p{index}", arg);
-            command.CommandText = command.CommandText.Replace("{" + index + "}", $"@p{index}");
+            command.CommandText = command.CommandText.Replace($"{{{index}}}", $"@p{index}");
             index++;
         }
         return command;
