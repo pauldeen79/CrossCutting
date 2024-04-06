@@ -44,7 +44,7 @@ public class ProofOfConceptTests
 
             // Act
             var pipeline = builder
-                .AddComponente(new[] { new MyComponentWithContextBuilder(), new MyComponentWithContextBuilder() }.AsEnumerable())
+                .AddComponents(new[] { new MyComponentWithContextBuilder(), new MyComponentWithContextBuilder() }.AsEnumerable())
                 .Build();
 
             // Assert
@@ -220,7 +220,7 @@ public class ProofOfConceptTests
 
             // Act
             var pipeline = builder
-                .AddComponente(new[] { new MyContextlessComponentBuilder(), new MyContextlessComponentBuilder() }.AsEnumerable())
+                .AddComponents(new[] { new MyContextlessComponentBuilder(), new MyContextlessComponentBuilder() }.AsEnumerable())
                 .Build();
 
             // Assert

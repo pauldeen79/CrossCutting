@@ -11,7 +11,7 @@ public abstract class PipelineBuilderBase<T, TResult>
         set;
     }
 
-    public TResult AddComponente(IEnumerable<IBuilder<T>> components)
+    public TResult AddComponents(IEnumerable<IBuilder<T>> components)
         => AddComponents(components.IsNotNull(nameof(components)).ToArray());
 
     public TResult AddComponents(params IBuilder<T>[] components)
