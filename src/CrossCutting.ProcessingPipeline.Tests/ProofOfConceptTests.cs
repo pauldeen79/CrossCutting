@@ -2,7 +2,13 @@
 
 public class ProofOfConceptTests
 {
-    public class Pipeline_With_Context
+    protected IEnumerable<IPipelineComponent<TModel>> GetComponents<TModel>(IPipeline<TModel> instance)
+        => (instance.GetType().GetProperty(nameof(IPipelineBuilder<object>.Components))!.GetValue(instance) as IEnumerable<IPipelineComponent<TModel>>)!;
+
+    protected IEnumerable<IPipelineComponent<TModel, TContext>> GetComponents<TModel, TContext>(IPipeline<TModel, TContext> instance)
+        => (instance.GetType().GetProperty(nameof(IPipelineBuilder<object>.Components))!.GetValue(instance) as IEnumerable<IPipelineComponent<TModel, TContext>>)!;
+
+    public class Pipeline_With_Context : ProofOfConceptTests
     {
         [Fact]
         public void Can_Create_Pipeline()
@@ -16,8 +22,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().ContainSingle();
-            pipeline.Components.Single().Should().BeOfType<MyComponentWithContext>();
+            GetComponents(pipeline).Should().ContainSingle();
+            GetComponents(pipeline).Single().Should().BeOfType<MyComponentWithContext>();
         }
 
         [Fact]
@@ -32,8 +38,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().HaveCount(2);
-            pipeline.Components.Should().AllBeOfType<MyComponentWithContext>();
+            GetComponents(pipeline).Should().HaveCount(2);
+            GetComponents(pipeline).Should().AllBeOfType<MyComponentWithContext>();
         }
 
         [Fact]
@@ -48,8 +54,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().HaveCount(2);
-            pipeline.Components.Should().AllBeOfType<MyComponentWithContext>();
+            GetComponents(pipeline).Should().HaveCount(2);
+            GetComponents(pipeline).Should().AllBeOfType<MyComponentWithContext>();
         }
 
         [Fact]
@@ -65,8 +71,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().ContainSingle();
-            pipeline.Components.Single().Should().BeOfType<MyReplacedComponentWithContext>();
+            GetComponents(pipeline).Should().ContainSingle();
+            GetComponents(pipeline).Single().Should().BeOfType<MyReplacedComponentWithContext>();
         }
 
         [Fact]
@@ -82,7 +88,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().BeEmpty();
+            GetComponents(pipeline).Should().BeEmpty();
         }
 
         [Fact]
@@ -181,7 +187,7 @@ public class ProofOfConceptTests
         }
     }
 
-    public class Pipeline_Without_Context
+    public class Pipeline_Without_Context : ProofOfConceptTests
     {
         [Fact]
         public void Can_Create_Pipeline()
@@ -195,8 +201,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().ContainSingle();
-            pipeline.Components.Single().Should().BeOfType<MyContextlessComponent>();
+            GetComponents(pipeline).Should().ContainSingle();
+            GetComponents(pipeline).Single().Should().BeOfType<MyContextlessComponent>();
         }
 
         [Fact]
@@ -211,8 +217,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().HaveCount(2);
-            pipeline.Components.Should().AllBeOfType<MyContextlessComponent>();
+            GetComponents(pipeline).Should().HaveCount(2);
+            GetComponents(pipeline).Should().AllBeOfType<MyContextlessComponent>();
         }
 
         [Fact]
@@ -227,8 +233,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().HaveCount(2);
-            pipeline.Components.Should().AllBeOfType<MyContextlessComponent>();
+            GetComponents(pipeline).Should().HaveCount(2);
+            GetComponents(pipeline).Should().AllBeOfType<MyContextlessComponent>();
         }
 
         [Fact]
@@ -244,8 +250,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().ContainSingle();
-            pipeline.Components.Single().Should().BeOfType<MyReplacedContextlessComponent>();
+            GetComponents(pipeline).Should().ContainSingle();
+            GetComponents(pipeline).Single().Should().BeOfType<MyReplacedContextlessComponent>();
         }
 
         [Fact]
@@ -261,7 +267,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().BeEmpty();
+            GetComponents(pipeline).Should().BeEmpty();
         }
 
         [Fact]
