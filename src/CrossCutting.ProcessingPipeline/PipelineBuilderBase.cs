@@ -4,6 +4,7 @@ public abstract class PipelineBuilderBase<T, TResult>
     where TResult : PipelineBuilderBase<T, TResult>
 {
 #pragma warning disable CA2227 // Collection properties should be read only
+    [ValidateObject]
     public IList<IBuilder<T>> Components
 #pragma warning restore CA2227 // Collection properties should be read only
     {

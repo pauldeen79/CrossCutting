@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.ProcessingPipeline.Tests;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CrossCutting.ProcessingPipeline.Tests;
 
 public class ProofOfConceptTests
 {
@@ -301,6 +303,20 @@ public class ProofOfConceptTests
         }
 
         [Fact]
+        public void Can_Validate_PipelineBuilder_With_NonEmpty_Features_List_Validatable_Component()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?> { Components = new List<IBuilder<IPipelineComponent<object?>>>(new[] { new MyContextlessValidatableComponentBuilder().WithProcessCallback(null!) }) };
+
+            // Act
+            var validationResults = builder.Validate(new(builder));
+
+            // Assert
+            validationResults.Should().ContainSingle();
+            validationResults.Single().ErrorMessage.Should().Be("The field Components is invalid.");
+        }
+
+        [Fact]
         public void Can_Process_Pipeline_With_Feature()
         {
             // Arrange
@@ -392,6 +408,21 @@ public class ProofOfConceptTests
         public Func<PipelineContext<object?>, Result<object?>> ProcessCallback { get; set; } = new(_ => Result.NoContent<object?>());
 
         public MyContextlessComponentBuilder WithProcessCallback(Func<PipelineContext<object?>, Result<object?>> processCallback)
+        {
+            ProcessCallback = processCallback;
+            return this;
+        }
+
+        public IPipelineComponent<object?> Build()
+            => new MyContextlessComponent(ProcessCallback);
+    }
+
+    private sealed class MyContextlessValidatableComponentBuilder : IPipelineComponentBuilder<object?>
+    {
+        [Required]
+        public Func<PipelineContext<object?>, Result<object?>> ProcessCallback { get; set; } = new(_ => Result.NoContent<object?>());
+
+        public MyContextlessValidatableComponentBuilder WithProcessCallback(Func<PipelineContext<object?>, Result<object?>> processCallback)
         {
             ProcessCallback = processCallback;
             return this;

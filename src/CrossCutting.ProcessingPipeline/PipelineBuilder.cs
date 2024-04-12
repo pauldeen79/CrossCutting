@@ -10,7 +10,11 @@ public class PipelineBuilder<TModel> : PipelineBuilderBase<IPipelineComponent<TM
         => new Pipeline<TModel>(Initialize, Components.Select(x => x.Build()));
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        => Validate(new PipelineBase<TModel>(Components?.Select(x => x.Build())));
+    {
+        var validationResults = new List<ValidationResult>();
+        _ = Validator.TryValidateObject(this, new ValidationContext(this, null, null), validationResults, true);
+        return validationResults;
+    }
 
 
     protected virtual void Initialize(TModel model, PipelineContext<TModel> pipelineContext)
