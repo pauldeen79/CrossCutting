@@ -6,14 +6,7 @@ public class ResultProcessor : IFormattableStringStateProcessor
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (state.IsEscaped)
-        {
-            state.ResetEscape();
-        }
-        else
-        {
-            state.ResultBuilder.Append(state.Current);
-        }
+        state.ResultBuilder.Append(state.Current);
 
         return Result.NoContent<FormattableStringParserResult>();
     }

@@ -188,11 +188,13 @@ public sealed class FormattableStringParserTests : IDisposable
         var preparsedResult = sut.Parse("Hello {Name}, you are called {{Name}}", CultureInfo.InvariantCulture);
 
         // Act
-        var result = sut.Parse(preparsedResult.GetValueOrThrow().ToString(CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+        var result = sut.Parse(preparsedResult.GetValueOrThrow(), CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
+        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
+        result.Value.ArgumentCount.Should().Be(1);
+        result.Value.GetArgument(0).Should().BeEquivalentTo(ReplacedValue);
     }
 
     [Fact]
