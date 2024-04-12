@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace CrossCutting.ProcessingPipeline.Tests;
+﻿namespace CrossCutting.ProcessingPipeline.Tests;
 
 public class ProofOfConceptTests
 {
@@ -92,9 +90,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?, object?> { Components = null! };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().ContainSingle();
@@ -105,9 +104,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?, object?> { Components = new List<IBuilder<IPipelineComponent<object?, object?>>>() };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().BeEmpty();
@@ -118,9 +118,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?, object?> { Components = new List<IBuilder<IPipelineComponent<object?, object?>>>(new[] { new MyComponentWithContextBuilder() }) };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().BeEmpty();
@@ -268,9 +269,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?> { Components = null! };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().ContainSingle();
@@ -281,9 +283,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?> { Components = new List<IBuilder<IPipelineComponent<object?>>>() };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().BeEmpty();
@@ -294,9 +297,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?> { Components = new List<IBuilder<IPipelineComponent<object?>>>(new[] { new MyContextlessComponentBuilder() }) };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().BeEmpty();
@@ -307,9 +311,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?> { Components = new List<IBuilder<IPipelineComponent<object?>>>(new[] { new MyContextlessValidatableComponentBuilder().WithProcessCallback(null!) }) };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().ContainSingle();

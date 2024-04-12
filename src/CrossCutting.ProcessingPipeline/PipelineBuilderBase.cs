@@ -4,7 +4,7 @@ public abstract class PipelineBuilderBase<T, TResult>
     where TResult : PipelineBuilderBase<T, TResult>
 {
 #pragma warning disable CA2227 // Collection properties should be read only
-    [ValidateObject]
+    [Required][ValidateObject]
     public IList<IBuilder<T>> Components
 #pragma warning restore CA2227 // Collection properties should be read only
     {
@@ -42,13 +42,6 @@ public abstract class PipelineBuilderBase<T, TResult>
         }
 
         return (TResult)this;
-    }
-
-    protected IEnumerable<ValidationResult> Validate(object instance)
-    {
-        var results = new List<ValidationResult>();
-        Validator.TryValidateObject(instance.IsNotNull(nameof(instance)), new ValidationContext(instance, null, null), results, true);
-        return results;
     }
 
     protected PipelineBuilderBase()
