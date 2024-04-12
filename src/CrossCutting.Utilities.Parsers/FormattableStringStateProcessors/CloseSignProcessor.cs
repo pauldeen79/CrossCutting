@@ -21,11 +21,6 @@ public class CloseSignProcessor : IFormattableStringStateProcessor
         if (state.NextPositionIsSign(FormattableStringParser.CloseSign)
             || state.PreviousPositionIsSign(FormattableStringParser.CloseSign))
         {
-            if (state.NextPositionIsSign(FormattableStringParser.CloseSign))
-            {
-                state.Escape();
-            }
-
             return Result.Continue<FormattableStringParserResult>();
         }
 

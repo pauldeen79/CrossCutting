@@ -12,7 +12,6 @@ public class FormattableStringParserState
     public bool InPlaceholder { get; private set; }
     public char Current { get; private set; }
     public int Index { get; private set; }
-    public bool IsEscaped { get; private set; }
     public string ResultFormat => ResultBuilder.ToString();
     public Collection<object> ResultArguments { get; } = new();
 
@@ -56,10 +55,6 @@ public class FormattableStringParserState
         Index = index;
         return this;
     }
-
-    public void Escape() => IsEscaped = true;
-
-    public void ResetEscape() => IsEscaped = false;
 
     public void StartPlaceholder() => InPlaceholder = true;
 
