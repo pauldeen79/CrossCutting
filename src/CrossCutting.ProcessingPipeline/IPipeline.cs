@@ -2,10 +2,10 @@
 
 public interface IPipeline<TModel>
 {
-    Result<TModel> Process(TModel model);
+    Task<Result<TModel>> Process(TModel model, CancellationToken token);
 }
 
 public interface IPipeline<TModel, TContext>
 {
-    Result<TModel> Process(TModel model, TContext context);
+    Task<Result<TModel>> Process(TModel model, TContext context, CancellationToken token);
 }

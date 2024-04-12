@@ -134,7 +134,7 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Can_Process_Pipeline_With_Feature()
+        public async Task Can_Process_Pipeline_With_Feature()
         {
             // Arrange
             PipelineContext<object?, object?>? context = null;
@@ -144,7 +144,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Act
-            var result = sut.Process(model: 1, context: 2);
+            var result = await sut.Process(model: 1, context: 2);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -154,7 +154,7 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status()
+        public async Task Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status()
         {
             // Arrange
             Func<PipelineContext<object?, object?>, Result<object?>> processCallback = new(_ => Result.Error<object?>("Kaboom"));
@@ -163,7 +163,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Act
-            var result = sut.Process(model: 1, context: 2);
+            var result = await sut.Process(model: 1, context: 2);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -328,7 +328,7 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Can_Process_Pipeline_With_Feature()
+        public async Task Can_Process_Pipeline_With_Feature()
         {
             // Arrange
             PipelineContext<object?>? context = null;
@@ -338,7 +338,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Act
-            var result = sut.Process(model: 1);
+            var result = await sut.Process(model: 1);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -347,7 +347,7 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status()
+        public async Task Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status()
         {
             // Arrange
             Func<PipelineContext<object?>, Result<object?>> processCallback = new(_ => Result.Error<object?>("Kaboom"));
@@ -356,7 +356,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Act
-            var result = sut.Process(model: 1);
+            var result = await sut.Process(model: 1);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -410,8 +410,8 @@ public class ProofOfConceptTests
         public MyContextlessComponent(Func<PipelineContext<object?>, Result<object?>> processCallback)
             => ProcessCallback = processCallback;
 
-        public Result<object?> Process(PipelineContext<object?> context)
-            => ProcessCallback.Invoke(context);
+        public Task<Result<object?>> Process(PipelineContext<object?> context, CancellationToken token)
+            => Task.FromResult(ProcessCallback.Invoke(context));
     }
 
     private sealed class MyContextlessComponentBuilder : IPipelineComponentBuilder<object?>
@@ -445,9 +445,9 @@ public class ProofOfConceptTests
 
     private sealed class MyReplacedContextlessComponent : IPipelineComponent<object?>
     {
-        public Result<object?> Process(PipelineContext<object?> context)
+        public Task<Result<object?>> Process(PipelineContext<object?> context, CancellationToken token)
         {
-            return Result.NotImplemented<object?>();
+            return Task.FromResult(Result.NotImplemented<object?>());
         }
     }
 
@@ -467,8 +467,8 @@ public class ProofOfConceptTests
         public MyComponentWithContext(Func<PipelineContext<object?, object?>, Result<object?>> processCallback)
             => ProcessCallback = processCallback;
 
-        public Result<object?> Process(PipelineContext<object?, object?> context)
-            => ProcessCallback.Invoke(context);
+        public Task<Result<object?>> Process(PipelineContext<object?, object?> context, CancellationToken token)
+            => Task.FromResult(ProcessCallback.Invoke(context));
     }
 
     private sealed class MyComponentWithContextBuilder : IPipelineComponentBuilder<object?, object?>
@@ -487,9 +487,9 @@ public class ProofOfConceptTests
 
     private sealed class MyReplacedComponentWithContext : IPipelineComponent<object?, object?>
     {
-        public Result<object?> Process(PipelineContext<object?, object?> context)
+        public Task<Result<object?>> Process(PipelineContext<object?, object?> context, CancellationToken token)
         {
-            return Result.NotImplemented<object?>();
+            return Task.FromResult(Result.NotImplemented<object?>());
         }
     }
 

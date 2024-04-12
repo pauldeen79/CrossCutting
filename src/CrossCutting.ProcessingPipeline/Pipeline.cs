@@ -9,22 +9,15 @@ public class Pipeline<TModel> : PipelineBase<TModel>, IPipeline<TModel>
         _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
     }
 
-    public Result<TModel> Process(TModel model)
+    public async Task<Result<TModel>> Process(TModel model, CancellationToken token)
     {
         var pipelineContext = new PipelineContext<TModel>(ArgumentGuard.IsNotNull(model, nameof(model)));
 
         _validationDelegate(model, pipelineContext);
 
-        foreach (var feature in Components)
-        {
-            var result = feature.Process(pipelineContext);
-            if (result.Status != ResultStatus.Continue)
-            {
-                return result;
-            }
-        }
-
-        return Result.Success(model);
+        var results = await Task.WhenAll(Components.Select(x => x.Process(pipelineContext, token))).ConfigureAwait(false);
+        return Array.Find(results, x => !x.IsSuccessful())
+            ?? Result.Success(model);
     }
 }
 
@@ -37,21 +30,14 @@ public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>, IPipel
         _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
     }
 
-    public Result<TModel> Process(TModel model, TContext context)
+    public async Task<Result<TModel>> Process(TModel model, TContext context, CancellationToken token)
     {
         var pipelineContext = new PipelineContext<TModel, TContext>(model.IsNotNull(nameof(model)), context.IsNotNull(nameof(context)));
 
         _validationDelegate(model, pipelineContext);
 
-        foreach (var feature in Components)
-        {
-            var result = feature.Process(pipelineContext);
-            if (result.Status != ResultStatus.Continue)
-            {
-                return result;
-            }
-        }
-
-        return Result.Success(model);
+        var results = await Task.WhenAll(Components.Select(x => x.Process(pipelineContext, token))).ConfigureAwait(false);
+        return Array.Find(results, x => !x.IsSuccessful())
+            ?? Result.Success(model);
     }
 }

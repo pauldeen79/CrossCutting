@@ -2,10 +2,10 @@
 
 public interface IPipelineComponent<TModel>
 {
-    Result<TModel> Process(PipelineContext<TModel> context);
+    Task<Result<TModel>> Process(PipelineContext<TModel> context, CancellationToken token);
 }
 
 public interface IPipelineComponent<TModel, TContext>
 {
-    Result<TModel> Process(PipelineContext<TModel, TContext> context);
+    Task<Result<TModel>> Process(PipelineContext<TModel, TContext> context, CancellationToken token);
 }
