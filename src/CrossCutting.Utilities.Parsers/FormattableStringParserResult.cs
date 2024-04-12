@@ -28,6 +28,5 @@ public class FormattableStringParserResult : FormattableString
     public override string ToString(IFormatProvider formatProvider)
         => string.Format(formatProvider, Format, _arguments);
 
-    //TODO: Review if we need this
-    //public static implicit operator string(FormattableStringParserResult r) => r?.ToString()!;
+    public static implicit operator string(FormattableStringParserResult r) => r?.ToString()!;
 }

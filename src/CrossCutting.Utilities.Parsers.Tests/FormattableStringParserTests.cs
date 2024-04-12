@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Extensions;
-
-namespace CrossCutting.Utilities.Parsers.Tests;
+﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
 public sealed class FormattableStringParserTests : IDisposable
 {
@@ -97,7 +95,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(expectedValue);
+        result.Value!.ToString().Should().Be(expectedValue);
     }
 
     [Fact]
@@ -135,7 +133,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("Hello function result!");
+        result.Value!.ToString().Should().Be("Hello function result!");
     }
 
     [Fact]
@@ -149,7 +147,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("I can add 1 to 2, this results in 2");
+        result.Value!.ToString().Should().Be("I can add 1 to 2, this results in 2");
     }
 
     [Fact]
@@ -165,7 +163,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be($"Hello {ReplacedValue}!");
+        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}!");
     }
 
     [Fact]
@@ -195,6 +193,20 @@ public sealed class FormattableStringParserTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
+    }
+
+    [Fact]
+    public void Can_Implicitly_Convert_ParseStringResult_To_String()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var parsedResult = sut.Parse("Hello {Name}!", CultureInfo.InvariantCulture);
+
+        // Act
+        string result = parsedResult.GetValueOrThrow();
+
+        // Assert
+        result.Should().Be("Hello replaced name!");
     }
 
     [Fact]
