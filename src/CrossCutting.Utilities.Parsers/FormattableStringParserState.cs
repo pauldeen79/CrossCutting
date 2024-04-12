@@ -13,6 +13,8 @@ public class FormattableStringParserState
     public char Current { get; private set; }
     public int Index { get; private set; }
     public bool IsEscaped { get; private set; }
+    public string ResultFormat => ResultBuilder.ToString();
+    public Collection<object> ResultArguments { get; } = new();
 
     public FormattableStringParserState(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser parser)
     {
@@ -48,7 +50,7 @@ public class FormattableStringParserState
         return Input[Index - 1] == sign;
     }
 
-    internal FormattableStringParserState Update(char current, int index)
+    public FormattableStringParserState Update(char current, int index)
     {
         Current = current;
         Index = index;
@@ -61,12 +63,13 @@ public class FormattableStringParserState
 
     public void StartPlaceholder() => InPlaceholder = true;
 
-    public void ClosePlaceholder(string value)
+    public void ClosePlaceholder(FormattableStringParserResult value)
     {
-        ArgumentGuard.IsNotNull(value, nameof(value));
+        value = value.IsNotNull(nameof(value));
 
         InPlaceholder = false;
-        ResultBuilder.Append(value);
+        ResultBuilder.Append(value.Format);
+        ResultArguments.AddRange(value.GetArguments());
         PlaceholderBuilder.Clear();
     }
 }

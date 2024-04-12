@@ -12,7 +12,7 @@ public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserA
         {
             var result = formattableStringParser.Parse(stringArgument.Substring(1), formatProvider, context);
             return result.IsSuccessful()
-                ? Result.Success<FunctionParseResultArgument>(new LiteralArgument(result.Value!))
+                ? Result.Success<FunctionParseResultArgument>(new LiteralArgument(result.Value!.ToString(formatProvider)))
                 : Result.FromExistingResult<FunctionParseResultArgument>(result);
         }
 

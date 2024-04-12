@@ -27,7 +27,7 @@ public class FormattableStringParser : IFormattableStringParser
             ]);
     }
 
-    public Result<string> Parse(string input, IFormatProvider formatProvider, object? context)
+    public Result<FormattableStringParserResult> Parse(string input, IFormatProvider formatProvider, object? context)
     {
         input = input.IsNotNull(nameof(input));
         formatProvider = formatProvider.IsNotNull(nameof(formatProvider));
@@ -54,9 +54,9 @@ public class FormattableStringParser : IFormattableStringParser
 
         if (state.InPlaceholder)
         {
-            return Result.Invalid<string>("Missing close sign '}'. To use the '{' character, you have to escape it with an additional '{' character");
+            return Result.Invalid<FormattableStringParserResult>("Missing close sign '}'. To use the '{' character, you have to escape it with an additional '{' character");
         }
 
-        return Result.Success(state.ResultBuilder.ToString());
+        return Result.Success(new FormattableStringParserResult(state.ResultFormat, state.ResultArguments.ToArray()));
     }
 }

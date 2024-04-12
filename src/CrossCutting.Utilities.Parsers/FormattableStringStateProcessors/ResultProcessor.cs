@@ -2,7 +2,7 @@
 
 public class ResultProcessor : IFormattableStringStateProcessor
 {
-    public Result<string> Process(FormattableStringParserState state)
+    public Result<FormattableStringParserResult> Process(FormattableStringParserState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
@@ -15,6 +15,6 @@ public class ResultProcessor : IFormattableStringStateProcessor
             state.ResultBuilder.Append(state.Current);
         }
 
-        return Result.NoContent<string>();
+        return Result.NoContent<FormattableStringParserResult>();
     }
 }

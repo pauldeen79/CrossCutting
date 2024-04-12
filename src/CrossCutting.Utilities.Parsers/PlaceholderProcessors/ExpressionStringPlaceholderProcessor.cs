@@ -13,17 +13,15 @@ public class ExpressionStringPlaceholderProcessor : IPlaceholderProcessor
 
     public int Order => 990;
 
-    public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         var result = _expressionStringParser.Parse($"={value}", formatProvider, context, formattableStringParser);
 
         if (result.Status == ResultStatus.NotFound)
         {
-            return Result.Continue<string>();
+            return Result.Continue<FormattableStringParserResult>();
         }
 
-        return Result.FromExistingResult(
-            result,
-            value => value.ToString(formatProvider, string.Empty));
+        return Result.FromExistingResult(result, value => new FormattableStringParserResult(value));
     }
 }

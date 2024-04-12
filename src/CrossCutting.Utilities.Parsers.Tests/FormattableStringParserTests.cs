@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+﻿using CrossCutting.Common.Extensions;
+
+namespace CrossCutting.Utilities.Parsers.Tests;
 
 public sealed class FormattableStringParserTests : IDisposable
 {
@@ -159,7 +161,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Act
         var result = sut.Parse(Input, CultureInfo.InvariantCulture);
-        result = sut.Parse(result.GetValueOrThrow(), CultureInfo.InvariantCulture); // have to parse the result, because it contains a new placeholder...
+        result = sut.Parse(result.GetValueOrThrow().ToString(CultureInfo.InvariantCulture), CultureInfo.InvariantCulture); // have to parse the result, because it contains a new placeholder...
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -188,7 +190,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var preparsedResult = sut.Parse("Hello {Name}, you are called {{Name}}", CultureInfo.InvariantCulture);
 
         // Act
-        var result = sut.Parse(preparsedResult.GetValueOrThrow(), CultureInfo.InvariantCulture);
+        var result = sut.Parse(preparsedResult.GetValueOrThrow().ToString(CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -237,15 +239,15 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         public int Order => 10;
 
-        public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
         {
             return value switch
             {
-                "Name" => Result.Success(ReplacedValue),
-                "Context" => Result.Success(context?.ToString() ?? string.Empty),
-                "Unsupported placeholder" => Result.Error<string>($"Unsupported placeholder name: {value}"),
-                "ReplaceWithPlaceholder" => Result.Success("{Name}"),
-                _ => Result.Continue<string>()
+                "Name" => Result.Success(ReplacedValue.ToFormattableStringParserResult()),
+                "Context" => Result.Success(context.ToStringWithDefault().ToFormattableStringParserResult()),
+                "Unsupported placeholder" => Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}"),
+                "ReplaceWithPlaceholder" => Result.Success("{Name}".ToFormattableStringParserResult()),
+                _ => Result.Continue<FormattableStringParserResult>()
             };
         }
     }

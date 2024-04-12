@@ -2,5 +2,5 @@
 
 public interface IFormattableStringStateProcessor
 {
-    Result<string> Process(FormattableStringParserState state);
+    Result<FormattableStringParserResult> Process(FormattableStringParserState state);
 }
