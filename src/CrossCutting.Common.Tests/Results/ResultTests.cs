@@ -1223,4 +1223,32 @@ public class ResultTests
         act.Should().ThrowExactly<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom");
     }
 
+    [Fact]
+    public void Transform_Can_Transform_The_Value_On_Success()
+    {
+        // Arrange
+        var source = Result.Success(1);
+
+        // Act
+        var result = source.Transform(x => x.ToString());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("1");
+    }
+
+    [Fact]
+    public void Transform_Returns_Same_Error_On_Failure()
+    {
+        // Arrange
+        var source = Result.Error<int>("Kaboom!");
+
+        // Act
+        var result = source.Transform(x => x.ToString());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom!");
+        result.Value.Should().BeNull();
+    }
 }
