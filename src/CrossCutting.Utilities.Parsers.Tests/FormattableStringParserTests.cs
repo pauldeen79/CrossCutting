@@ -212,6 +212,19 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Can_Implicitly_Convert_Null_ParseStringResult_To_String()
+    {
+        // Arrange
+        var parsedResult = default(FormattableStringParserResult);
+
+        // Act
+        string result = parsedResult!;
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
     public void Create_Throws_On_Null_Processors()
     {
         // Act & Assert
