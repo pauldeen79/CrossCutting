@@ -185,10 +185,10 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var preparsedResult = sut.Parse("Hello {Name}, you are called {{Name}}", CultureInfo.InvariantCulture);
+        var preparsedResult = sut.Parse("Hello {Name}, you are called {{Name}}", CultureInfo.InvariantCulture).GetValueOrThrow();
 
         // Act
-        var result = sut.Parse(preparsedResult.GetValueOrThrow(), CultureInfo.InvariantCulture);
+        var result = sut.Parse(preparsedResult, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
