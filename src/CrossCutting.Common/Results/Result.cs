@@ -43,7 +43,7 @@ public record Result<T> : Result
                 : Invalid<TCast>(errorMessage);
         }
 
-        return Success(castValue);
+        return new Result<TCast>(castValue, Status, ErrorMessage, ValidationErrors, Exception);
     }
 }
 

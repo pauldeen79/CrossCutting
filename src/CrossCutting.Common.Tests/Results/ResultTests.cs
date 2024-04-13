@@ -1103,6 +1103,20 @@ public class ResultTests
     }
 
     [Fact]
+    public void TryCast_Returns_Same_Status()
+    {
+        // Arrange
+        var sut = Result.Continue<object?>(true);
+
+        // Act
+        var result = sut.TryCast<bool>();
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+        result.Value.Should().BeTrue();
+    }
+
+    [Fact]
     public void Can_Create_ValidationResult_With_ErrorMessage_From_ValidationErrors()
     {
         // Arrange
