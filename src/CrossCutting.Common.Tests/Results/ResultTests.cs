@@ -1032,7 +1032,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void TryCast_Returns_Invalid_Without_ErrorMessage_When_Value_Could_Not_Be_Cast()
+    public void TryCast_Returns_Invalid_With_Default_ErrorMessage_When_Value_Could_Not_Be_Cast()
     {
         // Arrange
         var sut = Result.Success<object?>("test");
@@ -1042,11 +1042,11 @@ public class ResultTests
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().BeNull();
+        result.ErrorMessage.Should().Be("Could not cast System.Object to System.Boolean");
     }
 
     [Fact]
-    public void TryCast_Returns_Invalid_With_ErrorMessage_When_Value_Could_Not_Be_Cast()
+    public void TryCast_Returns_Invalid_With_Custom_ErrorMessage_When_Value_Could_Not_Be_Cast()
     {
         // Arrange
         var sut = Result.Success<object?>("test");

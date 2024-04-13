@@ -38,9 +38,7 @@ public record Result<T> : Result
 
         if (Value is not TCast castValue)
         {
-            return errorMessage is null
-                ? Invalid<TCast>()
-                : Invalid<TCast>(errorMessage);
+            return Invalid<TCast>(errorMessage ?? $"Could not cast {typeof(T).FullName} to {typeof(TCast).FullName}");
         }
 
         return new Result<TCast>(castValue, Status, ErrorMessage, ValidationErrors, Exception);
