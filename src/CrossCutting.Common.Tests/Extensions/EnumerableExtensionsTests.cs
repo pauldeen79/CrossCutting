@@ -224,4 +224,22 @@ public class EnumerableExtensionsTests
         // Assert
         result.Should().BeEquivalentTo(new[] { 1, 2, 3 });
     }
+    
+    [Fact]
+    public async Task SelectAsync_Returns_Correct_Result()
+    {
+        // Arrange
+        var input = new string[] { "a", "b", "c" };
+
+        // Act
+        var result = await input.SelectAsync(MyAsyncFunction);
+
+        // Assert
+        result.Should().BeEquivalentTo("A", "B", "C");
+    }
+
+    private Task<string> MyAsyncFunction(string input)
+    {
+        return Task.FromResult(input.ToUpperInvariant());
+    }
 }
