@@ -44,7 +44,7 @@ public record Result<T> : Result
         return new Result<TCast>(castValue, Status, ErrorMessage, ValidationErrors, Exception);
     }
 
-    public Result<TTarget> Transform<TTarget>(Func<T, TTarget> transformDelegate)
+    public Result<TTarget> TransformValue<TTarget>(Func<T, TTarget> transformDelegate)
     {
         ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
 
