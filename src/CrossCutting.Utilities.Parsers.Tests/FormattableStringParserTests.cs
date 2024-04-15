@@ -267,6 +267,32 @@ public sealed class FormattableStringParserTests : IDisposable
         instance.ToString().Should().Be("hello {world}");
     }
 
+    [Fact]
+    public void ToString_Override_Returns_Correct_Result()
+    {
+        // Arrange
+        FormattableStringParserResult result = "Hello world!";
+
+        // Act
+        var stringResult = result.ToString();
+
+        // Assert
+        stringResult.Should().Be("Hello world!");
+    }
+
+    [Fact]
+    public void Implicit_Operator_Returns_Correct_Result()
+    {
+        // Arrange
+        FormattableStringParserResult result = "Hello world!";
+
+        // Act
+        string stringResult = result;
+
+        // Assert
+        stringResult.Should().Be("Hello world!");
+    }
+
     public void Dispose()
     {
         _scope?.Dispose();
