@@ -245,6 +245,28 @@ public sealed class FormattableStringParserTests : IDisposable
         result.Should().BeOfType<FormattableStringParser>();
     }
 
+    [Fact]
+    public void FromString_Creates_New_Instance_From_String_Correclty()
+    {
+        // Act
+        var instance = FormattableStringParserResult.FromString("hello world");
+
+        // Assert
+        instance.Format.Should().Be("{0}");
+        instance.ToString().Should().Be("hello world");
+    }
+
+    [Fact]
+    public void FromString_Creates_New_Instance_From_String_With_Accolades_Correclty()
+    {
+        // Act
+        var instance = FormattableStringParserResult.FromString("hello {world}");
+
+        // Assert
+        instance.Format.Should().Be("{0}");
+        instance.ToString().Should().Be("hello {world}");
+    }
+
     public void Dispose()
     {
         _scope?.Dispose();
@@ -270,10 +292,10 @@ public sealed class FormattableStringParserTests : IDisposable
         {
             return value switch
             {
-                "Name" => Result.Success(ReplacedValue.ToFormattableStringParserResult()),
-                "Context" => Result.Success(context.ToStringWithDefault().ToFormattableStringParserResult()),
+                "Name" => Result.Success<FormattableStringParserResult>(ReplacedValue),
+                "Context" => Result.Success<FormattableStringParserResult>(context.ToStringWithDefault()),
                 "Unsupported placeholder" => Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}"),
-                "ReplaceWithPlaceholder" => Result.Success("{Name}".ToFormattableStringParserResult()),
+                "ReplaceWithPlaceholder" => Result.Success<FormattableStringParserResult>("{Name}"),
                 _ => Result.Continue<FormattableStringParserResult>()
             };
         }

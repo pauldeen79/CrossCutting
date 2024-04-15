@@ -419,7 +419,7 @@ public sealed class FunctionParserTests : IDisposable
 
         public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
-                ? Result.Success(ReplacedValue.ToFormattableStringParserResult())
+                ? Result.Success<FormattableStringParserResult>(ReplacedValue)
                 : Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}");
     }
 }
