@@ -63,8 +63,17 @@ public class FormattableStringParserState
         value = value.IsNotNull(nameof(value));
 
         InPlaceholder = false;
-        ResultBuilder.Append(value.Format);
-        ResultArguments.AddRange(value.GetArguments());
+        var format = value.Format;
+        var previousCount = ResultArguments.Count;
+        for (int i = 0; i < value.GetArguments().Length; i++)
+        {
+            if (previousCount > 0)
+            {
+                format = format.Replace($"{{{i}}}", $"{{{i + previousCount}}}");
+            }
+            ResultArguments.Add(value.GetArgument(i));
+        }
+        ResultBuilder.Append(format);
         PlaceholderBuilder.Clear();
     }
 }
