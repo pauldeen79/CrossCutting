@@ -400,6 +400,40 @@ public class ProofOfConceptTests
         }
     }
 
+    public class PipelineComponent_With_Context()
+    {
+        [Fact]
+        public async Task Can_Call_Process_Without_CancellationToken()
+        {
+            // Arrange
+            var sut = new MyReplacedContextlessComponent();
+            var context = new PipelineContext<object?>(1);
+
+            // Act
+            var result = await sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.NotImplemented);
+        }
+    }
+
+    public class PipelineComponent_Without_Context()
+    {
+        [Fact]
+        public async Task Can_Call_Process_Without_CancellationToken()
+        {
+            // Arrange
+            var sut = new MyReplacedContextlessComponent();
+            var context = new PipelineContext<object?, object?>(1, 2);
+
+            // Act
+            var result = await sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.NotImplemented);
+        }
+    }
+
     private sealed class MyContextlessComponent : IPipelineComponent<object?>
     {
         public Func<PipelineContext<object?>, Result<object?>> ProcessCallback { get; }
