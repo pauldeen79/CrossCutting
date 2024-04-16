@@ -1032,7 +1032,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void TryCast_Returns_Invalid_Without_ErrorMessage_When_Value_Could_Not_Be_Cast()
+    public void TryCast_Returns_Invalid_With_Default_ErrorMessage_When_Value_Could_Not_Be_Cast()
     {
         // Arrange
         var sut = Result.Success<object?>("test");
@@ -1042,11 +1042,11 @@ public class ResultTests
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().BeNull();
+        result.ErrorMessage.Should().Be("Could not cast System.Object to System.Boolean");
     }
 
     [Fact]
-    public void TryCast_Returns_Invalid_With_ErrorMessage_When_Value_Could_Not_Be_Cast()
+    public void TryCast_Returns_Invalid_With_Custom_ErrorMessage_When_Value_Could_Not_Be_Cast()
     {
         // Arrange
         var sut = Result.Success<object?>("test");
@@ -1099,6 +1099,20 @@ public class ResultTests
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeTrue();
+    }
+
+    [Fact]
+    public void TryCast_Returns_Same_Status()
+    {
+        // Arrange
+        var sut = Result.Continue<object?>(true);
+
+        // Act
+        var result = sut.TryCast<bool>();
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
         result.Value.Should().BeTrue();
     }
 
@@ -1209,4 +1223,32 @@ public class ResultTests
         act.Should().ThrowExactly<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom");
     }
 
+    [Fact]
+    public void TransformValue_Can_TransformValue_The_Value_On_Success()
+    {
+        // Arrange
+        var source = Result.Success(1);
+
+        // Act
+        var result = source.TransformValue(x => x.ToString());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("1");
+    }
+
+    [Fact]
+    public void TransformValue_Returns_Same_Error_On_Failure()
+    {
+        // Arrange
+        var source = Result.Error<int>("Kaboom!");
+
+        // Act
+        var result = source.TransformValue(x => x.ToString());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom!");
+        result.Value.Should().BeNull();
+    }
 }

@@ -12,7 +12,8 @@ public class FormattableStringParserState
     public bool InPlaceholder { get; private set; }
     public char Current { get; private set; }
     public int Index { get; private set; }
-    public bool IsEscaped { get; private set; }
+    public string ResultFormat => ResultBuilder.ToString();
+    public Collection<object> ResultArguments { get; } = new();
 
     public FormattableStringParserState(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser parser)
     {
@@ -48,25 +49,31 @@ public class FormattableStringParserState
         return Input[Index - 1] == sign;
     }
 
-    internal FormattableStringParserState Update(char current, int index)
+    public FormattableStringParserState Update(char current, int index)
     {
         Current = current;
         Index = index;
         return this;
     }
 
-    public void Escape() => IsEscaped = true;
-
-    public void ResetEscape() => IsEscaped = false;
-
     public void StartPlaceholder() => InPlaceholder = true;
 
-    public void ClosePlaceholder(string value)
+    public void ClosePlaceholder(FormattableStringParserResult value)
     {
-        ArgumentGuard.IsNotNull(value, nameof(value));
+        value = value.IsNotNull(nameof(value));
 
         InPlaceholder = false;
-        ResultBuilder.Append(value);
+        var format = value.Format;
+        var previousCount = ResultArguments.Count;
+        for (int i = 0; i < value.GetArguments().Length; i++)
+        {
+            if (previousCount > 0)
+            {
+                format = format.Replace($"{{{i}}}", $"{{{i + previousCount}}}");
+            }
+            ResultArguments.Add(value.GetArgument(i));
+        }
+        ResultBuilder.Append(format);
         PlaceholderBuilder.Clear();
     }
 }

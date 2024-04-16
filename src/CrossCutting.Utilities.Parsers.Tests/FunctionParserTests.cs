@@ -417,9 +417,9 @@ public sealed class FunctionParserTests : IDisposable
     {
         public int Order => 10;
 
-        public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
-                ? Result.Success(ReplacedValue)
-                : Result.Error<string>($"Unsupported placeholder name: {value}");
+                ? Result.Success<FormattableStringParserResult>(ReplacedValue)
+                : Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}");
     }
 }

@@ -38,12 +38,22 @@ public record Result<T> : Result
 
         if (Value is not TCast castValue)
         {
-            return errorMessage is null
-                ? Invalid<TCast>()
-                : Invalid<TCast>(errorMessage);
+            return Invalid<TCast>(errorMessage ?? $"Could not cast {typeof(T).FullName} to {typeof(TCast).FullName}");
         }
 
-        return Success(castValue);
+        return new Result<TCast>(castValue, Status, ErrorMessage, ValidationErrors, Exception);
+    }
+
+    public Result<TTarget> TransformValue<TTarget>(Func<T, TTarget> transformDelegate)
+    {
+        ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
+
+        if (!IsSuccessful())
+        {
+            return FromExistingResult<TTarget>(this);
+        }
+
+        return new Result<TTarget>(transformDelegate(Value!), Status, ErrorMessage, ValidationErrors, Exception);
     }
 }
 

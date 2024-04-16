@@ -95,7 +95,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(expectedValue);
+        result.Value!.ToString().Should().Be(expectedValue);
     }
 
     [Fact]
@@ -133,7 +133,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("Hello function result!");
+        result.Value!.ToString().Should().Be("Hello function result!");
     }
 
     [Fact]
@@ -147,7 +147,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("I can add 1 to 2, this results in 2");
+        result.Value!.ToString().Should().Be("I can add 1 to 2, this results in 2");
     }
 
     [Fact]
@@ -159,11 +159,11 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Act
         var result = sut.Parse(Input, CultureInfo.InvariantCulture);
-        result = sut.Parse(result.GetValueOrThrow(), CultureInfo.InvariantCulture); // have to parse the result, because it contains a new placeholder...
+        result = sut.Parse(result.GetValueOrThrow().ToString(CultureInfo.InvariantCulture), CultureInfo.InvariantCulture); // have to parse the result, because it contains a new placeholder...
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be($"Hello {ReplacedValue}!");
+        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}!");
     }
 
     [Fact]
@@ -185,14 +185,43 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var preparsedResult = sut.Parse("Hello {Name}, you are called {{Name}}", CultureInfo.InvariantCulture);
+        var preparsedResult = sut.Parse("Hello {Name}, you are called {{Name}}", CultureInfo.InvariantCulture).GetValueOrThrow();
 
         // Act
-        var result = sut.Parse(preparsedResult.GetValueOrThrow(), CultureInfo.InvariantCulture);
+        var result = sut.Parse(preparsedResult, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
+        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
+        result.Value.ArgumentCount.Should().Be(1);
+        result.Value.GetArgument(0).Should().BeEquivalentTo(ReplacedValue);
+    }
+
+    [Fact]
+    public void Can_Implicitly_Convert_ParseStringResult_To_String()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var parsedResult = sut.Parse("Hello {Name}!", CultureInfo.InvariantCulture);
+
+        // Act
+        string result = parsedResult.GetValueOrThrow();
+
+        // Assert
+        result.Should().Be("Hello replaced name!");
+    }
+
+    [Fact]
+    public void Can_Implicitly_Convert_Null_ParseStringResult_To_String()
+    {
+        // Arrange
+        var parsedResult = default(FormattableStringParserResult);
+
+        // Act
+        string result = parsedResult!;
+
+        // Assert
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -216,6 +245,54 @@ public sealed class FormattableStringParserTests : IDisposable
         result.Should().BeOfType<FormattableStringParser>();
     }
 
+    [Fact]
+    public void FromString_Creates_New_Instance_From_String_Correclty()
+    {
+        // Act
+        var instance = FormattableStringParserResult.FromString("hello world");
+
+        // Assert
+        instance.Format.Should().Be("{0}");
+        instance.ToString().Should().Be("hello world");
+    }
+
+    [Fact]
+    public void FromString_Creates_New_Instance_From_String_With_Accolades_Correclty()
+    {
+        // Act
+        var instance = FormattableStringParserResult.FromString("hello {world}");
+
+        // Assert
+        instance.Format.Should().Be("{0}");
+        instance.ToString().Should().Be("hello {world}");
+    }
+
+    [Fact]
+    public void ToString_Override_Returns_Correct_Result()
+    {
+        // Arrange
+        FormattableStringParserResult result = "Hello world!";
+
+        // Act
+        var stringResult = result.ToString();
+
+        // Assert
+        stringResult.Should().Be("Hello world!");
+    }
+
+    [Fact]
+    public void Implicit_Operator_Returns_Correct_Result()
+    {
+        // Arrange
+        FormattableStringParserResult result = "Hello world!";
+
+        // Act
+        string stringResult = result;
+
+        // Assert
+        stringResult.Should().Be("Hello world!");
+    }
+
     public void Dispose()
     {
         _scope?.Dispose();
@@ -237,15 +314,15 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         public int Order => 10;
 
-        public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
         {
             return value switch
             {
-                "Name" => Result.Success(ReplacedValue),
-                "Context" => Result.Success(context?.ToString() ?? string.Empty),
-                "Unsupported placeholder" => Result.Error<string>($"Unsupported placeholder name: {value}"),
-                "ReplaceWithPlaceholder" => Result.Success("{Name}"),
-                _ => Result.Continue<string>()
+                "Name" => Result.Success<FormattableStringParserResult>(ReplacedValue),
+                "Context" => Result.Success<FormattableStringParserResult>(context.ToStringWithDefault()),
+                "Unsupported placeholder" => Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}"),
+                "ReplaceWithPlaceholder" => Result.Success<FormattableStringParserResult>("{Name}"),
+                _ => Result.Continue<FormattableStringParserResult>()
             };
         }
     }

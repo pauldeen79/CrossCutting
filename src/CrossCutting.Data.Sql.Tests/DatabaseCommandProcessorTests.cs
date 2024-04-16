@@ -1,6 +1,4 @@
-﻿using NSubstitute;
-
-namespace CrossCutting.Data.Sql.Tests;
+﻿namespace CrossCutting.Data.Sql.Tests;
 
 public sealed class DatabaseCommandProcessorTests : IDisposable
 {

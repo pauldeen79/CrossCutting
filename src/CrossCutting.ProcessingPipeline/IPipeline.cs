@@ -2,14 +2,10 @@
 
 public interface IPipeline<TModel>
 {
-    IReadOnlyCollection<IPipelineComponent<TModel>> Components { get; }
-    
-    Result<TModel> Process(TModel model);
+    Task<Result<TModel>> Process(TModel model, CancellationToken token);
 }
 
 public interface IPipeline<TModel, TContext>
 {
-    IReadOnlyCollection<IPipelineComponent<TModel, TContext>> Components { get; }
-
-    Result<TModel> Process(TModel model, TContext context);
+    Task<Result<TModel>> Process(TModel model, TContext context, CancellationToken token);
 }

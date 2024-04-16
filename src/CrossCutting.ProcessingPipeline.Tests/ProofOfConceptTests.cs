@@ -2,7 +2,13 @@
 
 public class ProofOfConceptTests
 {
-    public class Pipeline_With_Context
+    protected IEnumerable<IPipelineComponent<TModel>> GetComponents<TModel>(IPipeline<TModel> instance)
+        => (instance.GetType().GetProperty(nameof(IPipelineBuilder<object>.Components))!.GetValue(instance) as IEnumerable<IPipelineComponent<TModel>>)!;
+
+    protected IEnumerable<IPipelineComponent<TModel, TContext>> GetComponents<TModel, TContext>(IPipeline<TModel, TContext> instance)
+        => (instance.GetType().GetProperty(nameof(IPipelineBuilder<object>.Components))!.GetValue(instance) as IEnumerable<IPipelineComponent<TModel, TContext>>)!;
+
+    public class Pipeline_With_Context : ProofOfConceptTests
     {
         [Fact]
         public void Can_Create_Pipeline()
@@ -16,8 +22,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().ContainSingle();
-            pipeline.Components.Single().Should().BeOfType<MyComponentWithContext>();
+            GetComponents(pipeline).Should().ContainSingle();
+            GetComponents(pipeline).Single().Should().BeOfType<MyComponentWithContext>();
         }
 
         [Fact]
@@ -32,8 +38,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().HaveCount(2);
-            pipeline.Components.Should().AllBeOfType<MyComponentWithContext>();
+            GetComponents(pipeline).Should().HaveCount(2);
+            GetComponents(pipeline).Should().AllBeOfType<MyComponentWithContext>();
         }
 
         [Fact]
@@ -48,8 +54,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().HaveCount(2);
-            pipeline.Components.Should().AllBeOfType<MyComponentWithContext>();
+            GetComponents(pipeline).Should().HaveCount(2);
+            GetComponents(pipeline).Should().AllBeOfType<MyComponentWithContext>();
         }
 
         [Fact]
@@ -65,8 +71,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().ContainSingle();
-            pipeline.Components.Single().Should().BeOfType<MyReplacedComponentWithContext>();
+            GetComponents(pipeline).Should().ContainSingle();
+            GetComponents(pipeline).Single().Should().BeOfType<MyReplacedComponentWithContext>();
         }
 
         [Fact]
@@ -82,7 +88,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().BeEmpty();
+            GetComponents(pipeline).Should().BeEmpty();
         }
 
         [Fact]
@@ -90,9 +96,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?, object?> { Components = null! };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().ContainSingle();
@@ -103,9 +110,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?, object?> { Components = new List<IBuilder<IPipelineComponent<object?, object?>>>() };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().BeEmpty();
@@ -116,16 +124,17 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?, object?> { Components = new List<IBuilder<IPipelineComponent<object?, object?>>>(new[] { new MyComponentWithContextBuilder() }) };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().BeEmpty();
         }
 
         [Fact]
-        public void Can_Process_Pipeline_With_Feature()
+        public async Task Can_Process_Pipeline_With_Feature()
         {
             // Arrange
             PipelineContext<object?, object?>? context = null;
@@ -135,7 +144,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Act
-            var result = sut.Process(model: 1, context: 2);
+            var result = await sut.Process(model: 1, context: 2);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -145,7 +154,7 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status()
+        public async Task Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status()
         {
             // Arrange
             Func<PipelineContext<object?, object?>, Result<object?>> processCallback = new(_ => Result.Error<object?>("Kaboom"));
@@ -154,7 +163,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Act
-            var result = sut.Process(model: 1, context: 2);
+            var result = await sut.Process(model: 1, context: 2);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -178,7 +187,7 @@ public class ProofOfConceptTests
         }
     }
 
-    public class Pipeline_Without_Context
+    public class Pipeline_Without_Context : ProofOfConceptTests
     {
         [Fact]
         public void Can_Create_Pipeline()
@@ -192,8 +201,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().ContainSingle();
-            pipeline.Components.Single().Should().BeOfType<MyContextlessComponent>();
+            GetComponents(pipeline).Should().ContainSingle();
+            GetComponents(pipeline).Single().Should().BeOfType<MyContextlessComponent>();
         }
 
         [Fact]
@@ -208,8 +217,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().HaveCount(2);
-            pipeline.Components.Should().AllBeOfType<MyContextlessComponent>();
+            GetComponents(pipeline).Should().HaveCount(2);
+            GetComponents(pipeline).Should().AllBeOfType<MyContextlessComponent>();
         }
 
         [Fact]
@@ -224,8 +233,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().HaveCount(2);
-            pipeline.Components.Should().AllBeOfType<MyContextlessComponent>();
+            GetComponents(pipeline).Should().HaveCount(2);
+            GetComponents(pipeline).Should().AllBeOfType<MyContextlessComponent>();
         }
 
         [Fact]
@@ -241,8 +250,8 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().ContainSingle();
-            pipeline.Components.Single().Should().BeOfType<MyReplacedContextlessComponent>();
+            GetComponents(pipeline).Should().ContainSingle();
+            GetComponents(pipeline).Single().Should().BeOfType<MyReplacedContextlessComponent>();
         }
 
         [Fact]
@@ -258,7 +267,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Assert
-            pipeline.Components.Should().BeEmpty();
+            GetComponents(pipeline).Should().BeEmpty();
         }
 
         [Fact]
@@ -266,9 +275,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?> { Components = null! };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().ContainSingle();
@@ -279,9 +289,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?> { Components = new List<IBuilder<IPipelineComponent<object?>>>() };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().BeEmpty();
@@ -292,16 +303,32 @@ public class ProofOfConceptTests
         {
             // Arrange
             var builder = new PipelineBuilder<object?> { Components = new List<IBuilder<IPipelineComponent<object?>>>(new[] { new MyContextlessComponentBuilder() }) };
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var validationResults = builder.Validate(new(builder));
+            _ = builder.TryValidate(validationResults);
 
             // Assert
             validationResults.Should().BeEmpty();
         }
 
         [Fact]
-        public void Can_Process_Pipeline_With_Feature()
+        public void Can_Validate_PipelineBuilder_With_NonEmpty_Features_List_Validatable_Component()
+        {
+            // Arrange
+            var builder = new PipelineBuilder<object?> { Components = new List<IBuilder<IPipelineComponent<object?>>>(new[] { new MyContextlessValidatableComponentBuilder().WithProcessCallback(null!) }) };
+            var validationResults = new List<ValidationResult>();
+
+            // Act
+            _ = builder.TryValidate(validationResults);
+
+            // Assert
+            validationResults.Should().ContainSingle();
+            validationResults.Single().ErrorMessage.Should().Be("The field Components is invalid.");
+        }
+
+        [Fact]
+        public async Task Can_Process_Pipeline_With_Feature()
         {
             // Arrange
             PipelineContext<object?>? context = null;
@@ -311,7 +338,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Act
-            var result = sut.Process(model: 1);
+            var result = await sut.Process(model: 1);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -320,7 +347,7 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status()
+        public async Task Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status()
         {
             // Arrange
             Func<PipelineContext<object?>, Result<object?>> processCallback = new(_ => Result.Error<object?>("Kaboom"));
@@ -329,7 +356,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Act
-            var result = sut.Process(model: 1);
+            var result = await sut.Process(model: 1);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -373,6 +400,40 @@ public class ProofOfConceptTests
         }
     }
 
+    public class PipelineComponent_Without_Context()
+    {
+        [Fact]
+        public async Task Can_Call_Process_Without_CancellationToken()
+        {
+            // Arrange
+            var sut = new MyReplacedContextlessComponent();
+            var context = new PipelineContext<object?>(1);
+
+            // Act
+            var result = await sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.NotImplemented);
+        }
+    }
+
+    public class PipelineComponent_With_Context()
+    {
+        [Fact]
+        public async Task Can_Call_Process_Without_CancellationToken()
+        {
+            // Arrange
+            var sut = new MyReplacedComponentWithContext();
+            var context = new PipelineContext<object?, object?>(1, 2);
+
+            // Act
+            var result = await sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.NotImplemented);
+        }
+    }
+
     private sealed class MyContextlessComponent : IPipelineComponent<object?>
     {
         public Func<PipelineContext<object?>, Result<object?>> ProcessCallback { get; }
@@ -383,8 +444,8 @@ public class ProofOfConceptTests
         public MyContextlessComponent(Func<PipelineContext<object?>, Result<object?>> processCallback)
             => ProcessCallback = processCallback;
 
-        public Result<object?> Process(PipelineContext<object?> context)
-            => ProcessCallback.Invoke(context);
+        public Task<Result<object?>> Process(PipelineContext<object?> context, CancellationToken token)
+            => Task.FromResult(ProcessCallback.Invoke(context));
     }
 
     private sealed class MyContextlessComponentBuilder : IPipelineComponentBuilder<object?>
@@ -401,11 +462,26 @@ public class ProofOfConceptTests
             => new MyContextlessComponent(ProcessCallback);
     }
 
+    private sealed class MyContextlessValidatableComponentBuilder : IPipelineComponentBuilder<object?>
+    {
+        [Required]
+        public Func<PipelineContext<object?>, Result<object?>> ProcessCallback { get; set; } = new(_ => Result.NoContent<object?>());
+
+        public MyContextlessValidatableComponentBuilder WithProcessCallback(Func<PipelineContext<object?>, Result<object?>> processCallback)
+        {
+            ProcessCallback = processCallback;
+            return this;
+        }
+
+        public IPipelineComponent<object?> Build()
+            => new MyContextlessComponent(ProcessCallback);
+    }
+
     private sealed class MyReplacedContextlessComponent : IPipelineComponent<object?>
     {
-        public Result<object?> Process(PipelineContext<object?> context)
+        public Task<Result<object?>> Process(PipelineContext<object?> context, CancellationToken token)
         {
-            return Result.NotImplemented<object?>();
+            return Task.FromResult(Result.NotImplemented<object?>());
         }
     }
 
@@ -425,8 +501,8 @@ public class ProofOfConceptTests
         public MyComponentWithContext(Func<PipelineContext<object?, object?>, Result<object?>> processCallback)
             => ProcessCallback = processCallback;
 
-        public Result<object?> Process(PipelineContext<object?, object?> context)
-            => ProcessCallback.Invoke(context);
+        public Task<Result<object?>> Process(PipelineContext<object?, object?> context, CancellationToken token)
+            => Task.FromResult(ProcessCallback.Invoke(context));
     }
 
     private sealed class MyComponentWithContextBuilder : IPipelineComponentBuilder<object?, object?>
@@ -445,9 +521,9 @@ public class ProofOfConceptTests
 
     private sealed class MyReplacedComponentWithContext : IPipelineComponent<object?, object?>
     {
-        public Result<object?> Process(PipelineContext<object?, object?> context)
+        public Task<Result<object?>> Process(PipelineContext<object?, object?> context, CancellationToken token)
         {
-            return Result.NotImplemented<object?>();
+            return Task.FromResult(Result.NotImplemented<object?>());
         }
     }
 
