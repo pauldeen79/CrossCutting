@@ -400,7 +400,7 @@ public class ProofOfConceptTests
         }
     }
 
-    public class PipelineComponent_With_Context()
+    public class PipelineComponent_Without_Context()
     {
         [Fact]
         public async Task Can_Call_Process_Without_CancellationToken()
@@ -417,13 +417,13 @@ public class ProofOfConceptTests
         }
     }
 
-    public class PipelineComponent_Without_Context()
+    public class PipelineComponent_With_Context()
     {
         [Fact]
         public async Task Can_Call_Process_Without_CancellationToken()
         {
             // Arrange
-            var sut = new MyReplacedContextlessComponent();
+            var sut = new MyReplacedComponentWithContext();
             var context = new PipelineContext<object?, object?>(1, 2);
 
             // Act
