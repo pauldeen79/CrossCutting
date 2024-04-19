@@ -54,4 +54,19 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
 
         return returnValue;
     }
+
+    public Task<T?> FindOneAsync(IDatabaseCommand command, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IReadOnlyCollection<T>> FindManyAsync(IDatabaseCommand command, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IPagedResult<T>> FindPagedAsync(IPagedDatabaseCommand command, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -128,4 +128,19 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
     {
         // Method intentionally left empty.
     }
+
+    public Task<IDatabaseCommandResult<TEntity>> ExecuteCommandAsync(IDatabaseCommand command, TEntity instance, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<object> ExecuteScalarAsync(IDatabaseCommand command, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<int> ExecuteNonQueryAsync(IDatabaseCommand command, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }
