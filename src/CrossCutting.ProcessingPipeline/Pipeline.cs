@@ -9,7 +9,7 @@ public class Pipeline<TModel> : PipelineBase<TModel>, IPipeline<TModel>
         _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
     }
 
-    public async Task<Result<TModel>> Process(TModel model, CancellationToken token)
+    public async Task<Result> Process(TModel model, CancellationToken token)
     {
         var pipelineContext = new PipelineContext<TModel>(ArgumentGuard.IsNotNull(model, nameof(model)));
 
@@ -17,7 +17,7 @@ public class Pipeline<TModel> : PipelineBase<TModel>, IPipeline<TModel>
 
         var results = await Task.WhenAll(Components.Select(x => x.Process(pipelineContext, token))).ConfigureAwait(false);
         return Array.Find(results, x => !x.IsSuccessful())
-            ?? Result.Success(model);
+            ?? Result.Success();
     }
 }
 
@@ -30,7 +30,7 @@ public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>, IPipel
         _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
     }
 
-    public async Task<Result<TModel>> Process(TModel model, TContext context, CancellationToken token)
+    public async Task<Result> Process(TModel model, TContext context, CancellationToken token)
     {
         var pipelineContext = new PipelineContext<TModel, TContext>(model.IsNotNull(nameof(model)), context.IsNotNull(nameof(context)));
 
@@ -38,6 +38,6 @@ public class Pipeline<TModel, TContext> : PipelineBase<TModel, TContext>, IPipel
 
         var results = await Task.WhenAll(Components.Select(x => x.Process(pipelineContext, token))).ConfigureAwait(false);
         return Array.Find(results, x => !x.IsSuccessful())
-            ?? Result.Success(model);
+            ?? Result.Success();
     }
 }
