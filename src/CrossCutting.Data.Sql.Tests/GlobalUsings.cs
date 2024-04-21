@@ -6,6 +6,7 @@ global using System.Data.Stub;
 global using System.Data.Stub.Extensions;
 global using System.Linq;
 global using System.Text;
+global using System.Threading.Tasks;
 global using AutoFixture;
 global using AutoFixture.AutoNSubstitute;
 global using CrossCutting.Data.Abstractions;
