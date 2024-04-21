@@ -2,10 +2,12 @@
 global using System.Collections.Generic;
 global using System.ComponentModel.DataAnnotations;
 global using System.Linq;
+global using System.Threading.Tasks;
 global using AutoFixture;
 global using AutoFixture.AutoNSubstitute;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Data.Abstractions;
+global using CrossCutting.Data.Abstractions.Extensions;
 global using CrossCutting.Data.Core.Builders;
 global using CrossCutting.Data.Core.CommandProviders;
 global using CrossCutting.Data.Core.Commands;
