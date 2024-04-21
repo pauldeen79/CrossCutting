@@ -13,9 +13,9 @@ public class AbstractBuilders : CrossCuttingCSharpClassBase
     protected override bool EnableBuilderInhericance => true;
     protected override bool IsAbstract => true;
 
-    public override IEnumerable<TypeBase> Model
-        => GetBuilders(
-            GetAbstractModels(),
+    public override async Task<IEnumerable<TypeBase>> GetModel()
+        => await GetBuilders(
+            await GetAbstractModels(),
             CurrentNamespace,
             Constants.Namespaces.UtilitiesParsers);
 }

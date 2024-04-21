@@ -9,9 +9,9 @@ public class CoreBuilders : CrossCuttingCSharpClassBase
 
     public override string Path => $"{Constants.Namespaces.UtilitiesParsers}/Builders";
 
-    public override IEnumerable<TypeBase> Model
-        => GetBuilders(
-            GetCoreModels(),
+    public override async Task<IEnumerable<TypeBase>> GetModel()
+        => await GetBuilders(
+            await GetCoreModels(),
             CurrentNamespace,
             Constants.Namespaces.UtilitiesParsers);
 }

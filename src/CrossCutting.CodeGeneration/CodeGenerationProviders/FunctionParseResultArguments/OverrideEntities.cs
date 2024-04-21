@@ -11,8 +11,8 @@ public class OverrideEntities : CrossCuttingCSharpClassBase
 
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;
-    protected override Class? BaseClass => CreateBaseclass(typeof(IFunctionParseResultArgument), CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsers);
+    protected override async Task<Class?> GetBaseClass() => await CreateBaseClass(typeof(IFunctionParseResultArgument), CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsers);
 
-    public override IEnumerable<TypeBase> Model
-        => GetEntities(GetOverrideModels(typeof(IFunctionParseResultArgument)), CurrentNamespace);
+    public override async Task<IEnumerable<TypeBase>> GetModel()
+        => await GetEntities(await GetOverrideModels(typeof(IFunctionParseResultArgument)), CurrentNamespace);
 }
