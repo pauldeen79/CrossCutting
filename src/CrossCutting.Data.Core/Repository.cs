@@ -25,27 +25,27 @@ public class Repository<TEntity, TIdentity> : IRepository<TEntity, TIdentity>
         => EntityRetriever.FindPaged(PagedEntitySelectCommandProvider.CreatePaged<TEntity>(DatabaseOperation.Select, offset, pageSize));
 
     public async Task<TEntity> AddAsync(TEntity instance, CancellationToken cancellationToken)
-        => (await CommandProcessor.ExecuteCommandAsync(EntityCommandProvider.Create(instance, DatabaseOperation.Insert), instance).ConfigureAwait(false))
+        => (await CommandProcessor.ExecuteCommandAsync(EntityCommandProvider.Create(instance, DatabaseOperation.Insert), instance, cancellationToken).ConfigureAwait(false))
                                   .HandleResult($"{typeof(TEntity).Name} has not been added");
 
     public async Task<TEntity> UpdateAsync(TEntity instance, CancellationToken cancellationToken)
-        => (await CommandProcessor.ExecuteCommandAsync(EntityCommandProvider.Create(instance, DatabaseOperation.Update), instance).ConfigureAwait(false))
+        => (await CommandProcessor.ExecuteCommandAsync(EntityCommandProvider.Create(instance, DatabaseOperation.Update), instance, cancellationToken).ConfigureAwait(false))
                                   .HandleResult($"{typeof(TEntity).Name} has not been updated");
 
     public async Task<TEntity> DeleteAsync(TEntity instance, CancellationToken cancellationToken)
-        => (await CommandProcessor.ExecuteCommandAsync(EntityCommandProvider.Create(instance, DatabaseOperation.Delete), instance).ConfigureAwait(false))
+        => (await CommandProcessor.ExecuteCommandAsync(EntityCommandProvider.Create(instance, DatabaseOperation.Delete), instance, cancellationToken).ConfigureAwait(false))
                                   .HandleResult($"{typeof(TEntity).Name} has not been deleted");
 
     public async Task<TEntity?> FindAsync(TIdentity identity, CancellationToken cancellationToken)
-        => await EntityRetriever.FindOneAsync(IdentitySelectCommandProvider.Create(identity, DatabaseOperation.Select))
+        => await EntityRetriever.FindOneAsync(IdentitySelectCommandProvider.Create(identity, DatabaseOperation.Select), cancellationToken)
                                 .ConfigureAwait(false);
 
     public async Task<IReadOnlyCollection<TEntity>> FindAllAsync(CancellationToken cancellationToken)
-        => await EntityRetriever.FindManyAsync(EntitySelectCommandProvider.Create<TEntity>(DatabaseOperation.Select))
+        => await EntityRetriever.FindManyAsync(EntitySelectCommandProvider.Create<TEntity>(DatabaseOperation.Select), cancellationToken)
                                 .ConfigureAwait(false);
 
     public async Task<IPagedResult<TEntity>> FindAllPagedAsync(int offset, int pageSize, CancellationToken cancellationToken)
-        => await EntityRetriever.FindPagedAsync(PagedEntitySelectCommandProvider.CreatePaged<TEntity>(DatabaseOperation.Select, offset, pageSize))
+        => await EntityRetriever.FindPagedAsync(PagedEntitySelectCommandProvider.CreatePaged<TEntity>(DatabaseOperation.Select, offset, pageSize), cancellationToken)
                                 .ConfigureAwait(false);
 
     public Repository(IDatabaseCommandProcessor<TEntity> commandProcessor,
