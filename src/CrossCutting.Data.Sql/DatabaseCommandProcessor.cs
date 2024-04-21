@@ -39,7 +39,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
     public object ExecuteScalar(IDatabaseCommand command)
         => InvokeCommand(command, cmd => cmd.ExecuteScalar());
 
-    public async Task<object> ExecuteScalarAsync(IDatabaseCommand command, CancellationToken cancellationToken)
+    public async Task<object?> ExecuteScalarAsync(IDatabaseCommand command, CancellationToken cancellationToken)
         => await InvokeCommandAsync(_connection, command, async cmd => await cmd.ExecuteScalarAsync(cancellationToken));
 
     public IDatabaseCommandResult<TEntity> ExecuteCommand(IDatabaseCommand command, TEntity instance)

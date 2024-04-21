@@ -6,7 +6,7 @@ public static class DatabaseCommandProcessorExtensions
         where TOutput : class
         => processor.ExecuteCommandAsync(command, instance, CancellationToken.None);
 
-    public static Task<object> ExecuteScalarAsync(this IDatabaseCommandProcessor processor, IDatabaseCommand command)
+    public static Task<object?> ExecuteScalarAsync(this IDatabaseCommandProcessor processor, IDatabaseCommand command)
         => processor.ExecuteScalarAsync(command, CancellationToken.None);
 
     public static Task<int> ExecuteNonQueryAsync(this IDatabaseCommandProcessor processor, IDatabaseCommand command)
