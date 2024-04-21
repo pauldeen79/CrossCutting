@@ -25,10 +25,79 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
     public int ExecuteNonQuery(IDatabaseCommand command)
         => InvokeCommand(command, cmd => cmd.ExecuteNonQuery());
 
+    public async Task<int> ExecuteNonQueryAsync(IDatabaseCommand command, CancellationToken cancellationToken)
+    {
+        if (_connection is not SqlConnection sqlConnection)
+        {
+            return ExecuteNonQuery(command);
+        }
+
+        return await InvokeCommandAsync(sqlConnection, command, async cmd => await cmd.ExecuteNonQueryAsync());
+    }
+
     public object ExecuteScalar(IDatabaseCommand command)
         => InvokeCommand(command, cmd => cmd.ExecuteScalar());
 
+    public async Task<object> ExecuteScalarAsync(IDatabaseCommand command, CancellationToken cancellationToken)
+    {
+        if (_connection is not SqlConnection sqlConnection)
+        {
+            return ExecuteScalar(command);
+        }
+
+        return await InvokeCommandAsync(sqlConnection, command, async cmd => await cmd.ExecuteScalarAsync());
+    }
+
     public IDatabaseCommandResult<TEntity> ExecuteCommand(IDatabaseCommand command, TEntity instance)
+    {
+        var resultEntity = CreateResultEntity(command, instance);
+
+        _connection.OpenIfNecessary();
+        using (var cmd = _connection.CreateCommand())
+        {
+            cmd.FillCommand(command.CommandText, command.CommandType, command.CommandParameters);
+
+            if (_provider.AfterReadDelegate is null)
+            {
+                //Use ExecuteNonQuery
+                return ExecuteNonQuery(cmd, resultEntity);
+            }
+            else
+            {
+                //Use ExecuteReader
+                return ExecuteReader(cmd, command.Operation, _provider.AfterReadDelegate, resultEntity);
+            }
+        }
+    }
+
+    public async Task<IDatabaseCommandResult<TEntity>> ExecuteCommandAsync(IDatabaseCommand command, TEntity instance, CancellationToken cancellationToken)
+    {
+        if (_connection is not SqlConnection sqlConnection)
+        {
+            return ExecuteCommand(command, instance);
+        }
+
+        var resultEntity = CreateResultEntity(command, instance);
+
+        sqlConnection.OpenIfNecessary();
+        using (var cmd = sqlConnection.CreateCommand())
+        {
+            cmd.FillCommand(command.CommandText, command.CommandType, command.CommandParameters);
+
+            if (_provider.AfterReadDelegate is null)
+            {
+                //Use ExecuteNonQuery
+                return await ExecuteNonQueryAsync(cmd, resultEntity);
+            }
+            else
+            {
+                //Use ExecuteReader
+                return await ExecuteReaderAsync(cmd, command.Operation, cancellationToken, _provider.AfterReadDelegate, resultEntity);
+            }
+        }
+    }
+
+    private TBuilder CreateResultEntity(IDatabaseCommand command, TEntity instance)
     {
         TBuilder? builder = default;
         if (instance is TBuilder x)
@@ -57,23 +126,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
         }
 
         resultEntity.Validate();
-
-        _connection.OpenIfNecessary();
-        using (var cmd = _connection.CreateCommand())
-        {
-            cmd.FillCommand(command.CommandText, command.CommandType, command.CommandParameters);
-
-            if (_provider.AfterReadDelegate is null)
-            {
-                //Use ExecuteNonQuery
-                return ExecuteNonQuery(cmd, resultEntity);
-            }
-            else
-            {
-                //Use ExecuteReader
-                return ExecuteReader(cmd, command.Operation, _provider.AfterReadDelegate, resultEntity);
-            }
-        }
+        return resultEntity;
     }
 
     private TResult InvokeCommand<TResult>(IDatabaseCommand command, Func<IDbCommand, TResult> actionDelegate)
@@ -83,16 +136,6 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
         {
             cmd.FillCommand(command.CommandText, command.CommandType, command.CommandParameters);
             return actionDelegate(cmd);
-        }
-    }
-
-    private static async Task<TResult> InvokeCommandAsync<TResult>(SqlConnection sqlConnection, IDatabaseCommand command, Func<SqlCommand, Task<TResult>> actionDelegate)
-    {
-        sqlConnection.OpenIfNecessary();
-        using (var cmd = sqlConnection.CreateCommand())
-        {
-            cmd.FillCommand(command.CommandText, command.CommandType, command.CommandParameters);
-            return await actionDelegate(cmd);
         }
     }
 
@@ -159,81 +202,19 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
 
         return new DatabaseCommandResult<TEntity>(success, CreateEntityFromBuilder(resultEntity));
     }
-    private static void Nothing()
+
+    private static async Task<TResult> InvokeCommandAsync<TResult>(SqlConnection sqlConnection, IDatabaseCommand command, Func<SqlCommand, Task<TResult>> actionDelegate)
     {
-        // Method intentionally left empty.
-    }
-
-    public async Task<IDatabaseCommandResult<TEntity>> ExecuteCommandAsync(IDatabaseCommand command, TEntity instance, CancellationToken cancellationToken)
-    {
-        if (_connection is not SqlConnection sqlConnection)
-        {
-            return ExecuteCommand(command, instance);
-        }
-
-        TBuilder? builder = default;
-        if (instance is TBuilder x)
-        {
-            builder = x;
-        }
-        else
-        {
-            builder = _provider.CreateBuilderDelegate is not null
-                ? _provider.CreateBuilderDelegate.Invoke(instance)
-                : default;
-        }
-
-        if (builder is null)
-        {
-            throw new InvalidOperationException("Builder instance was not constructed, create builder delegate should deliver an instance");
-        }
-
-        var resultEntity = _provider.ResultEntityDelegate is null
-            ? builder
-            : _provider.ResultEntityDelegate.Invoke(builder, command.Operation);
-
-        if (resultEntity is null)
-        {
-            throw new InvalidOperationException("Instance should be supplied, or result entity delegate should deliver an instance");
-        }
-
-        resultEntity.Validate();
-
         sqlConnection.OpenIfNecessary();
         using (var cmd = sqlConnection.CreateCommand())
         {
             cmd.FillCommand(command.CommandText, command.CommandType, command.CommandParameters);
-
-            if (_provider.AfterReadDelegate is null)
-            {
-                //Use ExecuteNonQuery
-                return await ExecuteNonQueryAsync(cmd, resultEntity);
-            }
-            else
-            {
-                //Use ExecuteReader
-                return await ExecuteReaderAsync(cmd, command.Operation, cancellationToken,  _provider.AfterReadDelegate, resultEntity);
-            }
+            return await actionDelegate(cmd);
         }
     }
 
-    public async Task<object> ExecuteScalarAsync(IDatabaseCommand command, CancellationToken cancellationToken)
+    private static void Nothing()
     {
-        if (_connection is not SqlConnection sqlConnection)
-        {
-            return ExecuteScalar(command);
-        }
-
-        return await InvokeCommandAsync(sqlConnection, command, async cmd => await cmd.ExecuteScalarAsync());
-    }
-
-    public async Task<int> ExecuteNonQueryAsync(IDatabaseCommand command, CancellationToken cancellationToken)
-    {
-        if (_connection is not SqlConnection sqlConnection)
-        {
-            return ExecuteNonQuery(command);
-        }
-
-        return await InvokeCommandAsync(sqlConnection, command, async cmd => await cmd.ExecuteNonQueryAsync());
+        // Method intentionally left empty.
     }
 }
