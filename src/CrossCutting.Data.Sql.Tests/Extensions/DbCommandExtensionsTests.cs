@@ -132,10 +132,39 @@ public class DbCommandExtensionsTests
         {
             new MyDataObject { Property = "test" }
         });
-        var command = connection.CreateCommand();
+        using var command = connection.CreateCommand();
 
         // Act
         var result = command.FindOne($"SELECT TOP 1 * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, reader => new MyDataObject { Property = reader.GetString("Property") });
+
+        // Assert
+        result.Should().NotBeNull();
+        result?.Property.Should().Be("test");
+    }
+
+    [Fact]
+    public async Task FindOneAsync_Returns_Correct_Result()
+    {
+        // Arrange
+        using var connection = new DbConnection();
+        connection.AddResultForDataReader(new[]
+        {
+            new MyDataObject { Property = "test" }
+        });
+        using var command = connection.CreateCommand();
+        var wrapperCommand = new SqlCommandWrapper(
+            command,
+            (cmd, _) => Task.FromResult(cmd.ExecuteNonQuery()),
+            (cmd, _, _) => Task.FromResult(new SqlDataReaderWrapper(
+                cmd.ExecuteReader(),
+                (reader, _) => Task.FromResult(reader.Read()),
+                (reader, _) => Task.FromResult(reader.NextResult()),
+                (reader) => { reader.Close(); return Task.CompletedTask; })
+            ),
+            (cmd, _) => Task.FromResult(cmd.ExecuteScalar()));
+
+        // Act
+        var result = await wrapperCommand.FindOneAsync($"SELECT TOP 1 * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, CancellationToken.None, reader => new MyDataObject { Property = reader.GetString("Property") });
 
         // Assert
         result.Should().NotBeNull();
@@ -152,7 +181,7 @@ public class DbCommandExtensionsTests
             new MyDataObject { Property = "test1" },
             new MyDataObject { Property = "test2" }
         });
-        var command = connection.CreateCommand();
+        using var command = connection.CreateCommand();
 
         // Act
         var result = command.FindMany($"SELECT * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, reader => new MyDataObject { Property = reader.GetString("Property") });
@@ -163,6 +192,36 @@ public class DbCommandExtensionsTests
         result.Last().Property.Should().Be("test2");
     }
 
+    [Fact]
+    public async Task FindManyAsync_Returns_Correct_Result()
+    {
+        // Arrange
+        using var connection = new DbConnection();
+        connection.AddResultForDataReader(new[]
+        {
+            new MyDataObject { Property = "test1" },
+            new MyDataObject { Property = "test2" }
+        });
+        using var command = connection.CreateCommand();
+        var wrapperCommand = new SqlCommandWrapper(
+            command,
+            (cmd, _) => Task.FromResult(cmd.ExecuteNonQuery()),
+            (cmd, _, _) => Task.FromResult(new SqlDataReaderWrapper(
+                cmd.ExecuteReader(),
+                (reader, _) => Task.FromResult(reader.Read()),
+                (reader, _) => Task.FromResult(reader.NextResult()),
+                (reader) => { reader.Close(); return Task.CompletedTask; })
+            ),
+            (cmd, _) => Task.FromResult(cmd.ExecuteScalar()));
+
+        // Act
+        var result = await wrapperCommand.FindManyAsync($"SELECT * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, CancellationToken.None, reader => new MyDataObject { Property = reader.GetString("Property") });
+
+        // Assert
+        result.Should().NotBeNull().And.HaveCount(2);
+        result.First().Property.Should().Be("test1");
+        result.Last().Property.Should().Be("test2");
+    }
     public class MyDataObject
     {
         public string? Property { get; set; }
