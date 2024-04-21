@@ -141,13 +141,14 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
     private async Task<IDatabaseCommandResult<TEntity>> ExecuteReaderAsync(
         SqlCommand cmd,
         DatabaseOperation operation,
+        CancellationToken cancellationToken,
         Func<TBuilder, DatabaseOperation, IDataReader, TBuilder> afterReadDelegate,
         TBuilder resultEntity)
     {
         var success = false;
-        using (var reader = await cmd.ExecuteReaderAsync())
+        using (var reader = await cmd.ExecuteReaderAsync(cancellationToken))
         {
-            var result = await reader.ReadAsync();
+            var result = await reader.ReadAsync(cancellationToken);
             do { Nothing(); } while ((reader.FieldCount == 0 || !result) && await reader.NextResultAsync());
             if (result)
             {
@@ -211,7 +212,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
             else
             {
                 //Use ExecuteReader
-                return await ExecuteReaderAsync(cmd, command.Operation, _provider.AfterReadDelegate, resultEntity);
+                return await ExecuteReaderAsync(cmd, command.Operation, cancellationToken,  _provider.AfterReadDelegate, resultEntity);
             }
         }
     }

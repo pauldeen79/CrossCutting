@@ -75,7 +75,7 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
             return FindOne(command);
         }
 
-        return await FindAsync(sqlConnection, async cmd => await cmd.FindOneAsync(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters));
+        return await FindAsync(sqlConnection, async cmd => await cmd.FindOneAsync(command.CommandText, command.CommandType, cancellationToken, _mapper.Map, command.CommandParameters));
     }
 
     public async Task<IReadOnlyCollection<T>> FindManyAsync(IDatabaseCommand command, CancellationToken cancellationToken)
@@ -85,7 +85,7 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
             return FindMany(command);
         }
 
-        return await FindAsync(sqlConnection, async cmd => (await cmd.FindManyAsync(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters)).ToList());
+        return await FindAsync(sqlConnection, async cmd => (await cmd.FindManyAsync(command.CommandText, command.CommandType, cancellationToken, _mapper.Map, command.CommandParameters)).ToList());
     }
 
     public async Task<IPagedResult<T>> FindPagedAsync(IPagedDatabaseCommand command, CancellationToken cancellationToken)
@@ -103,10 +103,10 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
             using (var countCommand = sqlConnection.CreateCommand())
             {
                 countCommand.FillCommand(command.RecordCountCommand.CommandText, command.RecordCountCommand.CommandType, command.RecordCountCommand.CommandParameters);
-                var totalRecordCount = (int) await countCommand.ExecuteScalarAsync();
+                var totalRecordCount = (int) await countCommand.ExecuteScalarAsync(cancellationToken);
                 returnValue = new PagedResult<T>
                 (
-                    (await cmd.FindManyAsync(command.DataCommand.CommandText, command.DataCommand.CommandType, _mapper.Map, command.DataCommand.CommandParameters)).ToList(),
+                    (await cmd.FindManyAsync(command.DataCommand.CommandText, command.DataCommand.CommandType, cancellationToken, _mapper.Map, command.DataCommand.CommandParameters)).ToList(),
                     totalRecordCount,
                     command.Offset,
                     command.PageSize
