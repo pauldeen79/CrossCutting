@@ -5,18 +5,15 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
 {
     private readonly IDbConnection _connection;
     private readonly IDatabaseEntityMapper<T> _mapper;
-    private readonly ISqlConnectionWrapperFactory _sqlConnectionWrapperFactory;
     private readonly ISqlCommandWrapperFactory _sqlCommandWrapperFactory;
 
     public DatabaseEntityRetriever(
         IDbConnection connection,
         IDatabaseEntityMapper<T> mapper,
-        ISqlConnectionWrapperFactory sqlConnectionWrapperFactory,
         ISqlCommandWrapperFactory sqlCommandWrapperFactory)
     {
         _connection = connection;
         _mapper = mapper;
-        _sqlConnectionWrapperFactory = sqlConnectionWrapperFactory;
         _sqlCommandWrapperFactory = sqlCommandWrapperFactory;
     }
 
@@ -86,11 +83,10 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
     {
         var returnValue = default(IPagedResult<T>);
 
-        var sqlConnection = _sqlConnectionWrapperFactory.Create(_connection);
-        sqlConnection.OpenIfNecessary();
-        using (var cmd = _sqlCommandWrapperFactory.Create(sqlConnection.CreateCommand()))
+        _connection.OpenIfNecessary();
+        using (var cmd = _sqlCommandWrapperFactory.Create(_connection.CreateCommand()))
         {
-            using (var countCommand = _sqlCommandWrapperFactory.Create(sqlConnection.CreateCommand()))
+            using (var countCommand = _sqlCommandWrapperFactory.Create(_connection.CreateCommand()))
             {
                 countCommand.FillCommand(command.RecordCountCommand.CommandText, command.RecordCountCommand.CommandType, command.RecordCountCommand.CommandParameters);
                 var totalRecordCount = (int) await countCommand.ExecuteScalarAsync(cancellationToken);

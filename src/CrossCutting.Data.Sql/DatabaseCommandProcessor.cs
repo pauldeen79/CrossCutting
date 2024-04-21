@@ -6,9 +6,8 @@ public class DatabaseCommandProcessor<TEntity> : DatabaseCommandProcessor<TEntit
     public DatabaseCommandProcessor(
         IDbConnection connection,
         IDatabaseCommandEntityProvider<TEntity, TEntity> provider,
-        ISqlConnectionWrapperFactory sqlConnectionWrapperFactory,
         ISqlCommandWrapperFactory sqlCommandWrapperFactory)
-        : base(connection, provider, sqlConnectionWrapperFactory, sqlCommandWrapperFactory)
+        : base(connection, provider, sqlCommandWrapperFactory)
     {
     }
 }
@@ -19,18 +18,15 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
 {
     private readonly IDbConnection _connection;
     private readonly IDatabaseCommandEntityProvider<TEntity, TBuilder> _provider;
-    private readonly ISqlConnectionWrapperFactory _sqlConnectionWrapperFactory;
     private readonly ISqlCommandWrapperFactory _sqlCommandWrapperFactory;
 
     public DatabaseCommandProcessor(
         IDbConnection connection,
         IDatabaseCommandEntityProvider<TEntity, TBuilder> provider,
-        ISqlConnectionWrapperFactory sqlConnectionWrapperFactory,
         ISqlCommandWrapperFactory sqlCommandWrapperFactory)
     {
         _connection = connection;
         _provider = provider;
-        _sqlConnectionWrapperFactory = sqlConnectionWrapperFactory;
         _sqlCommandWrapperFactory = sqlCommandWrapperFactory;
     }
 
@@ -38,13 +34,13 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
         => InvokeCommand(command, cmd => cmd.ExecuteNonQuery());
 
     public async Task<int> ExecuteNonQueryAsync(IDatabaseCommand command, CancellationToken cancellationToken)
-        => await InvokeCommandAsync(_sqlConnectionWrapperFactory.Create(_connection), command, async cmd => await cmd.ExecuteNonQueryAsync(cancellationToken));
+        => await InvokeCommandAsync(_connection, command, async cmd => await cmd.ExecuteNonQueryAsync(cancellationToken));
 
     public object ExecuteScalar(IDatabaseCommand command)
         => InvokeCommand(command, cmd => cmd.ExecuteScalar());
 
     public async Task<object> ExecuteScalarAsync(IDatabaseCommand command, CancellationToken cancellationToken)
-        => await InvokeCommandAsync(_sqlConnectionWrapperFactory.Create(_connection), command, async cmd => await cmd.ExecuteScalarAsync(cancellationToken));
+        => await InvokeCommandAsync(_connection, command, async cmd => await cmd.ExecuteScalarAsync(cancellationToken));
 
     public IDatabaseCommandResult<TEntity> ExecuteCommand(IDatabaseCommand command, TEntity instance)
     {
@@ -72,7 +68,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
     {
         var resultEntity = CreateResultEntity(command, instance);
 
-        var sqlConnection = _sqlConnectionWrapperFactory.Create(_connection);
+        var sqlConnection = _connection;
         sqlConnection.OpenIfNecessary();
         using (var cmd = sqlConnection.CreateCommand())
         {
@@ -201,10 +197,10 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
         return new DatabaseCommandResult<TEntity>(success, CreateEntityFromBuilder(resultEntity));
     }
 
-    private async Task<TResult> InvokeCommandAsync<TResult>(SqlConnectionWrapper sqlConnection, IDatabaseCommand command, Func<SqlCommandWrapper, Task<TResult>> actionDelegate)
+    private async Task<TResult> InvokeCommandAsync<TResult>(IDbConnection connection, IDatabaseCommand command, Func<SqlCommandWrapper, Task<TResult>> actionDelegate)
     {
-        sqlConnection.OpenIfNecessary();
-        using (var cmd = _sqlCommandWrapperFactory.Create(sqlConnection.CreateCommand()))
+        connection.OpenIfNecessary();
+        using (var cmd = _sqlCommandWrapperFactory.Create(connection.CreateCommand()))
         {
             cmd.FillCommand(command.CommandText, command.CommandType, command.CommandParameters);
             return await actionDelegate(cmd);
