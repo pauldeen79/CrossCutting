@@ -12,10 +12,12 @@ public static class DbCommandExtensions
         return dbDataParameter;
     }
 
-    public static IDbCommand AddParameter(this IDbCommand command, string name, object? value)
+    public static T AddParameter<T>(this T command, string name, object? value)
+        where T : IDbCommand
         => command.Chain(x => x.Parameters.Add(command.CreateParameter(name, value)));
 
-    public static IDbCommand AddParameters(this IDbCommand command, IEnumerable<KeyValuePair<string, object?>> keyValuePairs)
+    public static T AddParameters<T>(this T command, IEnumerable<KeyValuePair<string, object?>> keyValuePairs)
+        where T : IDbCommand
     {
         foreach (var keyValuePair in keyValuePairs)
         {
@@ -25,10 +27,11 @@ public static class DbCommandExtensions
         return command;
     }
 
-    public static IDbCommand FillCommand(this IDbCommand command,
-                                         string commandText,
-                                         DatabaseCommandType commandType,
-                                         object? commandParameters)
+    public static T FillCommand<T>(this T command,
+                                   string commandText,
+                                   DatabaseCommandType commandType,
+                                   object? commandParameters)
+        where T : IDbCommand
     {
         command.CommandText = commandText;
         command.CommandType = commandType.ToCommandType();
@@ -42,9 +45,10 @@ public static class DbCommandExtensions
         return command;
     }
 
-    public static IDbCommand FillCommand(this IDbCommand command,
-                                         FormattableString commandText,
-                                         DatabaseCommandType commandType)
+    public static T FillCommand<T>(this T command,
+                                   FormattableString commandText,
+                                   DatabaseCommandType commandType)
+        where T : IDbCommand
     {
         command.CommandText = commandText.Format;
         command.CommandType = commandType.ToCommandType();
@@ -75,6 +79,23 @@ public static class DbCommandExtensions
         => command.FillCommand(commandText, commandType)
                   .FindOne(mapFunction);
 
+    public static async Task<T?> FindOneAsync<T>(this SqlCommand command,
+                                                 string commandText,
+                                                 DatabaseCommandType commandType,
+                                                 Func<IDataReader, T> mapFunction,
+                                                 object? commandParameters)
+        where T : class
+        => await command.FillCommand(commandText, commandType, commandParameters)
+                        .FindOneAsync(mapFunction);
+
+    public static async Task<T?> FindOneAsync<T>(this SqlCommand command,
+                                                 FormattableString commandText,
+                                                 DatabaseCommandType commandType,
+                                                 Func<IDataReader, T> mapFunction)
+        where T : class
+        => await command.FillCommand(commandText, commandType)
+                        .FindOneAsync(mapFunction);
+
     public static IReadOnlyCollection<T> FindMany<T>(this IDbCommand command,
                                                      string commandText,
                                                      DatabaseCommandType commandType,
@@ -90,6 +111,21 @@ public static class DbCommandExtensions
         => command.FillCommand(commandText, commandType)
                   .FindMany(mapFunction);
 
+    public static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this SqlCommand command,
+                                                                      string commandText,
+                                                                      DatabaseCommandType commandType,
+                                                                      Func<IDataReader, T> mapFunction,
+                                                                      object? commandParameters)
+        => await command.FillCommand(commandText, commandType, commandParameters)
+                        .FindManyAsync(mapFunction);
+
+    public static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this SqlCommand command,
+                                                                      FormattableString commandText,
+                                                                      DatabaseCommandType commandType,
+                                                                      Func<IDataReader, T> mapFunction)
+        => await command.FillCommand(commandText, commandType)
+                        .FindManyAsync(mapFunction);
+
     private static KeyValuePair<string, object> CreateParameter(string name, object? value)
         => new KeyValuePair<string, object>(name, value.FixNull());
 
@@ -100,9 +136,22 @@ public static class DbCommandExtensions
         return reader.FindOne(mapFunction);
     }
 
+    private static async Task<T?> FindOneAsync<T>(this SqlCommand command, Func<IDataReader, T> mapFunction)
+        where T : class
+    {
+        using var reader = await command.ExecuteReaderAsync();
+        return await reader.FindOneAsync(mapFunction);
+    }
+
     private static IReadOnlyCollection<T> FindMany<T>(this IDbCommand command, Func<IDataReader, T> mapFunction)
     {
         using var reader = command.ExecuteReader();
         return reader.FindMany(mapFunction);
+    }
+
+    private static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this SqlCommand command, Func<IDataReader, T> mapFunction)
+    {
+        using var reader = await command.ExecuteReaderAsync();
+        return await reader.FindManyAsync(mapFunction);
     }
 }

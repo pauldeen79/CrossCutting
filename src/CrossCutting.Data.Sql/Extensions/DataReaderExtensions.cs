@@ -465,6 +465,12 @@ public static class DataReaderExtensions
             ? mapFunction(instance)
             : default;
 
+    public static async Task<T?> FindOneAsync<T>(this SqlDataReader instance, Func<IDataReader, T> mapFunction)
+        where T : class
+        => await instance.ReadAsync()
+            ? mapFunction(instance)
+            : default;
+
     /// <summary>
     /// Maps all entities of an IDataReader instance.
     /// </summary>
@@ -478,6 +484,16 @@ public static class DataReaderExtensions
     {
         var result = new List<T>();
         while (instance.Read())
+        {
+            result.Add(mapFunction(instance));
+        }
+        return result;
+    }
+
+    public static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this SqlDataReader instance, Func<IDataReader, T> mapFunction)
+    {
+        var result = new List<T>();
+        while (await instance.ReadAsync())
         {
             result.Add(mapFunction(instance));
         }

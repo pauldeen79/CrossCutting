@@ -55,18 +55,65 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
         return returnValue;
     }
 
-    public Task<T?> FindOneAsync(IDatabaseCommand command, CancellationToken cancellationToken)
+    private static async Task<TResult> FindAsync<TResult>(SqlConnection connection, Func<SqlCommand, Task<TResult>> findDelegate)
     {
-        throw new NotImplementedException();
+        var returnValue = default(TResult);
+
+        connection.OpenIfNecessary();
+        using (var cmd = connection.CreateCommand())
+        {
+            returnValue = await findDelegate(cmd);
+        }
+
+        return returnValue;
     }
 
-    public Task<IReadOnlyCollection<T>> FindManyAsync(IDatabaseCommand command, CancellationToken cancellationToken)
+    public async Task<T?> FindOneAsync(IDatabaseCommand command, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (_connection is not SqlConnection sqlConnection)
+        {
+            return FindOne(command);
+        }
+
+        return await FindAsync(sqlConnection, async cmd => await cmd.FindOneAsync(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters));
     }
 
-    public Task<IPagedResult<T>> FindPagedAsync(IPagedDatabaseCommand command, CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<T>> FindManyAsync(IDatabaseCommand command, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (_connection is not SqlConnection sqlConnection)
+        {
+            return FindMany(command);
+        }
+
+        return await FindAsync(sqlConnection, async cmd => (await cmd.FindManyAsync(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters)).ToList());
+    }
+
+    public async Task<IPagedResult<T>> FindPagedAsync(IPagedDatabaseCommand command, CancellationToken cancellationToken)
+    {
+        if (_connection is not SqlConnection sqlConnection)
+        {
+            return FindPaged(command);
+        }
+
+        var returnValue = default(IPagedResult<T>);
+
+        sqlConnection.OpenIfNecessary();
+        using (var cmd = sqlConnection.CreateCommand())
+        {
+            using (var countCommand = sqlConnection.CreateCommand())
+            {
+                countCommand.FillCommand(command.RecordCountCommand.CommandText, command.RecordCountCommand.CommandType, command.RecordCountCommand.CommandParameters);
+                var totalRecordCount = (int) await countCommand.ExecuteScalarAsync();
+                returnValue = new PagedResult<T>
+                (
+                    (await cmd.FindManyAsync(command.DataCommand.CommandText, command.DataCommand.CommandType, _mapper.Map, command.DataCommand.CommandParameters)).ToList(),
+                    totalRecordCount,
+                    command.Offset,
+                    command.PageSize
+                );
+            }
+        }
+
+        return returnValue;
     }
 }
