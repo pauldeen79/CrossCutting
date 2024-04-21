@@ -89,7 +89,7 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
             using (var countCommand = _sqlCommandWrapperFactory.Create(_connection.CreateCommand()))
             {
                 countCommand.FillCommand(command.RecordCountCommand.CommandText, command.RecordCountCommand.CommandType, command.RecordCountCommand.CommandParameters);
-                var totalRecordCount = (int) await countCommand.ExecuteScalarAsync(cancellationToken);
+                var totalRecordCount = ((await countCommand.ExecuteScalarAsync(cancellationToken)) as int?).GetValueOrDefault();
                 returnValue = new PagedResult<T>
                 (
                     (await cmd.FindManyAsync(command.DataCommand.CommandText, command.DataCommand.CommandType, cancellationToken, _mapper.Map, command.DataCommand.CommandParameters)).ToList(),

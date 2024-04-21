@@ -9,6 +9,17 @@ public sealed class IntegrationTests : IDisposable
 
     public IntegrationTests()
     {
+        var sqlCommandWrapperFactory = Substitute.For<ISqlCommandWrapperFactory>();
+        sqlCommandWrapperFactory.Create(Arg.Any<IDbCommand>()).Returns(x => new SqlCommandWrapper(
+            x.ArgAt<IDbCommand>(0),
+            (cmd, _) => Task.FromResult(cmd.ExecuteNonQuery()),
+            (cmd, _, _) => Task.FromResult(new SqlDataReaderWrapper(
+                cmd.ExecuteReader(),
+                (reader, _) => Task.FromResult(reader.Read()),
+                (reader, _) => Task.FromResult(reader.NextResult()),
+                (reader) => { reader.Close(); return Task.CompletedTask; } )
+            ),
+            (cmd, _) => Task.FromResult(cmd.ExecuteScalar())));
         _connection = new DbConnection();
         _serviceProvider = new ServiceCollection()
             .AddCrossCuttingDataSql()
@@ -18,6 +29,7 @@ public sealed class IntegrationTests : IDisposable
             .AddSingleton<IDatabaseEntityRetrieverSettingsProvider, TestEntityDatabaseEntityRetrieverSettingsProvider>()
             .AddSingleton<IPagedDatabaseEntityRetrieverSettingsProvider, TestEntityDatabaseEntityRetrieverSettingsProvider>()
             .AddSingleton<IDatabaseEntityMapper<TestEntity>, TestEntityMapper>()
+            .AddSingleton<ISqlCommandWrapperFactory>(sqlCommandWrapperFactory)
             .AddScoped<IDbConnection>(_ => _connection)
             .AddScoped<IDatabaseCommandProcessor<TestEntity>, DatabaseCommandProcessor<TestEntity, TestEntityBuilder>>()
             .AddScoped<IDatabaseEntityRetriever<TestEntity>, DatabaseEntityRetriever<TestEntity>>()

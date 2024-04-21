@@ -5,12 +5,26 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     private DatabaseCommandProcessor<MyEntity> Sut { get; }
     private DbConnection Connection { get; }
     private IDatabaseCommandEntityProvider<MyEntity> ProviderMock { get; }
+    private ISqlCommandWrapperFactory SqlCommandWrapperFactoryMock { get; }
 
     public DatabaseCommandProcessorTests()
     {
         Connection = new DbConnection();
         ProviderMock = Substitute.For<IDatabaseCommandEntityProvider<MyEntity>>();
-        Sut = new DatabaseCommandProcessor<MyEntity>(Connection, ProviderMock);
+        SqlCommandWrapperFactoryMock = Substitute.For<ISqlCommandWrapperFactory>();
+
+        SqlCommandWrapperFactoryMock.Create(Arg.Any<IDbCommand>()).Returns(x => new SqlCommandWrapper(
+            x.ArgAt<IDbCommand>(0),
+            (cmd, _) => Task.FromResult(cmd.ExecuteNonQuery()),
+            (cmd, _, _) => Task.FromResult(new SqlDataReaderWrapper(
+                cmd.ExecuteReader(),
+                (reader, _) => Task.FromResult(reader.Read()),
+                (reader, _) => Task.FromResult(reader.NextResult()),
+                (reader) => { reader.Close(); return Task.CompletedTask; })
+            ),
+            (cmd, _) => Task.FromResult(cmd.ExecuteScalar())));
+
+        Sut = new DatabaseCommandProcessor<MyEntity>(Connection, ProviderMock, SqlCommandWrapperFactoryMock);
     }
 
     [Fact]
@@ -272,7 +286,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var builderProviderMock = Substitute.For<IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>>();
-        var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
+        var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock, SqlCommandWrapperFactoryMock);
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act & Assert
@@ -286,7 +300,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var builderProviderMock = Substitute.For<IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>>();
-        var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
+        var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock, SqlCommandWrapperFactoryMock);
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act & Assert
@@ -305,7 +319,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         builderProviderMock.CreateEntityDelegate.Returns(default(Func<TestEntityBuilder, TestEntity>?));
 
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
+        var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock, SqlCommandWrapperFactoryMock);
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act & Assert
@@ -324,7 +338,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         builderProviderMock.CreateEntityDelegate.Returns(default(Func<TestEntityBuilder, TestEntity>?));
 
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
+        var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock, SqlCommandWrapperFactoryMock);
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act & Assert
@@ -345,7 +359,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         builderProviderMock.ResultEntityDelegate.Returns(default(Func<TestEntityBuilder, DatabaseOperation, TestEntityBuilder>?));
         builderProviderMock.AfterReadDelegate.Returns(default(Func<TestEntityBuilder, DatabaseOperation, IDataReader, TestEntityBuilder>?));
 
-        var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
+        var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock, SqlCommandWrapperFactoryMock);
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act
@@ -370,7 +384,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         builderProviderMock.ResultEntityDelegate.Returns(default(Func<TestEntityBuilder, DatabaseOperation, TestEntityBuilder>?));
         builderProviderMock.AfterReadDelegate.Returns(default(Func<TestEntityBuilder, DatabaseOperation, IDataReader, TestEntityBuilder>?));
 
-        var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
+        var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock, SqlCommandWrapperFactoryMock);
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act

@@ -143,7 +143,7 @@ public static class DbCommandExtensions
     private static async Task<T?> FindOneAsync<T>(this SqlCommandWrapper command, CancellationToken cancellationToken, Func<IDataReader, T> mapFunction)
         where T : class
     {
-        using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        using var reader = await command.ExecuteReaderAsync(CommandBehavior.Default, cancellationToken);
         return await reader.FindOneAsync(cancellationToken, mapFunction);
     }
 
@@ -155,7 +155,7 @@ public static class DbCommandExtensions
 
     private static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this SqlCommandWrapper command, CancellationToken cancellationToken, Func<IDataReader, T> mapFunction)
     {
-        using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        using var reader = await command.ExecuteReaderAsync(CommandBehavior.Default, cancellationToken);
         return await reader.FindManyAsync(cancellationToken, mapFunction);
     }
 }

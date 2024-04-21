@@ -3,10 +3,20 @@
 public sealed class SqlCommandWrapper : IDbCommand
 {
     private readonly IDbCommand _command;
+    private readonly Func<IDbCommand, CancellationToken, Task<int>> _executeNonQueryAsyncDelegate;
+    private readonly Func<IDbCommand, CommandBehavior, CancellationToken, Task<SqlDataReaderWrapper>> _executeReaderAsyncDelegate;
+    private readonly Func<IDbCommand, CancellationToken, Task<object?>> _executeScalarAsyncDelegate;
 
-    public SqlCommandWrapper(IDbCommand command)
+    public SqlCommandWrapper(
+        IDbCommand command,
+        Func<IDbCommand, CancellationToken, Task<int>> executeNonQueryAsyncDelegate,
+        Func<IDbCommand, CommandBehavior, CancellationToken, Task<SqlDataReaderWrapper>> executeReaderAsyncDelegate,
+        Func<IDbCommand, CancellationToken, Task<object?>> executeScalarAsyncDelegate)
     {
         _command = command;
+        _executeNonQueryAsyncDelegate = executeNonQueryAsyncDelegate;
+        _executeReaderAsyncDelegate = executeReaderAsyncDelegate;
+        _executeScalarAsyncDelegate = executeScalarAsyncDelegate;
     }
 
     public string CommandText
@@ -104,4 +114,10 @@ public sealed class SqlCommandWrapper : IDbCommand
     public object ExecuteScalar() => _command.ExecuteScalar();
 
     public void Prepare() => _command.Prepare();
+
+    public Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken) => _executeNonQueryAsyncDelegate(_command, cancellationToken);
+
+    public Task<SqlDataReaderWrapper> ExecuteReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) => _executeReaderAsyncDelegate(_command, behavior, cancellationToken);
+
+    public Task<object?> ExecuteScalarAsync(CancellationToken cancellationToken) => _executeScalarAsyncDelegate(_command, cancellationToken);
 }

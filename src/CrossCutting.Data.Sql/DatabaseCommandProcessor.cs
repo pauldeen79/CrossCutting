@@ -135,7 +135,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
     private async Task<IDatabaseCommandResult<TEntity>> ExecuteNonQueryAsync(IDbCommand cmd, TBuilder result, CancellationToken cancellationToken)
     {
         var sqlCommand = _sqlCommandWrapperFactory.Create(cmd);
-        return new DatabaseCommandResult<TEntity>(await (sqlCommand.ExecuteNonQueryAsync(cancellationToken)) != 0, CreateEntityFromBuilder(result));
+        return new DatabaseCommandResult<TEntity>(await sqlCommand.ExecuteNonQueryAsync(cancellationToken) != 0, CreateEntityFromBuilder(result));
     }
 
     private TEntity CreateEntityFromBuilder(TBuilder result)
@@ -183,7 +183,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
     {
         var success = false;
         var sqlCommand = _sqlCommandWrapperFactory.Create(cmd);
-        using (var reader = await sqlCommand.ExecuteReaderAsync(cancellationToken))
+        using (var reader = await sqlCommand.ExecuteReaderAsync(CommandBehavior.Default, cancellationToken))
         {
             var result = await reader.ReadAsync(cancellationToken);
             do { Nothing(); } while (!cancellationToken.IsCancellationRequested && (reader.FieldCount == 0 || !result) && await reader.NextResultAsync(cancellationToken));

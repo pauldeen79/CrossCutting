@@ -3,10 +3,20 @@
 public sealed class SqlDataReaderWrapper : IDataReader
 {
     private readonly IDataReader _reader;
+    private readonly Func<IDataReader, CancellationToken, Task<bool>> _readAsyncDelegate;
+    private readonly Func<IDataReader, CancellationToken, Task<bool>> _nextResultAsyncDelegate;
+    private readonly Func<IDataReader, Task> _closeAsyncDelegate;
 
-    public SqlDataReaderWrapper(IDataReader reader)
+    public SqlDataReaderWrapper(
+        IDataReader reader,
+        Func<IDataReader, CancellationToken, Task<bool>> readAsyncDelegate,
+        Func<IDataReader, CancellationToken, Task<bool>> nextResultAsyncDelegate,
+        Func<IDataReader, Task> closeAsyncDelegate)
     {
         _reader = reader;
+        _readAsyncDelegate = readAsyncDelegate;
+        _nextResultAsyncDelegate = nextResultAsyncDelegate;
+        _closeAsyncDelegate = closeAsyncDelegate;
     }
 
     public object this[int i] => _reader[i];
@@ -42,4 +52,8 @@ public sealed class SqlDataReaderWrapper : IDataReader
     public bool IsDBNull(int i) => _reader.IsDBNull(i);
     public bool NextResult() => _reader.NextResult();
     public bool Read() => _reader.Read();
+
+    public Task<bool> ReadAsync(CancellationToken cancellationToken) => _readAsyncDelegate(_reader, cancellationToken);
+    public Task<bool> NextResultAsync(CancellationToken cancellationToken) => _nextResultAsyncDelegate(_reader, cancellationToken);
+    public Task CloseAsync() => _closeAsyncDelegate(_reader);
 }
