@@ -11,6 +11,7 @@ global using CrossCutting.Data.Abstractions.Extensions;
 global using CrossCutting.Data.Core;
 global using CrossCutting.Data.Core.Commands;
 global using CrossCutting.Data.Core.Extensions;
+global using CrossCutting.Data.Sql.Abstractions;
 global using CrossCutting.Data.Sql.Builders;
 global using CrossCutting.Data.Sql.CommandProviders;
 global using CrossCutting.Data.Sql.Extensions;

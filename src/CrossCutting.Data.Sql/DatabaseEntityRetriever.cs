@@ -5,11 +5,19 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
 {
     private readonly IDbConnection _connection;
     private readonly IDatabaseEntityMapper<T> _mapper;
+    private readonly ISqlConnectionWrapperFactory _sqlConnectionWrapperFactory;
+    private readonly ISqlCommandWrapperFactory _sqlCommandWrapperFactory;
 
-    public DatabaseEntityRetriever(IDbConnection connection, IDatabaseEntityMapper<T> mapper)
+    public DatabaseEntityRetriever(
+        IDbConnection connection,
+        IDatabaseEntityMapper<T> mapper,
+        ISqlConnectionWrapperFactory sqlConnectionWrapperFactory,
+        ISqlCommandWrapperFactory sqlCommandWrapperFactory)
     {
         _connection = connection;
         _mapper = mapper;
+        _sqlConnectionWrapperFactory = sqlConnectionWrapperFactory;
+        _sqlCommandWrapperFactory = sqlCommandWrapperFactory;
     }
 
     public T? FindOne(IDatabaseCommand command)
@@ -55,12 +63,12 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
         return returnValue;
     }
 
-    private static async Task<TResult> FindAsync<TResult>(SqlConnection connection, Func<SqlCommand, Task<TResult>> findDelegate)
+    private async Task<TResult> FindAsync<TResult>(IDbConnection connection, Func<SqlCommandWrapper, Task<TResult>> findDelegate)
     {
         var returnValue = default(TResult);
 
         connection.OpenIfNecessary();
-        using (var cmd = connection.CreateCommand())
+        using (var cmd = _sqlCommandWrapperFactory.Create(connection.CreateCommand()))
         {
             returnValue = await findDelegate(cmd);
         }
@@ -69,38 +77,20 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
     }
 
     public async Task<T?> FindOneAsync(IDatabaseCommand command, CancellationToken cancellationToken)
-    {
-        if (_connection is not SqlConnection sqlConnection)
-        {
-            return FindOne(command);
-        }
-
-        return await FindAsync(sqlConnection, async cmd => await cmd.FindOneAsync(command.CommandText, command.CommandType, cancellationToken, _mapper.Map, command.CommandParameters));
-    }
+        => await FindAsync(_connection, async cmd => await cmd.FindOneAsync(command.CommandText, command.CommandType, cancellationToken, _mapper.Map, command.CommandParameters));
 
     public async Task<IReadOnlyCollection<T>> FindManyAsync(IDatabaseCommand command, CancellationToken cancellationToken)
-    {
-        if (_connection is not SqlConnection sqlConnection)
-        {
-            return FindMany(command);
-        }
-
-        return await FindAsync(sqlConnection, async cmd => (await cmd.FindManyAsync(command.CommandText, command.CommandType, cancellationToken, _mapper.Map, command.CommandParameters)).ToList());
-    }
+        => await FindAsync(_connection, async cmd => (await cmd.FindManyAsync(command.CommandText, command.CommandType, cancellationToken, _mapper.Map, command.CommandParameters)).ToList());
 
     public async Task<IPagedResult<T>> FindPagedAsync(IPagedDatabaseCommand command, CancellationToken cancellationToken)
     {
-        if (_connection is not SqlConnection sqlConnection)
-        {
-            return FindPaged(command);
-        }
-
         var returnValue = default(IPagedResult<T>);
 
+        var sqlConnection = _sqlConnectionWrapperFactory.Create(_connection);
         sqlConnection.OpenIfNecessary();
-        using (var cmd = sqlConnection.CreateCommand())
+        using (var cmd = _sqlCommandWrapperFactory.Create(sqlConnection.CreateCommand()))
         {
-            using (var countCommand = sqlConnection.CreateCommand())
+            using (var countCommand = _sqlCommandWrapperFactory.Create(sqlConnection.CreateCommand()))
             {
                 countCommand.FillCommand(command.RecordCountCommand.CommandText, command.RecordCountCommand.CommandType, command.RecordCountCommand.CommandParameters);
                 var totalRecordCount = (int) await countCommand.ExecuteScalarAsync(cancellationToken);

@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace CrossCutting.Data.Sql.Extensions;
+﻿namespace CrossCutting.Data.Sql.Extensions;
 
 public static class DbCommandExtensions
 {
@@ -81,7 +79,7 @@ public static class DbCommandExtensions
         => command.FillCommand(commandText, commandType)
                   .FindOne(mapFunction);
 
-    public static async Task<T?> FindOneAsync<T>(this SqlCommand command,
+    public static async Task<T?> FindOneAsync<T>(this SqlCommandWrapper command,
                                                  string commandText,
                                                  DatabaseCommandType commandType,
                                                  CancellationToken cancellationToken,
@@ -91,7 +89,7 @@ public static class DbCommandExtensions
         => await command.FillCommand(commandText, commandType, commandParameters)
                         .FindOneAsync(cancellationToken, mapFunction);
 
-    public static async Task<T?> FindOneAsync<T>(this SqlCommand command,
+    public static async Task<T?> FindOneAsync<T>(this SqlCommandWrapper command,
                                                  FormattableString commandText,
                                                  DatabaseCommandType commandType,
                                                  CancellationToken cancellationToken,
@@ -115,7 +113,7 @@ public static class DbCommandExtensions
         => command.FillCommand(commandText, commandType)
                   .FindMany(mapFunction);
 
-    public static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this SqlCommand command,
+    public static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this SqlCommandWrapper command,
                                                                       string commandText,
                                                                       DatabaseCommandType commandType,
                                                                       CancellationToken cancellationToken,
@@ -124,7 +122,7 @@ public static class DbCommandExtensions
         => await command.FillCommand(commandText, commandType, commandParameters)
                         .FindManyAsync(cancellationToken, mapFunction);
 
-    public static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this SqlCommand command,
+    public static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this SqlCommandWrapper command,
                                                                       FormattableString commandText,
                                                                       DatabaseCommandType commandType,
                                                                       CancellationToken cancellationToken,
@@ -142,7 +140,7 @@ public static class DbCommandExtensions
         return reader.FindOne(mapFunction);
     }
 
-    private static async Task<T?> FindOneAsync<T>(this SqlCommand command, CancellationToken cancellationToken, Func<IDataReader, T> mapFunction)
+    private static async Task<T?> FindOneAsync<T>(this SqlCommandWrapper command, CancellationToken cancellationToken, Func<IDataReader, T> mapFunction)
         where T : class
     {
         using var reader = await command.ExecuteReaderAsync(cancellationToken);
@@ -155,7 +153,7 @@ public static class DbCommandExtensions
         return reader.FindMany(mapFunction);
     }
 
-    private static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this SqlCommand command, CancellationToken cancellationToken, Func<IDataReader, T> mapFunction)
+    private static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this SqlCommandWrapper command, CancellationToken cancellationToken, Func<IDataReader, T> mapFunction)
     {
         using var reader = await command.ExecuteReaderAsync(cancellationToken);
         return await reader.FindManyAsync(cancellationToken, mapFunction);
