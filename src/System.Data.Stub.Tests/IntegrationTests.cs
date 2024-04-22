@@ -12,7 +12,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanStubCommandForExecuteNonQuery()
+    public async Task CanStubCommandForExecuteNonQuery()
     {
         // Arrange
         using var command = Connection.CreateCommand();
@@ -20,14 +20,14 @@ public sealed class IntegrationTests : IDisposable
 
         // Act
         command.CommandText = "INSERT INTO [Fridge](Name, Amount) VALUES ('Beer', 1)";
-        var actual = command.ExecuteNonQuery();
+        var actual = await command.ExecuteNonQueryAsync();
 
         // Assert
         actual.Should().Be(12345);
     }
 
     [Fact]
-    public void CanStubCommandForExecuteScalar()
+    public async Task CanStubCommandForExecuteScalar()
     {
         // Arrange
         using var command = Connection.CreateCommand();
@@ -35,16 +35,16 @@ public sealed class IntegrationTests : IDisposable
 
         // Act
         command.CommandText = "SELCT MAX(Amount) FROM [Fridge]";
-        var actual = command.ExecuteScalar();
+        var actual = await command.ExecuteScalarAsync();
 
         // Assert
         actual.Should().Be(2);
     }
 
     [Fact]
-    public void CanStubCommandForExecuteReader()
+    public async Task CanStubCommandForExecuteReader()
     {
-        ReaderTest(reader => new MyRecord
+        await ReaderTest(reader => new MyRecord
         {
             Name = reader.GetString(reader.GetOrdinal("Name")),
             Amount = reader.GetInt32(reader.GetOrdinal("Amount"))
@@ -52,9 +52,9 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanUseIndexerOnDataReader()
+    public async Task CanUseIndexerOnDataReader()
     {
-        ReaderTest(reader => new MyRecord
+        await ReaderTest(reader => new MyRecord
         {
             Name = (string)reader["Name"],
             Amount = (int)reader["Amount"]
@@ -62,9 +62,9 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanUseGetValueAndGetOrdinalOnDataReader()
+    public async Task CanUseGetValueAndGetOrdinalOnDataReader()
     {
-        ReaderTest(reader => new MyRecord
+        await ReaderTest(reader => new MyRecord
         {
             Name = (string)reader.GetValue(reader.GetOrdinal("Name")),
             Amount = (int)reader.GetValue(reader.GetOrdinal("Amount"))
@@ -72,9 +72,9 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanUseGetValueAndColumnIndexOnDataReader()
+    public async Task CanUseGetValueAndColumnIndexOnDataReader()
     {
-        ReaderTest(reader => new MyRecord
+        await ReaderTest(reader => new MyRecord
         {
             Name = (string)reader.GetValue(0),
             Amount = (int)reader.GetValue(1)
@@ -82,12 +82,12 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanCallGetValuesOnDataReader()
+    public async Task CanCallGetValuesOnDataReader()
     {
         // Arrange & Act
         int result = int.MinValue;
         object[] values = new object[2];
-        ReaderTest(reader =>
+        await ReaderTest(reader =>
         {
             result = reader.GetValues(values);
             return new MyRecord
@@ -417,7 +417,7 @@ public sealed class IntegrationTests : IDisposable
         actual.Should().Be(12345);
     }
 
-    private void ReaderTest(Func<IDataReader, MyRecord> recordDelegate)
+    private async Task ReaderTest(Func<IDataReader, MyRecord> recordDelegate)
     {
         // Arrange
         // Important to initialize datareader BEFORE creating the command! Else, the event won't fire
@@ -430,9 +430,9 @@ public sealed class IntegrationTests : IDisposable
         // Act
         using var command = Connection.CreateCommand();
         command.CommandText = "SELECT * FROM [Fridge] WHERE Amount > 0";
-        using var reader = command.ExecuteReader();
+        using var reader = await command.ExecuteReaderAsync();
         var result = new List<MyRecord>();
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             result.Add(recordDelegate(reader));
         }
