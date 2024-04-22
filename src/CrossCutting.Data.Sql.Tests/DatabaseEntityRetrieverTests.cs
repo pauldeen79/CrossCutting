@@ -5,26 +5,13 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
     private DatabaseEntityRetriever<MyEntity> Sut { get; }
     private DbConnection Connection { get; }
     private IDatabaseEntityMapper<MyEntity> MapperMock { get; }
-    private ISqlCommandWrapperFactory SqlCommandWrapperFactoryMock { get; }
 
     public DatabaseEntityRetrieverTests()
     {
         Connection = new DbConnection();
         MapperMock = Substitute.For<IDatabaseEntityMapper<MyEntity>>();
-        SqlCommandWrapperFactoryMock = Substitute.For<ISqlCommandWrapperFactory>();
 
-        SqlCommandWrapperFactoryMock.Create(Arg.Any<IDbCommand>()).Returns(x => new SqlCommandWrapper(
-            x.ArgAt<IDbCommand>(0),
-            (cmd, _) => Task.FromResult(cmd.ExecuteNonQuery()),
-            (cmd, _, _) => Task.FromResult(new SqlDataReaderWrapper(
-                cmd.ExecuteReader(),
-                (reader, _) => Task.FromResult(reader.Read()),
-                (reader, _) => Task.FromResult(reader.NextResult()),
-                (reader) => { reader.Close(); return Task.CompletedTask; })
-            ),
-            (cmd, _) => Task.FromResult(cmd.ExecuteScalar())));
-
-        Sut = new DatabaseEntityRetriever<MyEntity>(Connection, MapperMock, SqlCommandWrapperFactoryMock);
+        Sut = new DatabaseEntityRetriever<MyEntity>(Connection, MapperMock);
     }
 
     [Fact]

@@ -465,7 +465,7 @@ public static class DataReaderExtensions
             ? mapFunction(instance)
             : default;
 
-    public static async Task<T?> FindOneAsync<T>(this SqlDataReaderWrapper instance, CancellationToken cancellationToken, Func<IDataReader, T> mapFunction)
+    public static async Task<T?> FindOneAsync<T>(this DbDataReader instance, CancellationToken cancellationToken, Func<IDataReader, T> mapFunction)
         where T : class
         => await instance.ReadAsync(cancellationToken)
             ? mapFunction(instance)
@@ -490,7 +490,7 @@ public static class DataReaderExtensions
         return result;
     }
 
-    public static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this SqlDataReaderWrapper instance, CancellationToken cancellationToken, Func<IDataReader, T> mapFunction)
+    public static async Task<IReadOnlyCollection<T>> FindManyAsync<T>(this DbDataReader instance, CancellationToken cancellationToken, Func<IDataReader, T> mapFunction)
     {
         var result = new List<T>();
         while (await instance.ReadAsync(cancellationToken) && !cancellationToken.IsCancellationRequested)

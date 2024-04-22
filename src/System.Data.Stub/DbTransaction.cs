@@ -1,21 +1,33 @@
 ﻿namespace System.Data.Stub;
 
-public sealed class DbTransaction : IDbTransaction
+public sealed class DbTransaction : Common.DbTransaction
 {
-    private readonly DbConnection dbConnection;
+    private readonly DbConnection _dbConnection;
+    private IsolationLevel _isolationLevel = IsolationLevel.Unspecified;
 
-    public DbTransaction(DbConnection dbConnection) => this.dbConnection = dbConnection;
+    public DbTransaction(DbConnection dbConnection) => _dbConnection = dbConnection;
 
-    public IDbConnection Connection => dbConnection;
+    public override IsolationLevel IsolationLevel => _isolationLevel;
 
-    public IsolationLevel IsolationLevel { get; set; }
+    protected override Common.DbConnection DbConnection => _dbConnection;
 
-    public void Commit() => Committed?.Invoke(this, EventArgs.Empty);
+    public override void Commit() => Committed?.Invoke(this, EventArgs.Empty);
 
-    public void Dispose() => RolledBack?.Invoke(this, EventArgs.Empty);
+    public override void Rollback() => RolledBack?.Invoke(this, EventArgs.Empty);
 
-    public void Rollback() => RolledBack?.Invoke(this, EventArgs.Empty);
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            RolledBack?.Invoke(this, EventArgs.Empty);
+        }
+    }
 
     public event EventHandler? Committed;
     public event EventHandler? RolledBack;
+
+    public void SetIsolationLevel(IsolationLevel isolationLevel)
+    {
+        _isolationLevel = isolationLevel;
+    }
 }

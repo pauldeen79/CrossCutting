@@ -3,18 +3,15 @@
 public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
     where T : class
 {
-    private readonly IDbConnection _connection;
+    private readonly DbConnection _connection;
     private readonly IDatabaseEntityMapper<T> _mapper;
-    private readonly ISqlCommandWrapperFactory _sqlCommandWrapperFactory;
 
     public DatabaseEntityRetriever(
-        IDbConnection connection,
-        IDatabaseEntityMapper<T> mapper,
-        ISqlCommandWrapperFactory sqlCommandWrapperFactory)
+        DbConnection connection,
+        IDatabaseEntityMapper<T> mapper)
     {
         _connection = connection;
         _mapper = mapper;
-        _sqlCommandWrapperFactory = sqlCommandWrapperFactory;
     }
 
     public T? FindOne(IDatabaseCommand command)
@@ -60,12 +57,12 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
         return returnValue;
     }
 
-    private async Task<TResult> FindAsync<TResult>(IDbConnection connection, Func<SqlCommandWrapper, Task<TResult>> findDelegate)
+    private async Task<TResult> FindAsync<TResult>(Func<DbCommand, Task<TResult>> findDelegate)
     {
         var returnValue = default(TResult);
 
-        connection.OpenIfNecessary();
-        using (var cmd = _sqlCommandWrapperFactory.Create(connection.CreateCommand()))
+        _connection.OpenIfNecessary();
+        using (var cmd = _connection.CreateCommand())
         {
             returnValue = await findDelegate(cmd);
         }
@@ -74,19 +71,19 @@ public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
     }
 
     public async Task<T?> FindOneAsync(IDatabaseCommand command, CancellationToken cancellationToken)
-        => await FindAsync(_connection, async cmd => await cmd.FindOneAsync(command.CommandText, command.CommandType, cancellationToken, _mapper.Map, command.CommandParameters));
+        => await FindAsync(async cmd => await cmd.FindOneAsync(command.CommandText, command.CommandType, cancellationToken, _mapper.Map, command.CommandParameters));
 
     public async Task<IReadOnlyCollection<T>> FindManyAsync(IDatabaseCommand command, CancellationToken cancellationToken)
-        => await FindAsync(_connection, async cmd => (await cmd.FindManyAsync(command.CommandText, command.CommandType, cancellationToken, _mapper.Map, command.CommandParameters)).ToList());
+        => await FindAsync(async cmd => (await cmd.FindManyAsync(command.CommandText, command.CommandType, cancellationToken, _mapper.Map, command.CommandParameters)).ToList());
 
     public async Task<IPagedResult<T>> FindPagedAsync(IPagedDatabaseCommand command, CancellationToken cancellationToken)
     {
         var returnValue = default(IPagedResult<T>);
 
         _connection.OpenIfNecessary();
-        using (var cmd = _sqlCommandWrapperFactory.Create(_connection.CreateCommand()))
+        using (var cmd = _connection.CreateCommand())
         {
-            using (var countCommand = _sqlCommandWrapperFactory.Create(_connection.CreateCommand()))
+            using (var countCommand = _connection.CreateCommand())
             {
                 countCommand.FillCommand(command.RecordCountCommand.CommandText, command.RecordCountCommand.CommandType, command.RecordCountCommand.CommandParameters);
                 var totalRecordCount = ((await countCommand.ExecuteScalarAsync(cancellationToken)) as int?).GetValueOrDefault();

@@ -152,19 +152,9 @@ public class DbCommandExtensionsTests
             new MyDataObject { Property = "test" }
         });
         using var command = connection.CreateCommand();
-        var wrapperCommand = new SqlCommandWrapper(
-            command,
-            (cmd, _) => Task.FromResult(cmd.ExecuteNonQuery()),
-            (cmd, _, _) => Task.FromResult(new SqlDataReaderWrapper(
-                cmd.ExecuteReader(),
-                (reader, _) => Task.FromResult(reader.Read()),
-                (reader, _) => Task.FromResult(reader.NextResult()),
-                (reader) => { reader.Close(); return Task.CompletedTask; })
-            ),
-            (cmd, _) => Task.FromResult(cmd.ExecuteScalar()));
 
         // Act
-        var result = await wrapperCommand.FindOneAsync($"SELECT TOP 1 * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, CancellationToken.None, reader => new MyDataObject { Property = reader.GetString("Property") });
+        var result = await command.FindOneAsync($"SELECT TOP 1 * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, CancellationToken.None, reader => new MyDataObject { Property = reader.GetString("Property") });
 
         // Assert
         result.Should().NotBeNull();
@@ -203,19 +193,9 @@ public class DbCommandExtensionsTests
             new MyDataObject { Property = "test2" }
         });
         using var command = connection.CreateCommand();
-        var wrapperCommand = new SqlCommandWrapper(
-            command,
-            (cmd, _) => Task.FromResult(cmd.ExecuteNonQuery()),
-            (cmd, _, _) => Task.FromResult(new SqlDataReaderWrapper(
-                cmd.ExecuteReader(),
-                (reader, _) => Task.FromResult(reader.Read()),
-                (reader, _) => Task.FromResult(reader.NextResult()),
-                (reader) => { reader.Close(); return Task.CompletedTask; })
-            ),
-            (cmd, _) => Task.FromResult(cmd.ExecuteScalar()));
 
         // Act
-        var result = await wrapperCommand.FindManyAsync($"SELECT * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, CancellationToken.None, reader => new MyDataObject { Property = reader.GetString("Property") });
+        var result = await command.FindManyAsync($"SELECT * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, CancellationToken.None, reader => new MyDataObject { Property = reader.GetString("Property") });
 
         // Assert
         result.Should().NotBeNull().And.HaveCount(2);
