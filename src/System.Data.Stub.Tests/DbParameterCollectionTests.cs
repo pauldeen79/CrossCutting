@@ -8,14 +8,15 @@ public class DbParameterCollectionTests
         // Arrange
         var sut = new DbParameterCollection
         {
-            ["Parameter1"] = "value1"
+            new DbDataParameter { ParameterName = "Parameter1", Value = "value1" }
         };
 
         // Act
         var actual = sut["Parameter1"];
 
         // Assert
-        actual.Should().Be("value1");
+        actual.Should().BeOfType<DbDataParameter>();
+        ((DbDataParameter)actual.Value!).Value.Should().Be("value1");
     }
 
     [Fact]
@@ -24,14 +25,15 @@ public class DbParameterCollectionTests
         // Arrange
         var sut = new DbParameterCollection
         {
-            ["Parameter1"] = "value1"
+            new DbDataParameter { ParameterName = "Parameter1", Value = "value1" }
         };
 
         // Act
         var actual = sut[0];
 
         // Assert
-        actual.Should().Be("value1");
+        actual.Should().BeOfType<DbDataParameter>();
+        ((DbDataParameter)actual.Value!).Value.Should().Be("value1");
     }
 
     [Fact]
@@ -40,7 +42,7 @@ public class DbParameterCollectionTests
         // Arrange
         var sut = new DbParameterCollection
         {
-            ["Parameter1"] = "value1"
+            new DbDataParameter { ParameterName = "Parameter1", Value = "value1" }
         };
 
         // Act
@@ -56,7 +58,7 @@ public class DbParameterCollectionTests
         // Arrange
         var sut = new DbParameterCollection
         {
-            ["Parameter1"] = "value1"
+            new DbDataParameter { ParameterName = "Parameter1", Value = "value1" }
         };
 
         // Act
@@ -72,7 +74,7 @@ public class DbParameterCollectionTests
         // Arrange
         var sut = new DbParameterCollection
         {
-            ["Parameter1"] = "value1"
+            new DbDataParameter { ParameterName = "Parameter1", Value = "value1" }
         };
 
         // Act
@@ -88,7 +90,7 @@ public class DbParameterCollectionTests
         // Arrange
         var sut = new DbParameterCollection
         {
-            ["Parameter1"] = "value1"
+            new DbDataParameter { ParameterName = "Parameter1", Value = "value1" }
         };
 
         // Act
@@ -104,7 +106,7 @@ public class DbParameterCollectionTests
         // Arrange
         var sut = new DbParameterCollection
         {
-            ["Parameter1"] = "value1"
+            new DbDataParameter { ParameterName = "Parameter1", Value = "value1" }
         };
 
         // Act

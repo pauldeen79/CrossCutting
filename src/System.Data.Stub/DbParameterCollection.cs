@@ -1,52 +1,68 @@
 ﻿namespace System.Data.Stub;
 
-public sealed class DbParameterCollection : IDataParameterCollection
+public sealed class DbParameterCollection : Common.DbParameterCollection
 {
     private readonly IDictionary<string, object> dictionary = new Dictionary<string, object>();
 
-    public object this[string parameterName] { get => dictionary[parameterName]; set => dictionary[parameterName] = value; }
+    public override bool IsFixedSize => false;
 
-    public object this[int index] { get => dictionary[dictionary.Keys.ElementAt(index)]; set => dictionary[dictionary.Keys.ElementAt(index)] = value; }
+    public override bool IsReadOnly => false;
 
-    public bool IsFixedSize => false;
+    public override int Count => dictionary.Count;
 
-    public bool IsReadOnly => false;
+    public override bool IsSynchronized => true;
 
-    public int Count => dictionary.Count;
+    public override object SyncRoot => this;
 
-    public bool IsSynchronized => true;
-
-    public object SyncRoot => this;
-
-    public int Add(object value)
+    public override int Add(object value)
     {
         dictionary.Add("_" + (dictionary.Count + 1), value);
         return dictionary.Count;
     }
 
-    public void Clear() => dictionary.Clear();
+    public override void AddRange(Array values)
+    {
+        foreach (var value in values)
+        {
+            Add(value);
+        }
+    }
 
-    public bool Contains(string parameterName) => dictionary.ContainsKey(parameterName);
+    public override void Clear() => dictionary.Clear();
 
-    public bool Contains(object value) => dictionary.Values.Contains(value);
+    public override bool Contains(string value) => dictionary.Values.OfType<DbDataParameter>().Any(x => x.ParameterName == value);
 
-    public void CopyTo(Array array, int index) => throw new NotImplementedException();
+    public override bool Contains(object value) => dictionary.Values.OfType<DbDataParameter>().Any(x => x.Value?.Equals(value) == true);
 
-    public IEnumerator GetEnumerator() => dictionary.Select(kvp => (IDbDataParameter)kvp.Value).GetEnumerator();
+    public override void CopyTo(Array array, int index) => throw new NotImplementedException();
 
-    public int IndexOf(string parameterName) => dictionary.Keys.ToList().IndexOf(parameterName);
+    public override IEnumerator GetEnumerator() => dictionary.Select(kvp => (IDbDataParameter)kvp.Value).GetEnumerator();
 
-    public int IndexOf(object value) => dictionary.Values.ToList().IndexOf(value);
+    public override int IndexOf(string parameterName) => dictionary.Keys.ToList().IndexOf(parameterName);
 
-    public void Insert(int index, object value) => dictionary.Add("_" + index, value);
+    public override int IndexOf(object value) => dictionary.Values.ToList().IndexOf(value);
 
-    public void Remove(object value)
+    public override void Insert(int index, object value) => dictionary.Add("_" + index, value);
+
+    public override void Remove(object value)
         => dictionary.Where(kvp => kvp.Value.Equals(value))
             .Select(kvp => kvp.Key)
             .ToList()
             .ForEach(key => dictionary.Remove(key));
 
-    public void RemoveAt(string parameterName) => dictionary.Remove(parameterName);
+    public override void RemoveAt(string parameterName) => dictionary.Remove(parameterName);
 
-    public void RemoveAt(int index) => dictionary.Remove(dictionary.Keys.ElementAt(index));
+    public override void RemoveAt(int index) => dictionary.Remove(dictionary.Keys.ElementAt(index));
+
+    protected override Common.DbParameter GetParameter(int index)
+        => new DbDataParameter { ParameterName = dictionary.Keys.ElementAt(index), Value = dictionary[dictionary.Keys.ElementAt(index)] };
+
+    protected override Common.DbParameter GetParameter(string parameterName)
+        => new DbDataParameter { ParameterName = parameterName, Value = dictionary.Values.OfType<DbDataParameter>().First(x => x.ParameterName == parameterName) };
+
+    protected override void SetParameter(int index, Common.DbParameter value)
+        => dictionary[dictionary.Keys.ElementAt(index)] = value;
+
+    protected override void SetParameter(string parameterName, Common.DbParameter value)
+        => dictionary[parameterName] = value;
 }

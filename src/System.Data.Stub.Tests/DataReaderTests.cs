@@ -65,11 +65,11 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void GetData_Throws_NotImplementedException()
+    public void GetData_Throws_NotSupportedException()
     {
         // Act & Assert
         _sut.Invoking(x => x.GetData(0))
-            .Should().Throw<NotImplementedException>();
+            .Should().Throw<NotSupportedException>();
     }
 
     [Fact]

@@ -1,33 +1,32 @@
 ﻿namespace System.Data.Stub;
 
-public sealed class DbCommand : IDbCommand
+public sealed class DbCommand : Common.DbCommand
 {
-    public string CommandText { get; set; } = string.Empty;
-    public int CommandTimeout { get; set; }
-    public CommandType CommandType { get; set; }
-    public IDbConnection? Connection { get; set; }
+    public override string CommandText { get; set; } = string.Empty;
+    public override int CommandTimeout { get; set; }
+    public override CommandType CommandType { get; set; }
+    public override UpdateRowSource UpdatedRowSource { get; set; }
+    public override bool DesignTimeVisible { get; set; }
 
-    public IDataParameterCollection Parameters { get; } = new DbParameterCollection();
+    protected override Common.DbConnection DbConnection { get; set; } = default!;
+    protected override Common.DbTransaction DbTransaction { get; set; } = default!;
+    protected override Common.DbParameterCollection DbParameterCollection { get; } = new DbParameterCollection();
+    protected override Common.DbParameter CreateDbParameter() => new DbDataParameter();
+    protected override Common.DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
+    {
+        var result = new DataReader(behavior);
+        DataReaderCreated?.Invoke(this, new DataReaderCreatedEventArgs(result));
+        return result;
+    }
+    protected override Task<Common.DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+        => Task.FromResult(ExecuteDbDataReader(behavior));
 
-    public IDbTransaction? Transaction { get; set; }
-    public UpdateRowSource UpdatedRowSource { get; set; }
-
-    public void Cancel()
+    public override void Cancel()
     {
         // Method intentionally left empty.
     }
 
-    public IDbDataParameter CreateParameter()
-    {
-        return new DbDataParameter();
-    }
-
-    public void Dispose()
-    {
-        // Method intentionally left empty.
-    }
-
-    public int ExecuteNonQuery()
+    public override int ExecuteNonQuery()
     {
         if (ExecuteNonQueryResultDelegate is not null
             && (ExecuteNonQueryResultPredicate is null || ExecuteNonQueryResultPredicate(this)))
@@ -37,21 +36,7 @@ public sealed class DbCommand : IDbCommand
         return ExecuteNonQueryResult;
     }
 
-    public IDataReader ExecuteReader()
-    {
-        var result = new DataReader(CommandBehavior.Default);
-        DataReaderCreated?.Invoke(this, new DataReaderCreatedEventArgs(result));
-        return result;
-    }
-
-    public IDataReader ExecuteReader(CommandBehavior behavior)
-    {
-        var result = new DataReader(behavior);
-        DataReaderCreated?.Invoke(this, new DataReaderCreatedEventArgs(result));
-        return result;
-    }
-
-    public object? ExecuteScalar()
+    public override object? ExecuteScalar()
     {
         if (ExecuteScalarResultDelegate is not null
             && (ExecuteScalarResultPredicate is null || ExecuteScalarResultPredicate(this)))
@@ -61,10 +46,16 @@ public sealed class DbCommand : IDbCommand
         return ExecuteScalarResult;
     }
 
-    public void Prepare()
+    public override void Prepare()
     {
         // Method intentionally left empty.
     }
+
+    public override Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken)
+        => Task.FromResult(ExecuteNonQuery());
+
+    public override Task<object> ExecuteScalarAsync(CancellationToken cancellationToken)
+        => Task.FromResult(ExecuteScalar()!);
 
     public Func<DbCommand, bool>? ExecuteNonQueryResultPredicate { get; set; }
     public Func<DbCommand, int>? ExecuteNonQueryResultDelegate { get; set; }

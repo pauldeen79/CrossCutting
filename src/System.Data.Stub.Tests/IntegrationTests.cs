@@ -223,8 +223,10 @@ public sealed class IntegrationTests : IDisposable
         // Important to initialize datareader BEFORE creating the command! Else, the event won't fire
         Connection.AddResultForDataReader(reader => reader.NextResultCalled += (sender, args) =>
         {
-            var secondReader = new DataReader(CommandBehavior.Default);
-            secondReader.Add(new MyRecord { Name = "Milk", Amount = 3 });
+            var secondReader = new DataReader(CommandBehavior.Default)
+            {
+                new MyRecord { Name = "Milk", Amount = 3 }
+            };
             args.Dictionary = secondReader.Dictionary;
             args.CurrentIndex = secondReader.CurrentIndex + 1;
             args.Result = true;
