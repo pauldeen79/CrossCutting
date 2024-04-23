@@ -12,7 +12,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task CanStubCommandForExecuteNonQuery()
+    public async Task Can_Stub_Command_For_ExecuteNonQuery()
     {
         // Arrange
         using var command = Connection.CreateCommand();
@@ -27,7 +27,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task CanStubCommandForExecuteScalar()
+    public async Task Can_Stub_Command_For_ExecuteScalar()
     {
         // Arrange
         using var command = Connection.CreateCommand();
@@ -42,7 +42,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task CanStubCommandForExecuteReader()
+    public async Task Can_Stub_Command_For_ExecuteReader()
     {
         await ReaderTest(reader => new MyRecord
         {
@@ -52,7 +52,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task CanUseIndexerOnDataReader()
+    public async Task Can_Use_Indexer_On_DataReader()
     {
         await ReaderTest(reader => new MyRecord
         {
@@ -62,7 +62,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task CanUseGetValueAndGetOrdinalOnDataReader()
+    public async Task Can_Use_GetValue_And_GetOrdinal_On_DataReader()
     {
         await ReaderTest(reader => new MyRecord
         {
@@ -72,7 +72,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task CanUseGetValueAndColumnIndexOnDataReader()
+    public async Task Can_Use_GetValue_And_ColumnIndex_On_DataReader()
     {
         await ReaderTest(reader => new MyRecord
         {
@@ -82,7 +82,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task CanCallGetValuesOnDataReader()
+    public async Task Can_Call_GetValues_On_DataReader()
     {
         // Arrange & Act
         int result = int.MinValue;
@@ -99,7 +99,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanGetFieldCountOnDataReader()
+    public void Can_Get_FieldCount_On_DataReader()
     {
         // Arrange
         // Important to initialize datareader BEFORE creating the command! Else, the event won't fire
@@ -121,7 +121,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanStubMultipleCommandsForExecuteReader()
+    public void Can_Stub_Multiple_Commands_For_ExecuteReader()
     {
         // Arrange
         // Important to initialize datareader BEFORE creating the command! Else, the event won't fire
@@ -169,7 +169,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanInteractWithCommandByUsingParameters()
+    public void Can_Interact_With_Command_By_Using_Parameters()
     {
         // Arrange
         // Important to initialize datareader BEFORE creating the command! Else, the event won't fire
@@ -217,7 +217,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanExecuteCommandWithMultipleResultSets()
+    public void Can_Execute_Command_With_Multiple_ResultSets()
     {
         // Arrange
         // Important to initialize datareader BEFORE creating the command! Else, the event won't fire
@@ -266,7 +266,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanRollbackTransaction()
+    public void Can_Rollback_Transaction()
     {
         // Arrange
         using var transaction = Connection.BeginTransaction();
@@ -282,7 +282,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanCommitTransaction()
+    public void Can_Commit_Transaction()
     {
         // Arrange
         using var transaction = Connection.BeginTransaction();
@@ -298,7 +298,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanAddResultForNonQueryCommand()
+    public void Can_Add_Result_For_NonQueryCommand()
     {
         // Arrange
         Connection.AddResultForNonQueryCommand(12345);
@@ -313,7 +313,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanAddResultForNonQueryCommandWithPredicate()
+    public void Can_Add_Result_For_NonQueryCommand_WithPredicate()
     {
         // Arrange
         Connection.AddResultForNonQueryCommand(cmd => cmd.CommandText.StartsWith("UPDATE", StringComparison.OrdinalIgnoreCase), 12345);
@@ -328,7 +328,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanAddResultForNonQueryCommandWithPredicateAndDynamicDelegate()
+    public void Can_Add_Result_For_NonQueryCommand_WithPredicate_AndD_ynamicDelegate()
     {
         // Arrange
         Connection.AddResultForNonQueryCommand(cmd => cmd.CommandText.StartsWith("INSERT", StringComparison.OrdinalIgnoreCase), cmd => cmd.CommandText.Contains("Beer") ? 12345 : 0);
@@ -343,7 +343,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanAddResultForNonQueryCommandWithDynamicDelegate()
+    public void Can_Add_Result_For_NonQueryCommand_With_DynamicDelegate()
     {
         // Arrange
         Connection.AddResultForNonQueryCommand(cmd => cmd.CommandText.Contains("Beer") ? 12345 : 0);
@@ -358,7 +358,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanAddResultForScalarCommand()
+    public void Can_Add_Result_For_ScalarCommand()
     {
         // Arrange
         Connection.AddResultForScalarCommand(12345);
@@ -373,7 +373,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanAddResultForScalarCommandWithPredicate()
+    public void Can_Add_Result_For_ScalarCommand_With_Predicate()
     {
         // Arrange
         Connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("UPDATE", StringComparison.OrdinalIgnoreCase), 12345);
@@ -388,7 +388,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanAddResultForScalarCommandWithPredicateAndDynamicDelegate()
+    public void Can_Add_Result_For_ScalarCommand_With_Predicate_AndDynamic_Delegate()
     {
         // Arrange
         Connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("SELECT", StringComparison.OrdinalIgnoreCase), cmd => cmd.CommandText.Contains("MyTable") ? 12345 : 0);
@@ -403,7 +403,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CanAddResultForScalarCommandWithDynamicDelegate()
+    public void Can_Add_Result_For_ScalarCommand_With_DynamicDelegate()
     {
         // Arrange
         Connection.AddResultForScalarCommand(cmd => cmd.CommandText.Contains("MyTable") ? 12345 : 0);
