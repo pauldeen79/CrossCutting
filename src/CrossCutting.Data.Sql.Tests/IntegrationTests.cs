@@ -18,7 +18,7 @@ public sealed class IntegrationTests : IDisposable
             .AddSingleton<IDatabaseEntityRetrieverSettingsProvider, TestEntityDatabaseEntityRetrieverSettingsProvider>()
             .AddSingleton<IPagedDatabaseEntityRetrieverSettingsProvider, TestEntityDatabaseEntityRetrieverSettingsProvider>()
             .AddSingleton<IDatabaseEntityMapper<TestEntity>, TestEntityMapper>()
-            .AddScoped<IDbConnection>(_ => _connection)
+            .AddScoped<System.Data.Common.DbConnection>(_ => _connection)
             .AddScoped<IDatabaseCommandProcessor<TestEntity>, DatabaseCommandProcessor<TestEntity, TestEntityBuilder>>()
             .AddScoped<IDatabaseEntityRetriever<TestEntity>, DatabaseEntityRetriever<TestEntity>>()
             .AddScoped<ITestRepository, TestRepository>()

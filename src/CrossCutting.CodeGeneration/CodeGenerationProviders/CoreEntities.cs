@@ -9,6 +9,6 @@ public class CoreEntities : CrossCuttingCSharpClassBase
 
     public override string Path => Constants.Namespaces.UtilitiesParsers;
 
-    public override IEnumerable<TypeBase> Model
-        => GetEntities(GetCoreModels(), Constants.Namespaces.UtilitiesParsers);
+    public override async Task<IEnumerable<TypeBase>> GetModel()
+        => await GetEntities(await GetCoreModels(), Constants.Namespaces.UtilitiesParsers);
 }

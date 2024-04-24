@@ -1,17 +1,23 @@
 ﻿namespace System.Data.Stub;
 
-public sealed class DbDataParameter : IDbDataParameter
+public sealed class DbDataParameter : Common.DbParameter
 {
-    public byte Precision { get; set; }
-    public byte Scale { get; set; }
-    public int Size { get; set; }
-    public DbType DbType { get; set; }
-    public ParameterDirection Direction { get; set; }
+    public override byte Precision { get; set; }
+    public override byte Scale { get; set; }
+    public override int Size { get; set; }
+    public override DbType DbType { get; set; }
+    public override ParameterDirection Direction { get; set; }
 
-    public bool IsNullable { get; set; }
+    public override bool IsNullable { get; set; }
 
-    public string ParameterName { get; set; } = string.Empty;
-    public string SourceColumn { get; set; } = string.Empty;
-    public DataRowVersion SourceVersion { get; set; }
-    public object? Value { get; set; }
+    public override string ParameterName { get; set; } = string.Empty;
+    public override string SourceColumn { get; set; } = string.Empty;
+    public override DataRowVersion SourceVersion { get; set; }
+    public override object? Value { get; set; }
+    public override bool SourceColumnNullMapping { get; set; }
+
+    public override void ResetDbType()
+    {
+        DbType = default;
+    }
 }

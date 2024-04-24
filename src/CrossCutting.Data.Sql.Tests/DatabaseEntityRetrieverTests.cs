@@ -10,6 +10,7 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
     {
         Connection = new DbConnection();
         MapperMock = Substitute.For<IDatabaseEntityMapper<MyEntity>>();
+
         Sut = new DatabaseEntityRetriever<MyEntity>(Connection, MapperMock);
     }
 
@@ -29,18 +30,55 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
     }
 
     [Fact]
+    public async Task FindOneAync_Returns_MappedEntity_When_All_Goes_Well()
+    {
+        // Arrange
+        Connection.AddResultForDataReader(new[] { new MyEntity { Property = "test" } });
+        InitializeMapper();
+
+        // Act
+        var actual = await Sut.FindOneAsync(new SqlDatabaseCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text));
+
+        // Assert
+        actual.Should().NotBeNull();
+        actual?.Property.Should().Be("test");
+    }
+
+    [Fact]
     public void FindMany_Returns_MappedEntities_When_All_Goes_Well()
     {
         // Arrange
         Connection.AddResultForDataReader(new[]
         {
-                new MyEntity { Property = "test1" },
-                new MyEntity { Property = "test2" }
-            });
+            new MyEntity { Property = "test1" },
+            new MyEntity { Property = "test2" }
+        });
         InitializeMapper();
 
         // Act
         var actual = Sut.FindMany(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text));
+
+        // Assert
+        actual.Should().NotBeNull().And.HaveCount(2);
+        actual.First().Should().NotBeNull();
+        actual.First().Property.Should().Be("test1");
+        actual.Last().Should().NotBeNull();
+        actual.Last().Property.Should().Be("test2");
+    }
+
+    [Fact]
+    public async Task FindManyAsync_Returns_MappedEntities_When_All_Goes_Well()
+    {
+        // Arrange
+        Connection.AddResultForDataReader(new[]
+        {
+            new MyEntity { Property = "test1" },
+            new MyEntity { Property = "test2" }
+        });
+        InitializeMapper();
+
+        // Act
+        var actual = await Sut.FindManyAsync(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text));
 
         // Assert
         actual.Should().NotBeNull().And.HaveCount(2);
@@ -56,9 +94,9 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         // Arrange
         Connection.AddResultForDataReader(new[]
         {
-                new MyEntity { Property = "test1" },
-                new MyEntity { Property = "test2" }
-            });
+            new MyEntity { Property = "test1" },
+            new MyEntity { Property = "test2" }
+        });
         Connection.AddResultForScalarCommand(1);
         InitializeMapper();
         var command = new PagedDatabaseCommand(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text),
@@ -80,11 +118,42 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         actual.PageSize.Should().Be(10);
     }
 
+    [Fact]
+    public async Task FindPagedAsync_Returns_MappedEntities_And_Other_Properties_When_All_Goes_Well()
+    {
+        // Arrange
+        Connection.AddResultForDataReader(new[]
+        {
+            new MyEntity { Property = "test1" },
+            new MyEntity { Property = "test2" }
+        });
+        Connection.AddResultForScalarCommand(1);
+        InitializeMapper();
+        var command = new PagedDatabaseCommand(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text),
+                                               new SqlDatabaseCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text),
+                                               20,
+                                               10);
+
+        // Act
+        var actual = await Sut.FindPagedAsync(command);
+
+        // Assert
+        actual.Should().NotBeNull().And.HaveCount(2);
+        actual.First().Should().NotBeNull();
+        actual.First().Property.Should().Be("test1");
+        actual.Last().Should().NotBeNull();
+        actual.Last().Property.Should().Be("test2");
+        actual.TotalRecordCount.Should().Be(1);
+        actual.Offset.Should().Be(20);
+        actual.PageSize.Should().Be(10);
+    }
+
     private void InitializeMapper()
     {
         MapperMock.Map(Arg.Any<IDataReader>())
                   .Returns(x => new MyEntity { Property = x.ArgAt<IDataReader>(0).GetString("Property") });
     }
+
     public void Dispose()
     {
         Connection.Dispose();

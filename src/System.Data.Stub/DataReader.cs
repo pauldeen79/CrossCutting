@@ -1,74 +1,74 @@
 ﻿namespace System.Data.Stub;
 
-public sealed class DataReader : IDataReader
+public sealed class DataReader : Common.DbDataReader
 {
     public int CurrentIndex { get; private set; }
-    private CultureInfo CultureInfo { get; }
+    private CultureInfo _cultureInfo { get; }
+    private bool _isClosed;
+
     public Dictionary<int, IDictionary<string, object>> Dictionary { get; private set; }
         = new Dictionary<int, IDictionary<string, object>>();
 
     public DataReader(CommandBehavior commandBehavior, CultureInfo? cultureInfo = null)
     {
         CommandBehavior = commandBehavior;
-        CultureInfo = cultureInfo ?? CultureInfo.CurrentCulture;
+        _cultureInfo = cultureInfo ?? CultureInfo.CurrentCulture;
     }
 
-    public object this[int i] => Dictionary[CurrentIndex][Dictionary[CurrentIndex].Keys.ElementAt(i)];
+    public override object this[int i] => Dictionary[CurrentIndex][Dictionary[CurrentIndex].Keys.ElementAt(i)];
 
-    public object this[string name] => Dictionary[CurrentIndex][name];
+    public override object this[string name] => Dictionary[CurrentIndex][name];
 
-    public int Depth => 1;
+    public override int Depth => 1;
 
-    public bool IsClosed { get; set; }
+    public override bool IsClosed => _isClosed;
 
-    public int RecordsAffected { get; set; }
+    public override int RecordsAffected { get; }
 
-    public int FieldCount
+    public override int FieldCount
         => CurrentIndex > Dictionary.Count || Dictionary.Count == 0 || !Dictionary.ContainsKey(CurrentIndex)
             ? 0
             : Dictionary[CurrentIndex].Count;
 
     public CommandBehavior CommandBehavior { get; }
 
-    public void Close() => IsClosed = true;
+    public override bool HasRows => throw new NotImplementedException();
 
-    public void Dispose() => Close();
+    public override void Close() => _isClosed = true;
 
-    public bool GetBoolean(int i) => Convert.ToBoolean(this[i], CultureInfo);
+    public override bool GetBoolean(int ordinal) => Convert.ToBoolean(this[ordinal], _cultureInfo);
 
-    public byte GetByte(int i) => Convert.ToByte(this[i], CultureInfo);
+    public override byte GetByte(int ordinal) => Convert.ToByte(this[ordinal], _cultureInfo);
 
-    public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length) => throw new NotImplementedException();
+    public override long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) => throw new NotImplementedException();
 
-    public char GetChar(int i) => Convert.ToChar(this[i], CultureInfo);
+    public override char GetChar(int ordinal) => Convert.ToChar(this[ordinal], _cultureInfo);
 
-    public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length) => throw new NotImplementedException();
+    public override long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) => throw new NotImplementedException();
 
-    public IDataReader GetData(int i) => throw new NotImplementedException();
+    public override string GetDataTypeName(int ordinal) => this[ordinal].GetType().FullName;
 
-    public string GetDataTypeName(int i) => this[i].GetType().FullName;
+    public override DateTime GetDateTime(int ordinal) => Convert.ToDateTime(this[ordinal], _cultureInfo);
 
-    public DateTime GetDateTime(int i) => Convert.ToDateTime(this[i], CultureInfo);
+    public override decimal GetDecimal(int ordinal) => Convert.ToDecimal(this[ordinal], _cultureInfo);
 
-    public decimal GetDecimal(int i) => Convert.ToDecimal(this[i], CultureInfo);
+    public override double GetDouble(int ordinal) => Convert.ToDouble(this[ordinal], _cultureInfo);
 
-    public double GetDouble(int i) => Convert.ToDouble(this[i], CultureInfo);
+    public override Type GetFieldType(int ordinal) => this[ordinal].GetType();
 
-    public Type GetFieldType(int i) => this[i].GetType();
+    public override float GetFloat(int ordinal) => Convert.ToSingle(this[ordinal], _cultureInfo);
 
-    public float GetFloat(int i) => Convert.ToSingle(this[i], CultureInfo);
+    public override Guid GetGuid(int ordinal) => new Guid(Convert.ToString(this[ordinal], _cultureInfo));
 
-    public Guid GetGuid(int i) => new Guid(Convert.ToString(this[i], CultureInfo));
+    public override short GetInt16(int ordinal) => Convert.ToInt16(this[ordinal], _cultureInfo);
 
-    public short GetInt16(int i) => Convert.ToInt16(this[i], CultureInfo);
+    public override int GetInt32(int ordinal) => Convert.ToInt32(this[ordinal], _cultureInfo);
 
-    public int GetInt32(int i) => Convert.ToInt32(this[i], CultureInfo);
+    public override long GetInt64(int ordinal) => Convert.ToInt64(this[ordinal], _cultureInfo);
 
-    public long GetInt64(int i) => Convert.ToInt64(this[i], CultureInfo);
+    public override string GetName(int ordinal) => Dictionary[CurrentIndex].Keys.ElementAt(ordinal);
 
-    public string GetName(int i) => Dictionary[CurrentIndex].Keys.ElementAt(i);
-
-    public int GetOrdinal(string name)
+    public override int GetOrdinal(string name)
     {
         int index = 0;
         foreach (var key in Dictionary[CurrentIndex].Keys)
@@ -83,13 +83,13 @@ public sealed class DataReader : IDataReader
         return -1;
     }
 
-    public DataTable GetSchemaTable() => throw new NotImplementedException();
+    public override DataTable GetSchemaTable() => throw new NotImplementedException();
 
-    public string GetString(int i) => Convert.ToString(this[i], CultureInfo);
+    public override string GetString(int ordinal) => Convert.ToString(this[ordinal], _cultureInfo);
 
-    public object GetValue(int i) => this[i];
+    public override object GetValue(int ordinal) => this[ordinal];
 
-    public int GetValues(object[] values)
+    public override int GetValues(object[] values)
     {
         var index = 0;
         foreach (var kvp in Dictionary[CurrentIndex])
@@ -101,9 +101,9 @@ public sealed class DataReader : IDataReader
         return Dictionary.Count;
     }
 
-    public bool IsDBNull(int i) => this[i] is null || this[i] == DBNull.Value;
+    public override bool IsDBNull(int ordinal) => this[ordinal] is null || this[ordinal] == DBNull.Value;
 
-    public bool NextResult()
+    public override bool NextResult()
     {
         if (NextResultCalled is null)
         {
@@ -121,7 +121,7 @@ public sealed class DataReader : IDataReader
         return args.Result;
     }
 
-    public bool Read()
+    public override bool Read()
     {
         if (CurrentIndex >= Dictionary.Count)
         {
@@ -140,6 +140,8 @@ public sealed class DataReader : IDataReader
         }
         Dictionary.Add(Dictionary.Count + 1, localDict);
     }
+
+    public override IEnumerator GetEnumerator() => Dictionary.Select(x => x.Value).GetEnumerator();
 
     public event EventHandler<NextResultCalledEventArgs>? NextResultCalled;
 }

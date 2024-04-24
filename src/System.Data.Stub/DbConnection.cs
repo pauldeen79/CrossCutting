@@ -1,43 +1,42 @@
 ﻿namespace System.Data.Stub;
 
-public sealed class DbConnection : IDbConnection
+public sealed class DbConnection : Common.DbConnection
 {
-    public string ConnectionString { get; set; } = string.Empty;
+    private string _database = "System.Data.Stub.DbConnection";
+    private ConnectionState _state;
 
-    public int ConnectionTimeout => 1;
+    public override string ConnectionString { get; set; } = string.Empty;
 
-    public string Database { get; private set; } = "System.Data.Stub.DbConnection";
+    public override int ConnectionTimeout => 1;
 
-    public ConnectionState State { get; set; }
+    public override string Database => _database;
 
-    public IDbTransaction BeginTransaction()
+    public override ConnectionState State => _state;
+
+    public override string DataSource => "System.Data.Stub.DbConnection";
+
+    public override string ServerVersion => "3.0.0";
+
+    protected override Common.DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
     {
         var result = new DbTransaction(this);
+        result.SetIsolationLevel(isolationLevel);
         DbTransactionCreated?.Invoke(this, new DbTransactionCreatedEventArgs(result));
         return result;
     }
 
-    public IDbTransaction BeginTransaction(IsolationLevel il)
-    {
-        var result = new DbTransaction(this) { IsolationLevel = il };
-        DbTransactionCreated?.Invoke(this, new DbTransactionCreatedEventArgs(result));
-        return result;
-    }
+    public override void ChangeDatabase(string databaseName) => _database = databaseName;
 
-    public void ChangeDatabase(string databaseName) => Database = databaseName;
+    public override void Close() => _state = ConnectionState.Closed;
 
-    public void Close() => State = ConnectionState.Closed;
+    public override void Open() => _state = ConnectionState.Open;
 
-    public IDbCommand CreateCommand()
+    protected override Common.DbCommand CreateDbCommand()
     {
         var result = new DbCommand();
         DbCommandCreated?.Invoke(this, new DbCommandCreatedEventArgs(result));
         return result;
     }
-
-    public void Dispose() => Close();
-
-    public void Open() => State = ConnectionState.Open;
 
     public event EventHandler<DbCommandCreatedEventArgs>? DbCommandCreated;
     public event EventHandler<DbTransactionCreatedEventArgs>? DbTransactionCreated;

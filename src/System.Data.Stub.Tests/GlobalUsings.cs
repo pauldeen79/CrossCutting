@@ -2,5 +2,6 @@
 global using System.Data.Stub.Extensions;
 global using System.Globalization;
 global using System.Linq;
+global using System.Threading.Tasks;
 global using FluentAssertions;
 global using Xunit;

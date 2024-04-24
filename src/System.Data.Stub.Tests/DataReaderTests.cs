@@ -7,7 +7,7 @@ public sealed class DataReaderTests : IDisposable
     public DataReaderTests() => _sut = new DataReader(CommandBehavior.Default, CultureInfo.InvariantCulture);
 
     [Fact]
-    public void Can_GetBoolean()
+    public void Can_Get_Boolean()
     {
         // Arrange
         _sut.Add(new { Value = true });
@@ -21,7 +21,7 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Can_GetByte()
+    public void Can_Get_Byte()
     {
         // Arrange
         _sut.Add(new { Value = 12 });
@@ -43,7 +43,7 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Can_GetChar()
+    public void Can_Get_Char()
     {
         // Arrange
         _sut.Add(new { Value = 'a' });
@@ -65,11 +65,11 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void GetData_Throws_NotImplementedException()
+    public void GetData_Throws_NotSupportedException()
     {
         // Act & Assert
         _sut.Invoking(x => x.GetData(0))
-            .Should().Throw<NotImplementedException>();
+            .Should().Throw<NotSupportedException>();
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Can_GetDateTime()
+    public void Can_Get_DateTime()
     {
         // Arrange
         var value = DateTime.Now;
@@ -102,7 +102,7 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Can_GetDecimal()
+    public void Can_Get_Decimal()
     {
         // Arrange
         _sut.Add(new { Value = 12.34M });
@@ -116,7 +116,7 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Can_GetDouble()
+    public void Can_Get_Double()
     {
         // Arrange
         _sut.Add(new { Value = 12.34D });
@@ -144,7 +144,7 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Can_GetFloat()
+    public void Can_Get_Float()
     {
         // Arrange
         _sut.Add(new { Value = 12.34f });
@@ -158,7 +158,7 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Can_GetGuid()
+    public void Can_Get_Guid()
     {
         // Arrange
         var value = Guid.NewGuid();
@@ -173,7 +173,7 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Can_GetInt16()
+    public void Can_Get_Int16()
     {
         // Arrange
         short value = 12;
@@ -188,7 +188,7 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Can_GetInt32()
+    public void Can_Get_Int32()
     {
         // Arrange
         int value = 12;
@@ -203,7 +203,7 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Can_GetInt64()
+    public void Can_Get_Int64()
     {
         // Arrange
         long value = 12;
@@ -256,7 +256,7 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Can_GetString()
+    public void Can_Get_String()
     {
         // Arrange
         _sut.Add(new { Value = "Hello world!" });
@@ -270,7 +270,7 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Can_GetValue()
+    public void Can_Get_Value()
     {
         // Arrange
         _sut.Add(new { Value = 12.34f });
@@ -294,13 +294,36 @@ public sealed class DataReaderTests : IDisposable
     }
 
     [Fact]
-    public void Read_Returns_True_WHen_Data_Is_Available()
+    public void Read_Returns_True_When_Data_Is_Available()
     {
         // Arrange
         _sut.Add(new { Value = 12.34f });
 
         // Act
         var actual = _sut.Read();
+
+        // Assert
+        actual.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ReadAsync_Returns_False_When_No_Data_Is_Available()
+    {
+        // Act
+        var actual = await _sut.ReadAsync();
+
+        // Assert
+        actual.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task ReadAsync_Returns_True_When_Data_Is_Available()
+    {
+        // Arrange
+        _sut.Add(new { Value = 12.34f });
+
+        // Act
+        var actual = await _sut.ReadAsync();
 
         // Assert
         actual.Should().BeTrue();

@@ -11,12 +11,12 @@ public class OverrideBuilders : CrossCuttingCSharpClassBase
 
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;
-    protected override Class? BaseClass => CreateBaseclass(typeof(IFunctionParseResultArgument), CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsers);
+    protected override async Task<Class?> GetBaseClass() => await CreateBaseClass(typeof(IFunctionParseResultArgument), CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsers);
     protected override string BaseClassBuilderNamespace => CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsersBuilders;
 
-    public override IEnumerable<TypeBase> Model
-        => GetBuilders(
-            GetOverrideModels(typeof(IFunctionParseResultArgument)),
+    public override async Task<IEnumerable<TypeBase>> GetModel()
+        => await GetBuilders(
+            await GetOverrideModels(typeof(IFunctionParseResultArgument)),
             CurrentNamespace,
             CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsersFunctionParseResultArguments);
 }
