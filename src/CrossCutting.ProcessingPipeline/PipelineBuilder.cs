@@ -15,7 +15,6 @@ public class PipelineBuilder<TRequest> : PipelineBuilderBase<IPipelineComponent<
 }
 
 public class PipelineBuilder<TRequest, TResponse> : PipelineBuilderBase<IPipelineComponent<TRequest, TResponse>, PipelineBuilder<TRequest, TResponse>>, IPipelineBuilder<TRequest, TResponse>
-    where TResponse : new()
 {
     public PipelineBuilder()
     {

@@ -6,7 +6,6 @@ public interface IPipeline<TRequest>
 }
 
 public interface IPipeline<TRequest, TResponse>
-    where TResponse : new()
 {
-    Task<Result<TResponse>> Process(TRequest request, CancellationToken token);
+    Task<Result<TResponse>> Process(TRequest request, TResponse seed, CancellationToken token);
 }

@@ -6,7 +6,6 @@ public class ProofOfConceptTests
         => (instance.GetType().GetProperty(nameof(IPipelineBuilder<object>.Components))!.GetValue(instance) as IEnumerable<IPipelineComponent<TRequest>>)!;
 
     protected IEnumerable<IPipelineComponent<TRequest, TResponse>> GetComponents<TRequest, TResponse>(IPipeline<TRequest, TResponse> instance)
-        where TResponse : new()
         => (instance.GetType().GetProperty(nameof(IPipelineBuilder<object>.Components))!.GetValue(instance) as IEnumerable<IPipelineComponent<TRequest, TResponse>>)!;
 
     public class Pipeline_With_Response : ProofOfConceptTests
@@ -145,7 +144,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Act
-            var result = await sut.Process(request: 1);
+            var result = await sut.Process(request: 1, seed: new StringBuilder());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -164,7 +163,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Act
-            var result = await sut.Process(request: 1);
+            var result = await sut.Process(request: 1, seed: new StringBuilder());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);

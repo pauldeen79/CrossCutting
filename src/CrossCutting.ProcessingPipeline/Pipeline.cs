@@ -22,7 +22,6 @@ public class Pipeline<TRequest> : PipelineBase<TRequest>, IPipeline<TRequest>
 }
 
 public class Pipeline<TRequest, TResponse> : PipelineBase<TRequest, TResponse>, IPipeline<TRequest, TResponse>
-    where TResponse : new()
 {
     private readonly Action<TRequest, PipelineContext<TRequest, TResponse>> _validationDelegate;
 
@@ -31,10 +30,9 @@ public class Pipeline<TRequest, TResponse> : PipelineBase<TRequest, TResponse>, 
         _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
     }
 
-    public async Task<Result<TResponse>> Process(TRequest request, CancellationToken token)
+    public async Task<Result<TResponse>> Process(TRequest request, TResponse seed, CancellationToken token)
     {
-        var response = new TResponse();
-        var pipelineContext = new PipelineContext<TRequest, TResponse>(request.IsNotNull(nameof(request)), response);
+        var pipelineContext = new PipelineContext<TRequest, TResponse>(request.IsNotNull(nameof(request)), seed);
 
         _validationDelegate(request, pipelineContext);
 
@@ -45,6 +43,6 @@ public class Pipeline<TRequest, TResponse> : PipelineBase<TRequest, TResponse>, 
             return Result.FromExistingResult<TResponse>(error);
         }
 
-        return Result.Success(response);
+        return Result.Success(seed);
     }
 }

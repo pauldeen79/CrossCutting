@@ -8,7 +8,6 @@ public interface IPipelineBuilder<TRequest>
 }
 
 public interface IPipelineBuilder<TRequest, TResponse>
-    where TResponse : new()
 {
     IList<IBuilder<IPipelineComponent<TRequest, TResponse>>> Components { get; }
 
