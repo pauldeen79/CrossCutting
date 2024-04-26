@@ -2,9 +2,9 @@
 
 public static class PipelineComponentExtensions
 {
-    public static Task<Result<TModel>> Process<TModel>(this IPipelineComponent<TModel> instance, PipelineContext<TModel> context)
+    public static Task<Result> Process<TRequest>(this IPipelineComponent<TRequest> instance, PipelineContext<TRequest> context)
         => instance.Process(context, CancellationToken.None);
 
-    public static Task<Result<TModel>> Process<TModel, TContext>(this IPipelineComponent<TModel, TContext> instance, PipelineContext<TModel, TContext> context)
+    public static Task<Result> Process<TRequest, TResponse>(this IPipelineComponent<TRequest, TResponse> instance, PipelineContext<TRequest, TResponse> context)
         => instance.Process(context, CancellationToken.None);
 }

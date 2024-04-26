@@ -1,4 +1,5 @@
 ﻿global using System.ComponentModel.DataAnnotations;
+global using System.Text;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
 global using FluentAssertions;

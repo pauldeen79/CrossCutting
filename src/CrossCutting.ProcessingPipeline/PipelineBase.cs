@@ -1,15 +1,15 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public class PipelineBase<TModel> : AbstractPipelineBase<IPipelineComponent<TModel>>
+public class PipelineBase<TRequest> : AbstractPipelineBase<IPipelineComponent<TRequest>>
 {
-    public PipelineBase(IEnumerable<IPipelineComponent<TModel>>? features) : base(features)
+    public PipelineBase(IEnumerable<IPipelineComponent<TRequest>>? features) : base(features)
     {
     }
 }
 
-public class PipelineBase<TModel, TContext> : AbstractPipelineBase<IPipelineComponent<TModel, TContext>>
+public class PipelineBase<TRequest, TResponse> : AbstractPipelineBase<IPipelineComponent<TRequest, TResponse>>
 {
-    public PipelineBase(IEnumerable<IPipelineComponent<TModel, TContext>>? features) : base(features)
+    public PipelineBase(IEnumerable<IPipelineComponent<TRequest, TResponse>>? features) : base(features)
     {
     }
 }

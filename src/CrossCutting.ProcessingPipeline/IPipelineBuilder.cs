@@ -1,15 +1,15 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public interface IPipelineBuilder<TModel>
+public interface IPipelineBuilder<TRequest>
 {
-    IList<IBuilder<IPipelineComponent<TModel>>> Components { get; }
+    IList<IBuilder<IPipelineComponent<TRequest>>> Components { get; }
 
-    public IPipeline<TModel> Build();
+    public IPipeline<TRequest> Build();
 }
 
-public interface IPipelineBuilder<TModel, TContext>
+public interface IPipelineBuilder<TRequest, TResponse>
 {
-    IList<IBuilder<IPipelineComponent<TModel, TContext>>> Components { get; }
+    IList<IBuilder<IPipelineComponent<TRequest, TResponse>>> Components { get; }
 
-    public IPipeline<TModel, TContext> Build();
+    public IPipeline<TRequest, TResponse> Build();
 }
