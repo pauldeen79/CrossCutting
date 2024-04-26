@@ -1,21 +1,21 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public class PipelineContext<TModel>
+public class PipelineContext<TRequest>
 {
-    public PipelineContext(TModel model)
+    public PipelineContext(TRequest request)
     {
-        Model = model.IsNotNull(nameof(model));
+        Request = request.IsNotNull(nameof(request));
     }
 
-    public TModel Model { get; }
+    public TRequest Request { get; }
 }
 
-public class PipelineContext<TModel, TContext> : PipelineContext<TModel>
+public class PipelineContext<TRequest, TResponse> : PipelineContext<TRequest>
 {
-    public PipelineContext(TModel model, TContext context) : base(model)
+    public PipelineContext(TRequest request, TResponse response) : base(request)
     {
-        Context = context.IsNotNull(nameof(context));
+        Response = response.IsNotNull(nameof(response));
     }
 
-    public TContext Context { get; }
+    public TResponse Response { get; }
 }

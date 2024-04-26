@@ -1,29 +1,30 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public class PipelineBuilder<TModel> : PipelineBuilderBase<IPipelineComponent<TModel>, PipelineBuilder<TModel>>, IPipelineBuilder<TModel>
+public class PipelineBuilder<TRequest> : PipelineBuilderBase<IPipelineComponent<TRequest>, PipelineBuilder<TRequest>>, IPipelineBuilder<TRequest>
 {
     public PipelineBuilder()
     {
     }
 
-    public IPipeline<TModel> Build()
-        => new Pipeline<TModel>(Initialize, Components.Select(x => x.Build()));
+    public IPipeline<TRequest> Build()
+        => new Pipeline<TRequest>(Initialize, Components.Select(x => x.Build()));
 
-    protected virtual void Initialize(TModel model, PipelineContext<TModel> pipelineContext)
+    protected virtual void Initialize(TRequest request, PipelineContext<TRequest> pipelineContext)
     {
     }
 }
 
-public class PipelineBuilder<TModel, TContext> : PipelineBuilderBase<IPipelineComponent<TModel, TContext>, PipelineBuilder<TModel, TContext>>, IPipelineBuilder<TModel, TContext>
+public class PipelineBuilder<TRequest, TResponse> : PipelineBuilderBase<IPipelineComponent<TRequest, TResponse>, PipelineBuilder<TRequest, TResponse>>, IPipelineBuilder<TRequest, TResponse>
+    where TResponse : new()
 {
     public PipelineBuilder()
     {
     }
 
-    public IPipeline<TModel, TContext> Build()
-        => new Pipeline<TModel, TContext>(Initialize, Components.Select(x => x.Build()));
+    public IPipeline<TRequest, TResponse> Build()
+        => new Pipeline<TRequest, TResponse>(Initialize, Components.Select(x => x.Build()));
 
-    protected virtual void Initialize(TModel model, PipelineContext<TModel, TContext> pipelineContext)
+    protected virtual void Initialize(TRequest request, PipelineContext<TRequest> pipelineContext)
     {
     }
 }
