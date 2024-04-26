@@ -163,7 +163,7 @@ public class ProofOfConceptTests
                 .Build();
 
             // Act
-            var result = await sut.Process(request: 1, seed: new StringBuilder());
+            var result = await sut.Process(request: 1);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
