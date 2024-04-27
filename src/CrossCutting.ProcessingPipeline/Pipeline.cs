@@ -16,8 +16,12 @@ public class Pipeline<TRequest> : PipelineBase<TRequest>, IPipeline<TRequest>
         _validationDelegate(request, pipelineContext);
 
         var results = await Task.WhenAll(Components.Select(x => x.Process(pipelineContext, token))).ConfigureAwait(false);
-        return Array.Find(results, x => !x.IsSuccessful())
-            ?? Result.Success();
+        return Result.Aggregate
+        (
+            results,
+            Result.Success(),
+            errors => Result.Error(errors, "An error occured while processing the pipeline. See the inner results for more details.")
+        );
     }
 }
 
@@ -37,12 +41,11 @@ public class Pipeline<TRequest, TResponse> : PipelineBase<TRequest, TResponse>, 
         _validationDelegate(request, pipelineContext);
 
         var results = await Task.WhenAll(Components.Select(x => x.Process(pipelineContext, token))).ConfigureAwait(false);
-        var error = Array.Find(results, x => !x.IsSuccessful());
-        if (error is not null)
-        {
-            return Result.FromExistingResult<TResponse>(error);
-        }
-
-        return Result.Success(seed);
+        return Result.Aggregate
+        (
+            results,
+            Result.Success(seed),
+            errors => Result.Error<TResponse>(errors, "An error occured while processing the pipeline. See the inner results for more details.")
+        );
     }
 }

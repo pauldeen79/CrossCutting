@@ -167,7 +167,7 @@ public class ProofOfConceptTests
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.ErrorMessage.Should().Be("An error occured while processing the pipeline. See the inner results for more details.");
         }
 
         [Fact]
@@ -184,7 +184,7 @@ public class ProofOfConceptTests
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.ErrorMessage.Should().Be("An error occured while processing the pipeline. See the inner results for more details.");
         }
         [Fact]
         public void Constructing_Pipeline_Using_Null_ValidationDelegate_Throws_ArgumentNullException()
@@ -376,7 +376,24 @@ public class ProofOfConceptTests
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.ErrorMessage.Should().Be("An error occured while processing the pipeline. See the inner results for more details.");
+        }
+
+        [Fact]
+        public async Task Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status_And_CancellationToken()
+        {
+            // Arrange
+            Func<PipelineContext<object?>, Result<object?>> processCallback = new(_ => Result.Error<object?>("Kaboom"));
+            var sut = new PipelineBuilder<object?>()
+                .AddComponent(new MyResponselessComponentBuilder().WithProcessCallback(processCallback))
+                .Build();
+
+            // Act
+            var result = await sut.Process(request: 1, new CancellationToken());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("An error occured while processing the pipeline. See the inner results for more details.");
         }
 
         [Fact]
