@@ -1251,4 +1251,70 @@ public class ResultTests
         result.ErrorMessage.Should().Be("Kaboom!");
         result.Value.Should().BeNull();
     }
+
+    [Fact]
+    public void Aggregate_Returns_Success_When_No_Items_Are_Present_No_Value()
+    {
+        // Arrange
+        var innerResults = Array.Empty<Result>();
+        var successResult = Result.Success();
+        var errorResultDelegate = new Func<Result[], Result>(errors => Result.Error(errors, "Something went wrong. See inner results."));
+
+        // Act
+        var result = Result.Aggregate(innerResults, successResult, errorResultDelegate);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.InnerResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Aggregate_Returns_Success_When_No_Errors_Are_Present_No_Value()
+    {
+        // Arrange
+        var innerResults = new Result[] { Result.Success(), Result.Success() };
+        var successResult = Result.Success();
+        var errorResultDelegate = new Func<Result[], Result>(errors => Result.Error(errors, "Something went wrong. See inner results."));
+
+        // Act
+        var result = Result.Aggregate(innerResults, successResult, errorResultDelegate);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.InnerResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Aggregate_Returns_Aggregate_Error_When_One_Item_Is_Not_Succesful_No_Value()
+    {
+        // Arrange
+        var innerResults = new Result[] { Result.Success(), Result.Error("Kaboom") };
+        var successResult = Result.Success();
+        var errorResultDelegate = new Func<Result[], Result>(errors => Result.Error(errors, "Something went wrong. See inner results."));
+
+        // Act
+        var result = Result.Aggregate(innerResults, successResult, errorResultDelegate);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom");
+        result.InnerResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Aggregate_Returns_Aggregate_Error_With_InnerResults_When_Two_Items_Are_Not_Succesful_No_Value()
+    {
+        // Arrange
+        var innerResults = new Result[] { Result.Error("Kaboom 1"), Result.Error("Kaboom 2") };
+        var successResult = Result.Success();
+        var errorResultDelegate = new Func<Result[], Result>(errors => Result.Error(errors, "Something went wrong. See inner results."));
+
+        // Act
+        var result = Result.Aggregate(innerResults, successResult, errorResultDelegate);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Something went wrong. See inner results.");
+        result.InnerResults.Should().HaveCount(2);
+    }
 }
