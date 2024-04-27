@@ -273,6 +273,21 @@ public class ResultTests
     }
 
     [Fact]
+    public void Can_Create_Invalid_Result_With_ErrorMessage_And_InnerResults()
+    {
+        // Act
+        var actual = Result.Invalid<string>("Error", new[] { Result.Error("Kaboom") });
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Invalid);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Error");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.InnerResults.Should().ContainSingle();
+        actual.Value.Should().BeNull();
+    }
+
+    [Fact]
     public void Can_Create_Invalid_Void_Result_With_ErrorMessage()
     {
         // Act
@@ -283,6 +298,20 @@ public class ResultTests
         actual.IsSuccessful().Should().BeFalse();
         actual.ErrorMessage.Should().Be("Error");
         actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_Invalid_Void_Result_With_ErrorMessage_And_InnerResults()
+    {
+        // Act
+        var actual = Result.Invalid("Error", new[] { Result.Error("Kaboom") });
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Invalid);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Error");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.InnerResults.Should().ContainSingle();
     }
 
     [Fact]
@@ -424,6 +453,22 @@ public class ResultTests
     }
 
     [Fact]
+    public void Can_Create_Error_Result_With_ErrorMessage_And_InnerResults()
+    {
+        // Act
+        var actual = Result.Error<string>([Result.Error("InnerError")], "Error");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Error);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Error");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+        actual.Exception.Should().BeNull();
+        actual.InnerResults.Should().ContainSingle();
+    }
+
+    [Fact]
     public void Can_Create_Error_Void_Result_With_ErrorMessage()
     {
         // Act
@@ -448,6 +493,21 @@ public class ResultTests
         actual.ErrorMessage.Should().Be("Error");
         actual.ValidationErrors.Should().BeEmpty();
         actual.Exception.Should().BeOfType<InvalidOperationException>().And.Match<InvalidOperationException>(x => x.Message == "Kaboom");
+    }
+
+    [Fact]
+    public void Can_Create_Error_Void_Result_With_ErrorMessage_And_InnerResults()
+    {
+        // Act
+        var actual = Result.Error([Result.Error("InnerError")], "Error");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Error);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("Error");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Exception.Should().BeNull();
+        actual.InnerResults.Should().ContainSingle();
     }
 
     [Fact]
@@ -979,6 +1039,21 @@ public class ResultTests
     }
 
     [Fact]
+    public void Can_Create_Conflict_Result_With_ErrorMessage_And_InnerResult()
+    {
+        // Act
+        var actual = Result.Conflict<string>([Result.Error("Kaboom")], "There is a huge conflict");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Conflict);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("There is a huge conflict");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.Value.Should().BeNull();
+        actual.InnerResults.Should().ContainSingle();
+    }
+
+    [Fact]
     public void Can_Create_Conflict_Void_Result_With_ErrorMessage()
     {
         // Act
@@ -989,6 +1064,20 @@ public class ResultTests
         actual.IsSuccessful().Should().BeFalse();
         actual.ErrorMessage.Should().Be("There is a huge conflict");
         actual.ValidationErrors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Can_Create_Conflict_Void_Result_With_ErrorMessage_And_InnerResult()
+    {
+        // Act
+        var actual = Result.Conflict([Result.Error("Kaboom")], "There is a huge conflict");
+
+        // Assert
+        actual.Status.Should().Be(ResultStatus.Conflict);
+        actual.IsSuccessful().Should().BeFalse();
+        actual.ErrorMessage.Should().Be("There is a huge conflict");
+        actual.ValidationErrors.Should().BeEmpty();
+        actual.InnerResults.Should().ContainSingle();
     }
 
     [Fact]
@@ -1297,8 +1386,8 @@ public class ResultTests
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Kaboom");
-        result.InnerResults.Should().BeEmpty();
+        result.ErrorMessage.Should().Be("Something went wrong. See inner results.");
+        result.InnerResults.Should().ContainSingle();
     }
 
     [Fact]

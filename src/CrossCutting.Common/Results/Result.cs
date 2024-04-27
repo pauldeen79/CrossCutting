@@ -99,12 +99,15 @@ public record Result
     public static Result<T> NotFound<T>(string errorMessage) => new(default, ResultStatus.NotFound, errorMessage, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
     public static Result Invalid() => new(ResultStatus.Invalid, null, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
     public static Result Invalid(IEnumerable<ValidationError> validationErrors) => new(ResultStatus.Invalid, null, validationErrors, Enumerable.Empty<Result>(), null);
+    public static Result Invalid(IEnumerable<Result> innerResults) => new(ResultStatus.Invalid, null, Enumerable.Empty<ValidationError>(), innerResults, null);
     public static Result Invalid(string errorMessage) => new(ResultStatus.Invalid, errorMessage, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
     public static Result Invalid(string errorMessage, IEnumerable<ValidationError> validationErrors) => new(ResultStatus.Invalid, errorMessage, validationErrors, Enumerable.Empty<Result>(), null);
+    public static Result Invalid(string errorMessage, IEnumerable<Result> innerResults) => new(ResultStatus.Invalid, errorMessage, Enumerable.Empty<ValidationError>(), innerResults, null);
     public static Result<T> Invalid<T>() => new(default, ResultStatus.Invalid, null, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
     public static Result<T> Invalid<T>(IEnumerable<ValidationError> validationErrors) => new(default, ResultStatus.Invalid, null, validationErrors, Enumerable.Empty<Result>(), null);
     public static Result<T> Invalid<T>(string errorMessage) => new Result<T>(default, ResultStatus.Invalid, errorMessage, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
     public static Result<T> Invalid<T>(string errorMessage, IEnumerable<ValidationError> validationErrors) => new(default, ResultStatus.Invalid, errorMessage, validationErrors, Enumerable.Empty<Result>(), null);
+    public static Result<T> Invalid<T>(string errorMessage, IEnumerable<Result> innerResults) => new(default, ResultStatus.Invalid, errorMessage, Enumerable.Empty<ValidationError>(), innerResults, null);
     public static Result Unauthorized() => new(ResultStatus.Unauthorized, null, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
     public static Result Unauthorized(string errorMessage) => new(ResultStatus.Unauthorized, errorMessage, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
     public static Result<T> Unauthorized<T>() => new(default, ResultStatus.Unauthorized, null, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
@@ -138,8 +141,10 @@ public record Result
     public static Result<T> Continue<T>(T value) => new(value, ResultStatus.Continue, null, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
     public static Result Conflict() => new(ResultStatus.Conflict, null, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
     public static Result Conflict(string errorMessage) => new(ResultStatus.Conflict, errorMessage, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
+    public static Result Conflict(IEnumerable<Result> innerResults, string errorMessage) => new(ResultStatus.Conflict, errorMessage, Enumerable.Empty<ValidationError>(), innerResults, null);
     public static Result<T> Conflict<T>() => new(default, ResultStatus.Conflict, null, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
     public static Result<T> Conflict<T>(string errorMessage) => new(default, ResultStatus.Conflict, errorMessage, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
+    public static Result<T> Conflict<T>(IEnumerable<Result> innerResults, string errorMessage) => new(default, ResultStatus.Conflict, errorMessage, Enumerable.Empty<ValidationError>(), innerResults, null);
 
     public static Result<T> Redirect<T>(T value) => new(value, ResultStatus.Redirect, null, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
 
@@ -199,11 +204,6 @@ public record Result
             return successResult;
         }
 
-        if (errors.Length == 1)
-        {
-            return errors[0];
-        }
-
         return errorResultDelegate(errors);
     }
 
@@ -215,11 +215,6 @@ public record Result
         if (errors.Length == 0)
         {
             return successResult;
-        }
-
-        if (errors.Length == 1)
-        {
-            return FromExistingResult<T>(errors[0]);
         }
 
         return errorResultDelegate(errors);
