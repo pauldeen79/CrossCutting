@@ -24,7 +24,7 @@ internal static class Program
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddCsharpExpressionDumper()
-        .AddClassFrameworkTemplates()
+            .AddClassFrameworkTemplates()
             .AddScoped<IAssemblyInfoContextService, MyAssemblyInfoContextService>();
 
         var generators = typeof(Program).Assembly.GetExportedTypes()
