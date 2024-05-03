@@ -6,8 +6,10 @@
     <Nullable>enable</Nullable>
     <PackageId>pauldeen79.CrossCutting.Data.Sql</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>5.1.0</Version>
-    <PackageVersion>5.1.0</PackageVersion>
+    <Version>5.1.1</Version>
+    <PackageVersion>5.1.1</PackageVersion>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/pauldeen79/CrossCutting/main/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +20,10 @@
     <ProjectReference Include="..\CrossCutting.Common\CrossCutting.Common.csproj" />
     <ProjectReference Include="..\CrossCutting.Data.Abstractions\CrossCutting.Data.Abstractions.csproj" />
     <ProjectReference Include="..\CrossCutting.Data.Core\CrossCutting.Data.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

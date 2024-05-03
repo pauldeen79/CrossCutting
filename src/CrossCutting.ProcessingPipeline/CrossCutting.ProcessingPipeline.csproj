@@ -7,12 +7,18 @@
     <AnalysisLevel>latest-All</AnalysisLevel>
     <PackageId>pauldeen79.CrossCutting.ProcessingPipeline</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>8.1.0</Version>
-    <PackageVersion>8.1.0</PackageVersion>
+    <Version>8.1.1</Version>
+    <PackageVersion>8.1.1</PackageVersion>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/pauldeen79/CrossCutting/main/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CrossCutting.Common\CrossCutting.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
