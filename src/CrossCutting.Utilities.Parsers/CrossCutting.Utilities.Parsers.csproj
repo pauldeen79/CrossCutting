@@ -7,8 +7,10 @@
     <AnalysisLevel>latest-All</AnalysisLevel>
     <PackageId>pauldeen79.CrossCutting.Utilities.Parsers</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>5.1.0</Version>
-    <PackageVersion>5.1.0</PackageVersion>
+    <Version>5.1.1</Version>
+    <PackageVersion>5.1.1</PackageVersion>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +21,11 @@
     <ProjectReference Include="..\CrossCutting.Common\CrossCutting.Common.csproj" />
     <ProjectReference Include="..\CrossCutting.Utilities.Aggregators\CrossCutting.Utilities.Aggregators.csproj" />
     <ProjectReference Include="..\CrossCutting.Utilities.Operators\CrossCutting.Utilities.Operators.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
