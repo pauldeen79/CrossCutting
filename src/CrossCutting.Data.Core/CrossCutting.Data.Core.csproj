@@ -9,7 +9,7 @@
     <Version>4.1.1</Version>
     <PackageVersion>4.1.1</PackageVersion>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/pauldeen79/CrossCutting/main/LICENSE</PackageLicenseUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
