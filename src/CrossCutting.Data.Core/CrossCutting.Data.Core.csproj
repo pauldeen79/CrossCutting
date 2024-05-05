@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <PackageId>pauldeen79.CrossCutting.Data.Core</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>4.1.1</Version>
-    <PackageVersion>4.1.1</PackageVersion>
+    <Version>5.0.0</Version>
+    <PackageVersion>5.0.0</PackageVersion>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>

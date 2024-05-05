@@ -13,7 +13,7 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
         // Act
-        var actual = sut.CommandDelegate.Invoke(entity, operation);
+        var actual = sut.CreateCommand.Invoke(entity, operation);
 
         // Assert
         actual.CommandText.Should().Be(expectedCommandText);
@@ -29,7 +29,7 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
         // Act
-        sut.Invoking(x => x.CommandDelegate.Invoke(entity, operation))
+        sut.Invoking(x => x.CreateCommand.Invoke(entity, operation))
            .Should().Throw<ArgumentOutOfRangeException>()
            .And.ParamName.Should().Be("operation");
     }
@@ -45,10 +45,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
         // Act
-        sut.ResultEntityDelegate.Should().NotBeNull();
-        if (sut.ResultEntityDelegate is not null)
+        sut.CreateResultEntity.Should().NotBeNull();
+        if (sut.CreateResultEntity is not null)
         {
-            var actual = sut.ResultEntityDelegate.Invoke(entity, operation);
+            var actual = sut.CreateResultEntity.Invoke(entity, operation);
 
             // Assert
             actual.Should().Be(entity);
@@ -65,10 +65,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
         // Act
-        sut.ResultEntityDelegate.Should().NotBeNull();
-        if (sut.ResultEntityDelegate is not null)
+        sut.CreateResultEntity.Should().NotBeNull();
+        if (sut.CreateResultEntity is not null)
         {
-            sut.Invoking(x => x.ResultEntityDelegate?.Invoke(entity, operation))
+            sut.Invoking(x => x.CreateResultEntity?.Invoke(entity, operation))
                .Should().Throw<ArgumentOutOfRangeException>()
                .And.ParamName.Should().Be("operation");
         }
@@ -114,10 +114,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         );
 
         // Act
-        sut.AfterReadDelegate.Should().NotBeNull();
-        if (sut.AfterReadDelegate is not null)
+        sut.AfterRead.Should().NotBeNull();
+        if (sut.AfterRead is not null)
         {
-            var actual = sut.AfterReadDelegate.Invoke(entity, operation, readerMock);
+            var actual = sut.AfterRead.Invoke(entity, operation, readerMock);
 
             // Assert
             actual.Should().Be(entity);
@@ -141,10 +141,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var readerMock = Substitute.For<IDataReader>();
 
         // Act
-        sut.AfterReadDelegate.Should().NotBeNull();
-        if (sut.AfterReadDelegate is not null)
+        sut.AfterRead.Should().NotBeNull();
+        if (sut.AfterRead is not null)
         {
-            sut.Invoking(x => x.AfterReadDelegate?.Invoke(entity, operation, readerMock))
+            sut.Invoking(x => x.AfterRead?.Invoke(entity, operation, readerMock))
                .Should().Throw<ArgumentOutOfRangeException>()
                .And.ParamName.Should().Be("operation");
         }
@@ -158,10 +158,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act
-        sut.CreateBuilderDelegate.Should().NotBeNull();
-        if (sut.CreateBuilderDelegate is not null)
+        sut.CreateBuilder.Should().NotBeNull();
+        if (sut.CreateBuilder is not null)
         {
-            var actual = sut.CreateBuilderDelegate.Invoke(entity);
+            var actual = sut.CreateBuilder.Invoke(entity);
 
             // Assert
             actual.Should().NotBeNull();
@@ -179,10 +179,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var builder = new TestEntityBuilder(new TestEntity("A", "B", "C", true));
 
         // Act
-        sut.CreateEntityDelegate.Should().NotBeNull();
-        if (sut.CreateEntityDelegate is not null)
+        sut.CreateEntity.Should().NotBeNull();
+        if (sut.CreateEntity is not null)
         {
-            var actual = sut.CreateEntityDelegate.Invoke(builder);
+            var actual = sut.CreateEntity.Invoke(builder);
 
             // Assert
             actual.Should().NotBeNull();
