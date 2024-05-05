@@ -75,7 +75,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        ProviderMock.ResultEntityDelegate.Returns((_, _) => null!);
+        ProviderMock.CreateResultEntity.Returns((_, _) => null!);
 
         // Act
         Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "filled" }))
@@ -88,7 +88,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        ProviderMock.ResultEntityDelegate.Returns((_, _) => null!);
+        ProviderMock.CreateResultEntity.Returns((_, _) => null!);
 
         // Act
         Sut.Awaiting(x => x.ExecuteCommandAsync(command, new MyEntity { Property = "filled" }))
@@ -101,8 +101,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        ProviderMock.ResultEntityDelegate.Returns(default(Func<MyEntity, DatabaseOperation, MyEntity>?));
-        ProviderMock.CreateEntityDelegate.Returns(default(Func<MyEntity, MyEntity>?));
+        ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
+        ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
         Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "filled" }))
@@ -114,8 +114,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        ProviderMock.ResultEntityDelegate.Returns(default(Func<MyEntity, DatabaseOperation, MyEntity>?));
-        ProviderMock.CreateEntityDelegate.Returns(default(Func<MyEntity, MyEntity>?));
+        ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
+        ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
         Sut.Awaiting(x => x.ExecuteCommandAsync(command, new MyEntity { Property = "filled" }))
@@ -127,8 +127,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        ProviderMock.ResultEntityDelegate.Returns(default(Func<MyEntity, DatabaseOperation, MyEntity>?));
-        ProviderMock.CreateEntityDelegate.Returns(default(Func<MyEntity, MyEntity>?));
+        ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
+        ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
         Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = null }))
@@ -141,8 +141,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        ProviderMock.ResultEntityDelegate.Returns(default(Func<MyEntity, DatabaseOperation, MyEntity>?));
-        ProviderMock.CreateEntityDelegate.Returns(default(Func<MyEntity, MyEntity>?));
+        ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
+        ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
         Sut.Awaiting(x => x.ExecuteCommandAsync(command, new MyEntity { Property = null }))
@@ -156,8 +156,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         // Arrange
         Connection.AddResultForNonQueryCommand(0); // 0 rows affected
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        ProviderMock.ResultEntityDelegate.Returns(default(Func<MyEntity, DatabaseOperation, MyEntity>?));
-        ProviderMock.CreateEntityDelegate.Returns(default(Func<MyEntity, MyEntity>?));
+        ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
+        ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
         Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added"))
@@ -171,8 +171,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         // Arrange
         Connection.AddResultForNonQueryCommand(0); // 0 rows affected
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        ProviderMock.ResultEntityDelegate.Returns(default(Func<MyEntity, DatabaseOperation, MyEntity>?));
-        ProviderMock.CreateEntityDelegate.Returns(default(Func<MyEntity, MyEntity>?));
+        ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
+        ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
         await Sut.Invoking(async x => (await x.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added"))
@@ -209,9 +209,9 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        ProviderMock.ResultEntityDelegate.Returns(default(Func<MyEntity, DatabaseOperation, MyEntity>?));
-        ProviderMock.CreateEntityDelegate.Returns(default(Func<MyEntity, MyEntity>?));
-        ProviderMock.AfterReadDelegate.Returns(new Func<MyEntity, DatabaseOperation, IDataReader, MyEntity>((x, _, _) => x));
+        ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
+        ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
+        ProviderMock.AfterRead.Returns(new AfterReadHandler<MyEntity>((x, _, _) => x));
 
         // Act
         Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added"))
@@ -224,9 +224,9 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        ProviderMock.ResultEntityDelegate.Returns(default(Func<MyEntity, DatabaseOperation, MyEntity>?));
-        ProviderMock.CreateEntityDelegate.Returns(default(Func<MyEntity, MyEntity>?));
-        ProviderMock.AfterReadDelegate.Returns(new Func<MyEntity, DatabaseOperation, IDataReader, MyEntity>((x, _, _) => x));
+        ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
+        ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
+        ProviderMock.AfterRead.Returns(new AfterReadHandler<MyEntity>((x, _, _) => x));
 
         // Act
         await Sut.Invoking(async x => (await x.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added"))
@@ -240,9 +240,9 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         // Arrange
         Connection.AddResultForDataReader(new[] { new MyEntity { Property = "test" } });
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        ProviderMock.ResultEntityDelegate.Returns(default(Func<MyEntity, DatabaseOperation, MyEntity>?));
-        ProviderMock.CreateEntityDelegate.Returns(default(Func<MyEntity, MyEntity>?));
-        ProviderMock.AfterReadDelegate.Returns(new Func<MyEntity, DatabaseOperation, IDataReader, MyEntity>((x, _, _) => x));
+        ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
+        ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
+        ProviderMock.AfterRead.Returns(new AfterReadHandler<MyEntity>((x, _, _) => x));
 
         // Act
         var actual = Sut.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added");
@@ -257,9 +257,9 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         // Arrange
         Connection.AddResultForDataReader(new[] { new MyEntity { Property = "test" } });
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        ProviderMock.ResultEntityDelegate.Returns(default(Func<MyEntity, DatabaseOperation, MyEntity>?));
-        ProviderMock.CreateEntityDelegate.Returns(default(Func<MyEntity, MyEntity>?));
-        ProviderMock.AfterReadDelegate.Returns(new Func<MyEntity, DatabaseOperation, IDataReader, MyEntity>((x, _, _) => x));
+        ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
+        ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
+        ProviderMock.AfterRead.Returns(new AfterReadHandler<MyEntity>((x, _, _) => x));
 
         // Act
         var actual = (await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added");
@@ -301,9 +301,9 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var builderProviderMock = Substitute.For<IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>>();
-        builderProviderMock.CreateBuilderDelegate.Returns(new Func<TestEntity, TestEntityBuilder>(entity => new TestEntityBuilder(entity)));
-        builderProviderMock.ResultEntityDelegate.Returns(default(Func<TestEntityBuilder, DatabaseOperation, TestEntityBuilder>?));
-        builderProviderMock.CreateEntityDelegate.Returns(default(Func<TestEntityBuilder, TestEntity>?));
+        builderProviderMock.CreateBuilder.Returns(new CreateBuilderHandler<TestEntity, TestEntityBuilder>(entity => new TestEntityBuilder(entity)));
+        builderProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<TestEntityBuilder>?));
+        builderProviderMock.CreateEntity.Returns(default(CreateEntityHandler<TestEntityBuilder, TestEntity>?));
 
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
         var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
@@ -320,9 +320,9 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     {
         // Arrange
         var builderProviderMock = Substitute.For<IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>>();
-        builderProviderMock.CreateBuilderDelegate.Returns(new Func<TestEntity, TestEntityBuilder>(entity => new TestEntityBuilder(entity)));
-        builderProviderMock.ResultEntityDelegate.Returns(default(Func<TestEntityBuilder, DatabaseOperation, TestEntityBuilder>?));
-        builderProviderMock.CreateEntityDelegate.Returns(default(Func<TestEntityBuilder, TestEntity>?));
+        builderProviderMock.CreateBuilder.Returns(new CreateBuilderHandler<TestEntity, TestEntityBuilder>(entity => new TestEntityBuilder(entity)));
+        builderProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<TestEntityBuilder>?));
+        builderProviderMock.CreateEntity.Returns(default(CreateEntityHandler<TestEntityBuilder, TestEntity>?));
 
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
         var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
@@ -340,11 +340,11 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         // Arrange
         Connection.AddResultForNonQueryCommand(12345); //using ExecuteNonQuery flow, need to give valid result
         var builderProviderMock = Substitute.For<IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>>();
-        builderProviderMock.CreateBuilderDelegate.Returns(new Func<TestEntity, TestEntityBuilder>(entity => new TestEntityBuilder(entity)));
+        builderProviderMock.CreateBuilder.Returns(new CreateBuilderHandler<TestEntity, TestEntityBuilder>(entity => new TestEntityBuilder(entity)));
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        builderProviderMock.CreateEntityDelegate.Returns(x => x.Build());
-        builderProviderMock.ResultEntityDelegate.Returns(default(Func<TestEntityBuilder, DatabaseOperation, TestEntityBuilder>?));
-        builderProviderMock.AfterReadDelegate.Returns(default(Func<TestEntityBuilder, DatabaseOperation, IDataReader, TestEntityBuilder>?));
+        builderProviderMock.CreateEntity.Returns(x => x.Build());
+        builderProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<TestEntityBuilder>?));
+        builderProviderMock.AfterRead.Returns(default( AfterReadHandler<TestEntityBuilder>?));
 
         var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
         var entity = new TestEntity("A", "B", "C", true);
@@ -365,11 +365,11 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         // Arrange
         Connection.AddResultForNonQueryCommand(12345); //using ExecuteNonQuery flow, need to give valid result
         var builderProviderMock = Substitute.For<IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>>();
-        builderProviderMock.CreateBuilderDelegate.Returns(new Func<TestEntity, TestEntityBuilder>(entity => new TestEntityBuilder(entity)));
+        builderProviderMock.CreateBuilder.Returns(new CreateBuilderHandler<TestEntity, TestEntityBuilder>(entity => new TestEntityBuilder(entity)));
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
-        builderProviderMock.CreateEntityDelegate.Returns(x => x.Build());
-        builderProviderMock.ResultEntityDelegate.Returns(default(Func<TestEntityBuilder, DatabaseOperation, TestEntityBuilder>?));
-        builderProviderMock.AfterReadDelegate.Returns(default(Func<TestEntityBuilder, DatabaseOperation, IDataReader, TestEntityBuilder>?));
+        builderProviderMock.CreateEntity.Returns(x => x.Build());
+        builderProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<TestEntityBuilder>?));
+        builderProviderMock.AfterRead.Returns(default( AfterReadHandler<TestEntityBuilder>?));
 
         var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
         var entity = new TestEntity("A", "B", "C", true);
