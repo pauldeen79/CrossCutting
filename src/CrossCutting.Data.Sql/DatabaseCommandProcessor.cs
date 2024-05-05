@@ -47,7 +47,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
         {
             cmd.FillCommand(command.CommandText, command.CommandType, command.CommandParameters);
 
-            if (_provider.OnReadComplete is null)
+            if (_provider.AfterReadDelegate is null)
             {
                 //Use ExecuteNonQuery
                 return ExecuteNonQuery(cmd, resultEntity);
@@ -55,7 +55,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
             else
             {
                 //Use ExecuteReader
-                return ExecuteReader(cmd, command.Operation, _provider.OnReadComplete, resultEntity);
+                return ExecuteReader(cmd, command.Operation, _provider.AfterReadDelegate, resultEntity);
             }
         }
     }
@@ -69,7 +69,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
         {
             cmd.FillCommand(command.CommandText, command.CommandType, command.CommandParameters);
 
-            if (_provider.OnReadComplete is null)
+            if (_provider.AfterReadDelegate is null)
             {
                 //Use ExecuteNonQuery
                 return await ExecuteNonQueryAsync(cmd, resultEntity, cancellationToken);
@@ -77,7 +77,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
             else
             {
                 //Use ExecuteReader
-                return await ExecuteReaderAsync(cmd, command.Operation, cancellationToken, _provider.OnReadComplete, resultEntity);
+                return await ExecuteReaderAsync(cmd, command.Operation, cancellationToken, _provider.AfterReadDelegate, resultEntity);
             }
         }
     }
@@ -91,8 +91,8 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
         }
         else
         {
-            builder = _provider.OnCreateBuilder is not null
-                ? _provider.OnCreateBuilder.Invoke(instance)
+            builder = _provider.CreateBuilderDelegate is not null
+                ? _provider.CreateBuilderDelegate.Invoke(instance)
                 : default;
         }
 
@@ -101,9 +101,9 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
             throw new InvalidOperationException("Builder instance was not constructed, create builder delegate should deliver an instance");
         }
 
-        var resultEntity = _provider.OnCreateResultEntity is null
+        var resultEntity = _provider.ResultEntityDelegate is null
             ? builder
-            : _provider.OnCreateResultEntity.Invoke(builder, command.Operation);
+            : _provider.ResultEntityDelegate.Invoke(builder, command.Operation);
 
         if (resultEntity is null)
         {
@@ -132,9 +132,9 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
 
     private TEntity CreateEntityFromBuilder(TBuilder result)
     {
-        if (_provider.OnCreateEntity is not null)
+        if (_provider.CreateEntityDelegate is not null)
         {
-            return _provider.OnCreateEntity.Invoke(result);
+            return _provider.CreateEntityDelegate.Invoke(result);
         }
 
         if (result is TEntity x)
@@ -148,7 +148,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
     private IDatabaseCommandResult<TEntity> ExecuteReader(
         IDbCommand cmd,
         DatabaseOperation operation,
-        OnReadCompleted<TBuilder> afterReadDelegate,
+        Func<TBuilder, DatabaseOperation, IDataReader, TBuilder> afterReadDelegate,
         TBuilder resultEntity)
     {
         var success = false;
@@ -170,7 +170,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProce
         DbCommand cmd,
         DatabaseOperation operation,
         CancellationToken cancellationToken,
-        OnReadCompleted<TBuilder> afterReadDelegate,
+        Func<TBuilder, DatabaseOperation, IDataReader, TBuilder> afterReadDelegate,
         TBuilder resultEntity)
     {
         var success = false;

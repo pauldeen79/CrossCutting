@@ -45,10 +45,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
         // Act
-        sut.OnCreateResultEntity.Should().NotBeNull();
-        if (sut.OnCreateResultEntity is not null)
+        sut.ResultEntityDelegate.Should().NotBeNull();
+        if (sut.ResultEntityDelegate is not null)
         {
-            var actual = sut.OnCreateResultEntity.Invoke(entity, operation);
+            var actual = sut.ResultEntityDelegate.Invoke(entity, operation);
 
             // Assert
             actual.Should().Be(entity);
@@ -65,10 +65,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
         // Act
-        sut.OnCreateResultEntity.Should().NotBeNull();
-        if (sut.OnCreateResultEntity is not null)
+        sut.ResultEntityDelegate.Should().NotBeNull();
+        if (sut.ResultEntityDelegate is not null)
         {
-            sut.Invoking(x => x.OnCreateResultEntity?.Invoke(entity, operation))
+            sut.Invoking(x => x.ResultEntityDelegate?.Invoke(entity, operation))
                .Should().Throw<ArgumentOutOfRangeException>()
                .And.ParamName.Should().Be("operation");
         }
@@ -114,10 +114,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         );
 
         // Act
-        sut.OnReadComplete.Should().NotBeNull();
-        if (sut.OnReadComplete is not null)
+        sut.AfterReadDelegate.Should().NotBeNull();
+        if (sut.AfterReadDelegate is not null)
         {
-            var actual = sut.OnReadComplete.Invoke(entity, operation, readerMock);
+            var actual = sut.AfterReadDelegate.Invoke(entity, operation, readerMock);
 
             // Assert
             actual.Should().Be(entity);
@@ -141,10 +141,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var readerMock = Substitute.For<IDataReader>();
 
         // Act
-        sut.OnReadComplete.Should().NotBeNull();
-        if (sut.OnReadComplete is not null)
+        sut.AfterReadDelegate.Should().NotBeNull();
+        if (sut.AfterReadDelegate is not null)
         {
-            sut.Invoking(x => x.OnReadComplete?.Invoke(entity, operation, readerMock))
+            sut.Invoking(x => x.AfterReadDelegate?.Invoke(entity, operation, readerMock))
                .Should().Throw<ArgumentOutOfRangeException>()
                .And.ParamName.Should().Be("operation");
         }
@@ -158,10 +158,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act
-        sut.OnCreateEntity.Should().NotBeNull();
-        if (sut.OnCreateEntity is not null)
+        sut.CreateBuilderDelegate.Should().NotBeNull();
+        if (sut.CreateBuilderDelegate is not null)
         {
-            var actual = sut.OnCreateEntity.Invoke(entity);
+            var actual = sut.CreateBuilderDelegate.Invoke(entity);
 
             // Assert
             actual.Should().NotBeNull();
@@ -179,10 +179,10 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var builder = new TestEntityBuilder(new TestEntity("A", "B", "C", true));
 
         // Act
-        sut.OnCreateBuilder.Should().NotBeNull();
-        if (sut.OnCreateBuilder is not null)
+        sut.CreateEntityDelegate.Should().NotBeNull();
+        if (sut.CreateEntityDelegate is not null)
         {
-            var actual = sut.OnCreateBuilder.Invoke(builder);
+            var actual = sut.CreateEntityDelegate.Invoke(builder);
 
             // Assert
             actual.Should().NotBeNull();

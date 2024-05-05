@@ -14,7 +14,7 @@ public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityPro
             };
         };
 
-    public OnResultEntityCreated<TestEntityBuilder>? OnCreateResultEntity
+    public Func<TestEntityBuilder, DatabaseOperation, TestEntityBuilder>? ResultEntityDelegate
         => (entity, operation) =>
         {
             return operation switch
@@ -26,7 +26,7 @@ public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityPro
             };
         };
 
-    public OnReadCompleted<TestEntityBuilder>? OnReadComplete
+    public Func<TestEntityBuilder, DatabaseOperation, IDataReader, TestEntityBuilder>? AfterReadDelegate
         => (entity, operation, reader) =>
         {
             return operation switch
@@ -38,9 +38,9 @@ public class TestEntityDatabaseCommandEntityProvider : IDatabaseCommandEntityPro
             };
         };
 
-    public OnCreateBuilder<TestEntity, TestEntityBuilder>? OnCreateBuilder => entity => new TestEntityBuilder(entity);
+    public Func<TestEntity, TestEntityBuilder>? CreateBuilderDelegate => entity => new TestEntityBuilder(entity);
 
-    public OnCreateEntity<TestEntityBuilder, TestEntity>? OnCreateEntity => builder => builder.Build();
+    public Func<TestEntityBuilder, TestEntity>? CreateEntityDelegate => builder => builder.Build();
 
     private KeyValuePair<string, object?>[] AddParameters(TestEntityBuilder resultEntity)
         =>
