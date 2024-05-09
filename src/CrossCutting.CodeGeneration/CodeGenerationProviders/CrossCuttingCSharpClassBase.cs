@@ -17,6 +17,7 @@ public abstract class CrossCuttingCSharpClassBase : CsharpClassGeneratorPipeline
     protected override string ProjectName => Constants.ProjectName;
     protected override string CoreNamespace => Constants.Namespaces.UtilitiesParsers; // standard implementation thinks we're using the project name concatenated with '.Domain'
     protected override bool CopyAttributes => true;
+    protected override bool CopyInterfaces => true;
     protected override bool CreateRecord => true;
     protected override bool GenerateMultipleFiles => false;
 
