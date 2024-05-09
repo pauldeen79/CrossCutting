@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 internal static class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         // Setup code generation
         var currentDirectory = Directory.GetCurrentDirectory();
@@ -45,7 +45,7 @@ internal static class Program
         var tasks = instances
             .Select(x => engine.Generate(x, new MultipleContentBuilderEnvironment(), new CodeGenerationSettings(basePath, Path.Combine(x.Path, $"{x.GetType().Name}.template.generated.cs"))))
             .ToArray();
-        Task.WaitAll(tasks);
+        await Task.WhenAll(tasks);
 
         // Log output to console
         if (!string.IsNullOrEmpty(basePath))
