@@ -16,8 +16,5 @@ public class AbstractNonGenericBuilders : CrossCuttingCSharpClassBase
     protected override string FilenameSuffix => ".nongeneric.template.generated";
 
     public override async Task<IEnumerable<TypeBase>> GetModel()
-        => await GetNonGenericBuilders(
-            await GetAbstractModels(),
-            CurrentNamespace,
-            Constants.Namespaces.UtilitiesParsers);
+        => await GetNonGenericBuilders(await GetAbstractModels(), CurrentNamespace, Constants.Namespaces.UtilitiesParsers);
 }
