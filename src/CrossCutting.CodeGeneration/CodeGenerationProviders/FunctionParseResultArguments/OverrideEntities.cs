@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class OverrideEntities : CrossCuttingCSharpClassBase
 {
-    public OverrideEntities(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    public OverrideEntities(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractBuilders : CrossCuttingCSharpClassBase
 {
-    public AbstractBuilders(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    public AbstractBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

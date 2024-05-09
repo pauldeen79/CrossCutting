@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 internal static class Program
 {
-    private static async Task Main(string[] args)
+    private static void Main(string[] args)
     {
         // Setup code generation
         var currentDirectory = Directory.GetCurrentDirectory();
@@ -14,8 +14,6 @@ internal static class Program
             var x when x.EndsWith($"{Constants.ProjectName}.CodeGeneration") => Path.Combine(currentDirectory, @"../"),
             _ => Path.Combine(currentDirectory, @"../../../../")
         };
-        var dryRun = false;
-        var codeGenerationSettings = new CodeGenerationSettings(basePath, "GeneratedCode.cs", dryRun);
         var services = new ServiceCollection()
             .AddParsers()
             .AddPipelines()
@@ -44,24 +42,13 @@ internal static class Program
         var engine = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
 
         // Generate code
-        var count = 0;
-        foreach (var instance in instances)
-        {
-            var generationEnvironment = new MultipleContentBuilderEnvironment();
-            await engine.Generate(instance, generationEnvironment, codeGenerationSettings);
-            count += generationEnvironment.Builder.Contents.Count();
-
-            if (string.IsNullOrEmpty(basePath))
-            {
-                Console.WriteLine(generationEnvironment.Builder.ToString());
-            }
-        }
+        var tasks = instances.Select(x => engine.Generate(x, new MultipleContentBuilderEnvironment(), new CodeGenerationSettings(basePath, Path.Combine(x.Path, $"{x.GetType().Name}.template.generated.cs")))).ToArray();
+        Task.WaitAll(tasks);
 
         // Log output to console
         if (!string.IsNullOrEmpty(basePath))
         {
             Console.WriteLine($"Code generation completed, check the output in {basePath}");
-            Console.WriteLine($"Generated files: {count}");
         }
     }
 }

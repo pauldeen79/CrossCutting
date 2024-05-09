@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractNonGenericBuilders : CrossCuttingCSharpClassBase
 {
-    public AbstractNonGenericBuilders(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    public AbstractNonGenericBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 
@@ -11,6 +11,7 @@ public class AbstractNonGenericBuilders : CrossCuttingCSharpClassBase
 
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;
+    protected override bool CreateAsObservable => true;
     protected override bool IsAbstract => true;
     protected override string FilenameSuffix => ".nongeneric.template.generated";
 
