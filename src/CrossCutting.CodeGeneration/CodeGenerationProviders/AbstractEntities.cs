@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractEntities : CrossCuttingCSharpClassBase
 {
-    public AbstractEntities(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    public AbstractEntities(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 
@@ -15,5 +15,5 @@ public class AbstractEntities : CrossCuttingCSharpClassBase
     protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.None; // not needed for abstract entities, because each derived class will do its own validation
 
     public override async Task<IEnumerable<TypeBase>> GetModel()
-        => await GetEntities(await GetAbstractModels(), Constants.Namespaces.UtilitiesParsers);
+        => await GetEntities(await GetAbstractModels(), CurrentNamespace);
 }

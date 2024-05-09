@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractBuilders : CrossCuttingCSharpClassBase
 {
-    public AbstractBuilders(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    public AbstractBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 
@@ -14,8 +14,5 @@ public class AbstractBuilders : CrossCuttingCSharpClassBase
     protected override bool IsAbstract => true;
 
     public override async Task<IEnumerable<TypeBase>> GetModel()
-        => await GetBuilders(
-            await GetAbstractModels(),
-            CurrentNamespace,
-            Constants.Namespaces.UtilitiesParsers);
+        => await GetBuilders(await GetAbstractModels(), CurrentNamespace, Constants.Namespaces.UtilitiesParsers);
 }

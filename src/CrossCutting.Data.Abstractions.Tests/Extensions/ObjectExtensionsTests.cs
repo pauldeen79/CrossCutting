@@ -3,7 +3,9 @@
 public class ObjectExtensionsTests
 {
     [Theory]
+#pragma warning disable xUnit1045 // Avoid using TheoryData type arguments that might not be serializable
     [MemberData(nameof(FixDbNullData))]
+#pragma warning restore xUnit1045 // Avoid using TheoryData type arguments that might not be serializable
     public void FixDbNull_Returns_Correct_Value(object? input, object? expectedOutput)
     {
         // Act
@@ -14,7 +16,9 @@ public class ObjectExtensionsTests
     }
 
     [Theory]
+#pragma warning disable xUnit1045 // Avoid using TheoryData type arguments that might not be serializable
     [MemberData(nameof(FixNullData))]
+#pragma warning restore xUnit1045 // Avoid using TheoryData type arguments that might not be serializable
     public void FixNull_Returns_Correct_Value(object? input, object expectedOutput)
     {
         // Act
