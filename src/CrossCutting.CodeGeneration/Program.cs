@@ -42,7 +42,9 @@ internal static class Program
         var engine = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
 
         // Generate code
-        var tasks = instances.Select(x => engine.Generate(x, new MultipleContentBuilderEnvironment(), new CodeGenerationSettings(basePath, Path.Combine(x.Path, $"{x.GetType().Name}.template.generated.cs")))).ToArray();
+        var tasks = instances
+            .Select(x => engine.Generate(x, new MultipleContentBuilderEnvironment(), new CodeGenerationSettings(basePath, Path.Combine(x.Path, $"{x.GetType().Name}.template.generated.cs"))))
+            .ToArray();
         Task.WaitAll(tasks);
 
         // Log output to console
