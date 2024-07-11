@@ -16,7 +16,7 @@ internal static class Program
         };
         var services = new ServiceCollection()
             .AddParsers()
-            .AddPipelines()
+            .AddClassFrameworkPipelines()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkCodeGeneration()
