@@ -15,8 +15,4 @@
     <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="0.11.1" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="dotnet $(TargetDir)CrossCutting.CodeGeneration.dll" />
-  </Target>
-
 </Project>
