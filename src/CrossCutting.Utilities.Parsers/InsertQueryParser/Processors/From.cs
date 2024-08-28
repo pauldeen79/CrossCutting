@@ -4,7 +4,7 @@ internal sealed class From : IInsertQueryParserProcessor
 {
     public ProcessResult Process(char character, InsertQueryParserState state)
     {
-        if (state.CurrentSection.ToString().EndsWith(" FRO", StringComparison.OrdinalIgnoreCase)
+        if (state.CurrentSection.ToString().EndsWithAny(StringComparison.OrdinalIgnoreCase, " FRO", "\tFRO", "\nFRO")
             && character.ToString().Equals("M", StringComparison.OrdinalIgnoreCase)
             && state.SelectFound)
         {

@@ -19,6 +19,34 @@ public class InsertQueryParserTests
     }
 
     [Fact]
+    public void CanParseInsertIntoValuesQueryWithNewLinesAndTabs()
+    {
+        // Arrange
+        const string input = @"INSERT INTO
+	[mytable]
+	(
+		[Column A],
+		[Column B],
+		[Column C]
+	)
+	values
+	(
+		'A',
+		'B',
+		'C'
+	)";
+
+        // Act
+        var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
+
+        // Assert
+        actual.IsSuccessful.Should().BeTrue();
+        actual.ErrorMessages.Should().BeEmpty();
+        var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
+        contents.Should().Be("Column A;'A'|Column B;'B'|Column C;'C'");
+    }
+
+    [Fact]
     public void CanParseInsertIntoValuesQueryWithOutputClause()
     {
         // Arrange
@@ -178,7 +206,7 @@ public class InsertQueryParserTests
         contents.Should().Be("Column A;0.5|Column B;'Hello world!'|ColumnC;FieldC|Column_D;FieldD|Missing1;#MISSING#|Missing2;#MISSING#");
     }
 
-    [Fact]
+    [Fact] // note that you probably better use ToInsertIntoString instead of string.Format in this test
     public void CanParseBackAndForth()
     {
         // Arrange
@@ -193,6 +221,28 @@ public class InsertQueryParserTests
             "INSERT INTO [{0}]({1}) VALUES ({2})"
             , "Tabel"
             , string.Join(", ", parseResult.Values.Select(kvp => kvp.Key))
+            , string.Join(", ", parseResult.Values.Select(kvp => kvp.Value))
+        );
+
+        // Assert
+        insertQuery.Should().Be(InsertQuery);
+    }
+
+    [Fact] // note that you probably better use ToInsertIntoString instead of string.Format in this test
+    public void CanParseBackAndForthWithSpacesInColumnNames()
+    {
+        // Arrange
+        const string InsertQuery = "INSERT INTO [Tabel]([Column A], [Column B], [Column C]) VALUES (ValueA, ValueB, ValueC)";
+
+        // Act
+        var parseResult = Parsers.InsertQueryParser.InsertQueryParser.Parse(InsertQuery);
+
+        // Act some more
+        var insertQuery = string.Format
+        (
+            "INSERT INTO [{0}]({1}) VALUES ({2})"
+            , "Tabel"
+            , string.Join(", ", parseResult.Values.Select(kvp => $"[{kvp.Key}]"))
             , string.Join(", ", parseResult.Values.Select(kvp => kvp.Value))
         );
 
