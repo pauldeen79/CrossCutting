@@ -4,14 +4,7 @@ internal sealed class NormalCharacter : IInsertQueryParserProcessor
 {
     public ProcessResult Process(char character, InsertQueryParserState state)
     {
-        if (character != '\r'
-            && character != '\n'
-            && character != '\t')
-        {
-            state.CurrentSection.Append(character);
-            return ProcessResult.Success();
-        }
-
-        return ProcessResult.NotUnderstood();
+        state.CurrentSection.Append(character);
+        return ProcessResult.Success();
     }
 }

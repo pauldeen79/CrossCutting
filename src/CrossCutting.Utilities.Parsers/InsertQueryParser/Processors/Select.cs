@@ -4,7 +4,7 @@ internal sealed class Select : IInsertQueryParserProcessor
 {
     public ProcessResult Process(char character, InsertQueryParserState state)
     {
-        if (state.CurrentSection.ToString().EndsWith(" SELEC", StringComparison.OrdinalIgnoreCase)
+        if (state.CurrentSection.ToString().EndsWithAny(StringComparison.OrdinalIgnoreCase, " SELEC", "\tSELEC", "\nSELEC")
             && character.ToString().Equals("T", StringComparison.OrdinalIgnoreCase)
             && state.InsertIntoFound
             && !state.SelectFound
