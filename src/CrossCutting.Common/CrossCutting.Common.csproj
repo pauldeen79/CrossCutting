@@ -7,8 +7,8 @@
     <AnalysisLevel>latest-All</AnalysisLevel>
     <PackageId>pauldeen79.CrossCutting.Common</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>3.10.2</Version>
-    <PackageVersion>3.10.2</PackageVersion>
+    <Version>3.11.0</Version>
+    <PackageVersion>3.11.0</PackageVersion>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <NeutralLanguage>en</NeutralLanguage>
