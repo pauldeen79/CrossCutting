@@ -57,6 +57,71 @@ public record Result<T> : Result
 
         return new Result<TTarget>(transformDelegate(Value!), Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
     }
+
+    public void Either(Action<Result<T>> errorDelegate, Action<Result<T>> successDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (!IsSuccessful())
+        {
+            errorDelegate(this);
+            return;
+        }
+
+        successDelegate(this);
+    }
+
+    public Result Either(Func<Result<T>, Result> errorDelegate, Func<Result<T>, Result> successDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (!IsSuccessful())
+        {
+            return errorDelegate(this);
+        }
+
+        return successDelegate(this);
+    }
+
+    public Result<T> Either(Func<Result<T>, Result<T>> errorDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+
+        if (!IsSuccessful())
+        {
+            return errorDelegate(this);
+        }
+
+        return this;
+    }
+
+    public Result<T> Either(Func<Result<T>, Result<T>> errorDelegate, Func<Result<T>, Result<T>> successDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (!IsSuccessful())
+        {
+            return errorDelegate(this);
+        }
+
+        return successDelegate(this);
+    }
+
+    public Result<TResult> Either<TResult>(Func<Result<T>, Result<TResult>> errorDelegate, Func<Result<T>, Result<TResult>> successDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (!IsSuccessful())
+        {
+            return errorDelegate(this);
+        }
+
+        return successDelegate(this);
+    }
 }
 
 public record Result
@@ -236,4 +301,18 @@ public record Result
         => ThrowIfInvalid(string.IsNullOrEmpty(ErrorMessage)
             ? $"Result: {Status}"
             : $"Result: {Status}, ErrorMessage: {ErrorMessage}");
+
+    public void Either(Action<Result> errorDelegate, Action<Result> successDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (!IsSuccessful())
+        {
+            errorDelegate(this);
+            return;
+        }
+
+        successDelegate(this);
+    }
 }

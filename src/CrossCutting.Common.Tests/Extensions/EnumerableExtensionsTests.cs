@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Common.Tests.Extensions;
+﻿using Castle.Components.DictionaryAdapter.Xml;
+
+namespace CrossCutting.Common.Tests.Extensions;
 
 public class EnumerableExtensionsTests
 {
@@ -236,6 +238,264 @@ public class EnumerableExtensionsTests
 
         // Assert
         result.Should().BeEquivalentTo("A", "B", "C");
+    }
+
+    [Fact]
+    public void PerformUntilFailure_Synchronous_Performs_Action_Until_First_NonSuccessful_Result()
+    {
+        // Arrange
+        var input = new[]
+        {
+            "success 1",
+            "success 2",
+            "error 1",
+            "error 2"
+        };
+        var counter = 0;
+
+        // Act
+        var result = input.PerformUntilFailure(x =>
+        {
+            counter++;
+            return x.StartsWith("success") ? Result.Success(x) : Result.Error("Error");
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error); // error should be returned
+        counter.Should().Be(3); // last error should be skipped
+    }
+
+    [Fact]
+    public void PerformUntilFailure_Synchronous_Performs_Action_On_All_Items_When_No_NonSuccessful_Results_Are_Present()
+    {
+        // Arrange
+        var input = new[]
+        {
+            "success 1",
+            "success 2"
+        };
+        var counter = 0;
+
+        // Act
+        var result = input.PerformUntilFailure(x =>
+        {
+            counter++;
+            return x.StartsWith("success") ? Result.Success(x) : Result.Error("Error");
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.GetValue().Should().BeEquivalentTo("success 2"); // last result should be returned
+        counter.Should().Be(2); // all items should have been processed
+    }
+
+    [Fact]
+    public void PerformUntilFailure_Synchronous_Performs_Action_On_All_Items_When_No_NonSuccessful_Results_Are_Present_Custom_Default_Value_Provided()
+    {
+        // Arrange
+        var input = new[]
+        {
+            "success 1",
+            "success 2"
+        };
+        var counter = 0;
+
+        // Act
+        var result = input.PerformUntilFailure(Result.NotFound, x =>
+        {
+            counter++;
+            return x.StartsWith("success") ? Result.Success(x) : Result.Error("Error");
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.GetValue().Should().BeEquivalentTo("success 2"); // last result should be returned
+        counter.Should().Be(2); // all items should have been processed
+    }
+
+    [Fact]
+    public void PerformUntilFailure_Synchronous_Returns_Default_Value_When_No_Items_Are_Present()
+    {
+        // Arrange
+        var input = Array.Empty<string>();
+        var counter = 0;
+
+        // Act
+        var result = input.PerformUntilFailure(x =>
+        {
+            counter++;
+            return x.StartsWith("success") ? Result.Success(x) : Result.Error("Error");
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok); // default value should be returned
+        counter.Should().Be(0); // no items to process
+    }
+
+    [Fact]
+    public void PerformUntilFailure_Synchronous_Returns_Custom_Default_Value_When_No_Items_Are_Present()
+    {
+        // Arrange
+        var input = Array.Empty<string>();
+        var counter = 0;
+
+        // Act
+        var result = input.PerformUntilFailure(Result.NotFound, x =>
+        {
+            counter++;
+            return x.StartsWith("success") ? Result.Success(x) : Result.Error("Error");
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound); // default value should be returned
+        counter.Should().Be(0); // no items to process
+    }
+
+    [Fact]
+    public async Task PerformUntilFailure_Async_Untyped_Performs_Action_Until_First_NonSuccessful_Result()
+    {
+        // Arrange
+        IEnumerable input = new[]
+        {
+            "success 1",
+            "success 2",
+            "error 1",
+            "error 2"
+        };
+        var counter = 0;
+
+        // Act
+        var result = await input.PerformUntilFailure(x =>
+        {
+            counter++;
+            return Task.FromResult(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error); // error should be returned
+        counter.Should().Be(3); // last error should be skipped
+    }
+
+    [Fact]
+    public async Task PerformUntilFailure_Async_Typed_Performs_Action_Until_First_NonSuccessful_Result()
+    {
+        // Arrange
+        IEnumerable<string> input = new[]
+        {
+        "success 1",
+        "success 2",
+        "error 1",
+        "error 2"
+    };
+        var counter = 0;
+
+        // Act
+        var result = await input.PerformUntilFailure(x =>
+        {
+            counter++;
+            return Task.FromResult(x.ToStringWithDefault().StartsWith("success") ? (Result)Result.Success(x) : Result.Error<string>("Error"));
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error); // error should be returned
+        counter.Should().Be(3); // last error should be skipped
+    }
+
+    [Fact]
+    public async Task PerformUntilFailure_Async_Untyped_Performs_Action_Until_First_NonSuccessful_Result_Custom_Default_Value_Provided()
+    {
+        // Arrange
+        IEnumerable input = new[]
+        {
+            "success 1",
+            "success 2",
+            "error 1",
+            "error 2"
+        };
+        var counter = 0;
+
+        // Act
+        var result = await input.PerformUntilFailure(() => Result.Success("default success"), x =>
+        {
+            counter++;
+            return Task.FromResult(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error); // error should be returned
+        counter.Should().Be(3); // last error should be skipped
+    }
+
+    [Fact]
+    public async Task PerformUntilFailure_Async_Untyped_Performs_Action_Until_First_NonSuccessful_Result_No_Unsucessful_Items_Present()
+    {
+        // Arrange
+        IEnumerable input = new[]
+        {
+            "success 1",
+            "success 2"
+        };
+        var counter = 0;
+
+        // Act
+        var result = await input.PerformUntilFailure(x =>
+        {
+            counter++;
+            return Task.FromResult(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok); // error should be returned
+        result.GetValue().Should().BeNull(); // no value is returned, we are just returning a new Result instance with status Ok and no value
+        counter.Should().Be(2); // last error should be skipped
+    }
+
+    [Fact]
+    public async Task PerformUntilFailure_Async_Typed_Performs_Action_Until_First_NonSuccessful_Result_No_Unsucessful_Items_Present()
+    {
+        // Arrange
+        IEnumerable<string> input = new[]
+        {
+        "success 1",
+        "success 2"
+    };
+        var counter = 0;
+
+        // Act
+        var result = await input.PerformUntilFailure(x =>
+        {
+            counter++;
+            return Task.FromResult(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok); // error should be returned
+        result.GetValue().Should().BeNull(); // no value is returned, we are just returning a new Result instance with status Ok and no value
+        counter.Should().Be(2); // last error should be skipped
+    }
+
+    [Fact]
+    public async Task PerformUntilFailure_Async_Untyped_Performs_Action_On_All_Items_When_No_NonSuccessful_Results_Are_Present_Custom_Default_Value_Provided()
+    {
+        // Arrange
+        IEnumerable input = new[]
+        {
+            "success 1",
+            "success 2"
+        };
+        var counter = 0;
+
+        // Act
+        var result = await input.PerformUntilFailure(() => Result.Success("default success"), x =>
+        {
+            counter++;
+            return Task.FromResult(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.GetValue().Should().BeEquivalentTo("default success"); // last result should be returned
+        counter.Should().Be(2); // all items should have been processed
     }
 
     private Task<string> MyAsyncFunction(string input)

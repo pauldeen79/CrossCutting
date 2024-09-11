@@ -102,4 +102,58 @@ public static class EnumerableExtensions
             semaphore.Dispose();
         }
     }
+
+    public static Result PerformUntilFailure<T>(this IEnumerable<T> instance, Func<T, Result> actionDelegate)
+        => instance.PerformUntilFailure(Result.Success, actionDelegate);
+
+    public static Result PerformUntilFailure<T>(this IEnumerable<T> instance, Func<Result> defaultValueDelegate, Func<T, Result> actionDelegate)
+    {
+        defaultValueDelegate = defaultValueDelegate.IsNotNull(nameof(defaultValueDelegate));
+        actionDelegate = actionDelegate.IsNotNull(nameof(actionDelegate));
+
+        return instance
+            .Select(x => actionDelegate(x))
+            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
+            .LastOrDefault() ?? defaultValueDelegate();
+    }
+
+    public static Task<Result> PerformUntilFailure<T>(this IEnumerable<T> instance, Func<T, Task<Result>> actionDelegate)
+        => instance.PerformUntilFailure(Result.Success, actionDelegate);
+
+    public static async Task<Result> PerformUntilFailure<T>(this IEnumerable<T> instance, Func<Result> defaultValueDelegate, Func<T, Task<Result>> actionDelegate)
+    {
+        defaultValueDelegate = defaultValueDelegate.IsNotNull(nameof(defaultValueDelegate));
+        actionDelegate = actionDelegate.IsNotNull(nameof(actionDelegate));
+
+        foreach (var item in instance)
+        {
+            var result = await actionDelegate(item).ConfigureAwait(false);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
+        }
+
+        return defaultValueDelegate();
+    }
+
+    public static Task<Result> PerformUntilFailure(this IEnumerable instance, Func<object, Task<Result>> actionDelegate)
+        => instance.PerformUntilFailure(Result.Success, actionDelegate);
+
+    public static async Task<Result> PerformUntilFailure(this IEnumerable instance, Func<Result> defaultValueDelegate, Func<object, Task<Result>> actionDelegate)
+    {
+        defaultValueDelegate = defaultValueDelegate.IsNotNull(nameof(defaultValueDelegate));
+        actionDelegate = actionDelegate.IsNotNull(nameof(actionDelegate));
+
+        foreach (var item in instance)
+        {
+            var result = await actionDelegate(item).ConfigureAwait(false);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
+        }
+
+        return defaultValueDelegate();
+    }
 }
