@@ -377,6 +377,31 @@ public class EnumerableExtensionsTests
     }
 
     [Fact]
+    public async Task PerformUntilFailure_Async_Typed_Performs_Action_Until_First_NonSuccessful_Result()
+    {
+        // Arrange
+        IEnumerable<string> input = new[]
+        {
+        "success 1",
+        "success 2",
+        "error 1",
+        "error 2"
+    };
+        var counter = 0;
+
+        // Act
+        var result = await input.PerformUntilFailure(x =>
+        {
+            counter++;
+            return Task.FromResult(x.ToStringWithDefault().StartsWith("success") ? (Result)Result.Success(x) : Result.Error<string>("Error"));
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error); // error should be returned
+        counter.Should().Be(3); // last error should be skipped
+    }
+
+    [Fact]
     public async Task PerformUntilFailure_Async_Untyped_Performs_Action_Until_First_NonSuccessful_Result_Custom_Default_Value_Provided()
     {
         // Arrange
@@ -410,6 +435,30 @@ public class EnumerableExtensionsTests
             "success 1",
             "success 2"
         };
+        var counter = 0;
+
+        // Act
+        var result = await input.PerformUntilFailure(x =>
+        {
+            counter++;
+            return Task.FromResult(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
+        });
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok); // error should be returned
+        result.GetValue().Should().BeNull(); // no value is returned, we are just returning a new Result instance with status Ok and no value
+        counter.Should().Be(2); // last error should be skipped
+    }
+
+    [Fact]
+    public async Task PerformUntilFailure_Async_Typed_Performs_Action_Until_First_NonSuccessful_Result_No_Unsucessful_Items_Present()
+    {
+        // Arrange
+        IEnumerable<string> input = new[]
+        {
+        "success 1",
+        "success 2"
+    };
         var counter = 0;
 
         // Act
