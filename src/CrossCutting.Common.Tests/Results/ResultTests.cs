@@ -1406,4 +1406,177 @@ public class ResultTests
         result.ErrorMessage.Should().Be("Something went wrong. See inner results.");
         result.InnerResults.Should().HaveCount(2);
     }
+
+    [Fact]
+    public void Either_Void_Untyped_Runs_Success_Action_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+        var success = false;
+
+        // Act
+        sut.Either(_ => error = true, _ => success = true);
+
+        // Assert
+        success.Should().BeTrue();
+        error.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Either_Void_Untyped_Runs_Failure_Action_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+        var success = false;
+
+        // Act
+        sut.Either(_ => error = true, _ => success = true);
+
+        // Assert
+        success.Should().BeFalse();
+        error.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Either_Void_Typed_Runs_Success_Action_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success<string>(string.Empty);
+        var error = false;
+        var success = false;
+
+        // Act
+        sut.Either(_ => error = true, _ => success = true);
+
+        // Assert
+        success.Should().BeTrue();
+        error.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Either_Void_Typed_Runs_Failure_Action_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error<string>("Kaboom");
+        var error = false;
+        var success = false;
+
+        // Act
+        sut.Either(_ => error = true, _ => success = true);
+
+        // Assert
+        success.Should().BeFalse();
+        error.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Either_Untyped_Result_Returns_Success_Delegate_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success("OK");
+
+        // Act
+        var result = sut.Either(_ => Result.Error("Custom"), _ => Result.Continue());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+    }
+
+    [Fact]
+    public void Either_Untyped_Result_Returns_Failure_Delegate_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error<string>("Kaboom");
+
+        // Act
+        var result = sut.Either(_ => Result.Error("Custom"), _ => Result.Continue());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Custom");
+    }
+
+    [Fact]
+    public void Either_Untyped_Result_Returns_Failure_Delegate_On_Non_Successful_Result_No_Alternate_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error<string>("Kaboom");
+
+        // Act
+        var result = sut.Either(_ => Result.Error<string>("Custom"));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Custom");
+    }
+
+    [Fact]
+    public void Either_Typed_Result_Returns_Success_Delegate_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success("OK");
+
+        // Act
+        var result = sut.Either(_ => Result.Error<string>("Custom"), _ => Result.Continue<string>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+    }
+
+    [Fact]
+    public void Either_Typed_Result_Returns_Same_Instance_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success("OK");
+
+        // Act
+        var result = sut.Either(_ => Result.Error<string>("Custom"));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("OK");
+    }
+
+    [Fact]
+    public void Either_Typed_Result_Returns_Failure_Delegate_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error<string>("Kaboom");
+
+        // Act
+        var result = sut.Either(_ => Result.Error<string>("Custom"), _ => Result.Continue<string>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Custom");
+    }
+
+    [Fact]
+    public void Either_Typed_Result_With_Different_ReturnType_Returns_Success_Delegate_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success("OK");
+
+        // Act
+        var result = sut.Either<int>(_ => Result.Error<int>(), _ => Result.Continue<int>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+    }
+
+    [Fact]
+    public void Either_Typed_Result_With_Different_ReturnType_Returns_Failure_Delegate_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error<string>("Kaboom");
+
+        // Act
+        var result = sut.Either<int>(_ => Result.Error<int>("Custom"), _ => Result.Continue<int>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Custom");
+    }
 }

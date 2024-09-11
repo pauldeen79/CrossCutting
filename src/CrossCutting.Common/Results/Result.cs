@@ -85,6 +85,31 @@ public record Result<T> : Result
         return successDelegate(this);
     }
 
+    public Result<T> Either(Func<Result<T>, Result<T>> errorDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+
+        if (!IsSuccessful())
+        {
+            return errorDelegate(this);
+        }
+
+        return this;
+    }
+
+    public Result<T> Either(Func<Result<T>, Result<T>> errorDelegate, Func<Result<T>, Result<T>> successDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (!IsSuccessful())
+        {
+            return errorDelegate(this);
+        }
+
+        return successDelegate(this);
+    }
+
     public Result<TResult> Either<TResult>(Func<Result<T>, Result<TResult>> errorDelegate, Func<Result<T>, Result<TResult>> successDelegate)
     {
         errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
