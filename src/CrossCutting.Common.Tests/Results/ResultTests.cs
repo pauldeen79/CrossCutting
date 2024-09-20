@@ -1293,7 +1293,7 @@ public class ResultTests
         var sut = Result.Invalid<string>();
 
         // Act
-        var act = new Action(() => sut.ThrowIfInvalid());
+        var act = new Action(sut.ThrowIfInvalid);
 
         // Assert
         act.Should().ThrowExactly<InvalidOperationException>().WithMessage("Result: Invalid");
@@ -1306,7 +1306,7 @@ public class ResultTests
         var sut = Result.Error<string>("Kaboom");
 
         // Act
-        var act = new Action(() => sut.ThrowIfInvalid());
+        var act = new Action(sut.ThrowIfInvalid);
 
         // Assert
         act.Should().ThrowExactly<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom");
@@ -1517,6 +1517,23 @@ public class ResultTests
     }
 
     [Fact]
+    public async Task Either_Void_Untyped_Func_Task_Runs_Success_Action_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+        var success = false;
+
+        // Act
+        var result = await sut.Either(x => x.Chain(() => error = true), _ => Task.FromResult(Result.Success().Chain(() => success = true)));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        success.Should().BeTrue();
+        error.Should().BeFalse();
+    }
+
+    [Fact]
     public void Either_Void_Untyped_Func_Runs_Failure_Action_On_Non_Successful_Result()
     {
         // Arrange
@@ -1526,6 +1543,23 @@ public class ResultTests
 
         // Act
         var result = sut.Either(x => x.Chain(() => error = true), _ => Result.Success().Chain(() => success = true));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        success.Should().BeFalse();
+        error.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Either_Void_Untyped_Func_Async_Runs_Failure_Action_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+        var success = false;
+
+        // Act
+        var result = await sut.Either(x => x.Chain(() => error = true), _ => Task.FromResult(Result.Success().Chain(() => success = true)));
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -1550,6 +1584,22 @@ public class ResultTests
     }
 
     [Fact]
+    public async Task Either_Void_Untyped_Func_Parameterless_Async_Runs_Success_Action_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+        var success = false;
+
+        // Act
+        await sut.Either(x => x.Chain(() => error = true), () => Task.FromResult(Result.Success().Chain(() => success = true)));
+
+        // Assert
+        success.Should().BeTrue();
+        error.Should().BeFalse();
+    }
+
+    [Fact]
     public void Either_Void_Untyped_Func_Parameterless_Runs_Failure_Action_On_Non_Successful_Result()
     {
         // Arrange
@@ -1559,6 +1609,22 @@ public class ResultTests
 
         // Act
         sut.Either(x => x.Chain(() => error = true), () => Result.Success().Chain(() => success = true));
+
+        // Assert
+        success.Should().BeFalse();
+        error.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Either_Void_Untyped_Func_Parameterless_Async_Runs_Failure_Action_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+        var success = false;
+
+        // Act
+        await sut.Either(x => x.Chain(() => error = true), () => Task.FromResult(Result.Success().Chain(() => success = true)));
 
         // Assert
         success.Should().BeFalse();
@@ -1600,7 +1666,7 @@ public class ResultTests
     public void Either_Void_Typed_Runs_Success_Action_On_Successful_Result()
     {
         // Arrange
-        var sut = Result.Success<string>(string.Empty);
+        var sut = Result.Success(string.Empty);
         var error = false;
         var success = false;
 
@@ -1683,13 +1749,39 @@ public class ResultTests
     }
 
     [Fact]
+    public async Task Either_Typed_Result_Async_Returns_Success_Delegate_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success("OK");
+
+        // Act
+        var result = await sut.Either(_ => Result.Error<string>("Custom"), _ => Task.FromResult(Result.Continue<string>()));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+    }
+
+    [Fact]
     public void Either_Typed_Result_Parameterless_Returns_Success_Delegate_On_Successful_Result()
     {
         // Arrange
         var sut = Result.Success("OK");
 
         // Act
-        var result = sut.Either(_ => Result.Error<string>("Custom"), () => Result.Continue<string>());
+        var result = sut.Either(_ => Result.Error<string>("Custom"), Result.Continue<string>);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+    }
+
+    [Fact]
+    public async Task Either_Typed_Result_Async_Parameterless_Returns_Success_Delegate_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success("OK");
+
+        // Act
+        var result = await sut.Either(_ => Result.Error<string>("Custom"), () => Task.FromResult(Result.Continue<string>()));
 
         // Assert
         result.Status.Should().Be(ResultStatus.Continue);
@@ -1724,13 +1816,41 @@ public class ResultTests
     }
 
     [Fact]
+    public async Task Either_Typed_Result_Async_Returns_Failure_Delegate_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error<string>("Kaboom");
+
+        // Act
+        var result = await sut.Either(_ => Result.Error<string>("Custom"), _ => Task.FromResult(Result.Continue<string>()));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Custom");
+    }
+
+    [Fact]
     public void Either_Typed_Result_Parameterless_Returns_Failure_Delegate_On_Non_Successful_Result()
     {
         // Arrange
         var sut = Result.Error<string>("Kaboom");
 
         // Act
-        var result = sut.Either(_ => Result.Error<string>("Custom"), () => Result.Continue<string>());
+        var result = sut.Either(_ => Result.Error<string>("Custom"), Result.Continue<string>);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Custom");
+    }
+
+    [Fact]
+    public async Task Either_Typed_Result_Async_Parameterless_Returns_Failure_Delegate_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error<string>("Kaboom");
+
+        // Act
+        var result = await sut.Either(_ => Result.Error<string>("Custom"), () => Task.FromResult(Result.Continue<string>()));
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -1744,7 +1864,20 @@ public class ResultTests
         var sut = Result.Success("OK");
 
         // Act
-        var result = sut.Either<int>(_ => Result.Error<int>(), _ => Result.Continue<int>());
+        var result = sut.Either(_ => Result.Error<int>(), _ => Result.Continue<int>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+    }
+
+    [Fact]
+    public async Task Either_Typed_Result_Async_With_Different_ReturnType_Returns_Success_Delegate_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success("OK");
+
+        // Act
+        var result = await sut.Either(_ => Result.Error<int>(), _ => Task.FromResult(Result.Continue<int>()));
 
         // Assert
         result.Status.Should().Be(ResultStatus.Continue);
@@ -1757,7 +1890,21 @@ public class ResultTests
         var sut = Result.Error<string>("Kaboom");
 
         // Act
-        var result = sut.Either<int>(_ => Result.Error<int>("Custom"), _ => Result.Continue<int>());
+        var result = sut.Either(_ => Result.Error<int>("Custom"), _ => Result.Continue<int>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Custom");
+    }
+
+    [Fact]
+    public async Task Either_Typed_Result_Async_With_Different_ReturnType_Returns_Failure_Delegate_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error<string>("Kaboom");
+
+        // Act
+        var result = await sut.Either(_ => Result.Error<int>("Custom"), _ => Task.FromResult(Result.Continue<int>()));
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
