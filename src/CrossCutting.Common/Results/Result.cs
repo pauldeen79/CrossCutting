@@ -110,6 +110,19 @@ public record Result<T> : Result
         return successDelegate(this);
     }
 
+    public Result<T> Either(Func<Result<T>, Result<T>> errorDelegate, Func<Result<T>> successDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (!IsSuccessful())
+        {
+            return errorDelegate(this);
+        }
+
+        return successDelegate();
+    }
+
     public Result<TResult> Either<TResult>(Func<Result<T>, Result<TResult>> errorDelegate, Func<Result<T>, Result<TResult>> successDelegate)
     {
         errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
@@ -314,5 +327,67 @@ public record Result
         }
 
         successDelegate(this);
+    }
+
+    public void Either(Action<Result> errorDelegate, Action successDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (!IsSuccessful())
+        {
+            errorDelegate(this);
+            return;
+        }
+
+        successDelegate();
+    }
+
+    public void Either(Action<Result> errorDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+
+        if (!IsSuccessful())
+        {
+            errorDelegate(this);
+        }
+    }
+
+    public Result Either(Func<Result, Result> errorDelegate, Func<Result, Result> successDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (!IsSuccessful())
+        {
+            return errorDelegate(this);
+        }
+
+        return successDelegate(this);
+    }
+
+    public Result Either(Func<Result, Result> errorDelegate, Func<Result> successDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (!IsSuccessful())
+        {
+            return errorDelegate(this);
+        }
+
+        return successDelegate();
+    }
+
+    public Result Either(Func<Result, Result> errorDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+
+        if (!IsSuccessful())
+        {
+            return errorDelegate(this);
+        }
+
+        return Success();
     }
 }

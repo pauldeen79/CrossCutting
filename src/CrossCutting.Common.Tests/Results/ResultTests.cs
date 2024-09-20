@@ -1440,6 +1440,66 @@ public class ResultTests
     }
 
     [Fact]
+    public void Either_Void_Untyped_Parameterless_Runs_Success_Action_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+        var success = false;
+
+        // Act
+        sut.Either(_ => error = true, () => success = true);
+
+        // Assert
+        success.Should().BeTrue();
+        error.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Either_Void_Untyped_Parameterless_Runs_Failure_Action_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+        var success = false;
+
+        // Act
+        sut.Either(_ => error = true, () => success = true);
+
+        // Assert
+        success.Should().BeFalse();
+        error.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Either_Void_Untyped_Does_Nothing_On_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+
+        // Act
+        sut.Either(_ => error = true);
+
+        // Assert
+        error.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Either_Void_Untyped_Runs_Failure_Action_On_Non_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+
+        // Act
+        sut.Either(_ => error = true);
+
+        // Assert
+        error.Should().BeTrue();
+    }
+
+    [Fact]
     public void Either_Void_Typed_Runs_Success_Action_On_Successful_Result()
     {
         // Arrange
@@ -1526,6 +1586,19 @@ public class ResultTests
     }
 
     [Fact]
+    public void Either_Typed_Result_Parameterless_Returns_Success_Delegate_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success("OK");
+
+        // Act
+        var result = sut.Either(_ => Result.Error<string>("Custom"), () => Result.Continue<string>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+    }
+
+    [Fact]
     public void Either_Typed_Result_Returns_Same_Instance_On_Successful_Result()
     {
         // Arrange
@@ -1547,6 +1620,20 @@ public class ResultTests
 
         // Act
         var result = sut.Either(_ => Result.Error<string>("Custom"), _ => Result.Continue<string>());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Custom");
+    }
+
+    [Fact]
+    public void Either_Typed_Result_Parameterless_Returns_Failure_Delegate_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error<string>("Kaboom");
+
+        // Act
+        var result = sut.Either(_ => Result.Error<string>("Custom"), () => Result.Continue<string>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
