@@ -1424,6 +1424,22 @@ public class ResultTests
     }
 
     [Fact]
+    public async Task Either_Void_Untyped_Async_Runs_Success_Action_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+        var success = false;
+
+        // Act
+        await sut.Either(_ => error = true, x => Task.FromResult(x.Chain(() => success = true)));
+
+        // Assert
+        success.Should().BeTrue();
+        error.Should().BeFalse();
+    }
+
+    [Fact]
     public void Either_Void_Untyped_Runs_Failure_Action_On_Non_Successful_Result()
     {
         // Arrange
@@ -1433,6 +1449,22 @@ public class ResultTests
 
         // Act
         sut.Either(_ => error = true, _ => success = true);
+
+        // Assert
+        success.Should().BeFalse();
+        error.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Either_Void_Untyped_Async_Runs_Failure_Action_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+        var success = false;
+
+        // Act
+        await sut.Either(_ => error = true, x => Task.FromResult(x.Chain(() => success = true)));
 
         // Assert
         success.Should().BeFalse();
@@ -1456,6 +1488,22 @@ public class ResultTests
     }
 
     [Fact]
+    public async Task Either_Void_Untyped_Parameterless_Async_Runs_Success_Action_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+        var success = false;
+
+        // Act
+        await sut.Either(_ => error = true, () => Task.FromResult(Result.Success().Chain(() => success = true)));
+
+        // Assert
+        success.Should().BeTrue();
+        error.Should().BeFalse();
+    }
+
+    [Fact]
     public void Either_Void_Untyped_Parameterless_Runs_Failure_Action_On_Non_Successful_Result()
     {
         // Arrange
@@ -1465,6 +1513,22 @@ public class ResultTests
 
         // Act
         sut.Either(_ => error = true, () => success = true);
+
+        // Assert
+        success.Should().BeFalse();
+        error.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Either_Void_Untyped_Parameterless_Async_Runs_Failure_Action_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+        var success = false;
+
+        // Act
+        await sut.Either(_ => error = true, () => Task.FromResult(Result.Success().Chain(() => success = true)));
 
         // Assert
         success.Should().BeFalse();

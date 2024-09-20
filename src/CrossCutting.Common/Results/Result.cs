@@ -368,6 +368,20 @@ public record Result
         successDelegate(this);
     }
 
+    public Task Either(Action<Result> errorDelegate, Func<Result, Task<Result>> successDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (!IsSuccessful())
+        {
+            errorDelegate(this);
+            return Task.CompletedTask;
+        }
+
+        return successDelegate(this);
+    }
+
     public void Either(Action<Result> errorDelegate, Action successDelegate)
     {
         errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
@@ -380,6 +394,20 @@ public record Result
         }
 
         successDelegate();
+    }
+
+    public Task Either(Action<Result> errorDelegate, Func<Task<Result>> successDelegate)
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (!IsSuccessful())
+        {
+            errorDelegate(this);
+            return Task.CompletedTask;
+        }
+
+        return successDelegate();
     }
 
     public void Either(Action<Result> errorDelegate)
