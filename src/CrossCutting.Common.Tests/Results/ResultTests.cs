@@ -1500,6 +1500,103 @@ public class ResultTests
     }
 
     [Fact]
+    public void Either_Void_Untyped_Func_Runs_Success_Action_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+        var success = false;
+
+        // Act
+        var result = sut.Either(x => x.Chain(() => error = true), _ => Result.Success().Chain(() => success = true));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        success.Should().BeTrue();
+        error.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Either_Void_Untyped_Func_Runs_Failure_Action_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+        var success = false;
+
+        // Act
+        var result = sut.Either(x => x.Chain(() => error = true), _ => Result.Success().Chain(() => success = true));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        success.Should().BeFalse();
+        error.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Either_Void_Untyped_Func_Parameterless_Runs_Success_Action_On_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+        var success = false;
+
+        // Act
+        sut.Either(x => x.Chain(() => error = true), () => Result.Success().Chain(() => success = true));
+
+        // Assert
+        success.Should().BeTrue();
+        error.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Either_Void_Untyped_Func_Parameterless_Runs_Failure_Action_On_Non_Successful_Result()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+        var success = false;
+
+        // Act
+        sut.Either(x => x.Chain(() => error = true), () => Result.Success().Chain(() => success = true));
+
+        // Assert
+        success.Should().BeFalse();
+        error.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Either_Void_Untyped_Func_Does_Nothing_On_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+
+        // Act
+        var result = sut.Either(x => x.Chain(() => error = true));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        error.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Either_Void_Untyped_Func_Runs_Failure_Action_On_Non_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+
+        // Act
+        var result = sut.Either(x => x.Chain(() => error = true));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom");
+        error.Should().BeTrue();
+    }
+
+    [Fact]
     public void Either_Void_Typed_Runs_Success_Action_On_Successful_Result()
     {
         // Arrange
