@@ -1538,34 +1538,6 @@ public class ResultTests
     }
 
     [Fact]
-    public void Either_Void_Does_Nothing_On_Successful_Result_No_Success_Delegate()
-    {
-        // Arrange
-        var sut = Result.Success();
-        var error = false;
-
-        // Act
-        sut.Either(_ => error = true);
-
-        // Assert
-        error.Should().BeFalse();
-    }
-
-    [Fact]
-    public void Either_Void_Runs_Failure_Action_On_Non_Successful_Result_No_Success_Delegate()
-    {
-        // Arrange
-        var sut = Result.Error("Kaboom");
-        var error = false;
-
-        // Act
-        sut.Either(_ => error = true);
-
-        // Assert
-        error.Should().BeTrue();
-    }
-
-    [Fact]
     public async Task Either_Void_Func_Task_Runs_Success_Action_On_Successful_Result()
     {
         // Arrange
@@ -1738,5 +1710,35 @@ public class ResultTests
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
         result.ErrorMessage.Should().Be("Custom");
+    }
+
+    [Fact]
+    public void WhenNotSuccesful_Does_Nothing_On_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+
+        // Act
+        var result = sut.WhenNotSuccesful(_ => error = true);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        error.Should().BeFalse();
+    }
+
+    [Fact]
+    public void WhenNotSuccesful_Runs_Failure_Action_On_Non_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+
+        // Act
+        var result = sut.WhenNotSuccesful(_ => error = true);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        error.Should().BeTrue();
     }
 }

@@ -62,17 +62,6 @@ public static class ResultExtensions
         return successDelegate();
     }
 
-    public static void Either<T>(this T instance, Action<T> errorDelegate)
-        where T : Result
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-
-        if (!instance.IsSuccessful())
-        {
-            errorDelegate(instance);
-        }
-    }
-
     public static T Either<T>(this T instance, Func<T, T> errorDelegate, Func<T, T> successDelegate)
         where T : Result
     {
@@ -127,5 +116,18 @@ public static class ResultExtensions
         }
 
         return successDelegate();
+    }
+
+    public static T WhenNotSuccesful<T>(this T instance, Action<T> errorDelegate)
+        where T : Result
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+
+        if (!instance.IsSuccessful())
+        {
+            errorDelegate(instance);
+        }
+
+        return instance;
     }
 }
