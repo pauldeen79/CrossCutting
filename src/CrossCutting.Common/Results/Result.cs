@@ -58,33 +58,6 @@ public record Result<T> : Result
         return new Result<TTarget>(transformDelegate(Value!), Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
     }
 
-    public void Either(Action<Result<T>> errorDelegate, Action<Result<T>> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            errorDelegate(this);
-            return;
-        }
-
-        successDelegate(this);
-    }
-
-    public Result Either(Func<Result<T>, Result> errorDelegate, Func<Result<T>, Result> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            return errorDelegate(this);
-        }
-
-        return successDelegate(this);
-    }
-
     public Result<T> Either(Func<Result<T>, Result<T>> errorDelegate)
     {
         errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
@@ -95,84 +68,6 @@ public record Result<T> : Result
         }
 
         return this;
-    }
-
-    public Result<T> Either(Func<Result<T>, Result<T>> errorDelegate, Func<Result<T>, Result<T>> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            return errorDelegate(this);
-        }
-
-        return successDelegate(this);
-    }
-
-    public Task<Result<T>> Either(Func<Result<T>, Result<T>> errorDelegate, Func<Result<T>, Task<Result<T>>> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            return Task.FromResult(errorDelegate(this));
-        }
-
-        return successDelegate(this);
-    }
-
-    public Result<T> Either(Func<Result<T>, Result<T>> errorDelegate, Func<Result<T>> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            return errorDelegate(this);
-        }
-
-        return successDelegate();
-    }
-
-    public Task<Result<T>> Either(Func<Result<T>, Result<T>> errorDelegate, Func<Task<Result<T>>> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            return Task.FromResult(errorDelegate(this));
-        }
-
-        return successDelegate();
-    }
-
-    public Result<TResult> Either<TResult>(Func<Result<T>, Result<TResult>> errorDelegate, Func<Result<T>, Result<TResult>> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            return errorDelegate(this);
-        }
-
-        return successDelegate(this);
-    }
-
-    public Task<Result<TResult>> Either<TResult>(Func<Result<T>, Result<TResult>> errorDelegate, Func<Result<T>, Task<Result<TResult>>> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            return Task.FromResult(errorDelegate(this));
-        }
-
-        return successDelegate(this);
     }
 }
 
@@ -354,124 +249,6 @@ public record Result
             ? $"Result: {Status}"
             : $"Result: {Status}, ErrorMessage: {ErrorMessage}");
 
-    public void Either(Action<Result> errorDelegate, Action<Result> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            errorDelegate(this);
-            return;
-        }
-
-        successDelegate(this);
-    }
-
-    public Task Either(Action<Result> errorDelegate, Func<Result, Task<Result>> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            errorDelegate(this);
-            return Task.CompletedTask;
-        }
-
-        return successDelegate(this);
-    }
-
-    public void Either(Action<Result> errorDelegate, Action successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            errorDelegate(this);
-            return;
-        }
-
-        successDelegate();
-    }
-
-    public Task Either(Action<Result> errorDelegate, Func<Task<Result>> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            errorDelegate(this);
-            return Task.CompletedTask;
-        }
-
-        return successDelegate();
-    }
-
-    public void Either(Action<Result> errorDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-
-        if (!IsSuccessful())
-        {
-            errorDelegate(this);
-        }
-    }
-
-    public Result Either(Func<Result, Result> errorDelegate, Func<Result, Result> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            return errorDelegate(this);
-        }
-
-        return successDelegate(this);
-    }
-
-    public Task<Result> Either(Func<Result, Result> errorDelegate, Func<Result, Task<Result>> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            return Task.FromResult(errorDelegate(this));
-        }
-
-        return successDelegate(this);
-    }
-
-    public Result Either(Func<Result, Result> errorDelegate, Func<Result> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            return errorDelegate(this);
-        }
-
-        return successDelegate();
-    }
-
-    public Task<Result> Either(Func<Result, Result> errorDelegate, Func<Task<Result>> successDelegate)
-    {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
-
-        if (!IsSuccessful())
-        {
-            return Task.FromResult(errorDelegate(this));
-        }
-
-        return successDelegate();
-    }
-
     public Result Either(Func<Result, Result> errorDelegate)
     {
         errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
@@ -481,6 +258,6 @@ public record Result
             return errorDelegate(this);
         }
 
-        return Success();
+        return this;
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Common.Tests.Results;
+﻿using CrossCutting.Common.Extensions;
+
+namespace CrossCutting.Common.Tests.Results;
 
 public class ResultTests
 {
@@ -1762,7 +1764,7 @@ public class ResultTests
     public void Either_Untyped_Result_Returns_Success_Delegate_On_Successful_Result()
     {
         // Arrange
-        var sut = Result.Success("OK");
+        var sut = Result.Success();
 
         // Act
         var result = sut.Either(_ => Result.Error("Custom"), _ => Result.Continue());
@@ -1775,7 +1777,7 @@ public class ResultTests
     public void Either_Untyped_Result_Returns_Failure_Delegate_On_Non_Successful_Result()
     {
         // Arrange
-        var sut = Result.Error<string>("Kaboom");
+        var sut = Result.Error("Kaboom");
 
         // Act
         var result = sut.Either(_ => Result.Error("Custom"), _ => Result.Continue());
@@ -1928,7 +1930,7 @@ public class ResultTests
         var sut = Result.Success("OK");
 
         // Act
-        var result = sut.Either(_ => Result.Error<int>(), _ => Result.Continue<int>());
+        var result = sut.Either(_ => Result.Error<int>().TransformValue(x => x.ToStringWithNullCheck()), _ => Result.Continue<int>().TransformValue(x => x.ToStringWithNullCheck()));
 
         // Assert
         result.Status.Should().Be(ResultStatus.Continue);
@@ -1941,7 +1943,7 @@ public class ResultTests
         var sut = Result.Success("OK");
 
         // Act
-        var result = await sut.Either(_ => Result.Error<int>(), _ => Task.FromResult(Result.Continue<int>()));
+        var result = await sut.Either(_ => Result.Error<int>().TransformValue(x => x.ToStringWithNullCheck()), _ => Task.FromResult(Result.Continue<int>().TransformValue(x => x.ToStringWithNullCheck())));
 
         // Assert
         result.Status.Should().Be(ResultStatus.Continue);
@@ -1954,7 +1956,7 @@ public class ResultTests
         var sut = Result.Error<string>("Kaboom");
 
         // Act
-        var result = sut.Either(_ => Result.Error<int>("Custom"), _ => Result.Continue<int>());
+        var result = sut.Either(_ => Result.Error<int>("Custom").TryCast<string>(), _ => Result.Continue<int>().TryCast<string>());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -1968,7 +1970,7 @@ public class ResultTests
         var sut = Result.Error<string>("Kaboom");
 
         // Act
-        var result = await sut.Either(_ => Result.Error<int>("Custom"), _ => Task.FromResult(Result.Continue<int>()));
+        var result = await sut.Either(_ => Result.Error<int>("Custom").TryCast<string>(), _ => Task.FromResult(Result.Continue<int>().TryCast<string>()));
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
