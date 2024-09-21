@@ -1743,6 +1743,36 @@ public class ResultTests
     }
 
     [Fact]
+    public void OnFailure_Parameterless_Does_Nothing_On_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+
+        // Act
+        var result = sut.OnFailure(() => error = true);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        error.Should().BeFalse();
+    }
+
+    [Fact]
+    public void OnFailure_Parameterless_Runs_Failure_Action_On_Non_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+
+        // Act
+        var result = sut.OnFailure(() => error = true);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        error.Should().BeTrue();
+    }
+
+    [Fact]
     public void OnFailure_Func_No_Arguments_Does_Nothing_On_Successful_Result_No_Success_Delegate()
     {
         // Arrange
@@ -1886,6 +1916,36 @@ public class ResultTests
 
         // Act
         var result = sut.OnSuccess(_ => success = true);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        success.Should().BeFalse();
+    }
+
+    [Fact]
+    public void OnSuccess_Parameterless_Runs_Success_Action_On_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var success = false;
+
+        // Act
+        var result = sut.OnSuccess(() => success = true);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        success.Should().BeTrue();
+    }
+
+    [Fact]
+    public void OnSuccess_Parameterless_Does_Nothing_On_Non_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var success = false;
+
+        // Act
+        var result = sut.OnSuccess(() => success = true);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);

@@ -118,6 +118,19 @@ public static class ResultExtensions
         return successDelegate();
     }
 
+    public static T OnFailure<T>(this T instance, Action errorDelegate)
+        where T : Result
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+
+        if (!instance.IsSuccessful())
+        {
+            errorDelegate();
+        }
+
+        return instance;
+    }
+
     public static T OnFailure<T>(this T instance, Action<T> errorDelegate)
         where T : Result
     {
@@ -181,6 +194,19 @@ public static class ResultExtensions
         }
 
         return Task.FromResult(instance);
+    }
+
+    public static T OnSuccess<T>(this T instance, Action successDelegate)
+    where T : Result
+    {
+        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+
+        if (instance.IsSuccessful())
+        {
+            successDelegate();
+        }
+
+        return instance;
     }
 
     public static T OnSuccess<T>(this T instance, Action<T> successDelegate)
