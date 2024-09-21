@@ -17,7 +17,7 @@ public static class ResultExtensions
         successDelegate(instance);
     }
 
-    public static Task Either<T>(this T instance, Action<T> errorDelegate, Func<T, Task<T>> successDelegate)
+    public static Task<T> Either<T>(this T instance, Action<T> errorDelegate, Func<T, Task<T>> successDelegate)
         where T : Result
     {
         errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
@@ -26,7 +26,7 @@ public static class ResultExtensions
         if (!instance.IsSuccessful())
         {
             errorDelegate(instance);
-            return Task.CompletedTask;
+            return Task.FromResult(instance);
         }
 
         return successDelegate(instance);
@@ -47,7 +47,7 @@ public static class ResultExtensions
         successDelegate();
     }
 
-    public static Task Either<T>(this T instance, Action<T> errorDelegate, Func<Task<T>> successDelegate)
+    public static Task<T> Either<T>(this T instance, Action<T> errorDelegate, Func<Task<T>> successDelegate)
         where T : Result
     {
         errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
@@ -56,7 +56,7 @@ public static class ResultExtensions
         if (!instance.IsSuccessful())
         {
             errorDelegate(instance);
-            return Task.CompletedTask;
+            return Task.FromResult(instance);
         }
 
         return successDelegate();
