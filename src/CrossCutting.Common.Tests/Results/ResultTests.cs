@@ -1801,4 +1801,214 @@ public class ResultTests
         result.Status.Should().Be(ResultStatus.Invalid);
         error.Should().BeTrue();
     }
+
+    [Fact]
+    public async Task OnFailure_Func_No_Arguments_Async_Does_Nothing_On_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+
+        // Act
+        var result = await sut.OnFailure(() => Task.FromResult(Result.Continue().Then(() => error = true)));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        error.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task OnFailure_Func_No_Arguments_Async_Runs_Failure_Action_On_Non_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+
+        // Act
+        var result = await sut.OnFailure(() => Task.FromResult(Result.Invalid().Then(() => error = true)));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        error.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task OnFailure_Func_With_Arguments_Async_Does_Nothing_On_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var error = false;
+
+        // Act
+        var result = await sut.OnFailure(_ => Task.FromResult(Result.Continue().Then(() => error = true)));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        error.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task OnFailure_Func_With_Arguments_Async_Runs_Failure_Action_On_Non_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var error = false;
+
+        // Act
+        var result = await sut.OnFailure(_ => Task.FromResult(Result.Invalid().Then(() => error = true)));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        error.Should().BeTrue();
+    }
+
+    [Fact]
+    public void OnSuccess_Runs_Success_Action_On_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var success = false;
+
+        // Act
+        var result = sut.OnSuccess(_ => success = true);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        success.Should().BeTrue();
+    }
+
+    [Fact]
+    public void OnSuccess_Does_Nothing_On_Non_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var success = false;
+
+        // Act
+        var result = sut.OnSuccess(_ => success = true);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        success.Should().BeFalse();
+    }
+
+    [Fact]
+    public void OnSuccess_Func_No_Arguments_Runs_Success_Action_On_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var success = false;
+
+        // Act
+        var result = sut.OnSuccess(() => Result.Continue().Then(() => success = true));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+        success.Should().BeTrue();
+    }
+
+    [Fact]
+    public void OnSuccess_Func_No_Arguments_Does_Nothing_On_Non_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var success = false;
+
+        // Act
+        var result = sut.OnSuccess(() => Result.Continue().Then(() => success = true));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        success.Should().BeFalse();
+    }
+
+    [Fact]
+    public void OnSuccess_Func_With_Arguments_Runs_Success_Action_On_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var success = false;
+
+        // Act
+        var result = sut.OnSuccess(_ => Result.Continue().Then(() => success = true));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+        success.Should().BeTrue();
+    }
+
+    [Fact]
+    public void OnSuccess_Func_With_Arguments_Does_Nothing_On_Non_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var success = false;
+
+        // Act
+        var result = sut.OnSuccess(_ => Result.Continue().Then(() => success = true));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        success.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task OnSuccess_Func_No_Arguments_Async_Runs_Success_Action_On_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var success = false;
+
+        // Act
+        var result = await sut.OnSuccess(() => Task.FromResult(Result.Continue().Then(() => success = true)));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+        success.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task OnSuccess_Func_No_Arguments_Async_Does_Nothing_On_Non_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var success = false;
+
+        // Act
+        var result = await sut.OnSuccess(() => Task.FromResult(Result.Continue().Then(() => success = true)));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        success.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task OnSuccess_Func_With_Arguments_Async_Runs_Success_Action_On_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Success();
+        var success = false;
+
+        // Act
+        var result = await sut.OnSuccess(_ => Task.FromResult(Result.Continue().Then(() => success = true)));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+        success.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task OnSuccess_Func_With_Arguments_Async_Does_Nothing_On_Non_Successful_Result_No_Success_Delegate()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+        var success = false;
+
+        // Act
+        var result = await sut.OnSuccess(_ => Task.FromResult(Result.Continue().Then(() => success = true)));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        success.Should().BeFalse();
+    }
 }
