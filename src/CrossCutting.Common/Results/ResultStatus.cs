@@ -19,7 +19,6 @@ public enum ResultStatus
     Created,
     Accepted,
     AlreadyReported,
-
     Found,
     MovedPermanently,
     Gone,
