@@ -17,7 +17,7 @@ public static class ResultExtensions
         successDelegate(instance);
     }
 
-    public static Task Either<T>(this T instance, Action<T> errorDelegate, Func<Result, Task<T>> successDelegate)
+    public static Task Either<T>(this T instance, Action<T> errorDelegate, Func<T, Task<T>> successDelegate)
         where T : Result
     {
         errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
@@ -76,7 +76,7 @@ public static class ResultExtensions
         return successDelegate(instance);
     }
 
-    public static Task<T> Either<T>(this T instance, Func<T, T> errorDelegate, Func<Result, Task<T>> successDelegate)
+    public static Task<T> Either<T>(this T instance, Func<T, T> errorDelegate, Func<T, Task<T>> successDelegate)
         where T : Result
     {
         errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
@@ -118,7 +118,7 @@ public static class ResultExtensions
         return successDelegate();
     }
 
-    public static T WhenNotSuccesful<T>(this T instance, Action<T> errorDelegate)
+    public static T OnFailure<T>(this T instance, Action<T> errorDelegate)
         where T : Result
     {
         errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
@@ -129,5 +129,57 @@ public static class ResultExtensions
         }
 
         return instance;
+    }
+
+    public static T OnFailure<T>(this T instance, Func<T> errorDelegate)
+        where T : Result
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+
+        if (!instance.IsSuccessful())
+        {
+            return errorDelegate();
+        }
+
+        return instance;
+    }
+
+    public static Task<T> OnFailure<T>(this T instance, Func<Task<T>> errorDelegate)
+        where T : Result
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+
+        if (!instance.IsSuccessful())
+        {
+            return errorDelegate();
+        }
+
+        return Task.FromResult(instance);
+    }
+
+    public static T OnFailure<T>(this T instance, Func<T, T> errorDelegate)
+        where T : Result
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+
+        if (!instance.IsSuccessful())
+        {
+            return errorDelegate(instance);
+        }
+
+        return instance;
+    }
+
+    public static Task<T> OnFailure<T>(this T instance, Func<T, Task<T>> errorDelegate)
+        where T : Result
+    {
+        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+
+        if (!instance.IsSuccessful())
+        {
+            return errorDelegate(instance);
+        }
+
+        return Task.FromResult(instance);
     }
 }
