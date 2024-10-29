@@ -348,4 +348,14 @@ public static class StringExtensions
 
         return field.Replace("\"\"", "\"");
     }
+
+    public static string ToPascalCase(this string value, CultureInfo cultureInfo)
+        => string.IsNullOrEmpty(value)
+            ? value
+            : string.Concat(value.Substring(0, 1).ToUpper(cultureInfo), value.Substring(1));
+
+    public static string ToCamelCase(this string value, CultureInfo cultureInfo)
+        => string.IsNullOrEmpty(value)
+            ? value
+            : string.Concat(value.Substring(0, 1).ToLower(cultureInfo), value.Substring(1));
 }
