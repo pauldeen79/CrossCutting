@@ -196,4 +196,34 @@ public partial class StringExtensionsTests
         // Assert
         result.Should().Be($"some{Environment.NewLine}more{Environment.NewLine}data");
     }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData("something", "Something")]
+    [InlineData("Something", "Something")]
+    [InlineData("a", "A")]
+    [InlineData("A", "A")]
+    public void ToPascalCase_Returns_Correct_Result(string input, string expectedResult)
+    {
+        // Act
+        var actual = input.ToPascalCase(CultureInfo.InvariantCulture);
+
+        // Assert
+        actual.Should().Be(expectedResult);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData("something", "something")]
+    [InlineData("Something", "something")]
+    [InlineData("a", "a")]
+    [InlineData("A", "a")]
+    public void ToCamelCase_Returns_Correct_Result(string input, string expectedResult)
+    {
+        // Act
+        var actual = input.ToCamelCase(CultureInfo.InvariantCulture);
+
+        // Assert
+        actual.Should().Be(expectedResult);
+    }
 }
