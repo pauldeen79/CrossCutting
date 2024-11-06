@@ -13,7 +13,11 @@ public abstract class PipelineBuilderBase<T, TResult>
     }
 
     public TResult AddComponents(IEnumerable<IBuilder<T>> components)
-        => AddComponents(components.IsNotNull(nameof(components)).ToArray());
+    {
+        ArgumentGuard.IsNotNull(components, nameof(components));
+
+        return AddComponents(components.ToArray());
+    }
 
     public TResult AddComponents(params IBuilder<T>[] components)
     {
@@ -27,12 +31,19 @@ public abstract class PipelineBuilderBase<T, TResult>
 
     public TResult AddComponent(IBuilder<T> component)
     {
-        Components.Add(component.IsNotNull(nameof(component)));
+        ArgumentGuard.IsNotNull(component, nameof(component));
+
+        Components.Add(component);
+
         return (TResult)this;
     }
 
     public TResult ReplaceComponent<TOriginal>(IBuilder<T> newComponent)
-        => RemoveComponent<TOriginal>().AddComponent(newComponent.IsNotNull(nameof(newComponent)));
+    {
+        ArgumentGuard.IsNotNull(newComponent, nameof(newComponent));
+
+        return RemoveComponent<TOriginal>().AddComponent(newComponent);
+    }
 
     public TResult RemoveComponent<TRemove>()
     {

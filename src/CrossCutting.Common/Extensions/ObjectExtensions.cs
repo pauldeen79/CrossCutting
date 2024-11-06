@@ -54,7 +54,11 @@ public static class ObjectExtensions
     /// value.ToString() when te value is not null, defaultValueDelegate result otherwise.
     /// </returns>
     public static string ToStringWithDefault(this object? value, Func<string> defaultValueDelegate)
-        => value.ToStringWithDefault(ArgumentGuard.IsNotNull(defaultValueDelegate, nameof(defaultValueDelegate)).Invoke());
+    {
+        ArgumentGuard.IsNotNull(defaultValueDelegate, nameof(defaultValueDelegate));
+
+        return value.ToStringWithDefault(defaultValueDelegate.Invoke());
+    }
 
     /// <summary>
     /// Converts an object value to string with default value if null.
@@ -176,7 +180,11 @@ public static class ObjectExtensions
     }
 
     public static TTarget Transform<TSource, TTarget>(this TSource instance, Func<TSource, TTarget> transformDelegate)
-        => ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate)).Invoke(instance);
+    {
+        ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
+        
+        return transformDelegate.Invoke(instance);
+    }
 
     public static T With<T>(this T instance, Action<T> action)
     {

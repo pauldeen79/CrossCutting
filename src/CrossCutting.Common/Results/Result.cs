@@ -79,10 +79,13 @@ public record Result
                      IEnumerable<Result> innerResults,
                      Exception? exception)
     {
+        ArgumentGuard.IsNotNull(validationErrors, nameof(validationErrors));
+        ArgumentGuard.IsNotNull(innerResults, nameof(innerResults));
+
         Status = status;
         ErrorMessage = errorMessage;
-        ValidationErrors = new ValueCollection<ValidationError>(validationErrors.IsNotNull(nameof(validationErrors)));
-        InnerResults = new ValueCollection<Result>(innerResults.IsNotNull(nameof(innerResults)));
+        ValidationErrors = new ValueCollection<ValidationError>(validationErrors);
+        InnerResults = new ValueCollection<Result>(innerResults);
         Exception = exception;
     }
 
@@ -242,8 +245,20 @@ public record Result
 
     public static Result<T> Redirect<T>(T value) => new(value, ResultStatus.Redirect, null, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null);
 
-    public static Result<T> FromExistingResult<T>(Result existingResult) => new(TryGetValue<T>(ArgumentGuard.IsNotNull(existingResult, nameof(existingResult))), existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors, existingResult.InnerResults, null);
-    public static Result<T> FromExistingResult<T>(Result existingResult, T value) => new(value, ArgumentGuard.IsNotNull(existingResult, nameof(existingResult)).Status, existingResult.ErrorMessage, existingResult.ValidationErrors, existingResult.InnerResults, null);
+    public static Result<T> FromExistingResult<T>(Result existingResult)
+    {
+        ArgumentGuard.IsNotNull(existingResult, nameof(existingResult));
+
+        return new(TryGetValue<T>(existingResult), existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors, existingResult.InnerResults, null);
+    }
+
+    public static Result<T> FromExistingResult<T>(Result existingResult, T value)
+    {
+        ArgumentGuard.IsNotNull(existingResult, nameof(existingResult));
+
+        return new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors, existingResult.InnerResults, null);
+    }
+
     public static Result<TTargetResult> FromExistingResult<TSourceResult, TTargetResult>(Result<TSourceResult> existingResult, Func<TSourceResult, TTargetResult> convertDelegate)
     {
         ArgumentGuard.IsNotNull(existingResult, nameof(existingResult));
