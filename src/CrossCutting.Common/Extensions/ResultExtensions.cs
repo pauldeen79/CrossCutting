@@ -5,8 +5,8 @@ public static class ResultExtensions
     public static void Either<T>(this T instance, Action<T> errorDelegate, Action<T> successDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -20,8 +20,8 @@ public static class ResultExtensions
     public static Task<T> Either<T>(this T instance, Action<T> errorDelegate, Func<T, Task<T>> successDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -35,8 +35,8 @@ public static class ResultExtensions
     public static void Either<T>(this T instance, Action<T> errorDelegate, Action successDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -50,8 +50,8 @@ public static class ResultExtensions
     public static Task<T> Either<T>(this T instance, Action<T> errorDelegate, Func<Task<T>> successDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -65,8 +65,8 @@ public static class ResultExtensions
     public static T Either<T>(this T instance, Func<T, T> errorDelegate, Func<T, T> successDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -79,8 +79,8 @@ public static class ResultExtensions
     public static Task<T> Either<T>(this T instance, Func<T, T> errorDelegate, Func<T, Task<T>> successDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -93,8 +93,8 @@ public static class ResultExtensions
     public static T Either<T>(this T instance, Func<T, T> errorDelegate, Func<T> successDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -107,8 +107,8 @@ public static class ResultExtensions
     public static Task<T> Either<T>(this T instance, Func<T, T> errorDelegate, Func<Task<T>> successDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -121,7 +121,7 @@ public static class ResultExtensions
     public static T OnFailure<T>(this T instance, Action errorDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -134,7 +134,7 @@ public static class ResultExtensions
     public static T OnFailure<T>(this T instance, Action<T> errorDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -147,7 +147,7 @@ public static class ResultExtensions
     public static T OnFailure<T>(this T instance, Func<T> errorDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -160,7 +160,7 @@ public static class ResultExtensions
     public static Task<T> OnFailure<T>(this T instance, Func<Task<T>> errorDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -173,7 +173,7 @@ public static class ResultExtensions
     public static T OnFailure<T>(this T instance, Func<T, T> errorDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -186,7 +186,7 @@ public static class ResultExtensions
     public static Task<T> OnFailure<T>(this T instance, Func<T, Task<T>> errorDelegate)
         where T : Result
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
 
         if (!instance.IsSuccessful())
         {
@@ -199,7 +199,7 @@ public static class ResultExtensions
     public static T OnSuccess<T>(this T instance, Action successDelegate)
     where T : Result
     {
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (instance.IsSuccessful())
         {
@@ -212,7 +212,7 @@ public static class ResultExtensions
     public static T OnSuccess<T>(this T instance, Action<T> successDelegate)
         where T : Result
     {
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (instance.IsSuccessful())
         {
@@ -225,7 +225,7 @@ public static class ResultExtensions
     public static T OnSuccess<T>(this T instance, Func<T> successDelegate)
         where T : Result
     {
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (instance.IsSuccessful())
         {
@@ -238,7 +238,7 @@ public static class ResultExtensions
     public static Task<T> OnSuccess<T>(this T instance, Func<Task<T>> successDelegate)
         where T : Result
     {
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (instance.IsSuccessful())
         {
@@ -251,7 +251,7 @@ public static class ResultExtensions
     public static T OnSuccess<T>(this T instance, Func<T, T> successDelegate)
         where T : Result
     {
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (instance.IsSuccessful())
         {
@@ -264,7 +264,7 @@ public static class ResultExtensions
     public static Task<T> OnSuccess<T>(this T instance, Func<T, Task<T>> successDelegate)
         where T : Result
     {
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
         if (instance.IsSuccessful())
         {

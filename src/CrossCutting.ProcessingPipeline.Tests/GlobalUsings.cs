@@ -3,6 +3,7 @@ global using System.Text;
 global using AutoFixture;
 global using AutoFixture.AutoNSubstitute;
 global using AutoFixture.Kernel;
+global using CrossCutting.Common.Abstractions;
 global using CrossCutting.Common.DataAnnotations;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;

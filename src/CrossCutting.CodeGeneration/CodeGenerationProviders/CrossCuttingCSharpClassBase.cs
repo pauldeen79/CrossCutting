@@ -20,15 +20,17 @@ public abstract class CrossCuttingCSharpClassBase : CsharpClassGeneratorPipeline
     protected override bool CopyInterfaces => true;
     protected override bool CreateRecord => true;
     protected override bool GenerateMultipleFiles => false;
+    protected override bool EnableGlobalUsings => true;
 
     protected override bool IsAbstractType(Type type)
     {
-        type = type.IsNotNull(nameof(type));
+        ArgumentGuard.IsNotNull(type, nameof(type));
 
         if (type.IsInterface && type.Namespace == $"{CodeGenerationRootNamespace}.Models" && type.Name.Substring(1) == Constants.Types.FunctionParseResultArgument)
         {
             return true;
         }
+
         return base.IsAbstractType(type);
     }
 

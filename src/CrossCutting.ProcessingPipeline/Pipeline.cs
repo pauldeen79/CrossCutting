@@ -4,14 +4,19 @@ public class Pipeline<TRequest> : PipelineBase<TRequest>, IPipeline<TRequest>
 {
     private readonly Action<TRequest, PipelineContext<TRequest>> _validationDelegate;
 
-    public Pipeline(Action<TRequest, PipelineContext<TRequest>> validationDelegate, IEnumerable<IPipelineComponent<TRequest>> features) : base(features.IsNotNull(nameof(features)))
+    public Pipeline(Action<TRequest, PipelineContext<TRequest>> validationDelegate, IEnumerable<IPipelineComponent<TRequest>> features) : base(features)
     {
-        _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
+        ArgumentGuard.IsNotNull(validationDelegate, nameof(validationDelegate));
+        ArgumentGuard.IsNotNull(features, nameof(features)); //note that the base class allows null
+
+        _validationDelegate = validationDelegate;
     }
 
     public async Task<Result> Process(TRequest request, CancellationToken token)
     {
-        var pipelineContext = new PipelineContext<TRequest>(ArgumentGuard.IsNotNull(request, nameof(request)));
+        ArgumentGuard.IsNotNull(request, nameof(request));
+
+        var pipelineContext = new PipelineContext<TRequest>(request);
 
         _validationDelegate(request, pipelineContext);
 
@@ -29,14 +34,19 @@ public class Pipeline<TRequest, TResponse> : PipelineBase<TRequest, TResponse>, 
 {
     private readonly Action<TRequest, PipelineContext<TRequest, TResponse>> _validationDelegate;
 
-    public Pipeline(Action<TRequest, PipelineContext<TRequest, TResponse>> validationDelegate, IEnumerable<IPipelineComponent<TRequest, TResponse>> features) : base(features.IsNotNull(nameof(features)))
+    public Pipeline(Action<TRequest, PipelineContext<TRequest, TResponse>> validationDelegate, IEnumerable<IPipelineComponent<TRequest, TResponse>> features) : base(features)
     {
-        _validationDelegate = validationDelegate.IsNotNull(nameof(validationDelegate));
+        ArgumentGuard.IsNotNull(validationDelegate, nameof(validationDelegate));
+        ArgumentGuard.IsNotNull(features, nameof(features)); //note that the base class allows null
+
+        _validationDelegate = validationDelegate;
     }
 
     public async Task<Result<TResponse>> Process(TRequest request, TResponse seed, CancellationToken token)
     {
-        var pipelineContext = new PipelineContext<TRequest, TResponse>(request.IsNotNull(nameof(request)), seed);
+        ArgumentGuard.IsNotNull(request, nameof(request));
+
+        var pipelineContext = new PipelineContext<TRequest, TResponse>(request, seed);
 
         _validationDelegate(request, pipelineContext);
 
