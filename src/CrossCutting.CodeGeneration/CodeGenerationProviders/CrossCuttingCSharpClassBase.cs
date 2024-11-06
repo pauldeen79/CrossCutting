@@ -20,6 +20,7 @@ public abstract class CrossCuttingCSharpClassBase : CsharpClassGeneratorPipeline
     protected override bool CopyInterfaces => true;
     protected override bool CreateRecord => true;
     protected override bool GenerateMultipleFiles => false;
+    protected override bool EnableGlobalUsings => true;
 
     protected override bool IsAbstractType(Type type)
     {
