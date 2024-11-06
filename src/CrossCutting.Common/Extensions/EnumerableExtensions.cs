@@ -108,8 +108,8 @@ public static class EnumerableExtensions
 
     public static Result PerformUntilFailure<T>(this IEnumerable<T> instance, Func<Result> defaultValueDelegate, Func<T, Result> actionDelegate)
     {
-        defaultValueDelegate = defaultValueDelegate.IsNotNull(nameof(defaultValueDelegate));
-        actionDelegate = actionDelegate.IsNotNull(nameof(actionDelegate));
+        ArgumentGuard.IsNotNull(defaultValueDelegate, nameof(defaultValueDelegate));
+        ArgumentGuard.IsNotNull(actionDelegate, nameof(actionDelegate));
 
         return instance
             .Select(x => actionDelegate(x))
@@ -122,8 +122,8 @@ public static class EnumerableExtensions
 
     public static async Task<Result> PerformUntilFailure<T>(this IEnumerable<T> instance, Func<Result> defaultValueDelegate, Func<T, Task<Result>> actionDelegate)
     {
-        defaultValueDelegate = defaultValueDelegate.IsNotNull(nameof(defaultValueDelegate));
-        actionDelegate = actionDelegate.IsNotNull(nameof(actionDelegate));
+        ArgumentGuard.IsNotNull(defaultValueDelegate, nameof(defaultValueDelegate));
+        ArgumentGuard.IsNotNull(actionDelegate, nameof(actionDelegate));
 
         foreach (var item in instance)
         {
@@ -142,8 +142,8 @@ public static class EnumerableExtensions
 
     public static async Task<Result> PerformUntilFailure(this IEnumerable instance, Func<Result> defaultValueDelegate, Func<object, Task<Result>> actionDelegate)
     {
-        defaultValueDelegate = defaultValueDelegate.IsNotNull(nameof(defaultValueDelegate));
-        actionDelegate = actionDelegate.IsNotNull(nameof(actionDelegate));
+        ArgumentGuard.IsNotNull(defaultValueDelegate, nameof(defaultValueDelegate));
+        ArgumentGuard.IsNotNull(actionDelegate, nameof(actionDelegate));
 
         foreach (var item in instance)
         {

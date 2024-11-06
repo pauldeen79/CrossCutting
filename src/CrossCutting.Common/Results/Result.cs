@@ -60,7 +60,7 @@ public record Result<T> : Result
 
     public Result<T> Either(Func<Result<T>, Result<T>> errorDelegate)
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
 
         if (!IsSuccessful())
         {
@@ -333,7 +333,7 @@ public record Result
 
     public Result Either(Func<Result, Result> errorDelegate)
     {
-        errorDelegate = errorDelegate.IsNotNull(nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
 
         if (!IsSuccessful())
         {
