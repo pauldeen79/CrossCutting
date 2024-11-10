@@ -1,6 +1,4 @@
-﻿using Castle.Components.DictionaryAdapter.Xml;
-
-namespace CrossCutting.Common.Tests.Extensions;
+﻿namespace CrossCutting.Common.Tests.Extensions;
 
 public class EnumerableExtensionsTests
 {
@@ -498,7 +496,7 @@ public class EnumerableExtensionsTests
         counter.Should().Be(2); // all items should have been processed
     }
 
-    private Task<string> MyAsyncFunction(string input)
+    private static Task<string> MyAsyncFunction(string input)
     {
         return Task.FromResult(input.ToUpperInvariant());
     }
