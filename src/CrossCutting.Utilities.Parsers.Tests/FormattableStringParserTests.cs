@@ -137,6 +137,20 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Works_With_ExpressionString_Containing_Nested_Function()
+    {
+        // Arrange
+        const string Input = "Hello {ToUpperCase(MyFunction())}!";
+
+        // Act
+        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.ToString().Should().Be("Hello FUNCTION RESULT!");
+    }
+
+    [Fact]
     public void Parse_Works_With_ExpressionString()
     {
         // Arrange
@@ -305,6 +319,7 @@ public sealed class FormattableStringParserTests : IDisposable
             .AddParsers()
             .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
             .AddSingleton<IFunctionResultParser, MyFunctionResultParser>()
+            .AddSingleton<IFunctionResultParser, ToUpperCaseResultParser>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
         return _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>();
@@ -337,6 +352,25 @@ public sealed class FormattableStringParserTests : IDisposable
             }
 
             return Result.Success<object?>("function result");
+        }
+    }
+
+    private sealed class ToUpperCaseResultParser : IFunctionResultParser
+    {
+        public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+        {
+            if (functionParseResult.FunctionName != "ToUpperCase")
+            {
+                return Result.Continue<object?>();
+            }
+
+            var valueResult = functionParseResult.Arguments.First().GetValueResult(context, evaluator, parser, functionParseResult.FormatProvider);
+            if (!valueResult.IsSuccessful())
+            {
+                return valueResult;
+            }
+
+            return Result.Success<object?>(valueResult.Value.ToStringWithDefault().ToUpperInvariant());
         }
     }
 }
