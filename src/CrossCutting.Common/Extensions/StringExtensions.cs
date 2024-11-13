@@ -215,7 +215,7 @@ public static class StringExtensions
     {
         ArgumentGuard.IsNotNull(delimiter, nameof(delimiter));
 
-        if (delimiter.Length != 1 && delimiter.Length != 2)
+        if (delimiter.Length is not 1 and not 2)
         {
             throw new ArgumentOutOfRangeException(nameof(delimiter), "Delimiter can only be 1 or 2 characters");
         }

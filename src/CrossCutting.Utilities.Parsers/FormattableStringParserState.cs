@@ -13,7 +13,7 @@ public class FormattableStringParserState
     public char Current { get; private set; }
     public int Index { get; private set; }
     public string ResultFormat => ResultBuilder.ToString();
-    public Collection<object> ResultArguments { get; } = new();
+    public Collection<object> ResultArguments { get; } = [];
 
     public FormattableStringParserState(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser parser)
     {

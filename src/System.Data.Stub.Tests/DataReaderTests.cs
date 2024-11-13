@@ -140,7 +140,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetFieldType(0);
 
         // Assert
-        actual.Should().Be(typeof(char));
+        actual.Should().Be<char>();
     }
 
     [Fact]

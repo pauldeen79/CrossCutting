@@ -1,15 +1,9 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressionProcessors;
 
-public abstract class AggregatorBase : IAggregator
+public abstract class AggregatorBase(char character, int order) : IAggregator
 {
-    public char Character { get; }
-    public int Order { get; }
-
-    protected AggregatorBase(char character, int order)
-    {
-        Character = character;
-        Order = order;
-    }
+    public char Character { get; } = character;
+    public int Order { get; } = order;
 
     public abstract Result<object?> Aggregate(object value1, object value2, IFormatProvider formatProvider);
 }

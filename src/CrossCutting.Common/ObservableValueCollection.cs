@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Common;
 
-public sealed class ObservableValueCollection<T> : ObservableCollection<T>, IEquatable<ObservableCollection<T>>, IFormattable
+public sealed class ObservableValueCollection<T>(IEnumerable<T> list, IEqualityComparer<T>? equalityComparer = null) : ObservableCollection<T>(list.ToList()), IEquatable<ObservableCollection<T>>, IFormattable
 {
-    private readonly IEqualityComparer<T> _equalityComparer;
+    private readonly IEqualityComparer<T> _equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
 
     public ObservableValueCollection() : this(Enumerable.Empty<T>())
     {
@@ -11,9 +11,6 @@ public sealed class ObservableValueCollection<T> : ObservableCollection<T>, IEqu
     public ObservableValueCollection(IEqualityComparer<T>? equalityComparer) : this(Enumerable.Empty<T>(), equalityComparer)
     {
     }
-
-    public ObservableValueCollection(IEnumerable<T> list, IEqualityComparer<T>? equalityComparer = null) : base(list.ToList())
-        => _equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
 
     public bool Equals(ObservableCollection<T>? other)
         => ValueCollectionBase.Equals(this, other, _equalityComparer);

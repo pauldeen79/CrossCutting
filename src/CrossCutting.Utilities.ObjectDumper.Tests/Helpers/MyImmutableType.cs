@@ -1,13 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
 
-public class MyImmutableType
+public class MyImmutableType(string name, int age)
 {
-    public string Name { get; }
-    public int Age { get; }
-
-    public MyImmutableType(string name, int age)
-    {
-        Name = name;
-        Age = age;
-    }
+    public string Name { get; } = name;
+    public int Age { get; } = age;
 }

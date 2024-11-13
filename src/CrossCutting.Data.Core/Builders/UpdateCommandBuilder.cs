@@ -13,9 +13,9 @@ public class UpdateCommandBuilder
     public UpdateCommandBuilder()
     {
         CommandParameters = new Dictionary<string, object>();
-        FieldNames = new List<string>();
-        FieldValues = new List<string>();
-        OutputFields = new List<string>();
+        FieldNames = [];
+        FieldValues = [];
+        OutputFields = [];
         Table = string.Empty;
         TemporaryTable = string.Empty;
         _whereBuilder = new StringBuilder();

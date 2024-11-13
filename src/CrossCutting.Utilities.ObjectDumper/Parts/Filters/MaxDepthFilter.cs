@@ -1,11 +1,8 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Parts.Filters;
 
-public class MaxDepthFilter : IObjectDumperPart
+public class MaxDepthFilter(int maxDepth) : IObjectDumperPart
 {
-    private readonly int _maxDepth;
-
-    public MaxDepthFilter(int maxDepth)
-        => _maxDepth = maxDepth;
+    private readonly int _maxDepth = maxDepth;
 
     public int Order
         => 99;

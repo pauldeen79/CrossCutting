@@ -1,24 +1,16 @@
 ﻿namespace CrossCutting.Data.Core;
 
-public class PagedResult<T> : IPagedResult<T>
+public class PagedResult<T>(IEnumerable<T> records, int totalRecordCount, int offset, int pageSize) : IPagedResult<T>
 {
-    private readonly IReadOnlyCollection<T> _records;
+    private readonly IReadOnlyCollection<T> _records = new List<T>(records).AsReadOnly();
 
-    public int TotalRecordCount { get; }
+    public int TotalRecordCount { get; } = totalRecordCount;
 
-    public int Offset { get; }
+    public int Offset { get; } = offset;
 
-    public int PageSize { get; }
+    public int PageSize { get; } = pageSize;
 
     public int Count => _records.Count;
-
-    public PagedResult(IEnumerable<T> records, int totalRecordCount, int offset, int pageSize)
-    {
-        TotalRecordCount = totalRecordCount;
-        Offset = offset;
-        PageSize = pageSize;
-        _records = new List<T>(records).AsReadOnly();
-    }
 
     public IEnumerator<T> GetEnumerator() => _records.GetEnumerator();
 

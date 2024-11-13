@@ -2,8 +2,8 @@
 
 public class DbConnectionCallback
 {
-    private readonly Collection<DbCommand> _commands = new Collection<DbCommand>();
-    private readonly Collection<DbTransaction> _transactions = new Collection<DbTransaction>();
+    private readonly Collection<DbCommand> _commands = [];
+    private readonly Collection<DbTransaction> _transactions = [];
 
     public IEnumerable<DbCommand> Commands => _commands;
     public IEnumerable<DbTransaction> Transactions => _transactions;

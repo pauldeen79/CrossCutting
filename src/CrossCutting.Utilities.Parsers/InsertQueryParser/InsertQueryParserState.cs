@@ -1,6 +1,7 @@
 ﻿namespace CrossCutting.Utilities.Parsers.InsertQueryParser;
 
-internal sealed class InsertQueryParserState
+internal sealed class InsertQueryParserState(IEnumerable<IInsertQueryParserProcessor> processors,
+                              IEnumerable<IInsertQueryParserResultGenerator> resultGenerators)
 {
     public StringBuilder CurrentSection { get; } = new StringBuilder();
     public bool InsertIntoFound { get; set; }
@@ -15,18 +16,11 @@ internal sealed class InsertQueryParserState
     public bool InValue { get; set; }
     public int OpenBracketCount { get; set; }
     public int OpenRoundBracketCount { get; set; }
-    public List<string> ColumnNames { get; } = new List<string>();
-    public List<string> ColumnValues { get; } = new List<string>();
+    public List<string> ColumnNames { get; } = [];
+    public List<string> ColumnValues { get; } = [];
 
-    private readonly IEnumerable<IInsertQueryParserProcessor> _processors;
-    private readonly IEnumerable<IInsertQueryParserResultGenerator> _resultGenerators;
-
-    public InsertQueryParserState(IEnumerable<IInsertQueryParserProcessor> processors,
-                                  IEnumerable<IInsertQueryParserResultGenerator> resultGenerators)
-    {
-        _processors = processors;
-        _resultGenerators = resultGenerators;
-    }
+    private readonly IEnumerable<IInsertQueryParserProcessor> _processors = processors;
+    private readonly IEnumerable<IInsertQueryParserResultGenerator> _resultGenerators = resultGenerators;
 
     public ParseResult<string, string> Process(char character)
     {

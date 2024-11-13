@@ -1,11 +1,8 @@
 ﻿namespace CrossCutting.Data.Sql.CommandProviders;
 
-public class PagedSelectDatabaseCommandProvider : IPagedDatabaseCommandProvider
+public class PagedSelectDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders) : IPagedDatabaseCommandProvider
 {
-    private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders;
-
-    public PagedSelectDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders)
-        => _settingsProviders = settingsProviders;
+    private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
 
     public IPagedDatabaseCommand CreatePaged<TSource>(DatabaseOperation operation, int offset, int pageSize)
     {

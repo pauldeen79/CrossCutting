@@ -1,22 +1,14 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper;
 
-public class DynamicPropertyDescriptor<TTarget, TProperty> : PropertyDescriptor
+public class DynamicPropertyDescriptor<TTarget, TProperty>(
+   string propertyName,
+   Func<TTarget, TProperty> getter,
+   Action<TTarget, TProperty> setter,
+   Attribute[]? attributes) : PropertyDescriptor(propertyName, attributes ?? Array.Empty<Attribute>())
 {
-    private readonly Func<TTarget, TProperty> getter;
-    private readonly Action<TTarget, TProperty> setter;
-    private readonly string propertyName;
-
-    public DynamicPropertyDescriptor(
-       string propertyName,
-       Func<TTarget, TProperty> getter,
-       Action<TTarget, TProperty> setter,
-       Attribute[]? attributes)
-          : base(propertyName, attributes ?? Array.Empty<Attribute>())
-    {
-        this.setter = setter;
-        this.getter = getter;
-        this.propertyName = propertyName;
-    }
+    private readonly Func<TTarget, TProperty> getter = getter;
+    private readonly Action<TTarget, TProperty> setter = setter;
+    private readonly string propertyName = propertyName;
 
     public override bool Equals(object obj)
         => (obj as DynamicPropertyDescriptor<TTarget, TProperty>)?.propertyName.Equals(propertyName, StringComparison.Ordinal) == true;

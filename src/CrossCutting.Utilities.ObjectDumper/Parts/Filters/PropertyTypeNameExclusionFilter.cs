@@ -1,11 +1,8 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Parts.Filters;
 
-public class PropertyTypeNameExclusionFilter : IObjectDumperPart
+public class PropertyTypeNameExclusionFilter(string skipPropertyTypeName) : IObjectDumperPart
 {
-    private readonly string _skipPropertyTypeName;
-
-    public PropertyTypeNameExclusionFilter(string skipPropertyTypeName)
-        => _skipPropertyTypeName = skipPropertyTypeName;
+    private readonly string _skipPropertyTypeName = skipPropertyTypeName;
 
     public int Order
         => 99;

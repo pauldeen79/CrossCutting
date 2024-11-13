@@ -1,12 +1,7 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Repositories;
 
-public class TestEntityDatabaseCommandProvider : SelectDatabaseCommandProvider, IDatabaseCommandProvider<TestEntity>
+public class TestEntityDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverSettingsProvider> settingsProviders) : SelectDatabaseCommandProvider(settingsProviders), IDatabaseCommandProvider<TestEntity>
 {
-    public TestEntityDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverSettingsProvider> settingsProviders)
-        : base(settingsProviders)
-    {
-    }
-
     public IDatabaseCommand Create(TestEntity source, DatabaseOperation operation)
         => operation switch
         {

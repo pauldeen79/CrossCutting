@@ -8,7 +8,7 @@ public class EnumerableDumper : IObjectDumperPartWithCallback
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
-        if (!(instance is string) && instance is IEnumerable enumerable)
+        if (instance is not string and IEnumerable enumerable)
         {
             builder.BeginNesting(indent, instanceType);
             builder.BeginEnumerable(indent, instanceType);

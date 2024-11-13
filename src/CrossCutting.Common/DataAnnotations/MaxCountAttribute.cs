@@ -9,24 +9,14 @@ public sealed class MaxCountAttribute : ValidationAttribute
     {
         // Check the lengths for legality
         EnsureLegalLengths();
-        
+
         if (value is null)
         {
             // bypass validation in case of null
             return true;
         }
 
-        if (MaxAllowableCount == Count)
-        {
-            return true;
-        }
-
-        if (value is IList list)
-        {
-            return list.Count <= Count;
-        }
-
-        return false;
+        return MaxAllowableCount == Count || (value is IList list && list.Count <= Count);
     }
 
     public int Count { get; }
@@ -58,7 +48,7 @@ public sealed class MaxCountAttribute : ValidationAttribute
     /// <exception cref="InvalidOperationException">Length is zero or less than negative one.</exception>
     private void EnsureLegalLengths()
     {
-        if (Count == 0 || Count < -1)
+        if (Count is 0 or < (-1))
         {
             throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, DataAnnotationsResources.MaxCountAttribute_InvalidMaxCount));
         }

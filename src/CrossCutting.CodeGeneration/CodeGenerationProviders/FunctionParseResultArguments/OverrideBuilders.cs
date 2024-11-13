@@ -1,12 +1,8 @@
 ﻿namespace ExpressionFramework.CodeGeneration.CodeGenerationProviders.FunctionParseResultArguments;
 
 [ExcludeFromCodeCoverage]
-public class OverrideBuilders : CrossCuttingCSharpClassBase
+public class OverrideBuilders(IPipelineService pipelineService) : CrossCuttingCSharpClassBase(pipelineService)
 {
-    public OverrideBuilders(IPipelineService pipelineService) : base(pipelineService)
-    {
-    }
-
     public override string Path => CrossCutting.CodeGeneration.Constants.Paths.FunctionParseResultArgumentBuilders;
 
     protected override bool EnableEntityInheritance => true;

@@ -20,7 +20,7 @@ public class MinCountAttributeTests
     public void Is_Valid_When_Value_Falls_Within_Range()
     {
         // Arrange
-        var sut = new MyClass { MyProperty = new List<int> { 1, 2, 3 } };
+        var sut = new MyClass { MyProperty = [1, 2, 3] };
         var results = new List<ValidationResult>();
 
         // Act
@@ -34,7 +34,7 @@ public class MinCountAttributeTests
     public void Is_Invalid_When_Value_Is_Lower_Than_Minimum()
     {
         // Arrange
-        var sut = new MyClass { MyProperty = new List<int>() };
+        var sut = new MyClass { MyProperty = [] };
         var results = new List<ValidationResult>();
 
         // Act

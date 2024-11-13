@@ -477,14 +477,9 @@ public sealed class MathematicExpressionParserTests : IDisposable
         _provider?.Dispose();
     }
 
-    private sealed class MyMathematicExpressionParser : IExpressionParser
+    private sealed class MyMathematicExpressionParser(Func<string, IFormatProvider, Result<object?>> dlg) : IExpressionParser
     {
-        private readonly Func<string, IFormatProvider, Result<object?>> _dlg;
-
-        public MyMathematicExpressionParser(Func<string, IFormatProvider, Result<object?>> dlg)
-        {
-            _dlg = dlg;
-        }
+        private readonly Func<string, IFormatProvider, Result<object?>> _dlg = dlg;
 
         public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
             => _dlg.Invoke(value, formatProvider);

@@ -1,13 +1,8 @@
 ﻿namespace CrossCutting.Utilities.Parsers.FormattableStringStateProcessors;
 
-public class CloseSignProcessor : IFormattableStringStateProcessor
+public class CloseSignProcessor(IEnumerable<IPlaceholderProcessor> processors) : IFormattableStringStateProcessor
 {
-    private readonly IEnumerable<IPlaceholderProcessor> _processors;
-
-    public CloseSignProcessor(IEnumerable<IPlaceholderProcessor> processors)
-    {
-        _processors = processors;
-    }
+    private readonly IEnumerable<IPlaceholderProcessor> _processors = processors;
 
     public Result<FormattableStringParserResult> Process(FormattableStringParserState state)
     {

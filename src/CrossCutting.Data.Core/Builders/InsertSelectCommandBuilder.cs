@@ -12,8 +12,8 @@ public class InsertSelectCommandBuilder
     public InsertSelectCommandBuilder()
     {
         CommandParameters = new Dictionary<string, object>();
-        FieldNames = new List<string>();
-        OutputFields = new List<string>();
+        FieldNames = [];
+        OutputFields = [];
         SelectCommand = new SelectCommandBuilder();
         Table = string.Empty;
         TemporaryTable = string.Empty;

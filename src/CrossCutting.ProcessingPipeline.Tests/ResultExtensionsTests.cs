@@ -72,15 +72,10 @@ public class ResultExtensionsTests : TestBase
         public MyBuilder Builder { get; }
     }
 
-    public sealed class MyBuilder
+    public sealed class MyBuilder(ResultExtensionsTests.Model sourceModel)
     {
-        public MyBuilder(Model sourceModel)
-        {
-            SourceModel = sourceModel;
-        }
-
         [ValidateObject]
-        public Model SourceModel { get; }
+        public Model SourceModel { get; } = sourceModel;
 
         public Model Build()
         {
@@ -88,14 +83,9 @@ public class ResultExtensionsTests : TestBase
         }
     }
 
-    public class Model
+    public class Model(string value)
     {
         [Required]
-        public string Value { get; }
-
-        public Model(string value)
-        {
-            Value = value;
-        }
+        public string Value { get; } = value;
     }
 }

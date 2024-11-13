@@ -7,19 +7,14 @@ public sealed class CountAttribute : ValidationAttribute
     {
         // Check the lengths for legality
         EnsureLegalLengths();
-        
+
         if (value is null)
         {
             // bypass validation in case of null
             return true;
         }
 
-        if (value is IList list)
-        {
-            return list.Count >= MinimumCount && list.Count <= MaximumCount;
-        }
-
-        return false;
+        return value is IList list && list.Count >= MinimumCount && list.Count <= MaximumCount;
     }
 
     public int MinimumCount { get; }
@@ -41,9 +36,9 @@ public sealed class CountAttribute : ValidationAttribute
     {
         EnsureLegalLengths();
 
-        bool useErrorMessageWithMinimum = MinimumCount != 0;
+        var useErrorMessageWithMinimum = MinimumCount != 0;
 
-        string errorMessage = useErrorMessageWithMinimum
+        var errorMessage = useErrorMessageWithMinimum
             ? DataAnnotationsResources.CountAttribute_ValidationErrorIncludingMinimum
             : ErrorMessageString;
 

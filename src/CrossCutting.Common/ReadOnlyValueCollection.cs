@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Common;
 
-public sealed class ReadOnlyValueCollection<T> : ReadOnlyCollection<T>, IEquatable<ReadOnlyValueCollection<T>>, IFormattable
+public sealed class ReadOnlyValueCollection<T>(IEnumerable<T> list, IEqualityComparer<T>? equalityComparer = null) : ReadOnlyCollection<T>(list.ToList()), IEquatable<ReadOnlyValueCollection<T>>, IFormattable
 {
-    private readonly IEqualityComparer<T> _equalityComparer;
+    private readonly IEqualityComparer<T> _equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
 
     public ReadOnlyValueCollection() : this(Enumerable.Empty<T>())
     {
@@ -11,9 +11,6 @@ public sealed class ReadOnlyValueCollection<T> : ReadOnlyCollection<T>, IEquatab
     public ReadOnlyValueCollection(IEqualityComparer<T>? equalityComparer) : this(Enumerable.Empty<T>(), equalityComparer)
     {
     }
-
-    public ReadOnlyValueCollection(IEnumerable<T> list, IEqualityComparer<T>? equalityComparer = null) : base(list.ToList())
-        => _equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
 
     public bool Equals(ReadOnlyValueCollection<T>? other)
         => ValueCollectionBase.Equals(this, other, _equalityComparer);

@@ -1,23 +1,17 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public class FormattableStringParserResult : FormattableString
+public class FormattableStringParserResult(string format, object[] arguments) : FormattableString
 {
-    private readonly object[] _arguments;
+    private readonly object[] _arguments = arguments.IsNotNull(nameof(arguments));
 
     public FormattableStringParserResult(object? value) : this("{0}", [value!])
     {
     }
 
-    public FormattableStringParserResult(string format, object[] arguments)
-    {
-        Format = format.IsNotNull(nameof(format));
-        _arguments = arguments.IsNotNull(nameof(arguments));
-    }
-
     public override int ArgumentCount
         => _arguments.Length;
 
-    public override string Format { get; }
+    public override string Format { get; } = format.IsNotNull(nameof(format));
 
     public override object GetArgument(int index)
         => _arguments[index];

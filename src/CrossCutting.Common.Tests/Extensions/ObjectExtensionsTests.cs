@@ -473,7 +473,7 @@ public class ObjectExtensionsTests
 
     private sealed class MyPocoClassWithList
     {
-        public List<MyPocoClass> Items { get; set; } = new();
+        public List<MyPocoClass> Items { get; set; } = [];
     }
 
     private sealed class MyDisposableClass : IDisposable

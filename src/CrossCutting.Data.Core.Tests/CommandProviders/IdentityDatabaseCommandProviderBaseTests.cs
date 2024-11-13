@@ -43,13 +43,8 @@ public class IdentityDatabaseCommandProviderBaseTests
         actual.CommandText.Should().Be(@"SELECT A, B, C FROM Table WHERE [Field1] = @Field1 AND [Field2] = @Field2Alias");
     }
 
-    private sealed class IdentityDatabaseCommandProviderMock : IdentityDatabaseCommandProviderBase<TestEntityIdentity>
+    private sealed class IdentityDatabaseCommandProviderMock(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders) : IdentityDatabaseCommandProviderBase<TestEntityIdentity>(settingsProviders)
     {
-        public IdentityDatabaseCommandProviderMock(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders)
-            : base(settingsProviders)
-        {
-        }
-
         protected override IEnumerable<IdentityDatabaseCommandProviderField> GetFields()
         {
             yield return new IdentityDatabaseCommandProviderField("Field1");

@@ -15,11 +15,14 @@ public sealed class ValidateObjectAttribute : ValidationAttribute
 
         var validationResults = new List<ValidationResult>();
 
-        if (value is not string && value is IEnumerable e)
+        if (value is not string and IEnumerable e)
         {
             foreach (var item in e.OfType<object?>().Where(x => x is not null))
             {
-                if (!item!.TryValidate(validationResults)) return false;
+                if (!item!.TryValidate(validationResults))
+                {
+                    return false;
+                }
             }
             return true;
         }
@@ -43,11 +46,11 @@ public sealed class ValidateObjectAttribute : ValidationAttribute
         }
 
         var validationResults = new List<ValidationResult>();
-        if (value is not string && value is IEnumerable e)
+        if (value is not string and IEnumerable e)
         {
             foreach (var item in e.OfType<object?>().Where(x => x is not null))
             {
-                item!.TryValidate(validationResults);
+                _ = item!.TryValidate(validationResults);
             }
         }
         else
@@ -55,11 +58,8 @@ public sealed class ValidateObjectAttribute : ValidationAttribute
             _ = value.TryValidate(validationResults);
         }
 
-        if (validationResults.Count == 0)
-        {
-            return ValidationResult.Success;
-        }
-
-        return new ValidationResult($"{validationContext?.MemberName}: {string.Join(Environment.NewLine, validationResults.Select(x => x.ErrorMessage))}", [validationContext?.MemberName]);
+        return validationResults.Count == 0
+            ? ValidationResult.Success
+            : new ValidationResult($"{validationContext?.MemberName}: {string.Join(Environment.NewLine, validationResults.Select(x => x.ErrorMessage))}", [validationContext?.MemberName]);
     }
 }

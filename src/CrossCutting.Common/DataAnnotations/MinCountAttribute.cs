@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Common.DataAnnotations;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
-public sealed class MinCountAttribute : ValidationAttribute
+public sealed class MinCountAttribute(int count) : ValidationAttribute(DataAnnotationsResources.MinCountAttribute_ValidationError)
 {
     public override bool IsValid(object value)
     {
@@ -14,20 +14,10 @@ public sealed class MinCountAttribute : ValidationAttribute
             return true;
         }
 
-        if (value is IList list)
-        {
-            return list.Count >= Count;
-        }
-
-        return false;
+        return value is IList list && list.Count >= Count;
     }
 
-    public int Count { get; }
-
-    public MinCountAttribute(int count) : base(DataAnnotationsResources.MinCountAttribute_ValidationError)
-    {
-        Count = count;
-    }
+    public int Count { get; } = count;
 
     /// <summary>
     /// Applies formatting to a specified error message. (Overrides <see cref = "ValidationAttribute.FormatErrorMessage" />)

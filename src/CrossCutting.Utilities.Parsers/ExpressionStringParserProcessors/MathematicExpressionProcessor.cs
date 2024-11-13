@@ -1,13 +1,8 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
 
-public class MathematicExpressionProcessor : IExpressionStringParserProcessor
+public class MathematicExpressionProcessor(IMathematicExpressionParser parser) : IExpressionStringParserProcessor
 {
-    private readonly IMathematicExpressionParser _parser;
-
-    public MathematicExpressionProcessor(IMathematicExpressionParser parser)
-    {
-        _parser = parser;
-    }
+    private readonly IMathematicExpressionParser _parser = parser;
 
     public int Order => 500;
 
@@ -17,7 +12,7 @@ public class MathematicExpressionProcessor : IExpressionStringParserProcessor
 
         // try =1+1 -> mathematic expression, no functions/formattable strings
         var mathResult = _parser.Parse(state.Input.Substring(1), state.FormatProvider, state.Context);
-        if (mathResult.Status == ResultStatus.Ok || mathResult.Status != ResultStatus.NotFound)
+        if (mathResult.Status is ResultStatus.Ok or not ResultStatus.NotFound)
         {
             // both success and failure need to be returned.
             // not found can be ignored, we can try formattable string and function in that case

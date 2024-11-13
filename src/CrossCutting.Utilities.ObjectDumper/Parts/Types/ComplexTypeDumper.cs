@@ -92,19 +92,11 @@ public class ComplexTypeDumper : IObjectDumperPartWithCallback
 
     public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth) => instance;
 
-    private sealed class ComplexTypeDumperState
+    private sealed class ComplexTypeDumperState(bool first, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
-        public bool First { get; }
-        public IObjectDumperResultBuilder Builder { get; }
-        public int Indent { get; }
-        public int CurrentDepth { get; }
-
-        public ComplexTypeDumperState(bool first, IObjectDumperResultBuilder builder, int indent, int currentDepth)
-        {
-            First = first;
-            Builder = builder;
-            Indent = indent;
-            CurrentDepth = currentDepth;
-        }
+        public bool First { get; } = first;
+        public IObjectDumperResultBuilder Builder { get; } = builder;
+        public int Indent { get; } = indent;
+        public int CurrentDepth { get; } = currentDepth;
     }
 }

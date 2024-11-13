@@ -1,19 +1,13 @@
 ﻿namespace System.Data.Stub;
 
-public sealed class DataReader : Common.DbDataReader
+public sealed class DataReader(CommandBehavior commandBehavior, CultureInfo? cultureInfo = null) : Common.DbDataReader
 {
     public int CurrentIndex { get; private set; }
-    private CultureInfo _cultureInfo { get; }
+    private CultureInfo _cultureInfo { get; } = cultureInfo ?? CultureInfo.CurrentCulture;
     private bool _isClosed;
 
     public Dictionary<int, IDictionary<string, object>> Dictionary { get; private set; }
-        = new Dictionary<int, IDictionary<string, object>>();
-
-    public DataReader(CommandBehavior commandBehavior, CultureInfo? cultureInfo = null)
-    {
-        CommandBehavior = commandBehavior;
-        _cultureInfo = cultureInfo ?? CultureInfo.CurrentCulture;
-    }
+        = [];
 
     public override object this[int i] => Dictionary[CurrentIndex][Dictionary[CurrentIndex].Keys.ElementAt(i)];
 
@@ -30,7 +24,7 @@ public sealed class DataReader : Common.DbDataReader
             ? 0
             : Dictionary[CurrentIndex].Count;
 
-    public CommandBehavior CommandBehavior { get; }
+    public CommandBehavior CommandBehavior { get; } = commandBehavior;
 
     public override bool HasRows => throw new NotImplementedException();
 
