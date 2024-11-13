@@ -12,9 +12,9 @@ public class InsertCommandBuilder
     public InsertCommandBuilder()
     {
         CommandParameters = new Dictionary<string, object>();
-        FieldNames = new List<string>();
-        OutputFields = new List<string>();
-        FieldValues = new List<string>();
+        FieldNames = [];
+        OutputFields = [];
+        FieldValues = [];
         Table = string.Empty;
         TemporaryTable = string.Empty;
     }

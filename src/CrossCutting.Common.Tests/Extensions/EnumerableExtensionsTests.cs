@@ -224,7 +224,7 @@ public class EnumerableExtensionsTests
         // Assert
         result.Should().BeEquivalentTo(new[] { 1, 2, 3 });
     }
-    
+
     [Fact]
     public async Task SelectAsync_Returns_Correct_Result()
     {

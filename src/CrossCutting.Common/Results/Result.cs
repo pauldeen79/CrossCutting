@@ -91,7 +91,7 @@ public record Result
 
     public virtual object? GetValue() => null;
 
-    public bool IsSuccessful() => Status == ResultStatus.Ok || Status == ResultStatus.NoContent || Status == ResultStatus.Continue;
+    public bool IsSuccessful() => Status is ResultStatus.Ok or ResultStatus.NoContent or ResultStatus.Continue;
     public string? ErrorMessage { get; }
     public Exception? Exception { get; }
     public ResultStatus Status { get; }

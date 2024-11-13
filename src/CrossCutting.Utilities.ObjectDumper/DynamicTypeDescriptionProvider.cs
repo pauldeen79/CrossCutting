@@ -1,24 +1,19 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper
 {
-    public class DynamicTypeDescriptionProvider : TypeDescriptionProvider
+    public class DynamicTypeDescriptionProvider(Type type) : TypeDescriptionProvider
     {
-        private readonly TypeDescriptionProvider provider;
-        private readonly List<PropertyDescriptor> properties = new List<PropertyDescriptor>();
-
-        public DynamicTypeDescriptionProvider(Type type) => provider = TypeDescriptor.GetProvider(type);
+        private readonly TypeDescriptionProvider provider = TypeDescriptor.GetProvider(type);
+        private readonly List<PropertyDescriptor> properties = [];
 
         public IList<PropertyDescriptor> Properties => properties;
 
         public override ICustomTypeDescriptor GetTypeDescriptor(Type objectType, object instance)
             => new DynamicCustomTypeDescriptor(this, provider.GetTypeDescriptor(objectType, instance));
 
-        private sealed class DynamicCustomTypeDescriptor : CustomTypeDescriptor
+        private sealed class DynamicCustomTypeDescriptor(DynamicTypeDescriptionProvider provider,
+           ICustomTypeDescriptor descriptor) : CustomTypeDescriptor(descriptor)
         {
-            private readonly DynamicTypeDescriptionProvider provider;
-
-            public DynamicCustomTypeDescriptor(DynamicTypeDescriptionProvider provider,
-               ICustomTypeDescriptor descriptor)
-                  : base(descriptor) => this.provider = provider;
+            private readonly DynamicTypeDescriptionProvider provider = provider;
 
             public override PropertyDescriptorCollection GetProperties() => GetProperties(Array.Empty<Attribute>());
 

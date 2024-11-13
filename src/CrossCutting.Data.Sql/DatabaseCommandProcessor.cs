@@ -1,30 +1,20 @@
 ﻿namespace CrossCutting.Data.Sql;
 
-public class DatabaseCommandProcessor<TEntity> : DatabaseCommandProcessor<TEntity, TEntity>
+public class DatabaseCommandProcessor<TEntity>(
+    DbConnection connection,
+    IDatabaseCommandEntityProvider<TEntity, TEntity> provider) : DatabaseCommandProcessor<TEntity, TEntity>(connection, provider)
     where TEntity : class
 {
-    public DatabaseCommandProcessor(
-        DbConnection connection,
-        IDatabaseCommandEntityProvider<TEntity, TEntity> provider)
-        : base(connection, provider)
-    {
-    }
 }
 
-public class DatabaseCommandProcessor<TEntity, TBuilder> : IDatabaseCommandProcessor<TEntity>
+public class DatabaseCommandProcessor<TEntity, TBuilder>(
+    DbConnection connection,
+    IDatabaseCommandEntityProvider<TEntity, TBuilder> provider) : IDatabaseCommandProcessor<TEntity>
     where TEntity : class
     where TBuilder : class
 {
-    private readonly DbConnection _connection;
-    private readonly IDatabaseCommandEntityProvider<TEntity, TBuilder> _provider;
-
-    public DatabaseCommandProcessor(
-        DbConnection connection,
-        IDatabaseCommandEntityProvider<TEntity, TBuilder> provider)
-    {
-        _connection = connection;
-        _provider = provider;
-    }
+    private readonly DbConnection _connection = connection;
+    private readonly IDatabaseCommandEntityProvider<TEntity, TBuilder> _provider = provider;
 
     public int ExecuteNonQuery(IDatabaseCommand command)
         => InvokeCommand(command, cmd => cmd.ExecuteNonQuery());

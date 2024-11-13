@@ -1,18 +1,12 @@
 ﻿namespace CrossCutting.Data.Sql;
 
-public class DatabaseEntityRetriever<T> : IDatabaseEntityRetriever<T>
+public class DatabaseEntityRetriever<T>(
+    DbConnection connection,
+    IDatabaseEntityMapper<T> mapper) : IDatabaseEntityRetriever<T>
     where T : class
 {
-    private readonly DbConnection _connection;
-    private readonly IDatabaseEntityMapper<T> _mapper;
-
-    public DatabaseEntityRetriever(
-        DbConnection connection,
-        IDatabaseEntityMapper<T> mapper)
-    {
-        _connection = connection;
-        _mapper = mapper;
-    }
+    private readonly DbConnection _connection = connection;
+    private readonly IDatabaseEntityMapper<T> _mapper = mapper;
 
     public T? FindOne(IDatabaseCommand command)
         => Find(cmd => cmd.FindOne(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters));

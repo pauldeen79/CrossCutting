@@ -7,17 +7,13 @@ public interface ITestRepository : IRepository<TestEntity, TestEntityIdentity>
     IPagedResult<TestEntity> FindPaged(int offset, int pageSize);
 }
 
-public class TestRepository : Repository<TestEntity, TestEntityIdentity>, ITestRepository
+public class TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcessor,
+                      IDatabaseEntityRetriever<TestEntity> entityRetriever,
+                      IDatabaseCommandProvider<TestEntityIdentity> identitySelectCommandProvider,
+                      IPagedDatabaseCommandProvider pagedEntitySelectCommandProvider,
+                      IDatabaseCommandProvider entitySelectCommandProvider,
+                      IDatabaseCommandProvider<TestEntity> entityCommandProvider) : Repository<TestEntity, TestEntityIdentity>(commandProcessor, entityRetriever, identitySelectCommandProvider, pagedEntitySelectCommandProvider, entitySelectCommandProvider, entityCommandProvider), ITestRepository
 {
-    public TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcessor,
-                          IDatabaseEntityRetriever<TestEntity> entityRetriever,
-                          IDatabaseCommandProvider<TestEntityIdentity> identitySelectCommandProvider,
-                          IPagedDatabaseCommandProvider pagedEntitySelectCommandProvider,
-                          IDatabaseCommandProvider entitySelectCommandProvider,
-                          IDatabaseCommandProvider<TestEntity> entityCommandProvider)
-        : base(commandProcessor, entityRetriever, identitySelectCommandProvider, pagedEntitySelectCommandProvider, entitySelectCommandProvider, entityCommandProvider)
-    {
-    }
 
     // for test purposes only. normally you would add arguments here (request/query)
     public TestEntity? FindOne()

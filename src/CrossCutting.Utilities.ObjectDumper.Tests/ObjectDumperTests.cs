@@ -526,9 +526,11 @@ public class ObjectDumperTests
     public void CanDumpDictionaryBasedObject()
     {
         // Arrange
-        var input = new ContextDictionary("custom1", 23);
-        input.Add("key1", "string value");
-        input.Add("key2", 55);
+        var input = new ContextDictionary("custom1", 23)
+        {
+            { "key1", "string value" },
+            { "key2", 55 }
+        };
 
         // Act
         var actual = input.Dump(new ContextDictionaryHandler());

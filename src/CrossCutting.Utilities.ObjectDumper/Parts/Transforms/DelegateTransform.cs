@@ -1,14 +1,11 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Parts.Transforms;
 
-public class DelegateTransform : IObjectDumperPart
+public class DelegateTransform(Func<object?, object?> transformDelegate) : IObjectDumperPart
 {
     public int Order
         => 99;
 
-    private readonly Func<object?, object?> _transformDelegate;
-
-    public DelegateTransform(Func<object?, object?> transformDelegate)
-        => _transformDelegate = transformDelegate;
+    private readonly Func<object?, object?> _transformDelegate = transformDelegate;
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         => false;

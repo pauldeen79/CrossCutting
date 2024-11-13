@@ -1,25 +1,18 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
 
-public class ContextDictionary : IDictionary<string, object>
+/// <summary>
+/// Initializes a new instance of the <see cref="ContextDictionary"/> class.
+/// </summary>
+/// <param name="commandHandler">The command handler.</param>
+/// <param name="host">The host.</param>
+/// <exception cref="ArgumentNullException">
+/// commandHandler
+/// or
+/// host
+/// </exception>
+public class ContextDictionary(string custom1, int custom2) : IDictionary<string, object>
 {
-    private readonly IDictionary<string, object> _state;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ContextDictionary"/> class.
-    /// </summary>
-    /// <param name="commandHandler">The command handler.</param>
-    /// <param name="host">The host.</param>
-    /// <exception cref="ArgumentNullException">
-    /// commandHandler
-    /// or
-    /// host
-    /// </exception>
-    public ContextDictionary(string custom1, int custom2)
-    {
-        Custom1 = custom1;
-        Custom2 = custom2;
-        _state = new Dictionary<string, object>();
-    }
+    private readonly IDictionary<string, object> _state = new Dictionary<string, object>();
 
     /// <summary>
     /// Gets the custom1.
@@ -27,7 +20,7 @@ public class ContextDictionary : IDictionary<string, object>
     /// <value>
     /// The custom1.
     /// </value>
-    public string Custom1 { get; }
+    public string Custom1 { get; } = custom1;
 
     /// <summary>
     /// Gets the custom2.
@@ -35,7 +28,7 @@ public class ContextDictionary : IDictionary<string, object>
     /// <value>
     /// The custom2.
     /// </value>
-    public int Custom2 { get; }
+    public int Custom2 { get; } = custom2;
 
     public ICollection<string> Keys => _state.Keys;
 

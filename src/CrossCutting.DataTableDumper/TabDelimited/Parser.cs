@@ -19,12 +19,9 @@ public static class Parser
         return new ParseResult(new DataTableDumper<ExpandoObject>(new MyColumnNameProvider(split), new MyColumnDataProvider()), list);
     }
 
-    private sealed class MyColumnNameProvider : IColumnNameProvider
+    private sealed class MyColumnNameProvider(IEnumerable<string[]> data) : IColumnNameProvider
     {
-        private readonly IEnumerable<string[]> _data;
-
-        public MyColumnNameProvider(IEnumerable<string[]> data)
-            => _data = data;
+        private readonly IEnumerable<string[]> _data = data;
 
         public IReadOnlyCollection<string> Get<T>() where T : class
             => new List<string>(_data.First()).AsReadOnly();
@@ -37,14 +34,8 @@ public static class Parser
     }
 }
 
-public class ParseResult
+public class ParseResult(DataTableDumper<ExpandoObject> dataTableDumper, List<ExpandoObject> list)
 {
-    public ParseResult(DataTableDumper<ExpandoObject> dataTableDumper, List<ExpandoObject> list)
-    {
-        DataTableDumper = dataTableDumper;
-        List = list;
-    }
-
-    public DataTableDumper<ExpandoObject> DataTableDumper { get; }
-    public List<ExpandoObject> List { get; }
+    public DataTableDumper<ExpandoObject> DataTableDumper { get; } = dataTableDumper;
+    public List<ExpandoObject> List { get; } = list;
 }

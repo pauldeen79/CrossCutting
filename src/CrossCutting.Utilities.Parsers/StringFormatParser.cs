@@ -40,7 +40,7 @@ public static class StringFormatParser
                     state.ProcessCurrentSection();
                 }
             }
-            else if (character != '\r' && character != '\n' && character != '\t')
+            else if (character is not '\r' and not '\n' and not '\t')
             {
                 state.CurrentSection.Append(character);
             }

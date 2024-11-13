@@ -1,12 +1,8 @@
 ﻿namespace CrossCutting.CodeGeneration.CodeGenerationProviders.FunctionParseResultArguments;
 
 [ExcludeFromCodeCoverage]
-public class AbstractEntities : CrossCuttingCSharpClassBase
+public class AbstractEntities(IPipelineService pipelineService) : CrossCuttingCSharpClassBase(pipelineService)
 {
-    public AbstractEntities(IPipelineService pipelineService) : base(pipelineService)
-    {
-    }
-
     public override string Path => Constants.Namespaces.UtilitiesParsers;
 
     protected override bool EnableEntityInheritance => true;

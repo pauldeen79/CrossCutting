@@ -1,18 +1,12 @@
 ﻿namespace CrossCutting.Data.Core;
 
-public class DatabaseCommandResult<T> : IDatabaseCommandResult<T>
+public class DatabaseCommandResult<T>(bool success, T? data) : IDatabaseCommandResult<T>
     where T : class
 {
-    public bool Success { get; }
-    public T? Data { get; }
+    public bool Success { get; } = success;
+    public T? Data { get; } = data;
 
     public DatabaseCommandResult(T? data) : this(data is not null, data)
     {
-    }
-
-    public DatabaseCommandResult(bool success, T? data)
-    {
-        Success = success;
-        Data = data;
     }
 }

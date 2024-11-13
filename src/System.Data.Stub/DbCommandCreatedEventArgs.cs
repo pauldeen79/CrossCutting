@@ -1,8 +1,6 @@
 ﻿namespace System.Data.Stub;
 
-public class DbCommandCreatedEventArgs : EventArgs
+public class DbCommandCreatedEventArgs(DbCommand dbCommand) : EventArgs
 {
-    public DbCommand DbCommand { get; }
-
-    public DbCommandCreatedEventArgs(DbCommand dbCommand) => DbCommand = dbCommand;
+    public DbCommand DbCommand { get; } = dbCommand;
 }

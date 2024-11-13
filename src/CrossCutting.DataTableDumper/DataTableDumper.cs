@@ -1,16 +1,10 @@
 ﻿namespace CrossCutting.DataTableDumper;
 
-public class DataTableDumper<T> : IDataTableDumper<T>
+public class DataTableDumper<T>(IColumnNameProvider columnNameProvider, IColumnDataProvider<T> columnDataProvider) : IDataTableDumper<T>
     where T : class
 {
-    private readonly IColumnNameProvider _columnNameProvider;
-    private readonly IColumnDataProvider<T> _columnDataProvider;
-
-    public DataTableDumper(IColumnNameProvider columnNameProvider, IColumnDataProvider<T> columnDataProvider)
-    {
-        _columnNameProvider = columnNameProvider;
-        _columnDataProvider = columnDataProvider;
-    }
+    private readonly IColumnNameProvider _columnNameProvider = columnNameProvider;
+    private readonly IColumnDataProvider<T> _columnDataProvider = columnDataProvider;
 
     public string Dump(IEnumerable<T> data, string escapeValue)
     {

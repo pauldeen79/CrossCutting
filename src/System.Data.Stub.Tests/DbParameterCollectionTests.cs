@@ -90,11 +90,10 @@ public class DbParameterCollectionTests
         // Arrange
         var sut = new DbParameterCollection
         {
-            new DbDataParameter { ParameterName = "Parameter1", Value = "value1" }
+            new DbDataParameter { ParameterName = "Parameter1", Value = "value1" },
+            // Act
+            "value 2"
         };
-
-        // Act
-        sut.Add("value 2");
 
         // Assert
         sut.Count.Should().Be(2);

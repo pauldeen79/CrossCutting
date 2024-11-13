@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+﻿namespace CrossCutting.Common.Tests.Extensions;
 
 public partial class StringExtensionsTests
 {

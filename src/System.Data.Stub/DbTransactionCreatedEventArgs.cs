@@ -1,8 +1,6 @@
 ﻿namespace System.Data.Stub;
 
-public class DbTransactionCreatedEventArgs : EventArgs
+public class DbTransactionCreatedEventArgs(DbTransaction dbTransaction) : EventArgs
 {
-    public DbTransaction DbTransaction { get; }
-
-    public DbTransactionCreatedEventArgs(DbTransaction dbTransaction) => DbTransaction = dbTransaction;
+    public DbTransaction DbTransaction { get; } = dbTransaction;
 }

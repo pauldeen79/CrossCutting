@@ -160,7 +160,7 @@ internal static class StringBuilderExtensions
     {
         if (offset.HasValue && offset.Value > 0 && !countOnly)
         {
-            if (pageSize is not null && pageSize > 0)
+            if (pageSize is not null and > 0)
             {
                 return instance.Append($") sq WHERE sq.sq_row_number BETWEEN {offset.Value + 1} and {offset.Value + pageSize.Value};");
             }

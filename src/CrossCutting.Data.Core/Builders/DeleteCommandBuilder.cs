@@ -11,7 +11,7 @@ public class DeleteCommandBuilder
     public DeleteCommandBuilder()
     {
         CommandParameters = new Dictionary<string, object>();
-        OutputFields = new List<string>();
+        OutputFields = [];
         Table = string.Empty;
         TemporaryTable = string.Empty;
         _whereBuilder = new StringBuilder();

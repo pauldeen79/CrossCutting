@@ -182,7 +182,7 @@ public static class ObjectExtensions
     public static TTarget Transform<TSource, TTarget>(this TSource instance, Func<TSource, TTarget> transformDelegate)
     {
         ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
-        
+
         return transformDelegate.Invoke(instance);
     }
 

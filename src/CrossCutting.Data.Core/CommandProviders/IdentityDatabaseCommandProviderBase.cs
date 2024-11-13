@@ -1,12 +1,9 @@
 ﻿namespace CrossCutting.Data.Core.CommandProviders;
 
-public abstract class IdentityDatabaseCommandProviderBase<T> : IDatabaseCommandProvider<T>
+public abstract class IdentityDatabaseCommandProviderBase<T>(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders) : IDatabaseCommandProvider<T>
     where T : class
 {
-    private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders;
-
-    protected IdentityDatabaseCommandProviderBase(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders)
-        => _settingsProviders = settingsProviders;
+    private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
 
     public IDatabaseCommand Create(T source, DatabaseOperation operation)
     {

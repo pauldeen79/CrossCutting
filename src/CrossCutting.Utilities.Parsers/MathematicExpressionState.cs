@@ -6,7 +6,7 @@ public class MathematicExpressionState
     public string Remainder { get; set; }
     public IFormatProvider FormatProvider { get; }
     public object? Context { get; }
-    public ICollection<Result<object?>> Results { get; } = new List<Result<object?>>();
+    public ICollection<Result<object?>> Results { get; } = [];
     public Func<string, IFormatProvider, object?, Result<object?>> ParseDelegate { get; }
 
     public int Position { get; private set; }

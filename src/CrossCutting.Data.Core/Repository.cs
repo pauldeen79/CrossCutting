@@ -1,6 +1,11 @@
 ﻿namespace CrossCutting.Data.Core;
 
-public class Repository<TEntity, TIdentity> : IRepository<TEntity, TIdentity>
+public class Repository<TEntity, TIdentity>(IDatabaseCommandProcessor<TEntity> commandProcessor,
+                  IDatabaseEntityRetriever<TEntity> entityRetriever,
+                  IDatabaseCommandProvider<TIdentity> identitySelectCommandProvider,
+                  IPagedDatabaseCommandProvider pagedEntitySelectCommandProvider,
+                  IDatabaseCommandProvider entitySelectCommandProvider,
+                  IDatabaseCommandProvider<TEntity> entityCommandProvider) : IRepository<TEntity, TIdentity>
     where TEntity : class
 {
     public TEntity Add(TEntity instance)
@@ -48,25 +53,10 @@ public class Repository<TEntity, TIdentity> : IRepository<TEntity, TIdentity>
         => await EntityRetriever.FindPagedAsync(PagedEntitySelectCommandProvider.CreatePaged<TEntity>(DatabaseOperation.Select, offset, pageSize), cancellationToken)
                                 .ConfigureAwait(false);
 
-    public Repository(IDatabaseCommandProcessor<TEntity> commandProcessor,
-                      IDatabaseEntityRetriever<TEntity> entityRetriever,
-                      IDatabaseCommandProvider<TIdentity> identitySelectCommandProvider,
-                      IPagedDatabaseCommandProvider pagedEntitySelectCommandProvider,
-                      IDatabaseCommandProvider entitySelectCommandProvider,
-                      IDatabaseCommandProvider<TEntity> entityCommandProvider)
-    {
-        CommandProcessor = commandProcessor;
-        EntityRetriever = entityRetriever;
-        IdentitySelectCommandProvider = identitySelectCommandProvider;
-        EntitySelectCommandProvider = entitySelectCommandProvider;
-        PagedEntitySelectCommandProvider = pagedEntitySelectCommandProvider;
-        EntityCommandProvider = entityCommandProvider;
-    }
-
-    protected IDatabaseCommandProcessor<TEntity> CommandProcessor { get; }
-    protected IDatabaseEntityRetriever<TEntity> EntityRetriever { get; }
-    protected IDatabaseCommandProvider<TIdentity> IdentitySelectCommandProvider { get; }
-    protected IDatabaseCommandProvider EntitySelectCommandProvider { get; }
-    protected IPagedDatabaseCommandProvider PagedEntitySelectCommandProvider { get; }
-    protected IDatabaseCommandProvider<TEntity> EntityCommandProvider { get; }
+    protected IDatabaseCommandProcessor<TEntity> CommandProcessor { get; } = commandProcessor;
+    protected IDatabaseEntityRetriever<TEntity> EntityRetriever { get; } = entityRetriever;
+    protected IDatabaseCommandProvider<TIdentity> IdentitySelectCommandProvider { get; } = identitySelectCommandProvider;
+    protected IDatabaseCommandProvider EntitySelectCommandProvider { get; } = entitySelectCommandProvider;
+    protected IPagedDatabaseCommandProvider PagedEntitySelectCommandProvider { get; } = pagedEntitySelectCommandProvider;
+    protected IDatabaseCommandProvider<TEntity> EntityCommandProvider { get; } = entityCommandProvider;
 }

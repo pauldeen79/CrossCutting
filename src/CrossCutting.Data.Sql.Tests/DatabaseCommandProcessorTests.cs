@@ -344,7 +344,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
         builderProviderMock.CreateEntity.Returns(x => x.Build());
         builderProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<TestEntityBuilder>?));
-        builderProviderMock.AfterRead.Returns(default( AfterReadHandler<TestEntityBuilder>?));
+        builderProviderMock.AfterRead.Returns(default(AfterReadHandler<TestEntityBuilder>?));
 
         var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
         var entity = new TestEntity("A", "B", "C", true);
@@ -369,7 +369,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
         builderProviderMock.CreateEntity.Returns(x => x.Build());
         builderProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<TestEntityBuilder>?));
-        builderProviderMock.AfterRead.Returns(default( AfterReadHandler<TestEntityBuilder>?));
+        builderProviderMock.AfterRead.Returns(default(AfterReadHandler<TestEntityBuilder>?));
 
         var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
         var entity = new TestEntity("A", "B", "C", true);

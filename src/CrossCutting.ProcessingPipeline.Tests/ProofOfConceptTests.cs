@@ -109,7 +109,7 @@ public class ProofOfConceptTests
         public void Can_Validate_PipelineBuilder_With_Empty_Features_List()
         {
             // Arrange
-            var builder = new PipelineBuilder<object?, StringBuilder> { Components = new List<IBuilder<IPipelineComponent<object?, StringBuilder>>>() };
+            var builder = new PipelineBuilder<object?, StringBuilder> { Components = [] };
             var validationResults = new List<ValidationResult>();
 
             // Act
@@ -304,7 +304,7 @@ public class ProofOfConceptTests
         public void Can_Validate_PipelineBuilder_With_Empty_Features_List()
         {
             // Arrange
-            var builder = new PipelineBuilder<object?> { Components = new List<IBuilder<IPipelineComponent<object?>>>() };
+            var builder = new PipelineBuilder<object?> { Components = [] };
             var validationResults = new List<ValidationResult>();
 
             // Act
@@ -571,14 +571,9 @@ public class ProofOfConceptTests
         IMyService MyService { get; }
     }
 
-    public sealed class PipelineComponentBuilderWithDependencies : IPipelineFeatureBuilderWithDependencies
+    public sealed class PipelineComponentBuilderWithDependencies(ProofOfConceptTests.IMyService myService) : IPipelineFeatureBuilderWithDependencies
     {
-        private readonly IMyService _myService;
-
-        public PipelineComponentBuilderWithDependencies(IMyService myService)
-        {
-            _myService = myService;
-        }
+        private readonly IMyService _myService = myService;
 
         public IPipelineComponent<object?> Build()
         {

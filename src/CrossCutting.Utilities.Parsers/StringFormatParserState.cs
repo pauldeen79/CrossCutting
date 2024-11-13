@@ -4,8 +4,8 @@ internal sealed class StringFormatParserState
 {
     public StringBuilder CurrentSection { get; } = new StringBuilder();
     public int OpenBracketCount { get; private set; }
-    public List<string> FormatPlaceholders { get; private set; } = new List<string>();
-    public List<string> ValidationErrors { get; } = new List<string>();
+    public List<string> FormatPlaceholders { get; private set; } = [];
+    public List<string> ValidationErrors { get; } = [];
     public List<object> FormatValues { get; }
 
     private bool FormatValueCountUnequalToFormatPlaceholderCount

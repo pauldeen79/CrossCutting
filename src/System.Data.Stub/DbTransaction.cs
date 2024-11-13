@@ -1,11 +1,9 @@
 ﻿namespace System.Data.Stub;
 
-public sealed class DbTransaction : Common.DbTransaction
+public sealed class DbTransaction(DbConnection dbConnection) : Common.DbTransaction
 {
-    private readonly DbConnection _dbConnection;
+    private readonly DbConnection _dbConnection = dbConnection;
     private IsolationLevel _isolationLevel = IsolationLevel.Unspecified;
-
-    public DbTransaction(DbConnection dbConnection) => _dbConnection = dbConnection;
 
     public override IsolationLevel IsolationLevel => _isolationLevel;
 

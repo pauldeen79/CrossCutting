@@ -1,12 +1,7 @@
 ﻿namespace CrossCutting.Data.Sql.Tests.Repositories;
 
-public class TestEntityIdentityDatabaseCommandProvider : IdentityDatabaseCommandProviderBase<TestEntityIdentity>
+public class TestEntityIdentityDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders) : IdentityDatabaseCommandProviderBase<TestEntityIdentity>(settingsProviders)
 {
-    public TestEntityIdentityDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders)
-        : base(settingsProviders)
-    {
-    }
-
     protected override IEnumerable<IdentityDatabaseCommandProviderField> GetFields()
     {
         yield return new IdentityDatabaseCommandProviderField("Code");

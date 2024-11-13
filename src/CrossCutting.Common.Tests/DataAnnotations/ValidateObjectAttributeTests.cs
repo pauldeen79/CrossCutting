@@ -123,7 +123,7 @@ public class ValidateObjectAttributeTests
         // Assert
         result.Should().BeFalse();
         validationResults.Should().HaveCount(2);
-                      validationResults.Select(x => x.ErrorMessage).Should().BeEquivalentTo("The Name field is required.", "Property SubProperty is wrong");
+        validationResults.Select(x => x.ErrorMessage).Should().BeEquivalentTo("The Name field is required.", "Property SubProperty is wrong");
         validationResults.SelectMany(x => x.MemberNames).Should().BeEquivalentTo("Name", "SubProperty");
     }
 
@@ -146,26 +146,26 @@ public class ValidateObjectAttributeTests
     }
 }
 
-public class MyValidatableClassDetailed
+internal sealed class MyValidatableClassDetailed
 {
     [Required] public string Name { get; set; } = "";
 
     [ValidateObject(DetailedErrorMessages = true)] public MyValidatableClassDetailed? SubProperty { get; set; }
-    [ValidateObject(DetailedErrorMessages = true)] public Collection<MyValidatableClassDetailed> CollectionSubProperty { get; } = new();
+    [ValidateObject(DetailedErrorMessages = true)] public Collection<MyValidatableClassDetailed> CollectionSubProperty { get; } = [];
 }
 
-public class MyValidatableClassNotDetailed
+internal sealed class MyValidatableClassNotDetailed
 {
     [Required] public string Name { get; set; } = "";
 
     [ValidateObject] public MyValidatableClassNotDetailed? SubProperty { get; set; }
-    [ValidateObject] public Collection<MyValidatableClassNotDetailed> CollectionSubProperty { get; internal set; } = new();
+    [ValidateObject] public Collection<MyValidatableClassNotDetailed> CollectionSubProperty { get; internal set; } = [];
 }
 
-public class MyValidatableClassNotDetailedCustom
+internal sealed class MyValidatableClassNotDetailedCustom
 {
     [Required] public string Name { get; set; } = "";
 
     [ValidateObject(ErrorMessage = "Property {0} is wrong")] public MyValidatableClassNotDetailedCustom? SubProperty { get; set; }
-    [ValidateObject(ErrorMessage = "Property {0} is wrong")] public Collection<MyValidatableClassNotDetailedCustom> CollectionSubProperty { get; } = new();
+    [ValidateObject(ErrorMessage = "Property {0} is wrong")] public Collection<MyValidatableClassNotDetailedCustom> CollectionSubProperty { get; } = [];
 }
