@@ -5,10 +5,9 @@ public class ComposableObjectDumper : IObjectDumperCallback
     private readonly IObjectDumperPart[] _parts;
 
     public ComposableObjectDumper(IEnumerable<IObjectDumperPart> typeHandlers)
-        => _parts = typeHandlers
+        => _parts = [.. typeHandlers
             .Select(x => x.PerformActionOnType<IObjectDumperPart, IObjectDumperPartWithCallback>(a => a.Callback = this))
-            .OrderBy(x => x.Order)
-            .ToArray();
+            .OrderBy(x => x.Order)];
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {

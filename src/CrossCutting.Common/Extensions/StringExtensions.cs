@@ -178,7 +178,7 @@ public static class StringExtensions
                 result.Add(line);
             }
         }
-        return result.ToArray();
+        return [.. result];
     }
 
     /// <summary>
@@ -336,7 +336,7 @@ public static class StringExtensions
 
         fields.Add(ParseCsvField(instance.Substring(fieldStart)));
 
-        return fields.ToArray();
+        return [.. fields];
     }
 
     private static string ParseCsvField(string field)

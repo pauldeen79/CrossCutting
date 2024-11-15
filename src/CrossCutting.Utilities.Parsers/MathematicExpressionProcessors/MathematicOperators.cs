@@ -30,17 +30,15 @@ public class MathematicOperators(IExpressionParser expressionParser) : IMathemat
                     continue;
                 }
 
-                state.SetPreviousIndexes(Aggregators
+                state.SetPreviousIndexes([.. Aggregators
                     .Select(x => state.Remainder.LastIndexOf(x.Character, state.Position - 1))
                     .Where(x => x > -1)
-                    .OrderByDescending(x => x)
-                    .ToArray(), _expressionParser);
+                    .OrderByDescending(x => x)], _expressionParser);
 
-                state.SetNextIndexes(Aggregators
+                state.SetNextIndexes([.. Aggregators
                     .Select(x => state.Remainder.IndexOf(x.Character, state.Position + 1))
                     .Where(x => x > -1)
-                    .OrderBy(x => x)
-                    .ToArray(), _expressionParser);
+                    .OrderBy(x => x)], _expressionParser);
 
                 if (!state.LeftPartResult.IsSuccessful())
                 {
