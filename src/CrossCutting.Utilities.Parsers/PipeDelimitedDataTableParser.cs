@@ -35,8 +35,8 @@ public static class PipeDelimitedDataTableParser
         using (var sr = new StringReader(input))
         {
             string line;
-            int lineNumber = 0;
-            string[]? columnNamesArray = columnNames?.ToArray();
+            var lineNumber = 0;
+            var columnNamesArray = columnNames?.ToArray();
 
             while ((line = sr.ReadLine()) is not null)
             {
@@ -71,7 +71,7 @@ public static class PipeDelimitedDataTableParser
     {
         var split = line.Split('|');
         var values = new List<object>();
-        int columnIndex = 1;
+        var columnIndex = 1;
 
         for (var column = skipColumnsLeft; column < split.Length - skipColumnsRight; column++)
         {

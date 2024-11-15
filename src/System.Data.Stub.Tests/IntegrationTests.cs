@@ -85,8 +85,8 @@ public sealed class IntegrationTests : IDisposable
     public async Task Can_Call_GetValues_On_DataReader()
     {
         // Arrange & Act
-        int result = int.MinValue;
-        object[] values = new object[2];
+        var result = int.MinValue;
+        var values = new object[2];
         await ReaderTest(reader =>
         {
             result = reader.GetValues(values);

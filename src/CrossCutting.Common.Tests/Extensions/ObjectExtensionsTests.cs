@@ -297,7 +297,7 @@ public class ObjectExtensionsTests
     public void In_Throws_On_Null_Values_ParamArray()
     {
         // Arrange
-        string instance = "A";
+        var instance = "A";
         string[] values = default!;
 
         // Act
@@ -310,7 +310,7 @@ public class ObjectExtensionsTests
     public void In_Throws_On_Null_Values_Enumerable()
     {
         // Arrange
-        string instance = "A";
+        var instance = "A";
         IEnumerable<string> values = default!;
 
         // Act

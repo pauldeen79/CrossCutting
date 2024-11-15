@@ -65,7 +65,7 @@ public class FormattableStringParserState
         InPlaceholder = false;
         var format = value.Format;
         var previousCount = ResultArguments.Count;
-        for (int i = 0; i < value.GetArguments().Length; i++)
+        for (var i = 0; i < value.GetArguments().Length; i++)
         {
             if (previousCount > 0)
             {

@@ -35,7 +35,7 @@ public static class TypeExtensions
             var parameters = constructor.GetParameters().ToArray();
             var mocks = GetMocks(parameters, parameterReplaceDelegate, classFactory);
 
-            for (int i = 0; i < parameters.Length; i++)
+            for (var i = 0; i < parameters.Length; i++)
             {
                 if (ShouldSkipParameter(parameterPredicate, parameters, i))
                 {
@@ -88,7 +88,7 @@ public static class TypeExtensions
         var parameters = constructor.GetParameters().ToArray();
         var mocks = GetMocks(parameters, parameterReplaceDelegate, classFactory);
         var mocksCopy = mocks.ToArray();
-        for (int i = 0; i < parameters.Length; i++)
+        for (var i = 0; i < parameters.Length; i++)
         {
             if (parameters[i].ParameterType.IsValueType)
             {
@@ -149,7 +149,7 @@ public static class TypeExtensions
 
     private static void FixStringsAndArrays(ParameterInfo[] parameters, int i, object?[] mocksCopy)
     {
-        for (int j = 0; j < parameters.Length; j++)
+        for (var j = 0; j < parameters.Length; j++)
         {
             if (j == i)
             {

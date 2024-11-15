@@ -60,7 +60,7 @@ internal sealed class StringFormatParserState
 
     public void AddWarningsForMissingPlaceholders()
     {
-        for (int i = 0; i < FormatValues.Count; i++)
+        for (var i = 0; i < FormatValues.Count; i++)
         {
             if (!FormatPlaceholders.Contains(i.ToString()))
             {

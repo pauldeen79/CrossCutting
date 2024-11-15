@@ -191,7 +191,7 @@ public sealed class DataReaderTests : IDisposable
     public void Can_Get_Int32()
     {
         // Arrange
-        int value = 12;
+        var value = 12;
         _sut.Add(new { Value = value });
         _sut.Read();
 
