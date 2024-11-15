@@ -50,6 +50,8 @@ dotnet_diagnostic.IDE0022.severity = silent
 dotnet_diagnostic.IDE0058.severity = silent
 # use 'var' instead of explicit type
 # dotnet_diagnostic.IDE0007.severity = silent
+# If statement can be simplified
+dotnet_diagnostic.IDE0046.severity = silent
 
 ###############################
 # Naming Conventions          #
