@@ -176,6 +176,9 @@ dotnet_diagnostic.CA1508.severity = none
 # CA1822: Mark members as static
 dotnet_diagnostic.CA1822.severity = none
 
+# CA1515: Because an application's API isn't typically referenced from outside the assembly, types can be made internal (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1515)
+dotnet_diagnostic.CA1515.severity = none
+
 ###############################
 # VB Coding Conventions       #
 ###############################
