@@ -15,7 +15,7 @@
         {
             private readonly DynamicTypeDescriptionProvider provider = provider;
 
-            public override PropertyDescriptorCollection GetProperties() => GetProperties(Array.Empty<Attribute>());
+            public override PropertyDescriptorCollection GetProperties() => GetProperties([]);
 
             public override PropertyDescriptorCollection GetProperties(Attribute[] attributes)
             {

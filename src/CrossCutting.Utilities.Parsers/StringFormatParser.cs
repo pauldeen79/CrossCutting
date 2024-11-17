@@ -94,6 +94,6 @@ public static class StringFormatParser
             currentSection.Clear();
         }
 
-        return Parse(formatString, arguments.ToArray());
+        return Parse(formatString, [.. arguments]);
     }
 }

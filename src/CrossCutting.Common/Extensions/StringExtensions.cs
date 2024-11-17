@@ -314,7 +314,7 @@ public static class StringExtensions
     {
         if (string.IsNullOrEmpty(instance))
         {
-            return Array.Empty<string>();
+            return [];
         }
 
         var fields = new List<string>();

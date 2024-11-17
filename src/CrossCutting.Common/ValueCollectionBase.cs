@@ -32,7 +32,7 @@ internal static class ValueCollectionBase
 
         while (enumerator1.MoveNext())
         {
-            if (!enumerator2.MoveNext() || !(equalityComparer!).Equals(enumerator1.Current, enumerator2.Current))
+            if (!enumerator2.MoveNext() || !equalityComparer!.Equals(enumerator1.Current, enumerator2.Current))
             {
                 return false;
             }

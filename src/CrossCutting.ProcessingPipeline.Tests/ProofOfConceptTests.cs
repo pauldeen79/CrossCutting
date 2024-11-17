@@ -190,7 +190,7 @@ public class ProofOfConceptTests
         public void Constructing_Pipeline_Using_Null_ValidationDelegate_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?>(validationDelegate: null!, features: Enumerable.Empty<IPipelineComponent<object?>>()))
+            this.Invoking(_ => new Pipeline<object?>(validationDelegate: null!, features: []))
                 .Should().Throw<ArgumentNullException>().WithParameterName("validationDelegate");
         }
 
@@ -400,7 +400,7 @@ public class ProofOfConceptTests
         public void Constructing_Pipeline_Using_Null_ValidationDelegate_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?, StringBuilder>(validationDelegate: null!, features: Enumerable.Empty<IPipelineComponent<object?, StringBuilder>>()))
+            this.Invoking(_ => new Pipeline<object?, StringBuilder>(validationDelegate: null!, features: []))
                 .Should().Throw<ArgumentNullException>().WithParameterName("validationDelegate");
         }
 

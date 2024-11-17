@@ -6,7 +6,7 @@ public record ValidationError
     public IReadOnlyCollection<string> MemberNames { get; }
 
     public ValidationError(string errorMessage)
-        : this(errorMessage, Enumerable.Empty<string>())
+        : this(errorMessage, [])
     {
     }
 

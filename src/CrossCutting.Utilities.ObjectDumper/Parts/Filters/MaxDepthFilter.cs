@@ -14,7 +14,7 @@ public class MaxDepthFilter(int maxDepth) : IObjectDumperPart
 
     public bool ShouldProcess(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         => currentDepth <= _maxDepth
-            || (instance is null || instance is string || instance is Type || instance.GetType().IsPrimitive);
+            || instance is null || instance is string || instance is Type || instance.GetType().IsPrimitive;
 
     public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor)
         => true;

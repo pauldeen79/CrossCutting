@@ -4,11 +4,11 @@ public sealed class ObservableValueCollection<T>(IEnumerable<T> list, IEqualityC
 {
     private readonly IEqualityComparer<T> _equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
 
-    public ObservableValueCollection() : this(Enumerable.Empty<T>())
+    public ObservableValueCollection() : this([])
     {
     }
 
-    public ObservableValueCollection(IEqualityComparer<T>? equalityComparer) : this(Enumerable.Empty<T>(), equalityComparer)
+    public ObservableValueCollection(IEqualityComparer<T>? equalityComparer) : this([], equalityComparer)
     {
     }
 

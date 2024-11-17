@@ -35,7 +35,7 @@ internal sealed class StringFormatParserState
 
     public void SortPlaceholders()
     {
-        FormatPlaceholders = new List<string>(FormatPlaceholders.OrderBy(s => s).ToList());
+        FormatPlaceholders = new List<string>([.. FormatPlaceholders.OrderBy(s => s)]);
     }
 
     public void ClearCurrentSection()

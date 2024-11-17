@@ -11,7 +11,7 @@ public static class EnumerableExtensions
     /// <returns></returns>
     public static IEnumerable<T> NotNull<T>(this IEnumerable<T>? instance, Func<T, bool>? predicate = null)
     {
-        var notNull = instance ?? Enumerable.Empty<T>();
+        var notNull = instance ?? [];
         return predicate is null
             ? notNull
             : notNull.Where(predicate);
@@ -27,7 +27,7 @@ public static class EnumerableExtensions
     /// Typed array.
     /// </returns>
     public static IEnumerable<T> DefaultWhenNull<T>(this IEnumerable<T>? instance, IEnumerable<T>? valueWhenNull = null)
-        => instance ?? valueWhenNull ?? Enumerable.Empty<T>();
+        => instance ?? valueWhenNull ?? [];
 
     public static IEnumerable<T> TakeWhileWithFirstNonMatching<T>(this IEnumerable<T> instance, Func<T, bool> predicate)
     {
