@@ -4,15 +4,33 @@ public sealed class MathematicExpressionParserTests : IDisposable
 {
     private ServiceProvider? _provider;
     private IServiceScope? _scope;
+    private readonly IVariable _variable = Substitute.For<IVariable>();
 
     [Fact]
     public void Can_Add_One_And_One()
     {
         // Arrange
         var input = "1 + 1";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeEquivalentTo(1 + 1);
+    }
+
+    [Fact]
+    public void Can_Add_One_And_One_Using_Variable()
+    {
+        // Arrange
+        var input = "1 + $myvariable";
+        _variable!.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<object?>(1) : Result.Continue<object?>());
+        var sut = CreateSut(ParseExpressionDelegateInt32);
+
+        // Act
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -24,9 +42,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "1 - 1";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -38,9 +57,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "2 * 3";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -52,9 +72,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "6 / 2";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -66,9 +87,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "2 ^ 4";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -80,9 +102,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "5 % 2";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -94,9 +117,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "1 + 2 + 3";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -108,9 +132,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "(1 + 2) * 3";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -122,9 +147,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "1 + 2 * 3";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -136,9 +162,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "1";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -150,9 +177,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "1 + 2)";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -164,9 +192,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "(1 + 2";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -178,9 +207,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "((1 + 2";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -192,9 +222,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "+ 2";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -206,9 +237,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "1 +";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -220,9 +252,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "1 ++ 2";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -234,9 +267,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "1 + + 2";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -248,9 +282,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = string.Empty;
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -262,9 +297,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "This string contains the magic `` internal temporary delimiter. Don't ask why, we just don't support it. You're doomed if you try this.";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -375,9 +411,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "bicycle + 1";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -389,9 +426,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "1 + bicycle";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -403,9 +441,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "(1 + bicycle)";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -417,9 +456,10 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "1 / 0";
+        var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt32).Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -430,6 +470,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         _provider = new ServiceCollection()
             .AddParsers()
+            .AddSingleton(_variable)
             .AddSingleton<IExpressionParser>(new MyMathematicExpressionParser(dlg))
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
@@ -437,36 +478,38 @@ public sealed class MathematicExpressionParserTests : IDisposable
     }
 
     private Result<object?> ParseExpressionDelegateInt32(string arg, IFormatProvider formatProvider)
-        => int.TryParse(arg, formatProvider, out var result)
-            ? Result.Success<object?>(result)
-            : Result.Invalid<object?>($"Could not parse {arg} to integer");
+        => arg == "$myvariable"
+            ? _variable.Process(arg[1..], null)
+            : int.TryParse(arg, formatProvider, out var result)
+                ? Result.Success<object?>(result)
+                : Result.Invalid<object?>($"Could not parse {arg} to integer");
 
-    private Result<object?> ParseExpressionDelegateInt64(string arg, IFormatProvider formatProvider)
+    private static Result<object?> ParseExpressionDelegateInt64(string arg, IFormatProvider formatProvider)
         => long.TryParse(arg, formatProvider, out var result)
             ? Result.Success<object?>(result)
             : Result.Invalid<object?>($"Could not parse {arg} to long");
 
-    private Result<object?> ParseExpressionDelegateDouble(string arg, IFormatProvider formatProvider)
+    private static Result<object?> ParseExpressionDelegateDouble(string arg, IFormatProvider formatProvider)
         => double.TryParse(arg, formatProvider, out var result)
             ? Result.Success<object?>(result)
             : Result.Invalid<object?>($"Could not parse {arg} to double");
 
-    private Result<object?> ParseExpressionDelegateSingle(string arg, IFormatProvider formatProvider)
+    private static Result<object?> ParseExpressionDelegateSingle(string arg, IFormatProvider formatProvider)
         => float.TryParse(arg, formatProvider, out var result)
             ? Result.Success<object?>(result)
             : Result.Invalid<object?>($"Could not parse {arg} to float");
 
-    private Result<object?> ParseExpressionDelegateDecimal(string arg, IFormatProvider formatProvider)
+    private static Result<object?> ParseExpressionDelegateDecimal(string arg, IFormatProvider formatProvider)
         => decimal.TryParse(arg, formatProvider, out var result)
             ? Result.Success<object?>(result)
             : Result.Invalid<object?>($"Could not parse {arg} to decimal");
 
-    private Result<object?> ParseExpressionDelegateByte(string arg, IFormatProvider formatProvider)
+    private static Result<object?> ParseExpressionDelegateByte(string arg, IFormatProvider formatProvider)
         => byte.TryParse(arg, formatProvider, out var result)
             ? Result.Success<object?>(result)
             : Result.Invalid<object?>($"Could not parse {arg} to byte");
 
-    private Result<object?> ParseExpressionDelegateInt16(string arg, IFormatProvider formatProvider)
+    private static Result<object?> ParseExpressionDelegateInt16(string arg, IFormatProvider formatProvider)
         => short.TryParse(arg, formatProvider, out var result)
             ? Result.Success<object?>(result)
             : Result.Invalid<object?>($"Could not parse {arg} to short");

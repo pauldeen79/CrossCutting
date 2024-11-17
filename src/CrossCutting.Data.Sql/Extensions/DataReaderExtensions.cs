@@ -427,7 +427,7 @@ public static class DataReaderExtensions
         {
             if (skipUnknownColumn)
             {
-                return Array.Empty<byte>();
+                return [];
             }
             throw new ArgumentOutOfRangeException(nameof(columnName), $"Column [{columnName}] could not be found");
         }
@@ -436,7 +436,7 @@ public static class DataReaderExtensions
 
         if (instance.IsDBNull(ordinal))
         {
-            return Array.Empty<byte>();
+            return [];
         }
 
         if (length is null)

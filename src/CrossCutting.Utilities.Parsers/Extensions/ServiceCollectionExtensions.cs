@@ -8,7 +8,8 @@ public static class ServiceCollectionExtensions
         .AddExpressionStringParser()
         .AddFunctionParser()
         .AddFormattableStringParser()
-        .AddMathematicExpressionParser();
+        .AddMathematicExpressionParser()
+        .AddVariableProcessor();
 
     private static IServiceCollection AddExpressionParser(this IServiceCollection services)
         => services
@@ -17,6 +18,7 @@ public static class ServiceCollectionExtensions
         .AddScoped<IExpressionParserProcessor, ContextExpressionParserProcessor>()
         .AddScoped<IExpressionParserProcessor, NullExpressionParserProcessor>()
         .AddScoped<IExpressionParserProcessor, StringExpressionParserProcessor>()
+        .AddScoped<IExpressionParserProcessor, VariableExpressionParserProcessor>()
         .AddScoped<IExpressionParserProcessor, NumericExpressionParserProcessor>()
         .AddScoped<IExpressionParserProcessor, DateTimeExpressionParserProcessor>();
 
@@ -65,4 +67,8 @@ public static class ServiceCollectionExtensions
         .AddScoped<IMathematicExpressionValidator, EndWithOperatorValidator>()
         .AddScoped<IMathematicExpressionValidator, EmptyValuePartValidator>()
         .AddScoped<IMathematicExpressionValidator, BraceValidator>();
+
+    private static IServiceCollection AddVariableProcessor(this IServiceCollection services)
+        => services
+        .AddScoped<IVariableProcessor, VariableProcessor>();
 }

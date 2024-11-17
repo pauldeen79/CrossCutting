@@ -4,6 +4,7 @@ public sealed class FormattableStringParserTests : IDisposable
 {
     private ServiceProvider? _provider;
     private IServiceScope? _scope;
+    private IVariable _variable = default!;
     private const string ReplacedValue = "replaced name";
 
     [Fact]
@@ -165,6 +166,20 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Works_With_Variable_ExpressionString()
+    {
+        // Arrange
+        const string Input = "I can add 1 to 2, this results in {$variable + $variable}";
+
+        // Act
+        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.ToString().Should().Be("I can add 1 to 2, this results in 2");
+    }
+
+    [Fact]
     public void Parse_Works_With_Placeholder_That_Returns_Another_Placeholder()
     {
         // Arrange
@@ -315,11 +330,18 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private IFormattableStringParser CreateSut()
     {
+        _variable = Substitute.For<IVariable>();
+
+        _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "variable"
+            ? Result.Success<object?>(1)
+            : Result.Continue<object?>());
+
         _provider = new ServiceCollection()
             .AddParsers()
             .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
             .AddSingleton<IFunctionResultParser, MyFunctionResultParser>()
             .AddSingleton<IFunctionResultParser, ToUpperCaseResultParser>()
+            .AddSingleton(_variable)
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
         return _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>();

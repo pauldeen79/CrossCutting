@@ -38,7 +38,7 @@ public sealed class DataReaderTests : IDisposable
     public void GetBytes_Throws_NotImplementedException()
     {
         // Act & Assert
-        _sut.Invoking(x => x.GetBytes(0, 0, Array.Empty<byte>(), 0, 0))
+        _sut.Invoking(x => x.GetBytes(0, 0, [], 0, 0))
             .Should().Throw<NotImplementedException>();
     }
 
@@ -60,7 +60,7 @@ public sealed class DataReaderTests : IDisposable
     public void GetChars_Throws_NotImplementedException()
     {
         // Act & Assert
-        _sut.Invoking(x => x.GetChars(0, 0, Array.Empty<char>(), 0, 0))
+        _sut.Invoking(x => x.GetChars(0, 0, [], 0, 0))
             .Should().Throw<NotImplementedException>();
     }
 

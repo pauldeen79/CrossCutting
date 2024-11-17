@@ -4,11 +4,11 @@ public sealed class ReadOnlyValueCollection<T>(IEnumerable<T> list, IEqualityCom
 {
     private readonly IEqualityComparer<T> _equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
 
-    public ReadOnlyValueCollection() : this(Enumerable.Empty<T>())
+    public ReadOnlyValueCollection() : this([])
     {
     }
 
-    public ReadOnlyValueCollection(IEqualityComparer<T>? equalityComparer) : this(Enumerable.Empty<T>(), equalityComparer)
+    public ReadOnlyValueCollection(IEqualityComparer<T>? equalityComparer) : this([], equalityComparer)
     {
     }
 

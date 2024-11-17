@@ -27,7 +27,7 @@ public class DatabaseEntityRetriever<T>(
                 var totalRecordCount = (int)countCommand.ExecuteScalar();
                 returnValue = new PagedResult<T>
                 (
-                    cmd.FindMany(command.DataCommand.CommandText, command.DataCommand.CommandType, _mapper.Map, command.DataCommand.CommandParameters).ToList(),
+                    [.. cmd.FindMany(command.DataCommand.CommandText, command.DataCommand.CommandType, _mapper.Map, command.DataCommand.CommandParameters)],
                     totalRecordCount,
                     command.Offset,
                     command.PageSize
@@ -83,7 +83,7 @@ public class DatabaseEntityRetriever<T>(
                 var totalRecordCount = ((await countCommand.ExecuteScalarAsync(cancellationToken)) as int?).GetValueOrDefault();
                 returnValue = new PagedResult<T>
                 (
-                    (await cmd.FindManyAsync(command.DataCommand.CommandText, command.DataCommand.CommandType, cancellationToken, _mapper.Map, command.DataCommand.CommandParameters)).ToList(),
+                    [.. (await cmd.FindManyAsync(command.DataCommand.CommandText, command.DataCommand.CommandType, cancellationToken, _mapper.Map, command.DataCommand.CommandParameters))],
                     totalRecordCount,
                     command.Offset,
                     command.PageSize

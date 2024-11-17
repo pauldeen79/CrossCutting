@@ -35,22 +35,21 @@ public class MathematicExpressionState
         ParseDelegate = parseDelegate;
 
         Position = -1;
-        Indexes = Array.Empty<AggregatorInfo>();
-        PreviousIndexes = Array.Empty<int>();
+        Indexes = [];
+        PreviousIndexes = [];
         LeftPart = string.Empty;
         LeftPartResult = Result.NoContent<object?>();
-        NextIndexes = Array.Empty<int>();
+        NextIndexes = [];
         RightPart = string.Empty;
         RightPartResult = Result.NoContent<object?>();
     }
 
     internal void SetPosition(IGrouping<int, AggregatorBase> aggregators)
     {
-        Indexes = aggregators
+        Indexes = [.. aggregators
             .Select(x => new AggregatorInfo(x, Remainder.IndexOf(x.Character)))
             .Where(x => x.Index > -1)
-            .OrderBy(x => x.Index)
-            .ToArray();
+            .OrderBy(x => x.Index)];
         Position = Indexes.Count > 0
             ? Indexes.First().Index
             : -1;
@@ -94,11 +93,9 @@ public class MathematicExpressionState
                     : 0
             ),
             FormattableString.Invariant($"{MathematicExpressionParser.TemporaryDelimiter}{Results.Count}{MathematicExpressionParser.TemporaryDelimiter}"),
-            (
                 NextIndexes.Count > 0
                     ? Remainder.Substring(NextIndexes.First())
                     : string.Empty
-            )
         );
         Results.Add(aggregateResult);
     }

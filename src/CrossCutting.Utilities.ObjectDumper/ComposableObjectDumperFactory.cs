@@ -17,7 +17,7 @@ public static class ComposableObjectDumperFactory
                     && t.GetConstructor(Type.EmptyTypes) is not null
                 )
                 .Select(t => CreatePart(t))
-                .Concat(customTypeHandlers ?? Enumerable.Empty<IObjectDumperPart>())
+                .Concat(customTypeHandlers ?? [])
         );
 
     private static IObjectDumperPart CreatePart(Type type)

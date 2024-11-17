@@ -4,11 +4,11 @@ public sealed class ValueCollection<T>(IEnumerable<T> list, IEqualityComparer<T>
 {
     private readonly IEqualityComparer<T> _equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
 
-    public ValueCollection() : this(Enumerable.Empty<T>())
+    public ValueCollection() : this([])
     {
     }
 
-    public ValueCollection(IEqualityComparer<T>? equalityComparer) : this(Enumerable.Empty<T>(), equalityComparer)
+    public ValueCollection(IEqualityComparer<T>? equalityComparer) : this([], equalityComparer)
     {
     }
 

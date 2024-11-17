@@ -4,7 +4,7 @@ public class DynamicPropertyDescriptor<TTarget, TProperty>(
    string propertyName,
    Func<TTarget, TProperty> getter,
    Action<TTarget, TProperty> setter,
-   Attribute[]? attributes) : PropertyDescriptor(propertyName, attributes ?? Array.Empty<Attribute>())
+   Attribute[]? attributes) : PropertyDescriptor(propertyName, attributes ?? [])
 {
     private readonly Func<TTarget, TProperty> getter = getter;
     private readonly Action<TTarget, TProperty> setter = setter;
