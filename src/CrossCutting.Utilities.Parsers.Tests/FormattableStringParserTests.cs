@@ -56,6 +56,20 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Returns_Invalid_When_Variable_Is_Unknown()
+    {
+        // Arrange
+        var input = "{$unknownVariable}";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.ErrorMessage.Should().Be("Unknown variable found: unknownVariable");
+    }
+
+    [Fact]
     public void Parse_Returns_Invalid_When_Close_Sign_Is_Missing()
     {
         // Arrange

@@ -21,6 +21,11 @@ public class NumericExpressionParserProcessor : IExpressionParserProcessor
         var isWholeDecimal = new Lazy<bool>(() => _wholeDecimalRegEx.IsMatch(value));
         var isFloatingPointDecimal = new Lazy<bool>(() => _floatingPointDecimalRegEx.IsMatch(value));
 
+        if (value.Length == 0)
+        {
+            return Result.Continue<object?>();
+        }
+
         if (isWholeNumber.Value && int.TryParse(value, NumberStyles.AllowDecimalPoint, formatProvider, out var i))
         {
             return Result.Success<object?>(i);

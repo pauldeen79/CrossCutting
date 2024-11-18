@@ -174,6 +174,21 @@ public class ExpressionParserTests : IDisposable
         }
 
         [Fact]
+        public void Parses_Variable_Correctly()
+        {
+            // Arrange
+            var input = "$classname";
+            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
+
+            // Act
+            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().BeEquivalentTo("HelloWorld");
+        }
+
+        [Fact]
         public void Parses_Variable_Correctly_Using_Context()
         {
             // Arrange
@@ -189,6 +204,51 @@ public class ExpressionParserTests : IDisposable
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
             result.Value.Should().BeEquivalentTo("HelloWorldClass");
+        }
+
+        [Fact]
+        public void Parse_Returns_NotSupported_On_Empty_String()
+        {
+            // Arrange
+            var input = "";
+            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
+
+            // Act
+            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.NotSupported);
+            result.ErrorMessage.Should().Be("Unknown expression type found in fragment: ");
+        }
+
+        [Fact]
+        public void Parse_Returns_NotSupported_On_DollarSign()
+        {
+            // Arrange
+            var input = "$";
+            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
+
+            // Act
+            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.NotSupported);
+            result.ErrorMessage.Should().Be("Unknown expression type found in fragment: $");
+        }
+
+        [Fact]
+        public void Parse_Returns_NotSupported_On_Unknown_Variable()
+        {
+            // Arrange
+            var input = "$unknownvariable";
+            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Continue<object?>());
+
+            // Act
+            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.NotSupported);
+            result.ErrorMessage.Should().Be("Unknown variable found: unknownvariable");
         }
 
         private sealed class MyContext(string className)

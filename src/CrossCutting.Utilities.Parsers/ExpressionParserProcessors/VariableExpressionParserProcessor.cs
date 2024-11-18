@@ -17,7 +17,7 @@ public class VariableExpressionParserProcessor : IExpressionParserProcessor
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        if (value.StartsWith("$"))
+        if (value.StartsWith("$") && value.Length > 1)
         {
             return _variableProcessor.Process(value.Substring(1), context);
         }

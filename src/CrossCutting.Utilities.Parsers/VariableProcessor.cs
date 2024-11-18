@@ -15,5 +15,5 @@ public class VariableProcessor : IVariableProcessor
         => _variables
             .Select(x => x.Process(variable, context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.NotFound<object?>($"Unknown variable found: {variable}");
+                ?? Result.NotSupported<object?>($"Unknown variable found: {variable}");
 }
