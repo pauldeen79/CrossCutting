@@ -2,5 +2,5 @@
 
 public interface IVariableProcessor
 {
-    Result<object?> Process(string variable, object? context);
+    Result<object?> Process(string variableExpression, object? context);
 }

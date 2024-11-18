@@ -33,5 +33,19 @@ public class VariableProcessorTests
             result.Status.Should().Be(ResultStatus.NotSupported);
             result.ErrorMessage.Should().Be("Unknown variable found: myVariable");
         }
+
+        [Fact]
+        public void Returns_Invalid_When_Variable_Is_Unknown()
+        {
+            // Arrange
+            var sut = new VariableProcessor([]);
+
+            // Act
+            var result = sut.Process(string.Empty, null);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Variable is required");
+        }
     }
 }
