@@ -279,7 +279,7 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
-    public void FromString_Creates_New_Instance_From_String_With_Accolades_Correclty()
+    public void FromString_Creates_New_Instance_From_String_With_Braces_Correclty()
     {
         // Act
         var instance = FormattableStringParserResult.FromString("hello {world}");
