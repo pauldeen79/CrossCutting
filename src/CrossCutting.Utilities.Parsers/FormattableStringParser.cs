@@ -14,19 +14,6 @@ public class FormattableStringParser : IFormattableStringParser
         _processors = processors;
     }
 
-    public static IFormattableStringParser Create(params IPlaceholderProcessor[] processors)
-    {
-        processors = processors.IsNotNull(nameof(processors));
-
-        return new FormattableStringParser(
-            [
-                new OpenSignProcessor(),
-                new CloseSignProcessor(processors),
-                new PlaceholderProcessor(),
-                new ResultProcessor()
-            ]);
-    }
-
     public Result<FormattableStringParserResult> Parse(string input, IFormatProvider formatProvider, object? context)
     {
         input = input.IsNotNull(nameof(input));

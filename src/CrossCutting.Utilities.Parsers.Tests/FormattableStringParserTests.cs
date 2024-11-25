@@ -268,27 +268,6 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
-    public void Create_Throws_On_Null_Processors()
-    {
-        // Act & Assert
-        this.Invoking(_ => FormattableStringParser.Create(processors: null!))
-            .Should().Throw<ArgumentNullException>().WithParameterName("processors");
-    }
-
-    [Fact]
-    public void Create_Returns_New_Instance_With_Correct_Configuration()
-    {
-        // Arrange
-        _ = CreateSut();
-
-        // Act
-        var result = FormattableStringParser.Create(new MyPlaceholderProcessor());
-
-        // Assert
-        result.Should().BeOfType<FormattableStringParser>();
-    }
-
-    [Fact]
     public void FromString_Creates_New_Instance_From_String_Correclty()
     {
         // Act
