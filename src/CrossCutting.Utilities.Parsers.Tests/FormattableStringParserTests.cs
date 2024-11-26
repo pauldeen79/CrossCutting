@@ -257,16 +257,18 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Can_Parse_String_And_Defer_Specific_Placeholder()
     {
         // Arrange
-        var settings = new FormattableStringParserSettingsBuilder().Build();
         var sut = CreateSut();
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var preparsedResult = sut.Parse("Hello {Name}, you are called {{Name}}", settings).GetValueOrThrow();
 
         // Act
-        var result = sut.Parse("Hello {Name}, you are called {{Name}}", settings);
+        var result = sut.Parse(preparsedResult, settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().NotBeNull();
-        result.Value!.Format.Should().Be("Hello {0}, you are called {Name}");
+        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
+        result.Value.ArgumentCount.Should().Be(1);
+        result.Value.GetArgument(0).Should().BeEquivalentTo(ReplacedValue);
     }
 
     [Fact]
