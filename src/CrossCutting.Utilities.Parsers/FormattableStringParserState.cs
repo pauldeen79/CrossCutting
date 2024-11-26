@@ -3,7 +3,7 @@
 public class FormattableStringParserState
 {
     public string Input { get; }
-    public IFormatProvider FormatProvider { get; }
+    public FormattableStringParserSettings Settings { get; }
     public object? Context { get; }
     public IFormattableStringParser Parser { get; }
 
@@ -15,14 +15,14 @@ public class FormattableStringParserState
     public string ResultFormat => ResultBuilder.ToString();
     public Collection<object> ResultArguments { get; } = [];
 
-    public FormattableStringParserState(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser parser)
+    public FormattableStringParserState(string input, FormattableStringParserSettings settings, object? context, IFormattableStringParser parser)
     {
         ArgumentGuard.IsNotNull(input, nameof(input));
-        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+        ArgumentGuard.IsNotNull(settings, nameof(settings));
         ArgumentGuard.IsNotNull(parser, nameof(parser));
 
         Input = input;
-        FormatProvider = formatProvider;
+        Settings = settings;
         Context = context;
         Parser = parser;
     }

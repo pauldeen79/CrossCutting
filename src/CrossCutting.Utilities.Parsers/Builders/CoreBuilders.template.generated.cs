@@ -10,6 +10,111 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders
 {
+    public partial class FormattableStringParserSettingsBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private System.IFormatProvider _formatProvider;
+
+        private string _placeholderStart;
+
+        private string _placeholderEnd;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public System.IFormatProvider FormatProvider
+        {
+            get
+            {
+                return _formatProvider;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.IFormatProvider>.Default.Equals(_formatProvider!, value!);
+                _formatProvider = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FormatProvider));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Utilities.Parsers.Attributes.MatchingCharactersAttribute]
+        public string PlaceholderStart
+        {
+            get
+            {
+                return _placeholderStart;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_placeholderStart!, value!);
+                _placeholderStart = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(PlaceholderStart));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Utilities.Parsers.Attributes.MatchingCharactersAttribute]
+        public string PlaceholderEnd
+        {
+            get
+            {
+                return _placeholderEnd;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_placeholderEnd!, value!);
+                _placeholderEnd = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(PlaceholderEnd));
+            }
+        }
+
+        public FormattableStringParserSettingsBuilder(CrossCutting.Utilities.Parsers.FormattableStringParserSettings source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _formatProvider = source.FormatProvider;
+            _placeholderStart = source.PlaceholderStart;
+            _placeholderEnd = source.PlaceholderEnd;
+        }
+
+        public FormattableStringParserSettingsBuilder()
+        {
+            _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
+            _placeholderStart = string.Empty;
+            _placeholderEnd = string.Empty;
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.Parsers.FormattableStringParserSettings Build()
+        {
+            return new CrossCutting.Utilities.Parsers.FormattableStringParserSettings(FormatProvider, PlaceholderStart, PlaceholderEnd);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.Parsers.Builders.FormattableStringParserSettingsBuilder WithFormatProvider(System.IFormatProvider formatProvider)
+        {
+            if (formatProvider is null) throw new System.ArgumentNullException(nameof(formatProvider));
+            FormatProvider = formatProvider;
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FormattableStringParserSettingsBuilder WithPlaceholderStart(string placeholderStart)
+        {
+            if (placeholderStart is null) throw new System.ArgumentNullException(nameof(placeholderStart));
+            PlaceholderStart = placeholderStart;
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FormattableStringParserSettingsBuilder WithPlaceholderEnd(string placeholderEnd)
+        {
+            if (placeholderEnd is null) throw new System.ArgumentNullException(nameof(placeholderEnd));
+            PlaceholderEnd = placeholderEnd;
+            return this;
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
     public partial class FunctionParseResultBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         private string _functionName;

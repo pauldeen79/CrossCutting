@@ -12,21 +12,22 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var sut = CreateSut();
+        var settings = new FormattableStringParserSettingsBuilder().Build();
 
         // Act & Assert
-        sut.Invoking(x => x.Parse(input: null!, CultureInfo.InvariantCulture))
+        sut.Invoking(x => x.Parse(input: null!, settings))
            .Should().Throw<ArgumentNullException>().WithParameterName("input");
     }
 
     [Fact]
-    public void Parse_Throws_On_Null_FormatProvider()
+    public void Parse_Throws_On_Null_Settings()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act & Assert
-        sut.Invoking(x => x.Parse("some input", formatProvider: null!))
-           .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
+        sut.Invoking(x => x.Parse("some input", settings: null!))
+           .Should().Throw<ArgumentNullException>().WithParameterName("settings");
     }
 
     [Fact]
@@ -34,9 +35,11 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "Hello {Name {nested}} you are welcome";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -47,9 +50,11 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -60,9 +65,11 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "{$unknownVariable}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotSupported);
@@ -74,9 +81,11 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "{";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -87,9 +96,11 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "{Unsupported placeholder}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(input, settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -105,8 +116,14 @@ public sealed class FormattableStringParserTests : IDisposable
         InlineData("public class Bla {{ {Name} }}", $"public class Bla {{ {ReplacedValue} }}")]
     public void Parse_Returns_Success_On_Valid_Input(string input, string expectedValue)
     {
+        // Arrange
+        var settings = new FormattableStringParserSettingsBuilder()
+            .WithFormatProvider(CultureInfo.InvariantCulture)
+            .Build();
+        var sut = CreateSut();
+
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, "[value from context]");
+        var result = sut.Parse(input, settings, "[value from context]");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -129,9 +146,11 @@ public sealed class FormattableStringParserTests : IDisposable
             // Assert
             //TODO
         }}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
 
         // Act
-        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(Input, settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -142,9 +161,11 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "Hello {MyFunction()}!";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
 
         // Act
-        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(Input, settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -156,9 +177,11 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "Hello {ToUpperCase(MyFunction())}!";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
 
         // Act
-        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(Input, settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -170,9 +193,11 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "I can add 1 to 2, this results in {1 + 1}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
 
         // Act
-        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(Input, settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -184,9 +209,11 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "I can add 1 to 2, this results in {$variable + $variable}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
 
         // Act
-        var result = CreateSut().Parse(Input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(Input, settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -198,11 +225,12 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "Hello {ReplaceWithPlaceholder}!";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(Input, CultureInfo.InvariantCulture);
-        result = sut.Parse(result.GetValueOrThrow().ToString(CultureInfo.InvariantCulture), CultureInfo.InvariantCulture); // have to parse the result, because it contains a new placeholder...
+        var result = sut.Parse(Input, settings);
+        result = sut.Parse(result.GetValueOrThrow().ToString(CultureInfo.InvariantCulture), settings); // have to parse the result, because it contains a new placeholder...
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -213,10 +241,12 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Parse_Returns_Invalid_On_Unknown_Placeholder()
     {
         // Arrange
-        var input = "{Unknown placeholder}";
+        const string Input = "{Unknown placeholder}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
 
         // Act
-        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Parse(Input, settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -227,25 +257,45 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Can_Parse_String_And_Defer_Specific_Placeholder()
     {
         // Arrange
+        var settings = new FormattableStringParserSettingsBuilder().Build();
         var sut = CreateSut();
-        var preparsedResult = sut.Parse("Hello {Name}, you are called {{Name}}", CultureInfo.InvariantCulture).GetValueOrThrow();
 
         // Act
-        var result = sut.Parse(preparsedResult, CultureInfo.InvariantCulture);
+        var result = sut.Parse("Hello {Name}, you are called {{Name}}", settings);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
-        result.Value.ArgumentCount.Should().Be(1);
-        result.Value.GetArgument(0).Should().BeEquivalentTo(ReplacedValue);
+        result.Value.Should().NotBeNull();
+        result.Value!.Format.Should().Be("Hello {0}, you are called {Name}");
+    }
+
+    [Fact]
+    public void Can_Parse_String_With_Double_Placeholder_Signs()
+    {
+        // Arrange
+        var input = "Hello {{Name}}!";
+        var sut = CreateSut();
+        var settings = new FormattableStringParserSettingsBuilder()
+            .WithFormatProvider(CultureInfo.InvariantCulture)
+            .WithPlaceholderStart("{{")
+            .WithPlaceholderEnd("}}")
+            .Build();
+
+        // Act
+        var result = sut.Parse(input, settings, "[value from context]");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}!");
     }
 
     [Fact]
     public void Can_Implicitly_Convert_ParseStringResult_To_String()
     {
         // Arrange
+        var settings = new FormattableStringParserSettingsBuilder().Build();
         var sut = CreateSut();
-        var parsedResult = sut.Parse("Hello {Name}!", CultureInfo.InvariantCulture);
+        var parsedResult = sut.Parse("Hello {Name}!", settings);
 
         // Act
         string result = parsedResult.GetValueOrThrow();

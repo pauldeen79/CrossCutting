@@ -10,7 +10,7 @@ public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserA
 
         if (stringArgument.StartsWith("@") && formattableStringParser is not null)
         {
-            var result = formattableStringParser.Parse(stringArgument.Substring(1), formatProvider, context);
+            var result = formattableStringParser.Parse(stringArgument.Substring(1), new FormattableStringParserSettingsBuilder().WithFormatProvider(formatProvider).Build(), context);
             return result.IsSuccessful()
                 ? Result.Success<FunctionParseResultArgument>(new LiteralArgument(result.Value!.ToString(formatProvider)))
                 : Result.FromExistingResult<FunctionParseResultArgument>(result);

@@ -2,48 +2,63 @@
 
 public class FormattableStringParser : IFormattableStringParser
 {
-    public const char OpenSign = '{';
-    public const char CloseSign = '}';
+    private readonly IEnumerable<IPlaceholderProcessor> _processors;
 
-    private readonly IEnumerable<IFormattableStringStateProcessor> _processors;
-
-    public FormattableStringParser(IEnumerable<IFormattableStringStateProcessor> processors)
+    public FormattableStringParser(IEnumerable<IPlaceholderProcessor> processors)
     {
         processors = processors.IsNotNull(nameof(processors));
 
         _processors = processors;
     }
 
-    public Result<FormattableStringParserResult> Parse(string input, IFormatProvider formatProvider, object? context)
+    public Result<FormattableStringParserResult> Parse(string input, FormattableStringParserSettings settings, object? context)
     {
         input = input.IsNotNull(nameof(input));
-        formatProvider = formatProvider.IsNotNull(nameof(formatProvider));
+        settings = settings.IsNotNull(nameof(settings));
 
-        var state = new FormattableStringParserState(input, formatProvider, context, this);
-
-        for (var index = 0; index < input.Length; index++)
+        if (string.IsNullOrEmpty(input))
         {
-            state.Update(input[index], index);
-
-            foreach (var processor in _processors)
-            {
-                var processorResult = processor.Process(state);
-                if (!processorResult.IsSuccessful())
-                {
-                    return processorResult;
-                }
-                else if (processorResult.Status == ResultStatus.NoContent)
-                {
-                    break;
-                }
-            }
+            return Result.Success(new FormattableStringParserResult(input, []));
         }
 
-        if (state.InPlaceholder)
+        // Handle escaped markers (e.g., {{ -> {)
+        var escapedStart = settings.PlaceholderStart + settings.PlaceholderStart;
+        var escapedEnd = settings.PlaceholderEnd + settings.PlaceholderEnd;
+
+        input = input.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
+                     .Replace(escapedEnd, "\uE001");  // Temporarily replace escaped end marker
+
+        // Build a regex to match placeholders
+        var placeholderPattern = $"{settings.PlaceholderStart}(.*?){settings.PlaceholderEnd}";
+        var regex = new Regex(placeholderPattern);
+
+        // Perform replacement
+        var results = new List<Result<FormattableStringParserResult>>();
+        var result = regex.Replace(input, match =>
         {
-            return Result.Invalid<FormattableStringParserResult>("Missing close sign '}'. To use the '{' character, you have to escape it with an additional '{' character");
+            var placeholder = match.Groups[1].Value; // Extract placeholder name
+            var state = new FormattableStringParserState(placeholder, settings, context, this);
+
+            var placeholderResult = _processors
+                .OrderBy(x => x.Order)
+                .Select(x => x.Process(placeholder, state.Settings.FormatProvider, state.Context, state.Parser))
+                .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                    ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
+            results.Add(placeholderResult);
+
+            return placeholderResult.Value?.Format ?? string.Empty;
+        });
+
+        var err = results.Select(x => new { Item = x, IsSuccessful = x.IsSuccessful() }).FirstOrDefault(x => !x.IsSuccessful);
+        if (err is not null)
+        {
+            return err.Item;
         }
 
-        return Result.Success(new FormattableStringParserResult(state.ResultFormat, [.. state.ResultArguments]));
+        // Restore escaped markers
+        result = result.Replace("\uE000", settings.PlaceholderStart)
+                       .Replace("\uE001", settings.PlaceholderEnd);
+
+        return Result.Success(new FormattableStringParserResult(result, [.. results.Select(x => x.Value!)]));
     }
 }

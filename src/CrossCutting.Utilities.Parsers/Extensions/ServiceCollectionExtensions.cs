@@ -49,10 +49,6 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddFormattableStringParser(this IServiceCollection services)
         => services
         .AddScoped<IFormattableStringParser, FormattableStringParser>()
-        .AddScoped<IFormattableStringStateProcessor, OpenSignProcessor>()
-        .AddScoped<IFormattableStringStateProcessor, CloseSignProcessor>()
-        .AddScoped<IFormattableStringStateProcessor, PlaceholderProcessor>()
-        .AddScoped<IFormattableStringStateProcessor, ResultProcessor>()
         .AddScoped<IPlaceholderProcessor, ExpressionStringPlaceholderProcessor>();
 
     private static IServiceCollection AddMathematicExpressionParser(this IServiceCollection services)
