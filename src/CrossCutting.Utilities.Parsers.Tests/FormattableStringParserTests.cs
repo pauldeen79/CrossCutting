@@ -31,7 +31,7 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
-    public void Parse_Returns_Invalid_When_Using_Nested_Open_Signs()
+    public void Parse_Returns_Success_When_Using_Nested_Open_Signs()
     {
         // Arrange
         var input = "Hello {Name {nested}} you are welcome";
@@ -42,11 +42,12 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.GetValueOrThrow().Format.Should().Be(input);
     }
 
     [Fact]
-    public void Parse_Returns_Invalid_When_Open_Sign_Is_Missing()
+    public void Parse_Returns_Success_When_Open_Sign_Is_Missing()
     {
         // Arrange
         var input = "}";
@@ -57,7 +58,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.GetValueOrThrow().Format.Should().Be(input);
     }
 
     [Fact]
@@ -77,7 +79,7 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
-    public void Parse_Returns_Invalid_When_Close_Sign_Is_Missing()
+    public void Parse_Returns_Success_When_Close_Sign_Is_Missing()
     {
         // Arrange
         var input = "{";
@@ -88,7 +90,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.GetValueOrThrow().Format.Should().Be(input);
     }
 
     [Fact]
