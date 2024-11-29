@@ -177,7 +177,27 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
-    public void Parse_Works_With_Csharp_Code_Using_Two_Character_Placeholder_Markers_To_Escape()
+    public void Parse_Works_With_Csharp_Code_Using_One_Character_Placeholder_Markers()
+    {
+        // Arrange
+        var input = "public class Bla {{ /* implementation goes here with {Name} */ }}";
+        var settings = new FormattableStringParserSettingsBuilder()
+            .WithFormatProvider(CultureInfo.InvariantCulture)
+            .WithPlaceholderStart("{")
+            .WithPlaceholderEnd("}")
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(input, settings, "[value from context]");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.ToString().Should().Be("public class Bla { /* implementation goes here with replaced name */ }");
+    }
+
+    [Fact]
+    public void Parse_Works_With_Csharp_Code_Using_Two_Character_Placeholder_Markers()
     {
         // Arrange
         var input = "public class Bla { /* implementation goes here with {{Name}} */ }";
