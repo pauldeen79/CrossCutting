@@ -4,6 +4,8 @@ public class FormattableStringParser : IFormattableStringParser
 {
     private readonly IEnumerable<IPlaceholderProcessor> _processors;
 
+    private const string TemporaryDelimiter = "^^";
+
     public FormattableStringParser(IEnumerable<IPlaceholderProcessor> processors)
     {
         processors = processors.IsNotNull(nameof(processors));
@@ -28,37 +30,51 @@ public class FormattableStringParser : IFormattableStringParser
         input = input.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
                      .Replace(escapedEnd, "\uE001");  // Temporarily replace escaped end marker
 
-        // Build a regex to match placeholders
-        var placeholderPattern = $"{settings.PlaceholderStart}(.*?){settings.PlaceholderEnd}";
-        var regex = new Regex(placeholderPattern);
-
-        // Perform replacement
         var results = new List<Result<FormattableStringParserResult>>();
-        var result = regex.Replace(input, match =>
+        var remainder = input;
+        do
         {
-            var placeholder = match.Groups[1].Value; // Extract placeholder name
-            var state = new FormattableStringParserState(placeholder, settings, context, this);
+            var closeIndex = remainder.LastIndexOf(settings.PlaceholderEnd);
+            if (closeIndex == -1)
+            {
+                break;
+            }
 
+            var openIndex = remainder.LastIndexOf(settings.PlaceholderStart);
+            if (openIndex == -1)
+            {
+                break;
+            }
+
+            var placeholder = remainder.Substring(openIndex + settings.PlaceholderStart.Length, closeIndex - openIndex - settings.PlaceholderStart.Length);
+            var found = $"{settings.PlaceholderStart}{placeholder}{settings.PlaceholderEnd}";
+            remainder = remainder.Replace(found, $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}");
             var placeholderResult = _processors
                 .OrderBy(x => x.Order)
-                .Select(x => x.Process(placeholder, state.Settings.FormatProvider, state.Context, state.Parser))
+                .Select(x => x.Process(placeholder, settings.FormatProvider, context, this))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                     ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
+
+            if (!placeholderResult.IsSuccessful())
+            {
+                return placeholderResult;
+            }
+
             results.Add(placeholderResult);
-
-            return placeholderResult.Value?.Format ?? string.Empty;
-        });
-
-        var err = results.Select(x => new { Item = x, IsSuccessful = x.IsSuccessful() }).FirstOrDefault(x => !x.IsSuccessful);
-        if (err is not null)
-        {
-            return err.Item;
-        }
+        } while (remainder.IndexOf(settings.PlaceholderStart) > -1 || remainder.IndexOf(settings.PlaceholderEnd) > -1);
 
         // Restore escaped markers
-        result = result.Replace("\uE000", settings.PlaceholderStart)
-                       .Replace("\uE001", settings.PlaceholderEnd);
+        // First, fix invalid format string {bla} to {{bla}} when escaped, else the ToString operation on FormattableStringParserResult fails
+        var start = settings.PlaceholderStart == "{" ? settings.PlaceholderStart + settings.PlaceholderStart : settings.PlaceholderStart;
+        var end = settings.PlaceholderEnd == "}" ? settings.PlaceholderEnd + settings.PlaceholderEnd : settings.PlaceholderEnd;
+        remainder = remainder.Replace("\uE000", start)
+                             .Replace("\uE001", end);
 
-        return Result.Success(new FormattableStringParserResult(result, [.. results.Select(x => x.Value!)]));
+        for (var i = 0; i < results.Count; i++)
+        {
+            remainder = remainder.Replace($"{TemporaryDelimiter}{i}{TemporaryDelimiter}", $"{{{i}}}");
+        }
+
+        return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.GetArgument(0))]));
     }
 }
