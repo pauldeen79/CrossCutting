@@ -15,7 +15,7 @@ public static class InsertQueryParser
     }
 
     private static InsertQueryParserState CreateInsertQueryParserState()
-        => new InsertQueryParserState(ComponentConfiguration.GetProcessors(), ComponentConfiguration.GetResultGenerators());
+        => new(ComponentConfiguration.GetProcessors(), ComponentConfiguration.GetResultGenerators());
 
     public static string ToInsertIntoString(ParseResult<string, string> parseResult, string tableName)
     {

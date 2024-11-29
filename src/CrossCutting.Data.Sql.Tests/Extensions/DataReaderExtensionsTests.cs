@@ -850,7 +850,7 @@ public class DataReaderExtensionsTests
     }
 
     private MyEntity Map(IDataReader reader)
-        => new MyEntity
+        => new()
         {
             Property = reader.GetString("Property")
         };

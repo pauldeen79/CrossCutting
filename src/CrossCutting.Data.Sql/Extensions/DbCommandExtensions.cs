@@ -131,7 +131,7 @@ public static class DbCommandExtensions
                         .FindManyAsync(cancellationToken, mapFunction);
 
     private static KeyValuePair<string, object> CreateParameter(string name, object? value)
-        => new KeyValuePair<string, object>(name, value.FixNull());
+        => new(name, value.FixNull());
 
     private static T? FindOne<T>(this IDbCommand command, Func<IDataReader, T> mapFunction)
         where T : class

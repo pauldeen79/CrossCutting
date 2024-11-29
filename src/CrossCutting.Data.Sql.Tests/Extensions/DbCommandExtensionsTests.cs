@@ -25,8 +25,8 @@ public class DbCommandExtensionsTests
         using var command = new DbCommand();
         var parameters = new List<KeyValuePair<string, object?>>
         {
-            new KeyValuePair<string, object?>("param1", "value1"),
-            new KeyValuePair<string, object?>("param2", null),
+            new("param1", "value1"),
+            new("param2", null),
         };
 
         // Act
@@ -90,8 +90,8 @@ public class DbCommandExtensionsTests
         using var command = new DbCommand();
         var parameters = new List<KeyValuePair<string, object?>>
         {
-            new KeyValuePair<string, object?>("param1", "value1"),
-            new KeyValuePair<string, object?>("param2", null),
+            new("param1", "value1"),
+            new("param2", null),
         };
 
         // Act

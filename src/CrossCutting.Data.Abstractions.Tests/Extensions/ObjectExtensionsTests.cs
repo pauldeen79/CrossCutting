@@ -29,7 +29,7 @@ public class ObjectExtensionsTests
     }
 
     public static TheoryData<object?, object?> FixDbNullData
-        => new TheoryData<object?, object?>
+        => new()
         {
             { DBNull.Value, null },
             { null, null }, // note that according to the interface, you can't send null. but it will not crash 8-)
@@ -41,7 +41,7 @@ public class ObjectExtensionsTests
         };
 
     public static TheoryData<object?, object> FixNullData
-        => new TheoryData<object?, object>
+        => new()
         {
             { null, DBNull.Value },
             { "", "" },

@@ -52,7 +52,7 @@ public sealed class DataReader(CommandBehavior commandBehavior, CultureInfo? cul
 
     public override float GetFloat(int ordinal) => Convert.ToSingle(this[ordinal], _cultureInfo);
 
-    public override Guid GetGuid(int ordinal) => new Guid(Convert.ToString(this[ordinal], _cultureInfo));
+    public override Guid GetGuid(int ordinal) => new(Convert.ToString(this[ordinal], _cultureInfo));
 
     public override short GetInt16(int ordinal) => Convert.ToInt16(this[ordinal], _cultureInfo);
 

@@ -12,17 +12,17 @@ internal sealed class ProcessResult
     }
 
     internal static ProcessResult Success()
-        => new ProcessResult(true, ParseResult.Success<string, string>());
+        => new(true, ParseResult.Success<string, string>());
 
     internal static ProcessResult Success(ParseResult<string, string> outcome)
-        => new ProcessResult(true, outcome);
+        => new(true, outcome);
 
     internal static ProcessResult Fail(string errorMessage)
-        => new ProcessResult(true, ParseResult.Error<string, string>(errorMessage));
+        => new(true, ParseResult.Error<string, string>(errorMessage));
 
     internal static ProcessResult Fail(ParseResult<string, string> result)
-        => new ProcessResult(true, result);
+        => new(true, result);
 
     internal static ProcessResult NotUnderstood()
-        => new ProcessResult(false, ParseResult.NotUnderstood<string, string>());
+        => new(false, ParseResult.NotUnderstood<string, string>());
 }

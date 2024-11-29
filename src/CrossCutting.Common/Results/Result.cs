@@ -120,7 +120,7 @@ public record Result
     public static Result Invalid(string errorMessage, IEnumerable<Result> innerResults) => new(ResultStatus.Invalid, errorMessage, [], innerResults, null);
     public static Result<T> Invalid<T>() => new(default, ResultStatus.Invalid, null, [], [], null);
     public static Result<T> Invalid<T>(IEnumerable<ValidationError> validationErrors) => new(default, ResultStatus.Invalid, null, validationErrors, [], null);
-    public static Result<T> Invalid<T>(string errorMessage) => new Result<T>(default, ResultStatus.Invalid, errorMessage, [], [], null);
+    public static Result<T> Invalid<T>(string errorMessage) => new(default, ResultStatus.Invalid, errorMessage, [], [], null);
     public static Result<T> Invalid<T>(string errorMessage, IEnumerable<ValidationError> validationErrors) => new(default, ResultStatus.Invalid, errorMessage, validationErrors, [], null);
     public static Result<T> Invalid<T>(string errorMessage, IEnumerable<Result> innerResults) => new(default, ResultStatus.Invalid, errorMessage, [], innerResults, null);
     public static Result Unauthorized() => new(ResultStatus.Unauthorized, null, [], [], null);

@@ -3,8 +3,7 @@
 public class TestEntityMapper : IDatabaseEntityMapper<TestEntity>
 {
     public TestEntity Map(IDataReader reader)
-        => new TestEntity
-        (
+        => new        (
             code: reader.GetString("Code"),
             codeType: reader.GetString("CodeType"),
             description: reader.GetNullableString("Description"),

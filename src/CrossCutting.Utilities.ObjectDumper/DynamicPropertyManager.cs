@@ -8,14 +8,14 @@ public static class DynamicPropertyManager
         Func<TTargetType, TPropertyType> getter,
         Action<TTargetType, TPropertyType> setter,
         Attribute[] attributes
-    ) => new DynamicPropertyDescriptor<TTargetType, TPropertyType>(displayName, getter, setter, attributes);
+    ) => new(displayName, getter, setter, attributes);
 
     public static DynamicPropertyDescriptor<TTargetType, TPropertyType> CreateProperty<TTargetType, TPropertyType>
     (
         string displayName,
         Func<TTargetType, TPropertyType> getHandler,
         Attribute[]? attributes
-    ) => new DynamicPropertyDescriptor<TTargetType, TPropertyType>(displayName, getHandler, (t, p) => { }, attributes);
+    ) => new(displayName, getHandler, (t, p) => { }, attributes);
 }
 
 public sealed class DynamicPropertyManager<TTarget> : IDisposable
