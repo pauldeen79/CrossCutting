@@ -15,12 +15,11 @@ public class FormattableStringParser : IFormattableStringParser
 
     public Result<FormattableStringParserResult> Parse(string input, FormattableStringParserSettings settings, object? context)
     {
-        input = input.IsNotNull(nameof(input));
         settings = settings.IsNotNull(nameof(settings));
 
         if (string.IsNullOrEmpty(input))
         {
-            return Result.Success(new FormattableStringParserResult(input, []));
+            return Result.Success(new FormattableStringParserResult(input ?? string.Empty, []));
         }
 
         // Handle escaped markers (e.g., {{ -> {)

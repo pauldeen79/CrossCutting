@@ -8,15 +8,33 @@ public sealed class FormattableStringParserTests : IDisposable
     private const string ReplacedValue = "replaced name";
 
     [Fact]
-    public void Parse_Throws_On_Null_Input()
+    public void Parse_Returns_Success_On_Null_Input()
     {
         // Arrange
-        var sut = CreateSut();
+        var input = default(string?);
         var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
 
-        // Act & Assert
-        sut.Invoking(x => x.Parse(input: null!, settings))
-           .Should().Throw<ArgumentNullException>().WithParameterName("input");
+        // Act
+        var result = sut.Parse(input!, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Parse_Returns_Success_On_Empty_Input()
+    {
+        // Arrange
+        var input = string.Empty;
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(input!, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
     }
 
     [Fact]
