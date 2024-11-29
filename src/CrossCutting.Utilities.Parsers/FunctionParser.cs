@@ -2,7 +2,7 @@
 
 public class FunctionParser : IFunctionParser
 {
-    private const string TemporaryDelimiter = "^^";
+    private const string TemporaryDelimiter = "\uE002";
 
     private readonly IEnumerable<IFunctionParserNameProcessor> _nameProcessors;
     private readonly IEnumerable<IFunctionParserArgumentProcessor> _argumentProcessors;
