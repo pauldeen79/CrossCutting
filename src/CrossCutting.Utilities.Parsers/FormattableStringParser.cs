@@ -26,11 +26,11 @@ public class FormattableStringParser : IFormattableStringParser
         var escapedStart = settings.PlaceholderStart + settings.PlaceholderStart;
         var escapedEnd = settings.PlaceholderEnd + settings.PlaceholderEnd;
 
-        input = input.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
-                     .Replace(escapedEnd, "\uE001");  // Temporarily replace escaped end marker
+        var remainder = input;
+        remainder = remainder.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
+                             .Replace(escapedEnd, "\uE001");  // Temporarily replace escaped end marker
 
         var results = new List<Result<FormattableStringParserResult>>();
-        var remainder = input;
         do
         {
             var closeIndex = remainder.LastIndexOf(settings.PlaceholderEnd);
@@ -42,7 +42,7 @@ public class FormattableStringParser : IFormattableStringParser
             var openIndex = remainder.LastIndexOf(settings.PlaceholderStart);
             if (openIndex == -1)
             {
-                break;
+                return Result.Invalid<FormattableStringParserResult>($"PlaceholderStart sign '{settings.PlaceholderStart}' is missing");
             }
 
             var placeholder = remainder.Substring(openIndex + settings.PlaceholderStart.Length, closeIndex - openIndex - settings.PlaceholderStart.Length);
@@ -61,6 +61,10 @@ public class FormattableStringParser : IFormattableStringParser
 
             results.Add(placeholderResult);
         } while (remainder.IndexOf(settings.PlaceholderStart) > -1 || remainder.IndexOf(settings.PlaceholderEnd) > -1);
+
+        // Fix FormatException when using ToString on FormattableStringParserResult
+        remainder = remainder.Replace("{", "{{")
+                             .Replace("}", "}}");
 
         // Restore escaped markers
         // First, fix invalid format string {bla} to {{bla}} when escaped, else the ToString operation on FormattableStringParserResult fails

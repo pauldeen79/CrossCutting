@@ -61,11 +61,11 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValueOrThrow().Format.Should().Be(input);
+        result.GetValueOrThrow().Format.Should().Be("Hello {{Name {{nested}} you are welcome");
     }
 
     [Fact]
-    public void Parse_Returns_Success_When_Open_Sign_Is_Missing()
+    public void Parse_Returns_Invalid_When_Open_Sign_Is_Missing()
     {
         // Arrange
         var input = "}";
@@ -76,8 +76,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValueOrThrow().Format.Should().Be(input);
+        result.Status.Should().Be(ResultStatus.Invalid);
     }
 
     [Fact]
@@ -109,7 +108,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValueOrThrow().Format.Should().Be(input);
+        result.GetValueOrThrow().Format.Should().Be(input + input); //need to duplicate because of FormatException on FormattableStringParserResult
     }
 
     [Fact]
@@ -175,6 +174,26 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Parse_Works_With_Csharp_Code_Using_Two_Character_Placeholder_Markers_To_Escape()
+    {
+        // Arrange
+        var input = "public class Bla { /* implementation goes here with {{Name}} */ }";
+        var settings = new FormattableStringParserSettingsBuilder()
+            .WithFormatProvider(CultureInfo.InvariantCulture)
+            .WithPlaceholderStart("{{")
+            .WithPlaceholderEnd("}}")
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(input, settings, "[value from context]");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.ToString().Should().Be("public class Bla { /* implementation goes here with replaced name */ }");
     }
 
     [Fact]
