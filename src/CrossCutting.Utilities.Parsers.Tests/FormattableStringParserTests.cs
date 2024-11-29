@@ -12,11 +12,10 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = default(string?);
-        var settings = new FormattableStringParserSettingsBuilder().Build();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(input!, settings);
+        var result = sut.Parse(input!, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
