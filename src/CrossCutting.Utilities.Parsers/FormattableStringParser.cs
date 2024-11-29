@@ -81,6 +81,6 @@ public class FormattableStringParser : IFormattableStringParser
             remainder = remainder.Replace($"{TemporaryDelimiter}{i}{TemporaryDelimiter}", $"{{{i}}}");
         }
 
-        return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.GetArgument(0))]));
+        return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
     }
 }
