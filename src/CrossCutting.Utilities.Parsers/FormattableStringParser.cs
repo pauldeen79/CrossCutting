@@ -62,9 +62,12 @@ public class FormattableStringParser : IFormattableStringParser
             results.Add(placeholderResult);
         } while (remainder.IndexOf(settings.PlaceholderStart) > -1 || remainder.IndexOf(settings.PlaceholderEnd) > -1);
 
-        // Fix FormatException when using ToString on FormattableStringParserResult
-        remainder = remainder.Replace("{", "{{")
-                             .Replace("}", "}}");
+        if (settings.EscapeBraces)
+        {
+            // Fix FormatException when using ToString on FormattableStringParserResult
+            remainder = remainder.Replace("{", "{{")
+                                 .Replace("}", "}}");
+        }
 
         // Restore escaped markers
         // First, fix invalid format string {bla} to {{bla}} when escaped, else the ToString operation on FormattableStringParserResult fails

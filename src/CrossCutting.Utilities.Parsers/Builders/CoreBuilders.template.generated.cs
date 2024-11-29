@@ -18,6 +18,8 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         private string _placeholderEnd;
 
+        private bool _escapeBraces;
+
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
         public System.IFormatProvider FormatProvider
@@ -64,12 +66,28 @@ namespace CrossCutting.Utilities.Parsers.Builders
             }
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool EscapeBraces
+        {
+            get
+            {
+                return _escapeBraces;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_escapeBraces, value);
+                _escapeBraces = value;
+                if (hasChanged) HandlePropertyChanged(nameof(EscapeBraces));
+            }
+        }
+
         public FormattableStringParserSettingsBuilder(CrossCutting.Utilities.Parsers.FormattableStringParserSettings source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _formatProvider = source.FormatProvider;
             _placeholderStart = source.PlaceholderStart;
             _placeholderEnd = source.PlaceholderEnd;
+            _escapeBraces = source.EscapeBraces;
         }
 
         public FormattableStringParserSettingsBuilder()
@@ -77,12 +95,13 @@ namespace CrossCutting.Utilities.Parsers.Builders
             _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
             _placeholderStart = string.Empty;
             _placeholderEnd = string.Empty;
+            _escapeBraces = true;
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.Parsers.FormattableStringParserSettings Build()
         {
-            return new CrossCutting.Utilities.Parsers.FormattableStringParserSettings(FormatProvider, PlaceholderStart, PlaceholderEnd);
+            return new CrossCutting.Utilities.Parsers.FormattableStringParserSettings(FormatProvider, PlaceholderStart, PlaceholderEnd, EscapeBraces);
         }
 
         partial void SetDefaultValues();
@@ -105,6 +124,12 @@ namespace CrossCutting.Utilities.Parsers.Builders
         {
             if (placeholderEnd is null) throw new System.ArgumentNullException(nameof(placeholderEnd));
             PlaceholderEnd = placeholderEnd;
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FormattableStringParserSettingsBuilder WithEscapeBraces(bool escapeBraces = true)
+        {
+            EscapeBraces = escapeBraces;
             return this;
         }
 

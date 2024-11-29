@@ -217,6 +217,27 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Can_Disable_Escaping_Single_Braces()
+    {
+        // Arrange
+        var input = "public class Bla {{ /* implementation goes here with <Name> */ }}";
+        var settings = new FormattableStringParserSettingsBuilder()
+            .WithFormatProvider(CultureInfo.InvariantCulture)
+            .WithPlaceholderStart("<")
+            .WithPlaceholderEnd(">")
+            .WithEscapeBraces(false)
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(input, settings, "[value from context]");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.ToString().Should().Be("public class Bla { /* implementation goes here with replaced name */ }");
+    }
+
+    [Fact]
     public void Parse_Works_With_ExpressionString_Containing_Function()
     {
         // Arrange

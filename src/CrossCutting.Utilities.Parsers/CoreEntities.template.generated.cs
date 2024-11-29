@@ -29,11 +29,18 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        public FormattableStringParserSettings(System.IFormatProvider formatProvider, string placeholderStart, string placeholderEnd)
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool EscapeBraces
+        {
+            get;
+        }
+
+        public FormattableStringParserSettings(System.IFormatProvider formatProvider, string placeholderStart, string placeholderEnd, bool escapeBraces)
         {
             this.FormatProvider = formatProvider;
             this.PlaceholderStart = placeholderStart;
             this.PlaceholderEnd = placeholderEnd;
+            this.EscapeBraces = escapeBraces;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
