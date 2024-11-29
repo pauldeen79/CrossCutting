@@ -307,4 +307,19 @@ public class InsertQueryParserTests
         actual.ErrorMessages.Should().HaveCount(1);
         actual.ErrorMessages.First().Should().Be("Insert query is empty");
     }
+
+    [Fact]
+    public void Parse_With_Argument_Not_Containing_Insert_Into_Gives_Error_Result()
+    {
+        // Arrange
+        var input = "Delete from mytable";
+
+        // Act
+        var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
+
+        // Assert
+        actual.IsSuccessful.Should().BeFalse();
+        actual.ErrorMessages.Should().HaveCount(1);
+        actual.ErrorMessages.First().Should().Be("INSERT INTO clause was not found");
+    }
 }
