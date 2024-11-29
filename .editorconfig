@@ -46,6 +46,8 @@ dotnet_style_prefer_conditional_expression_over_assignment = true:silent
 dotnet_style_prefer_conditional_expression_over_return = true:silent
 # Use expression body for methods
 dotnet_diagnostic.IDE0022.severity = silent
+# Use block body for conversion operator
+dotnet_diagnostic.IDE0023.severity = silent
 # Expression value is never used
 dotnet_diagnostic.IDE0058.severity = silent
 # use 'var' instead of explicit type
