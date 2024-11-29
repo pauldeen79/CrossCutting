@@ -4,7 +4,7 @@ public class FormattableStringParser : IFormattableStringParser
 {
     private readonly IEnumerable<IPlaceholderProcessor> _processors;
 
-    private const string TemporaryDelimiter = "^^";
+    private const string TemporaryDelimiter = "\uE002";
 
     public FormattableStringParser(IEnumerable<IPlaceholderProcessor> processors)
     {
@@ -64,10 +64,8 @@ public class FormattableStringParser : IFormattableStringParser
 
         // Restore escaped markers
         // First, fix invalid format string {bla} to {{bla}} when escaped, else the ToString operation on FormattableStringParserResult fails
-        var start = settings.PlaceholderStart == "{" ? settings.PlaceholderStart + settings.PlaceholderStart : settings.PlaceholderStart;
-        var end = settings.PlaceholderEnd == "}" ? settings.PlaceholderEnd + settings.PlaceholderEnd : settings.PlaceholderEnd;
-        remainder = remainder.Replace("\uE000", start)
-                             .Replace("\uE001", end);
+        remainder = remainder.Replace("\uE000", settings.PlaceholderStart + settings.PlaceholderStart)
+                             .Replace("\uE001", settings.PlaceholderEnd + settings.PlaceholderEnd);
 
         for (var i = 0; i < results.Count; i++)
         {

@@ -9,14 +9,14 @@ public partial record FormattableStringParserSettings : IValidatableObject
             yield return new ValidationResult($"{nameof(PlaceholderStart)} and {nameof(PlaceholderEnd)} cannot have the same value", [nameof(PlaceholderStart), nameof(PlaceholderEnd)]);
         }
 
-        if (PlaceholderStart?.Contains("^") == true)
+        if (PlaceholderStart?.Contains("\uE002") == true)
         {
-            yield return new ValidationResult($"{nameof(PlaceholderStart)} cannot contain the ^ character", [nameof(PlaceholderStart)]);
+            yield return new ValidationResult($"{nameof(PlaceholderStart)} cannot contain the \uE002 character", [nameof(PlaceholderStart)]);
         }
 
-        if (PlaceholderEnd?.Contains("^") == true)
+        if (PlaceholderEnd?.Contains("\uE002") == true)
         {
-            yield return new ValidationResult($"{nameof(PlaceholderEnd)} cannot contain the ^ character", [nameof(PlaceholderEnd)]);
+            yield return new ValidationResult($"{nameof(PlaceholderEnd)} cannot contain the \uE002 character", [nameof(PlaceholderEnd)]);
         }
     }
 }

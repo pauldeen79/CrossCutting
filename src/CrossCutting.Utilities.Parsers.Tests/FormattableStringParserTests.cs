@@ -293,6 +293,27 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Can_Parse_String_And_Defer_Specific_Placeholder_With_Two_Character_Placholder_Markers()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var settings = new FormattableStringParserSettingsBuilder()
+            .WithPlaceholderStart("{{")
+            .WithPlaceholderEnd("}}")
+            .Build();
+        var preparsedResult = sut.Parse("Hello {{Name}}, you are called {{{{Name}}}}", settings).GetValueOrThrow();
+
+        // Act
+        var result = sut.Parse(preparsedResult, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
+        result.Value.ArgumentCount.Should().Be(1);
+        result.Value.GetArgument(0).Should().BeEquivalentTo(ReplacedValue);
+    }
+
+    [Fact]
     public void Can_Parse_String_With_Double_Placeholder_Signs()
     {
         // Arrange
@@ -320,6 +341,7 @@ public sealed class FormattableStringParserTests : IDisposable
     [InlineData("@@", "$$")]
     [InlineData("<%", "%>")]
     [InlineData("{{", "}}")]
+    [InlineData("^^", "&&")]
     public void Can_Parse_String_With_Custom_Placeholders(string start, string end)
     {
         // Arrange

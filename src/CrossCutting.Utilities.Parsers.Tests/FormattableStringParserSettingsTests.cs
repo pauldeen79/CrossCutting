@@ -11,7 +11,7 @@ public class FormattableStringParserSettingsTests
             var builder = new FormattableStringParserSettingsBuilder();
 
             // Act & Assert
-            builder.WithPlaceholderStart("^").Invoking(x => x.Build()).Should().Throw<ValidationException>().WithMessage("PlaceholderStart cannot contain the ^ character");
+            builder.WithPlaceholderStart("\uE002").Invoking(x => x.Build()).Should().Throw<ValidationException>().WithMessage("PlaceholderStart cannot contain the \uE002 character");
         }
 
         [Fact]
@@ -21,7 +21,7 @@ public class FormattableStringParserSettingsTests
             var builder = new FormattableStringParserSettingsBuilder();
 
             // Act & Assert
-            builder.WithPlaceholderEnd("^").Invoking(x => x.Build()).Should().Throw<ValidationException>().WithMessage("PlaceholderEnd cannot contain the ^ character");
+            builder.WithPlaceholderEnd("\uE002").Invoking(x => x.Build()).Should().Throw<ValidationException>().WithMessage("PlaceholderEnd cannot contain the \uE002 character");
         }
 
         [Fact]
