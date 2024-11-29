@@ -35,7 +35,6 @@ namespace CrossCutting.Utilities.Parsers.Builders
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Utilities.Parsers.Attributes.MatchingCharactersAttribute]
         public string PlaceholderStart
         {
             get
@@ -51,7 +50,6 @@ namespace CrossCutting.Utilities.Parsers.Builders
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Utilities.Parsers.Attributes.MatchingCharactersAttribute]
         public string PlaceholderEnd
         {
             get

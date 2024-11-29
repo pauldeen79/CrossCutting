@@ -18,14 +18,12 @@ namespace CrossCutting.Utilities.Parsers
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Utilities.Parsers.Attributes.MatchingCharactersAttribute]
         public string PlaceholderStart
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Utilities.Parsers.Attributes.MatchingCharactersAttribute]
         public string PlaceholderEnd
         {
             get;

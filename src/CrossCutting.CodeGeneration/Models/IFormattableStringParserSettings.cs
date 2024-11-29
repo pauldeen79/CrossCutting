@@ -3,6 +3,6 @@
 internal interface IFormattableStringParserSettings
 {
     IFormatProvider FormatProvider { get; }
-    [Required(AllowEmptyStrings = false)][MatchingCharacters] string PlaceholderStart { get; }
-    [Required(AllowEmptyStrings = false)][MatchingCharacters] string PlaceholderEnd { get; }
+    [Required(AllowEmptyStrings = false)] string PlaceholderStart { get; }
+    [Required(AllowEmptyStrings = false)] string PlaceholderEnd { get; }
 }

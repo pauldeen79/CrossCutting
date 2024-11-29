@@ -294,6 +294,33 @@ public sealed class FormattableStringParserTests : IDisposable
         result.Value!.ToString().Should().Be($"Hello {ReplacedValue}!");
     }
 
+    [Theory]
+    [InlineData("[", "]")]
+    [InlineData("<", ">")]
+    [InlineData("[[", "]]")]
+    [InlineData("<<", ">>")]
+    [InlineData("@@", "$$")]
+    [InlineData("<%", "%>")]
+    [InlineData("{{", "}}")]
+    public void Can_Parse_String_With_Custom_Placeholders(string start, string end)
+    {
+        // Arrange
+        var input = $"Hello {start}Name{end}!";
+        var sut = CreateSut();
+        var settings = new FormattableStringParserSettingsBuilder()
+            .WithFormatProvider(CultureInfo.InvariantCulture)
+            .WithPlaceholderStart(start)
+            .WithPlaceholderEnd(end)
+            .Build();
+
+        // Act
+        var result = sut.Parse(input, settings, "[value from context]");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}!");
+    }
+
     [Fact]
     public void Can_Implicitly_Convert_ParseStringResult_To_String()
     {

@@ -41,9 +41,5 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
                     .WithValue(new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}", null))
                     .WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue)
             );
-
-        yield return new TypenameMappingBuilder()
-            .WithSourceType(typeof(MatchingCharactersAttribute))
-            .WithTargetTypeName(typeof(MatchingCharactersAttribute).FullName!.Replace("CrossCutting.CodeGeneration.Attributes", "CrossCutting.Utilities.Parsers.Attributes"));
     }
 }
