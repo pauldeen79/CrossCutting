@@ -136,13 +136,10 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Parse_Returns_Success_On_Valid_Input(string input, string expectedValue)
     {
         // Arrange
-        var settings = new FormattableStringParserSettingsBuilder()
-            .WithFormatProvider(CultureInfo.InvariantCulture)
-            .Build();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(input, settings, "[value from context]");
+        var result = sut.Parse(input, CultureInfo.InvariantCulture, "[value from context]");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
