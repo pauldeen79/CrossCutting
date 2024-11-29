@@ -669,14 +669,14 @@ public class ExpressionStringParserTests : IDisposable
         public void Returns_NotSupported_When_FunctionParser_Returns_NotSupported()
         {
             // Arrange
-            var input = "=somefunction(^^)";
+            var input = "=somefunction(\uE002)";
 
             // Act
             var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Input cannot contain ^^, as this is used internally for formatting");
+            result.ErrorMessage.Should().Be("Input cannot contain \uE002, as this is used internally for formatting");
         }
 
         [Fact]

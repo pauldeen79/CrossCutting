@@ -2,7 +2,7 @@
 
 public class DefaultObjectDumperResultBuilder : IObjectDumperResultBuilder
 {
-    private readonly StringBuilder _builder = new StringBuilder();
+    private readonly StringBuilder _builder = new();
 
     public void AddEnumerableItem(bool first, int indent, bool isComplexType)
     {

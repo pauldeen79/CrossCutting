@@ -21,5 +21,5 @@ public class TestEntityBuilder
         Description = source.Description;
     }
 
-    public TestEntity Build() => new TestEntity(Code, CodeType, Description, IsExistingEntity);
+    public TestEntity Build() => new(Code, CodeType, Description, IsExistingEntity);
 }

@@ -295,14 +295,14 @@ public sealed class FunctionParserTests : IDisposable
     public void String_Containing_TemporaryDelimiter_Returns_NotSupported()
     {
         // Arrange
-        var input = "This string contains the magic ^^ internal temporary delimiter. Don't ask why, we just don't support it. You're doomed if you try this.";
+        var input = "This string contains the magic \uE002 internal temporary delimiter. Don't ask why, we just don't support it. You're doomed if you try this.";
 
         // Act
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotSupported);
-        result.ErrorMessage.Should().Be("Input cannot contain ^^, as this is used internally for formatting");
+        result.ErrorMessage.Should().Be("Input cannot contain \uE002, as this is used internally for formatting");
     }
 
     [Fact]

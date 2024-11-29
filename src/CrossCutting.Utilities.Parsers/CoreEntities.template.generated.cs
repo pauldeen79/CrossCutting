@@ -10,6 +10,45 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers
 {
+    public partial record FormattableStringParserSettings
+    {
+        public System.IFormatProvider FormatProvider
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string PlaceholderStart
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string PlaceholderEnd
+        {
+            get;
+        }
+
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool EscapeBraces
+        {
+            get;
+        }
+
+        public FormattableStringParserSettings(System.IFormatProvider formatProvider, string placeholderStart, string placeholderEnd, bool escapeBraces)
+        {
+            this.FormatProvider = formatProvider;
+            this.PlaceholderStart = placeholderStart;
+            this.PlaceholderEnd = placeholderEnd;
+            this.EscapeBraces = escapeBraces;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FormattableStringParserSettingsBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FormattableStringParserSettingsBuilder(this);
+        }
+    }
     public partial record FunctionParseResult
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]

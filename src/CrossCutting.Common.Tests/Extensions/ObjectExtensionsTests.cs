@@ -340,7 +340,7 @@ public class ObjectExtensionsTests
         // Arrange
         var input = new List<KeyValuePair<string, object>>
             {
-                new KeyValuePair<string, object>("Value", "MyValue")
+                new("Value", "MyValue")
             };
 
         // Act

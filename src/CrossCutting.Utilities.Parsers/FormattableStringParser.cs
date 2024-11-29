@@ -2,61 +2,85 @@
 
 public class FormattableStringParser : IFormattableStringParser
 {
-    public const char OpenSign = '{';
-    public const char CloseSign = '}';
+    private readonly IEnumerable<IPlaceholderProcessor> _processors;
 
-    private readonly IEnumerable<IFormattableStringStateProcessor> _processors;
+    private const string TemporaryDelimiter = "\uE002";
 
-    public FormattableStringParser(IEnumerable<IFormattableStringStateProcessor> processors)
+    public FormattableStringParser(IEnumerable<IPlaceholderProcessor> processors)
     {
         processors = processors.IsNotNull(nameof(processors));
 
         _processors = processors;
     }
 
-    public static IFormattableStringParser Create(params IPlaceholderProcessor[] processors)
+    public Result<FormattableStringParserResult> Parse(string input, FormattableStringParserSettings settings, object? context)
     {
-        processors = processors.IsNotNull(nameof(processors));
+        settings = settings.IsNotNull(nameof(settings));
 
-        return new FormattableStringParser(
-            [
-                new OpenSignProcessor(),
-                new CloseSignProcessor(processors),
-                new PlaceholderProcessor(),
-                new ResultProcessor()
-            ]);
-    }
-
-    public Result<FormattableStringParserResult> Parse(string input, IFormatProvider formatProvider, object? context)
-    {
-        input = input.IsNotNull(nameof(input));
-        formatProvider = formatProvider.IsNotNull(nameof(formatProvider));
-
-        var state = new FormattableStringParserState(input, formatProvider, context, this);
-
-        for (var index = 0; index < input.Length; index++)
+        if (string.IsNullOrEmpty(input))
         {
-            state.Update(input[index], index);
+            return Result.Success(new FormattableStringParserResult(input ?? string.Empty, []));
+        }
 
-            foreach (var processor in _processors)
+        // Handle escaped markers (e.g., {{ -> {)
+        var escapedStart = settings.PlaceholderStart + settings.PlaceholderStart;
+        var escapedEnd = settings.PlaceholderEnd + settings.PlaceholderEnd;
+
+        var remainder = input;
+        remainder = remainder.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
+                             .Replace(escapedEnd, "\uE001");  // Temporarily replace escaped end marker
+
+        var results = new List<Result<FormattableStringParserResult>>();
+        do
+        {
+            var closeIndex = remainder.LastIndexOf(settings.PlaceholderEnd);
+            if (closeIndex == -1)
             {
-                var processorResult = processor.Process(state);
-                if (!processorResult.IsSuccessful())
-                {
-                    return processorResult;
-                }
-                else if (processorResult.Status == ResultStatus.NoContent)
-                {
-                    break;
-                }
+                break;
             }
-        }
 
-        if (state.InPlaceholder)
+            var openIndex = remainder.LastIndexOf(settings.PlaceholderStart);
+            if (openIndex == -1)
+            {
+                return Result.Invalid<FormattableStringParserResult>($"PlaceholderStart sign '{settings.PlaceholderStart}' is missing");
+            }
+
+            var placeholder = remainder.Substring(openIndex + settings.PlaceholderStart.Length, closeIndex - openIndex - settings.PlaceholderStart.Length);
+            var found = $"{settings.PlaceholderStart}{placeholder}{settings.PlaceholderEnd}";
+            remainder = remainder.Replace(found, $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}");
+            var placeholderResult = _processors
+                .OrderBy(x => x.Order)
+                .Select(x => x.Process(placeholder, settings.FormatProvider, context, this))
+                .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                    ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
+
+            if (!placeholderResult.IsSuccessful())
+            {
+                return placeholderResult;
+            }
+
+            results.Add(placeholderResult);
+        } while (remainder.IndexOf(settings.PlaceholderStart) > -1 || remainder.IndexOf(settings.PlaceholderEnd) > -1);
+
+        if (settings.EscapeBraces)
         {
-            return Result.Invalid<FormattableStringParserResult>("Missing close sign '}'. To use the '{' character, you have to escape it with an additional '{' character");
+            // Fix FormatException when using ToString on FormattableStringParserResult
+            remainder = remainder.Replace("{", "{{")
+                                 .Replace("}", "}}");
         }
 
-        return Result.Success(new FormattableStringParserResult(state.ResultFormat, [.. state.ResultArguments]));
+        // Restore escaped markers
+        // First, fix invalid format string {bla} to {{bla}} when escaped, else the ToString operation on FormattableStringParserResult fails
+        var start = settings.PlaceholderStart.StartsWith("{") ? settings.PlaceholderStart + settings.PlaceholderStart : settings.PlaceholderStart;
+        var end = settings.PlaceholderEnd.StartsWith("}") ? settings.PlaceholderEnd + settings.PlaceholderEnd : settings.PlaceholderEnd;
+        remainder = remainder.Replace("\uE000", start)
+                             .Replace("\uE001", end);
+
+        for (var i = 0; i < results.Count; i++)
+        {
+            remainder = remainder.Replace($"{TemporaryDelimiter}{i}{TemporaryDelimiter}", $"{{{i}}}");
+        }
+
+        return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.GetArgument(0))]));
     }
 }

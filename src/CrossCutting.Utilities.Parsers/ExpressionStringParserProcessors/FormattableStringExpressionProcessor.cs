@@ -12,7 +12,7 @@ public class FormattableStringExpressionProcessor : IExpressionStringParserProce
         {
             // =@"string value" -> literal, no functions but formattable strings possible
             return state.FormattableStringParser is not null
-                ? Result.FromExistingResult<FormattableStringParserResult, object?>(state.FormattableStringParser.Parse(state.Input.Substring(3, state.Input.Length - 4), state.FormatProvider, state.Context), value => value.ToString(state.FormatProvider))
+                ? Result.FromExistingResult<FormattableStringParserResult, object?>(state.FormattableStringParser.Parse(state.Input.Substring(3, state.Input.Length - 4), new FormattableStringParserSettingsBuilder().WithFormatProvider(state.FormatProvider).Build(), state.Context), value => value.ToString(state.FormatProvider))
                 : Result.Success<object?>(state.Input.Substring(3, state.Input.Length - 4));
         }
         else if (state.Input.StartsWith("=\"") && state.Input.EndsWith("\""))
