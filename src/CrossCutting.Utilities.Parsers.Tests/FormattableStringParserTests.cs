@@ -307,7 +307,6 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Act
         var result = sut.Parse(Input, settings);
-        result = sut.Parse(result.GetValueOrThrow().ToString(CultureInfo.InvariantCulture), settings); // have to parse the result, because it contains a new placeholder...
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);

@@ -59,6 +59,16 @@ public class FormattableStringParser : IFormattableStringParser
                 return placeholderResult;
             }
 
+            if (placeholderResult.Value?.Format == "{0}"
+                && placeholderResult.Value.ArgumentCount == 1
+                && placeholderResult.Value.GetArgument(0) is string placeholderResultValue
+                && placeholderResultValue.Contains(settings.PlaceholderStart)
+                && placeholderResultValue.Contains(settings.PlaceholderEnd)
+                && placeholderResultValue != input) //compare with input to prevent infinitive loop
+            {
+                placeholderResult = Parse(placeholderResultValue, settings, context);
+            }
+
             results.Add(placeholderResult);
         } while (remainder.IndexOf(settings.PlaceholderStart) > -1 || remainder.IndexOf(settings.PlaceholderEnd) > -1);
 
