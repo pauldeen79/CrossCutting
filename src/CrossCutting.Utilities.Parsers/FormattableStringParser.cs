@@ -1,7 +1,4 @@
-﻿
-using System.Runtime;
-
-namespace CrossCutting.Utilities.Parsers;
+﻿namespace CrossCutting.Utilities.Parsers;
 
 public class FormattableStringParser : IFormattableStringParser
 {
