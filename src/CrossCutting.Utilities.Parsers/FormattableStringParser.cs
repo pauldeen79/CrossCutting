@@ -59,13 +59,7 @@ public class FormattableStringParser : IFormattableStringParser
                 return placeholderResult;
             }
 
-            if (placeholderResult.Value?.Format == "{0}"
-                && placeholderResult.Value.ArgumentCount == 1
-                && placeholderResult.Value.GetArgument(0) is string placeholderResultValue
-                && NeedRecurse(placeholderResultValue, settings, input)) //compare with input to prevent infinitive loop
-            {
-                placeholderResult = Parse(placeholderResultValue, settings, context);
-            }
+            placeholderResult = ProcessRecurse(input, settings, context, placeholderResult);
 
             results.Add(placeholderResult);
         } while (remainder.IndexOf(settings.PlaceholderStart) > -1 || remainder.IndexOf(settings.PlaceholderEnd) > -1);
@@ -90,6 +84,19 @@ public class FormattableStringParser : IFormattableStringParser
         }
 
         return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
+    }
+
+    private Result<FormattableStringParserResult> ProcessRecurse(string input, FormattableStringParserSettings settings, object? context, Result<FormattableStringParserResult> placeholderResult)
+    {
+        if (placeholderResult.Value?.Format == "{0}"
+            && placeholderResult.Value.ArgumentCount == 1
+            && placeholderResult.Value.GetArgument(0) is string placeholderResultValue
+            && NeedRecurse(placeholderResultValue, settings, input)) //compare with input to prevent infinitive loop
+        {
+            placeholderResult = Parse(placeholderResultValue, settings, context);
+        }
+
+        return placeholderResult;
     }
 
     private static bool NeedRecurse(string placeholderResultValue, FormattableStringParserSettings settings, string input)
