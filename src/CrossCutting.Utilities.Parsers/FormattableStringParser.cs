@@ -1,4 +1,7 @@
-﻿namespace CrossCutting.Utilities.Parsers;
+﻿
+using System.Runtime;
+
+namespace CrossCutting.Utilities.Parsers;
 
 public class FormattableStringParser : IFormattableStringParser
 {
@@ -62,9 +65,7 @@ public class FormattableStringParser : IFormattableStringParser
             if (placeholderResult.Value?.Format == "{0}"
                 && placeholderResult.Value.ArgumentCount == 1
                 && placeholderResult.Value.GetArgument(0) is string placeholderResultValue
-                && placeholderResultValue.Contains(settings.PlaceholderStart)
-                && placeholderResultValue.Contains(settings.PlaceholderEnd)
-                && placeholderResultValue != input) //compare with input to prevent infinitive loop
+                && NeedRecurse(placeholderResultValue, settings, input)) //compare with input to prevent infinitive loop
             {
                 placeholderResult = Parse(placeholderResultValue, settings, context);
             }
@@ -93,4 +94,9 @@ public class FormattableStringParser : IFormattableStringParser
 
         return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
     }
+
+    private static bool NeedRecurse(string placeholderResultValue, FormattableStringParserSettings settings, string input)
+        => placeholderResultValue.Contains(settings.PlaceholderStart)
+            && placeholderResultValue.Contains(settings.PlaceholderEnd)
+            && placeholderResultValue != input;
 }
