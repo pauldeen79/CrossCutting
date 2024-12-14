@@ -213,6 +213,22 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Returns_Error_When_Maximum_Recursion_Level_Is_Reached()
+    {
+        // Arrange
+        const string Input = "Hello {ReplaceWithPlaceholder}!";
+        var settings = new FormattableStringParserSettingsBuilder().WithMaximumRecursion(0).Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(Input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Maximum of 0 recursions is reached");
+    }
+
+    [Fact]
     public void Can_Disable_Escaping_Single_Braces()
     {
         // Arrange

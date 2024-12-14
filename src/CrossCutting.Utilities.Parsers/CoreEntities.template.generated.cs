@@ -35,12 +35,19 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        public FormattableStringParserSettings(System.IFormatProvider formatProvider, string placeholderStart, string placeholderEnd, bool escapeBraces)
+        [System.ComponentModel.DefaultValueAttribute(10)]
+        public int MaximumRecursion
+        {
+            get;
+        }
+
+        public FormattableStringParserSettings(System.IFormatProvider formatProvider, string placeholderStart, string placeholderEnd, bool escapeBraces, int maximumRecursion)
         {
             this.FormatProvider = formatProvider;
             this.PlaceholderStart = placeholderStart;
             this.PlaceholderEnd = placeholderEnd;
             this.EscapeBraces = escapeBraces;
+            this.MaximumRecursion = maximumRecursion;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 

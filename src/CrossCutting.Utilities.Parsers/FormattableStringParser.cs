@@ -17,6 +17,11 @@ public class FormattableStringParser : IFormattableStringParser
     {
         settings = settings.IsNotNull(nameof(settings));
 
+        return ParseRecursive(input, settings, context, 0);
+    }
+
+    private Result<FormattableStringParserResult> ParseRecursive(string input, FormattableStringParserSettings settings, object? context, int currentRecursionLevel)
+    {
         if (string.IsNullOrEmpty(input))
         {
             return Result.Success(new FormattableStringParserResult(input ?? string.Empty, []));
@@ -26,8 +31,7 @@ public class FormattableStringParser : IFormattableStringParser
         var escapedStart = settings.PlaceholderStart + settings.PlaceholderStart;
         var escapedEnd = settings.PlaceholderEnd + settings.PlaceholderEnd;
 
-        var remainder = input;
-        remainder = remainder.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
+        var remainder = input.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
                              .Replace(escapedEnd, "\uE001");  // Temporarily replace escaped end marker
 
         var results = new List<Result<FormattableStringParserResult>>();
@@ -59,7 +63,11 @@ public class FormattableStringParser : IFormattableStringParser
                 return placeholderResult;
             }
 
-            placeholderResult = ProcessRecurse(input, settings, context, placeholderResult);
+            placeholderResult = ProcessRecurse(input, settings, context, placeholderResult, currentRecursionLevel + 1);
+            if (!placeholderResult.IsSuccessful())
+            {
+                return placeholderResult;
+            }
 
             results.Add(placeholderResult);
         } while (remainder.IndexOf(settings.PlaceholderStart) > -1 || remainder.IndexOf(settings.PlaceholderEnd) > -1);
@@ -86,14 +94,19 @@ public class FormattableStringParser : IFormattableStringParser
         return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
     }
 
-    private Result<FormattableStringParserResult> ProcessRecurse(string input, FormattableStringParserSettings settings, object? context, Result<FormattableStringParserResult> placeholderResult)
+    private Result<FormattableStringParserResult> ProcessRecurse(string input, FormattableStringParserSettings settings, object? context, Result<FormattableStringParserResult> placeholderResult, int currentRecursionLevel)
     {
         if (placeholderResult.Value?.Format == "{0}"
             && placeholderResult.Value.ArgumentCount == 1
             && placeholderResult.Value.GetArgument(0) is string placeholderResultValue
             && NeedRecurse(placeholderResultValue, settings, input)) //compare with input to prevent infinitive loop
         {
-            placeholderResult = Parse(placeholderResultValue, settings, context);
+            if (currentRecursionLevel >= settings.MaximumRecursion)
+            {
+                return Result.Error<FormattableStringParserResult>($"Maximum of {settings.MaximumRecursion} recursions is reached");
+            }
+
+            placeholderResult = ParseRecursive(placeholderResultValue, settings, context, currentRecursionLevel);
         }
 
         return placeholderResult;
