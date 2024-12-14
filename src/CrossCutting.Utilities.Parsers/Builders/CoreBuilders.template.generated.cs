@@ -20,6 +20,8 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         private bool _escapeBraces;
 
+        private int _maximumRecursion;
+
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
         public System.IFormatProvider FormatProvider
@@ -81,6 +83,21 @@ namespace CrossCutting.Utilities.Parsers.Builders
             }
         }
 
+        [System.ComponentModel.DefaultValueAttribute(10)]
+        public int MaximumRecursion
+        {
+            get
+            {
+                return _maximumRecursion;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Int32>.Default.Equals(_maximumRecursion, value);
+                _maximumRecursion = value;
+                if (hasChanged) HandlePropertyChanged(nameof(MaximumRecursion));
+            }
+        }
+
         public FormattableStringParserSettingsBuilder(CrossCutting.Utilities.Parsers.FormattableStringParserSettings source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
@@ -88,6 +105,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
             _placeholderStart = source.PlaceholderStart;
             _placeholderEnd = source.PlaceholderEnd;
             _escapeBraces = source.EscapeBraces;
+            _maximumRecursion = source.MaximumRecursion;
         }
 
         public FormattableStringParserSettingsBuilder()
@@ -96,12 +114,13 @@ namespace CrossCutting.Utilities.Parsers.Builders
             _placeholderStart = string.Empty;
             _placeholderEnd = string.Empty;
             _escapeBraces = true;
+            _maximumRecursion = 10;
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.Parsers.FormattableStringParserSettings Build()
         {
-            return new CrossCutting.Utilities.Parsers.FormattableStringParserSettings(FormatProvider, PlaceholderStart, PlaceholderEnd, EscapeBraces);
+            return new CrossCutting.Utilities.Parsers.FormattableStringParserSettings(FormatProvider, PlaceholderStart, PlaceholderEnd, EscapeBraces, MaximumRecursion);
         }
 
         partial void SetDefaultValues();
@@ -130,6 +149,12 @@ namespace CrossCutting.Utilities.Parsers.Builders
         public CrossCutting.Utilities.Parsers.Builders.FormattableStringParserSettingsBuilder WithEscapeBraces(bool escapeBraces = true)
         {
             EscapeBraces = escapeBraces;
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FormattableStringParserSettingsBuilder WithMaximumRecursion(int maximumRecursion)
+        {
+            MaximumRecursion = maximumRecursion;
             return this;
         }
 

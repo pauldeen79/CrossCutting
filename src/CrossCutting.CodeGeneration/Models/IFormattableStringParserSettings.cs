@@ -6,4 +6,5 @@ internal interface IFormattableStringParserSettings
     [Required(AllowEmptyStrings = false)] string PlaceholderStart { get; }
     [Required(AllowEmptyStrings = false)] string PlaceholderEnd { get; }
     [DefaultValue(true)] bool EscapeBraces { get; }
+    [DefaultValue(10)] int MaximumRecursion { get; }
 }
