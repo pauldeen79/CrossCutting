@@ -9,6 +9,7 @@ public static class ServiceCollectionExtensions
         .AddFunctionParser()
         .AddFormattableStringParser()
         .AddMathematicExpressionParser()
+        .AddObjectResolver()
         .AddVariableProcessor();
 
     private static IServiceCollection AddExpressionParser(this IServiceCollection services)
@@ -63,6 +64,10 @@ public static class ServiceCollectionExtensions
         .AddScoped<IMathematicExpressionValidator, EndWithOperatorValidator>()
         .AddScoped<IMathematicExpressionValidator, EmptyValuePartValidator>()
         .AddScoped<IMathematicExpressionValidator, BraceValidator>();
+
+    private static IServiceCollection AddObjectResolver(this IServiceCollection services)
+        => services
+        .AddScoped<IObjectResolver, ObjectResolver>();
 
     private static IServiceCollection AddVariableProcessor(this IServiceCollection services)
         => services
