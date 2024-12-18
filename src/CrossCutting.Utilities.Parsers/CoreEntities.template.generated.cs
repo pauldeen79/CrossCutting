@@ -86,7 +86,7 @@ namespace CrossCutting.Utilities.Parsers
         public FunctionParseResult(string functionName, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionParseResultArgument> arguments, System.IFormatProvider formatProvider, object? context)
         {
             this.FunctionName = functionName;
-            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionParseResultArgument>(arguments);
+            this.Arguments = arguments is null ? null : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionParseResultArgument>(arguments);
             this.FormatProvider = formatProvider;
             this.Context = context;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
