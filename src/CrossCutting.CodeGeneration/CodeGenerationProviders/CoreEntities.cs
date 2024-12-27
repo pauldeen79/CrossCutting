@@ -5,6 +5,6 @@ public class CoreEntities(IPipelineService pipelineService) : CrossCuttingCSharp
 {
     public override string Path => Constants.Namespaces.UtilitiesParsers;
 
-    public override async Task<IEnumerable<TypeBase>> GetModel()
-        => await GetEntities(await GetCoreModels(), CurrentNamespace);
+    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
+        => GetEntities(GetCoreModels(), CurrentNamespace);
 }

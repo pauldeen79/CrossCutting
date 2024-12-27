@@ -9,6 +9,6 @@ public class AbstractBuilders(IPipelineService pipelineService) : CrossCuttingCS
     protected override bool EnableBuilderInhericance => true;
     protected override bool IsAbstract => true;
 
-    public override async Task<IEnumerable<TypeBase>> GetModel()
-        => await GetBuilders(await GetAbstractModels(), CurrentNamespace, Constants.Namespaces.UtilitiesParsers);
+    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
+        => GetBuilders(GetAbstractModels(), CurrentNamespace, Constants.Namespaces.UtilitiesParsers);
 }

@@ -8,12 +8,12 @@ public class OverrideBuilders(IPipelineService pipelineService) : CrossCuttingCS
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;
     protected override bool CreateAsObservable => true;
-    protected override async Task<TypeBase?> GetBaseClass() => await CreateBaseClass(typeof(IFunctionParseResultArgument), CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsers);
+    protected override Task<Result<TypeBase>> GetBaseClass() => CreateBaseClass(typeof(IFunctionParseResultArgument), CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsers);
     protected override string BaseClassBuilderNamespace => CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsersBuilders;
 
-    public override async Task<IEnumerable<TypeBase>> GetModel()
-        => await GetBuilders(
-            await GetOverrideModels(typeof(IFunctionParseResultArgument)),
+    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
+        => GetBuilders(
+            GetOverrideModels(typeof(IFunctionParseResultArgument)),
             CurrentNamespace,
             CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsersFunctionParseResultArguments);
 }

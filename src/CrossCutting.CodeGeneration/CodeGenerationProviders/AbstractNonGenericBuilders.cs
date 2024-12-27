@@ -11,6 +11,6 @@ public class AbstractNonGenericBuilders(IPipelineService pipelineService) : Cros
     protected override bool IsAbstract => true;
     protected override string FilenameSuffix => ".nongeneric.template.generated";
 
-    public override async Task<IEnumerable<TypeBase>> GetModel()
-        => await GetNonGenericBuilders(await GetAbstractModels(), CurrentNamespace, Constants.Namespaces.UtilitiesParsers);
+    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
+        => GetNonGenericBuilders(GetAbstractModels(), CurrentNamespace, Constants.Namespaces.UtilitiesParsers);
 }
