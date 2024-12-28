@@ -594,9 +594,9 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private sealed class MyFunctionResultParser : IFunctionResultParser
     {
-        public Result<object?> Parse(FunctionCall functionParseResult, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Parse(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
         {
-            if (functionParseResult.FunctionName != "MyFunction")
+            if (functionCall.FunctionName != "MyFunction")
             {
                 return Result.Continue<object?>();
             }
@@ -607,14 +607,14 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private sealed class ToUpperCaseResultParser : IFunctionResultParser
     {
-        public Result<object?> Parse(FunctionCall functionParseResult, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Parse(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
         {
-            if (functionParseResult.FunctionName != "ToUpperCase")
+            if (functionCall.FunctionName != "ToUpperCase")
             {
                 return Result.Continue<object?>();
             }
 
-            var valueResult = functionParseResult.Arguments.First().GetValueResult(context, evaluator, parser, functionParseResult.FormatProvider);
+            var valueResult = functionCall.Arguments.First().GetValueResult(context, evaluator, parser, functionCall.FormatProvider);
             if (!valueResult.IsSuccessful())
             {
                 return valueResult;

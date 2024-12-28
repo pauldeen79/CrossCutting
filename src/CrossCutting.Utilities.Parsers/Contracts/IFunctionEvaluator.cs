@@ -2,5 +2,5 @@
 
 public interface IFunctionEvaluator
 {
-    Result<object?> Evaluate(FunctionCall functionResult, IExpressionParser parser, object? context);
+    Result<object?> Evaluate(FunctionCall functionCall, IExpressionParser parser, object? context);
 }

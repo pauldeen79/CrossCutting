@@ -775,24 +775,24 @@ public class ExpressionStringParserTests : IDisposable
 
     private sealed class MyFunctionResultParser : IFunctionResultParser
     {
-        public Result<object?> Parse(FunctionCall functionParseResult, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Parse(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
         {
-            if (functionParseResult.FunctionName == "error")
+            if (functionCall.FunctionName == "error")
             {
                 return Result.Error<object?>("Kaboom");
             }
 
-            if (functionParseResult.FunctionName == "ToUpper")
+            if (functionCall.FunctionName == "ToUpper")
             {
-                return Result.Success<object?>(functionParseResult.Context?.ToString()?.ToUpperInvariant() ?? string.Empty);
+                return Result.Success<object?>(functionCall.Context?.ToString()?.ToUpperInvariant() ?? string.Empty);
             }
 
-            if (functionParseResult.Arguments.Count > 0)
+            if (functionCall.Arguments.Count > 0)
             {
-                return Result.Success<object?>($"result of {functionParseResult.FunctionName} function: {string.Join(", ", functionParseResult.Arguments.OfType<LiteralArgument>().Select(x => x.GetValueResult(context, evaluator, parser, functionParseResult.FormatProvider).GetValueOrThrow()))}");
+                return Result.Success<object?>($"result of {functionCall.FunctionName} function: {string.Join(", ", functionCall.Arguments.OfType<LiteralArgument>().Select(x => x.GetValueResult(context, evaluator, parser, functionCall.FormatProvider).GetValueOrThrow()))}");
             }
 
-            return Result.Success<object?>($"result of {functionParseResult.FunctionName} function");
+            return Result.Success<object?>($"result of {functionCall.FunctionName} function");
         }
     }
 
