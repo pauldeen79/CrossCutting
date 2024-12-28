@@ -42,11 +42,6 @@ public class ExpressionStringParser : IExpressionStringParser
     {
         // =something else, we can try function
         var functionResult = _functionParser.Parse(state.Input.Substring(1), state.FormatProvider, state.Context, state.FormattableStringParser);
-        if (functionResult.Status == ResultStatus.NotFound)
-        {
-            return Result.FromExistingResult<object?>(functionResult);
-        }
-
         if (!functionResult.IsSuccessful())
         {
             return Result.FromExistingResult<object?>(functionResult);
