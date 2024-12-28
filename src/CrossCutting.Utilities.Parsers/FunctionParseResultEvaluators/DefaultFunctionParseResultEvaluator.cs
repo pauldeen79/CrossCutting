@@ -4,7 +4,7 @@ public class DefaultFunctionParseResultEvaluator(IEnumerable<IFunctionResultPars
 {
     private readonly IEnumerable<IFunctionResultParser> _functionResultParsers = functionResultParsers;
 
-    public Result<object?> Evaluate(FunctionParseResult functionResult, IExpressionParser parser, object? context)
+    public Result<object?> Evaluate(FunctionCall functionResult, IExpressionParser parser, object? context)
     {
         functionResult = ArgumentGuard.IsNotNull(functionResult, nameof(functionResult));
 

@@ -163,11 +163,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class FunctionParseResultBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class FunctionCallBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         private string _functionName;
 
-        private System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionParseResultArgumentBuilder> _arguments;
+        private System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder> _arguments;
 
         private System.IFormatProvider _formatProvider;
 
@@ -193,7 +193,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionParseResultArgumentBuilder> Arguments
+        public System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder> Arguments
         {
             get
             {
@@ -201,7 +201,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.Builders.FunctionParseResultArgumentBuilder>>.Default.Equals(_arguments!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder>>.Default.Equals(_arguments!, value!);
                 _arguments = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Arguments));
             }
@@ -236,59 +236,59 @@ namespace CrossCutting.Utilities.Parsers.Builders
             }
         }
 
-        public FunctionParseResultBuilder(CrossCutting.Utilities.Parsers.FunctionParseResult source)
+        public FunctionCallBuilder(CrossCutting.Utilities.Parsers.FunctionCall source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionParseResultArgumentBuilder>();
+            _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder>();
             _functionName = source.FunctionName;
             if (source.Arguments is not null) foreach (var item in source.Arguments.Select(x => x.ToBuilder())) _arguments.Add(item);
             _formatProvider = source.FormatProvider;
             _context = source.Context;
         }
 
-        public FunctionParseResultBuilder()
+        public FunctionCallBuilder()
         {
-            _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionParseResultArgumentBuilder>();
+            _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder>();
             _functionName = string.Empty;
             _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
             SetDefaultValues();
         }
 
-        public CrossCutting.Utilities.Parsers.FunctionParseResult Build()
+        public CrossCutting.Utilities.Parsers.FunctionCall Build()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionParseResult(FunctionName, Arguments.Select(x => x.Build()!).ToList().AsReadOnly(), FormatProvider, Context);
+            return new CrossCutting.Utilities.Parsers.FunctionCall(FunctionName, Arguments.Select(x => x.Build()!).ToList().AsReadOnly(), FormatProvider, Context);
         }
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionParseResultBuilder AddArguments(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.Builders.FunctionParseResultArgumentBuilder> arguments)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder AddArguments(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder> arguments)
         {
             if (arguments is null) throw new System.ArgumentNullException(nameof(arguments));
             return AddArguments(arguments.ToArray());
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionParseResultBuilder AddArguments(params CrossCutting.Utilities.Parsers.Builders.FunctionParseResultArgumentBuilder[] arguments)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder AddArguments(params CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder[] arguments)
         {
             if (arguments is null) throw new System.ArgumentNullException(nameof(arguments));
             foreach (var item in arguments) Arguments.Add(item);
             return this;
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionParseResultBuilder WithFunctionName(string functionName)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder WithFunctionName(string functionName)
         {
             if (functionName is null) throw new System.ArgumentNullException(nameof(functionName));
             FunctionName = functionName;
             return this;
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionParseResultBuilder WithFormatProvider(System.IFormatProvider formatProvider)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder WithFormatProvider(System.IFormatProvider formatProvider)
         {
             if (formatProvider is null) throw new System.ArgumentNullException(nameof(formatProvider));
             FormatProvider = formatProvider;
             return this;
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionParseResultBuilder WithContext(object? context)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder WithContext(object? context)
         {
             Context = context;
             return this;

@@ -8,9 +8,9 @@ public sealed class FunctionParseResultTests : IDisposable
 
     public FunctionParseResultTests()
     {
-        _evaluatorMock.Evaluate(Arg.Any<FunctionParseResult>(), Arg.Any<IExpressionParser>(), Arg.Any<object?>())
+        _evaluatorMock.Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IExpressionParser>(), Arg.Any<object?>())
                       //<FunctionParseResult, IExpressionParser, object?>((result, _, _)
-                      .Returns(x => x.ArgAt<FunctionParseResult>(0).FunctionName switch
+                      .Returns(x => x.ArgAt<FunctionCall>(0).FunctionName switch
                         {
                             "MyNestedFunction" => Result.Success<object?>("Evaluated result"),
                             "NumericFunction" => Result.Success<object?>(1),
@@ -653,20 +653,20 @@ public sealed class FunctionParseResultTests : IDisposable
         _provider.Dispose();
     }
 
-    private static FunctionParseResult CreateFunctionParseResultWithoutArguments()
-        => new FunctionParseResultBuilder()
+    private static FunctionCall CreateFunctionParseResultWithoutArguments()
+        => new FunctionCallBuilder()
             .WithFunctionName("Test")
             .Build();
 
-    private static FunctionParseResult CreateFunctionParseResultWithLiteralArgument()
-        => new FunctionParseResultBuilder()
+    private static FunctionCall CreateFunctionParseResultWithLiteralArgument()
+        => new FunctionCallBuilder()
             .WithFunctionName("Test")
             .AddArguments(new LiteralArgumentBuilder().WithValue("some value"))
             .Build();
 
-    private static FunctionParseResult CreateFunctionParseResultWithFunctionArgument(string functionName)
-        => new FunctionParseResultBuilder()
+    private static FunctionCall CreateFunctionParseResultWithFunctionArgument(string functionName)
+        => new FunctionCallBuilder()
             .WithFunctionName("Test")
-            .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionParseResultBuilder().WithFunctionName(functionName)))
+            .AddArguments(new RecursiveArgumentBuilder().WithFunction(new FunctionCallBuilder().WithFunctionName(functionName)))
             .Build();
 }

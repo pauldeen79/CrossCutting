@@ -162,8 +162,8 @@ public sealed class FunctionParserTests : IDisposable
         result.Value!.FunctionName.Should().Be("MYFUNCTION");
         result.Value!.Arguments.Should().HaveCount(3);
         result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b");
-        result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.FunctionName).Should().BeEquivalentTo("MYNESTEDFUNCTION");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("c", "d", "e");
+        result.Value.Arguments.OfType<RecursiveArgument>().Select(x => x.Function.FunctionName).Should().BeEquivalentTo("MYNESTEDFUNCTION");
+        result.Value.Arguments.OfType<RecursiveArgument>().SelectMany(x => x.Function.Arguments).OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("c", "d", "e");
     }
 
     [Fact]
@@ -180,14 +180,14 @@ public sealed class FunctionParserTests : IDisposable
         result.Value!.FunctionName.Should().Be("MYFUNCTION");
         result.Value!.Arguments.Should().HaveCount(3);
         result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b");
-        result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.FunctionName).Should().BeEquivalentTo("MYNESTEDFUNCTION");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Should().HaveCount(3);
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Should().AllBeOfType<FunctionArgument>();
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().Select(x => x.Function.FunctionName).Should().BeEquivalentTo("SUB1", "SUB1", "SUB1");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(LiteralArgument), nameof(LiteralArgument), nameof(FunctionArgument));
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.FunctionName.Should().Be("SUB2");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(LiteralArgument));
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.OfType<LiteralArgument>().First().Value.Should().Be("e");
+        result.Value.Arguments.OfType<RecursiveArgument>().Select(x => x.Function.FunctionName).Should().BeEquivalentTo("MYNESTEDFUNCTION");
+        result.Value.Arguments.OfType<RecursiveArgument>().SelectMany(x => x.Function.Arguments).Should().HaveCount(3);
+        result.Value.Arguments.OfType<RecursiveArgument>().SelectMany(x => x.Function.Arguments).Should().AllBeOfType<RecursiveArgument>();
+        result.Value.Arguments.OfType<RecursiveArgument>().SelectMany(x => x.Function.Arguments).OfType<RecursiveArgument>().Select(x => x.Function.FunctionName).Should().BeEquivalentTo("SUB1", "SUB1", "SUB1");
+        result.Value.Arguments.OfType<RecursiveArgument>().SelectMany(x => x.Function.Arguments).OfType<RecursiveArgument>().SelectMany(x => x.Function.Arguments).Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(LiteralArgument), nameof(LiteralArgument), nameof(RecursiveArgument));
+        result.Value.Arguments.OfType<RecursiveArgument>().SelectMany(x => x.Function.Arguments).OfType<RecursiveArgument>().SelectMany(x => x.Function.Arguments).OfType<RecursiveArgument>().First().Function.FunctionName.Should().Be("SUB2");
+        result.Value.Arguments.OfType<RecursiveArgument>().SelectMany(x => x.Function.Arguments).OfType<RecursiveArgument>().SelectMany(x => x.Function.Arguments).OfType<RecursiveArgument>().First().Function.Arguments.Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(LiteralArgument));
+        result.Value.Arguments.OfType<RecursiveArgument>().SelectMany(x => x.Function.Arguments).OfType<RecursiveArgument>().SelectMany(x => x.Function.Arguments).OfType<RecursiveArgument>().First().Function.Arguments.OfType<LiteralArgument>().First().Value.Should().Be("e");
     }
 
     [Fact]
@@ -402,8 +402,8 @@ public sealed class FunctionParserTests : IDisposable
     {
         public int Order => 1;
 
-        public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
-            => Result.Error<FunctionParseResultArgument>("Kaboom");
+        public Result<FunctionCallArgument> Process(string stringArgument, IReadOnlyCollection<FunctionCall> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+            => Result.Error<FunctionCallArgument>("Kaboom");
     }
 
     private sealed class ErrorNameProcessor : IFunctionParserNameProcessor

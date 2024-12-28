@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public partial record FunctionParseResult
+public partial record FunctionCall
 {
     public Result<object?> GetArgumentValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
         => index + 1 > Arguments.Count

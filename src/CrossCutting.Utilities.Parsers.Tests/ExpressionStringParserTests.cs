@@ -733,15 +733,15 @@ public class ExpressionStringParserTests : IDisposable
         {
             // Arrange
             var functionResultParserMock = Substitute.For<IFunctionResultParser>();
-            functionResultParserMock.Parse(Arg.Any<FunctionParseResult>(), Arg.Any<object?>(), Arg.Any<IFunctionParseResultEvaluator>(), Arg.Any<IExpressionParser>())
+            functionResultParserMock.Parse(Arg.Any<FunctionCall>(), Arg.Any<object?>(), Arg.Any<IFunctionParseResultEvaluator>(), Arg.Any<IExpressionParser>())
                 .Returns(x =>
                 {
-                    if (x.ArgAt<FunctionParseResult>(0).FunctionName != "ToUpperCase")
+                    if (x.ArgAt<FunctionCall>(0).FunctionName != "ToUpperCase")
                     {
                         return Result.Continue<object?>();
                     }
 
-                    return Result.Success<object?>(x.ArgAt<FunctionParseResult>(0).GetArgumentStringValueResult(0, "expression", x.ArgAt<object?>(1), x.ArgAt<IFunctionParseResultEvaluator>(2), x.ArgAt<IExpressionParser>(3)).GetValueOrThrow().ToUpperInvariant());
+                    return Result.Success<object?>(x.ArgAt<FunctionCall>(0).GetArgumentStringValueResult(0, "expression", x.ArgAt<object?>(1), x.ArgAt<IFunctionParseResultEvaluator>(2), x.ArgAt<IExpressionParser>(3)).GetValueOrThrow().ToUpperInvariant());
                 });
             using var provider = new ServiceCollection()
                 .AddParsers()
@@ -775,7 +775,7 @@ public class ExpressionStringParserTests : IDisposable
 
     private sealed class MyFunctionResultParser : IFunctionResultParser
     {
-        public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Parse(FunctionCall functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
         {
             if (functionParseResult.FunctionName == "error")
             {

@@ -594,7 +594,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private sealed class MyFunctionResultParser : IFunctionResultParser
     {
-        public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Parse(FunctionCall functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
         {
             if (functionParseResult.FunctionName != "MyFunction")
             {
@@ -607,7 +607,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private sealed class ToUpperCaseResultParser : IFunctionResultParser
     {
-        public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Parse(FunctionCall functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
         {
             if (functionParseResult.FunctionName != "ToUpperCase")
             {

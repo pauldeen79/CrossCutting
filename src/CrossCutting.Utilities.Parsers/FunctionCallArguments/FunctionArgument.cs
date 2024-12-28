@@ -1,6 +1,6 @@
-﻿namespace CrossCutting.Utilities.Parsers.FunctionParseResultArguments;
+﻿namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
 
-public partial record FunctionArgument
+public partial record RecursiveArgument
 {
     public override Result<object?> GetValueResult(object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, IFormatProvider formatProvider)
     {

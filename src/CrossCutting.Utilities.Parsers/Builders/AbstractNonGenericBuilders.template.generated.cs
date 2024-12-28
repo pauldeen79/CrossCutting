@@ -10,21 +10,21 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders
 {
-    public abstract partial class FunctionParseResultArgumentBuilder : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class FunctionCallArgumentBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
-        protected FunctionParseResultArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionParseResultArgument source)
+        protected FunctionCallArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgument source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
         }
 
-        protected FunctionParseResultArgumentBuilder()
+        protected FunctionCallArgumentBuilder()
         {
             SetDefaultValues();
         }
 
-        public abstract CrossCutting.Utilities.Parsers.FunctionParseResultArgument Build();
+        public abstract CrossCutting.Utilities.Parsers.FunctionCallArgument Build();
 
         partial void SetDefaultValues();
 

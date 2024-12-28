@@ -56,7 +56,7 @@ namespace CrossCutting.Utilities.Parsers
             return new CrossCutting.Utilities.Parsers.Builders.FormattableStringParserSettingsBuilder(this);
         }
     }
-    public partial record FunctionParseResult
+    public partial record FunctionCall
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -67,7 +67,7 @@ namespace CrossCutting.Utilities.Parsers
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.FunctionParseResultArgument> Arguments
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.FunctionCallArgument> Arguments
         {
             get;
         }
@@ -83,18 +83,18 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        public FunctionParseResult(string functionName, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionParseResultArgument> arguments, System.IFormatProvider formatProvider, object? context)
+        public FunctionCall(string functionName, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionCallArgument> arguments, System.IFormatProvider formatProvider, object? context)
         {
             this.FunctionName = functionName;
-            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionParseResultArgument>(arguments);
+            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionCallArgument>(arguments);
             this.FormatProvider = formatProvider;
             this.Context = context;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionParseResultBuilder ToBuilder()
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.Parsers.Builders.FunctionParseResultBuilder(this);
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder(this);
         }
     }
 }

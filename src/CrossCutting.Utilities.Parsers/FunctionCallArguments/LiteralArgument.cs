@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.FunctionParseResultArguments;
+﻿namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
 
 public partial record LiteralArgument
 {

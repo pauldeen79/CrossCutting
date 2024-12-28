@@ -2,5 +2,5 @@
 
 public interface IFunctionResultParser
 {
-    Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser);
+    Result<object?> Parse(FunctionCall functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser);
 }
