@@ -4,13 +4,13 @@ public class ExpressionStringParser : IExpressionStringParser
 {
     private readonly IFunctionParser _functionParser;
     private readonly IExpressionParser _expressionParser;
-    private readonly IFunctionParseResultEvaluator _evaluator;
+    private readonly IFunctionEvaluator _evaluator;
     private readonly IEnumerable<IExpressionStringParserProcessor> _processors;
 
     public ExpressionStringParser(
         IFunctionParser functionParser,
         IExpressionParser expressionParser,
-        IFunctionParseResultEvaluator evaluator,
+        IFunctionEvaluator evaluator,
         IEnumerable<IExpressionStringParserProcessor> processors)
     {
         ArgumentGuard.IsNotNull(functionParser, nameof(functionParser));

@@ -2,7 +2,7 @@
 
 public sealed class FunctionParseResultTests : IDisposable
 {
-    private readonly IFunctionParseResultEvaluator _evaluatorMock = Substitute.For<IFunctionParseResultEvaluator>();
+    private readonly IFunctionEvaluator _evaluatorMock = Substitute.For<IFunctionEvaluator>();
     private readonly ServiceProvider _provider;
     private readonly IServiceScope _scope;
 

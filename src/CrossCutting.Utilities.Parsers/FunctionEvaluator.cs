@@ -1,6 +1,6 @@
-﻿namespace CrossCutting.Utilities.Parsers.FunctionParseResultEvaluators;
+﻿namespace CrossCutting.Utilities.Parsers;
 
-public class DefaultFunctionParseResultEvaluator(IEnumerable<IFunctionResultParser> functionResultParsers) : IFunctionParseResultEvaluator
+public class FunctionEvaluator(IEnumerable<IFunctionResultParser> functionResultParsers) : IFunctionEvaluator
 {
     private readonly IEnumerable<IFunctionResultParser> _functionResultParsers = functionResultParsers;
 

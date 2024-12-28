@@ -2,86 +2,86 @@
 
 public partial record FunctionCall
 {
-    public Result<object?> GetArgumentValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<object?> GetArgumentValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
         => index + 1 > Arguments.Count
             ? Result.Invalid<object?>($"Missing argument: {argumentName}")
             : Arguments.ElementAt(index).GetValueResult(context, evaluator, parser, FormatProvider);
 
-    public Result<object?> GetArgumentValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, object? defaultValue)
+    public Result<object?> GetArgumentValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser, object? defaultValue)
         => index + 1 > Arguments.Count
             ? Result.Success(defaultValue)
             : Arguments.ElementAt(index).GetValueResult(context, evaluator, parser, FormatProvider);
 
-    public Result<string> GetArgumentStringValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<string> GetArgumentStringValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
         => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
 
-    public Result<string> GetArgumentStringValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, string defaultValue)
+    public Result<string> GetArgumentStringValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser, string defaultValue)
         => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
 
-    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
     {
         parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
 
         return ProcessInt32ArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
     }
 
-    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, int defaultValue)
+    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser, int defaultValue)
     {
         parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
 
         return ProcessInt32ArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
     }
 
-    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
     {
         parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
 
         return ProcessInt64ArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
     }
 
-    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, long defaultValue)
+    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser, long defaultValue)
     {
         parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
 
         return ProcessInt64ArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
     }
 
-    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
     {
         parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
 
         return ProcessDecimalArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
     }
 
-    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, decimal defaultValue)
+    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser, decimal defaultValue)
     {
         parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
 
         return ProcessDecimalArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
     }
 
-    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
     {
         parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
 
         return ProcessBooleanArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
     }
 
-    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, bool defaultValue)
+    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser, bool defaultValue)
     {
         parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
 
         return ProcessBooleanArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser, defaultValue));
     }
 
-    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
     {
         parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
 
         return ProcessDateTimeArgumentResult(argumentName, parser, GetArgumentValueResult(index, argumentName, context, evaluator, parser));
     }
 
-    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, DateTime defaultValue)
+    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, object? context, IFunctionEvaluator evaluator, IExpressionParser parser, DateTime defaultValue)
     {
         parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
 

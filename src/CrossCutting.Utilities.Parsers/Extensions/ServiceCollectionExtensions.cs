@@ -45,7 +45,7 @@ public static class ServiceCollectionExtensions
         .AddScoped<IFunctionParser, FunctionParser>()
         .AddScoped<IFunctionParserNameProcessor, DefaultFunctionParserNameProcessor>()
         .AddScoped<IFunctionParserArgumentProcessor, FormattableStringFunctionParserArgumentProcessor>()
-        .AddScoped<IFunctionParseResultEvaluator, DefaultFunctionParseResultEvaluator>();
+        .AddScoped<IFunctionEvaluator, FunctionEvaluator>();
 
     private static IServiceCollection AddFormattableStringParser(this IServiceCollection services)
         => services

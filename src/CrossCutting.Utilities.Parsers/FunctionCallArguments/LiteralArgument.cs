@@ -2,7 +2,7 @@
 
 public partial record LiteralArgument
 {
-    public override Result<object?> GetValueResult(object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, IFormatProvider formatProvider)
+    public override Result<object?> GetValueResult(object? context, IFunctionEvaluator evaluator, IExpressionParser parser, IFormatProvider formatProvider)
     {
         parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
 

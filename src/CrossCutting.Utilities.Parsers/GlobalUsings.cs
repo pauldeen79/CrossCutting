@@ -19,7 +19,6 @@ global using CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
 global using CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors.Operators;
 global using CrossCutting.Utilities.Parsers.FunctionParserArgumentProcessors;
 global using CrossCutting.Utilities.Parsers.FunctionCallArguments;
-global using CrossCutting.Utilities.Parsers.FunctionParseResultEvaluators;
 global using CrossCutting.Utilities.Parsers.FunctionParserNameProcessors;
 global using CrossCutting.Utilities.Parsers.InsertQueryParser.Abstractions;
 global using CrossCutting.Utilities.Parsers.InsertQueryParser.Processors;

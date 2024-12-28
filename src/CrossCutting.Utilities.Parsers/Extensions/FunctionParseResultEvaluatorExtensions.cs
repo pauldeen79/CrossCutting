@@ -2,6 +2,6 @@
 
 public static class FunctionParseResultEvaluatorExtensions
 {
-    public static Result<object?> Evaluate(this IFunctionParseResultEvaluator instance, FunctionCall functionResult, IExpressionParser parser)
+    public static Result<object?> Evaluate(this IFunctionEvaluator instance, FunctionCall functionResult, IExpressionParser parser)
         => instance.Evaluate(functionResult, parser, null);
 }

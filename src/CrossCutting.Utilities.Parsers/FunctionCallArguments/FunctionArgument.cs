@@ -2,7 +2,7 @@
 
 public partial record RecursiveArgument
 {
-    public override Result<object?> GetValueResult(object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, IFormatProvider formatProvider)
+    public override Result<object?> GetValueResult(object? context, IFunctionEvaluator evaluator, IExpressionParser parser, IFormatProvider formatProvider)
     {
         evaluator = ArgumentGuard.IsNotNull(evaluator, nameof(evaluator));
 
