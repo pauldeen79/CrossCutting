@@ -17,17 +17,17 @@ public class FormattableStringParser : IFormattableStringParser
     {
         settings = settings.IsNotNull(nameof(settings));
 
-        return ParseRecursive(input, settings, context, false, 0);
+        return ProcessRecursive(input, settings, context, false, 0);
     }
 
     public Result Validate(string input, FormattableStringParserSettings settings, object? context)
     {
         settings = settings.IsNotNull(nameof(settings));
 
-        return ParseRecursive(input, settings, context, true, 0);
+        return ProcessRecursive(input, settings, context, true, 0);
     }
 
-    private Result<FormattableStringParserResult> ParseRecursive(string input, FormattableStringParserSettings settings, object? context, bool validateOnly, int currentRecursionLevel)
+    private Result<FormattableStringParserResult> ProcessRecursive(string input, FormattableStringParserSettings settings, object? context, bool validateOnly, int currentRecursionLevel)
     {
         if (string.IsNullOrEmpty(input))
         {
@@ -59,9 +59,9 @@ public class FormattableStringParser : IFormattableStringParser
             var placeholder = remainder.Substring(openIndex + settings.PlaceholderStart.Length, closeIndex - openIndex - settings.PlaceholderStart.Length);
             var found = $"{settings.PlaceholderStart}{placeholder}{settings.PlaceholderEnd}";
             remainder = remainder.Replace(found, $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}");
-            var placeholderResult = PerformAction(settings, context, validateOnly, placeholder);
+            var placeholderResult = ProcessOnProcessors(settings, context, validateOnly, placeholder);
 
-            placeholderResult = CombineResults(placeholderResult, validateOnly, () => ProcessRecurse(input, settings, context, placeholderResult, validateOnly, currentRecursionLevel + 1));
+            placeholderResult = CombineResults(placeholderResult, validateOnly, () => ProcessRecursive(input, settings, context, placeholderResult, validateOnly, currentRecursionLevel + 1));
             if (!placeholderResult.IsSuccessful() && !validateOnly)
             {
                 return placeholderResult;
@@ -94,16 +94,7 @@ public class FormattableStringParser : IFormattableStringParser
         return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
     }
 
-    private Result<FormattableStringParserResult> PerformAction(FormattableStringParserSettings settings, object? context, bool validateOnly, string placeholder)
-        => _processors
-            .OrderBy(x => x.Order)
-            .Select(processor => validateOnly
-                ? processor.Validate(placeholder, settings.FormatProvider, context, this)
-                : processor.Process(placeholder, settings.FormatProvider, context, this))
-            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
-
-    private Result<FormattableStringParserResult> ProcessRecurse(string input, FormattableStringParserSettings settings, object? context, Result<FormattableStringParserResult> placeholderResult, bool validateOnly, int currentRecursionLevel)
+    private Result<FormattableStringParserResult> ProcessRecursive(string input, FormattableStringParserSettings settings, object? context, Result<FormattableStringParserResult> placeholderResult, bool validateOnly, int currentRecursionLevel)
     {
         if (placeholderResult.Value?.Format == "{0}"
             && placeholderResult.Value.ArgumentCount == 1
@@ -115,11 +106,20 @@ public class FormattableStringParser : IFormattableStringParser
                 return Result.Error<FormattableStringParserResult>($"Maximum of {settings.MaximumRecursion} recursions is reached");
             }
 
-            placeholderResult = ParseRecursive(placeholderResultValue, settings, context, validateOnly, currentRecursionLevel);
+            placeholderResult = ProcessRecursive(placeholderResultValue, settings, context, validateOnly, currentRecursionLevel);
         }
 
         return placeholderResult;
     }
+
+    private Result<FormattableStringParserResult> ProcessOnProcessors(FormattableStringParserSettings settings, object? context, bool validateOnly, string placeholder)
+        => _processors
+            .OrderBy(x => x.Order)
+            .Select(processor => validateOnly
+                ? processor.Validate(placeholder, settings.FormatProvider, context, this)
+                : processor.Process(placeholder, settings.FormatProvider, context, this))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
 
     private static string ReplaceTemporaryDelimiters(string remainder, List<Result<FormattableStringParserResult>> results)
     {
