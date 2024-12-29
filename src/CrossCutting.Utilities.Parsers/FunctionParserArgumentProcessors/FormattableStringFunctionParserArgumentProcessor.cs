@@ -6,7 +6,7 @@ public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserA
 
     public Result<FunctionCallArgument> Process(string stringArgument, IReadOnlyCollection<FunctionCall> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
-        //TODO: Reiew this path
+        //TODO: Review this path
         if (stringArgument is null)
         {
             return Result.Invalid<FunctionCallArgument>("Argument is empty");
@@ -25,7 +25,7 @@ public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserA
 
     public Result Validate(string stringArgument, IReadOnlyCollection<FunctionCall> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
-        //TODO: Reiew this path
+        //TODO: Review this path
         if (stringArgument is null)
         {
             return Result.Invalid("Argument is empty");

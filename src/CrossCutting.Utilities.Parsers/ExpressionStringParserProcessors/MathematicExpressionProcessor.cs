@@ -26,7 +26,6 @@ public class MathematicExpressionProcessor(IMathematicExpressionParser parser) :
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        //TODO: Implement Validate on IMathematicExpressionParser as well
         // try =1+1 -> mathematic expression, no functions/formattable strings
         var mathResult = _parser.Parse(state.Input.Substring(1), state.FormatProvider, state.Context);
         if (mathResult.Status is ResultStatus.Ok or not ResultStatus.NotFound)

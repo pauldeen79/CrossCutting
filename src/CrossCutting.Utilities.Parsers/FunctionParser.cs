@@ -77,12 +77,6 @@ public class FunctionParser : IFunctionParser
             : Result.NotFound<FunctionCall>("Input has additional characters after last close bracket");
     }
 
-    public Result Validate(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
-    {
-        //TODO: Review if we can use validation here as well. For now, we just parse everything, and return the result.
-        return Parse(input, formatProvider, context, formattableStringParser);
-    }
-
     private static string RemoveStringQualifiers(string value)
     {
         if (value.StartsWith("\"") && value.EndsWith("\""))

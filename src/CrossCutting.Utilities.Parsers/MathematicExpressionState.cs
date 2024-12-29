@@ -14,9 +14,11 @@ public class MathematicExpressionState
     public IReadOnlyCollection<int> PreviousIndexes { get; private set; }
     public string LeftPart { get; private set; }
     public Result<object?> LeftPartResult { get; private set; }
+    public Result LeftPartValidationResult { get; private set; }
     public IReadOnlyCollection<int> NextIndexes { get; private set; }
     public string RightPart { get; private set; }
     public Result<object?> RightPartResult { get; private set; }
+    public Result RightPartValidationResult { get; private set; }
 
     public MathematicExpressionState(
         string input,
@@ -39,9 +41,11 @@ public class MathematicExpressionState
         PreviousIndexes = [];
         LeftPart = string.Empty;
         LeftPartResult = Result.NoContent<object?>();
+        LeftPartValidationResult = Result.NoContent();
         NextIndexes = [];
         RightPart = string.Empty;
         RightPartResult = Result.NoContent<object?>();
+        RightPartValidationResult = Result.NoContent();
     }
 
     internal void SetPosition(IGrouping<int, AggregatorBase> aggregators)
@@ -67,6 +71,20 @@ public class MathematicExpressionState
         NextIndexes = aggregatorPositions;
         RightPart = GetRightPart();
         RightPartResult = GetPartResult(RightPart, expressionParser);
+    }
+
+    internal void SetPreviousIndexesForValidation(int[] aggregatorPositions, IExpressionParser expressionParser)
+    {
+        PreviousIndexes = aggregatorPositions;
+        LeftPart = GetLeftPart();
+        LeftPartValidationResult = GetPartValidationResult(LeftPart, expressionParser);
+    }
+
+    internal void SetNextIndexesForValidation(int[] aggregatorPositions, IExpressionParser expressionParser)
+    {
+        NextIndexes = aggregatorPositions;
+        RightPart = GetRightPart();
+        RightPartValidationResult = GetPartValidationResult(RightPart, expressionParser);
     }
 
     internal Result<object?> PerformAggregation()
@@ -114,4 +132,9 @@ public class MathematicExpressionState
         => part.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && part.EndsWith(MathematicExpressionParser.TemporaryDelimiter)
             ? Results.ElementAt(int.Parse(part.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture))
             : expressionParser.Parse(part, FormatProvider, Context);
+
+    private Result GetPartValidationResult(string part, IExpressionParser expressionParser)
+        => part.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && part.EndsWith(MathematicExpressionParser.TemporaryDelimiter)
+            ? Results.ElementAt(int.Parse(part.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture))
+            : expressionParser.Validate(part, FormatProvider, Context);
 }
