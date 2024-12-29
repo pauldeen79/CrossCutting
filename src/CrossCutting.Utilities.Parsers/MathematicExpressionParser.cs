@@ -30,8 +30,6 @@ public class MathematicExpressionParser : IMathematicExpressionParser
             return Result.Invalid<object?>("Input is required");
         }
 
-        formatProvider = formatProvider ?? CultureInfo.InvariantCulture;
-
         var state = new MathematicExpressionState(input, formatProvider, context, Parse);
         var error = _processors
             .Select(x => x.Process(state))
@@ -57,8 +55,6 @@ public class MathematicExpressionParser : IMathematicExpressionParser
         {
             return Result.Invalid("Input is required");
         }
-
-        formatProvider = formatProvider ?? CultureInfo.InvariantCulture;
 
         var state = new MathematicExpressionState(input, formatProvider, context, Parse);
         var error = _processors

@@ -28,8 +28,6 @@ public class NumericExpressionParserProcessor : IExpressionParserProcessor
             return Result.Continue<object?>();
         }
 
-        formatProvider = formatProvider ?? CultureInfo.CurrentCulture;
-
         if (isWholeNumber.Value && int.TryParse(value, NumberStyles.AllowDecimalPoint, formatProvider, out var i))
         {
             return Result.Success<object?>(i);
@@ -75,8 +73,6 @@ public class NumericExpressionParserProcessor : IExpressionParserProcessor
         {
             return Result.Continue();
         }
-
-        formatProvider = formatProvider ?? CultureInfo.CurrentCulture;
 
         if (isWholeNumber.Value && int.TryParse(value, NumberStyles.AllowDecimalPoint, formatProvider, out _))
         {

@@ -18,8 +18,6 @@ public class ExpressionParser : IExpressionParser
             return Result.Invalid<object?>("Value is required");
         }
 
-        formatProvider = formatProvider ?? CultureInfo.CurrentCulture;
-
         return _processors
             .OrderBy(x => x.Order)
             .Select(x => x.Parse(value, formatProvider, context))
@@ -33,8 +31,6 @@ public class ExpressionParser : IExpressionParser
         {
             return Result.Invalid("Value is required");
         }
-
-        formatProvider = formatProvider ?? CultureInfo.CurrentCulture;
 
         return _processors
             .OrderBy(x => x.Order)

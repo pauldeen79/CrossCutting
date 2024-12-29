@@ -31,8 +31,6 @@ public class ExpressionStringParser : IExpressionStringParser
             return Result.Invalid<object?>("Input is required");
         }
 
-        formatProvider = formatProvider ?? CultureInfo.CurrentCulture;
-
         var state = new ExpressionStringParserState(input, formatProvider, context, this, formattableStringParser);
 
         return _processors
@@ -48,8 +46,6 @@ public class ExpressionStringParser : IExpressionStringParser
         {
             return Result.Invalid("Input is required");
         }
-
-        formatProvider = formatProvider ?? CultureInfo.CurrentCulture;
 
         var state = new ExpressionStringParserState(input, formatProvider, context, this, formattableStringParser);
 
