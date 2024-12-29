@@ -67,13 +67,13 @@ public class FormattableStringParser : IFormattableStringParser
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                     ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
 
-            if (!placeholderResult.IsSuccessful())
+            if (!placeholderResult.IsSuccessful() && !validateOnly)
             {
                 return placeholderResult;
             }
 
             placeholderResult = ProcessRecurse(input, settings, context, placeholderResult, validateOnly, currentRecursionLevel + 1);
-            if (!placeholderResult.IsSuccessful())
+            if (!placeholderResult.IsSuccessful() && !validateOnly)
             {
                 return placeholderResult;
             }
@@ -98,6 +98,11 @@ public class FormattableStringParser : IFormattableStringParser
         for (var i = 0; i < results.Count; i++)
         {
             remainder = remainder.Replace($"{TemporaryDelimiter}{i}{TemporaryDelimiter}", $"{{{i}}}");
+        }
+
+        if (validateOnly)
+        {
+            return Result.Aggregate<FormattableStringParserResult>(results, Result.Success<FormattableStringParserResult>(new FormattableStringParserResult(string.Empty, [])), validationResults => Result.Invalid<FormattableStringParserResult>("Validation failed, see inner results for details", validationResults));
         }
 
         return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
