@@ -29,18 +29,11 @@ public class PipedExpressionProcessor : IExpressionStringParserProcessor
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        return BaseProcessor.SplitDelimited(state, '|', split =>
-        {
-            foreach (var item in split)
-            {
-                var result = state.Parser.Validate($"={item}", state.FormatProvider, state.Context, state.FormattableStringParser);
-                if (!result.IsSuccessful())
-                {
-                    return result;
-                }
-            }
-
-            return Result.Success();
-        });
+        return BaseProcessor.SplitDelimited
+        (
+            state,
+            '|',
+            split => Result.Aggregate(split.Select(item => state.Parser.Validate($"={item}", state.FormatProvider, state.Context, state.FormattableStringParser)), Result.Success(), validationResults => Result.Invalid("Validation failed, see inner results for details", validationResults))
+        );
     }
 }
