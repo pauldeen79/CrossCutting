@@ -61,9 +61,7 @@ public class FormattableStringParser : IFormattableStringParser
             remainder = remainder.Replace(found, $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}");
             var placeholderResult = _processors
                 .OrderBy(x => x.Order)
-                .Select(x => validateOnly
-                    ? x.Validate(placeholder, settings.FormatProvider, context, this)
-                    : x.Process(placeholder, settings.FormatProvider, context, this))
+                .Select(processor => ExecuteAction(settings, context, validateOnly, processor, placeholder))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                     ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
 
@@ -79,7 +77,7 @@ public class FormattableStringParser : IFormattableStringParser
             }
 
             results.Add(placeholderResult);
-        } while (remainder.IndexOf(settings.PlaceholderStart) > -1 || remainder.IndexOf(settings.PlaceholderEnd) > -1);
+        } while (NeedToRepeat(settings, remainder));
 
         if (settings.EscapeBraces)
         {
@@ -95,10 +93,7 @@ public class FormattableStringParser : IFormattableStringParser
         remainder = remainder.Replace("\uE000", start)
                              .Replace("\uE001", end);
 
-        for (var i = 0; i < results.Count; i++)
-        {
-            remainder = remainder.Replace($"{TemporaryDelimiter}{i}{TemporaryDelimiter}", $"{{{i}}}");
-        }
+        remainder = ReplaceTemporaryDelimiters(remainder, results);
 
         if (validateOnly)
         {
@@ -107,6 +102,11 @@ public class FormattableStringParser : IFormattableStringParser
 
         return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
     }
+
+    private Result<FormattableStringParserResult> ExecuteAction(FormattableStringParserSettings settings, object? context, bool validateOnly, IPlaceholderProcessor processor, string placeholder)
+        => validateOnly
+            ? processor.Validate(placeholder, settings.FormatProvider, context, this)
+            : processor.Process(placeholder, settings.FormatProvider, context, this);
 
     private Result<FormattableStringParserResult> ProcessRecurse(string input, FormattableStringParserSettings settings, object? context, Result<FormattableStringParserResult> placeholderResult, bool validateOnly, int currentRecursionLevel)
     {
@@ -125,6 +125,20 @@ public class FormattableStringParser : IFormattableStringParser
 
         return placeholderResult;
     }
+
+    private static string ReplaceTemporaryDelimiters(string remainder, List<Result<FormattableStringParserResult>> results)
+    {
+        for (var i = 0; i < results.Count; i++)
+        {
+            remainder = remainder.Replace($"{TemporaryDelimiter}{i}{TemporaryDelimiter}", $"{{{i}}}");
+        }
+
+        return remainder;
+    }
+
+    private static bool NeedToRepeat(FormattableStringParserSettings settings, string remainder)
+        => remainder.IndexOf(settings.PlaceholderStart) > -1
+        || remainder.IndexOf(settings.PlaceholderEnd) > -1;
 
     private static bool NeedRecurse(string placeholderResultValue, FormattableStringParserSettings settings, string input)
         => placeholderResultValue.Contains(settings.PlaceholderStart)
