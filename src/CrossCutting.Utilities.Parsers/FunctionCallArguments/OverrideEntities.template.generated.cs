@@ -10,6 +10,23 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
+    public partial record EmptyArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
+    {
+        public EmptyArgument() : base()
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder(this);
+        }
+    }
     public partial record LiteralArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
     {
         public string Value

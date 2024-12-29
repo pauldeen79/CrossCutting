@@ -10,6 +10,25 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
+    public partial class EmptyArgumentBuilder : CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder<EmptyArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument>
+    {
+        public EmptyArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+        }
+
+        public EmptyArgumentBuilder() : base()
+        {
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument BuildTyped()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument();
+        }
+
+        partial void SetDefaultValues();
+    }
     public partial class LiteralArgumentBuilder : CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder<LiteralArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.LiteralArgument>
     {
         private string _value;

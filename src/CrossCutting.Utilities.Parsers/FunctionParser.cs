@@ -144,7 +144,9 @@ public class FunctionParser : IFunctionParser
             }
             else
             {
-                arguments.Add(new LiteralArgument(stringArgument));
+                arguments.Add(string.IsNullOrEmpty(stringArgument)
+                    ? new EmptyArgument()
+                    : new LiteralArgument(stringArgument));
             }
         }
 
