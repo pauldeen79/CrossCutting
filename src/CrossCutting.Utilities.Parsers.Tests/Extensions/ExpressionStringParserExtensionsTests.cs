@@ -37,4 +37,34 @@ public class ExpressionStringParserExtensionsTests
         // Assert
         SutMock.Received().Parse(Input, FormatProvider, Context, null);
     }
+
+    [Fact]
+    public void Validate_Without_Context_And_FormattableStringParser_Gets_Processed_Correctly()
+    {
+        // Act
+        _ = SutMock.Validate(Input, FormatProvider);
+
+        // Assert
+        SutMock.Received().Validate(Input, FormatProvider, null, null);
+    }
+
+    [Fact]
+    public void Validate_Without_Context_Gets_Processed_Correctly()
+    {
+        // Act
+        _ = SutMock.Validate(Input, FormatProvider, FormattableStringParserMock);
+
+        // Assert
+        SutMock.Received().Validate(Input, FormatProvider, null, FormattableStringParserMock);
+    }
+
+    [Fact]
+    public void Validate_Without_FormattableStringParser_Gets_Processed_Correctly()
+    {
+        // Act
+        _ = SutMock.Validate(Input, FormatProvider, Context);
+
+        // Assert
+        SutMock.Received().Validate(Input, FormatProvider, Context, null);
+    }
 }

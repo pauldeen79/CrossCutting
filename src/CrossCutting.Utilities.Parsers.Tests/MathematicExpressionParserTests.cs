@@ -393,6 +393,85 @@ public sealed class MathematicExpressionParserTests : IDisposable
     }
 
     [Fact]
+    public void Can_Validate_Add_One_And_One_Using_Int64()
+    {
+        // Arrange
+        var input = "1 + 1";
+
+        // Act
+        var result = CreateSut(ParseExpressionDelegateInt64).Validate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Validate_One_And_One_Using_Decimal()
+    {
+        // Arrange
+        var input = "3.5 + 3.6";
+
+        // Act
+        var result = CreateSut(ParseExpressionDelegateDecimal).Validate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Validate_One_And_One_Using_Single()
+    {
+        // Arrange
+        var input = "1.4 + 1.3";
+
+        // Act
+        var result = CreateSut(ParseExpressionDelegateSingle).Validate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Validate_One_And_One_Using_Double()
+    {
+        // Arrange
+        var input = "1.7 + 1.4";
+
+        // Act
+        var result = CreateSut(ParseExpressionDelegateDouble).Validate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Validate_One_And_One_Using_Byte()
+    {
+        // Arrange
+        var input = "1 + 1";
+
+        // Act
+        var result = CreateSut(ParseExpressionDelegateByte).Validate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+
+    }
+
+    [Fact]
+    public void Can_Validate_One_And_One_Using_Short()
+    {
+        // Arrange
+        var input = "1 + 1";
+
+        // Act
+        var result = CreateSut(ParseExpressionDelegateInt16).Validate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
     public void Handles_Order_Correctly()
     {
         // Arrange
@@ -528,6 +607,6 @@ public sealed class MathematicExpressionParserTests : IDisposable
             => _dlg.Invoke(value, formatProvider);
 
         public Result Validate(string value, IFormatProvider formatProvider, object? context)
-            => Result.NotImplemented();
+            => Result.Success();
     }
 }
