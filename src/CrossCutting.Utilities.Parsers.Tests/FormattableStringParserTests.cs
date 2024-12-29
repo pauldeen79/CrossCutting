@@ -145,6 +145,143 @@ public sealed class FormattableStringParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.ToString().Should().Be(expectedValue);
     }
+    [Fact]
+    public void Validate_Returns_Success_On_Null_Input()
+    {
+        // Arrange
+        var input = default(string?);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input!, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Validate_Returns_Success_On_Empty_Input()
+    {
+        // Arrange
+        var input = string.Empty;
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input!, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Validate_Throws_On_Null_Settings()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act & Assert
+        sut.Invoking(x => x.Validate("some input", settings: null!))
+           .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+    }
+
+    [Fact]
+    public void Validate_Returns_Success_When_Using_Nested_Open_Signs()
+    {
+        // Arrange
+        var input = "Hello {Name {nested}} you are welcome";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Validate_Returns_Invalid_When_Open_Sign_Is_Missing()
+    {
+        // Arrange
+        var input = "}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
+    [Fact]
+    public void Validate_Returns_Invalid_When_Variable_Is_Unknown()
+    {
+        // Arrange
+        var input = "{$unknownVariable}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Validation failed, see inner results for details");
+        result.InnerResults.Single().ErrorMessage.Should().Be("Unknown variable found: unknownVariable");
+    }
+
+    [Fact]
+    public void Validate_Returns_Success_When_Close_Sign_Is_Missing()
+    {
+        // Arrange
+        var input = "{";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Validate_Returns_Invalid_When_Not_Successful()
+    {
+        // Arrange
+        var input = "{Unsupported placeholder}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Validation failed, see inner results for details");
+        result.InnerResults.Single().ErrorMessage.Should().Be("Unsupported placeholder name: Unsupported placeholder");
+    }
+
+    [Theory,
+        InlineData("Hello {Name}!"),
+        InlineData("Hello {Context}!"),
+        InlineData("Hello {{Name}}!"),
+        InlineData("Data without accolades"),
+        InlineData("public class Bla {{ /* implementation goes here */ }}"),
+        InlineData("public class Bla {{ {Name} }}")]
+    public void Validate_Returns_Success_On_Valid_Input(string input)
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input, CultureInfo.InvariantCulture, "[value from context]");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
 
     [Fact]
     public void Parse_Works_With_MultiLine_Template()
@@ -343,6 +480,38 @@ public sealed class FormattableStringParserTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
         result.ErrorMessage.Should().Be("Unknown placeholder in value: Unknown placeholder");
+    }
+
+    [Fact]
+    public void Validate_Works_With_Placeholder_That_Returns_Another_Placeholder()
+    {
+        // Arrange
+        const string Input = "Hello {ReplaceWithPlaceholder}!";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(Input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Validate_Returns_Invalid_On_Unknown_Placeholder()
+    {
+        // Arrange
+        const string Input = "{Unknown placeholder}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(Input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Validation failed, see inner results for details");
+        result.InnerResults.Single().ErrorMessage.Should().Be("Unknown placeholder in value: Unknown placeholder");
     }
 
     [Fact]
