@@ -59,18 +59,9 @@ public class FormattableStringParser : IFormattableStringParser
             var placeholder = remainder.Substring(openIndex + settings.PlaceholderStart.Length, closeIndex - openIndex - settings.PlaceholderStart.Length);
             var found = $"{settings.PlaceholderStart}{placeholder}{settings.PlaceholderEnd}";
             remainder = remainder.Replace(found, $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}");
-            var placeholderResult = _processors
-                .OrderBy(x => x.Order)
-                .Select(processor => ExecuteAction(settings, context, validateOnly, processor, placeholder))
-                .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                    ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
+            var placeholderResult = PerformAction(settings, context, validateOnly, placeholder);
 
-            if (!placeholderResult.IsSuccessful() && !validateOnly)
-            {
-                return placeholderResult;
-            }
-
-            placeholderResult = ProcessRecurse(input, settings, context, placeholderResult, validateOnly, currentRecursionLevel + 1);
+            placeholderResult = CombineResults(placeholderResult, validateOnly, () => ProcessRecurse(input, settings, context, placeholderResult, validateOnly, currentRecursionLevel + 1));
             if (!placeholderResult.IsSuccessful() && !validateOnly)
             {
                 return placeholderResult;
@@ -103,10 +94,14 @@ public class FormattableStringParser : IFormattableStringParser
         return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
     }
 
-    private Result<FormattableStringParserResult> ExecuteAction(FormattableStringParserSettings settings, object? context, bool validateOnly, IPlaceholderProcessor processor, string placeholder)
-        => validateOnly
-            ? processor.Validate(placeholder, settings.FormatProvider, context, this)
-            : processor.Process(placeholder, settings.FormatProvider, context, this);
+    private Result<FormattableStringParserResult> PerformAction(FormattableStringParserSettings settings, object? context, bool validateOnly, string placeholder)
+        => _processors
+            .OrderBy(x => x.Order)
+            .Select(processor => validateOnly
+                ? processor.Validate(placeholder, settings.FormatProvider, context, this)
+                : processor.Process(placeholder, settings.FormatProvider, context, this))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
 
     private Result<FormattableStringParserResult> ProcessRecurse(string input, FormattableStringParserSettings settings, object? context, Result<FormattableStringParserResult> placeholderResult, bool validateOnly, int currentRecursionLevel)
     {
@@ -134,6 +129,16 @@ public class FormattableStringParser : IFormattableStringParser
         }
 
         return remainder;
+    }
+
+    private static Result<FormattableStringParserResult> CombineResults(Result<FormattableStringParserResult> placeholderResult, bool validateOnly, Func<Result<FormattableStringParserResult>> dlg)
+    {
+        if (!placeholderResult.IsSuccessful() && !validateOnly)
+        {
+            return placeholderResult;
+        }
+
+        return dlg();
     }
 
     private static bool NeedToRepeat(FormattableStringParserSettings settings, string remainder)
