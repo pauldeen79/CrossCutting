@@ -24,7 +24,7 @@ public class FunctionParser : IFunctionParser
 
         if (string.IsNullOrEmpty(input))
         {
-            return Result.NotFound<FunctionCall>("Input cannot be null or empty");
+            return Result.NotFound<FunctionCall>("No function found");
         }
 
         if (input.Contains(TemporaryDelimiter))
@@ -75,6 +75,12 @@ public class FunctionParser : IFunctionParser
         return remainder.EndsWith(TemporaryDelimiter)
             ? Result.Success(results[results.Count - 1])
             : Result.NotFound<FunctionCall>("Input has additional characters after last close bracket");
+    }
+
+    public Result Validate(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    {
+        //TODO: Review if we can use validation here as well. For now, we just parse everything, and return the result.
+        return Parse(input, formatProvider, context, formattableStringParser);
     }
 
     private static string RemoveStringQualifiers(string value)

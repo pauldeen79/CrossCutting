@@ -15,4 +15,16 @@ public class OnlyEqualsExpressionProcessor : IExpressionStringParserProcessor
 
         return Result.Continue<object?>();
     }
+
+    public Result Validate(ExpressionStringParserState state)
+    {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
+        if (state.Input == "=")
+        {
+            return Result.Success();
+        }
+
+        return Result.Continue();
+    }
 }

@@ -23,4 +23,24 @@ public class FormattableStringExpressionProcessor : IExpressionStringParserProce
 
         return Result.Continue<object?>();
     }
+
+    public Result Validate(ExpressionStringParserState state)
+    {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
+        if (state.Input.StartsWith("=@\"") && state.Input.EndsWith("\""))
+        {
+            // =@"string value" -> literal, no functions but formattable strings possible
+            return state.FormattableStringParser is not null
+                ? state.FormattableStringParser.Validate(state.Input.Substring(3, state.Input.Length - 4), new FormattableStringParserSettingsBuilder().WithFormatProvider(state.FormatProvider).Build(), state.Context)
+                : Result.Success();
+        }
+        else if (state.Input.StartsWith("=\"") && state.Input.EndsWith("\""))
+        {
+            // ="string value" -> literal, no functions and no formattable strings possible
+            return Result.Success();
+        }
+
+        return Result.Continue();
+    }
 }

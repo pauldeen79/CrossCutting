@@ -709,7 +709,7 @@ public class ExpressionStringParserTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Unknown function found: MYFUNCTION");
+            result.ErrorMessage.Should().Be("Unknown function call: MYFUNCTION");
         }
 
         [Fact]
@@ -771,6 +771,11 @@ public class ExpressionStringParserTests : IDisposable
             => value == "Name"
                 ? Result.Success(new FormattableStringParserResult(ReplacedValue))
                 : Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}");
+
+        public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+            => value == "Name"
+                ? Result.Success()
+                : Result.Error($"Unsupported placeholder name: {value}");
     }
 
     private sealed class MyFunctionResultParser : IFunctionResultParser
@@ -793,6 +798,17 @@ public class ExpressionStringParserTests : IDisposable
             }
 
             return Result.Success<object?>($"result of {functionCall.FunctionName} function");
+        }
+
+        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        {
+            if (!functionCall.FunctionName.In("error", "ToUpper"))
+            {
+                return Result.Continue();
+            }
+
+            // Aparently, this function does not care about the given arguments
+            return Result.Success();
         }
     }
 

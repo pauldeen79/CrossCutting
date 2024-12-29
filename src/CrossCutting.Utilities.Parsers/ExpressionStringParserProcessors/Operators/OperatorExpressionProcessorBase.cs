@@ -35,5 +35,35 @@ public abstract class OperatorExpressionProcessorBase : IExpressionStringParserP
         return Result.FromExistingResult<object?>(PerformOperator(leftResult.Value, rightResult.Value));
     }
 
+    public Result Validate(ExpressionStringParserState state)
+    {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
+        if (state.Input.IndexOf(Sign) == -1)
+        {
+            return Result.Continue();
+        }
+
+        var split = state.Input.Substring(1).SplitDelimited(Sign, '\"', true, true);
+        if (split.Length != 2)
+        {
+            return Result.Continue();
+        }
+
+        var leftResult = state.Parser.Validate($"={split[0]}", state.FormatProvider, state.Context, state.FormattableStringParser);
+        if (!leftResult.IsSuccessful())
+        {
+            return leftResult;
+        }
+
+        var rightResult = state.Parser.Validate($"={split[1]}", state.FormatProvider, state.Context, state.FormattableStringParser);
+        if (!rightResult.IsSuccessful())
+        {
+            return rightResult;
+        }
+
+        return Result.Success();
+    }
+
     protected abstract Result<bool> PerformOperator(object? leftValue, object? rightValue);
 }

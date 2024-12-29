@@ -6,11 +6,27 @@ public class FunctionEvaluator(IEnumerable<IFunctionResultParser> functionResult
 
     public Result<object?> Evaluate(FunctionCall functionCall, IExpressionParser parser, object? context)
     {
-        functionCall = ArgumentGuard.IsNotNull(functionCall, nameof(functionCall));
+        if (functionCall is null)
+        {
+            return Result.Invalid<object?>("Function call is required");
+        }
 
         return _functionResultParsers
             .Select(x => x.Parse(functionCall, context, this, parser))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.NotSupported<object?>($"Unknown function found: {functionCall.FunctionName}");
+                ?? Result.NotSupported<object?>($"Unknown function call: {functionCall.FunctionName}");
+    }
+
+    public Result Validate(FunctionCall functionCall, IExpressionParser parser, object? context)
+    {
+        if (functionCall is null)
+        {
+            return Result.Invalid("Function call is required");
+        }
+
+        return _functionResultParsers
+            .Select(x => x.Validate(functionCall, context, this, parser))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.Invalid($"Unknown function call: {functionCall.FunctionName}");
     }
 }

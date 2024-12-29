@@ -590,6 +590,18 @@ public sealed class FormattableStringParserTests : IDisposable
                 _ => Result.Continue<FormattableStringParserResult>()
             };
         }
+
+        public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        {
+            return value switch
+            {
+                "Name" => Result.Success(),
+                "Context" => Result.Success(),
+                "Unsupported placeholder" => Result.Error($"Unsupported placeholder name: {value}"),
+                "ReplaceWithPlaceholder" => Result.Success(),
+                _ => Result.Continue()
+            };
+        }
     }
 
     private sealed class MyFunctionResultParser : IFunctionResultParser
@@ -602,6 +614,17 @@ public sealed class FormattableStringParserTests : IDisposable
             }
 
             return Result.Success<object?>("function result");
+        }
+
+        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        {
+            if (functionCall.FunctionName != "MyFunction")
+            {
+                return Result.Continue();
+            }
+
+            // Aparently, this function does not care about the given arguments
+            return Result.Success();
         }
     }
 
@@ -621,6 +644,27 @@ public sealed class FormattableStringParserTests : IDisposable
             }
 
             return Result.Success<object?>(valueResult.Value.ToStringWithDefault().ToUpperInvariant());
+        }
+
+        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        {
+            if (functionCall.FunctionName != "MyFunction")
+            {
+                return Result.Continue();
+            }
+
+            if (functionCall.Arguments.Count != 1)
+            {
+                return Result.Invalid("MyFunction requires 1 argument");
+            }
+
+            var valueResult = functionCall.Arguments.First().ValidateValueResult(context, evaluator, parser, functionCall.FormatProvider);
+            if (!valueResult.IsSuccessful())
+            {
+                return valueResult;
+            }
+
+            return Result.Success();
         }
     }
 }

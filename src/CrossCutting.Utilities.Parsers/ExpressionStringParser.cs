@@ -26,8 +26,12 @@ public class ExpressionStringParser : IExpressionStringParser
 
     public Result<object?> Parse(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
-        ArgumentGuard.IsNotNull(input, nameof(input));
-        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+        if (input is null)
+        {
+            return Result.Invalid<object?>("Input is required");
+        }
+
+        formatProvider = formatProvider ?? CultureInfo.CurrentCulture;
 
         var state = new ExpressionStringParserState(input, formatProvider, context, this, formattableStringParser);
 
@@ -36,6 +40,24 @@ public class ExpressionStringParser : IExpressionStringParser
             .Select(x => x.Process(state))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? EvaluateSimpleExpression(state);
+    }
+
+    public Result Validate(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    {
+        if (input is null)
+        {
+            return Result.Invalid("Input is required");
+        }
+
+        formatProvider = formatProvider ?? CultureInfo.CurrentCulture;
+
+        var state = new ExpressionStringParserState(input, formatProvider, context, this, formattableStringParser);
+
+        return _processors
+            .OrderBy(x => x.Order)
+            .Select(x => x.Validate(state))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? ValidateSimpleExpression(state);
     }
 
     private Result<object?> EvaluateSimpleExpression(ExpressionStringParserState state)
@@ -48,5 +70,17 @@ public class ExpressionStringParser : IExpressionStringParser
         }
 
         return _evaluator.Evaluate(functionResult.Value!, _expressionParser, state.Context);
+    }
+
+    private Result ValidateSimpleExpression(ExpressionStringParserState state)
+    {
+        // =something else, we can try function
+        var functionResult = _functionParser.Parse(state.Input.Substring(1), state.FormatProvider, state.Context, state.FormattableStringParser);
+        if (!functionResult.IsSuccessful())
+        {
+            return functionResult;
+        }
+
+        return _evaluator.Validate(functionResult.Value!, _expressionParser, state.Context);
     }
 }

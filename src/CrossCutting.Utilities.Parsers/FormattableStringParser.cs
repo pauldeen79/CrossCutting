@@ -116,4 +116,10 @@ public class FormattableStringParser : IFormattableStringParser
         => placeholderResultValue.Contains(settings.PlaceholderStart)
             && placeholderResultValue.Contains(settings.PlaceholderEnd)
             && placeholderResultValue != input;
+
+    public Result Validate(string input, FormattableStringParserSettings settings, object? context)
+    {
+        //TODO: Review if we can use validation here as well. For now, we just parse everything, and return the result.
+        return Parse(input, settings, context);
+    }
 }

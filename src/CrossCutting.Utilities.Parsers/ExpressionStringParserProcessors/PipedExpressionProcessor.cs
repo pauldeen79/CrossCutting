@@ -24,4 +24,23 @@ public class PipedExpressionProcessor : IExpressionStringParserProcessor
             return Result.Success(resultValue);
         });
     }
+
+    public Result Validate(ExpressionStringParserState state)
+    {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
+        return BaseProcessor.SplitDelimited(state, '|', split =>
+        {
+            foreach (var item in split)
+            {
+                var result = state.Parser.Validate($"={item}", state.FormatProvider, state.Context, state.FormattableStringParser);
+                if (!result.IsSuccessful())
+                {
+                    return result;
+                }
+            }
+
+            return Result.Success();
+        });
+    }
 }

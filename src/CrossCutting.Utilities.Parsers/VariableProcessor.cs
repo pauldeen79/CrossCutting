@@ -23,4 +23,17 @@ public class VariableProcessor : IVariableProcessor
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.NotSupported<object?>($"Unknown variable found: {variableExpression}");
     }
+
+    public Result Validate(string variableExpression, object? context)
+    {
+        if (string.IsNullOrEmpty(variableExpression))
+        {
+            return Result.Invalid("Variable is required");
+        }
+
+        return _variables
+            .Select(x => x.Validate(variableExpression, context))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.Invalid($"Unknown variable found: {variableExpression}");
+    }
 }

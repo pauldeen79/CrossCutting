@@ -274,7 +274,7 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Input cannot be null or empty");
+        result.ErrorMessage.Should().Be("No function found");
     }
 
     [Fact]
@@ -404,6 +404,9 @@ public sealed class FunctionParserTests : IDisposable
 
         public Result<FunctionCallArgument> Process(string stringArgument, IReadOnlyCollection<FunctionCall> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
             => Result.Error<FunctionCallArgument>("Kaboom");
+
+        public Result Validate(string stringArgument, IReadOnlyCollection<FunctionCall> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+            => Result.Error("Kaboom");
     }
 
     private sealed class ErrorNameProcessor : IFunctionParserNameProcessor
@@ -421,5 +424,10 @@ public sealed class FunctionParserTests : IDisposable
             => value == "Name"
                 ? Result.Success<FormattableStringParserResult>(ReplacedValue)
                 : Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}");
+
+        public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+            => value == "Name"
+                ? Result.Success()
+                : Result.Error($"Unsupported placeholder name: {value}");
     }
 }
