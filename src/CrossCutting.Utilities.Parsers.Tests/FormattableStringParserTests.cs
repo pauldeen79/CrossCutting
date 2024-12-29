@@ -419,6 +419,38 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Works_With_ExpressionString_Using_EmptyArgument()
+    {
+        // Arrange
+        const string Input = "Hello {ToUpperCase(,)}!";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(Input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.ToString().Should().Be("Hello !");
+    }
+
+
+    [Fact]
+    public void Validate_Works_With_ExpressionString_Using_EmptyArgument()
+    {
+        // Arrange
+        const string Input = "Hello {ToUpperCase(,)}!";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(Input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
     public void Parse_Works_With_ExpressionString()
     {
         // Arrange
@@ -817,14 +849,14 @@ public sealed class FormattableStringParserTests : IDisposable
 
         public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
         {
-            if (functionCall.FunctionName != "MyFunction")
+            if (functionCall.FunctionName != "ToUpperCase")
             {
                 return Result.Continue();
             }
 
-            if (functionCall.Arguments.Count != 1)
+            if (functionCall.Arguments.Count < 1)
             {
-                return Result.Invalid("MyFunction requires 1 argument");
+                return Result.Invalid("ToUpperCase requires 1 argument");
             }
 
             var valueResult = functionCall.Arguments.First().ValidateValueResult(context, evaluator, parser, functionCall.FormatProvider);
