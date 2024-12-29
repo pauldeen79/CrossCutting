@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.Parsers;
+﻿using CrossCutting.Common.Extensions;
+
+namespace CrossCutting.Utilities.Parsers;
 
 public class FormattableStringParser : IFormattableStringParser
 {
@@ -20,11 +22,18 @@ public class FormattableStringParser : IFormattableStringParser
         return ParseRecursive(input, settings, context, 0);
     }
 
+    public Result Validate(string input, FormattableStringParserSettings settings, object? context)
+    {
+        settings = settings.IsNotNull(nameof(settings));
+
+        return ValidateRecursive(input, settings, context, 0);
+    }
+
     private Result<FormattableStringParserResult> ParseRecursive(string input, FormattableStringParserSettings settings, object? context, int currentRecursionLevel)
     {
         if (string.IsNullOrEmpty(input))
         {
-            return Result.Success(new FormattableStringParserResult(input ?? string.Empty, []));
+            return Result.Success(new FormattableStringParserResult(string.Empty, []));
         }
 
         // Handle escaped markers (e.g., {{ -> {)
@@ -112,14 +121,100 @@ public class FormattableStringParser : IFormattableStringParser
         return placeholderResult;
     }
 
+    private Result<FormattableStringParserResult> ValidateRecursive(string input, FormattableStringParserSettings settings, object? context, int currentRecursionLevel)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return Result.Success(new FormattableStringParserResult(string.Empty, []));
+        }
+
+        // Handle escaped markers (e.g., {{ -> {)
+        var escapedStart = settings.PlaceholderStart + settings.PlaceholderStart;
+        var escapedEnd = settings.PlaceholderEnd + settings.PlaceholderEnd;
+
+        var remainder = input.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
+                             .Replace(escapedEnd, "\uE001");  // Temporarily replace escaped end marker
+
+        var results = new List<Result<FormattableStringParserResult>>();
+        do
+        {
+            var closeIndex = remainder.LastIndexOf(settings.PlaceholderEnd);
+            if (closeIndex == -1)
+            {
+                break;
+            }
+
+            var openIndex = remainder.LastIndexOf(settings.PlaceholderStart);
+            if (openIndex == -1)
+            {
+                return Result.Invalid<FormattableStringParserResult>($"PlaceholderStart sign '{settings.PlaceholderStart}' is missing");
+            }
+
+            var placeholder = remainder.Substring(openIndex + settings.PlaceholderStart.Length, closeIndex - openIndex - settings.PlaceholderStart.Length);
+            var found = $"{settings.PlaceholderStart}{placeholder}{settings.PlaceholderEnd}";
+            remainder = remainder.Replace(found, $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}");
+            var placeholderResult = _processors
+                .OrderBy(x => x.Order)
+                .Select(x => x.Validate(placeholder, settings.FormatProvider, context, this))
+                .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                    ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
+
+            if (!placeholderResult.IsSuccessful())
+            {
+                return placeholderResult;
+            }
+
+            placeholderResult = ValidateRecurse(input, settings, context, placeholderResult, currentRecursionLevel + 1);
+            if (!placeholderResult.IsSuccessful())
+            {
+                return placeholderResult;
+            }
+
+            results.Add(placeholderResult);
+        } while (remainder.IndexOf(settings.PlaceholderStart) > -1 || remainder.IndexOf(settings.PlaceholderEnd) > -1);
+
+        if (settings.EscapeBraces)
+        {
+            // Fix FormatException when using ToString on FormattableStringParserResult
+            remainder = remainder.Replace("{", "{{")
+                                 .Replace("}", "}}");
+        }
+
+        // Restore escaped markers
+        // First, fix invalid format string {bla} to {{bla}} when escaped, else the ToString operation on FormattableStringParserResult fails
+        var start = settings.PlaceholderStart.StartsWith("{") ? settings.PlaceholderStart + settings.PlaceholderStart : settings.PlaceholderStart;
+        var end = settings.PlaceholderEnd.StartsWith("}") ? settings.PlaceholderEnd + settings.PlaceholderEnd : settings.PlaceholderEnd;
+        remainder = remainder.Replace("\uE000", start)
+                             .Replace("\uE001", end);
+
+        for (var i = 0; i < results.Count; i++)
+        {
+            remainder = remainder.Replace($"{TemporaryDelimiter}{i}{TemporaryDelimiter}", $"{{{i}}}");
+        }
+
+        return Result.Success(new FormattableStringParserResult(string.Empty, []));
+    }
+
+    private Result<FormattableStringParserResult> ValidateRecurse(string input, FormattableStringParserSettings settings, object? context, Result<FormattableStringParserResult> placeholderResult, int currentRecursionLevel)
+    {
+        if (placeholderResult.Value?.Format == "{0}"
+            && placeholderResult.Value.ArgumentCount == 1
+            && placeholderResult.Value.GetArgument(0) is string placeholderResultValue
+            && NeedRecurse(placeholderResultValue, settings, input)) //compare with input to prevent infinitive loop
+        {
+            if (currentRecursionLevel >= settings.MaximumRecursion)
+            {
+                return Result.Error<FormattableStringParserResult>($"Maximum of {settings.MaximumRecursion} recursions is reached");
+            }
+
+            placeholderResult = ValidateRecursive(placeholderResultValue, settings, context, currentRecursionLevel);
+        }
+
+        return placeholderResult;
+    }
+
     private static bool NeedRecurse(string placeholderResultValue, FormattableStringParserSettings settings, string input)
         => placeholderResultValue.Contains(settings.PlaceholderStart)
             && placeholderResultValue.Contains(settings.PlaceholderEnd)
             && placeholderResultValue != input;
-
-    public Result Validate(string input, FormattableStringParserSettings settings, object? context)
-    {
-        //TODO: Review if we can use validation here as well. For now, we just parse everything, and return the result.
-        return Parse(input, settings, context);
-    }
 }

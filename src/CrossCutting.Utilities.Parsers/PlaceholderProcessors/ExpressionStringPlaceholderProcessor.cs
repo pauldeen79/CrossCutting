@@ -25,15 +25,17 @@ public class ExpressionStringPlaceholderProcessor : IPlaceholderProcessor
         return Result.FromExistingResult(result, value => new FormattableStringParserResult(value));
     }
 
-    public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<FormattableStringParserResult> Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         var result = _expressionStringParser.Validate($"={value}", formatProvider, context, formattableStringParser);
 
         if (result.Status == ResultStatus.NotFound)
         {
-            return Result.Continue();
+            return Result.Continue<FormattableStringParserResult>();
         }
 
-        return result;
+        return result.IsSuccessful()
+            ? Result.Success(new FormattableStringParserResult(string.Empty, []))
+            : Result.FromExistingResult<FormattableStringParserResult>(result);
     }
 }
