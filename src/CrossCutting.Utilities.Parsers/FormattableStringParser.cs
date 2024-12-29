@@ -102,7 +102,7 @@ public class FormattableStringParser : IFormattableStringParser
 
         if (validateOnly)
         {
-            return Result.Aggregate<FormattableStringParserResult>(results, Result.Success<FormattableStringParserResult>(new FormattableStringParserResult(string.Empty, [])), validationResults => Result.Invalid<FormattableStringParserResult>("Validation failed, see inner results for details", validationResults));
+            return Result.Aggregate(results, Result.Success(new FormattableStringParserResult(string.Empty, [])), validationResults => Result.Invalid<FormattableStringParserResult>("Validation failed, see inner results for details", validationResults));
         }
 
         return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));

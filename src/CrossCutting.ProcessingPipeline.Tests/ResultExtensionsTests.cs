@@ -72,7 +72,7 @@ public class ResultExtensionsTests : TestBase
         public MyBuilder Builder { get; }
     }
 
-    public sealed class MyBuilder(ResultExtensionsTests.Model sourceModel)
+    public sealed class MyBuilder(Model sourceModel)
     {
         [ValidateObject]
         public Model SourceModel { get; } = sourceModel;
