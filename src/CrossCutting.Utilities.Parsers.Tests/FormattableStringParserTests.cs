@@ -873,12 +873,6 @@ public sealed class FormattableStringParserTests : IDisposable
                 return Result.Invalid("ToUpperCase requires 1 argument");
             }
 
-            var valueResult = functionCall.Arguments.First().ValidateValueResult(context, evaluator, parser, functionCall.FormatProvider);
-            if (!valueResult.IsSuccessful())
-            {
-                return valueResult;
-            }
-
             return Result.Success();
         }
     }
