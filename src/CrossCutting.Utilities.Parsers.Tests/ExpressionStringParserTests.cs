@@ -37,6 +37,20 @@ public class ExpressionStringParserTests : IDisposable
         }
 
         [Fact]
+        public void Returns_Invali_On_Null_String()
+        {
+            // Arrange
+            var input = default(string);
+
+            // Act
+            var result = CreateSut().Parse(input!, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Input is required");
+        }
+
+        [Fact]
         public void Returns_Success_When_Input_Only_Contains_Equals_Sign()
         {
             // Arrange
@@ -774,6 +788,20 @@ public class ExpressionStringParserTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Invali_On_Null_String()
+        {
+            // Arrange
+            var input = default(string);
+
+            // Act
+            var result = CreateSut().Validate(input!, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Input is required");
         }
 
         [Fact]
