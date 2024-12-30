@@ -761,6 +761,613 @@ public class ExpressionStringParserTests : IDisposable
         }
     }
 
+    public class Validate : ExpressionStringParserTests
+    {
+        [Fact]
+        public void Returns_Success_With_Input_Value_On_Empty_String()
+        {
+            // Arrange
+            var input = string.Empty;
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_When_Input_Only_Contains_Equals_Sign()
+        {
+            // Arrange
+            var input = "=";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_With_Input_Value_On_String_That_Does_Not_Start_With_Equals_Sign()
+        {
+            // Arrange
+            var input = "string that does not begin with =";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Mathematic_Expression_When_Found()
+        {
+            // Arrange
+            var input = "=1+1";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Variable_Expression_When_Found()
+        {
+            // Arrange
+            var input = "=$myvariable";
+            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<object?>("MyVariableValue") : Result.Continue<object?>());
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Failure_From_Mathemetic_Expression_When_Found()
+        {
+            // Arrange
+            var input = "=1+error";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.NotSupported);
+            result.ErrorMessage.Should().Be("Unknown expression type found in fragment: error");
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Formattable_String_When_Found_And_FormattableStringProcessor_Is_Not_Null()
+        {
+            // Arrange
+            var input = "=@\"Hello {Name}!\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Formattable_String_Unprocessed_When_Found_And_FormattableStringProcessor_Is_Null()
+        {
+            // Arrange
+            var input = "=@\"Hello {Name}!\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Failure_Result_From_Formattable_String_When_Found()
+        {
+            // Arrange
+            var input = "=@\"Hello {Kaboom}!\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Validation failed, see inner results for details");
+            result.InnerResults.Single().ErrorMessage.Should().Be("Unsupported placeholder name: Kaboom");
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Literal_String_When_Found()
+        {
+            // Arrange
+            var input = "=\"Hello {Name}!\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Literal_String_With_Pipe_Sign_When_Found()
+        {
+            // Arrange
+            var input = "=\"Hello | {Name}!\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Literal_String_With_Ampersand_When_Found()
+        {
+            // Arrange
+            var input = "=\"Hello & {Name}!\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Literal_String_With_Equals_Operator_When_Found_More_Than_Two_Times()
+        {
+            // Arrange
+            var input = "=\"a\" == \"b\" == \"c\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Function_When_Found()
+        {
+            // Arrange
+            var input = "=MYFUNCTION()";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Function_With_Formattable_String_As_Argument()
+        {
+            // Arrange
+            var input = "=MYFUNCTION2(@\"Hello {Name}!\")";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_With_Input_String_When_No_Mathematic_Expression_Or_Formattable_String_Or_Function_Was_Found()
+        {
+            // Arrange
+            var input = "some string that does not start with = sign";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_With_Input_String_When_String_Starts_With_Equals_Sign_But_No_Other_Expression_Was_Found_After_This()
+        {
+            // Arrange
+            var input = "=\"some string that starts with = sign but does not contain any formattable string, function or mathematical expression\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Piped_Expression_When_Found()
+        {
+            // Arrange
+            var input = "=\"Hello {Name}!\" | ToUpper(context)";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Concatenated_Expression_When_Found()
+        {
+            // Arrange
+            var input = "=\"Hello \" & \"Name!\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Concatenated_Expression_Containing_Formattable_String_When_Found()
+        {
+            // Arrange
+            var input = "=\"Hello \" & @\"{Name}!\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Concatenated_And_Piped_Expression_When_Found()
+        {
+            // Arrange
+            var input = "=\"Hello \" & \"{Name}!\" | ToUpper(context)";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Equals_Operator_When_Found_With_String_Expressions()
+        {
+            // Arrange
+            var input = "=\"Hello\" == \"Hello\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Equals_Operator_When_Found_With_Non_String_Expressions()
+        {
+            // Arrange
+            var input = "=1 == 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Equals_Operator_When_Found_With_Left_Null()
+        {
+            // Arrange
+            var input = "=null == \"Hello\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Equals_Operator_When_Found_With_Right_Null()
+        {
+            // Arrange
+            var input = "=\"Hello\" == null";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Equals_Operator_When_Found_With_Left_And_Righ_Null()
+        {
+            // Arrange
+            var input = "=null == null";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_NotEquals_Operator_When_Found_With_String_Expressions()
+        {
+            // Arrange
+            var input = "=\"Hello\" != \"Hello\"";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Greater_Than_Operator_When_Found_With_Left_Null()
+        {
+            // Arrange
+            var input = "=null > 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Greater_Than_Operator_When_Found_With_Right_Null()
+        {
+            // Arrange
+            var input = "=2 > null";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Greater_Than_Operator_When_Found_With_No_Nulls_Same_Type()
+        {
+            // Arrange
+            var input = "=3 > 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_GreaterThanOrEqual_Than_Operator_When_Found_With_Left_Null()
+        {
+            // Arrange
+            var input = "=null >= 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_GreaterOrEqual_Than_Operator_When_Found_With_Right_Null()
+        {
+            // Arrange
+            var input = "=2 >= null";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_GreaterOrEqual_Than_Operator_When_Found_With_No_Nulls_Same_Type()
+        {
+            // Arrange
+            var input = "=3 >= 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Smaller_Than_Operator_When_Found_With_Left_Null()
+        {
+            // Arrange
+            var input = "=null < 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Smaller_Than_Operator_When_Found_With_Right_Null()
+        {
+            // Arrange
+            var input = "=2 < null";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_Smaller_Than_Operator_When_Found_With_No_Nulls_Same_Type()
+        {
+            // Arrange
+            var input = "=3 < 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_SmallerOrEqual_Than_Operator_When_Found_With_Left_Null()
+        {
+            // Arrange
+            var input = "=null <= 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_SmallerOrEqual_Than_Operator_When_Found_With_Right_Null()
+        {
+            // Arrange
+            var input = "=2 <= null";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_SmallerOrEqual_Than_Operator_When_Found_With_No_Nulls_Same_Type()
+        {
+            // Arrange
+            var input = "=3 <= 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_NotSupported_When_FunctionParser_Returns_NotSupported()
+        {
+            // Arrange
+            var input = "=somefunction(\uE002)";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.NotSupported);
+            result.ErrorMessage.Should().Be("Input cannot contain \uE002, as this is used internally for formatting");
+        }
+
+        [Fact]
+        public void Returns_Failure_From_FunctionParser_When_FunctionName_Is_Missing()
+        {
+            // Arrange
+            var input = "=()";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.NotFound);
+            result.ErrorMessage.Should().Be("No function name found");
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_FunctionParseResult_Could_Not_Be_Understood()
+        {
+            // Arrange
+            using var provider = new ServiceCollection()
+                .AddParsers()
+                .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+                .BuildServiceProvider(true);
+            using var scope = provider.CreateScope();
+            var input = "=MYFUNCTION()";
+
+            // Act
+            var result = scope.ServiceProvider.GetRequiredService<IExpressionStringParser>().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Unknown function call: MYFUNCTION");
+        }
+
+        [Fact]
+        public void Can_Escape_Equals_Sign_To_Skip_ExpressionString_Parsing()
+        {
+            // Arrange
+            var input = "\'=error()";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Theory,
+            InlineData("=ToUpperCase(\"  space  \")"),
+            InlineData("=ToUpperCase(@\"  space  \")")]
+        public void Function_With_String_Argument_Preserves_WhiteSpace(string input)
+        {
+            // Arrange
+            var functionResultParserMock = Substitute.For<IFunctionResultParser>();
+            functionResultParserMock.Validate(Arg.Any<FunctionCall>(), Arg.Any<object?>(), Arg.Any<IFunctionEvaluator>(), Arg.Any<IExpressionParser>())
+                .Returns(x =>
+                {
+                    if (x.ArgAt<FunctionCall>(0).FunctionName != "ToUpperCase")
+                    {
+                        return Result.Continue<object?>();
+                    }
+
+                    return Result.Success<object?>(x.ArgAt<FunctionCall>(0).GetArgumentStringValueResult(0, "expression", x.ArgAt<object?>(1), x.ArgAt<IFunctionEvaluator>(2), x.ArgAt<IExpressionParser>(3)).GetValueOrThrow().ToUpperInvariant());
+                });
+            using var provider = new ServiceCollection()
+                .AddParsers()
+                .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+                .AddSingleton(functionResultParserMock)
+                .BuildServiceProvider(true);
+            using var scope = provider.CreateScope();
+
+            var parser = scope.ServiceProvider.GetRequiredService<IExpressionStringParser>();
+
+            // Act
+            var result = parser.Validate(input, CultureInfo.InvariantCulture, scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+    }
+
     private IExpressionStringParser CreateSut() => _scope.ServiceProvider.GetRequiredService<IExpressionStringParser>();
 
     private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
@@ -802,7 +1409,7 @@ public class ExpressionStringParserTests : IDisposable
 
         public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
         {
-            if (!functionCall.FunctionName.In("error", "ToUpper"))
+            if (!functionCall.FunctionName.In("error", "ToUpper", "MYFUNCTION", "MYFUNCTION2"))
             {
                 return Result.Continue();
             }
