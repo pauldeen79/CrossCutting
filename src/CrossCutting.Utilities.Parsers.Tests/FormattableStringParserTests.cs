@@ -419,6 +419,21 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Validate_Works_With_ExpressionString_Containing_Nested_Function()
+    {
+        // Arrange
+        const string Input = "Hello {ToUpperCase(MyFunction())}!";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(Input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
     public void Parse_Works_With_ExpressionString_Using_EmptyArgument()
     {
         // Arrange
@@ -433,7 +448,6 @@ public sealed class FormattableStringParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.ToString().Should().Be("Hello !");
     }
-
 
     [Fact]
     public void Validate_Works_With_ExpressionString_Using_EmptyArgument()
