@@ -6,13 +6,7 @@ public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserA
 
     public Result<FunctionCallArgument> Process(string stringArgument, IReadOnlyCollection<FunctionCall> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
-        //TODO: Review this path
-        if (stringArgument is null)
-        {
-            return Result.Invalid<FunctionCallArgument>("Argument is empty");
-        }
-
-        if (stringArgument.StartsWith("@") && formattableStringParser is not null)
+        if (stringArgument?.StartsWith("@") == true && formattableStringParser is not null)
         {
             var result = formattableStringParser.Parse(stringArgument.Substring(1), new FormattableStringParserSettingsBuilder().WithFormatProvider(formatProvider).Build(), context);
             return result.IsSuccessful()
