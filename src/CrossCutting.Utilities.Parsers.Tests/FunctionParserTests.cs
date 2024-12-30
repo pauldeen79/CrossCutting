@@ -404,9 +404,6 @@ public sealed class FunctionParserTests : IDisposable
 
         public Result<FunctionCallArgument> Process(string stringArgument, IReadOnlyCollection<FunctionCall> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
             => Result.Error<FunctionCallArgument>("Kaboom");
-
-        public Result Validate(string stringArgument, IReadOnlyCollection<FunctionCall> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
-            => Result.Error("Kaboom");
     }
 
     private sealed class ErrorNameProcessor : IFunctionParserNameProcessor

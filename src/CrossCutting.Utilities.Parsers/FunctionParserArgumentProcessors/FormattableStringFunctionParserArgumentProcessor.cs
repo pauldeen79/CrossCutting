@@ -22,21 +22,4 @@ public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserA
 
         return Result.Continue<FunctionCallArgument>();
     }
-
-    public Result Validate(string stringArgument, IReadOnlyCollection<FunctionCall> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
-    {
-        //TODO: Review this path
-        if (stringArgument is null)
-        {
-            return Result.Invalid("Argument is empty");
-        }
-
-        if (stringArgument.StartsWith("@") && formattableStringParser is not null)
-        {
-            var result = formattableStringParser.Validate(stringArgument.Substring(1), new FormattableStringParserSettingsBuilder().WithFormatProvider(formatProvider).Build(), context);
-            return result;
-        }
-
-        return Result.Continue();
-    }
 }
