@@ -563,7 +563,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
     public void Returns_Invalid_On_Null_Input()
     {
         // Arrange
-        var input = default(string?);
+        var input = default(string);
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
@@ -591,7 +591,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
     public void Returns_Invalid_On_Null_Input_Validation()
     {
         // Arrange
-        var input = default(string?);
+        var input = default(string);
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act

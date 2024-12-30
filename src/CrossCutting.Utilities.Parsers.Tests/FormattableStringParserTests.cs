@@ -11,7 +11,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Parse_Returns_Success_On_Null_Input()
     {
         // Arrange
-        var input = default(string?);
+        var input = default(string);
         var sut = CreateSut();
 
         // Act
@@ -149,7 +149,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Validate_Returns_Success_On_Null_Input()
     {
         // Arrange
-        var input = default(string?);
+        var input = default(string);
         var sut = CreateSut();
 
         // Act

@@ -207,7 +207,7 @@ public class ExpressionParserTests : IDisposable
         }
 
         [Fact]
-        public void Returns_NotSupported_On_Empty_String()
+        public void Returns_Invalid_On_Empty_String()
         {
             // Arrange
             var input = "";
@@ -217,8 +217,8 @@ public class ExpressionParserTests : IDisposable
             var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Unknown expression type found in fragment: ");
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Value is required");
         }
 
         [Fact]
@@ -249,6 +249,21 @@ public class ExpressionParserTests : IDisposable
             // Assert
             result.Status.Should().Be(ResultStatus.NotSupported);
             result.ErrorMessage.Should().Be("Unknown variable found: unknownvariable");
+        }
+
+        [Fact]
+        public void Returns_Invalid_On_Null_String()
+        {
+            // Arrange
+            var input = default(string);
+            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
+
+            // Act
+            var result = CreateSut().Parse(input!, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Value is required");
         }
     }
 
@@ -442,7 +457,7 @@ public class ExpressionParserTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Unknown expression type found in fragment: ");
+            result.ErrorMessage.Should().Be("Value is required");
         }
 
         [Fact]

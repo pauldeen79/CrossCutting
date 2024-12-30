@@ -13,7 +13,7 @@ public class ExpressionParser : IExpressionParser
 
     public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
     {
-        if (value is null)
+        if (string.IsNullOrEmpty(value))
         {
             return Result.Invalid<object?>("Value is required");
         }
@@ -27,7 +27,7 @@ public class ExpressionParser : IExpressionParser
 
     public Result Validate(string value, IFormatProvider formatProvider, object? context)
     {
-        if (value is null)
+        if (string.IsNullOrEmpty(value))
         {
             return Result.Invalid("Value is required");
         }
