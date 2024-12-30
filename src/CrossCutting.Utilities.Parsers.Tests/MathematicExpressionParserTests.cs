@@ -545,6 +545,62 @@ public sealed class MathematicExpressionParserTests : IDisposable
         result.ErrorMessage.Should().Be("Aggregation failed. Error message: Attempted to divide by zero.");
     }
 
+    [Fact]
+    public void Returns_NotFound_On_Empty_Input()
+    {
+        // Arrange
+        var input = string.Empty;
+        var sut = CreateSut(ParseExpressionDelegateInt32);
+
+        // Act
+        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+    }
+
+    [Fact]
+    public void Returns_Invalid_On_Null_Input()
+    {
+        // Arrange
+        var input = default(string?);
+        var sut = CreateSut(ParseExpressionDelegateInt32);
+
+        // Act
+        var result = sut.Parse(input!, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
+    [Fact]
+    public void Returns_NotFound_On_Empty_Input_Validation()
+    {
+        // Arrange
+        var input = string.Empty;
+        var sut = CreateSut(ParseExpressionDelegateInt32);
+
+        // Act
+        var result = sut.Validate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+    }
+
+    [Fact]
+    public void Returns_Invalid_On_Null_Input_Validation()
+    {
+        // Arrange
+        var input = default(string?);
+        var sut = CreateSut(ParseExpressionDelegateInt32);
+
+        // Act
+        var result = sut.Validate(input!, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
     private IMathematicExpressionParser CreateSut(Func<string, IFormatProvider, Result<object?>> dlg)
     {
         _provider = new ServiceCollection()
