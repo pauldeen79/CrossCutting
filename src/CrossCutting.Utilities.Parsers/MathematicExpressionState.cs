@@ -73,20 +73,6 @@ public class MathematicExpressionState
         RightPartResult = GetPartResult(RightPart, expressionParser);
     }
 
-    internal void SetPreviousIndexesForValidation(int[] aggregatorPositions, IExpressionParser expressionParser)
-    {
-        PreviousIndexes = aggregatorPositions;
-        LeftPart = GetLeftPart();
-        LeftPartValidationResult = GetPartValidationResult(LeftPart, expressionParser);
-    }
-
-    internal void SetNextIndexesForValidation(int[] aggregatorPositions, IExpressionParser expressionParser)
-    {
-        NextIndexes = aggregatorPositions;
-        RightPart = GetRightPart();
-        RightPartValidationResult = GetPartValidationResult(RightPart, expressionParser);
-    }
-
     internal Result<object?> PerformAggregation()
     {
         var aggregateResult = Indexes.First().Aggregator.Aggregate(LeftPartResult.Value!, RightPartResult.Value!, FormatProvider);
@@ -132,9 +118,4 @@ public class MathematicExpressionState
         => part.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && part.EndsWith(MathematicExpressionParser.TemporaryDelimiter)
             ? Results.ElementAt(int.Parse(part.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture))
             : expressionParser.Parse(part, FormatProvider, Context);
-
-    private Result GetPartValidationResult(string part, IExpressionParser expressionParser)
-        => part.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && part.EndsWith(MathematicExpressionParser.TemporaryDelimiter)
-            ? Results.ElementAt(int.Parse(part.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture))
-            : expressionParser.Validate(part, FormatProvider, Context);
 }
