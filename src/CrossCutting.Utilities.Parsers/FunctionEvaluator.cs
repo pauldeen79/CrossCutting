@@ -14,7 +14,7 @@ public class FunctionEvaluator(IEnumerable<IFunctionResultParser> functionResult
         return _functionResultParsers
             .Select(x => x.Parse(functionCall, context, this, parser))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.NotSupported<object?>($"Unknown function call: {functionCall.FunctionName}");
+                ?? Result.NotSupported<object?>($"Unknown function: {functionCall.FunctionName}");
     }
 
     public Result Validate(FunctionCall functionCall, IExpressionParser parser, object? context)
@@ -27,6 +27,6 @@ public class FunctionEvaluator(IEnumerable<IFunctionResultParser> functionResult
         return _functionResultParsers
             .Select(x => x.Validate(functionCall, context, this, parser))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid($"Unknown function call: {functionCall.FunctionName}");
+                ?? Result.Invalid($"Unknown function: {functionCall.FunctionName}");
     }
 }

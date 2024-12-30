@@ -709,7 +709,7 @@ public class ExpressionStringParserTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Unknown function call: MYFUNCTION");
+            result.ErrorMessage.Should().Be("Unknown function: MYFUNCTION");
         }
 
         [Fact]
@@ -1318,7 +1318,7 @@ public class ExpressionStringParserTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Unknown function call: MYFUNCTION");
+            result.ErrorMessage.Should().Be("Unknown function: MYFUNCTION");
         }
 
         [Fact]
