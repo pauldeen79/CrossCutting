@@ -613,11 +613,16 @@ public sealed class MathematicExpressionParserTests : IDisposable
     }
 
     private Result<object?> ParseExpressionDelegateInt32(string arg, IFormatProvider formatProvider)
-        => arg == "$myvariable"
-            ? _variable.Evaluate(arg[1..], null)
-            : int.TryParse(arg, formatProvider, out var result)
-                ? Result.Success<object?>(result)
-                : Result.Invalid<object?>($"Could not parse {arg} to integer");
+    {
+        if (arg == "$myvariable")
+        {
+            return _variable.Evaluate(arg[1..], null);
+        }
+        
+        return int.TryParse(arg, formatProvider, out var result)
+            ? Result.Success<object?>(result)
+            : Result.Invalid<object?>($"Could not parse {arg} to integer");
+    }
 
     private static Result<object?> ParseExpressionDelegateInt64(string arg, IFormatProvider formatProvider)
         => long.TryParse(arg, formatProvider, out var result)
