@@ -1,10 +1,10 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public class FormattableStringParserResult(string format, object[] arguments) : FormattableString
+public class GenericFormattableString(string format, object[] arguments) : FormattableString
 {
     private readonly object[] _arguments = arguments.IsNotNull(nameof(arguments));
 
-    public FormattableStringParserResult(object? value) : this("{0}", [value!])
+    public GenericFormattableString(object? value) : this("{0}", [value!])
     {
     }
 
@@ -25,9 +25,9 @@ public class FormattableStringParserResult(string format, object[] arguments) : 
     public override string ToString()
         => string.Format(Format, _arguments);
 
-    public static FormattableStringParserResult FromString(string s) => new(s);
+    public static GenericFormattableString FromString(string s) => new(s);
 
-    public static implicit operator string(FormattableStringParserResult r) => r?.ToString()!;
+    public static implicit operator string(GenericFormattableString r) => r?.ToString()!;
 
-    public static implicit operator FormattableStringParserResult(string s) => FromString(s);
+    public static implicit operator GenericFormattableString(string s) => FromString(s);
 }

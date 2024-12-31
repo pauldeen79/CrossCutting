@@ -107,7 +107,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValueOrThrow().Format.Should().Be(input + input); //need to duplicate because of FormatException on FormattableStringParserResult
+        result.GetValueOrThrow().Format.Should().Be(input + input); //need to duplicate because of FormatException on FormattableString
     }
 
     [Fact]
@@ -708,7 +708,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Can_Implicitly_Convert_Null_ParseStringResult_To_String()
     {
         // Arrange
-        var parsedResult = default(FormattableStringParserResult);
+        var parsedResult = default(GenericFormattableString);
 
         // Act
         string result = parsedResult!;
@@ -721,7 +721,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void FromString_Creates_New_Instance_From_String_Correclty()
     {
         // Act
-        var instance = FormattableStringParserResult.FromString("hello world");
+        var instance = GenericFormattableString.FromString("hello world");
 
         // Assert
         instance.Format.Should().Be("{0}");
@@ -732,7 +732,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void FromString_Creates_New_Instance_From_String_With_Braces_Correclty()
     {
         // Act
-        var instance = FormattableStringParserResult.FromString("hello {world}");
+        var instance = GenericFormattableString.FromString("hello {world}");
 
         // Assert
         instance.Format.Should().Be("{0}");
@@ -743,7 +743,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void ToString_Override_Returns_Correct_Result()
     {
         // Arrange
-        FormattableStringParserResult result = "Hello world!";
+        GenericFormattableString result = "Hello world!";
 
         // Act
         var stringResult = result.ToString();
@@ -756,7 +756,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Implicit_Operator_Returns_Correct_Result()
     {
         // Arrange
-        FormattableStringParserResult result = "Hello world!";
+        GenericFormattableString result = "Hello world!";
 
         // Act
         string stringResult = result;
@@ -794,15 +794,15 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         public int Order => 10;
 
-        public Result<FormattableStringParserResult> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
         {
             return value switch
             {
-                "Name" => Result.Success<FormattableStringParserResult>(ReplacedValue),
-                "Context" => Result.Success<FormattableStringParserResult>(context.ToStringWithDefault()),
-                "Unsupported placeholder" => Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}"),
-                "ReplaceWithPlaceholder" => Result.Success<FormattableStringParserResult>("{Name}"),
-                _ => Result.Continue<FormattableStringParserResult>()
+                "Name" => Result.Success<GenericFormattableString>(ReplacedValue),
+                "Context" => Result.Success<GenericFormattableString>(context.ToStringWithDefault()),
+                "Unsupported placeholder" => Result.Error<GenericFormattableString>($"Unsupported placeholder name: {value}"),
+                "ReplaceWithPlaceholder" => Result.Success<GenericFormattableString>("{Name}"),
+                _ => Result.Continue<GenericFormattableString>()
             };
         }
 

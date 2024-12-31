@@ -13,14 +13,14 @@ public class ExpressionStringPlaceholder : IPlaceholder
 
     public int Order => 990;
 
-    public Result<FormattableStringParserResult> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         var result = _expressionStringEvaluator.Evaluate($"={value}", formatProvider, context, formattableStringParser);
 
         return result.Status switch
         {
-            ResultStatus.NotFound => Result.Continue<FormattableStringParserResult>(),
-            _ => Result.FromExistingResult(result, value => new FormattableStringParserResult(value))
+            ResultStatus.NotFound => Result.Continue<GenericFormattableString>(),
+            _ => Result.FromExistingResult(result, value => new GenericFormattableString(value))
         };
     }
 

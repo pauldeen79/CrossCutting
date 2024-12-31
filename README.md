@@ -62,3 +62,4 @@ There have been some breaking changes.
 * IExpressionParser has been renamed to IExpressionEvaluator and IExpressionParserProcessor to IExpression.
 * IExpressionStringParser has been renamed to IExpressionStringEvaluator and IExpresionStringParserProcessor to IExpressionString.
 * IMathematicExpressionParser has been renamed to IMathematicExpressionEvaluator and IMathematicExpressionProcessor to IMathematicExpression.
+* FormattableStringParserResult has been renamed to GenericFormattableString.

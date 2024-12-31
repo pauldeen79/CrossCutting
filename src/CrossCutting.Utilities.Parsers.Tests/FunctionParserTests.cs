@@ -417,10 +417,10 @@ public sealed class FunctionParserTests : IDisposable
     {
         public int Order => 10;
 
-        public Result<FormattableStringParserResult> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
-                ? Result.Success<FormattableStringParserResult>(ReplacedValue)
-                : Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}");
+                ? Result.Success<GenericFormattableString>(ReplacedValue)
+                : Result.Error<GenericFormattableString>($"Unsupported placeholder name: {value}");
 
         public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
