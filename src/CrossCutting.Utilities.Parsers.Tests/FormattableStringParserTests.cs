@@ -806,15 +806,15 @@ public sealed class FormattableStringParserTests : IDisposable
             };
         }
 
-        public Result<FormattableStringParserResult> Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
         {
             return value switch
             {
-                "Name" => Result.Success(new FormattableStringParserResult(string.Empty, [])),
-                "Context" => Result.Success(new FormattableStringParserResult(string.Empty, [])),
-                "Unsupported placeholder" => Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}"),
-                "ReplaceWithPlaceholder" => Result.Success(new FormattableStringParserResult(string.Empty, [])),
-                _ => Result.Continue<FormattableStringParserResult>()
+                "Name" => Result.Success(),
+                "Context" => Result.Success(),
+                "Unsupported placeholder" => Result.Error($"Unsupported placeholder name: {value}"),
+                "ReplaceWithPlaceholder" => Result.Success(),
+                _ => Result.Continue()
             };
         }
     }

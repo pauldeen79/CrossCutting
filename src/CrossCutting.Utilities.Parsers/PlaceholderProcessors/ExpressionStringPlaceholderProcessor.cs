@@ -24,16 +24,14 @@ public class ExpressionStringPlaceholderProcessor : IPlaceholderProcessor
         };
     }
 
-    public Result<FormattableStringParserResult> Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         var result = _expressionStringParser.Validate($"={value}", formatProvider, context, formattableStringParser);
 
         return result.Status switch
         {
-            ResultStatus.NotFound => Result.Continue<FormattableStringParserResult>(),
-            _ => result.IsSuccessful()
-            ? Result.Success(new FormattableStringParserResult(string.Empty, []))
-            : Result.FromExistingResult<FormattableStringParserResult>(result)
+            ResultStatus.NotFound => Result.Continue(),
+            _ => result
         };
     }
 }

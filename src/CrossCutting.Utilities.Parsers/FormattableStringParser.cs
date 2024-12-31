@@ -116,7 +116,7 @@ public class FormattableStringParser : IFormattableStringParser
         => _processors
             .OrderBy(x => x.Order)
             .Select(processor => validateOnly
-                ? processor.Validate(placeholder, settings.FormatProvider, context, this)
+                ? Result.FromExistingResult<FormattableStringParserResult>(processor.Validate(placeholder, settings.FormatProvider, context, this))
                 : processor.Process(placeholder, settings.FormatProvider, context, this))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
