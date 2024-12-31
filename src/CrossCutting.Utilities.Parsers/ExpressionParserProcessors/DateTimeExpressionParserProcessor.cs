@@ -5,23 +5,16 @@ public class DateTimeExpressionParserProcessor : IExpressionParserProcessor
     public int Order => 70;
 
     public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
-    {
-        if (value is not null && DateTime.TryParse(value, formatProvider, DateTimeStyles.None, out var dt))
+        => value switch
         {
-            return Result.Success<object?>(dt);
-        }
-
-        return Result.Continue<object?>();
-    }
+            not null when DateTime.TryParse(value, formatProvider, DateTimeStyles.None, out var dt) => Result.Success<object?>(dt),
+            _ => Result.Continue<object?>()
+        };
 
     public Result Validate(string value, IFormatProvider formatProvider, object? context)
-    {
-        if (value is not null && DateTime.TryParse(value, formatProvider, DateTimeStyles.None, out _))
+        => value switch
         {
-            return Result.Success();
-        }
-
-        // Other values are ignored, so the expression parser knows whether an expression is supported
-        return Result.Continue();
-    }
+            not null when DateTime.TryParse(value, formatProvider, DateTimeStyles.None, out _) => Result.Success(),
+            _ => Result.Continue()
+        };
 }
