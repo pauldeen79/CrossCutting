@@ -1,10 +1,10 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
 
-public class OnlyEqualsExpressionProcessor : IExpressionStringParserProcessor
+public class OnlyEqualsExpressionProcessor : IExpressionString
 {
     public int Order => 300;
 
-    public Result<object?> Process(ExpressionStringParserState state)
+    public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
@@ -16,7 +16,7 @@ public class OnlyEqualsExpressionProcessor : IExpressionStringParserProcessor
         return Result.Continue<object?>();
     }
 
-    public Result Validate(ExpressionStringParserState state)
+    public Result Validate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 

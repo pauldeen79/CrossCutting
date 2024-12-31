@@ -26,7 +26,7 @@ public class ExpressionParserTests : IDisposable
             var input = "true";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -40,7 +40,7 @@ public class ExpressionParserTests : IDisposable
             var input = "false";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -54,7 +54,7 @@ public class ExpressionParserTests : IDisposable
             var input = "null";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -68,7 +68,7 @@ public class ExpressionParserTests : IDisposable
             var input = "context";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, "context value");
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, "context value");
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -82,7 +82,7 @@ public class ExpressionParserTests : IDisposable
             var input = "1.5";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -96,7 +96,7 @@ public class ExpressionParserTests : IDisposable
             var input = "1M";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -110,7 +110,7 @@ public class ExpressionParserTests : IDisposable
             var input = "2";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -124,7 +124,7 @@ public class ExpressionParserTests : IDisposable
             var input = "3147483647";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -138,7 +138,7 @@ public class ExpressionParserTests : IDisposable
             var input = "13L";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -152,7 +152,7 @@ public class ExpressionParserTests : IDisposable
             var input = "\"Hello world!\"";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -166,7 +166,7 @@ public class ExpressionParserTests : IDisposable
             var input = "01/02/2019";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -181,7 +181,7 @@ public class ExpressionParserTests : IDisposable
             _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -199,7 +199,7 @@ public class ExpressionParserTests : IDisposable
                 : Result.Continue<object?>());
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, context);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -214,7 +214,7 @@ public class ExpressionParserTests : IDisposable
             _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -229,7 +229,7 @@ public class ExpressionParserTests : IDisposable
             _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.NotSupported);
@@ -244,7 +244,7 @@ public class ExpressionParserTests : IDisposable
             _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Continue<object?>());
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -339,7 +339,7 @@ public class ExpressionParserTests : IDisposable
             var input = "2";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -379,7 +379,7 @@ public class ExpressionParserTests : IDisposable
             var input = "\"Hello world!\"";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -476,7 +476,7 @@ public class ExpressionParserTests : IDisposable
         }
     }
 
-    private IExpressionParser CreateSut() => _scope.ServiceProvider.GetRequiredService<IExpressionParser>();
+    private IExpressionEvaluator CreateSut() => _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>();
 
     protected virtual void Dispose(bool disposing)
     {

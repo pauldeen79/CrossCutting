@@ -4,22 +4,22 @@ public class FunctionEvaluator(IEnumerable<IFunction> functions) : IFunctionEval
 {
     private readonly IEnumerable<IFunction> _functions = functions;
 
-    public Result<object?> Evaluate(FunctionCall functionCall, IExpressionParser parser, object? context)
+    public Result<object?> Evaluate(FunctionCall functionCall, IExpressionEvaluator evaluator, object? context)
         => functionCall switch
         {
             null => Result.Invalid<object?>("Function call is required"),
             _ => _functions
-            .Select(x => x.Evaluate(functionCall, context, this, parser))
+            .Select(x => x.Evaluate(functionCall, context, this, evaluator))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.NotSupported<object?>($"Unknown function: {functionCall.FunctionName}")
         };
 
-    public Result Validate(FunctionCall functionCall, IExpressionParser parser, object? context)
+    public Result Validate(FunctionCall functionCall, IExpressionEvaluator evaluator, object? context)
         => functionCall switch
         {
             null => Result.Invalid("Function call is required"),
             _ => _functions
-            .Select(x => x.Validate(functionCall, context, this, parser))
+            .Select(x => x.Validate(functionCall, context, this, evaluator))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Invalid($"Unknown function: {functionCall.FunctionName}")
         };

@@ -821,7 +821,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private sealed class MyFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
         {
             if (functionCall.FunctionName != "MyFunction")
             {
@@ -831,7 +831,7 @@ public sealed class FormattableStringParserTests : IDisposable
             return Result.Success<object?>("function result");
         }
 
-        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
         {
             if (functionCall.FunctionName != "MyFunction")
             {
@@ -845,7 +845,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private sealed class ToUppercaseFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
         {
             if (functionCall.FunctionName != "ToUpperCase")
             {
@@ -861,7 +861,7 @@ public sealed class FormattableStringParserTests : IDisposable
             return Result.Success<object?>(valueResult.Value.ToStringWithDefault().ToUpperInvariant());
         }
 
-        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
         {
             if (functionCall.FunctionName != "ToUpperCase")
             {

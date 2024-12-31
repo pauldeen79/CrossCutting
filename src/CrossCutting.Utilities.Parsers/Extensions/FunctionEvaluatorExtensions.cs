@@ -2,9 +2,9 @@
 
 public static class FunctionEvaluatorExtensions
 {
-    public static Result Validate(this IFunctionEvaluator instance, FunctionCall functionCall, IExpressionParser parser)
-        => instance.Validate(functionCall, parser, null);
+    public static Result Validate(this IFunctionEvaluator instance, FunctionCall functionCall, IExpressionEvaluator evaluator)
+        => instance.Validate(functionCall, evaluator, null);
 
-    public static Result<object?> Evaluate(this IFunctionEvaluator instance, FunctionCall functionCall, IExpressionParser parser)
-        => instance.Evaluate(functionCall, parser, null);
+    public static Result<object?> Evaluate(this IFunctionEvaluator instance, FunctionCall functionCall, IExpressionEvaluator evaluator)
+        => instance.Evaluate(functionCall, evaluator, null);
 }

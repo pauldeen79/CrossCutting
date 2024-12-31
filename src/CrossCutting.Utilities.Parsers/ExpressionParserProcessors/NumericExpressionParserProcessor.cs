@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionParserProcessors;
 
-public class NumericExpressionParserProcessor : IExpressionParserProcessor
+public class NumericExpressionParserProcessor : IExpression
 {
     private static readonly Regex _floatingPointRegEx = new(@"^[0-9]*(?:\.[0-9]*)?$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
     private static readonly Regex _wholeNumberRegEx = new("^[0-9]*$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
@@ -10,7 +10,7 @@ public class NumericExpressionParserProcessor : IExpressionParserProcessor
 
     public int Order => 60;
 
-    public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
+    public Result<object?> Evaluate(string value, IFormatProvider formatProvider, object? context)
     {
         if (value is null)
         {

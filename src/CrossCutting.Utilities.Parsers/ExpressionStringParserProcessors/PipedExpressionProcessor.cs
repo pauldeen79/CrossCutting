@@ -1,10 +1,10 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
 
-public class PipedExpressionProcessor : IExpressionStringParserProcessor
+public class PipedExpressionProcessor : IExpressionString
 {
     public int Order => 180;
 
-    public Result<object?> Process(ExpressionStringParserState state)
+    public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
@@ -13,7 +13,7 @@ public class PipedExpressionProcessor : IExpressionStringParserProcessor
             var resultValue = state.Context;
             foreach (var item in split)
             {
-                var result = state.Parser.Parse($"={item}", state.FormatProvider, resultValue, state.FormattableStringParser);
+                var result = state.Parser.Evaluate($"={item}", state.FormatProvider, resultValue, state.FormattableStringParser);
                 if (!result.IsSuccessful())
                 {
                     return result;
@@ -25,7 +25,7 @@ public class PipedExpressionProcessor : IExpressionStringParserProcessor
         });
     }
 
-    public Result Validate(ExpressionStringParserState state)
+    public Result Validate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 

@@ -19,7 +19,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = default(FunctionCall);
-        var parser = Substitute.For<IExpressionParser>();
+        var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
@@ -35,7 +35,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithFunctionName("MyFunction").Build();
-        var parser = Substitute.For<IExpressionParser>();
+        var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
@@ -51,7 +51,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithFunctionName("Error").Build();
-        var parser = Substitute.For<IExpressionParser>();
+        var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
@@ -67,7 +67,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithFunctionName("WrongName").Build();
-        var parser = Substitute.For<IExpressionParser>();
+        var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
@@ -83,7 +83,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = default(FunctionCall);
-        var parser = Substitute.For<IExpressionParser>();
+        var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
@@ -99,7 +99,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithFunctionName("MyFunction").Build();
-        var parser = Substitute.For<IExpressionParser>();
+        var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
@@ -114,7 +114,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithFunctionName("Error").Build();
-        var parser = Substitute.For<IExpressionParser>();
+        var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
@@ -130,7 +130,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithFunctionName("WrongName").Build();
-        var parser = Substitute.For<IExpressionParser>();
+        var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
@@ -151,7 +151,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
     private sealed class MyFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
         {
             if (!functionCall.FunctionName.In("MyFunction", "Error"))
             {
@@ -166,7 +166,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
             return Result.Success<object?>("function result");
         }
 
-        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
         {
             if (!functionCall.FunctionName.In("MyFunction", "Error"))
             {

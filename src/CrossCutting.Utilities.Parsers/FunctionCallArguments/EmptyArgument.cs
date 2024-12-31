@@ -2,6 +2,6 @@
 
 public partial record EmptyArgument
 {
-    public override Result<object?> GetValueResult(object? context, IFunctionEvaluator evaluator, IExpressionParser parser, IFormatProvider formatProvider)
+    public override Result<object?> GetValueResult(object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider)
         => Result.Success(default(object?));
 }

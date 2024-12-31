@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionParserProcessors;
 
-public class VariableExpressionParserProcessor : IExpressionParserProcessor
+public class VariableExpressionParserProcessor : IExpression
 {
     public int Order => 50;
 
@@ -13,7 +13,7 @@ public class VariableExpressionParserProcessor : IExpressionParserProcessor
         _variableProcessor = variableProcessor;
     }
 
-    public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
+    public Result<object?> Evaluate(string value, IFormatProvider formatProvider, object? context)
     {
         if (value is null)
         {

@@ -14,7 +14,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -30,7 +30,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -45,7 +45,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -60,7 +60,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -75,7 +75,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -90,7 +90,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -105,7 +105,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -120,7 +120,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -135,7 +135,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -150,7 +150,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -165,7 +165,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -180,7 +180,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -195,7 +195,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -210,7 +210,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -225,7 +225,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -240,7 +240,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -255,7 +255,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -270,7 +270,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -285,7 +285,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -300,7 +300,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -314,7 +314,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var input = "1 + 1";
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt64).Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut(ParseExpressionDelegateInt64).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -328,7 +328,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var input = "3.5 + 3.6";
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateDecimal).Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut(ParseExpressionDelegateDecimal).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -342,7 +342,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var input = "1.4 + 1.3";
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateSingle).Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut(ParseExpressionDelegateSingle).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -357,7 +357,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var input = "1.7 + 1.4";
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateDouble).Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut(ParseExpressionDelegateDouble).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -371,7 +371,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var input = "1 + 1";
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateByte).Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut(ParseExpressionDelegateByte).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -385,7 +385,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var input = "1 + 1";
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateInt16).Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut(ParseExpressionDelegateInt16).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -478,7 +478,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var input = "7-16/8*2+8";
 
         // Act
-        var result = CreateSut(ParseExpressionDelegateDouble).Parse(input, CultureInfo.InvariantCulture);
+        var result = CreateSut(ParseExpressionDelegateDouble).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -493,7 +493,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -508,7 +508,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -523,7 +523,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -538,7 +538,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -553,7 +553,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -567,7 +567,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
-        var result = sut.Parse(input!, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(input!, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -601,15 +601,15 @@ public sealed class MathematicExpressionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Invalid);
     }
 
-    private IMathematicExpressionParser CreateSut(Func<string, IFormatProvider, Result<object?>> dlg)
+    private IMathematicExpressionEvaluator CreateSut(Func<string, IFormatProvider, Result<object?>> dlg)
     {
         _provider = new ServiceCollection()
             .AddParsers()
             .AddSingleton(_variable)
-            .AddSingleton<IExpressionParser>(new MyMathematicExpressionParser(dlg))
+            .AddSingleton<IExpressionEvaluator>(new MyMathematicExpressionParser(dlg))
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
-        return _scope.ServiceProvider.GetRequiredService<IMathematicExpressionParser>();
+        return _scope.ServiceProvider.GetRequiredService<IMathematicExpressionEvaluator>();
     }
 
     private Result<object?> ParseExpressionDelegateInt32(string arg, IFormatProvider formatProvider)
@@ -655,11 +655,11 @@ public sealed class MathematicExpressionParserTests : IDisposable
         _provider?.Dispose();
     }
 
-    private sealed class MyMathematicExpressionParser(Func<string, IFormatProvider, Result<object?>> dlg) : IExpressionParser
+    private sealed class MyMathematicExpressionParser(Func<string, IFormatProvider, Result<object?>> dlg) : IExpressionEvaluator
     {
         private readonly Func<string, IFormatProvider, Result<object?>> _dlg = dlg;
 
-        public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
+        public Result<object?> Evaluate(string value, IFormatProvider formatProvider, object? context)
             => _dlg.Invoke(value, formatProvider);
 
         public Result Validate(string value, IFormatProvider formatProvider, object? context)

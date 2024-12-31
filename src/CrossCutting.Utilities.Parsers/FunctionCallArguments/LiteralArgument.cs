@@ -2,11 +2,11 @@
 
 public partial record LiteralArgument
 {
-    public override Result<object?> GetValueResult(object? context, IFunctionEvaluator evaluator, IExpressionParser parser, IFormatProvider formatProvider)
+    public override Result<object?> GetValueResult(object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider)
     {
-        parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
+        expressionEvaluator = ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
 
-        var result = parser.Parse(Value, formatProvider, context);
+        var result = expressionEvaluator.Evaluate(Value, formatProvider, context);
 
         return result.Status == ResultStatus.NotSupported
             ? Result.Success<object?>(Value)

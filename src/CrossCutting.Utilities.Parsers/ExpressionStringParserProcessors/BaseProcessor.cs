@@ -2,7 +2,7 @@
 
 internal static class BaseProcessor
 {
-    internal static Result<object?> SplitDelimited(ExpressionStringParserState state, char splitDelimiter, Func<string[], Result<object?>> validDelegate)
+    internal static Result<object?> SplitDelimited(ExpressionStringEvaluatorState state, char splitDelimiter, Func<string[], Result<object?>> validDelegate)
     {
         if (state.Input.IndexOf(splitDelimiter) == -1)
         {
@@ -18,7 +18,7 @@ internal static class BaseProcessor
         return validDelegate(split);
     }
 
-    internal static Result SplitDelimited(ExpressionStringParserState state, char splitDelimiter, Func<string[], Result> validDelegate)
+    internal static Result SplitDelimited(ExpressionStringEvaluatorState state, char splitDelimiter, Func<string[], Result> validDelegate)
     {
         if (state.Input.IndexOf(splitDelimiter) == -1)
         {
