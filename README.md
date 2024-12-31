@@ -50,3 +50,10 @@ With this:
 ```regex
 Result.$2<$1>(
 ```
+
+# Upgrade Parsers from 6.x to 7.0
+There have been some breaking changes.
+
+First, the FunctionParseResult has been renamed to FunctionCall, because that's what it is.
+
+Second, some parsers and evaluators now have a Validate method, to check whether the input is valid. This way, you can check validity without actually performing the action.

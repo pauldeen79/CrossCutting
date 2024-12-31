@@ -17,7 +17,6 @@ string Name
 IFunctionDescriptorArgument[] Arguments
 
 IFunctionDescriptorArgument:
-//int Position // probably not needed? just assume the arguments are returned in the correct order
 string Name
 string Description //optional
 bool IsRequired
@@ -30,8 +29,4 @@ string TypeName
 IFunctionDescriptorProvider:
 IFunctionDescriptor[] GetAll()
 
-refactorings:
-FunctionParseResult -> FunctionCall
-FunctionParseResultArgument -> FunctionCallArgument
-FunctionArgument -> RecursiveArgument
-IFunctionParseResultEvaluator -> IFunctionEvaluator (and also move the default implementation to root namespace and remove the Default prefix)
+Maybe also add support for attributes (RequiredAttribute and DescriptionAttribute), so you can easily fill them from metadata on all registered functions.
