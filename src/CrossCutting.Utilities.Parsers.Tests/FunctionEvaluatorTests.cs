@@ -9,7 +9,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         _provider = new ServiceCollection()
         .AddParsers()
-            .AddSingleton<IFunctionResultParser, MyFunctionResultParser>()
+            .AddSingleton<IFunction, MyFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -149,9 +149,9 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
     private IFunctionEvaluator CreateSut() => _scope.ServiceProvider.GetRequiredService<IFunctionEvaluator>();
 
-    private sealed class MyFunctionResultParser : IFunctionResultParser
+    private sealed class MyFunction : IFunction
     {
-        public Result<object?> Parse(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
         {
             if (!functionCall.FunctionName.In("MyFunction", "Error"))
             {

@@ -1,32 +1,26 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public class FunctionEvaluator(IEnumerable<IFunctionResultParser> functionResultParsers) : IFunctionEvaluator
+public class FunctionEvaluator(IEnumerable<IFunction> functions) : IFunctionEvaluator
 {
-    private readonly IEnumerable<IFunctionResultParser> _functionResultParsers = functionResultParsers;
+    private readonly IEnumerable<IFunction> _functions = functions;
 
     public Result<object?> Evaluate(FunctionCall functionCall, IExpressionParser parser, object? context)
-    {
-        if (functionCall is null)
+        => functionCall switch
         {
-            return Result.Invalid<object?>("Function call is required");
-        }
-
-        return _functionResultParsers
-            .Select(x => x.Parse(functionCall, context, this, parser))
+            null => Result.Invalid<object?>("Function call is required"),
+            _ => _functions
+            .Select(x => x.Evaluate(functionCall, context, this, parser))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.NotSupported<object?>($"Unknown function: {functionCall.FunctionName}");
-    }
+                ?? Result.NotSupported<object?>($"Unknown function: {functionCall.FunctionName}")
+        };
 
     public Result Validate(FunctionCall functionCall, IExpressionParser parser, object? context)
-    {
-        if (functionCall is null)
+        => functionCall switch
         {
-            return Result.Invalid("Function call is required");
-        }
-
-        return _functionResultParsers
+            null => Result.Invalid("Function call is required"),
+            _ => _functions
             .Select(x => x.Validate(functionCall, context, this, parser))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid($"Unknown function: {functionCall.FunctionName}");
-    }
+                ?? Result.Invalid($"Unknown function: {functionCall.FunctionName}")
+        };
 }

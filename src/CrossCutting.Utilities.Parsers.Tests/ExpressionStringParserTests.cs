@@ -15,7 +15,7 @@ public class ExpressionStringParserTests : IDisposable
             .AddParsers()
             .AddSingleton(_variable)
             .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
-            .AddSingleton<IFunctionResultParser, MyFunctionResultParser>()
+            .AddSingleton<IFunction, MyFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -746,8 +746,8 @@ public class ExpressionStringParserTests : IDisposable
         public void Function_With_String_Argument_Preserves_WhiteSpace(string input)
         {
             // Arrange
-            var functionResultParserMock = Substitute.For<IFunctionResultParser>();
-            functionResultParserMock.Parse(Arg.Any<FunctionCall>(), Arg.Any<object?>(), Arg.Any<IFunctionEvaluator>(), Arg.Any<IExpressionParser>())
+            var functionResultParserMock = Substitute.For<IFunction>();
+            functionResultParserMock.Evaluate(Arg.Any<FunctionCall>(), Arg.Any<object?>(), Arg.Any<IFunctionEvaluator>(), Arg.Any<IExpressionParser>())
                 .Returns(x =>
                 {
                     if (x.ArgAt<FunctionCall>(0).FunctionName != "ToUpperCase")
@@ -1368,8 +1368,8 @@ public class ExpressionStringParserTests : IDisposable
         public void Function_With_String_Argument_Preserves_WhiteSpace(string input)
         {
             // Arrange
-            var functionResultParserMock = Substitute.For<IFunctionResultParser>();
-            functionResultParserMock.Validate(Arg.Any<FunctionCall>(), Arg.Any<object?>(), Arg.Any<IFunctionEvaluator>(), Arg.Any<IExpressionParser>())
+            var functionMock = Substitute.For<IFunction>();
+            functionMock.Validate(Arg.Any<FunctionCall>(), Arg.Any<object?>(), Arg.Any<IFunctionEvaluator>(), Arg.Any<IExpressionParser>())
                 .Returns(x =>
                 {
                     if (x.ArgAt<FunctionCall>(0).FunctionName != "ToUpperCase")
@@ -1382,7 +1382,7 @@ public class ExpressionStringParserTests : IDisposable
             using var provider = new ServiceCollection()
                 .AddParsers()
                 .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
-                .AddSingleton(functionResultParserMock)
+                .AddSingleton(functionMock)
                 .BuildServiceProvider(true);
             using var scope = provider.CreateScope();
 
@@ -1413,9 +1413,9 @@ public class ExpressionStringParserTests : IDisposable
                 : Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}");
     }
 
-    private sealed class MyFunctionResultParser : IFunctionResultParser
+    private sealed class MyFunction : IFunction
     {
-        public Result<object?> Parse(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
         {
             if (functionCall.FunctionName == "error")
             {

@@ -782,8 +782,8 @@ public sealed class FormattableStringParserTests : IDisposable
         _provider = new ServiceCollection()
             .AddParsers()
             .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
-            .AddSingleton<IFunctionResultParser, MyFunctionResultParser>()
-            .AddSingleton<IFunctionResultParser, ToUpperCaseResultParser>()
+            .AddSingleton<IFunction, MyFunction>()
+            .AddSingleton<IFunction, ToUppercaseFunction>()
             .AddSingleton(_variable)
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
@@ -819,9 +819,9 @@ public sealed class FormattableStringParserTests : IDisposable
         }
     }
 
-    private sealed class MyFunctionResultParser : IFunctionResultParser
+    private sealed class MyFunction : IFunction
     {
-        public Result<object?> Parse(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
         {
             if (functionCall.FunctionName != "MyFunction")
             {
@@ -843,9 +843,9 @@ public sealed class FormattableStringParserTests : IDisposable
         }
     }
 
-    private sealed class ToUpperCaseResultParser : IFunctionResultParser
+    private sealed class ToUppercaseFunction : IFunction
     {
-        public Result<object?> Parse(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionParser parser)
         {
             if (functionCall.FunctionName != "ToUpperCase")
             {
