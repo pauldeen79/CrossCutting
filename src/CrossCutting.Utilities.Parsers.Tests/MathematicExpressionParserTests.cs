@@ -278,7 +278,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
     }
 
     [Fact]
-    public void Empty_String_Returns_NotFound()
+    public void Empty_String_Returns_Invalid()
     {
         // Arrange
         var input = string.Empty;
@@ -288,23 +288,23 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
+        result.Status.Should().Be(ResultStatus.Invalid);
         result.ErrorMessage.Should().Be("Input cannot be null or empty");
     }
 
     [Fact]
-    public void String_Containing_TemporaryDelimiter_Returns_NotFound()
+    public void String_Containing_TemporaryDelimiter_Returns_Invalid()
     {
         // Arrange
-        var input = "This string contains the magic `` internal temporary delimiter. Don't ask why, we just don't support it. You're doomed if you try this.";
+        var input = "This string contains the magic \uE002 internal temporary delimiter. Don't ask why, we just don't support it. You're doomed if you try this.";
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Input cannot contain ``, as this is used internally for formatting");
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Input cannot contain \uE002, as this is used internally for formatting");
     }
 
     [Fact]
@@ -546,7 +546,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
     }
 
     [Fact]
-    public void Returns_NotFound_On_Empty_Input()
+    public void Returns_Invalid_On_Empty_Input()
     {
         // Arrange
         var input = string.Empty;
@@ -556,7 +556,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
+        result.Status.Should().Be(ResultStatus.Invalid);
     }
 
     [Fact]
@@ -574,7 +574,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
     }
 
     [Fact]
-    public void Returns_NotFound_On_Empty_Input_Validation()
+    public void Returns_Invalid_On_Empty_Input_Validation()
     {
         // Arrange
         var input = string.Empty;
@@ -584,7 +584,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
         var result = sut.Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
+        result.Status.Should().Be(ResultStatus.Invalid);
     }
 
     [Fact]

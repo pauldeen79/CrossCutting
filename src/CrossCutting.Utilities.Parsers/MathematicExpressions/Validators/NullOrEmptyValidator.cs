@@ -6,7 +6,7 @@ internal sealed class NullOrEmptyValidator : IMathematicExpressionValidator
     {
         if (string.IsNullOrEmpty(state.Input))
         {
-            return Result.NotFound<MathematicExpressionState>("Input cannot be null or empty");
+            return Result.Invalid<MathematicExpressionState>("Input cannot be null or empty");
         }
 
         return Result.Success(state);

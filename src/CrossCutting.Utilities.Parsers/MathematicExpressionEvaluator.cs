@@ -2,7 +2,7 @@
 
 public class MathematicExpressionEvaluator : IMathematicExpressionEvaluator
 {
-    public const string TemporaryDelimiter = "``";
+    public const string TemporaryDelimiter = "\uE002";
 
     private readonly IExpressionEvaluator _expressionEvaluator;
     private readonly IEnumerable<IMathematicExpression> _expressions;

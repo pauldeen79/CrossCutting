@@ -680,7 +680,7 @@ public class ExpressionStringParserTests : IDisposable
         }
 
         [Fact]
-        public void Returns_NotSupported_When_FunctionParser_Returns_NotSupported()
+        public void Returns_Invalid_When_FunctionParser_Returns_Invalid()
         {
             // Arrange
             var input = "=somefunction(\uE002)";
@@ -689,7 +689,7 @@ public class ExpressionStringParserTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
+            result.Status.Should().Be(ResultStatus.Invalid);
             result.ErrorMessage.Should().Be("Input cannot contain \uE002, as this is used internally for formatting");
         }
 
@@ -1303,7 +1303,7 @@ public class ExpressionStringParserTests : IDisposable
         }
 
         [Fact]
-        public void Returns_NotSupported_When_FunctionParser_Returns_NotSupported()
+        public void Returns_Invalid_When_FunctionParser_Returns_Invalid()
         {
             // Arrange
             var input = "=somefunction(\uE002)";
@@ -1312,7 +1312,7 @@ public class ExpressionStringParserTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
+            result.Status.Should().Be(ResultStatus.Invalid);
             result.ErrorMessage.Should().Be("Input cannot contain \uE002, as this is used internally for formatting");
         }
 
