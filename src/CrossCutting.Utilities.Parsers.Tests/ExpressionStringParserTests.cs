@@ -97,7 +97,7 @@ public class ExpressionStringParserTests : IDisposable
         {
             // Arrange
             var input = "=$myvariable";
-            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<object?>("MyVariableValue") : Result.Continue<object?>());
+            _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<object?>("MyVariableValue") : Result.Continue<object?>());
 
             // Act
             var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
@@ -848,7 +848,7 @@ public class ExpressionStringParserTests : IDisposable
         {
             // Arrange
             var input = "=$myvariable";
-            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<object?>("MyVariableValue") : Result.Continue<object?>());
+            _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<object?>("MyVariableValue") : Result.Continue<object?>());
 
             // Act
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);

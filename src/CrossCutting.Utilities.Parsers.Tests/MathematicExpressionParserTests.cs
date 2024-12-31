@@ -26,7 +26,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
     {
         // Arrange
         var input = "1 + $myvariable";
-        _variable!.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<object?>(1) : Result.Continue<object?>());
+        _variable!.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<object?>(1) : Result.Continue<object?>());
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
@@ -563,7 +563,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
     public void Returns_Invalid_On_Null_Input()
     {
         // Arrange
-        var input = default(string);
+        var input = default(string?);
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
@@ -591,7 +591,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
     public void Returns_Invalid_On_Null_Input_Validation()
     {
         // Arrange
-        var input = default(string);
+        var input = default(string?);
         var sut = CreateSut(ParseExpressionDelegateInt32);
 
         // Act
@@ -614,7 +614,7 @@ public sealed class MathematicExpressionParserTests : IDisposable
 
     private Result<object?> ParseExpressionDelegateInt32(string arg, IFormatProvider formatProvider)
         => arg == "$myvariable"
-            ? _variable.Process(arg[1..], null)
+            ? _variable.Evaluate(arg[1..], null)
             : int.TryParse(arg, formatProvider, out var result)
                 ? Result.Success<object?>(result)
                 : Result.Invalid<object?>($"Could not parse {arg} to integer");

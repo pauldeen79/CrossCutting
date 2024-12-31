@@ -90,7 +90,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.Status.Should().Be(ResultStatus.Invalid);
         result.ErrorMessage.Should().Be("Unknown variable found: unknownVariable");
     }
 
@@ -775,7 +775,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         _variable = Substitute.For<IVariable>();
 
-        _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "variable"
+        _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "variable"
             ? Result.Success<object?>(1)
             : Result.Continue<object?>());
 

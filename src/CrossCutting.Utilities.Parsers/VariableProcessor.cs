@@ -11,7 +11,7 @@ public class VariableProcessor : IVariableProcessor
         _variables = variables;
     }
 
-    public Result<object?> Process(string variableExpression, object? context)
+    public Result<object?> Evaluate(string variableExpression, object? context)
     {
         if (string.IsNullOrEmpty(variableExpression))
         {
@@ -19,9 +19,9 @@ public class VariableProcessor : IVariableProcessor
         }
 
         return _variables
-            .Select(x => x.Process(variableExpression, context))
+            .Select(x => x.Evaluate(variableExpression, context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.NotSupported<object?>($"Unknown variable found: {variableExpression}");
+                ?? Result.Invalid<object?>($"Unknown variable found: {variableExpression}");
     }
 
     public Result Validate(string variableExpression, object? context)
