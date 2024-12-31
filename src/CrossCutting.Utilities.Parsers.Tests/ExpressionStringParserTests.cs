@@ -14,7 +14,7 @@ public class ExpressionStringParserTests : IDisposable
         _provider = new ServiceCollection()
             .AddParsers()
             .AddSingleton(_variable)
-            .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+            .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
             .AddSingleton<IFunction, MyFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
@@ -713,7 +713,7 @@ public class ExpressionStringParserTests : IDisposable
             // Arrange
             using var provider = new ServiceCollection()
                 .AddParsers()
-                .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+                .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
                 .BuildServiceProvider(true);
             using var scope = provider.CreateScope();
             var input = "=MYFUNCTION()";
@@ -759,7 +759,7 @@ public class ExpressionStringParserTests : IDisposable
                 });
             using var provider = new ServiceCollection()
                 .AddParsers()
-                .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+                .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
                 .AddSingleton(functionResultParserMock)
                 .BuildServiceProvider(true);
             using var scope = provider.CreateScope();
@@ -1336,7 +1336,7 @@ public class ExpressionStringParserTests : IDisposable
             // Arrange
             using var provider = new ServiceCollection()
                 .AddParsers()
-                .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+                .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
                 .BuildServiceProvider(true);
             using var scope = provider.CreateScope();
             var input = "=MYFUNCTION()";
@@ -1381,7 +1381,7 @@ public class ExpressionStringParserTests : IDisposable
                 });
             using var provider = new ServiceCollection()
                 .AddParsers()
-                .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+                .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
                 .AddSingleton(functionMock)
                 .BuildServiceProvider(true);
             using var scope = provider.CreateScope();
@@ -1398,11 +1398,11 @@ public class ExpressionStringParserTests : IDisposable
 
     private IExpressionStringParser CreateSut() => _scope.ServiceProvider.GetRequiredService<IExpressionStringParser>();
 
-    private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
+    private sealed class MyPlaceholderProcessor : IPlaceholder
     {
         public int Order => 10;
 
-        public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<FormattableStringParserResult> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result.Success(new FormattableStringParserResult(ReplacedValue))
                 : Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}");

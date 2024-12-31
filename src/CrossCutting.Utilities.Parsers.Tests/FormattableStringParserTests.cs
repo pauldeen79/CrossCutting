@@ -781,7 +781,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
         _provider = new ServiceCollection()
             .AddParsers()
-            .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+            .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
             .AddSingleton<IFunction, MyFunction>()
             .AddSingleton<IFunction, ToUppercaseFunction>()
             .AddSingleton(_variable)
@@ -790,11 +790,11 @@ public sealed class FormattableStringParserTests : IDisposable
         return _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>();
     }
 
-    private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
+    private sealed class MyPlaceholderProcessor : IPlaceholder
     {
         public int Order => 10;
 
-        public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<FormattableStringParserResult> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
         {
             return value switch
             {

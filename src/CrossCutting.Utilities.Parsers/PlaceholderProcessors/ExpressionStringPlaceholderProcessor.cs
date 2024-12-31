@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.PlaceholderProcessors;
 
-public class ExpressionStringPlaceholderProcessor : IPlaceholderProcessor
+public class ExpressionStringPlaceholderProcessor : IPlaceholder
 {
     private readonly IExpressionStringParser _expressionStringParser;
 
@@ -13,7 +13,7 @@ public class ExpressionStringPlaceholderProcessor : IPlaceholderProcessor
 
     public int Order => 990;
 
-    public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<FormattableStringParserResult> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         var result = _expressionStringParser.Parse($"={value}", formatProvider, context, formattableStringParser);
 

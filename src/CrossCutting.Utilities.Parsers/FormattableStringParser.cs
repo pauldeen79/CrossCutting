@@ -2,15 +2,15 @@
 
 public class FormattableStringParser : IFormattableStringParser
 {
-    private readonly IEnumerable<IPlaceholderProcessor> _processors;
+    private readonly IEnumerable<IPlaceholder> _placeholders;
 
     private const string TemporaryDelimiter = "\uE002";
 
-    public FormattableStringParser(IEnumerable<IPlaceholderProcessor> processors)
+    public FormattableStringParser(IEnumerable<IPlaceholder> placeholders)
     {
-        processors = processors.IsNotNull(nameof(processors));
+        placeholders = placeholders.IsNotNull(nameof(placeholders));
 
-        _processors = processors;
+        _placeholders = placeholders;
     }
 
     public Result<FormattableStringParserResult> Parse(string input, FormattableStringParserSettings settings, object? context)
@@ -59,7 +59,7 @@ public class FormattableStringParser : IFormattableStringParser
             var placeholder = remainder.Substring(openIndex + settings.PlaceholderStart.Length, closeIndex - openIndex - settings.PlaceholderStart.Length);
             var found = $"{settings.PlaceholderStart}{placeholder}{settings.PlaceholderEnd}";
             remainder = remainder.Replace(found, $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}");
-            var placeholderResult = ProcessOnProcessors(settings, context, validateOnly, placeholder);
+            var placeholderResult = ProcessOnPlaceholders(settings, context, validateOnly, placeholder);
 
             placeholderResult = CombineResults(placeholderResult, validateOnly, () => ProcessRecursive(input, settings, context, placeholderResult, validateOnly, currentRecursionLevel + 1));
             if (!placeholderResult.IsSuccessful() && !validateOnly)
@@ -86,12 +86,9 @@ public class FormattableStringParser : IFormattableStringParser
 
         remainder = ReplaceTemporaryDelimiters(remainder, results);
 
-        if (validateOnly)
-        {
-            return Result.Aggregate(results, Result.Success(new FormattableStringParserResult(string.Empty, [])), validationResults => Result.Invalid<FormattableStringParserResult>("Validation failed, see inner results for details", validationResults));
-        }
-
-        return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
+        return validateOnly
+            ? Result.Aggregate(results, Result.Success(new FormattableStringParserResult(string.Empty, [])), validationResults => Result.Invalid<FormattableStringParserResult>("Validation failed, see inner results for details", validationResults))
+            : Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
     }
 
     private Result<FormattableStringParserResult> ProcessRecursive(string input, FormattableStringParserSettings settings, object? context, Result<FormattableStringParserResult> placeholderResult, bool validateOnly, int currentRecursionLevel)
@@ -112,14 +109,14 @@ public class FormattableStringParser : IFormattableStringParser
         return placeholderResult;
     }
 
-    private Result<FormattableStringParserResult> ProcessOnProcessors(FormattableStringParserSettings settings, object? context, bool validateOnly, string placeholder)
-        => _processors
+    private Result<FormattableStringParserResult> ProcessOnPlaceholders(FormattableStringParserSettings settings, object? context, bool validateOnly, string value)
+        => _placeholders
             .OrderBy(x => x.Order)
-            .Select(processor => validateOnly
-                ? Result.FromExistingResult<FormattableStringParserResult>(processor.Validate(placeholder, settings.FormatProvider, context, this))
-                : processor.Process(placeholder, settings.FormatProvider, context, this))
+            .Select(placeholder => validateOnly
+                ? Result.FromExistingResult<FormattableStringParserResult>(placeholder.Validate(value, settings.FormatProvider, context, this))
+                : placeholder.Evaluate(value, settings.FormatProvider, context, this))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
+                ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {value}");
 
     private static string ReplaceTemporaryDelimiters(string remainder, List<Result<FormattableStringParserResult>> results)
     {

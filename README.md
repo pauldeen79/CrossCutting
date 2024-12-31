@@ -56,4 +56,5 @@ There have been some breaking changes.
 
 First, the FunctionParseResult has been renamed to FunctionCall, because that's what it is.
 Second, IFunctionResultParser has been renamed to IFunction, and Parse has been renamed to Evaluate, because that's what it is.
-Third, some parsers and evaluators now have a Validate method, to check whether the input is valid. This way, you can check validity without actually performing the action.
+Third, IPlaceholderProcessor has been renamed to IPlaceholder, and Process has been renamed to Evaluate, because that's what it is.
+Fourth, some parsers and evaluators now have a Validate method, to check whether the input is valid. This way, you can check validity without actually performing the action.

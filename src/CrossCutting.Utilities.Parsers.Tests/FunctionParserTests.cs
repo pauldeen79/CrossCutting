@@ -10,7 +10,7 @@ public sealed class FunctionParserTests : IDisposable
     {
         _provider = new ServiceCollection()
             .AddParsers()
-            .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+            .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -413,11 +413,11 @@ public sealed class FunctionParserTests : IDisposable
         public Result<string> Process(string input) => Result.Error<string>("Kaboom");
     }
 
-    private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
+    private sealed class MyPlaceholderProcessor : IPlaceholder
     {
         public int Order => 10;
 
-        public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<FormattableStringParserResult> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result.Success<FormattableStringParserResult>(ReplacedValue)
                 : Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}");
