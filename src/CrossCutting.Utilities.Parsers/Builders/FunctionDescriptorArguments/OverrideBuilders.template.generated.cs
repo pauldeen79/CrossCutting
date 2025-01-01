@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArguments
 {
-    public partial class FunctionDescriptorArgumentBuilder : CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBaseBuilder<FunctionDescriptorArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionDescriptorArguments.FunctionDescriptorArgument>, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionDescriptorArgumentBuilder
+    public partial class FunctionDescriptorArgumentBuilder : FunctionDescriptorArgumentBaseBuilder<FunctionDescriptorArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionDescriptorArguments.FunctionDescriptorArgument>, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionDescriptorArgumentBuilder
     {
         private string _name;
 
@@ -104,7 +104,7 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArguments
             return this;
         }
     }
-    public partial class LiteralFunctionDescriptorArgumentBuilder : CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBaseBuilder<LiteralFunctionDescriptorArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionDescriptorArguments.LiteralFunctionDescriptorArgument>, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionDescriptorArgumentBuilder
+    public partial class LiteralFunctionDescriptorArgumentBuilder : FunctionDescriptorArgumentBaseBuilder<LiteralFunctionDescriptorArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionDescriptorArguments.LiteralFunctionDescriptorArgument>, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionDescriptorArgumentBuilder
     {
         private System.Type _type;
 

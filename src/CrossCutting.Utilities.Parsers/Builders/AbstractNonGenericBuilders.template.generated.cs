@@ -16,7 +16,6 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         protected FunctionCallArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgument source)
         {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
         }
 
         protected FunctionCallArgumentBuilder()
@@ -53,7 +52,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
             set
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_name!, value!);
-                _name = value ?? throw new System.ArgumentNullException(nameof(value));
+                _name = value;
                 if (hasChanged) HandlePropertyChanged(nameof(Name));
             }
         }
@@ -68,7 +67,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
             set
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_description!, value!);
-                _description = value ?? throw new System.ArgumentNullException(nameof(value));
+                _description = value;
                 if (hasChanged) HandlePropertyChanged(nameof(Description));
             }
         }
@@ -89,7 +88,6 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         protected FunctionDescriptorArgumentBaseBuilder(CrossCutting.Utilities.Parsers.FunctionDescriptorArgumentBase source)
         {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
             _name = source.Name;
             _description = source.Description;
             _isRequired = source.IsRequired;
@@ -105,26 +103,6 @@ namespace CrossCutting.Utilities.Parsers.Builders
         public abstract CrossCutting.Utilities.Parsers.FunctionDescriptorArgumentBase Build();
 
         partial void SetDefaultValues();
-
-        public TBuilder WithName(string name)
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            Name = name;
-            return (TBuilder)this;
-        }
-
-        public TBuilder WithDescription(string description)
-        {
-            if (description is null) throw new System.ArgumentNullException(nameof(description));
-            Description = description;
-            return (TBuilder)this;
-        }
-
-        public TBuilder WithIsRequired(bool isRequired = true)
-        {
-            IsRequired = isRequired;
-            return (TBuilder)this;
-        }
 
         protected void HandlePropertyChanged(string propertyName)
         {

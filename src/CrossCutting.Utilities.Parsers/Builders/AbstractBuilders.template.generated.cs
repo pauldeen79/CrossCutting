@@ -47,26 +47,6 @@ namespace CrossCutting.Utilities.Parsers.Builders
         }
 
         public abstract TEntity BuildTyped();
-
-        public TBuilder WithName(string name)
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            Name = name;
-            return (TBuilder)this;
-        }
-
-        public TBuilder WithDescription(string description)
-        {
-            if (description is null) throw new System.ArgumentNullException(nameof(description));
-            Description = description;
-            return (TBuilder)this;
-        }
-
-        public TBuilder WithIsRequired(bool isRequired = true)
-        {
-            IsRequired = isRequired;
-            return (TBuilder)this;
-        }
     }
 }
 #nullable disable

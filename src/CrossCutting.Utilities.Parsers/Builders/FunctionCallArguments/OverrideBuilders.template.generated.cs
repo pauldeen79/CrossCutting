@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
-    public partial class EmptyArgumentBuilder : CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder<EmptyArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument>
+    public partial class EmptyArgumentBuilder : FunctionCallArgumentBuilder<EmptyArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument>
     {
         public EmptyArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument source) : base(source)
         {
@@ -29,7 +29,7 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 
         partial void SetDefaultValues();
     }
-    public partial class LiteralArgumentBuilder : CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder<LiteralArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.LiteralArgument>
+    public partial class LiteralArgumentBuilder : FunctionCallArgumentBuilder<LiteralArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.LiteralArgument>
     {
         private string _value;
 
@@ -73,7 +73,7 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             return this;
         }
     }
-    public partial class RecursiveArgumentBuilder : CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder<RecursiveArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.RecursiveArgument>
+    public partial class RecursiveArgumentBuilder : FunctionCallArgumentBuilder<RecursiveArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.RecursiveArgument>
     {
         private CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder _function;
 
