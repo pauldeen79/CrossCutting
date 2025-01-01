@@ -11,29 +11,29 @@ public class VariableProcessor : IVariableProcessor
         _variables = variables;
     }
 
-    public Result<object?> Evaluate(string variableExpression, object? context)
+    public Result<object?> Evaluate(string expression, object? context)
     {
-        if (string.IsNullOrEmpty(variableExpression))
+        if (string.IsNullOrEmpty(expression))
         {
             return Result.Invalid<object?>("Variable is required");
         }
 
         return _variables
-            .Select(x => x.Evaluate(variableExpression, context))
+            .Select(x => x.Evaluate(expression, context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid<object?>($"Unknown variable found: {variableExpression}");
+                ?? Result.Invalid<object?>($"Unknown variable found: {expression}");
     }
 
-    public Result Validate(string variableExpression, object? context)
+    public Result Validate(string expression, object? context)
     {
-        if (string.IsNullOrEmpty(variableExpression))
+        if (string.IsNullOrEmpty(expression))
         {
             return Result.Invalid("Variable is required");
         }
 
         return _variables
-            .Select(x => x.Validate(variableExpression, context))
+            .Select(x => x.Validate(expression, context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid($"Unknown variable found: {variableExpression}");
+                ?? Result.Invalid($"Unknown variable found: {expression}");
     }
 }

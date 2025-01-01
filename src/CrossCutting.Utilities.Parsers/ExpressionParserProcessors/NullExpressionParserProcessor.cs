@@ -4,15 +4,15 @@ public class NullExpressionParserProcessor : IExpression
 {
     public int Order => 30;
 
-    public Result<object?> Evaluate(string value, IFormatProvider formatProvider, object? context)
-        => value switch
+    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
+        => expression switch
         {
             "null" => Result.Success<object?>(null),
             _ => Result.Continue<object?>()
         };
 
-    public Result Validate(string value, IFormatProvider formatProvider, object? context)
-        => value switch
+    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+        => expression switch
         {
             "null" => Result.Success(),
             _ => Result.Continue()

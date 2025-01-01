@@ -816,18 +816,18 @@ public abstract class ExpressionParserBase : IFunction, IExpressionResolver
         _aliases = aliases;
     }
 
-    public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
+    public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
     {
-        var result = Parse(functionCall, evaluator, parser);
+        var result = Parse(functionCall, functionEvaluator, expressionEvaluator);
 
         return result.IsSuccessful() && result.Status != ResultStatus.Continue
             ? result.Value?.Evaluate(context) ?? Result.Success<object?>(null)
             : Result.FromExistingResult<object?>(result);
     }
 
-    public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
+    public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
     {
-        return Parse(functionCall, evaluator, parser);
+        return Parse(functionCall, functionEvaluator, expressionEvaluator);
     }
 
     public Result<Expression> Parse(FunctionCall functionCall, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
@@ -889,7 +889,7 @@ public abstract class ExpressionParserBase : IFunction, IExpressionResolver
         }
         catch (Exception ex)
         {
-            return Result.Invalid<Expression>($"Could not create {expressionType.Name.Replace("`1", string.Empty)}. Error: {ex.Message}");
+            return Result.Invalid<Expression>($"Could not create {expressionType.Name.Replace("`1", string.Empty, StringComparison.Ordinal)}. Error: {ex.Message}");
         }
 #pragma warning restore CA1031 // Do not catch general exception types
     }
@@ -1009,7 +1009,7 @@ internal static class StringExtensions
     /// <returns>TypeName</returns>
     internal static string WithoutGenerics(this string instance)
     {
-        var index = instance.IndexOf('<');
+        var index = instance.IndexOf('<', StringComparison.Ordinal);
         return index == -1
             ? instance
             : instance.Substring(0, index);
@@ -1027,13 +1027,13 @@ internal static class StringExtensions
             return string.Empty;
         }
 
-        var open = value.IndexOf("<");
+        var open = value.IndexOf('<', StringComparison.Ordinal);
         if (open == -1)
         {
             return string.Empty;
         }
 
-        var close = value.LastIndexOf(">");
+        var close = value.LastIndexOf('>');
 
         if (close == -1)
         {

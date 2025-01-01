@@ -2,7 +2,7 @@
 
 public interface IVariable
 {
-    Result Validate(string variableExpression, object? context);
+    Result Validate(string expression, object? context);
 
-    Result<object?> Evaluate(string variableExpression, object? context);
+    Result<object?> Evaluate(string expression, object? context);
 }

@@ -13,31 +13,31 @@ public class VariableExpressionParserProcessor : IExpression
         _variableProcessor = variableProcessor;
     }
 
-    public Result<object?> Evaluate(string value, IFormatProvider formatProvider, object? context)
+    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
     {
-        if (value is null)
+        if (expression is null)
         {
             return Result.Continue<object?>();
         }
 
-        if (value.StartsWith("$") && value.Length > 1)
+        if (expression.StartsWith("$") && expression.Length > 1)
         {
-            return _variableProcessor.Evaluate(value.Substring(1), context);
+            return _variableProcessor.Evaluate(expression.Substring(1), context);
         }
 
         return Result.Continue<object?>();
     }
 
-    public Result Validate(string value, IFormatProvider formatProvider, object? context)
+    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
     {
-        if (value is null)
+        if (expression is null)
         {
             return Result.Continue();
         }
 
-        if (value.StartsWith("$") && value.Length > 1)
+        if (expression.StartsWith("$") && expression.Length > 1)
         {
-            return _variableProcessor.Validate(value.Substring(1), context);
+            return _variableProcessor.Validate(expression.Substring(1), context);
         }
 
         // Other values are ignored, so the expression parser knows whether an expression is supported

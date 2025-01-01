@@ -4,7 +4,7 @@ public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserA
 {
     public int Order => 10;
 
-    public Result<FunctionCallArgument> Process(string stringArgument, IReadOnlyCollection<FunctionCall> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    public Result<FunctionCallArgument> Process(string stringArgument, IReadOnlyCollection<FunctionCall> functionCalls, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
         if (stringArgument?.StartsWith("@") == true && formattableStringParser is not null)
         {

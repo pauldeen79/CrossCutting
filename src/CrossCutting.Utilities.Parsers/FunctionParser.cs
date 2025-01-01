@@ -18,22 +18,22 @@ public class FunctionParser : IFunctionParser
         _argumentProcessors = argumentProcessors;
     }
 
-    public Result<FunctionCall> Parse(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    public Result<FunctionCall> Parse(string function, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
         ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
 
-        if (string.IsNullOrEmpty(input))
+        if (string.IsNullOrEmpty(function))
         {
             return Result.NotFound<FunctionCall>("No function found");
         }
 
-        if (input.Contains(TemporaryDelimiter))
+        if (function.Contains(TemporaryDelimiter))
         {
             return Result.NotSupported<FunctionCall>($"Input cannot contain {TemporaryDelimiter}, as this is used internally for formatting");
         }
 
         var results = new List<FunctionCall>();
-        var remainder = input;
+        var remainder = function;
         do
         {
             var quoteMap = BuildQuoteMap(remainder);

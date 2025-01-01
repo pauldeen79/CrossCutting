@@ -4,17 +4,17 @@ public class DateTimeExpressionParserProcessor : IExpression
 {
     public int Order => 70;
 
-    public Result<object?> Evaluate(string value, IFormatProvider formatProvider, object? context)
-        => value switch
+    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
+        => expression switch
         {
-            not null when DateTime.TryParse(value, formatProvider, DateTimeStyles.None, out var dt) => Result.Success<object?>(dt),
+            not null when DateTime.TryParse(expression, formatProvider, DateTimeStyles.None, out var dt) => Result.Success<object?>(dt),
             _ => Result.Continue<object?>()
         };
 
-    public Result Validate(string value, IFormatProvider formatProvider, object? context)
-        => value switch
+    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+        => expression switch
         {
-            not null when DateTime.TryParse(value, formatProvider, DateTimeStyles.None, out _) => Result.Success(),
+            not null when DateTime.TryParse(expression, formatProvider, DateTimeStyles.None, out _) => Result.Success(),
             _ => Result.Continue()
         };
 }

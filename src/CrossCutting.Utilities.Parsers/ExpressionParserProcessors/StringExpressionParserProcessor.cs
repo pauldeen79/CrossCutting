@@ -4,17 +4,17 @@ public class StringExpressionParserProcessor : IExpression
 {
     public int Order => 40;
 
-    public Result<object?> Evaluate(string value, IFormatProvider formatProvider, object? context)
-        => value?.StartsWith("\"") switch
+    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
+        => expression?.StartsWith("\"") switch
         {
-            true when value.EndsWith("\"") => Result.Success<object?>(value.Substring(1, value.Length - 2)),
+            true when expression.EndsWith("\"") => Result.Success<object?>(expression.Substring(1, expression.Length - 2)),
             _ => Result.Continue<object?>()
         };
 
-    public Result Validate(string value, IFormatProvider formatProvider, object? context)
-        => value?.StartsWith("\"") switch
+    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+        => expression?.StartsWith("\"") switch
         {
-            true when value.EndsWith("\"") => Result.Success(),
+            true when expression.EndsWith("\"") => Result.Success(),
             _ => Result.Continue()
         };
 }

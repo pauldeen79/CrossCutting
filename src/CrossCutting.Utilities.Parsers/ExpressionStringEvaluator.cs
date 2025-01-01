@@ -24,14 +24,14 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
         _expressionStrings = expressionStrings;
     }
 
-    public Result<object?> Evaluate(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    public Result<object?> Evaluate(string expressionString, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
-        if (input is null)
+        if (expressionString is null)
         {
             return Result.Invalid<object?>("Input is required");
         }
 
-        var state = new ExpressionStringEvaluatorState(input, formatProvider, context, this, formattableStringParser);
+        var state = new ExpressionStringEvaluatorState(expressionString, formatProvider, context, this, formattableStringParser);
 
         return _expressionStrings
             .OrderBy(x => x.Order)
@@ -40,14 +40,14 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
                 ?? EvaluateSimpleExpression(state);
     }
 
-    public Result Validate(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    public Result Validate(string expressionString, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
-        if (input is null)
+        if (expressionString is null)
         {
             return Result.Invalid("Input is required");
         }
 
-        var state = new ExpressionStringEvaluatorState(input, formatProvider, context, this, formattableStringParser);
+        var state = new ExpressionStringEvaluatorState(expressionString, formatProvider, context, this, formattableStringParser);
 
         return _expressionStrings
             .OrderBy(x => x.Order)
