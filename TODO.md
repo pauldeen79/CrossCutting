@@ -24,7 +24,7 @@ bool IsRequired
 IRecursiveFunctionDescriptorArgument // FunctionArgument
 
 ILiteralFunctionDescriptorArgument // LiteralArgument
-string TypeName
+Type Type
 
 IFunctionDescriptorProvider:
 IFunctionDescriptor[] GetAll()
