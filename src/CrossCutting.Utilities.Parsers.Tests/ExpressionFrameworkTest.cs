@@ -1,38 +1,37 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
-public sealed class ExpressionFrameworkTest : IDisposable
+public sealed class ExpressionFrameworkTest
 {
-    private ServiceProvider? _provider;
-    private IServiceScope? _scope;
-
     [Fact]
     public void Can_Parse_ToUpperCaseExpression()
     {
         // Arrange
-        var sut = CreateSut();
-        var evaluator = Substitute.For<IExpressionEvaluator>();
-        evaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
+        var sut = new ToUpperCaseExpressionParser();
+        var functionEvaluator = Substitute.For<IFunctionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new FunctionCallBuilder().WithFunctionName("ToUpperCase").AddArguments(new LiteralArgumentBuilder().WithValue("Hello world!")).Build();
 
         // Act
-        var result = sut.Validate(functionCall, evaluator);
+        var result = sut.Parse(functionCall, functionEvaluator, expressionEvaluator);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValue().Should().BeOfType<ToUpperCaseExpression>();
+        result.Value.Should().BeOfType<ToUpperCaseExpression>();
     }
 
     [Fact]
     public void Can_Validate_ToUpperCaseExpression()
     {
         // Arrange
-        var sut = CreateSut();
-        var evaluator = Substitute.For<IExpressionEvaluator>();
-        evaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
+        var sut = new ToUpperCaseExpressionParser();
+        var functionEvaluator = Substitute.For<IFunctionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new FunctionCallBuilder().WithFunctionName("ToUpperCase").AddArguments(new LiteralArgumentBuilder().WithValue("Hello world!")).Build();
 
         // Act
-        var result = sut.Validate(functionCall, evaluator);
+        var result = sut.Validate(functionCall, null, functionEvaluator, expressionEvaluator);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -42,34 +41,19 @@ public sealed class ExpressionFrameworkTest : IDisposable
     public void Can_Evaluate_ToUpperCaseExpression()
     {
         // Arrange
-        var sut = CreateSut();
-        var evaluator = Substitute.For<IExpressionEvaluator>();
-        evaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
+        var sut = new ToUpperCaseExpressionParser();
+        var functionEvaluator = Substitute.For<IFunctionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new FunctionCallBuilder().WithFunctionName("ToUpperCase").AddArguments(new LiteralArgumentBuilder().WithValue("Hello world!")).Build();
 
         // Act
-        var result = sut.Evaluate(functionCall, evaluator);
+        var result = sut.Evaluate(functionCall, null, functionEvaluator, expressionEvaluator);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().BeOfType<string>();
         result.Value!.ToString().Should().Be("HELLO WORLD!");
-    }
-
-    public void Dispose()
-    {
-        _scope?.Dispose();
-        _provider?.Dispose();
-    }
-
-    private IFunctionEvaluator CreateSut()
-    {
-        _provider = new ServiceCollection()
-            .AddParsers()
-            .AddSingleton<IFunction, ToUpperCaseExpressionParser>()
-            .BuildServiceProvider(true);
-        _scope = _provider.CreateScope();
-        return _scope.ServiceProvider.GetRequiredService<IFunctionEvaluator>();
     }
 }
 
