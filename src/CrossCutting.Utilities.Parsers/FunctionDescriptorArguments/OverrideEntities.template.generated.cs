@@ -10,10 +10,30 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.FunctionDescriptorArguments
 {
-    public partial record FunctionDescriptorArgument : CrossCutting.Utilities.Parsers.FunctionDescriptorArgumentBase
+    public partial record FunctionDescriptorArgument : CrossCutting.Utilities.Parsers.FunctionDescriptorArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionDescriptorArgument
     {
-        public FunctionDescriptorArgument() : base()
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Name
         {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Description
+        {
+            get;
+        }
+
+        public bool IsRequired
+        {
+            get;
+        }
+
+        public FunctionDescriptorArgument(string name, string description, bool isRequired) : base(name, description, isRequired)
+        {
+            this.Name = name;
+            this.Description = description;
+            this.IsRequired = isRequired;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -27,7 +47,7 @@ namespace CrossCutting.Utilities.Parsers.FunctionDescriptorArguments
             return new CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArguments.FunctionDescriptorArgumentBuilder(this);
         }
     }
-    public partial record LiteralFunctionDescriptorArgument : CrossCutting.Utilities.Parsers.FunctionDescriptorArgumentBase
+    public partial record LiteralFunctionDescriptorArgument : CrossCutting.Utilities.Parsers.FunctionDescriptorArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionDescriptorArgument
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public System.Type Type
@@ -35,7 +55,7 @@ namespace CrossCutting.Utilities.Parsers.FunctionDescriptorArguments
             get;
         }
 
-        public LiteralFunctionDescriptorArgument(System.Type type) : base()
+        public LiteralFunctionDescriptorArgument(System.Type type, string name, string description, bool isRequired) : base(name, description, isRequired)
         {
             this.Type = type;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);

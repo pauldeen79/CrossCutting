@@ -33,23 +33,98 @@ namespace CrossCutting.Utilities.Parsers.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public abstract partial class FunctionDescriptorArgumentBaseBuilder : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class FunctionDescriptorArgumentBaseBuilder : CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionDescriptorArgumentBuilder, System.ComponentModel.INotifyPropertyChanged
     {
+        private string _name;
+
+        private string _description;
+
+        private bool _isRequired;
+
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_name!, value!);
+                _name = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Name));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Description
+        {
+            get
+            {
+                return _description;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_description!, value!);
+                _description = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Description));
+            }
+        }
+
+        public bool IsRequired
+        {
+            get
+            {
+                return _isRequired;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_isRequired, value);
+                _isRequired = value;
+                if (hasChanged) HandlePropertyChanged(nameof(IsRequired));
+            }
+        }
 
         protected FunctionDescriptorArgumentBaseBuilder(CrossCutting.Utilities.Parsers.FunctionDescriptorArgumentBase source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _name = source.Name;
+            _description = source.Description;
+            _isRequired = source.IsRequired;
         }
 
         protected FunctionDescriptorArgumentBaseBuilder()
         {
+            _name = string.Empty;
+            _description = string.Empty;
             SetDefaultValues();
         }
 
         public abstract CrossCutting.Utilities.Parsers.FunctionDescriptorArgumentBase Build();
 
         partial void SetDefaultValues();
+
+        public TBuilder WithName(string name)
+        {
+            if (name is null) throw new System.ArgumentNullException(nameof(name));
+            Name = name;
+            return (TBuilder)this;
+        }
+
+        public TBuilder WithDescription(string description)
+        {
+            if (description is null) throw new System.ArgumentNullException(nameof(description));
+            Description = description;
+            return (TBuilder)this;
+        }
+
+        public TBuilder WithIsRequired(bool isRequired = true)
+        {
+            IsRequired = isRequired;
+            return (TBuilder)this;
+        }
 
         protected void HandlePropertyChanged(string propertyName)
         {
