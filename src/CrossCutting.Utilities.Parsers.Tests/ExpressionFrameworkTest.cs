@@ -967,7 +967,7 @@ public static class ExpressionExtensions
     public static string CreateInvalidTypeErrorMessage<T>(string? errorMessage = null)
         => errorMessage.WhenNullOrEmpty(() => $"Expression is not of type {GetTypeName(typeof(T))}");
 
-    private static string GetTypeName(Type type)
+    private static string? GetTypeName(Type type)
     {
         if (type == typeof(string))
         {
