@@ -18,5 +18,13 @@ namespace CrossCutting.Utilities.Parsers
 
         public abstract CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder();
     }
+    public abstract partial record FunctionDescriptorArgumentBase
+    {
+        protected FunctionDescriptorArgumentBase()
+        {
+        }
+
+        public abstract CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBaseBuilder ToBuilder();
+    }
 }
 #nullable disable

@@ -22,7 +22,7 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
     {
         ArgumentGuard.IsNotNull(type, nameof(type));
 
-        if (type.IsInterface && type.Namespace == $"{CodeGenerationRootNamespace}.Models" && type.Name[1..] == Constants.Types.FunctionCallArgument)
+        if (type.IsInterface && type.Namespace == $"{CodeGenerationRootNamespace}.Models" && type.Name[1..].In(Constants.Types.FunctionCallArgument, Constants.Types.FunctionDescriptorArgument))
         {
             return true;
         }
