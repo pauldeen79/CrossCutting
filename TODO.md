@@ -14,17 +14,14 @@ VNEXT
 
 IFunctionDescriptor:
 string Name
+string Description //optional
 IFunctionDescriptorArgument[] Arguments
 
 IFunctionDescriptorArgument:
 string Name
 string Description //optional
 bool IsRequired
-
-IRecursiveFunctionDescriptorArgument // FunctionArgument
-
-ILiteralFunctionDescriptorArgument // LiteralArgument
-Type Type
+string TypeName
 
 IFunctionDescriptorProvider:
 IFunctionDescriptor[] GetAll()
