@@ -17,7 +17,6 @@ public static class Constants
     public static class Types
     {
         public const string FunctionCallArgument = "FunctionCallArgument";
-        public const string FunctionDescriptorArgument = "FunctionDescriptorArgument";
     }
 
     [ExcludeFromCodeCoverage]
