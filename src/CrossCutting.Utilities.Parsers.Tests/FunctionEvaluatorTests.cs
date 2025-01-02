@@ -39,7 +39,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(functionCall!, parser);
+        var result = sut.Evaluate(functionCall!, parser, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -55,7 +55,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(functionCall!, parser);
+        var result = sut.Evaluate(functionCall!, parser, default(object?));
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -103,7 +103,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = sut.Validate(functionCall!, parser);
+        var result = sut.Validate(functionCall!, parser, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -118,7 +118,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = sut.Validate(functionCall!, parser);
+        var result = sut.Validate(functionCall!, parser, default(object?));
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
