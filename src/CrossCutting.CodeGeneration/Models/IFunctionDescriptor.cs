@@ -3,5 +3,5 @@
 public interface IFunctionDescriptor
 {
     [Required] string FunctionName { get; }
-    [Required][ValidateObject] IReadOnlyCollection<IFunctionDescriptorArgumentBase> Arguments { get; }
+    [Required][ValidateObject] IReadOnlyCollection<IFunctionDescriptorArgument> Arguments { get; }
 }

@@ -18,35 +18,5 @@ namespace CrossCutting.Utilities.Parsers
 
         public abstract CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder();
     }
-    public abstract partial record FunctionDescriptorArgumentBase : CrossCutting.Utilities.Parsers.Abstractions.IFunctionDescriptorArgument
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string Name
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string Description
-        {
-            get;
-        }
-
-        public bool IsRequired
-        {
-            get;
-        }
-
-        protected FunctionDescriptorArgumentBase(string name, string description, bool isRequired)
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            if (description is null) throw new System.ArgumentNullException(nameof(description));
-            this.Name = name;
-            this.Description = description;
-            this.IsRequired = isRequired;
-        }
-
-        public abstract CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBaseBuilder ToBuilder();
-    }
 }
 #nullable disable

@@ -106,21 +106,60 @@ namespace CrossCutting.Utilities.Parsers
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorArgumentBase> Arguments
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> Arguments
         {
             get;
         }
 
-        public FunctionDescriptor(string functionName, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgumentBase> arguments)
+        public FunctionDescriptor(string functionName, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments)
         {
             this.FunctionName = functionName;
-            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorArgumentBase>(arguments);
+            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument>(arguments);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
         public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorBuilder ToBuilder()
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorBuilder(this);
+        }
+    }
+    public partial record FunctionDescriptorArgument
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Name
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string TypeName
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Description
+        {
+            get;
+        }
+
+        public bool IsRequired
+        {
+            get;
+        }
+
+        public FunctionDescriptorArgument(string name, string typeName, string description, bool isRequired)
+        {
+            this.Name = name;
+            this.TypeName = typeName;
+            this.Description = description;
+            this.IsRequired = isRequired;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder(this);
         }
     }
 }

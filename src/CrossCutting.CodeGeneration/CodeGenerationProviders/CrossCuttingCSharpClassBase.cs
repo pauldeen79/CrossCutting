@@ -1,8 +1,4 @@
-﻿//using ClassFramework.Domain.Abstractions;
-//using ClassFramework.Domain.Extensions;
-//using ClassFramework.Pipelines;
-
-namespace CrossCutting.CodeGeneration.CodeGenerationProviders;
+﻿namespace CrossCutting.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
@@ -21,18 +17,6 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
     protected override bool CreateRecord => true;
     protected override bool GenerateMultipleFiles => false;
     protected override bool EnableGlobalUsings => true;
-
-    //protected override string[] GetModelAbstractBaseTyped() => [nameof(Models.Abstractions.IFunctionDescriptorArgument)];
-
-    //protected override InheritanceComparisonDelegate? CreateInheritanceComparisonDelegate(TypeBase? baseClass) => (parentNameContainer, typeBase)
-    //    => parentNameContainer is not null
-    //        && typeBase is not null
-    //        && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
-    //            || (baseClass is not null && !baseClass.Properties.Any(x => x.Name == (parentNameContainer as INameContainer)?.Name))
-    //            || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
-    //            || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-    //            || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
-    //        );
 
     protected override bool IsAbstractType(Type type)
     {
