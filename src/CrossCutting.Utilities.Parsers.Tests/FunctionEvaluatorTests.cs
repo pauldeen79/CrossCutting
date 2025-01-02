@@ -34,7 +34,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public void Evaluate_Returns_First_Success_Result_From_FunctionResultParser()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithFunctionName("MyFunction").Build();
+        var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
         var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
@@ -50,7 +50,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public void Evaluate_Returns_First_Failure_Result_From_FunctionResultParser()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithFunctionName("Error").Build();
+        var functionCall = new FunctionCallBuilder().WithName("Error").Build();
         var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
@@ -66,7 +66,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public void Evaluate_Returns_NotSupported_When_FunctionCall_Is_Unknown()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithFunctionName("WrongName").Build();
+        var functionCall = new FunctionCallBuilder().WithName("WrongName").Build();
         var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
@@ -98,7 +98,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public void Validate_Returns_First_Success_Result_From_FunctionResultParser()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithFunctionName("MyFunction").Build();
+        var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
         var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
@@ -113,7 +113,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public void Validate_Returns_First_Failure_Result_From_FunctionResultParser()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithFunctionName("Error").Build();
+        var functionCall = new FunctionCallBuilder().WithName("Error").Build();
         var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
@@ -129,7 +129,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public void Validate_Returns_Invalid_When_FunctionCall_Is_Unknown()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithFunctionName("WrongName").Build();
+        var functionCall = new FunctionCallBuilder().WithName("WrongName").Build();
         var parser = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
@@ -151,14 +151,14 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
     private sealed class MyFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
+        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (!functionCall.FunctionName.In("MyFunction", "Error"))
+            if (!functionCall.Name.In("MyFunction", "Error"))
             {
                 return Result.Continue<object?>();
             }
 
-            if (functionCall.FunctionName == "Error")
+            if (functionCall.Name == "Error")
             {
                 return Result.Error<object?>("Kaboom");
             }
@@ -166,14 +166,14 @@ public sealed class FunctionEvaluatorTests : IDisposable
             return Result.Success<object?>("function result");
         }
 
-        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
+        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (!functionCall.FunctionName.In("MyFunction", "Error"))
+            if (!functionCall.Name.In("MyFunction", "Error"))
             {
                 return Result.Continue();
             }
 
-            if (functionCall.FunctionName == "Error")
+            if (functionCall.Name == "Error")
             {
                 return Result.Error<object?>("Kaboom");
             }

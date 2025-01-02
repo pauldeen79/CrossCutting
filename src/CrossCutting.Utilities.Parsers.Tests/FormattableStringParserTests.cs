@@ -821,9 +821,9 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private sealed class MyFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
+        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (functionCall.FunctionName != "MyFunction")
+            if (functionCall.Name != "MyFunction")
             {
                 return Result.Continue<object?>();
             }
@@ -831,9 +831,9 @@ public sealed class FormattableStringParserTests : IDisposable
             return Result.Success<object?>("function result");
         }
 
-        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
+        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (functionCall.FunctionName != "MyFunction")
+            if (functionCall.Name != "MyFunction")
             {
                 return Result.Continue();
             }
@@ -845,14 +845,14 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private sealed class ToUppercaseFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
+        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (functionCall.FunctionName != "ToUpperCase")
+            if (functionCall.Name != "ToUpperCase")
             {
                 return Result.Continue<object?>();
             }
 
-            var valueResult = functionCall.Arguments.First().GetValueResult(context, evaluator, parser, functionCall.FormatProvider);
+            var valueResult = functionCall.Arguments.First().GetValueResult(context, functionEvaluator, expressionEvaluator, formatProvider);
             if (!valueResult.IsSuccessful())
             {
                 return valueResult;
@@ -861,9 +861,9 @@ public sealed class FormattableStringParserTests : IDisposable
             return Result.Success<object?>(valueResult.Value.ToStringWithDefault().ToUpperInvariant());
         }
 
-        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
+        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (functionCall.FunctionName != "ToUpperCase")
+            if (functionCall.Name != "ToUpperCase")
             {
                 return Result.Continue();
             }

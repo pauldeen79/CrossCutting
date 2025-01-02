@@ -1,6 +1,8 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+﻿using CrossCutting.Common.Extensions;
 
-public class ExpressionStringParserTests : IDisposable
+namespace CrossCutting.Utilities.Parsers.Tests;
+
+public class ExpressionStringEvaluatorTests : IDisposable
 {
     private const string ReplacedValue = "replaced name";
     private readonly ServiceProvider _provider;
@@ -8,7 +10,7 @@ public class ExpressionStringParserTests : IDisposable
     private readonly IVariable _variable;
     private bool disposedValue;
 
-    public ExpressionStringParserTests()
+    public ExpressionStringEvaluatorTests()
     {
         _variable = Substitute.For<IVariable>();
         _provider = new ServiceCollection()
@@ -20,7 +22,7 @@ public class ExpressionStringParserTests : IDisposable
         _scope = _provider.CreateScope();
     }
 
-    public class Parse : ExpressionStringParserTests
+    public class Parse : ExpressionStringEvaluatorTests
     {
         [Fact]
         public void Returns_Success_With_Input_Value_On_Empty_String()
@@ -747,15 +749,15 @@ public class ExpressionStringParserTests : IDisposable
         {
             // Arrange
             var functionResultParserMock = Substitute.For<IFunction>();
-            functionResultParserMock.Evaluate(Arg.Any<FunctionCall>(), Arg.Any<object?>(), Arg.Any<IFunctionEvaluator>(), Arg.Any<IExpressionEvaluator>())
+            functionResultParserMock.Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IFunctionEvaluator>(), Arg.Any<IExpressionEvaluator>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                 .Returns(x =>
                 {
-                    if (x.ArgAt<FunctionCall>(0).FunctionName != "ToUpperCase")
+                    if (x.ArgAt<FunctionCall>(0).Name != "ToUpperCase")
                     {
                         return Result.Continue<object?>();
                     }
 
-                    return Result.Success<object?>(x.ArgAt<FunctionCall>(0).GetArgumentStringValueResult(0, "expression", x.ArgAt<object?>(1), x.ArgAt<IFunctionEvaluator>(2), x.ArgAt<IExpressionEvaluator>(3)).GetValueOrThrow().ToUpperInvariant());
+                    return Result.Success<object?>(x.ArgAt<FunctionCall>(0).GetArgumentStringValueResult(0, "expression", x.ArgAt<IFormatProvider>(3), x.ArgAt<object?>(4), x.ArgAt<IFunctionEvaluator>(1), x.ArgAt<IExpressionEvaluator>(2)).GetValueOrThrow().ToUpperInvariant());
                 });
             using var provider = new ServiceCollection()
                 .AddParsers()
@@ -775,7 +777,7 @@ public class ExpressionStringParserTests : IDisposable
         }
     }
 
-    public class Validate : ExpressionStringParserTests
+    public class Validate : ExpressionStringEvaluatorTests
     {
         [Fact]
         public void Returns_Success_With_Input_Value_On_Empty_String()
@@ -1369,15 +1371,16 @@ public class ExpressionStringParserTests : IDisposable
         {
             // Arrange
             var functionMock = Substitute.For<IFunction>();
-            functionMock.Validate(Arg.Any<FunctionCall>(), Arg.Any<object?>(), Arg.Any<IFunctionEvaluator>(), Arg.Any<IExpressionEvaluator>())
+            //Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+            functionMock.Validate(Arg.Any<FunctionCall>(), Arg.Any<IFunctionEvaluator>(), Arg.Any<IExpressionEvaluator>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                 .Returns(x =>
                 {
-                    if (x.ArgAt<FunctionCall>(0).FunctionName != "ToUpperCase")
+                    if (x.ArgAt<FunctionCall>(0).Name != "ToUpperCase")
                     {
                         return Result.Continue<object?>();
                     }
 
-                    return Result.Success<object?>(x.ArgAt<FunctionCall>(0).GetArgumentStringValueResult(0, "expression", x.ArgAt<object?>(1), x.ArgAt<IFunctionEvaluator>(2), x.ArgAt<IExpressionEvaluator>(3)).GetValueOrThrow().ToUpperInvariant());
+                    return Result.Success<object?>(x.ArgAt<FunctionCall>(0).GetArgumentStringValueResult(0, "expression", x.ArgAt<IFormatProvider>(3), x.ArgAt<object?>(4), x.ArgAt<IFunctionEvaluator>(1), x.ArgAt<IExpressionEvaluator>(2)).GetValueOrThrow().ToUpperInvariant());
                 });
             using var provider = new ServiceCollection()
                 .AddParsers()
@@ -1415,29 +1418,29 @@ public class ExpressionStringParserTests : IDisposable
 
     private sealed class MyFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
+        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (functionCall.FunctionName == "error")
+            if (functionCall.Name == "error")
             {
                 return Result.Error<object?>("Kaboom");
             }
 
-            if (functionCall.FunctionName == "ToUpper")
+            if (functionCall.Name == "ToUpper")
             {
-                return Result.Success<object?>(functionCall.Context?.ToString()?.ToUpperInvariant() ?? string.Empty);
+                return Result.Success<object?>(context?.ToString()?.ToUpperInvariant() ?? string.Empty);
             }
 
             if (functionCall.Arguments.Count > 0)
             {
-                return Result.Success<object?>($"result of {functionCall.FunctionName} function: {string.Join(", ", functionCall.Arguments.OfType<LiteralArgument>().Select(x => x.GetValueResult(context, evaluator, parser, functionCall.FormatProvider).GetValueOrThrow()))}");
+                return Result.Success<object?>($"result of {functionCall.Name} function: {string.Join(", ", functionCall.Arguments.OfType<LiteralArgument>().Select(x => x.GetValueResult(context, functionEvaluator, expressionEvaluator, formatProvider).GetValueOrThrow()))}");
             }
 
-            return Result.Success<object?>($"result of {functionCall.FunctionName} function");
+            return Result.Success<object?>($"result of {functionCall.Name} function");
         }
 
-        public Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator evaluator, IExpressionEvaluator parser)
+        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (!functionCall.FunctionName.In("error", "ToUpper", "MYFUNCTION", "MYFUNCTION2"))
+            if (!functionCall.Name.In("error", "ToUpper", "MYFUNCTION", "MYFUNCTION2"))
             {
                 return Result.Continue();
             }

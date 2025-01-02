@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
-public sealed class MathematicExpressionParserTests : IDisposable
+public sealed class MathematicExpressionEvaluatorTests : IDisposable
 {
     private ServiceProvider? _provider;
     private IServiceScope? _scope;
