@@ -59,7 +59,7 @@ namespace CrossCutting.Utilities.Parsers
     public partial record FunctionCall
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string FunctionName
+        public string Name
         {
             get;
         }
@@ -71,23 +71,10 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.IFormatProvider FormatProvider
+        public FunctionCall(string name, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionCallArgument> arguments)
         {
-            get;
-        }
-
-        public object? Context
-        {
-            get;
-        }
-
-        public FunctionCall(string functionName, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionCallArgument> arguments, System.IFormatProvider formatProvider, object? context)
-        {
-            this.FunctionName = functionName;
+            this.Name = name;
             this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionCallArgument>(arguments);
-            this.FormatProvider = formatProvider;
-            this.Context = context;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -99,7 +86,7 @@ namespace CrossCutting.Utilities.Parsers
     public partial record FunctionDescriptor
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string FunctionName
+        public string Name
         {
             get;
         }
@@ -117,9 +104,9 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        public FunctionDescriptor(string functionName, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments)
+        public FunctionDescriptor(string name, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments)
         {
-            this.FunctionName = functionName;
+            this.Name = name;
             this.Description = description;
             this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument>(arguments);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);

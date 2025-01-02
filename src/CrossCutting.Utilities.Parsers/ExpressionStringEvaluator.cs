@@ -65,7 +65,7 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
             return Result.FromExistingResult<object?>(functionResult);
         }
 
-        return _functionEvaluator.Evaluate(functionResult.Value!, _expressionEvaluator, state.Context);
+        return _functionEvaluator.Evaluate(functionResult.Value!, _expressionEvaluator, state.FormatProvider, state.Context);
     }
 
     private Result ValidateSimpleExpression(ExpressionStringEvaluatorState state)
@@ -77,6 +77,6 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
             return functionResult;
         }
 
-        return _functionEvaluator.Validate(functionResult.Value!, _expressionEvaluator, state.Context);
+        return _functionEvaluator.Validate(functionResult.Value!, _expressionEvaluator, state.FormatProvider, state.Context);
     }
 }

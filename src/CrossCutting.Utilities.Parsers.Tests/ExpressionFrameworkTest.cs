@@ -861,7 +861,7 @@ public abstract class ExpressionParserBase : IFunction, IExpressionResolver
     }
 
     protected virtual bool IsFunctionValid(FunctionCall FunctionCall)
-        => IsNameValid(ArgumentGuard.IsNotNull(FunctionCall, nameof(FunctionCall)).FunctionName);
+        => IsNameValid(ArgumentGuard.IsNotNull(FunctionCall, nameof(FunctionCall)).Name);
 
     protected abstract Result<Expression> DoParse(FunctionCall functionCall, IFunctionEvaluator evaluator, IExpressionEvaluator parser);
 
@@ -870,7 +870,7 @@ public abstract class ExpressionParserBase : IFunction, IExpressionResolver
         expressionType = ArgumentGuard.IsNotNull(expressionType, nameof(expressionType));
         functionCall = ArgumentGuard.IsNotNull(functionCall, nameof(functionCall));
 
-        var typeResult = functionCall.FunctionName.GetGenericTypeResult();
+        var typeResult = functionCall.Name.GetGenericTypeResult();
         if (!typeResult.IsSuccessful())
         {
             return Result.FromExistingResult<Expression>(typeResult);

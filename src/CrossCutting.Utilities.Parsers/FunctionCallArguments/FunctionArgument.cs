@@ -6,6 +6,6 @@ public partial record RecursiveArgument
     {
         functionEvaluator = ArgumentGuard.IsNotNull(functionEvaluator, nameof(functionEvaluator));
 
-        return functionEvaluator.Evaluate(Function, expressionEvaluator, context);
+        return functionEvaluator.Evaluate(Function, expressionEvaluator, formatProvider, context);
     }
 }

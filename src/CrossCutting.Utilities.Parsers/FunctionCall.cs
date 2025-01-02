@@ -2,93 +2,93 @@
 
 public partial record FunctionCall
 {
-    public Result<object?> GetArgumentValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
+    public Result<object?> GetArgumentValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
         => index + 1 > Arguments.Count
             ? Result.Invalid<object?>($"Missing argument: {argumentName}")
-            : Arguments.ElementAt(index).GetValueResult(context, functionEvaluator, expressionEvaluator, FormatProvider);
+            : Arguments.ElementAt(index).GetValueResult(context, functionEvaluator, expressionEvaluator, formatProvider);
 
-    public Result<object?> GetArgumentValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, object? defaultValue)
+    public Result<object?> GetArgumentValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, object? defaultValue)
         => index + 1 > Arguments.Count
             ? Result.Success(defaultValue)
-            : Arguments.ElementAt(index).GetValueResult(context, functionEvaluator, expressionEvaluator, FormatProvider);
+            : Arguments.ElementAt(index).GetValueResult(context, functionEvaluator, expressionEvaluator, formatProvider);
 
-    public Result<string> GetArgumentStringValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
-        => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, context, functionEvaluator, expressionEvaluator));
+    public Result<string> GetArgumentStringValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
+        => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, formatProvider, context, functionEvaluator, expressionEvaluator));
 
-    public Result<string> GetArgumentStringValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, string defaultValue)
-        => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, context, functionEvaluator, expressionEvaluator, defaultValue));
+    public Result<string> GetArgumentStringValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, string defaultValue)
+        => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, formatProvider, context, functionEvaluator, expressionEvaluator, defaultValue));
 
-    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
+    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
     {
         expressionEvaluator = ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
 
-        return ProcessInt32ArgumentResult(argumentName, expressionEvaluator, GetArgumentValueResult(index, argumentName, context, functionEvaluator, expressionEvaluator));
+        return ProcessInt32ArgumentResult(argumentName, formatProvider, context, expressionEvaluator, GetArgumentValueResult(index, argumentName, formatProvider, context, functionEvaluator, expressionEvaluator));
     }
 
-    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, int defaultValue)
+    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, int defaultValue)
     {
         expressionEvaluator = ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
 
-        return ProcessInt32ArgumentResult(argumentName, expressionEvaluator, GetArgumentValueResult(index, argumentName, context, functionEvaluator, expressionEvaluator, defaultValue));
+        return ProcessInt32ArgumentResult(argumentName, formatProvider, context, expressionEvaluator, GetArgumentValueResult(index, argumentName, formatProvider, context, functionEvaluator, expressionEvaluator, defaultValue));
     }
 
-    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
+    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
     {
         expressionEvaluator = ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
 
-        return ProcessInt64ArgumentResult(argumentName, expressionEvaluator, GetArgumentValueResult(index, argumentName, context, functionEvaluator, expressionEvaluator));
+        return ProcessInt64ArgumentResult(argumentName, formatProvider, context, expressionEvaluator, GetArgumentValueResult(index, argumentName, formatProvider, context, functionEvaluator, expressionEvaluator));
     }
 
-    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, long defaultValue)
+    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, long defaultValue)
     {
         expressionEvaluator = ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
 
-        return ProcessInt64ArgumentResult(argumentName, expressionEvaluator, GetArgumentValueResult(index, argumentName, context, functionEvaluator, expressionEvaluator, defaultValue));
+        return ProcessInt64ArgumentResult(argumentName, formatProvider, context, expressionEvaluator, GetArgumentValueResult(index, argumentName, formatProvider, context, functionEvaluator, expressionEvaluator, defaultValue));
     }
 
-    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
+    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
     {
         expressionEvaluator = ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
 
-        return ProcessDecimalArgumentResult(argumentName, expressionEvaluator, GetArgumentValueResult(index, argumentName, context, functionEvaluator, expressionEvaluator));
+        return ProcessDecimalArgumentResult(argumentName, formatProvider, context, expressionEvaluator, GetArgumentValueResult(index, argumentName, formatProvider, context, functionEvaluator, expressionEvaluator));
     }
 
-    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, decimal defaultValue)
+    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, decimal defaultValue)
     {
         expressionEvaluator = ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
 
-        return ProcessDecimalArgumentResult(argumentName, expressionEvaluator, GetArgumentValueResult(index, argumentName, context, functionEvaluator, expressionEvaluator, defaultValue));
+        return ProcessDecimalArgumentResult(argumentName, formatProvider, context, expressionEvaluator, GetArgumentValueResult(index, argumentName, formatProvider, context, functionEvaluator, expressionEvaluator, defaultValue));
     }
 
-    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
+    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
     {
         expressionEvaluator = ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
 
-        return ProcessBooleanArgumentResult(argumentName, expressionEvaluator, GetArgumentValueResult(index, argumentName, context, functionEvaluator, expressionEvaluator));
+        return ProcessBooleanArgumentResult(argumentName, formatProvider, context, expressionEvaluator, GetArgumentValueResult(index, argumentName, formatProvider, context, functionEvaluator, expressionEvaluator));
     }
 
-    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, bool defaultValue)
+    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, bool defaultValue)
     {
         expressionEvaluator = ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
 
-        return ProcessBooleanArgumentResult(argumentName, expressionEvaluator, GetArgumentValueResult(index, argumentName, context, functionEvaluator, expressionEvaluator, defaultValue));
+        return ProcessBooleanArgumentResult(argumentName, formatProvider, context, expressionEvaluator, GetArgumentValueResult(index, argumentName, formatProvider, context, functionEvaluator, expressionEvaluator, defaultValue));
     }
 
-    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
+    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator)
     {
         expressionEvaluator = ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
 
-        return ProcessDateTimeArgumentResult(argumentName, expressionEvaluator, GetArgumentValueResult(index, argumentName, context, functionEvaluator, expressionEvaluator));
+        return ProcessDateTimeArgumentResult(argumentName, formatProvider, context, expressionEvaluator, GetArgumentValueResult(index, argumentName, formatProvider, context, functionEvaluator, expressionEvaluator));
     }
 
-    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, DateTime defaultValue)
+    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, IFormatProvider formatProvider, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, DateTime defaultValue)
     {
         expressionEvaluator = ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
 
-        return ProcessDateTimeArgumentResult(argumentName, expressionEvaluator, GetArgumentValueResult(index, argumentName, context, functionEvaluator, expressionEvaluator, defaultValue));
+        return ProcessDateTimeArgumentResult(argumentName, formatProvider, context, expressionEvaluator, GetArgumentValueResult(index, argumentName, formatProvider, context, functionEvaluator, expressionEvaluator, defaultValue));
     }
 
-    private Result<int> ProcessInt32ArgumentResult(string argumentName, IExpressionEvaluator expressionEvaluator, Result<object?> argumentValueResult)
+    private static Result<int> ProcessInt32ArgumentResult(string argumentName, IFormatProvider formatProvider, object? context, IExpressionEvaluator expressionEvaluator, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -105,7 +105,7 @@ public partial record FunctionCall
             return Result.Invalid<int>($"{argumentName} is not of type integer");
         }
 
-        var parseResult = expressionEvaluator.Evaluate(s, FormatProvider, Context);
+        var parseResult = expressionEvaluator.Evaluate(s, formatProvider, context);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<int>($"{argumentName} is not of type integer");
@@ -116,7 +116,7 @@ public partial record FunctionCall
             : Result.Invalid<int>($"{argumentName} is not of type integer");
     }
 
-    private Result<long> ProcessInt64ArgumentResult(string argumentName, IExpressionEvaluator expressionEvaluator, Result<object?> argumentValueResult)
+    private static Result<long> ProcessInt64ArgumentResult(string argumentName, IFormatProvider formatProvider, object? context, IExpressionEvaluator expressionEvaluator, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -133,7 +133,7 @@ public partial record FunctionCall
             return Result.Invalid<long>($"{argumentName} is not of type long integer");
         }
 
-        var parseResult = expressionEvaluator.Evaluate(s, FormatProvider, Context);
+        var parseResult = expressionEvaluator.Evaluate(s, formatProvider, context);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<long>($"{argumentName} is not of type long integer");
@@ -144,7 +144,7 @@ public partial record FunctionCall
             : Result.Invalid<long>($"{argumentName} is not of type long integer");
     }
 
-    private Result<decimal> ProcessDecimalArgumentResult(string argumentName, IExpressionEvaluator expressionEvaluator, Result<object?> argumentValueResult)
+    private static Result<decimal> ProcessDecimalArgumentResult(string argumentName, IFormatProvider formatProvider, object? context, IExpressionEvaluator expressionEvaluator, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -161,7 +161,7 @@ public partial record FunctionCall
             return Result.Invalid<decimal>($"{argumentName} is not of type decimal");
         }
 
-        var parseResult = expressionEvaluator.Evaluate(s, FormatProvider, Context);
+        var parseResult = expressionEvaluator.Evaluate(s, formatProvider, context);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<decimal>($"{argumentName} is not of type decimal");
@@ -172,7 +172,7 @@ public partial record FunctionCall
             : Result.Invalid<decimal>($"{argumentName} is not of type decimal");
     }
 
-    private Result<bool> ProcessBooleanArgumentResult(string argumentName, IExpressionEvaluator expressionEvaluator, Result<object?> argumentValueResult)
+    private static Result<bool> ProcessBooleanArgumentResult(string argumentName, IFormatProvider formatProvider, object? context, IExpressionEvaluator expressionEvaluator, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -189,7 +189,7 @@ public partial record FunctionCall
             return Result.Invalid<bool>($"{argumentName} is not of type boolean");
         }
 
-        var parseResult = expressionEvaluator.Evaluate(s, FormatProvider, Context);
+        var parseResult = expressionEvaluator.Evaluate(s, formatProvider, context);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<bool>($"{argumentName} is not of type boolean");
@@ -200,7 +200,7 @@ public partial record FunctionCall
             : Result.Invalid<bool>($"{argumentName} is not of type boolean");
     }
 
-    private Result<DateTime> ProcessDateTimeArgumentResult(string argumentName, IExpressionEvaluator expressionEvaluator, Result<object?> argumentValueResult)
+    private static Result<DateTime> ProcessDateTimeArgumentResult(string argumentName, IFormatProvider formatProvider, object? context, IExpressionEvaluator expressionEvaluator, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -216,7 +216,7 @@ public partial record FunctionCall
         {
             return Result.Invalid<DateTime>($"{argumentName} is not of type datetime");
         }
-        var parseResult = expressionEvaluator.Evaluate(s, FormatProvider, Context);
+        var parseResult = expressionEvaluator.Evaluate(s, formatProvider, context);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<DateTime>($"{argumentName} is not of type datetime");

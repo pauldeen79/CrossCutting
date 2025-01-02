@@ -2,7 +2,7 @@
 
 public interface IFunction
 {
-    Result Validate(FunctionCall functionCall, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator);
+    Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context);
 
-    Result<object?> Evaluate(FunctionCall functionCall, object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator);
+    Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context);
 }
