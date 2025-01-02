@@ -23,14 +23,14 @@ public class MathematicExpressionEvaluator : IMathematicExpressionEvaluator
         return Array.Exists(MathematicOperators.Aggregators, x => found.Contains(x.Character.ToString()));
     }
 
-    public Result<object?> Evaluate(string input, IFormatProvider formatProvider, object? context)
+    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
     {
-        if (input is null)
+        if (expression is null)
         {
             return Result.Invalid<object?>("Input is required");
         }
 
-        var state = new MathematicExpressionState(input, formatProvider, context, Evaluate);
+        var state = new MathematicExpressionState(expression, formatProvider, context, Evaluate);
         var error = _expressions
             .Select(x => x.Evaluate(state))
             .FirstOrDefault(x => !x.IsSuccessful());
@@ -43,20 +43,20 @@ public class MathematicExpressionEvaluator : IMathematicExpressionEvaluator
         return state.Results.Count > 0
             ? state.Results.ElementAt(state.Results.Count - 1)
             : _expressionEvaluator
-                .Evaluate(input, formatProvider, context)
+                .Evaluate(expression, formatProvider, context)
                 .Transform(x => x.ErrorMessage?.StartsWith("Unknown expression type found in fragment: ") == true
                     ? Result.NotFound<object?>()
                     : x);
     }
 
-    public Result Validate(string input, IFormatProvider formatProvider, object? context)
+    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
     {
-        if (input is null)
+        if (expression is null)
         {
             return Result.Invalid("Input is required");
         }
 
-        var state = new MathematicExpressionState(input, formatProvider, context, Evaluate);
+        var state = new MathematicExpressionState(expression, formatProvider, context, Evaluate);
         var error = _expressions
             .OfType<Validate>()
             .Select(x => x.Evaluate(state))
@@ -70,7 +70,7 @@ public class MathematicExpressionEvaluator : IMathematicExpressionEvaluator
         return state.Results.Count > 0
             ? state.Results.ElementAt(state.Results.Count - 1)
             : _expressionEvaluator
-                .Validate(input, formatProvider, context)
+                .Validate(expression, formatProvider, context)
                 .Transform(x => x.ErrorMessage?.StartsWith("Unknown expression type found in fragment: ") == true
                     ? Result.NotFound()
                     : x);

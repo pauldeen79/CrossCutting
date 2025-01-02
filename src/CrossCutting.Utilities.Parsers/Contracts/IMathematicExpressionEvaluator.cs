@@ -2,7 +2,7 @@
 
 public interface IMathematicExpressionEvaluator
 {
-    Result Validate(string input, IFormatProvider formatProvider, object? context);
+    Result Validate(string expression, IFormatProvider formatProvider, object? context);
 
-    Result<object?> Evaluate(string input, IFormatProvider formatProvider, object? context);
+    Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context);
 }

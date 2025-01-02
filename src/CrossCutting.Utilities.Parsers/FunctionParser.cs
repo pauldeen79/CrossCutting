@@ -119,19 +119,19 @@ public class FunctionParser : IFunctionParser
         }
     }
 
-    private Result<FunctionCall> AddArguments(List<FunctionCall> results, IEnumerable<string> stringArgumentsSplit, List<FunctionCallArgument> arguments, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    private Result<FunctionCall> AddArguments(List<FunctionCall> results, IEnumerable<string> argumentsSplit, List<FunctionCallArgument> arguments, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
-        foreach (var stringArgument in stringArgumentsSplit)
+        foreach (var argument in argumentsSplit)
         {
-            if (stringArgument.StartsWith(TemporaryDelimiter) && stringArgument.EndsWith(TemporaryDelimiter))
+            if (argument.StartsWith(TemporaryDelimiter) && argument.EndsWith(TemporaryDelimiter))
             {
-                arguments.Add(new RecursiveArgument(results[int.Parse(stringArgument.Substring(TemporaryDelimiter.Length, stringArgument.Length - (TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]));
+                arguments.Add(new RecursiveArgument(results[int.Parse(argument.Substring(TemporaryDelimiter.Length, argument.Length - (TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]));
                 continue;
             }
 
             var processValueResult = _argumentProcessors
                 .OrderBy(x => x.Order)
-                .Select(x => x.Process(stringArgument, results, formatProvider, context, formattableStringParser))
+                .Select(x => x.Process(argument, results, formatProvider, context, formattableStringParser))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue);
             if (processValueResult is not null)
             {
@@ -144,9 +144,9 @@ public class FunctionParser : IFunctionParser
             }
             else
             {
-                arguments.Add(string.IsNullOrEmpty(stringArgument)
+                arguments.Add(string.IsNullOrEmpty(argument)
                     ? new EmptyArgument()
-                    : new LiteralArgument(stringArgument));
+                    : new LiteralArgument(argument));
             }
         }
 

@@ -13,23 +13,23 @@ public class FormattableStringParser : IFormattableStringParser
         _placeholders = placeholders;
     }
 
-    public Result<GenericFormattableString> Parse(string input, FormattableStringParserSettings settings, object? context)
+    public Result<GenericFormattableString> Parse(string format, FormattableStringParserSettings settings, object? context)
     {
         settings = settings.IsNotNull(nameof(settings));
 
-        return ProcessRecursive(input, settings, context, false, 0);
+        return ProcessRecursive(format, settings, context, false, 0);
     }
 
-    public Result Validate(string input, FormattableStringParserSettings settings, object? context)
+    public Result Validate(string format, FormattableStringParserSettings settings, object? context)
     {
         settings = settings.IsNotNull(nameof(settings));
 
-        return ProcessRecursive(input, settings, context, true, 0);
+        return ProcessRecursive(format, settings, context, true, 0);
     }
 
-    private Result<GenericFormattableString> ProcessRecursive(string input, FormattableStringParserSettings settings, object? context, bool validateOnly, int currentRecursionLevel)
+    private Result<GenericFormattableString> ProcessRecursive(string format, FormattableStringParserSettings settings, object? context, bool validateOnly, int currentRecursionLevel)
     {
-        if (string.IsNullOrEmpty(input))
+        if (string.IsNullOrEmpty(format))
         {
             return Result.Success(new GenericFormattableString(string.Empty, []));
         }
@@ -38,7 +38,7 @@ public class FormattableStringParser : IFormattableStringParser
         var escapedStart = settings.PlaceholderStart + settings.PlaceholderStart;
         var escapedEnd = settings.PlaceholderEnd + settings.PlaceholderEnd;
 
-        var remainder = input.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
+        var remainder = format.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
                              .Replace(escapedEnd, "\uE001");  // Temporarily replace escaped end marker
 
         var results = new List<Result<GenericFormattableString>>();
@@ -61,7 +61,7 @@ public class FormattableStringParser : IFormattableStringParser
             remainder = remainder.Replace(found, $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}");
             var placeholderResult = ProcessOnPlaceholders(settings, context, validateOnly, placeholder);
 
-            placeholderResult = CombineResults(placeholderResult, validateOnly, () => ProcessRecursive(input, settings, context, placeholderResult, validateOnly, currentRecursionLevel + 1));
+            placeholderResult = CombineResults(placeholderResult, validateOnly, () => ProcessRecursive(format, settings, context, placeholderResult, validateOnly, currentRecursionLevel + 1));
             if (!placeholderResult.IsSuccessful() && !validateOnly)
             {
                 return placeholderResult;
@@ -96,12 +96,12 @@ public class FormattableStringParser : IFormattableStringParser
             : Result.Success(new GenericFormattableString(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
     }
 
-    private Result<GenericFormattableString> ProcessRecursive(string input, FormattableStringParserSettings settings, object? context, Result<GenericFormattableString> placeholderResult, bool validateOnly, int currentRecursionLevel)
+    private Result<GenericFormattableString> ProcessRecursive(string format, FormattableStringParserSettings settings, object? context, Result<GenericFormattableString> placeholderResult, bool validateOnly, int currentRecursionLevel)
     {
         if (placeholderResult.Value?.Format == "{0}"
             && placeholderResult.Value.ArgumentCount == 1
             && placeholderResult.Value.GetArgument(0) is string placeholderResultValue
-            && NeedRecurse(placeholderResultValue, settings, input)) //compare with input to prevent infinitive loop
+            && NeedRecurse(format, settings, placeholderResultValue)) //compare with input to prevent infinitive loop
         {
             if (currentRecursionLevel >= settings.MaximumRecursion)
             {
@@ -147,8 +147,8 @@ public class FormattableStringParser : IFormattableStringParser
         => remainder.IndexOf(settings.PlaceholderStart) > -1
         || remainder.IndexOf(settings.PlaceholderEnd) > -1;
 
-    private static bool NeedRecurse(string placeholderResultValue, FormattableStringParserSettings settings, string input)
+    private static bool NeedRecurse(string format, FormattableStringParserSettings settings, string placeholderResultValue)
         => placeholderResultValue.Contains(settings.PlaceholderStart)
             && placeholderResultValue.Contains(settings.PlaceholderEnd)
-            && placeholderResultValue != input;
+            && placeholderResultValue != format;
 }

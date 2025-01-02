@@ -2,7 +2,7 @@
 
 public interface IFormattableStringParser
 {
-    Result Validate(string input, FormattableStringParserSettings settings, object? context);
+    Result Validate(string format, FormattableStringParserSettings settings, object? context);
 
-    Result<GenericFormattableString> Parse(string input, FormattableStringParserSettings settings, object? context);
+    Result<GenericFormattableString> Parse(string format, FormattableStringParserSettings settings, object? context);
 }
