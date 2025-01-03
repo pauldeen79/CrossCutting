@@ -57,14 +57,10 @@ public sealed class ExpressionFrameworkTest
     }
 }
 
-//[ExpressionDescription("Converts the expression to upper case")]
-//[UsesContext(true)]
-//[ContextDescription("Context to use on expression evaluation")]
-//[ParameterDescription(nameof(Expression), "String to get the upper case for")]
-//[ParameterRequired(nameof(Expression), true)]
-//[ParameterType(nameof(Expression), typeof(string))]
-//[ReturnValue(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
-//[ReturnValue(ResultStatus.Invalid, "Empty", "Expression must be of type string")]
+[Description("Converts the expression to upper case")]
+[FunctionArgument(nameof(Expression), typeof(string), "String to get the upper case for", true)]
+[Result(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
+[Result(ResultStatus.Invalid, "Expression must be of type string")]
 public partial record ToUpperCaseExpression : Expression, ITypedExpression<string>
 {
     public override Result<object?> Evaluate(object? context)
