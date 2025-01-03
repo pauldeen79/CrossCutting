@@ -1,18 +1,20 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionParserProcessors;
 
-public class StringExpressionParserProcessor : IExpressionParserProcessor
+public class StringExpressionParserProcessor : IExpression
 {
     public int Order => 40;
 
-    public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
-    {
-        value = ArgumentGuard.IsNotNull(value, nameof(value));
-
-        if (value.StartsWith("\"") && value.EndsWith("\""))
+    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
+        => expression?.StartsWith("\"") switch
         {
-            return Result.Success<object?>(value.Substring(1, value.Length - 2));
-        }
+            true when expression.EndsWith("\"") => Result.Success<object?>(expression.Substring(1, expression.Length - 2)),
+            _ => Result.Continue<object?>()
+        };
 
-        return Result.Continue<object?>();
-    }
+    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+        => expression?.StartsWith("\"") switch
+        {
+            true when expression.EndsWith("\"") => Result.Success(),
+            _ => Result.Continue()
+        };
 }

@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionParserProcessors;
 
-public class VariableExpressionParserProcessor : IExpressionParserProcessor
+public class VariableExpressionParserProcessor : IExpression
 {
     public int Order => 50;
 
@@ -13,15 +13,34 @@ public class VariableExpressionParserProcessor : IExpressionParserProcessor
         _variableProcessor = variableProcessor;
     }
 
-    public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
+    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
     {
-        value = ArgumentGuard.IsNotNull(value, nameof(value));
-
-        if (value.StartsWith("$") && value.Length > 1)
+        if (expression is null)
         {
-            return _variableProcessor.Process(value.Substring(1), context);
+            return Result.Continue<object?>();
+        }
+
+        if (expression.StartsWith("$") && expression.Length > 1)
+        {
+            return _variableProcessor.Evaluate(expression.Substring(1), context);
         }
 
         return Result.Continue<object?>();
+    }
+
+    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+    {
+        if (expression is null)
+        {
+            return Result.Continue();
+        }
+
+        if (expression.StartsWith("$") && expression.Length > 1)
+        {
+            return _variableProcessor.Validate(expression.Substring(1), context);
+        }
+
+        // Other values are ignored, so the expression parser knows whether an expression is supported
+        return Result.Continue();
     }
 }

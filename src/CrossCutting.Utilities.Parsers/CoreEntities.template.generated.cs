@@ -56,45 +56,104 @@ namespace CrossCutting.Utilities.Parsers
             return new CrossCutting.Utilities.Parsers.Builders.FormattableStringParserSettingsBuilder(this);
         }
     }
-    public partial record FunctionParseResult
+    public partial record FunctionCall
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public string FunctionName
+        public string Name
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.FunctionParseResultArgument> Arguments
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.FunctionCallArgument> Arguments
         {
             get;
         }
 
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.IFormatProvider FormatProvider
+        public FunctionCall(string name, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionCallArgument> arguments)
         {
-            get;
-        }
-
-        public object? Context
-        {
-            get;
-        }
-
-        public FunctionParseResult(string functionName, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionParseResultArgument> arguments, System.IFormatProvider formatProvider, object? context)
-        {
-            this.FunctionName = functionName;
-            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionParseResultArgument>(arguments);
-            this.FormatProvider = formatProvider;
-            this.Context = context;
+            this.Name = name;
+            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionCallArgument>(arguments);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionParseResultBuilder ToBuilder()
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.Parsers.Builders.FunctionParseResultBuilder(this);
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder(this);
+        }
+    }
+    public partial record FunctionDescriptor
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Name
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Description
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> Arguments
+        {
+            get;
+        }
+
+        public FunctionDescriptor(string name, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments)
+        {
+            this.Name = name;
+            this.Description = description;
+            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument>(arguments);
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorBuilder(this);
+        }
+    }
+    public partial record FunctionDescriptorArgument
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Name
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string TypeName
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Description
+        {
+            get;
+        }
+
+        public bool IsRequired
+        {
+            get;
+        }
+
+        public FunctionDescriptorArgument(string name, string typeName, string description, bool isRequired)
+        {
+            this.Name = name;
+            this.TypeName = typeName;
+            this.Description = description;
+            this.IsRequired = isRequired;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder(this);
         }
     }
 }

@@ -571,7 +571,7 @@ public class ProofOfConceptTests
         IMyService MyService { get; }
     }
 
-    public sealed class PipelineComponentBuilderWithDependencies(ProofOfConceptTests.IMyService myService) : IPipelineFeatureBuilderWithDependencies
+    public sealed class PipelineComponentBuilderWithDependencies(IMyService myService) : IPipelineFeatureBuilderWithDependencies
     {
         private readonly IMyService _myService = myService;
 

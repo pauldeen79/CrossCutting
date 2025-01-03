@@ -7,29 +7,25 @@ public static class Constants
     public static class Namespaces
     {
         public const string UtilitiesParsers = "CrossCutting.Utilities.Parsers";
-        public const string UtilitiesParsersFunctionParseResultArguments = "CrossCutting.Utilities.Parsers.FunctionParseResultArguments";
+        public const string UtilitiesParsersFunctionCallArguments = "CrossCutting.Utilities.Parsers.FunctionCallArguments";
+        public const string UtilitiesParsersFunctionDescriptorArguments = "CrossCutting.Utilities.Parsers.FunctionDescriptorArguments";
         public const string UtilitiesParsersBuilders = "CrossCutting.Utilities.Parsers.Builders";
-        public const string UtilitiesParsersBuildersFunctionParseResultArguments = "CrossCutting.Utilities.Parsers.Builders.FunctionParseResultArguments";
+        public const string UtilitiesParsersBuildersFunctionCallArguments = "CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments";
+        public const string UtilitiesParsersBuildersFunctionDescriptorArguments = "CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArguments";
     }
 
     public static class Types
     {
-        public const string FunctionParseResultArgument = "FunctionParseResultArgument";
-
-        public const string FunctionParseResultArgumentBuilder = "FunctionParseResultArgumentBuilder";
-    }
-
-    [ExcludeFromCodeCoverage]
-    public static class TypeNames
-    {
-        public const string FunctionParseResultArgument = $"{Namespaces.UtilitiesParsers}.FunctionParseResultArgument";
+        public const string FunctionCallArgument = "FunctionCallArgument";
     }
 
     [ExcludeFromCodeCoverage]
     public static class Paths
     {
-        public const string FunctionParseResultArguments = $"{Namespaces.UtilitiesParsers}/{nameof(FunctionParseResultArguments)}";
+        public const string FunctionCallArguments = $"{Namespaces.UtilitiesParsers}/{nameof(FunctionCallArguments)}";
+        public const string FunctionCallArgumentBuilders = $"{Namespaces.UtilitiesParsers}/Builders/{nameof(FunctionCallArguments)}";
 
-        public const string FunctionParseResultArgumentBuilders = $"{Namespaces.UtilitiesParsers}/Builders/{nameof(FunctionParseResultArguments)}";
+        public const string FunctionDescriptorArguments = $"{Namespaces.UtilitiesParsers}/{nameof(FunctionDescriptorArguments)}";
+        public const string FunctionDescriptorArgumentBuilders = $"{Namespaces.UtilitiesParsers}/Builders/{nameof(FunctionDescriptorArguments)}";
     }
 }

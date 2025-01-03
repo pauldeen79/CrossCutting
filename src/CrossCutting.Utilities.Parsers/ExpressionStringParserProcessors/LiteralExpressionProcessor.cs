@@ -1,10 +1,10 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
 
-public class LiteralExpressionProcessor : IExpressionStringParserProcessor
+public class LiteralExpressionProcessor : IExpressionString
 {
     public int Order => 200;
 
-    public Result<object?> Process(ExpressionStringParserState state)
+    public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
@@ -21,5 +21,24 @@ public class LiteralExpressionProcessor : IExpressionStringParserProcessor
         }
 
         return Result.Continue<object?>();
+    }
+
+    public Result Validate(ExpressionStringEvaluatorState state)
+    {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
+        if (state.Input.StartsWith("\'="))
+        {
+            // escaped expression string
+            return Result.Success();
+        }
+
+        if (!state.Input.StartsWith("="))
+        {
+            // literal
+            return Result.Success();
+        }
+
+        return Result.Continue();
     }
 }

@@ -50,3 +50,16 @@ With this:
 ```regex
 Result.$2<$1>(
 ```
+
+# Upgrade Parsers from 6.x to 7.0
+There have been some breaking changes.
+
+* FunctionParseResult has been renamed to FunctionCall, because that's what it is.
+* IFunctionResultParser has been renamed to IFunction, and Parse has been renamed to Evaluate, because that's what it is.
+* IPlaceholderProcessor has been renamed to IPlaceholder, and Process has been renamed to Evaluate, because that's what it is.
+* Some parsers and evaluators now have a Validate method, to check whether the input is valid. This way, you can check validity without actually performing the action.
+* IVariable and IVariableProcessor now have a method called Evaluate instead of Process, which is more descriptive.
+* IExpressionParser has been renamed to IExpressionEvaluator and IExpressionParserProcessor to IExpression.
+* IExpressionStringParser has been renamed to IExpressionStringEvaluator and IExpresionStringParserProcessor to IExpressionString.
+* IMathematicExpressionParser has been renamed to IMathematicExpressionEvaluator and IMathematicExpressionProcessor to IMathematicExpression.
+* FormattableStringParserResult has been renamed to GenericFormattableString.

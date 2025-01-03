@@ -30,7 +30,7 @@ public static class TypeExtensions
         var constructors = type.GetConstructors();
         constructors.Should().Match<ConstructorInfo[]?>(x => x != null && x.Length > 0, $"Type {type.FullName} should have public constructors");
 
-        foreach (var constructor in constructors.Where<ConstructorInfo>(c => ShouldProcessConstructor(constructorPredicate, c)))
+        foreach (var constructor in constructors.Where(c => ShouldProcessConstructor(constructorPredicate, c)))
         {
             var parameters = constructor.GetParameters().ToArray();
             var mocks = GetMocks(parameters, parameterReplaceDelegate, classFactory);

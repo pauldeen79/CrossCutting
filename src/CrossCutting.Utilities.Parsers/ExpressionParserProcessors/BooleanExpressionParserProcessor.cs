@@ -1,21 +1,22 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionParserProcessors;
 
-public class BooleanExpressionParserProcessor : IExpressionParserProcessor
+public class BooleanExpressionParserProcessor : IExpression
 {
     public int Order => 10;
 
-    public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
-    {
-        if (value == "true")
+    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
+        => expression switch
         {
-            return Result.Success<object?>(true);
-        }
+            "true" => Result.Success<object?>(true),
+            "false" => Result.Success<object?>(false),
+            _ => Result.Continue<object?>()
+        };
 
-        if (value == "false")
+    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+        => expression switch
         {
-            return Result.Success<object?>(false);
-        }
-
-        return Result.Continue<object?>();
-    }
+            "true" => Result.Success(),
+            "false" => Result.Success(),
+            _ => Result.Continue()
+        };
 }

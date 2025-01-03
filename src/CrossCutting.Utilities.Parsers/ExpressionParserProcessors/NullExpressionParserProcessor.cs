@@ -1,16 +1,20 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionParserProcessors;
 
-public class NullExpressionParserProcessor : IExpressionParserProcessor
+public class NullExpressionParserProcessor : IExpression
 {
     public int Order => 30;
 
-    public Result<object?> Parse(string value, IFormatProvider formatProvider, object? context)
-    {
-        if (value == "null")
+    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
+        => expression switch
         {
-            return Result.Success<object?>(null);
-        }
+            "null" => Result.Success<object?>(null),
+            _ => Result.Continue<object?>()
+        };
 
-        return Result.Continue<object?>();
-    }
+    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+        => expression switch
+        {
+            "null" => Result.Success(),
+            _ => Result.Continue()
+        };
 }

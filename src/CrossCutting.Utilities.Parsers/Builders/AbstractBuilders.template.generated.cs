@@ -10,19 +10,19 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders
 {
-    public abstract partial class FunctionParseResultArgumentBuilder<TBuilder, TEntity> : FunctionParseResultArgumentBuilder
-        where TEntity : CrossCutting.Utilities.Parsers.FunctionParseResultArgument
-        where TBuilder : FunctionParseResultArgumentBuilder<TBuilder, TEntity>
+    public abstract partial class FunctionCallArgumentBuilder<TBuilder, TEntity> : FunctionCallArgumentBuilder
+        where TEntity : CrossCutting.Utilities.Parsers.FunctionCallArgument
+        where TBuilder : FunctionCallArgumentBuilder<TBuilder, TEntity>
     {
-        protected FunctionParseResultArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionParseResultArgument source) : base(source)
+        protected FunctionCallArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgument source) : base(source)
         {
         }
 
-        protected FunctionParseResultArgumentBuilder() : base()
+        protected FunctionCallArgumentBuilder() : base()
         {
         }
 
-        public override CrossCutting.Utilities.Parsers.FunctionParseResultArgument Build()
+        public override CrossCutting.Utilities.Parsers.FunctionCallArgument Build()
         {
             return BuildTyped();
         }

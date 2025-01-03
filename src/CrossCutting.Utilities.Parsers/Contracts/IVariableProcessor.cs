@@ -2,5 +2,7 @@
 
 public interface IVariableProcessor
 {
-    Result<object?> Process(string variableExpression, object? context);
+    Result Validate(string expression, object? context);
+
+    Result<object?> Evaluate(string expression, object? context);
 }
