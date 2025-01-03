@@ -12,7 +12,7 @@ public class NumericExpressionParserProcessor : IExpression
 
     public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
     {
-        if (expression is null)
+        if (string.IsNullOrEmpty(expression))
         {
             return Result.Continue<object?>();
         }
@@ -22,11 +22,6 @@ public class NumericExpressionParserProcessor : IExpression
         var isLongNumber = new Lazy<bool>(() => _longNumberRegEx.IsMatch(expression));
         var isWholeDecimal = new Lazy<bool>(() => _wholeDecimalRegEx.IsMatch(expression));
         var isFloatingPointDecimal = new Lazy<bool>(() => _floatingPointDecimalRegEx.IsMatch(expression));
-
-        if (expression.Length == 0)
-        {
-            return Result.Continue<object?>();
-        }
 
         if (isWholeNumber.Value && int.TryParse(expression, NumberStyles.AllowDecimalPoint, formatProvider, out var i))
         {
@@ -58,9 +53,9 @@ public class NumericExpressionParserProcessor : IExpression
 
     public Result Validate(string expression, IFormatProvider formatProvider, object? context)
     {
-        if (expression is null)
+        if (string.IsNullOrEmpty(expression))
         {
-            return Result.Continue();
+            return Result.Continue<object?>();
         }
 
         var isFloatingPoint = new Lazy<bool>(() => _floatingPointRegEx.IsMatch(expression));
@@ -68,11 +63,6 @@ public class NumericExpressionParserProcessor : IExpression
         var isLongNumber = new Lazy<bool>(() => _longNumberRegEx.IsMatch(expression));
         var isWholeDecimal = new Lazy<bool>(() => _wholeDecimalRegEx.IsMatch(expression));
         var isFloatingPointDecimal = new Lazy<bool>(() => _floatingPointDecimalRegEx.IsMatch(expression));
-
-        if (expression.Length == 0)
-        {
-            return Result.Continue();
-        }
 
         if (isWholeNumber.Value && int.TryParse(expression, NumberStyles.AllowDecimalPoint, formatProvider, out _))
         {
