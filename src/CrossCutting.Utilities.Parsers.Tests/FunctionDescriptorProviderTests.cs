@@ -8,28 +8,32 @@ public class FunctionDescriptorProviderTests
         public void Returns_All_Available_Functions_Correctly()
         {
             // Arrange
-            var functionDescriptors = new[]
+            var functions = new IFunction[]
             {
-                new FunctionDescriptorBuilder().WithName("Function1").Build(),
-                new FunctionDescriptorBuilder().WithName("Function2").Build()
+                new MyFunction1(),
+                new MyFunction2()
             };
-            var sut = new FunctionDescriptorProvider(functionDescriptors);
+            var sut = new FunctionDescriptorProvider(functions);
 
             // Act
             var result = sut.GetAll();
 
             // Assert
-            result.Should().BeEquivalentTo(functionDescriptors);
+            result.Should().HaveCount(2);
+            result.First().Name.Should().Be(nameof(MyFunction1));
+            result.First().Description.Should().BeEmpty();
+            result.Last().Name.Should().Be("MyCustomFunctionName");
+            result.Last().Description.Should().Be("This is a very cool function");
         }
 
         [Fact]
         public void Returns_All_Registered_Available_Functions_Correctly()
         {
             // Arrange
-            var functionDescriptor = new FunctionDescriptorBuilder().WithName("MyFunction").Build();
             using var provider = new ServiceCollection()
                 .AddParsers()
-                .AddSingleton(functionDescriptor)
+                .AddScoped<IFunction, MyFunction1>()
+                .AddScoped<IFunction, MyFunction2>()
                 .BuildServiceProvider(true);
             using var scope = provider.CreateScope();
             var sut = scope.ServiceProvider.GetRequiredService<IFunctionDescriptorProvider>();
@@ -38,8 +42,33 @@ public class FunctionDescriptorProviderTests
             var result = sut.GetAll();
 
             // Assert
-            result.Should().ContainSingle();
-            result.Single().Should().BeEquivalentTo(functionDescriptor);
+            result.Should().HaveCount(2);
+            result.First().Name.Should().Be(nameof(MyFunction1));
+            result.First().Description.Should().BeEmpty();
+            result.Last().Name.Should().Be("MyCustomFunctionName");
+            result.Last().Description.Should().Be("This is a very cool function");
+        }
+
+        private sealed class MyFunction1 : IFunction
+        {
+            public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+                => throw new NotImplementedException();
+
+            public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+                => throw new NotImplementedException();
+        }
+
+        [FunctionName("MyCustomFunctionName")]
+        [FunctionArgument("Argument1", typeof(string), "Description of argument 1", true)]
+        [FunctionArgument("Argument2", typeof(int), "Description of argument 2", false)]
+        [Description("This is a very cool function")]
+        private sealed class MyFunction2 : IFunction
+        {
+            public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+                => throw new NotImplementedException();
+
+            public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+                => throw new NotImplementedException();
         }
     }
 }
