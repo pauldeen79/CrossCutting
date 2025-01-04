@@ -86,6 +86,12 @@ namespace CrossCutting.Utilities.Parsers
     public partial record FunctionDescriptor
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Id
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name
         {
             get;
@@ -104,8 +110,9 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        public FunctionDescriptor(string name, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments)
+        public FunctionDescriptor(string id, string name, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments)
         {
+            this.Id = id;
             this.Name = name;
             this.Description = description;
             this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument>(arguments);
