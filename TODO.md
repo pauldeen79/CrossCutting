@@ -32,7 +32,7 @@ Function evaluator:
 -Has all functions function descriptor provider injected in c'tor.
 -In there, provide mapping between fuction descriptor and function, and put it in a dictionary. Throw if functions could not be found.
 -Mapping from function descriptor to function: Probably the same as how we use reflection to create the function definition from a function. Maybe add an Id to make it unique?
--Also add Validate method
+-Also add Validate method, to only validate (and not execute) the function call
 
 -Evaluate/Validate:
 -When FunctionCall arrives, first checks if it's not null

@@ -9,9 +9,9 @@ public class FunctionEvaluator(IEnumerable<IFunction> functions) : IFunctionEval
         {
             null => Result.Invalid<object?>("Function call is required"),
             _ => _functions
-            .Select(x => x.Evaluate(functionCall, this, expressionEvaluator, formatProvider, context))
-            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.NotSupported<object?>($"Unknown function: {functionCall.Name}")
+                .Select(x => x.Evaluate(functionCall, this, expressionEvaluator, formatProvider, context))
+                .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                    ?? Result.NotSupported<object?>($"Unknown function: {functionCall.Name}")
         };
 
     public Result Validate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
@@ -19,8 +19,8 @@ public class FunctionEvaluator(IEnumerable<IFunction> functions) : IFunctionEval
         {
             null => Result.Invalid("Function call is required"),
             _ => _functions
-            .Select(x => x.Validate(functionCall, this, expressionEvaluator, formatProvider, context))
-            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid($"Unknown function: {functionCall.Name}")
+                .Select(x => x.Validate(functionCall, this, expressionEvaluator, formatProvider, context))
+                .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                    ?? Result.Invalid($"Unknown function: {functionCall.Name}")
         };
 }

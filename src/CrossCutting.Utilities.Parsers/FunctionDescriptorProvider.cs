@@ -11,19 +11,19 @@ public class FunctionDescriptorProvider : IFunctionDescriptorProvider
         _functions = functions.ToArray();
     }
 
-    public IReadOnlyCollection<FunctionDescriptor> GetAll() => _functions.Select(CreateFunction).ToList();
+    public IReadOnlyCollection<FunctionDescriptor> GetAll()
+        => _functions.Select(CreateFunction).ToList();
 
     private static FunctionDescriptor CreateFunction(IFunction source)
     {
-        var builder = new FunctionDescriptorBuilder();
-
         var type = source.GetType();
-        var nameAttribute = type.GetCustomAttribute<FunctionNameAttribute>();
-        builder.Name = nameAttribute?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal);
-        builder.Description = type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty;
-        builder.Arguments = type.GetCustomAttributes<FunctionArgumentAttribute>().Select(CreateFunctionArgument).ToList();
 
-        return builder.Build();
+        return new FunctionDescriptorBuilder()
+            .WithName(type.GetCustomAttribute<FunctionNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
+            .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
+            .WithId(type.GetCustomAttribute<FunctionIdAttribute>()?.Id ?? string.Empty)
+            .AddArguments(type.GetCustomAttributes<FunctionArgumentAttribute>().Select(CreateFunctionArgument))
+            .Build();
     }
 
     private static FunctionDescriptorArgumentBuilder CreateFunctionArgument(FunctionArgumentAttribute attribute)

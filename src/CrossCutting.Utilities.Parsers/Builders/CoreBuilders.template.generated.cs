@@ -378,30 +378,15 @@ namespace CrossCutting.Utilities.Parsers.Builders
     }
     public partial class FunctionDescriptorBuilder : System.ComponentModel.INotifyPropertyChanged
     {
-        private string _id;
-
         private string _name;
+
+        private string _id;
 
         private string _description;
 
         private System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder> _arguments;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string Id
-        {
-            get
-            {
-                return _id;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_id!, value!);
-                _id = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Id));
-            }
-        }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name
@@ -415,6 +400,22 @@ namespace CrossCutting.Utilities.Parsers.Builders
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_name!, value!);
                 _name = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Name));
+            }
+        }
+
+        [System.ComponentModel.DescriptionAttribute(@"Optional Id to use in case of function overload resolution")]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_id!, value!);
+                _id = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Id));
             }
         }
 
@@ -453,8 +454,8 @@ namespace CrossCutting.Utilities.Parsers.Builders
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder>();
-            _id = source.Id;
             _name = source.Name;
+            _id = source.Id;
             _description = source.Description;
             if (source.Arguments is not null) foreach (var item in source.Arguments.Select(x => x.ToBuilder())) _arguments.Add(item);
         }
@@ -462,15 +463,15 @@ namespace CrossCutting.Utilities.Parsers.Builders
         public FunctionDescriptorBuilder()
         {
             _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder>();
-            _id = string.Empty;
             _name = string.Empty;
+            _id = string.Empty;
             _description = string.Empty;
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.Parsers.FunctionDescriptor Build()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionDescriptor(Id, Name, Description, Arguments.Select(x => x.Build()!).ToList().AsReadOnly());
+            return new CrossCutting.Utilities.Parsers.FunctionDescriptor(Name, Id, Description, Arguments.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         partial void SetDefaultValues();
@@ -488,17 +489,17 @@ namespace CrossCutting.Utilities.Parsers.Builders
             return this;
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorBuilder WithId(string id)
-        {
-            if (id is null) throw new System.ArgumentNullException(nameof(id));
-            Id = id;
-            return this;
-        }
-
         public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorBuilder WithName(string name)
         {
             if (name is null) throw new System.ArgumentNullException(nameof(name));
             Name = name;
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorBuilder WithId(string id)
+        {
+            if (id is null) throw new System.ArgumentNullException(nameof(id));
+            Id = id;
             return this;
         }
 
