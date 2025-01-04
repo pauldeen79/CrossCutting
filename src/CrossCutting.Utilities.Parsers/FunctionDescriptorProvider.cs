@@ -21,7 +21,7 @@ public class FunctionDescriptorProvider : IFunctionDescriptorProvider
         return new FunctionDescriptorBuilder()
             .WithName(type.GetCustomAttribute<FunctionNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
             .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
-            .WithId(type.GetCustomAttribute<FunctionIdAttribute>()?.Id ?? string.Empty)
+            .WithTypeName(type.FullName)
             .AddArguments(type.GetCustomAttributes<FunctionArgumentAttribute>().Select(CreateFunctionArgument))
             .Build();
     }

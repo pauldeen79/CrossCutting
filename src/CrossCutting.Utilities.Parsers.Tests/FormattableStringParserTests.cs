@@ -819,25 +819,16 @@ public sealed class FormattableStringParserTests : IDisposable
         }
     }
 
+    [FunctionName("MyFunction")]
     private sealed class MyFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (functionCall.Name != "MyFunction")
-            {
-                return Result.Continue<object?>();
-            }
-
             return Result.Success<object?>("function result");
         }
 
         public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (functionCall.Name != "MyFunction")
-            {
-                return Result.Continue();
-            }
-
             // Aparently, this function does not care about the given arguments
             return Result.Success();
         }
@@ -847,11 +838,6 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (functionCall.Name != "ToUpperCase")
-            {
-                return Result.Continue<object?>();
-            }
-
             var valueResult = functionCall.Arguments.First().GetValueResult(context, functionEvaluator, expressionEvaluator, formatProvider);
             if (!valueResult.IsSuccessful())
             {
@@ -863,11 +849,6 @@ public sealed class FormattableStringParserTests : IDisposable
 
         public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (functionCall.Name != "ToUpperCase")
-            {
-                return Result.Continue();
-            }
-
             if (functionCall.Arguments.Count < 1)
             {
                 return Result.Invalid("ToUpperCase requires 1 argument");

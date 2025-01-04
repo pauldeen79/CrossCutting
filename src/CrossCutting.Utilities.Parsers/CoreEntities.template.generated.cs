@@ -91,9 +91,8 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        [System.ComponentModel.DescriptionAttribute(@"Optional Id to use in case of function overload resolution")]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string Id
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string TypeName
         {
             get;
         }
@@ -111,10 +110,10 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        public FunctionDescriptor(string name, string id, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments)
+        public FunctionDescriptor(string name, string typeName, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments)
         {
             this.Name = name;
-            this.Id = id;
+            this.TypeName = typeName;
             this.Description = description;
             this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument>(arguments);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);

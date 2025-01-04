@@ -8,8 +8,9 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public FunctionEvaluatorTests()
     {
         _provider = new ServiceCollection()
-        .AddParsers()
+            .AddParsers()
             .AddSingleton<IFunction, MyFunction>()
+            .AddSingleton<IFunction, ErrorFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -63,7 +64,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Evaluate_Returns_NotSupported_When_FunctionCall_Is_Unknown()
+    public void Evaluate_Returns_Invalid_When_FunctionCall_Is_Unknown()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("WrongName").Build();
@@ -74,7 +75,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Evaluate(functionCall!, parser);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.Status.Should().Be(ResultStatus.Invalid);
         result.ErrorMessage.Should().Be("Unknown function: WrongName");
     }
 
@@ -149,36 +150,29 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
     private IFunctionEvaluator CreateSut() => _scope.ServiceProvider.GetRequiredService<IFunctionEvaluator>();
 
+    private sealed class ErrorFunction : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        {
+            return Result.Error<object?>("Kaboom");
+        }
+
+        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        {
+            return Result.Error<object?>("Kaboom");
+        }
+    }
+
+    [FunctionName("MyFunction")]
     private sealed class MyFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (!functionCall.Name.In("MyFunction", "Error"))
-            {
-                return Result.Continue<object?>();
-            }
-
-            if (functionCall.Name == "Error")
-            {
-                return Result.Error<object?>("Kaboom");
-            }
-
             return Result.Success<object?>("function result");
         }
 
         public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (!functionCall.Name.In("MyFunction", "Error"))
-            {
-                return Result.Continue();
-            }
-
-            if (functionCall.Name == "Error")
-            {
-                return Result.Error<object?>("Kaboom");
-            }
-
-            // Aparently, this function does not care about the given arguments
             return Result.Success();
         }
     }

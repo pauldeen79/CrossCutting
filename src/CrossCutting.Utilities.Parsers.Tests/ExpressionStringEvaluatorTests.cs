@@ -17,7 +17,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             .AddParsers()
             .AddSingleton(_variable)
             .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
-            .AddSingleton<IFunction, MyFunction>()
+            .AddSingleton<IFunction, ToUperFunction>()
+            .AddSingleton<IFunction, ErrorFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -710,7 +711,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Returns_NotSupported_When_FunctionParseResult_Could_Not_Be_Understood()
+        public void Returns_Invalid_When_FunctionParseResult_Could_Not_Be_Understood()
         {
             // Arrange
             using var provider = new ServiceCollection()
@@ -724,7 +725,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = scope.ServiceProvider.GetRequiredService<IExpressionStringEvaluator>().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
+            result.Status.Should().Be(ResultStatus.Invalid);
             result.ErrorMessage.Should().Be("Unknown function: MYFUNCTION");
         }
 
@@ -1416,36 +1417,28 @@ public class ExpressionStringEvaluatorTests : IDisposable
                 : Result.Error($"Unsupported placeholder name: {value}");
     }
 
-    private sealed class MyFunction : IFunction
+    private sealed class ErrorFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (functionCall.Name == "error")
-            {
-                return Result.Error<object?>("Kaboom");
-            }
-
-            if (functionCall.Name == "ToUpper")
-            {
-                return Result.Success<object?>(context?.ToString()?.ToUpperInvariant() ?? string.Empty);
-            }
-
-            if (functionCall.Arguments.Count > 0)
-            {
-                return Result.Success<object?>($"result of {functionCall.Name} function: {string.Join(", ", functionCall.Arguments.OfType<LiteralArgument>().Select(x => x.GetValueResult(context, functionEvaluator, expressionEvaluator, formatProvider).GetValueOrThrow()))}");
-            }
-
-            return Result.Success<object?>($"result of {functionCall.Name} function");
+            return Result.Error<object?>("Kaboom");
         }
 
         public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            if (!functionCall.Name.In("error", "ToUpper", "MYFUNCTION", "MYFUNCTION2"))
-            {
-                return Result.Continue();
-            }
+            return Result.Success();
+        }
+    }
 
-            // Aparently, this function does not care about the given arguments
+    private sealed class ToUperFunction : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        {
+            return Result.Success<object?>(context?.ToString()?.ToUpperInvariant() ?? string.Empty);
+        }
+
+        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        {
             return Result.Success();
         }
     }
