@@ -55,6 +55,21 @@ public sealed class ExpressionFrameworkTest
         result.Value.Should().BeOfType<string>();
         result.Value!.ToString().Should().Be("HELLO WORLD!");
     }
+
+    [Fact]
+    public void Can_Get_FunctionDescriptor()
+    {
+        // Arrange
+        var functionDescriptorProvider = new FunctionDescriptorProvider([new ToUpperCaseExpressionParser()]);
+
+        // Act
+        var functionDescriptors = functionDescriptorProvider.GetAll();
+
+        // Assert
+        functionDescriptors.Should().ContainSingle();
+        functionDescriptors.Single().Arguments.Should().ContainSingle();
+        functionDescriptors.Single().Results.Should().HaveCount(2);
+    }
 }
 
 public partial record ToUpperCaseExpression : Expression, ITypedExpression<string>
