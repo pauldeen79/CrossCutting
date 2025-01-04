@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Extensions;
-
-namespace CrossCutting.Utilities.Parsers.Tests;
+﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
 public class ExpressionStringEvaluatorTests : IDisposable
 {
@@ -17,8 +15,9 @@ public class ExpressionStringEvaluatorTests : IDisposable
             .AddParsers()
             .AddSingleton(_variable)
             .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
-            .AddSingleton<IFunction, ToUperFunction>()
+            .AddSingleton<IFunction, ToUpperFunction>()
             .AddSingleton<IFunction, ErrorFunction>()
+            .AddSingleton<IFunction, MyFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -233,21 +232,21 @@ public class ExpressionStringEvaluatorTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("result of MYFUNCTION function");
+            result.Value.Should().Be(ReplacedValue);
         }
 
         [Fact]
         public void Returns_Success_Result_From_Function_With_Formattable_String_As_Argument()
         {
             // Arrange
-            var input = "=MYFUNCTION2(@\"Hello {Name}!\")";
+            var input = "=toupper(@\"Hello {Name}!\")";
 
             // Act
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("result of MYFUNCTION2 function: Hello replaced name!");
+            result.Value.Should().Be("HELLO REPLACED NAME!");
         }
 
         [Fact]
@@ -744,26 +743,14 @@ public class ExpressionStringEvaluatorTests : IDisposable
         }
 
         [Theory,
-            InlineData("=ToUpperCase(\"  space  \")"),
-            InlineData("=ToUpperCase(@\"  space  \")")]
+            InlineData("=ToUpper(\"  space  \")"),
+            InlineData("=ToUpper(@\"  space  \")")]
         public void Function_With_String_Argument_Preserves_WhiteSpace(string input)
         {
             // Arrange
-            var functionResultParserMock = Substitute.For<IFunction>();
-            functionResultParserMock.Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IFunctionEvaluator>(), Arg.Any<IExpressionEvaluator>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
-                .Returns(x =>
-                {
-                    if (x.ArgAt<FunctionCall>(0).Name != "ToUpperCase")
-                    {
-                        return Result.Continue<object?>();
-                    }
-
-                    return Result.Success<object?>(x.ArgAt<FunctionCall>(0).GetArgumentStringValueResult(0, "expression", x.ArgAt<IFormatProvider>(3), x.ArgAt<object?>(4), x.ArgAt<IFunctionEvaluator>(1), x.ArgAt<IExpressionEvaluator>(2)).GetValueOrThrow().ToUpperInvariant());
-                });
             using var provider = new ServiceCollection()
                 .AddParsers()
-                .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
-                .AddSingleton(functionResultParserMock)
+                .AddSingleton<IFunction, ToUpperFunction>()
                 .BuildServiceProvider(true);
             using var scope = provider.CreateScope();
 
@@ -984,7 +971,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         public void Returns_Success_Result_From_Function_With_Formattable_String_As_Argument()
         {
             // Arrange
-            var input = "=MYFUNCTION2(@\"Hello {Name}!\")";
+            var input = "=MYFUNCTION(@\"Hello {Name}!\")";
 
             // Act
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
@@ -1364,40 +1351,6 @@ public class ExpressionStringEvaluatorTests : IDisposable
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
         }
-
-        [Theory,
-            InlineData("=ToUpperCase(\"  space  \")"),
-            InlineData("=ToUpperCase(@\"  space  \")")]
-        public void Function_With_String_Argument_Preserves_WhiteSpace(string input)
-        {
-            // Arrange
-            var functionMock = Substitute.For<IFunction>();
-            //Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
-            functionMock.Validate(Arg.Any<FunctionCall>(), Arg.Any<IFunctionEvaluator>(), Arg.Any<IExpressionEvaluator>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
-                .Returns(x =>
-                {
-                    if (x.ArgAt<FunctionCall>(0).Name != "ToUpperCase")
-                    {
-                        return Result.Continue<object?>();
-                    }
-
-                    return Result.Success<object?>(x.ArgAt<FunctionCall>(0).GetArgumentStringValueResult(0, "expression", x.ArgAt<IFormatProvider>(3), x.ArgAt<object?>(4), x.ArgAt<IFunctionEvaluator>(1), x.ArgAt<IExpressionEvaluator>(2)).GetValueOrThrow().ToUpperInvariant());
-                });
-            using var provider = new ServiceCollection()
-                .AddParsers()
-                .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
-                .AddSingleton(functionMock)
-                .BuildServiceProvider(true);
-            using var scope = provider.CreateScope();
-
-            var parser = scope.ServiceProvider.GetRequiredService<IExpressionStringEvaluator>();
-
-            // Act
-            var result = parser.Validate(input, CultureInfo.InvariantCulture, scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
-
-            // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-        }
     }
 
     private IExpressionStringEvaluator CreateSut() => _scope.ServiceProvider.GetRequiredService<IExpressionStringEvaluator>();
@@ -1430,11 +1383,28 @@ public class ExpressionStringEvaluatorTests : IDisposable
         }
     }
 
-    private sealed class ToUperFunction : IFunction
+    private sealed class ToUpperFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
-            return Result.Success<object?>(context?.ToString()?.ToUpperInvariant() ?? string.Empty);
+            return Result.Success<object?>(
+                context?.ToString()?.ToUpperInvariant()
+                ?? functionCall.Arguments.FirstOrDefault()?.GetValueResult(context, functionEvaluator, expressionEvaluator, formatProvider).Value?.ToString()?.ToUpperInvariant()
+                ?? string.Empty);
+        }
+
+        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        {
+            return Result.Success();
+        }
+    }
+
+    [FunctionName("MyFunction")]
+    private sealed class MyFunction : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        {
+            return Result.Success<object?>(ReplacedValue);
         }
 
         public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
