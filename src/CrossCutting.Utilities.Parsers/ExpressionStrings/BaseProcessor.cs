@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
+﻿namespace CrossCutting.Utilities.Parsers.ExpressionStrings;
 
 internal static class BaseProcessor
 {

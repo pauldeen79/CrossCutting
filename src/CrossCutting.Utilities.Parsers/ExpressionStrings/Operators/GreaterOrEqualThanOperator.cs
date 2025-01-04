@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors.Operators;
+﻿namespace CrossCutting.Utilities.Parsers.ExpressionStrings.Operators;
 
 public class GreaterOrEqualThanOperator : OperatorExpressionProcessorBase
 {

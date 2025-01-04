@@ -1,27 +1,27 @@
-﻿namespace CrossCutting.Utilities.Parsers.ExpressionStringParserProcessors;
+﻿namespace CrossCutting.Utilities.Parsers.ExpressionStrings;
 
-public class PipedExpressionProcessor : IExpressionString
+public class ConcatenateExpressionProcessor : IExpressionString
 {
-    public int Order => 180;
+    public int Order => 190;
 
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        return BaseProcessor.SplitDelimited(state, '|', split =>
+        return BaseProcessor.SplitDelimited(state, '&', split =>
         {
-            var resultValue = state.Context;
+            var builder = new StringBuilder();
             foreach (var item in split)
             {
-                var result = state.Parser.Evaluate($"={item}", state.FormatProvider, resultValue, state.FormattableStringParser);
+                var result = state.Parser.Evaluate($"={item}", state.FormatProvider, state.Context, state.FormattableStringParser);
                 if (!result.IsSuccessful())
                 {
                     return result;
                 }
-                resultValue = result.Value;
+                builder.Append(result.Value.ToString(state.FormatProvider));
             }
 
-            return Result.Success(resultValue);
+            return Result.Success<object?>(builder.ToString());
         });
     }
 
@@ -32,7 +32,7 @@ public class PipedExpressionProcessor : IExpressionString
         return BaseProcessor.SplitDelimited
         (
             state,
-            '|',
+            '&',
             split => Result.Aggregate(split.Select(item => state.Parser.Validate($"={item}", state.FormatProvider, state.Context, state.FormattableStringParser)), Result.Success(), validationResults => Result.Invalid("Validation failed, see inner results for details", validationResults))
         );
     }

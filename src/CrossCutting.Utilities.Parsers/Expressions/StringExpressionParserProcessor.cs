@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.ExpressionParserProcessors;
+﻿namespace CrossCutting.Utilities.Parsers.Expressions;
 
 public class StringExpressionParserProcessor : IExpression
 {
