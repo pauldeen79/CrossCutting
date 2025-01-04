@@ -28,7 +28,7 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
     {
         if (expressionString is null)
         {
-            return Result.Invalid<object?>("Input is required");
+            return Result.Invalid<object?>("Expression string is required");
         }
 
         var state = new ExpressionStringEvaluatorState(expressionString, formatProvider, context, this, formattableStringParser);
@@ -44,7 +44,7 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
     {
         if (expressionString is null)
         {
-            return Result.Invalid("Input is required");
+            return Result.Invalid("Expression string is required");
         }
 
         var state = new ExpressionStringEvaluatorState(expressionString, formatProvider, context, this, formattableStringParser);

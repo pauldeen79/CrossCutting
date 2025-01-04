@@ -39,7 +39,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Returns_Invali_On_Null_String()
+        public void Returns_Invalid_On_Null_String()
         {
             // Arrange
             var input = default(string);
@@ -49,7 +49,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Input is required");
+            result.ErrorMessage.Should().Be("Expression string is required");
         }
 
         [Fact]
@@ -781,7 +781,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Returns_Invali_On_Null_String()
+        public void Returns_Invalid_On_Null_String()
         {
             // Arrange
             var input = default(string);
@@ -791,7 +791,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Input is required");
+            result.ErrorMessage.Should().Be("Expression string is required");
         }
 
         [Fact]

@@ -27,7 +27,7 @@ public class MathematicExpressionEvaluator : IMathematicExpressionEvaluator
     {
         if (expression is null)
         {
-            return Result.Invalid<object?>("Input is required");
+            return Result.Invalid<object?>("Expression is required");
         }
 
         var state = new MathematicExpressionState(expression, formatProvider, context, Evaluate);
@@ -53,7 +53,7 @@ public class MathematicExpressionEvaluator : IMathematicExpressionEvaluator
     {
         if (expression is null)
         {
-            return Result.Invalid("Input is required");
+            return Result.Invalid("Expression is required");
         }
 
         var state = new MathematicExpressionState(expression, formatProvider, context, Evaluate);
