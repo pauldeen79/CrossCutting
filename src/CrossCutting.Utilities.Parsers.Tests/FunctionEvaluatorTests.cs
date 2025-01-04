@@ -11,6 +11,9 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddParsers()
             .AddSingleton<IFunction, MyFunction>()
             .AddSingleton<IFunction, ErrorFunction>()
+            .AddSingleton<IFunction, OverloadTest1>()
+            .AddSingleton<IFunction, OverloadTest2>()
+            .AddSingleton<IFunction, OverloadTest3>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -142,6 +145,72 @@ public sealed class FunctionEvaluatorTests : IDisposable
         result.ErrorMessage.Should().Be("Unknown function: WrongName");
     }
 
+    [Fact]
+    public void Validate_Returns_Invalid_When_Overload_Does_Not_Have_The_Right_Amount_Of_Arguments()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("Overload").Build();
+        var parser = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall!, parser);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("No overload of the Overload function takes 0 arguments");
+    }
+
+    [Fact]
+    public void Validate_Returns_Invalid_When_Overload_ArgumentCount_Is_Registered_Twice()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new EmptyArgumentBuilder(), new EmptyArgumentBuilder()).Build();
+        var parser = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall!, parser);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Function Overload with 2 arguments could not be identified uniquely");
+    }
+
+    [Fact]
+    public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_And_Registered_Once()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new EmptyArgumentBuilder()).Build();
+        var parser = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall!, parser);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+    }
+
+    [Fact]
+    public void Validate_Returns_Error_When_Function_Could_Not_Be_Found_For_FunctionDescriptor()
+    {
+        // Arrange
+        var functionDescriptorProvider = Substitute.For<IFunctionDescriptorProvider>();
+        var functionDescriptor = new FunctionDescriptorBuilder().WithName("MyFunction").WithTypeName("MyTypeName").Build();
+        functionDescriptorProvider.GetAll().Returns([functionDescriptor]);
+        var sut = new FunctionEvaluator(functionDescriptorProvider, Enumerable.Empty<IFunction>());
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
+
+        // Act
+        var result = sut.Validate(functionCall, expressionEvaluator);
+
+        // Arrange
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Could not find function with type name MyTypeName");
+    }
+
     public void Dispose()
     {
         _scope.Dispose();
@@ -174,6 +243,53 @@ public sealed class FunctionEvaluatorTests : IDisposable
         public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         {
             return Result.Success();
+        }
+    }
+
+    [FunctionName("Overload")]
+    [FunctionArgument("Argument1", typeof(string))]
+    private sealed class OverloadTest1 : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        {
+            return Result.Continue();
+        }
+    }
+
+    [FunctionName("Overload")]
+    [FunctionArgument("Argument1", typeof(string))]
+    [FunctionArgument("Argument2", typeof(string))]
+    private sealed class OverloadTest2 : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        {
+            return Result.Continue();
+        }
+    }
+
+    [FunctionName("Overload")]
+    [FunctionArgument("Argument1", typeof(string))]
+    [FunctionArgument("Argument2", typeof(int))]
+    private sealed class OverloadTest3 : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        {
+            return Result.Continue();
         }
     }
 }
