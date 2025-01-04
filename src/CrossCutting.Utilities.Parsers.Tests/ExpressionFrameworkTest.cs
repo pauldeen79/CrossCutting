@@ -57,10 +57,6 @@ public sealed class ExpressionFrameworkTest
     }
 }
 
-[Description("Converts the expression to upper case")]
-[FunctionArgument(nameof(Expression), typeof(string), "String to get the upper case for", true)]
-[FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
-[FunctionResult(ResultStatus.Invalid, "Expression must be of type string")]
 public partial record ToUpperCaseExpression : Expression, ITypedExpression<string>
 {
     public override Result<object?> Evaluate(object? context)
@@ -208,12 +204,13 @@ public partial class ToUpperCaseExpressionBuilder : ExpressionBuilder<ToUpperCas
     }
 }
 
+[FunctionName(@"ToUpperCase")]
+[Description("Converts the expression to upper case")]
+[FunctionArgument(nameof(Expression), typeof(string), "String to get the upper case for", true)]
+[FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
+[FunctionResult(ResultStatus.Invalid, "Expression must be of type string")]
 public class ToUpperCaseExpressionParser : ExpressionParserBase
 {
-    public ToUpperCaseExpressionParser() : base(@"ToUpperCase")
-    {
-    }
-
     protected override Result<Expression> DoParse(FunctionCall functionCall, IFunctionEvaluator evaluator, IExpressionEvaluator parser, IFormatProvider formatProvider, object? context)
     {
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
@@ -793,25 +790,6 @@ public partial class TypedDelegateExpressionBuilder<T> : ExpressionBuilder<Typed
 
 public abstract class ExpressionParserBase : IFunction, IExpressionResolver
 {
-    private readonly string _functionName;
-    private readonly string _namespace;
-    private readonly string[] _aliases;
-
-    protected ExpressionParserBase(string functionName, params string[] aliases) : this(functionName, string.Empty, aliases)
-    {
-    }
-
-    protected ExpressionParserBase(string functionName, string @namespace, params string[] aliases)
-    {
-        ArgumentGuard.IsNotNull(functionName, nameof(functionName));
-        ArgumentGuard.IsNotNull(@namespace, nameof(@namespace));
-        ArgumentGuard.IsNotNull(aliases, nameof(aliases));
-
-        _functionName = functionName;
-        _namespace = @namespace;
-        _aliases = aliases;
-    }
-
     public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
     {
         var result = Parse(functionCall, functionEvaluator, expressionEvaluator, formatProvider, context);
@@ -830,34 +808,8 @@ public abstract class ExpressionParserBase : IFunction, IExpressionResolver
     {
         functionCall = ArgumentGuard.IsNotNull(functionCall, nameof(functionCall));
 
-        return IsFunctionValid(functionCall)
-            ? DoParse(functionCall, evaluator, parser, formatProvider, context)
-            : Result.Continue<Expression>();
+        return DoParse(functionCall, evaluator, parser, formatProvider, context);
     }
-
-    protected virtual bool IsNameValid(string functionName)
-    {
-        functionName = ArgumentGuard.IsNotNull(functionName, nameof(functionName));
-
-        if (_aliases.Length > 0 && Array.Exists(_aliases, x => functionName.Equals(x, StringComparison.OrdinalIgnoreCase)))
-        {
-            return true;
-        }
-
-        var lastDot = functionName.LastIndexOf('.');
-        if (lastDot == -1)
-        {
-            // no namespace qualifier
-            return _namespace.Length == 0 && functionName.Equals(_functionName, StringComparison.OrdinalIgnoreCase);
-        }
-
-        // namespace qualifier
-        return functionName.Substring(0, lastDot).Equals(_namespace, StringComparison.OrdinalIgnoreCase)
-            && functionName.Substring(lastDot + 1).Equals(_functionName, StringComparison.OrdinalIgnoreCase);
-    }
-
-    protected virtual bool IsFunctionValid(FunctionCall FunctionCall)
-        => IsNameValid(ArgumentGuard.IsNotNull(FunctionCall, nameof(FunctionCall)).Name);
 
     protected abstract Result<Expression> DoParse(FunctionCall functionCall, IFunctionEvaluator evaluator, IExpressionEvaluator parser, IFormatProvider formatProvider, object? context);
 
