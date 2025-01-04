@@ -1,5 +1,5 @@
 ﻿namespace CrossCutting.CodeGeneration.Models;
 
-public interface IFunctionCallArgument
+internal interface IFunctionCallArgument
 {
 }

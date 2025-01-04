@@ -110,12 +110,20 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        public FunctionDescriptor(string name, string typeName, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments)
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorResult> Results
+        {
+            get;
+        }
+
+        public FunctionDescriptor(string name, string typeName, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorResult> results)
         {
             this.Name = name;
             this.TypeName = typeName;
             this.Description = description;
             this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument>(arguments);
+            this.Results = results is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorResult>(results);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -161,6 +169,45 @@ namespace CrossCutting.Utilities.Parsers
         public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder ToBuilder()
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder(this);
+        }
+    }
+    public partial record FunctionDescriptorResult
+    {
+        public CrossCutting.Common.Results.ResultStatus Status
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Value
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string ValueType
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Description
+        {
+            get;
+        }
+
+        public FunctionDescriptorResult(CrossCutting.Common.Results.ResultStatus status, string value, string valueType, string description)
+        {
+            this.Status = status;
+            this.Value = value;
+            this.ValueType = valueType;
+            this.Description = description;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorResultBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorResultBuilder(this);
         }
     }
 }

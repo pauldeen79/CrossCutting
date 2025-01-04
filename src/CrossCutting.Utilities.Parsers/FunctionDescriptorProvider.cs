@@ -23,6 +23,7 @@ public class FunctionDescriptorProvider : IFunctionDescriptorProvider
             .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
             .WithTypeName(type.FullName)
             .AddArguments(type.GetCustomAttributes<FunctionArgumentAttribute>().Select(CreateFunctionArgument))
+            .AddResults(type.GetCustomAttributes<FunctionResultAttribute>().Select(CreateFunctionResult))
             .Build();
     }
 
@@ -32,4 +33,11 @@ public class FunctionDescriptorProvider : IFunctionDescriptorProvider
             .WithDescription(attribute.Description)
             .WithTypeName(attribute.TypeName)
             .WithIsRequired(attribute.IsRequired);
+
+    private static FunctionDescriptorResultBuilder CreateFunctionResult(FunctionResultAttribute attribute)
+        => new FunctionDescriptorResultBuilder()
+            .WithDescription(attribute.Description)
+            .WithStatus(attribute.Status)
+            .WithValue(attribute.Value)
+            .WithValueType(attribute.ValueType);
 }

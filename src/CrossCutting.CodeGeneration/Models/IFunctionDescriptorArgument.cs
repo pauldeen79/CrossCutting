@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.CodeGeneration.Models;
 
-public interface IFunctionDescriptorArgument
+internal interface IFunctionDescriptorArgument
 {
     [Required] string Name { get; }
     [Required] string TypeName { get; }
