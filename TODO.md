@@ -27,3 +27,19 @@ IFunctionDescriptorProvider:
 IFunctionDescriptor[] GetAll()
 
 Maybe also add support for attributes (RequiredAttribute and DescriptionAttribute), so you can easily fill them from metadata on all registered functions.
+
+Function evaluator:
+-Has all functions function descriptor provider injected in c'tor.
+-In there, provide mapping between fuction descriptor and function, and put it in a dictionary. Throw if functions could not be found.
+-Mapping from function descriptor to function: Probably the same as how we use reflection to create the function definition from a function. Maybe add an Id to make it unique?
+
+-Evaluate/Validate:
+-When FunctionCall arrives, first checks if it's not null
+-After that, check how many function descriptors are there with that function name (case insensitive)
+-When 0, return invalid: Function {name} is unknown
+-Check argument count of all valid functions
+-When 0, return invalid: No overload of function {name} takes {count} arguments
+-When >1, return invalid: Function {name} has multiple overloads with {count} arguments defined
+-When 1, search for the function that corresponds to that function descriptor (found in dictionary)
+
+After this, in ExpressionFramework and in unit tests, you don't have to check for the function name anymore, as the function evaluator takes care of this.
