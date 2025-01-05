@@ -822,23 +822,24 @@ public sealed class FormattableStringParserTests : IDisposable
     [FunctionName("MyFunction")]
     private sealed class MyFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        public Result<object?> Evaluate(FunctionCallRequest request)
         {
             return Result.Success<object?>("function result");
         }
 
-        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        public Result Validate(FunctionCallRequest request)
         {
             // Aparently, this function does not care about the given arguments
             return Result.Success();
         }
     }
 
+    [FunctionArgument("expression", typeof(string))]
     private sealed class ToUppercaseFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        public Result<object?> Evaluate(FunctionCallRequest request)
         {
-            var valueResult = functionCall.Arguments.First().GetValueResult(context, functionEvaluator, expressionEvaluator, formatProvider);
+            var valueResult = request.FunctionCall.Arguments.First().GetValueResult(request);
             if (!valueResult.IsSuccessful())
             {
                 return valueResult;
@@ -847,12 +848,9 @@ public sealed class FormattableStringParserTests : IDisposable
             return Result.Success<object?>(valueResult.Value.ToStringWithDefault().ToUpperInvariant());
         }
 
-        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        public Result Validate(FunctionCallRequest request)
         {
-            if (functionCall.Arguments.Count < 1)
-            {
-                return Result.Invalid("ToUpperCase requires 1 argument");
-            }
+            // No need to check for argument count, the FunctionDescriptor will take care of this
 
             return Result.Success();
         }

@@ -35,9 +35,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithLiteralArgument();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentValueResult(1, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentValueResult(1, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -49,9 +50,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithLiteralArgument();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -63,9 +65,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithLiteralArgument();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), "ignored");
+        var result = argument.GetArgumentValueResult(0, "SomeName", request, "ignored");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -77,9 +80,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("MyNestedFunction");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -91,9 +95,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithoutArguments();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), "some value");
+        var result = argument.GetArgumentValueResult(0, "SomeName", request, "some value");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -105,9 +110,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithLiteralArgument();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentStringValueResult(1, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentStringValueResult(1, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -119,9 +125,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("NumericFunction");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentStringValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentStringValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -133,9 +140,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithLiteralArgument();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentStringValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentStringValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -147,9 +155,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithoutArguments();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentStringValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), "default value");
+        var result = argument.GetArgumentStringValueResult(0, "SomeName", request, "default value");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -161,9 +170,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithLiteralArgument();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(1, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentInt32ValueResult(1, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -175,9 +185,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("NumericFunction");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -189,9 +200,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunction");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -203,9 +215,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("UnknownExpressionString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -217,9 +230,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunctionAsString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -231,9 +245,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("NumericFunctionAsString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -245,9 +260,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithoutArguments();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), 13);
+        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", request, 13);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -259,9 +275,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithLiteralArgument();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(1, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentInt64ValueResult(1, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -273,9 +290,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("LongFunction");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -287,9 +305,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunction");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -301,9 +320,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("UnknownExpressionString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -315,9 +335,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunctionAsString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -329,9 +350,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("LongFunctionAsString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -343,9 +365,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithoutArguments();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), 13L);
+        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", request, 13L);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -357,9 +380,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithLiteralArgument();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(1, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentDecimalValueResult(1, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -371,9 +395,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("DecimalFunction");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -385,9 +410,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunction");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -399,9 +425,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("UnknownExpressionString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -413,9 +440,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunctionAsString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -427,9 +455,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("DecimalFunctionAsString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -441,9 +470,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithoutArguments();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), 13.5M);
+        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", request, 13.5M);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -455,9 +485,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithLiteralArgument();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(1, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentBooleanValueResult(1, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -469,9 +500,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("BooleanFunction");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -483,9 +515,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunction");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -497,9 +530,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("UnknownExpressionString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -511,9 +545,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunctionAsString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -525,9 +560,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("BooleanFunctionAsString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -539,9 +575,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithoutArguments();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), true);
+        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", request, true);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -553,9 +590,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithLiteralArgument();
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(1, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentDateTimeValueResult(1, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -567,9 +605,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunction");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -581,9 +620,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("NumericFunction");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -595,9 +635,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("UnknownExpressionString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -609,9 +650,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("NumericFunctionAsString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -623,9 +665,10 @@ public sealed class FunctionCallTests : IDisposable
     {
         // Arrange
         var argument = CreateFunctionParseResultWithFunctionArgument("DateTimeFunctionAsString");
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>());
+        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", request);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -638,9 +681,10 @@ public sealed class FunctionCallTests : IDisposable
         // Arrange
         var argument = CreateFunctionParseResultWithoutArguments();
         var dt = DateTime.Now;
+        var request = new FunctionCallRequest(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture);
 
         // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", CultureInfo.InvariantCulture, null, _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), dt);
+        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", request, dt);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);

@@ -2,10 +2,10 @@
 
 public partial record RecursiveArgument
 {
-    public override Result<object?> GetValueResult(object? context, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider)
+    public override Result<object?> GetValueResult(FunctionCallRequest request)
     {
-        functionEvaluator = ArgumentGuard.IsNotNull(functionEvaluator, nameof(functionEvaluator));
+        request = ArgumentGuard.IsNotNull(request, nameof(request));
 
-        return functionEvaluator.Evaluate(Function, expressionEvaluator, formatProvider, context);
+        return request.FunctionEvaluator.Evaluate(Function, request.ExpressionEvaluator, request.FormatProvider, request.Context);
     }
 }

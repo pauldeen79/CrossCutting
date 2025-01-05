@@ -1372,12 +1372,12 @@ public class ExpressionStringEvaluatorTests : IDisposable
 
     private sealed class ErrorFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        public Result<object?> Evaluate(FunctionCallRequest request)
         {
             return Result.Error<object?>("Kaboom");
         }
 
-        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        public Result Validate(FunctionCallRequest request)
         {
             return Result.Success();
         }
@@ -1385,15 +1385,15 @@ public class ExpressionStringEvaluatorTests : IDisposable
 
     private sealed class ToUpperFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        public Result<object?> Evaluate(FunctionCallRequest request)
         {
             return Result.Success<object?>(
-                context?.ToString()?.ToUpperInvariant()
-                ?? functionCall.Arguments.FirstOrDefault()?.GetValueResult(context, functionEvaluator, expressionEvaluator, formatProvider).Value?.ToString()?.ToUpperInvariant()
+                request.Context?.ToString()?.ToUpperInvariant()
+                ?? request.FunctionCall.Arguments.FirstOrDefault()?.GetValueResult(request).Value?.ToString()?.ToUpperInvariant()
                 ?? string.Empty);
         }
 
-        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        public Result Validate(FunctionCallRequest request)
         {
             return Result.Success();
         }
@@ -1402,12 +1402,12 @@ public class ExpressionStringEvaluatorTests : IDisposable
     [FunctionName("MyFunction")]
     private sealed class MyFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        public Result<object?> Evaluate(FunctionCallRequest request)
         {
             return Result.Success<object?>(ReplacedValue);
         }
 
-        public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+        public Result Validate(FunctionCallRequest request)
         {
             return Result.Success();
         }

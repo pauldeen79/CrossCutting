@@ -51,10 +51,10 @@ public class FunctionDescriptorProviderTests
 
         private sealed class MyFunction1 : IFunction
         {
-            public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+            public Result<object?> Evaluate(FunctionCallRequest request)
                 => throw new NotImplementedException();
 
-            public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+            public Result Validate(FunctionCallRequest request)
                 => throw new NotImplementedException();
         }
 
@@ -64,10 +64,10 @@ public class FunctionDescriptorProviderTests
         [Description("This is a very cool function")]
         private sealed class MyFunction2 : IFunction
         {
-            public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+            public Result<object?> Evaluate(FunctionCallRequest request)
                 => throw new NotImplementedException();
 
-            public Result Validate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+            public Result Validate(FunctionCallRequest request)
                 => throw new NotImplementedException();
         }
     }

@@ -35,7 +35,7 @@ public class FunctionEvaluator : IFunctionEvaluator
             return Result.FromExistingResult<object?>(functionResult);
         }
 
-        return functionResult.Value!.Evaluate(functionCall, this, expressionEvaluator, formatProvider, context);
+        return functionResult.Value!.Evaluate(new FunctionCallRequest(functionCall, this, expressionEvaluator, formatProvider, context));
     }
 
     public Result Validate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
@@ -46,7 +46,7 @@ public class FunctionEvaluator : IFunctionEvaluator
             return Result.FromExistingResult<object?>(functionResult);
         }
 
-        return functionResult.Value!.Validate(functionCall, this, expressionEvaluator, formatProvider, context);
+        return functionResult.Value!.Validate(new FunctionCallRequest(functionCall, this, expressionEvaluator, formatProvider, context));
     }
 
     private Result<IFunction> ResolveFunction(FunctionCall functionCall)

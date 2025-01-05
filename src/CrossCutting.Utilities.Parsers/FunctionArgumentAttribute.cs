@@ -17,7 +17,7 @@ public sealed class FunctionArgumentAttribute : Attribute
         Name = name;
         TypeName = typeName;
         Description = string.Empty;
-        IsRequired = false;
+        IsRequired = true;
     }
 
     public FunctionArgumentAttribute(string name, string typeName, string description)
@@ -29,7 +29,7 @@ public sealed class FunctionArgumentAttribute : Attribute
         Name = name;
         TypeName = typeName;
         Description = description;
-        IsRequired = false;
+        IsRequired = true;
     }
 
     public FunctionArgumentAttribute(string name, Type type)
@@ -40,7 +40,7 @@ public sealed class FunctionArgumentAttribute : Attribute
         Name = name;
         TypeName = type.FullName;
         Description = string.Empty;
-        IsRequired = false;
+        IsRequired = true;
     }
 
     public FunctionArgumentAttribute(string name, Type type, string description)
@@ -52,7 +52,7 @@ public sealed class FunctionArgumentAttribute : Attribute
         Name = name;
         TypeName = type.FullName;
         Description = description;
-        IsRequired = false;
+        IsRequired = true;
     }
 
     public FunctionArgumentAttribute(string name, string typeName, bool isRequired)
