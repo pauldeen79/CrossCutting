@@ -1025,7 +1025,7 @@ internal static class StringExtensions
     }
 }
 
-public static class FunctionCallExtensions
+public static class FunctionCallRequestExtensions
 {
     public static ITypedExpression<T> GetArgumentValueExpression<T>(this FunctionCallRequest functionCallRequest, int index, string argumentName)
         => ProcessArgumentResult<T>(argumentName, functionCallRequest.FunctionCall.GetArgumentValueResult(index, argumentName, functionCallRequest));
