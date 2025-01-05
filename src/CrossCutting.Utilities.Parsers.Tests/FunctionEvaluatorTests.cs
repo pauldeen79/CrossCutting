@@ -221,12 +221,12 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
     private sealed class ErrorFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallRequest request)
+        public Result<object?> Evaluate(FunctionCallContext request)
         {
             return Result.Error<object?>("Kaboom");
         }
 
-        public Result Validate(FunctionCallRequest request)
+        public Result Validate(FunctionCallContext request)
         {
             return Result.Error<object?>("Kaboom");
         }
@@ -235,12 +235,12 @@ public sealed class FunctionEvaluatorTests : IDisposable
     [FunctionName("MyFunction")]
     private sealed class MyFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallRequest request)
+        public Result<object?> Evaluate(FunctionCallContext request)
         {
             return Result.Success<object?>("function result");
         }
 
-        public Result Validate(FunctionCallRequest request)
+        public Result Validate(FunctionCallContext request)
         {
             return Result.Success();
         }
@@ -250,12 +250,12 @@ public sealed class FunctionEvaluatorTests : IDisposable
     [FunctionArgument("Argument1", typeof(string))]
     private sealed class OverloadTest1 : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallRequest request)
+        public Result<object?> Evaluate(FunctionCallContext request)
         {
             throw new NotImplementedException();
         }
 
-        public Result Validate(FunctionCallRequest request)
+        public Result Validate(FunctionCallContext request)
         {
             return Result.Continue();
         }
@@ -266,12 +266,12 @@ public sealed class FunctionEvaluatorTests : IDisposable
     [FunctionArgument("Argument2", typeof(string))]
     private sealed class OverloadTest2 : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallRequest request)
+        public Result<object?> Evaluate(FunctionCallContext request)
         {
             throw new NotImplementedException();
         }
 
-        public Result Validate(FunctionCallRequest request)
+        public Result Validate(FunctionCallContext request)
         {
             return Result.Continue();
         }
@@ -282,12 +282,12 @@ public sealed class FunctionEvaluatorTests : IDisposable
     [FunctionArgument("Argument2", typeof(int))]
     private sealed class OverloadTest3 : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallRequest request)
+        public Result<object?> Evaluate(FunctionCallContext request)
         {
             throw new NotImplementedException();
         }
 
-        public Result Validate(FunctionCallRequest request)
+        public Result Validate(FunctionCallContext request)
         {
             return Result.Continue();
         }

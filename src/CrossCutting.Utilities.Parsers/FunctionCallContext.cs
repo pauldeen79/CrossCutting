@@ -1,13 +1,8 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public class FunctionCallRequest
+public class FunctionCallContext
 {
-    public FunctionCallRequest(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider)
-        : this(functionCall, functionEvaluator, expressionEvaluator, formatProvider, null)
-    {
-    }
-
-    public FunctionCallRequest(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+    public FunctionCallContext(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
     {
         FunctionCall = functionCall ?? throw new ArgumentNullException(nameof(functionCall));
         FunctionEvaluator = functionEvaluator ?? throw new ArgumentNullException(nameof(functionEvaluator));

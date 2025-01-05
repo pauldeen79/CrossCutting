@@ -2,93 +2,93 @@
 
 public partial record FunctionCall
 {
-    public Result<object?> GetArgumentValueResult(int index, string argumentName, FunctionCallRequest request)
+    public Result<object?> GetArgumentValueResult(int index, string argumentName, FunctionCallContext request)
         => index + 1 > Arguments.Count
             ? Result.Invalid<object?>($"Missing argument: {argumentName}")
             : Arguments.ElementAt(index).GetValueResult(request);
 
-    public Result<object?> GetArgumentValueResult(int index, string argumentName, FunctionCallRequest request, object? defaultValue)
+    public Result<object?> GetArgumentValueResult(int index, string argumentName, FunctionCallContext request, object? defaultValue)
         => index + 1 > Arguments.Count
             ? Result.Success(defaultValue)
             : Arguments.ElementAt(index).GetValueResult(request);
 
-    public Result<string> GetArgumentStringValueResult(int index, string argumentName, FunctionCallRequest request)
+    public Result<string> GetArgumentStringValueResult(int index, string argumentName, FunctionCallContext request)
         => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, request));
 
-    public Result<string> GetArgumentStringValueResult(int index, string argumentName, FunctionCallRequest request, string defaultValue)
+    public Result<string> GetArgumentStringValueResult(int index, string argumentName, FunctionCallContext request, string defaultValue)
         => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, request, defaultValue));
 
-    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, FunctionCallRequest request)
+    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, FunctionCallContext request)
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
         return ProcessInt32ArgumentResult(argumentName, request , GetArgumentValueResult(index, argumentName, request));
     }
 
-    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, FunctionCallRequest request, int defaultValue)
+    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, FunctionCallContext request, int defaultValue)
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
         return ProcessInt32ArgumentResult(argumentName, request , GetArgumentValueResult(index, argumentName, request, defaultValue));
     }
 
-    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, FunctionCallRequest request)
+    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, FunctionCallContext request)
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
         return ProcessInt64ArgumentResult(argumentName, request , GetArgumentValueResult(index, argumentName, request));
     }
 
-    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, FunctionCallRequest request, long defaultValue)
+    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, FunctionCallContext request, long defaultValue)
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
         return ProcessInt64ArgumentResult(argumentName, request , GetArgumentValueResult(index, argumentName, request, defaultValue));
     }
 
-    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, FunctionCallRequest request)
+    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, FunctionCallContext request)
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
         return ProcessDecimalArgumentResult(argumentName, request , GetArgumentValueResult(index, argumentName, request));
     }
 
-    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, FunctionCallRequest request, decimal defaultValue)
+    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, FunctionCallContext request, decimal defaultValue)
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
         return ProcessDecimalArgumentResult(argumentName, request , GetArgumentValueResult(index, argumentName, request, defaultValue));
     }
 
-    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, FunctionCallRequest request)
+    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, FunctionCallContext request)
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
         return ProcessBooleanArgumentResult(argumentName, request , GetArgumentValueResult(index, argumentName, request));
     }
 
-    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, FunctionCallRequest request, bool defaultValue)
+    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, FunctionCallContext request, bool defaultValue)
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
         return ProcessBooleanArgumentResult(argumentName, request , GetArgumentValueResult(index, argumentName, request, defaultValue));
     }
 
-    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, FunctionCallRequest request)
+    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, FunctionCallContext request)
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
         return ProcessDateTimeArgumentResult(argumentName, request , GetArgumentValueResult(index, argumentName, request));
     }
 
-    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, FunctionCallRequest request, DateTime defaultValue)
+    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, FunctionCallContext request, DateTime defaultValue)
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
         return ProcessDateTimeArgumentResult(argumentName, request , GetArgumentValueResult(index, argumentName, request, defaultValue));
     }
 
-    private static Result<int> ProcessInt32ArgumentResult(string argumentName, FunctionCallRequest request, Result<object?> argumentValueResult)
+    private static Result<int> ProcessInt32ArgumentResult(string argumentName, FunctionCallContext request, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -116,7 +116,7 @@ public partial record FunctionCall
             : Result.Invalid<int>($"{argumentName} is not of type integer");
     }
 
-    private static Result<long> ProcessInt64ArgumentResult(string argumentName, FunctionCallRequest request, Result<object?> argumentValueResult)
+    private static Result<long> ProcessInt64ArgumentResult(string argumentName, FunctionCallContext request, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -144,7 +144,7 @@ public partial record FunctionCall
             : Result.Invalid<long>($"{argumentName} is not of type long integer");
     }
 
-    private static Result<decimal> ProcessDecimalArgumentResult(string argumentName, FunctionCallRequest request, Result<object?> argumentValueResult)
+    private static Result<decimal> ProcessDecimalArgumentResult(string argumentName, FunctionCallContext request, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -172,7 +172,7 @@ public partial record FunctionCall
             : Result.Invalid<decimal>($"{argumentName} is not of type decimal");
     }
 
-    private static Result<bool> ProcessBooleanArgumentResult(string argumentName, FunctionCallRequest request, Result<object?> argumentValueResult)
+    private static Result<bool> ProcessBooleanArgumentResult(string argumentName, FunctionCallContext request, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -200,7 +200,7 @@ public partial record FunctionCall
             : Result.Invalid<bool>($"{argumentName} is not of type boolean");
     }
 
-    private static Result<DateTime> ProcessDateTimeArgumentResult(string argumentName, FunctionCallRequest request, Result<object?> argumentValueResult)
+    private static Result<DateTime> ProcessDateTimeArgumentResult(string argumentName, FunctionCallContext request, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {

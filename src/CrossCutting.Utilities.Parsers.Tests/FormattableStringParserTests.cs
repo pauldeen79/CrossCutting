@@ -822,12 +822,12 @@ public sealed class FormattableStringParserTests : IDisposable
     [FunctionName("MyFunction")]
     private sealed class MyFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallRequest request)
+        public Result<object?> Evaluate(FunctionCallContext request)
         {
             return Result.Success<object?>("function result");
         }
 
-        public Result Validate(FunctionCallRequest request)
+        public Result Validate(FunctionCallContext request)
         {
             // Aparently, this function does not care about the given arguments
             return Result.Success();
@@ -837,7 +837,7 @@ public sealed class FormattableStringParserTests : IDisposable
     [FunctionArgument("expression", typeof(string))]
     private sealed class ToUppercaseFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallRequest request)
+        public Result<object?> Evaluate(FunctionCallContext request)
         {
             var valueResult = request.FunctionCall.Arguments.First().GetValueResult(request);
             if (!valueResult.IsSuccessful())
@@ -848,7 +848,7 @@ public sealed class FormattableStringParserTests : IDisposable
             return Result.Success<object?>(valueResult.Value.ToStringWithDefault().ToUpperInvariant());
         }
 
-        public Result Validate(FunctionCallRequest request)
+        public Result Validate(FunctionCallContext request)
         {
             // No need to check for argument count, the FunctionDescriptor will take care of this
 

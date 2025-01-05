@@ -29,11 +29,11 @@ public class FunctionEvaluator : IFunctionEvaluator
 
     public Result<object?> Evaluate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         => ResolveFunction(functionCall)
-            .Transform(result => result.Evaluate(new FunctionCallRequest(functionCall, this, expressionEvaluator, formatProvider, context)));
+            .Transform(result => result.Evaluate(new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context)));
 
     public Result Validate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
         => ResolveFunction(functionCall)
-            .Transform(result => result.Validate(new FunctionCallRequest(functionCall, this, expressionEvaluator, formatProvider, context)));
+            .Transform(result => result.Validate(new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context)));
 
     private Result<IFunction> ResolveFunction(FunctionCall functionCall)
     {

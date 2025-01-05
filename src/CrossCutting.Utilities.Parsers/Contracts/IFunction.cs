@@ -2,7 +2,7 @@
 
 public interface IFunction
 {
-    Result Validate(FunctionCallRequest request);
+    Result Validate(FunctionCallContext request);
 
-    Result<object?> Evaluate(FunctionCallRequest request);
+    Result<object?> Evaluate(FunctionCallContext request);
 }

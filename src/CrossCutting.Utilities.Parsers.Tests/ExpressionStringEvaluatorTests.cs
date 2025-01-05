@@ -1372,12 +1372,12 @@ public class ExpressionStringEvaluatorTests : IDisposable
 
     private sealed class ErrorFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallRequest request)
+        public Result<object?> Evaluate(FunctionCallContext request)
         {
             return Result.Error<object?>("Kaboom");
         }
 
-        public Result Validate(FunctionCallRequest request)
+        public Result Validate(FunctionCallContext request)
         {
             return Result.Success();
         }
@@ -1385,7 +1385,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
 
     private sealed class ToUpperFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallRequest request)
+        public Result<object?> Evaluate(FunctionCallContext request)
         {
             return Result.Success<object?>(
                 request.Context?.ToString()?.ToUpperInvariant()
@@ -1393,7 +1393,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
                 ?? string.Empty);
         }
 
-        public Result Validate(FunctionCallRequest request)
+        public Result Validate(FunctionCallContext request)
         {
             return Result.Success();
         }
@@ -1402,12 +1402,12 @@ public class ExpressionStringEvaluatorTests : IDisposable
     [FunctionName("MyFunction")]
     private sealed class MyFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallRequest request)
+        public Result<object?> Evaluate(FunctionCallContext request)
         {
             return Result.Success<object?>(ReplacedValue);
         }
 
-        public Result Validate(FunctionCallRequest request)
+        public Result Validate(FunctionCallContext request)
         {
             return Result.Success();
         }

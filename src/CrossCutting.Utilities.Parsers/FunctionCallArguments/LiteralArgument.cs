@@ -2,7 +2,7 @@
 
 public partial record LiteralArgument
 {
-    public override Result<object?> GetValueResult(FunctionCallRequest request)
+    public override Result<object?> GetValueResult(FunctionCallContext request)
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 

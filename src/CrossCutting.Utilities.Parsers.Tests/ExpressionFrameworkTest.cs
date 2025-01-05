@@ -11,7 +11,7 @@ public sealed class ExpressionFrameworkTest
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new FunctionCallBuilder().WithName("ToUpperCase").AddArguments(new LiteralArgumentBuilder().WithValue("Hello world!")).Build();
-        var request = new FunctionCallRequest(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture);
+        var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
         var result = sut.Parse(request);
@@ -30,7 +30,7 @@ public sealed class ExpressionFrameworkTest
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new FunctionCallBuilder().WithName("ToUpperCase").AddArguments(new LiteralArgumentBuilder().WithValue("Hello world!")).Build();
-        var request = new FunctionCallRequest(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
         var result = sut.Validate(request);
@@ -48,7 +48,7 @@ public sealed class ExpressionFrameworkTest
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new FunctionCallBuilder().WithName("ToUpperCase").AddArguments(new LiteralArgumentBuilder().WithValue("Hello world!")).Build();
-        var request = new FunctionCallRequest(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture);
+        var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
         var result = sut.Evaluate(request);
@@ -229,7 +229,7 @@ public partial class ToUpperCaseExpressionBuilder : ExpressionBuilder<ToUpperCas
 [FunctionResult(ResultStatus.Invalid, "Expression must be of type string")]
 public class ToUpperCaseExpressionResolver : ExpressionResolverBase
 {
-    protected override Result<Expression> DoParse(FunctionCallRequest request)
+    protected override Result<Expression> DoParse(FunctionCallContext request)
     {
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         return Result.Success<Expression>(new ToUpperCaseExpression(
@@ -808,7 +808,7 @@ public partial class TypedDelegateExpressionBuilder<T> : ExpressionBuilder<Typed
 
 public abstract class ExpressionResolverBase : IFunction, IExpressionResolver
 {
-    public Result<object?> Evaluate(FunctionCallRequest request)
+    public Result<object?> Evaluate(FunctionCallContext request)
     {
         var result = Parse(request);
 
@@ -817,21 +817,21 @@ public abstract class ExpressionResolverBase : IFunction, IExpressionResolver
             : Result.FromExistingResult<object?>(result);
     }
 
-    public Result Validate(FunctionCallRequest request)
+    public Result Validate(FunctionCallContext request)
     {
         return Parse(request);
     }
 
-    public Result<Expression> Parse(FunctionCallRequest request)
+    public Result<Expression> Parse(FunctionCallContext request)
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
         return DoParse(request);
     }
 
-    protected abstract Result<Expression> DoParse(FunctionCallRequest request);
+    protected abstract Result<Expression> DoParse(FunctionCallContext request);
 
-    protected static Result<Expression> ParseTypedExpression(Type expressionType, int index, string argumentName, FunctionCallRequest request)
+    protected static Result<Expression> ParseTypedExpression(Type expressionType, int index, string argumentName, FunctionCallContext request)
     {
         expressionType = ArgumentGuard.IsNotNull(expressionType, nameof(expressionType));
         request = ArgumentGuard.IsNotNull(request, nameof(request));
@@ -878,7 +878,7 @@ public interface IUntypedExpressionProvider
 
 public interface IExpressionResolver
 {
-    Result<Expression> Parse(FunctionCallRequest request);
+    Result<Expression> Parse(FunctionCallContext request);
 }
 
 public static class StringExpression
@@ -1027,55 +1027,55 @@ internal static class StringExtensions
 
 public static class FunctionCallRequestExtensions
 {
-    public static ITypedExpression<T> GetArgumentValueExpression<T>(this FunctionCallRequest functionCallRequest, int index, string argumentName)
+    public static ITypedExpression<T> GetArgumentValueExpression<T>(this FunctionCallContext functionCallRequest, int index, string argumentName)
         => ProcessArgumentResult<T>(argumentName, functionCallRequest.FunctionCall.GetArgumentValueResult(index, argumentName, functionCallRequest));
 
-    public static ITypedExpression<T> GetArgumentValueExpression<T>(this FunctionCallRequest functionCallRequest, int index, string argumentName, T? defaultValue)
+    public static ITypedExpression<T> GetArgumentValueExpression<T>(this FunctionCallContext functionCallRequest, int index, string argumentName, T? defaultValue)
         => ProcessArgumentResult(argumentName, functionCallRequest.FunctionCall.GetArgumentValueResult(index, argumentName, functionCallRequest, defaultValue), true, defaultValue);
 
-    public static ITypedExpression<int> GetArgumentInt32ValueExpression(this FunctionCallRequest functionCallRequest, int index, string argumentName)
+    public static ITypedExpression<int> GetArgumentInt32ValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName)
         => ProcessArgumentResult<int>(argumentName, functionCallRequest.FunctionCall.GetArgumentInt32ValueResult(index, argumentName, functionCallRequest));
 
-    public static ITypedExpression<int> GetArgumentInt32ValueExpression(this FunctionCallRequest functionCallRequest, int index, string argumentName, int defaultValue)
+    public static ITypedExpression<int> GetArgumentInt32ValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName, int defaultValue)
         => ProcessArgumentResult<int>(argumentName, functionCallRequest.FunctionCall.GetArgumentInt32ValueResult(index, argumentName, functionCallRequest, defaultValue));
 
-    public static ITypedExpression<long> GetArgumentInt64ValueExpression(this FunctionCallRequest functionCallRequest, int index, string argumentName)
+    public static ITypedExpression<long> GetArgumentInt64ValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName)
         => ProcessArgumentResult<long>(argumentName, functionCallRequest.FunctionCall.GetArgumentInt64ValueResult(index, argumentName, functionCallRequest));
 
-    public static ITypedExpression<long> GetArgumentInt64ValueExpression(this FunctionCallRequest functionCallRequest, int index, string argumentName, long defaultValue)
+    public static ITypedExpression<long> GetArgumentInt64ValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName, long defaultValue)
         => ProcessArgumentResult<long>(argumentName, functionCallRequest.FunctionCall.GetArgumentInt64ValueResult(index, argumentName, functionCallRequest, defaultValue));
 
-    public static ITypedExpression<decimal> GetArgumentDecimalValueExpression(this FunctionCallRequest functionCallRequest, int index, string argumentName)
+    public static ITypedExpression<decimal> GetArgumentDecimalValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName)
         => ProcessArgumentResult<decimal>(argumentName, functionCallRequest.FunctionCall.GetArgumentDecimalValueResult(index, argumentName, functionCallRequest));
 
-    public static ITypedExpression<decimal> GetArgumentDecimalValueExpression(this FunctionCallRequest functionCallRequest, int index, string argumentName, decimal defaultValue)
+    public static ITypedExpression<decimal> GetArgumentDecimalValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName, decimal defaultValue)
         => ProcessArgumentResult<decimal>(argumentName, functionCallRequest.FunctionCall.GetArgumentDecimalValueResult(index, argumentName, functionCallRequest, defaultValue));
 
-    public static ITypedExpression<bool> GetArgumentBooleanValueExpression(this FunctionCallRequest functionCallRequest, int index, string argumentName)
+    public static ITypedExpression<bool> GetArgumentBooleanValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName)
         => ProcessArgumentResult<bool>(argumentName, functionCallRequest.FunctionCall.GetArgumentBooleanValueResult(index, argumentName, functionCallRequest));
 
-    public static ITypedExpression<bool> GetArgumentBooleanValueExpression(this FunctionCallRequest functionCallRequest, int index, string argumentName, bool defaultValue)
+    public static ITypedExpression<bool> GetArgumentBooleanValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName, bool defaultValue)
         => ProcessArgumentResult<bool>(argumentName, functionCallRequest.FunctionCall.GetArgumentBooleanValueResult(index, argumentName, functionCallRequest, defaultValue));
 
-    public static ITypedExpression<DateTime> GetArgumentDateTimeValueExpression(this FunctionCallRequest functionCallRequest, int index, string argumentName)
+    public static ITypedExpression<DateTime> GetArgumentDateTimeValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName)
         => ProcessArgumentResult<DateTime>(argumentName, functionCallRequest.FunctionCall.GetArgumentDateTimeValueResult(index, argumentName, functionCallRequest));
 
-    public static ITypedExpression<DateTime> GetArgumentDateTimeValueExpression(this FunctionCallRequest functionCallRequest, int index, string argumentName, DateTime defaultValue)
+    public static ITypedExpression<DateTime> GetArgumentDateTimeValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName, DateTime defaultValue)
         => ProcessArgumentResult<DateTime>(argumentName, functionCallRequest.FunctionCall.GetArgumentDateTimeValueResult(index, argumentName, functionCallRequest, defaultValue));
 
-    public static ITypedExpression<string> GetArgumentStringValueExpression(this FunctionCallRequest functionfunctionCallRequestarseResult, int index, string argumentName)
+    public static ITypedExpression<string> GetArgumentStringValueExpression(this FunctionCallContext functionfunctionCallRequestarseResult, int index, string argumentName)
         => ProcessArgumentResult<string>(argumentName, functionfunctionCallRequestarseResult.FunctionCall.GetArgumentStringValueResult(index, argumentName, functionfunctionCallRequestarseResult));
 
-    public static ITypedExpression<string> GetArgumentStringValueExpression(this FunctionCallRequest functionCallRequest, int index, string argumentName, string defaultValue)
+    public static ITypedExpression<string> GetArgumentStringValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName, string defaultValue)
         => ProcessArgumentResult<string>(argumentName, functionCallRequest.FunctionCall.GetArgumentStringValueResult(index, argumentName, functionCallRequest, defaultValue));
 
-    public static Result<T> GetArgumentExpressionResult<T>(this FunctionCallRequest functionCallRequest, int index, string argumentName)
+    public static Result<T> GetArgumentExpressionResult<T>(this FunctionCallContext functionCallRequest, int index, string argumentName)
         => GetArgumentValueExpression<T>(functionCallRequest, index, argumentName).EvaluateTyped(functionCallRequest.Context);
 
-    public static Result<T> GetArgumentExpressionResult<T>(this FunctionCallRequest functionCallRequest, int index, string argumentName, T? defaultValue)
+    public static Result<T> GetArgumentExpressionResult<T>(this FunctionCallContext functionCallRequest, int index, string argumentName, T? defaultValue)
         => GetArgumentValueExpression(functionCallRequest, index, argumentName, defaultValue).EvaluateTyped(functionCallRequest.Context);
 
-    public static ITypedExpression<IEnumerable> GetTypedExpressionsArgumentValueExpression(this FunctionCallRequest functionCallRequest, int index, string argumentName)
+    public static ITypedExpression<IEnumerable> GetTypedExpressionsArgumentValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName)
     {
         var expressions = GetArgumentValueExpression<IEnumerable>(functionCallRequest, index, argumentName).EvaluateTyped(functionCallRequest.Context);
 
@@ -1084,7 +1084,7 @@ public static class FunctionCallRequestExtensions
             : new Expression[] { new ConstantResultExpression(expressions) });
     }
 
-    public static IEnumerable<Expression> GetExpressionsArgumentValueResult(this FunctionCallRequest functionCallRequest, int index, string argumentName)
+    public static IEnumerable<Expression> GetExpressionsArgumentValueResult(this FunctionCallContext functionCallRequest, int index, string argumentName)
     {
         var expressions = GetArgumentValueExpression<IEnumerable>(functionCallRequest, index, argumentName).EvaluateTyped(functionCallRequest.Context);
 
