@@ -402,7 +402,7 @@ public sealed class FunctionParserTests : IDisposable
     {
         public int Order => 1;
 
-        public Result<FunctionCallArgument> Process(string stringArgument, IReadOnlyCollection<FunctionCall> functionCalls, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+        public Result<FunctionCallArgument> Process(string stringArgument, IReadOnlyCollection<FunctionCall> functionCalls, IFormatProvider formatProvider, IFormattableStringParser? formattableStringParser, object? context)
             => Result.Error<FunctionCallArgument>("Kaboom");
     }
 
