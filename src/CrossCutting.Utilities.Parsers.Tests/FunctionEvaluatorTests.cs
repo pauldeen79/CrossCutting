@@ -197,7 +197,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionDescriptorProvider = Substitute.For<IFunctionDescriptorProvider>();
-        var functionDescriptor = new FunctionDescriptorBuilder().WithName("MyFunction").WithTypeName("MyTypeName").Build();
+        var functionDescriptor = new FunctionDescriptorBuilder().WithName("MyFunction").WithType(typeof(string)).Build();
         functionDescriptorProvider.GetAll().Returns([functionDescriptor]);
         var sut = new FunctionEvaluator(functionDescriptorProvider, Enumerable.Empty<IFunction>());
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
@@ -208,7 +208,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
         // Arrange
         result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Could not find function with type name MyTypeName");
+        result.ErrorMessage.Should().Be("Could not find function with type name System.String");
     }
 
     public void Dispose()

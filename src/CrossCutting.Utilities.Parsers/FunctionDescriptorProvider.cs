@@ -21,7 +21,7 @@ public class FunctionDescriptorProvider : IFunctionDescriptorProvider
         return new FunctionDescriptorBuilder()
             .WithName(type.GetCustomAttribute<FunctionNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
             .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
-            .WithTypeName(type.FullName)
+            .WithType(type)
             .AddArguments(type.GetCustomAttributes<FunctionArgumentAttribute>().Select(CreateFunctionArgument))
             .AddResults(type.GetCustomAttributes<FunctionResultAttribute>().Select(CreateFunctionResult))
             .Build();
@@ -31,7 +31,7 @@ public class FunctionDescriptorProvider : IFunctionDescriptorProvider
         => new FunctionDescriptorArgumentBuilder()
             .WithName(attribute.Name)
             .WithDescription(attribute.Description)
-            .WithTypeName(attribute.TypeName)
+            .WithType(attribute.Type)
             .WithIsRequired(attribute.IsRequired);
 
     private static FunctionDescriptorResultBuilder CreateFunctionResult(FunctionResultAttribute attribute)

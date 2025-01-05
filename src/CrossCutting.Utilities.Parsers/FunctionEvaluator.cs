@@ -53,10 +53,10 @@ public class FunctionEvaluator : IFunctionEvaluator
 
     private Result<IFunction> GetFunctionByDescriptor(FunctionDescriptor functionDescriptor)
     {
-        var function = _functions.FirstOrDefault(x => x.GetType().FullName == functionDescriptor.TypeName);
+        var function = _functions.FirstOrDefault(x => x.GetType() == functionDescriptor.Type);
         if (function is null)
         {
-            return Result.Error<IFunction>($"Could not find function with type name {functionDescriptor.TypeName}");
+            return Result.Error<IFunction>($"Could not find function with type name {functionDescriptor.Type.FullName}");
         }
 
         return Result.Success(function);

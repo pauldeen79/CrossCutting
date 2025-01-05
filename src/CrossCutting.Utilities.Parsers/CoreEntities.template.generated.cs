@@ -92,7 +92,7 @@ namespace CrossCutting.Utilities.Parsers
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string TypeName
+        public System.Type Type
         {
             get;
         }
@@ -117,10 +117,10 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        public FunctionDescriptor(string name, string typeName, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorResult> results)
+        public FunctionDescriptor(string name, System.Type type, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorResult> results)
         {
             this.Name = name;
-            this.TypeName = typeName;
+            this.Type = type;
             this.Description = description;
             this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument>(arguments);
             this.Results = results is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorResult>(results);
@@ -141,7 +141,7 @@ namespace CrossCutting.Utilities.Parsers
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string TypeName
+        public System.Type Type
         {
             get;
         }
@@ -157,10 +157,10 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        public FunctionDescriptorArgument(string name, string typeName, string description, bool isRequired)
+        public FunctionDescriptorArgument(string name, System.Type type, string description, bool isRequired)
         {
             this.Name = name;
-            this.TypeName = typeName;
+            this.Type = type;
             this.Description = description;
             this.IsRequired = isRequired;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
