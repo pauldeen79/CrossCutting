@@ -28,30 +28,50 @@ public class FunctionEvaluator : IFunctionEvaluator
     }
 
     public Result<object?> Evaluate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
-        => ResolveFunction(functionCall)
-            .Transform(result => result.Evaluate(new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context)));
-
-    public Result Validate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
-        => ResolveFunction(functionCall)
-            .Transform(result => result.Validate(new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context)));
-
-    private Result<IFunction> ResolveFunction(FunctionCall functionCall)
     {
         if (functionCall is null)
         {
-            return Result.Invalid<IFunction>("Function call is required");
+            return Result.Invalid<object?>("Function call is required");
         }
 
-        var functionsByName = Descriptors.Where(x => x.Name.Equals(functionCall.Name, StringComparison.OrdinalIgnoreCase)).ToArray();
-        return functionsByName.Length switch
+        var functionCallContext = new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context);
+
+        return ResolveFunction(functionCallContext)
+            .Transform(result => result.Evaluate(functionCallContext));
+    }
+
+    public Result Validate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+    {
+        if (functionCall is null)
         {
-            0 => Result.Invalid<IFunction>($"Unknown function: {functionCall.Name}"),
-            1 => GetFunctionByDescriptor(functionsByName[0]),
-            _ => GetFunctionOverloadByDescriptors(functionCall, functionsByName)
+            return Result.Invalid("Function call is required");
+        }
+
+        var functionCallContext = new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context);
+
+        return ResolveFunction(functionCallContext)
+            .Transform(result => result.Validate(functionCallContext));
+    }
+
+    private Result<IFunction> ResolveFunction(FunctionCallContext functionCallContext)
+    {
+        var functionsByName = Descriptors.Where(x => x.Name.Equals(functionCallContext.FunctionCall.Name, StringComparison.OrdinalIgnoreCase)).ToArray();
+        if (functionsByName.Length == 0)
+        {
+            return Result.Invalid<IFunction>($"Unknown function: {functionCallContext.FunctionCall.Name}");
+        }
+
+        var functionsWithRightArgumentCount = functionsByName.Where(x => x.Arguments.Count == functionCallContext.FunctionCall.Arguments.Count).ToArray();
+
+        return functionsWithRightArgumentCount.Length switch
+        {
+            0 => Result.Invalid<IFunction>($"No overload of the {functionCallContext.FunctionCall.Name} function takes {functionCallContext.FunctionCall.Arguments.Count} arguments"),
+            1 => GetFunctionByDescriptor(functionCallContext, functionsWithRightArgumentCount[0]),
+            _ => Result.Invalid<IFunction>($"Function {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely")
         };
     }
 
-    private Result<IFunction> GetFunctionByDescriptor(FunctionDescriptor functionDescriptor)
+    private Result<IFunction> GetFunctionByDescriptor(FunctionCallContext functionCallContext, FunctionDescriptor functionDescriptor)
     {
         var function = _functions.FirstOrDefault(x => x.GetType() == functionDescriptor.Type);
         if (function is null)
@@ -59,18 +79,31 @@ public class FunctionEvaluator : IFunctionEvaluator
             return Result.Error<IFunction>($"Could not find function with type name {functionDescriptor.Type.FullName}");
         }
 
-        return Result.Success(function);
-    }
+        var arguments = functionDescriptor.Arguments.Zip(functionCallContext.FunctionCall.Arguments, (descriptor, call) => new { DescriptorArgument = descriptor, CallArgument = call });
 
-    private Result<IFunction> GetFunctionOverloadByDescriptors(FunctionCall functionCall, FunctionDescriptor[] functionsByName)
-    {
-        var functionsWithRightArgumentCount = functionsByName.Where(x => x.Arguments.Count == functionCall.Arguments.Count).ToArray();
-
-        return functionsWithRightArgumentCount.Length switch
+        var errors = new List<Result>();
+        foreach (var argument in arguments)
         {
-            0 => Result.Invalid<IFunction>($"No overload of the {functionCall.Name} function takes {functionCall.Arguments.Count} arguments"),
-            1 => GetFunctionByDescriptor(functionsWithRightArgumentCount[0]),
-            _ => Result.Invalid<IFunction>($"Function {functionCall.Name} with {functionCall.Arguments.Count} arguments could not be identified uniquely")
-        };
+            var result = argument.CallArgument.GetValueResult(functionCallContext);
+            if (!result.IsSuccessful())
+            {
+                errors.Add(result);
+            }
+            else if (result.Value is not null && !argument.DescriptorArgument.Type.IsAssignableFrom(result.Value.GetType()))
+            {
+                errors.Add(Result.Invalid($"Argument {argument.DescriptorArgument.Name} is not of type {argument.DescriptorArgument.Type.FullName}"));
+            }
+            else if (result.Value is null && argument.DescriptorArgument.IsRequired)
+            {
+                errors.Add(Result.Invalid($"Argument {argument.DescriptorArgument.Name} is required"));
+            }
+        }
+
+        if (errors.Count > 0)
+        {
+            return Result.Invalid<IFunction>($"Validation for function {functionCallContext.FunctionCall.Name} failed, see inner results for more details", errors);
+        }
+
+        return Result.Success(function);
     }
 }
