@@ -89,7 +89,7 @@ public class FunctionEvaluator : IFunctionEvaluator
             {
                 errors.Add(result);
             }
-            else if (result.Value is not null && !argument.DescriptorArgument.Type.IsAssignableFrom(result.Value.GetType()))
+            else if (result.Value is not null && !argument.DescriptorArgument.Type.IsInstanceOfType(result.Value))
             {
                 errors.Add(Result.Invalid($"Argument {argument.DescriptorArgument.Name} is not of type {argument.DescriptorArgument.Type.FullName}"));
             }
