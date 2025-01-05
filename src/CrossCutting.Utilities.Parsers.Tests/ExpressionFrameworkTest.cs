@@ -6,7 +6,7 @@ public sealed class ExpressionFrameworkTest
     public void Can_Parse_ToUpperCaseExpression()
     {
         // Arrange
-        var sut = new ToUpperCaseExpressionParser();
+        var sut = new ToUpperCaseExpressionResolver();
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
@@ -24,7 +24,7 @@ public sealed class ExpressionFrameworkTest
     public void Can_Validate_ToUpperCaseExpression()
     {
         // Arrange
-        var sut = new ToUpperCaseExpressionParser();
+        var sut = new ToUpperCaseExpressionResolver();
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
@@ -41,7 +41,7 @@ public sealed class ExpressionFrameworkTest
     public void Can_Evaluate_ToUpperCaseExpression()
     {
         // Arrange
-        var sut = new ToUpperCaseExpressionParser();
+        var sut = new ToUpperCaseExpressionResolver();
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
@@ -60,7 +60,7 @@ public sealed class ExpressionFrameworkTest
     public void Can_Get_FunctionDescriptor()
     {
         // Arrange
-        var functionDescriptorProvider = new FunctionDescriptorProvider([new ToUpperCaseExpressionParser()]);
+        var functionDescriptorProvider = new FunctionDescriptorProvider([new ToUpperCaseExpressionResolver()]);
 
         // Act
         var functionDescriptors = functionDescriptorProvider.GetAll();
@@ -224,7 +224,7 @@ public partial class ToUpperCaseExpressionBuilder : ExpressionBuilder<ToUpperCas
 [FunctionArgument(nameof(Expression), typeof(string), "String to get the upper case for", true)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
 [FunctionResult(ResultStatus.Invalid, "Expression must be of type string")]
-public class ToUpperCaseExpressionParser : ExpressionParserBase
+public class ToUpperCaseExpressionResolver : ExpressionResolverBase
 {
     protected override Result<Expression> DoParse(FunctionCall functionCall, IFunctionEvaluator evaluator, IExpressionEvaluator parser, IFormatProvider formatProvider, object? context)
     {
@@ -803,7 +803,7 @@ public partial class TypedDelegateExpressionBuilder<T> : ExpressionBuilder<Typed
     }
 }
 
-public abstract class ExpressionParserBase : IFunction, IExpressionResolver
+public abstract class ExpressionResolverBase : IFunction, IExpressionResolver
 {
     public Result<object?> Evaluate(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
     {
