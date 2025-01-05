@@ -46,7 +46,7 @@ public record Result<T> : Result
         return new Result<TCast>(castValue, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
     }
 
-    public Result<TTarget> TransformValue<TTarget>(Func<T, TTarget> transformDelegate)
+    public Result<TTarget> Transform<TTarget>(Func<T, TTarget> transformDelegate)
     {
         ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
 
@@ -55,7 +55,31 @@ public record Result<T> : Result
             return FromExistingResult<TTarget>(this);
         }
 
-        return new Result<TTarget>(transformDelegate(Value!), Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
+        return Success(transformDelegate(Value!));
+    }
+
+    public Result<TTarget> Transform<TTarget>(Func<T, Result<TTarget>> transformDelegate)
+    {
+        ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
+
+        if (!IsSuccessful())
+        {
+            return FromExistingResult<TTarget>(this);
+        }
+
+        return transformDelegate(Value!);
+    }
+
+    public Result Transform(Func<T, Result> transformDelegate)
+    {
+        ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
+
+        if (!IsSuccessful())
+        {
+            return this;
+        }
+
+        return transformDelegate(Value!);
     }
 
     public Result<T> Either(Func<Result<T>, Result<T>> errorDelegate)

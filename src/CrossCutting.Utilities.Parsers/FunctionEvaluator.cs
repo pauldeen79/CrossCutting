@@ -28,26 +28,12 @@ public class FunctionEvaluator : IFunctionEvaluator
     }
 
     public Result<object?> Evaluate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
-    {
-        var functionResult = ResolveFunction(functionCall);
-        if (!functionResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(functionResult);
-        }
-
-        return functionResult.Value!.Evaluate(new FunctionCallRequest(functionCall, this, expressionEvaluator, formatProvider, context));
-    }
+        => ResolveFunction(functionCall)
+            .Transform(result => result.Evaluate(new FunctionCallRequest(functionCall, this, expressionEvaluator, formatProvider, context)));
 
     public Result Validate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
-    {
-        var functionResult = ResolveFunction(functionCall);
-        if (!functionResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(functionResult);
-        }
-
-        return functionResult.Value!.Validate(new FunctionCallRequest(functionCall, this, expressionEvaluator, formatProvider, context));
-    }
+        => ResolveFunction(functionCall)
+            .Transform(result => result.Validate(new FunctionCallRequest(functionCall, this, expressionEvaluator, formatProvider, context)));
 
     private Result<IFunction> ResolveFunction(FunctionCall functionCall)
     {

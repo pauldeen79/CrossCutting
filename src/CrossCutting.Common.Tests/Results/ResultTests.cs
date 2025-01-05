@@ -2405,13 +2405,13 @@ public class ResultTests
     }
 
     [Fact]
-    public void TransformValue_Can_TransformValue_The_Value_On_Success()
+    public void Transform_Can_Transform_The_Value_On_Success_With_Value_Delegate()
     {
         // Arrange
         var source = Result.Success(1);
 
         // Act
-        var result = source.TransformValue(x => x.ToString());
+        var result = source.Transform(x => x.ToString());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -2419,18 +2419,74 @@ public class ResultTests
     }
 
     [Fact]
-    public void TransformValue_Returns_Same_Error_On_Failure()
+    public void Transform_Returns_Same_Error_On_Failure_With_Value_Delegate()
     {
         // Arrange
         var source = Result.Error<int>("Kaboom!");
 
         // Act
-        var result = source.TransformValue(x => x.ToString());
+        var result = source.Transform(x => x.ToString());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
         result.ErrorMessage.Should().Be("Kaboom!");
         result.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Transform_Can_Transform_The_Value_On_Success_With_Typed_Result_Delegate()
+    {
+        // Arrange
+        var source = Result.Success(1);
+
+        // Act
+        var result = source.Transform(x => Result.Success(x.ToString()));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("1");
+    }
+
+    [Fact]
+    public void Transform_Returns_Same_Error_On_Failure_With_Typed_Result_Delegate()
+    {
+        // Arrange
+        var source = Result.Error<int>("Kaboom!");
+
+        // Act
+        var result = source.Transform(x => Result.Success(x.ToString()));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom!");
+        result.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Transform_Can_Transform_The_Value_On_Success_With_Untyped_Result_Delegate()
+    {
+        // Arrange
+        var source = Result.Success(1);
+
+        // Act
+        var result = source.Transform(_ => Result.Success());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Transform_Returns_Same_Error_On_Failure_With_Untyped_Result_Delegate()
+    {
+        // Arrange
+        var source = Result.Error<int>("Kaboom!");
+
+        // Act
+        var result = source.Transform(_ => Result.Success());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom!");
     }
 
     [Fact]
