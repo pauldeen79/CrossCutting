@@ -10,6 +10,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         _provider = new ServiceCollection()
             .AddParsers()
             .AddSingleton<IFunction, MyFunction>()
+            .AddSingleton<IFunction, MyFunction2>()
             .AddSingleton<IFunction, ErrorFunction>()
             .AddSingleton<IFunction, OverloadTest1>()
             .AddSingleton<IFunction, OverloadTest2>()
@@ -23,11 +24,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = default(FunctionCall);
-        var parser = Substitute.For<IExpressionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(functionCall!, parser);
+        var result = sut.Evaluate(functionCall!, expressionEvaluator);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -39,11 +40,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
-        var parser = Substitute.For<IExpressionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(functionCall!, parser, CultureInfo.InvariantCulture);
+        var result = sut.Evaluate(functionCall!, expressionEvaluator, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -55,11 +56,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("Error").Build();
-        var parser = Substitute.For<IExpressionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(functionCall!, parser, default(object?));
+        var result = sut.Evaluate(functionCall!, expressionEvaluator, default(object?));
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -71,11 +72,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("WrongName").Build();
-        var parser = Substitute.For<IExpressionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(functionCall!, parser);
+        var result = sut.Evaluate(functionCall!, expressionEvaluator);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -87,11 +88,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = default(FunctionCall);
-        var parser = Substitute.For<IExpressionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Validate(functionCall!, parser);
+        var result = sut.Validate(functionCall!, expressionEvaluator);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -103,11 +104,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
-        var parser = Substitute.For<IExpressionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Validate(functionCall!, parser, CultureInfo.InvariantCulture);
+        var result = sut.Validate(functionCall!, expressionEvaluator, CultureInfo.InvariantCulture);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -118,11 +119,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("Error").Build();
-        var parser = Substitute.For<IExpressionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Validate(functionCall!, parser, default(object?));
+        var result = sut.Validate(functionCall!, expressionEvaluator, default(object?));
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
@@ -134,11 +135,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("WrongName").Build();
-        var parser = Substitute.For<IExpressionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Validate(functionCall!, parser);
+        var result = sut.Validate(functionCall!, expressionEvaluator);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -150,11 +151,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("Overload").Build();
-        var parser = Substitute.For<IExpressionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Validate(functionCall!, parser);
+        var result = sut.Validate(functionCall!, expressionEvaluator);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -166,11 +167,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new EmptyArgumentBuilder(), new EmptyArgumentBuilder()).Build();
-        var parser = Substitute.For<IExpressionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Validate(functionCall!, parser);
+        var result = sut.Validate(functionCall!, expressionEvaluator);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -181,15 +182,77 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_And_Registered_Once()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new EmptyArgumentBuilder()).Build();
-        var parser = Substitute.For<IExpressionEvaluator>();
+        var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new LiteralArgumentBuilder().WithValue("some value")).Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                           .Returns(Result.Success<object?>("some value"));
         var sut = CreateSut();
 
         // Act
-        var result = sut.Validate(functionCall!, parser);
+        var result = sut.Validate(functionCall!, expressionEvaluator);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Continue);
+    }
+
+    [Fact]
+    public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_But_Argument_Is_Of_Wrong_Type()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new LiteralArgumentBuilder().WithValue("13")).Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                           .Returns(Result.Success<object?>(13));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall!, expressionEvaluator);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Validation for function Overload failed, see inner results for more details");
+        result.InnerResults.Should().ContainSingle();
+        result.InnerResults.Single().Status.Should().Be(ResultStatus.Invalid);
+        result.InnerResults.Single().ErrorMessage.Should().Be("Argument Argument1 is not of type System.String");
+    }
+
+    [Fact]
+    public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_But_Required_Argument_Is_Missing()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new LiteralArgumentBuilder().WithValue("null")).Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                           .Returns(Result.Success<object?>(null));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall!, expressionEvaluator);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Validation for function Overload failed, see inner results for more details");
+        result.InnerResults.Should().ContainSingle();
+        result.InnerResults.Single().Status.Should().Be(ResultStatus.Invalid);
+        result.InnerResults.Single().ErrorMessage.Should().Be("Argument Argument1 is required");
+    }
+
+    [Fact]
+    public void Validate_Returns_Non_Successful_Result_As_Invalid_From_Validation_When_Overload_ArgumentCount_Is_Correct_And_Registered_Once()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("MyFunction2").AddArguments(new LiteralArgumentBuilder().WithValue("some value")).Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                           .Returns(Result.Success<object?>("some value"));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall!, expressionEvaluator);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Custom validation message");
     }
 
     [Fact]
@@ -243,6 +306,21 @@ public sealed class FunctionEvaluatorTests : IDisposable
         public Result Validate(FunctionCallContext request)
         {
             return Result.Success();
+        }
+    }
+
+    [FunctionName("MyFunction2")]
+    [FunctionArgument("Argument1", typeof(string))]
+    private sealed class MyFunction2 : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCallContext request)
+        {
+            return Result.Success<object?>("function result");
+        }
+
+        public Result Validate(FunctionCallContext request)
+        {
+            return Result.Invalid("Custom validation message");
         }
     }
 
