@@ -97,8 +97,8 @@ public partial record ToUpperCaseExpression : Expression, ITypedExpression<strin
 
     public ToUpperCaseExpression(ITypedExpression<string> expression, ITypedExpression<CultureInfo>? culture) : base()
     {
-        this.Expression = expression;
-        this.Culture = culture;
+        Expression = expression;
+        Culture = culture;
         Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
     }
 
@@ -310,7 +310,7 @@ public partial record ConstantExpression : Expression
 
     public ConstantExpression(object? value) : base()
     {
-        this.Value = value;
+        Value = value;
         Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
     }
 
@@ -344,7 +344,7 @@ public partial record ConstantResultExpression : Expression
 
     public ConstantResultExpression(Result value) : base()
     {
-        this.Value = value;
+        Value = value;
         Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
     }
 
@@ -424,7 +424,7 @@ public partial record DelegateExpression : Expression
 
     public DelegateExpression(Func<object?, object?> value) : base()
     {
-        this.Value = value;
+        Value = value;
         Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
     }
 
@@ -462,7 +462,7 @@ public partial record TypedConstantExpression<T> : Expression, ITypedExpression<
 
     public TypedConstantExpression(T value) : base()
     {
-        this.Value = value;
+        Value = value;
         Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
     }
 
@@ -501,7 +501,7 @@ public partial record TypedConstantResultExpression<T> : Expression, ITypedExpre
 
     public TypedConstantResultExpression(Result<T> value) : base()
     {
-        this.Value = value;
+        Value = value;
         Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
     }
 
@@ -540,7 +540,7 @@ public partial record TypedDelegateExpression<T> : Expression, ITypedExpression<
 
     public TypedDelegateExpression(Func<object?, T> value) : base()
     {
-        this.Value = value;
+        Value = value;
         Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
     }
 
@@ -1080,7 +1080,7 @@ public static class FunctionCallExtensions
         var expressions = GetArgumentValueExpression<IEnumerable>(functionCallRequest, index, argumentName).EvaluateTyped(functionCallRequest.Context);
 
         return new TypedConstantExpression<IEnumerable>(expressions.IsSuccessful()
-            ? expressions.Value!.OfType<object>().Select(x => new ConstantExpression(x))
+            ? expressions.Value!.OfType<object?>().Select(x => new ConstantExpression(x))
             : new Expression[] { new ConstantResultExpression(expressions) });
     }
 
@@ -1089,7 +1089,7 @@ public static class FunctionCallExtensions
         var expressions = GetArgumentValueExpression<IEnumerable>(functionCallRequest, index, argumentName).EvaluateTyped(functionCallRequest.Context);
 
         return expressions.IsSuccessful()
-            ? expressions.Value!.OfType<object>().Select(x => new ConstantExpression(x))
+            ? expressions.Value!.OfType<object?>().Select(x => new ConstantExpression(x))
             : new Expression[] { new ConstantResultExpression(expressions) };
     }
 
