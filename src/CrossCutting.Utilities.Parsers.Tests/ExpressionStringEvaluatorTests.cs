@@ -971,7 +971,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         public void Returns_Success_Result_From_Function_With_Formattable_String_As_Argument()
         {
             // Arrange
-            var input = "=MYFUNCTION(@\"Hello {Name}!\")";
+            var input = "=TOUPPER(@\"Hello {Name}!\")";
 
             // Act
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
@@ -1010,7 +1010,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         public void Returns_Success_Result_From_Piped_Expression_When_Found()
         {
             // Arrange
-            var input = "=\"Hello {Name}!\" | ToUpper(context)";
+            var input = "=\"Hello {Name}!\" | ToUpper(\"bla\")";
 
             // Act
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
@@ -1049,7 +1049,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         public void Returns_Success_Result_From_Concatenated_And_Piped_Expression_When_Found()
         {
             // Arrange
-            var input = "=\"Hello \" & \"{Name}!\" | ToUpper(context)";
+            var input = "=\"Hello \" & \"{Name}!\" | ToUpper(\"bla\")";
 
             // Act
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
@@ -1383,6 +1383,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         }
     }
 
+    [FunctionArgument("Expression", typeof(string))]
     private sealed class ToUpperFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext request)

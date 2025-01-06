@@ -437,7 +437,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Parse_Works_With_ExpressionString_Using_EmptyArgument()
     {
         // Arrange
-        const string Input = "Hello {ToUpperCase(,)}!";
+        const string Input = "Hello {ToUpperCase(null)}!";
         var settings = new FormattableStringParserSettingsBuilder().Build();
         var sut = CreateSut();
 
@@ -453,7 +453,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Validate_Works_With_ExpressionString_Using_EmptyArgument()
     {
         // Arrange
-        const string Input = "Hello {ToUpperCase(,)}!";
+        const string Input = "Hello {ToUpperCase(null)}!";
         var settings = new FormattableStringParserSettingsBuilder().Build();
         var sut = CreateSut();
 
@@ -834,7 +834,7 @@ public sealed class FormattableStringParserTests : IDisposable
         }
     }
 
-    [FunctionArgument("expression", typeof(string))]
+    [FunctionArgument("expression", typeof(string), false)]
     private sealed class ToUppercaseFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext request)
