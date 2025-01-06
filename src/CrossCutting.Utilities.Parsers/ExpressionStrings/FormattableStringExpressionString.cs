@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStrings;
 
-public class FormattableStringExpressionProcessor : IExpressionString
+public class FormattableStringExpressionString : IExpressionString
 {
     public int Order => 400;
 

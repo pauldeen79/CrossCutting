@@ -1,12 +1,12 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Expressions;
 
-public class VariableExpressionParserProcessor : IExpression
+public class VariableExpression : IExpression
 {
     public int Order => 50;
 
     private readonly IVariableProcessor _variableProcessor;
 
-    public VariableExpressionParserProcessor(IVariableProcessor variableProcessor)
+    public VariableExpression(IVariableProcessor variableProcessor)
     {
         ArgumentGuard.IsNotNull(variableProcessor, nameof(variableProcessor));
 

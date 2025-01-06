@@ -1,20 +1,22 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Expressions;
 
-public class NullExpressionParserProcessor : IExpression
+public class BooleanExpression : IExpression
 {
-    public int Order => 30;
+    public int Order => 10;
 
     public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
         => expression switch
         {
-            "null" => Result.Success<object?>(null),
+            "true" => Result.Success<object?>(true),
+            "false" => Result.Success<object?>(false),
             _ => Result.Continue<object?>()
         };
 
     public Result Validate(string expression, IFormatProvider formatProvider, object? context)
         => expression switch
         {
-            "null" => Result.Success(),
+            "true" => Result.Success(),
+            "false" => Result.Success(),
             _ => Result.Continue()
         };
 }

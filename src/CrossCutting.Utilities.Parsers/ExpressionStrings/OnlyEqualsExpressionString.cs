@@ -1,22 +1,15 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStrings;
 
-public class LiteralExpressionProcessor : IExpressionString
+public class OnlyEqualsExpressionString : IExpressionString
 {
-    public int Order => 200;
+    public int Order => 300;
 
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (state.Input.StartsWith("\'="))
+        if (state.Input == "=")
         {
-            // escaped expression string
-            return Result.Success<object?>(state.Input.Substring(1));
-        }
-
-        if (!state.Input.StartsWith("="))
-        {
-            // literal
             return Result.Success<object?>(state.Input);
         }
 
@@ -27,15 +20,8 @@ public class LiteralExpressionProcessor : IExpressionString
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (state.Input.StartsWith("\'="))
+        if (state.Input == "=")
         {
-            // escaped expression string
-            return Result.Success();
-        }
-
-        if (!state.Input.StartsWith("="))
-        {
-            // literal
             return Result.Success();
         }
 

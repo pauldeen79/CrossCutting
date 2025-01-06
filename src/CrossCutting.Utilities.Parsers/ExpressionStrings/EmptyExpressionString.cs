@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStrings;
 
-public class EmptyExpressionProcessor : IExpressionString
+public class EmptyExpressionString : IExpressionString
 {
     public int Order => 100;
 

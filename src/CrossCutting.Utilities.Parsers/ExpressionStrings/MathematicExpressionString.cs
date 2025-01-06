@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStrings;
 
-public class MathematicExpressionProcessor(IMathematicExpressionEvaluator parser) : IExpressionString
+public class MathematicExpressionString(IMathematicExpressionEvaluator parser) : IExpressionString
 {
     private readonly IMathematicExpressionEvaluator _parser = parser;
 

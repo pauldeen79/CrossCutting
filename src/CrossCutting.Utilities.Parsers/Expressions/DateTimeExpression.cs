@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Expressions;
 
-public class DateTimeExpressionParserProcessor : IExpression
+public class DateTimeExpression : IExpression
 {
     public int Order => 70;
 

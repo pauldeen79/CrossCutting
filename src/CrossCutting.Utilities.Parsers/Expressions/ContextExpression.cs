@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Expressions;
 
-public class ContextExpressionParserProcessor : IExpression
+public class ContextExpression : IExpression
 {
     public int Order => 20;
 
