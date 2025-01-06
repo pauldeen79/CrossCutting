@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
 
-public partial record LiteralArgument
+public partial record ConstantArgument
 {
     public override Result<object?> GetValueResult(FunctionCallContext request)
     {

@@ -10,6 +10,54 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
+    public partial record ConstantArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
+    {
+        public string Value
+        {
+            get;
+        }
+
+        public ConstantArgument(string value) : base()
+        {
+            this.Value = value;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder(this);
+        }
+    }
+    public partial record DynamicArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.Parsers.FunctionCall Function
+        {
+            get;
+        }
+
+        public DynamicArgument(CrossCutting.Utilities.Parsers.FunctionCall function) : base()
+        {
+            this.Function = function;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DynamicArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DynamicArgumentBuilder(this);
+        }
+    }
     public partial record EmptyArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
     {
         public EmptyArgument() : base()
@@ -25,54 +73,6 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder ToTypedBuilder()
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder(this);
-        }
-    }
-    public partial record LiteralArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
-    {
-        public string Value
-        {
-            get;
-        }
-
-        public LiteralArgument(string value) : base()
-        {
-            this.Value = value;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder()
-        {
-            return ToTypedBuilder();
-        }
-
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.LiteralArgumentBuilder ToTypedBuilder()
-        {
-            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.LiteralArgumentBuilder(this);
-        }
-    }
-    public partial record RecursiveArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.Parsers.FunctionCall Function
-        {
-            get;
-        }
-
-        public RecursiveArgument(CrossCutting.Utilities.Parsers.FunctionCall function) : base()
-        {
-            this.Function = function;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder()
-        {
-            return ToTypedBuilder();
-        }
-
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.RecursiveArgumentBuilder ToTypedBuilder()
-        {
-            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.RecursiveArgumentBuilder(this);
         }
     }
 }

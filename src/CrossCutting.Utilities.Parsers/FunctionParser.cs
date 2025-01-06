@@ -125,7 +125,7 @@ public class FunctionParser : IFunctionParser
         {
             if (argument.StartsWith(TemporaryDelimiter) && argument.EndsWith(TemporaryDelimiter))
             {
-                arguments.Add(new RecursiveArgument(results[int.Parse(argument.Substring(TemporaryDelimiter.Length, argument.Length - (TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]));
+                arguments.Add(new DynamicArgument(results[int.Parse(argument.Substring(TemporaryDelimiter.Length, argument.Length - (TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]));
                 continue;
             }
 
@@ -146,7 +146,7 @@ public class FunctionParser : IFunctionParser
             {
                 arguments.Add(string.IsNullOrEmpty(argument)
                     ? new EmptyArgument()
-                    : new LiteralArgument(argument));
+                    : new ConstantArgument(argument));
             }
         }
 

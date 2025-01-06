@@ -10,7 +10,7 @@ public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserA
         {
             var result = formattableStringParser.Parse(argument.Substring(1), new FormattableStringParserSettingsBuilder().WithFormatProvider(formatProvider).Build(), context);
             return result.IsSuccessful()
-                ? Result.Success<FunctionCallArgument>(new LiteralArgument(result.Value!.ToString(formatProvider)))
+                ? Result.Success<FunctionCallArgument>(new ConstantArgument(result.Value!.ToString(formatProvider)))
                 : Result.FromExistingResult<FunctionCallArgument>(result);
         }
 

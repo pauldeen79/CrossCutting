@@ -10,26 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
-    public partial class EmptyArgumentBuilder : FunctionCallArgumentBuilder<EmptyArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument>
-    {
-        public EmptyArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument source) : base(source)
-        {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
-        }
-
-        public EmptyArgumentBuilder() : base()
-        {
-            SetDefaultValues();
-        }
-
-        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument BuildTyped()
-        {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument();
-        }
-
-        partial void SetDefaultValues();
-    }
-    public partial class LiteralArgumentBuilder : FunctionCallArgumentBuilder<LiteralArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.LiteralArgument>
+    public partial class ConstantArgumentBuilder : FunctionCallArgumentBuilder<ConstantArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument>
     {
         private string _value;
 
@@ -47,33 +28,33 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             }
         }
 
-        public LiteralArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.LiteralArgument source) : base(source)
+        public ConstantArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _value = source.Value;
         }
 
-        public LiteralArgumentBuilder() : base()
+        public ConstantArgumentBuilder() : base()
         {
             _value = string.Empty;
             SetDefaultValues();
         }
 
-        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.LiteralArgument BuildTyped()
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.LiteralArgument(Value);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument(Value);
         }
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.LiteralArgumentBuilder WithValue(string value)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder WithValue(string value)
         {
             if (value is null) throw new System.ArgumentNullException(nameof(value));
             Value = value;
             return this;
         }
     }
-    public partial class RecursiveArgumentBuilder : FunctionCallArgumentBuilder<RecursiveArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.RecursiveArgument>
+    public partial class DynamicArgumentBuilder : FunctionCallArgumentBuilder<DynamicArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.DynamicArgument>
     {
         private CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder _function;
 
@@ -93,31 +74,50 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             }
         }
 
-        public RecursiveArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.RecursiveArgument source) : base(source)
+        public DynamicArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.DynamicArgument source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _function = source.Function.ToBuilder();
         }
 
-        public RecursiveArgumentBuilder() : base()
+        public DynamicArgumentBuilder() : base()
         {
             _function = new CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder()!;
             SetDefaultValues();
         }
 
-        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.RecursiveArgument BuildTyped()
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.DynamicArgument BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.RecursiveArgument(Function.Build());
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DynamicArgument(Function.Build());
         }
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.RecursiveArgumentBuilder WithFunction(CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder function)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DynamicArgumentBuilder WithFunction(CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder function)
         {
             if (function is null) throw new System.ArgumentNullException(nameof(function));
             Function = function;
             return this;
         }
+    }
+    public partial class EmptyArgumentBuilder : FunctionCallArgumentBuilder<EmptyArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument>
+    {
+        public EmptyArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+        }
+
+        public EmptyArgumentBuilder() : base()
+        {
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument BuildTyped()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument();
+        }
+
+        partial void SetDefaultValues();
     }
 }
 #nullable disable

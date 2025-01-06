@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.CodeGeneration.Models.FunctionCallArguments;
 
-internal interface IRecursiveArgument : IFunctionCallArgument
+internal interface IDynamicArgument : IFunctionCallArgument
 {
     [Required][ValidateObject] IFunctionCall Function { get; }
 }
