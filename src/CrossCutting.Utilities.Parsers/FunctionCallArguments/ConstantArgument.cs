@@ -2,11 +2,11 @@
 
 public partial record ConstantArgument
 {
-    public override Result<object?> GetValueResult(FunctionCallContext request)
+    public override Result<object?> GetValueResult(FunctionCallContext context)
     {
-        request = ArgumentGuard.IsNotNull(request, nameof(request));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var result = request.ExpressionEvaluator.Evaluate(Value, request.FormatProvider, request.Context);
+        var result = context.ExpressionEvaluator.Evaluate(Value, context.FormatProvider, context.Context);
 
         return result.Status == ResultStatus.NotSupported
             ? Result.Success<object?>(Value)

@@ -12,7 +12,15 @@ public class ExpressionFrameworkNewTests
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
-        var functionCall = new FunctionCallBuilder().WithName("ToLowerCase").AddArguments(new ConstantArgumentBuilder().WithValue("Hello world!")).Build();
+        //var functionCall = new FunctionCallBuilder()
+        //    .WithName("ToLowerCase")
+        //    .AddArguments(new ConstantArgumentBuilder()
+        //    .WithValue("Hello world!"))
+        //    .Build();
+        var functionCall = new ToLowerCaseExpressionBuilder()
+            .WithExpression(new TypedConstantExpressionBuilder<string>().WithValue("Hello world!"))
+            //.BuildTyped()
+            .ToFunctionCall();
         var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
@@ -30,7 +38,10 @@ public class ExpressionFrameworkNewTests
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
-        var functionCall = new FunctionCallBuilder().WithName("ToLowerCase").AddArguments(new ConstantArgumentBuilder().WithValue("Hello world!")).Build();
+        var functionCall = new ToLowerCaseExpressionBuilder()
+            .WithExpression(new TypedConstantExpressionBuilder<string>().WithValue("Hello world!"))
+            //.BuildTyped()
+            .ToFunctionCall();
         var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
@@ -96,38 +107,206 @@ public class ToLowerCaseFunction : IFunction
     }
 }
 
-public record ToLowerCaseExpression : ITypedExpression<string>
+public record ToLowerCaseExpression : Expression, ITypedExpression<string>
 {
-    public ToLowerCaseExpression(ITypedExpression<string> expression)
+    public ToLowerCaseExpression(ITypedExpression<string> expression, ITypedExpression<CultureInfo>? culture)
     {
         Expression = expression;
+        Culture = culture;
     }
 
     public ITypedExpression<string> Expression { get; }
+    public ITypedExpression<CultureInfo>? Culture { get; }
 
-    public Result<string> EvaluateTyped(object? context)
+    public override Result<object?> Evaluate(object? context)
+        => Result.FromExistingResult<object?>(EvaluateTyped(context));
+
+    public override ExpressionBuilder ToBuilder()
     {
-        // not needed anymore
-        throw new NotImplementedException();
+        return ToTypedBuilder();
+    }
+
+    public ToLowerCaseExpressionBuilder ToTypedBuilder()
+    {
+        return new ToLowerCaseExpressionBuilder(this);
     }
 
     public Expression ToUntyped()
     {
-        throw new NotImplementedException();
+        return this;
+    }
+
+    public Result<string> EvaluateTyped(object? context)
+        => StringExpression.EvaluateCultureExpression(Expression, Culture, context, (culture, value) => value.ToUpper(culture), value => value.ToUpperInvariant());
+
+    // niet meer nodig
+    public override Result<Expression> GetSingleContainedExpression()
+    {
+        return Result.Success(Expression.ToUntyped());
+    }
+
+    //public override FunctionCall ToFunctionCall()
+    //{
+    //    return new FunctionCallBuilder()
+    //        .WithName("ToLowerCase")
+    //        .AddArguments(
+    //            new ExpressionArgumentBuilder().WithExpression(Expression.ToUntyped().ToBuilder()),
+    //            new ExpressionArgumentBuilder().WithExpression(Culture?.ToUntyped().ToBuilder()))
+    //        .Build();
+    //}
+}
+
+public partial class ToLowerCaseExpressionBuilder : ExpressionBuilder<ToLowerCaseExpressionBuilder, ToLowerCaseExpression>, ITypedExpressionBuilder<string>
+{
+    private ITypedExpressionBuilder<string> _expression;
+
+    private ITypedExpressionBuilder<CultureInfo>? _culture;
+
+    [Required]
+    [ValidateObject]
+    public ITypedExpressionBuilder<string> Expression
+    {
+        get
+        {
+            return _expression;
+        }
+        set
+        {
+            var hasChanged = !EqualityComparer<ITypedExpressionBuilder<string>>.Default.Equals(_expression!, value!);
+            _expression = value ?? throw new ArgumentNullException(nameof(value));
+            if (hasChanged) HandlePropertyChanged(nameof(Expression));
+        }
+    }
+
+    public ITypedExpressionBuilder<CultureInfo>? Culture
+    {
+        get
+        {
+            return _culture;
+        }
+        set
+        {
+            var hasChanged = !EqualityComparer<ITypedExpressionBuilder<CultureInfo>>.Default.Equals(_culture!, value!);
+            _culture = value;
+            if (hasChanged) HandlePropertyChanged(nameof(Culture));
+        }
+    }
+
+    public ToLowerCaseExpressionBuilder(ToLowerCaseExpression source) : base(source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        _expression = source.Expression.ToBuilder();
+        _culture = source.Culture?.ToBuilder()!;
+    }
+
+    public ToLowerCaseExpressionBuilder() : base()
+    {
+        _expression = new TypedConstantExpressionBuilder<string>()!;
+        SetDefaultValues();
+    }
+
+    public override ToLowerCaseExpression BuildTyped()
+    {
+        return new ToLowerCaseExpression(Expression.Build(), Culture?.Build()!);
+    }
+
+    partial void SetDefaultValues();
+
+    ITypedExpression<string> ITypedExpressionBuilder<string>.Build()
+    {
+        return BuildTyped();
+    }
+
+    public ToLowerCaseExpressionBuilder WithExpression(ITypedExpressionBuilder<string> expression)
+    {
+        ArgumentNullException.ThrowIfNull(expression);
+        Expression = expression;
+        return this;
+    }
+
+    public ToLowerCaseExpressionBuilder WithExpression(string expression)
+    {
+        Expression = new TypedConstantExpressionBuilder<string>().WithValue(expression);
+        return this;
+    }
+
+    public ToLowerCaseExpressionBuilder WithExpression(Func<object?, string> expression)
+    {
+        Expression = new TypedDelegateExpressionBuilder<string>().WithValue(expression);
+        return this;
+    }
+
+    public ToLowerCaseExpressionBuilder WithCulture(ITypedExpressionBuilder<CultureInfo>? culture)
+    {
+        Culture = culture;
+        return this;
+    }
+
+    public ToLowerCaseExpressionBuilder WithCulture(CultureInfo? culture)
+    {
+        Culture = culture is null ? null : new TypedConstantExpressionBuilder<CultureInfo>().WithValue(culture);
+        return this;
+    }
+
+    public ToLowerCaseExpressionBuilder WithCulture(Func<object?, CultureInfo>? culture)
+    {
+        Culture = culture is null ? null : new TypedDelegateExpressionBuilder<CultureInfo>().WithValue(culture);
+        return this;
+    }
+
+    public /*override*/ FunctionCall ToFunctionCall()
+    {
+        return new FunctionCallBuilder()
+            .WithName("ToLowerCase")
+            .AddArguments(
+                new ExpressionArgumentBuilder().WithExpression(Expression.Build().ToUntyped().ToBuilder()),
+                new ExpressionArgumentBuilder().WithExpression(Culture?.Build().ToUntyped().ToBuilder()))
+            .Build();
     }
 }
 
-public class ToLowerCaseExpressionBuilder : ITypedExpressionBuilder<string>
+public class ExpressionArgumentBuilder : FunctionCallArgumentBuilder
 {
-    public ToLowerCaseExpressionBuilder()
+    public ExpressionArgumentBuilder(ExpressionArgument source) : base(source)
     {
-        Expression = new TypedConstantExpressionBuilder<string>();
+        Expression = source?.Expression?.ToBuilder();
     }
 
-    public ITypedExpressionBuilder<string> Expression { get; set; }
-
-    public ITypedExpression<string> Build()
+    public ExpressionArgumentBuilder() : base()
     {
-        return new ToLowerCaseExpression(Expression.Build());
+    }
+
+    public ExpressionBuilder? Expression { get; set; }
+
+    public ExpressionArgumentBuilder WithExpression(ExpressionBuilder? expression)
+    {
+        Expression = expression;
+        return this;
+    }
+
+    public override FunctionCallArgument Build()
+    {
+        return new ExpressionArgument(Expression?.Build());
+    }
+}
+
+public record ExpressionArgument : FunctionCallArgument
+{
+    public ExpressionArgument(Expression? expression)
+    {
+        Expression = expression;
+    }
+
+    public Expression? Expression { get; }
+
+    public override Result<object?> GetValueResult(FunctionCallContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+        return Expression?.Evaluate(context.Context) ?? Result.Success<object?>(null);
+    }
+
+    public override FunctionCallArgumentBuilder ToBuilder()
+    {
+        return new ExpressionArgumentBuilder(this);
     }
 }

@@ -2,10 +2,10 @@
 
 public partial record DynamicArgument
 {
-    public override Result<object?> GetValueResult(FunctionCallContext request)
+    public override Result<object?> GetValueResult(FunctionCallContext context)
     {
-        request = ArgumentGuard.IsNotNull(request, nameof(request));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return request.FunctionEvaluator.Evaluate(Function, request.ExpressionEvaluator, request.FormatProvider, request.Context);
+        return context.FunctionEvaluator.Evaluate(Function, context.ExpressionEvaluator, context.FormatProvider, context.Context);
     }
 }

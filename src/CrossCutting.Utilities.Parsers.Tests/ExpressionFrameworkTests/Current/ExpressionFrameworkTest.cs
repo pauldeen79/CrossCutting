@@ -121,6 +121,11 @@ public partial record ToUpperCaseExpression : Expression, ITypedExpression<strin
     {
         return this;
     }
+
+    //public override FunctionCall ToFunctionCall()
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
 
 public partial class ToUpperCaseExpressionBuilder : ExpressionBuilder<ToUpperCaseExpressionBuilder, ToUpperCaseExpression>, ITypedExpressionBuilder<string>
@@ -252,6 +257,8 @@ public abstract partial record Expression
     public abstract Result<object?> Evaluate(object? context);
 
     public abstract Result<Expression> GetSingleContainedExpression();
+
+    //public abstract FunctionCall ToFunctionCall();
 }
 
 public abstract partial class ExpressionBuilder : INotifyPropertyChanged
@@ -269,6 +276,8 @@ public abstract partial class ExpressionBuilder : INotifyPropertyChanged
     }
 
     public abstract Expression Build();
+
+    //public abstract FunctionCall ToFunctionCall();
 
     partial void SetDefaultValues();
 
@@ -328,6 +337,11 @@ public partial record ConstantExpression : Expression
     {
         return Result.NotFound<Expression>();
     }
+
+    //public override FunctionCall ToFunctionCall()
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
 
 public partial record ConstantResultExpression : Expression
@@ -362,6 +376,11 @@ public partial record ConstantResultExpression : Expression
     {
         return Result.NotFound<Expression>();
     }
+
+    //public override FunctionCall ToFunctionCall()
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
 
 public partial class ConstantResultExpressionBuilder : ExpressionBuilder<ConstantResultExpressionBuilder, ConstantResultExpression>
@@ -442,6 +461,11 @@ public partial record DelegateExpression : Expression
     {
         return Result.NotFound<Expression>();
     }
+
+    //public override FunctionCall ToFunctionCall()
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
 
 public partial record TypedConstantExpression<T> : Expression, ITypedExpression<T>
@@ -480,6 +504,11 @@ public partial record TypedConstantExpression<T> : Expression, ITypedExpression<
     {
         return Result.NotFound<Expression>();
     }
+
+    //public override FunctionCall ToFunctionCall()
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
 
 public partial record TypedConstantResultExpression<T> : Expression, ITypedExpression<T>
@@ -519,6 +548,11 @@ public partial record TypedConstantResultExpression<T> : Expression, ITypedExpre
     {
         return Result.NotFound<Expression>();
     }
+
+    //public override FunctionCall ToFunctionCall()
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
 
 public partial record TypedDelegateExpression<T> : Expression, ITypedExpression<T>
@@ -558,6 +592,11 @@ public partial record TypedDelegateExpression<T> : Expression, ITypedExpression<
     {
         return Result.NotFound<Expression>();
     }
+
+    //public override FunctionCall ToFunctionCall()
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
 
 public partial class ConstantExpressionBuilder : ExpressionBuilder<ConstantExpressionBuilder, ConstantExpression>

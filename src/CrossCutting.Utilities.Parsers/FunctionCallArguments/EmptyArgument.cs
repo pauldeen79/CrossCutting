@@ -2,6 +2,6 @@
 
 public partial record EmptyArgument
 {
-    public override Result<object?> GetValueResult(FunctionCallContext request)
+    public override Result<object?> GetValueResult(FunctionCallContext context)
         => Result.Success(default(object?));
 }

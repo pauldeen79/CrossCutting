@@ -2,5 +2,5 @@
 
 public partial record FunctionCallArgument
 {
-    public abstract Result<object?> GetValueResult(FunctionCallContext request);
+    public abstract Result<object?> GetValueResult(FunctionCallContext context);
 }
