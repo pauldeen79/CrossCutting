@@ -60,7 +60,7 @@ public class ExpressionFrameworkNewTests
 
 [FunctionName(@"ToLowerCase")]
 [Description("Converts the expression to lower case")]
-[FunctionArgument(nameof(Expression), typeof(string), "String to get the lower case for", true)]
+[FunctionArgument("Expression", typeof(string), "String to get the lower case for", true)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to lower case", "This result will be returned when the expression is of type string")]
 [FunctionResult(ResultStatus.Invalid, "Expression must be of type string")]
 [FunctionResult(ResultStatus.Invalid, "CultureInfo must be of type CultureInfo")]
