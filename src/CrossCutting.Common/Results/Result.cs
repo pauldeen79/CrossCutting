@@ -45,7 +45,7 @@ public record Result<T> : Result
 
         if (Value is not TCast castValue)
         {
-            return Invalid<TCast>(errorMessage ?? $"Could not cast {typeof(T).FullName} to {typeof(TCast).FullName}");
+            return Invalid<TCast>(errorMessage ?? $"Could not cast {Value.GetType().FullName} to {typeof(TCast).FullName}");
         }
 
         return new Result<TCast>(castValue, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);

@@ -2216,14 +2216,14 @@ public class ResultTests
     public void TryCast_Returns_Invalid_With_Default_ErrorMessage_When_Value_Could_Not_Be_Cast()
     {
         // Arrange
-        var sut = Result.Success<object?>("test");
+        var sut = Result.Success("test");
 
         // Act
         var result = sut.TryCast<bool>();
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not cast System.Object to System.Boolean");
+        result.ErrorMessage.Should().Be("Could not cast System.String to System.Boolean");
     }
 
     [Fact]
