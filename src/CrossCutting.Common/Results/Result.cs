@@ -38,6 +38,11 @@ public record Result<T> : Result
             return FromExistingResult<TCast>(this);
         }
 
+        if (Value is null)
+        {
+            return new Result<TCast>(default, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
+        }
+
         if (Value is not TCast castValue)
         {
             return Invalid<TCast>(errorMessage ?? $"Could not cast {typeof(T).FullName} to {typeof(TCast).FullName}");

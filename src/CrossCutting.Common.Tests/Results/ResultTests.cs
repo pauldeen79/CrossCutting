@@ -2284,6 +2284,20 @@ public class ResultTests
     }
 
     [Fact]
+    public void TryCast_Returns_Success_With_Default_Value_When_Value_Is_Null()
+    {
+        // Arrange
+        var sut = Result.Success<object?>(null);
+
+        // Act
+        var result = sut.TryCast<bool?>();
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeNull();
+    }
+
+    [Fact]
     public void TryCast_Returns_Same_Status()
     {
         // Arrange
