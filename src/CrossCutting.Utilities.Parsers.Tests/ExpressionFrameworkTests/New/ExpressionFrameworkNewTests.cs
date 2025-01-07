@@ -75,6 +75,9 @@ public class ToLowerCaseFunction : IFunction
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
         return new ResultDictionaryBuilder()
+            //TODO: Use GetArgumentValueResult<T>
+            //TODO: Review if the extension method can be added to FunctionCallContext as well, so we don't need the last parameter
+            //request.FunctionCall.GetArgumentValueResult<string>(0, "Expression", request);
             .Add("Expression", () => request.FunctionCall.Arguments.ElementAtOrDefault(0)?.GetValueResult(request).TryCast<string>() ?? Result.NotFound<string>())
             .Add("Culture", () => request.FunctionCall.Arguments.ElementAtOrDefault(1)?.GetValueResult(request).TryCast<CultureInfo>() ?? Result.NotFound<CultureInfo>())
             .Build()

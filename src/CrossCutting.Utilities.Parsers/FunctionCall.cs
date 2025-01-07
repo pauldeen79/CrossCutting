@@ -2,6 +2,7 @@
 
 public partial record FunctionCall
 {
+    //TODO: Add overload for <T> (any type)
     public Result<object?> GetArgumentValueResult(int index, string argumentName, FunctionCallContext context)
         => index + 1 > Arguments.Count
             ? Result.Invalid<object?>($"Missing argument: {argumentName}")
