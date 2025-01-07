@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+﻿namespace CrossCutting.Utilities.Parsers.Tests.ExpressionFrameworkTests.Current;
 
 public sealed class ExpressionFrameworkTest
 {
@@ -139,7 +139,7 @@ public partial class ToUpperCaseExpressionBuilder : ExpressionBuilder<ToUpperCas
         }
         set
         {
-            bool hasChanged = !EqualityComparer<ITypedExpressionBuilder<string>>.Default.Equals(_expression!, value!);
+            var hasChanged = !EqualityComparer<ITypedExpressionBuilder<string>>.Default.Equals(_expression!, value!);
             _expression = value ?? throw new ArgumentNullException(nameof(value));
             if (hasChanged) HandlePropertyChanged(nameof(Expression));
         }
@@ -153,7 +153,7 @@ public partial class ToUpperCaseExpressionBuilder : ExpressionBuilder<ToUpperCas
         }
         set
         {
-            bool hasChanged = !EqualityComparer<ITypedExpressionBuilder<CultureInfo>>.Default.Equals(_culture!, value!);
+            var hasChanged = !EqualityComparer<ITypedExpressionBuilder<CultureInfo>>.Default.Equals(_culture!, value!);
             _culture = value;
             if (hasChanged) HandlePropertyChanged(nameof(Culture));
         }
@@ -190,7 +190,7 @@ public partial class ToUpperCaseExpressionBuilder : ExpressionBuilder<ToUpperCas
         Expression = expression;
         return this;
     }
-    
+
     public ToUpperCaseExpressionBuilder WithExpression(string expression)
     {
         Expression = new TypedConstantExpressionBuilder<string>().WithValue(expression);
@@ -302,7 +302,7 @@ public partial record ConstantExpression : Expression
 {
     public override Result<object?> Evaluate(object? context)
         => Result.Success(Value);
-    
+
     public object? Value
     {
         get;
@@ -334,7 +334,7 @@ public partial record ConstantResultExpression : Expression
 {
     public override Result<object?> Evaluate(object? context)
         => Result.FromExistingResult<object?>(Value);
-    
+
     [Required]
     [ValidateObject]
     public Result Value
@@ -378,7 +378,7 @@ public partial class ConstantResultExpressionBuilder : ExpressionBuilder<Constan
         }
         set
         {
-            bool hasChanged = !EqualityComparer<Result>.Default.Equals(_value!, value!);
+            var hasChanged = !EqualityComparer<Result>.Default.Equals(_value!, value!);
             _value = value ?? throw new ArgumentNullException(nameof(value));
             if (hasChanged) HandlePropertyChanged(nameof(Value));
         }
@@ -392,7 +392,7 @@ public partial class ConstantResultExpressionBuilder : ExpressionBuilder<Constan
 
     public ConstantResultExpressionBuilder() : base()
     {
-        _value = default(Result)!;
+        _value = default!;
         SetDefaultValues();
     }
 
@@ -492,7 +492,7 @@ public partial record TypedConstantResultExpression<T> : Expression, ITypedExpre
 
     public Expression ToUntyped()
         => new ConstantExpression(Value.Value);
-    
+
     [Required]
     public Result<T> Value
     {
@@ -554,7 +554,7 @@ public partial record TypedDelegateExpression<T> : Expression, ITypedExpression<
         return new TypedDelegateExpressionBuilder<T>(this);
     }
 
-    public override Result< Expression> GetSingleContainedExpression()
+    public override Result<Expression> GetSingleContainedExpression()
     {
         return Result.NotFound<Expression>();
     }
@@ -572,7 +572,7 @@ public partial class ConstantExpressionBuilder : ExpressionBuilder<ConstantExpre
         }
         set
         {
-            bool hasChanged = !EqualityComparer<object>.Default.Equals(_value!, value!);
+            var hasChanged = !EqualityComparer<object>.Default.Equals(_value!, value!);
             _value = value;
             if (hasChanged) HandlePropertyChanged(nameof(Value));
         }
@@ -616,7 +616,7 @@ public partial class DelegateExpressionBuilder : ExpressionBuilder<DelegateExpre
         }
         set
         {
-            bool hasChanged = !EqualityComparer<Func<object?, object?>>.Default.Equals(_value!, value!);
+            var hasChanged = !EqualityComparer<Func<object?, object?>>.Default.Equals(_value!, value!);
             _value = value ?? throw new ArgumentNullException(nameof(value));
             if (hasChanged) HandlePropertyChanged(nameof(Value));
         }
@@ -630,7 +630,7 @@ public partial class DelegateExpressionBuilder : ExpressionBuilder<DelegateExpre
 
     public DelegateExpressionBuilder() : base()
     {
-        _value = default(Func<object?, object?>)!;
+        _value = default!;
         SetDefaultValues();
     }
 
@@ -661,7 +661,7 @@ public partial class TypedConstantExpressionBuilder<T> : ExpressionBuilder<Typed
         }
         set
         {
-            bool hasChanged = !EqualityComparer<T>.Default.Equals(_value!, value!);
+            var hasChanged = !EqualityComparer<T>.Default.Equals(_value!, value!);
             _value = value;
             if (hasChanged) HandlePropertyChanged(nameof(Value));
         }
@@ -675,7 +675,7 @@ public partial class TypedConstantExpressionBuilder<T> : ExpressionBuilder<Typed
 
     public TypedConstantExpressionBuilder() : base()
     {
-        _value = default(T)!;
+        _value = default!;
         SetDefaultValues();
     }
 
@@ -717,7 +717,7 @@ public partial class TypedConstantResultExpressionBuilder<T> : ExpressionBuilder
         }
         set
         {
-            bool hasChanged = !EqualityComparer<Result<T>>.Default.Equals(_value!, value!);
+            var hasChanged = !EqualityComparer<Result<T>>.Default.Equals(_value!, value!);
             _value = value ?? throw new ArgumentNullException(nameof(value));
             if (hasChanged) HandlePropertyChanged(nameof(Value));
         }
@@ -731,7 +731,7 @@ public partial class TypedConstantResultExpressionBuilder<T> : ExpressionBuilder
 
     public TypedConstantResultExpressionBuilder() : base()
     {
-        _value = default(Result<T>)!;
+        _value = default!;
         SetDefaultValues();
     }
 
@@ -768,7 +768,7 @@ public partial class TypedDelegateExpressionBuilder<T> : ExpressionBuilder<Typed
         }
         set
         {
-            bool hasChanged = !EqualityComparer<Func<object?, T>>.Default.Equals(_value!, value!);
+            var hasChanged = !EqualityComparer<Func<object?, T>>.Default.Equals(_value!, value!);
             _value = value ?? throw new ArgumentNullException(nameof(value));
             if (hasChanged) HandlePropertyChanged(nameof(Value));
         }
@@ -782,7 +782,7 @@ public partial class TypedDelegateExpressionBuilder<T> : ExpressionBuilder<Typed
 
     public TypedDelegateExpressionBuilder() : base()
     {
-        _value = default(Func<object?, T>)!;
+        _value = default!;
         SetDefaultValues();
     }
 
@@ -824,7 +824,7 @@ public abstract class ExpressionResolverBase : IFunction, IExpressionResolver
 
     public Result<Expression> Parse(FunctionCallContext request)
     {
-        request = ArgumentGuard.IsNotNull(request, nameof(request));
+        request = request.IsNotNull(nameof(request));
 
         return DoParse(request);
     }
@@ -833,8 +833,8 @@ public abstract class ExpressionResolverBase : IFunction, IExpressionResolver
 
     protected static Result<Expression> ParseTypedExpression(Type expressionType, int index, string argumentName, FunctionCallContext request)
     {
-        expressionType = ArgumentGuard.IsNotNull(expressionType, nameof(expressionType));
-        request = ArgumentGuard.IsNotNull(request, nameof(request));
+        expressionType = expressionType.IsNotNull(nameof(expressionType));
+        request = request.IsNotNull(nameof(request));
 
         var typeResult = request.FunctionCall.Name.GetGenericTypeResult();
         if (!typeResult.IsSuccessful())
@@ -958,7 +958,7 @@ public static class TypedExpressionExtensions
         => source switch
         {
             TypedConstantExpression<T> x => new TypedConstantExpressionBuilder<T>(x),
-            //TypedConstantResultExpression<T> x => new TypedConstantResultExpressionBuilder<T>(x),
+            TypedConstantResultExpression<T> x => new TypedConstantResultExpressionBuilder<T>(x),
             TypedDelegateExpression<T> x => new TypedDelegateExpressionBuilder<T>(x),
             //TypedDelegateResultExpression<T> x => new TypedDelegateResultExpressionBuilder<T>(x),
             Expression e => (ITypedExpressionBuilder<T>)e.ToBuilder(),
@@ -1025,7 +1025,7 @@ internal static class StringExtensions
     }
 }
 
-public static class FunctionCallRequestExtensions
+public static class FunctionCallContextExtensions
 {
     public static ITypedExpression<T> GetArgumentValueExpression<T>(this FunctionCallContext functionCallRequest, int index, string argumentName)
         => ProcessArgumentResult<T>(argumentName, functionCallRequest.FunctionCall.GetArgumentValueResult(index, argumentName, functionCallRequest));
@@ -1070,14 +1070,14 @@ public static class FunctionCallRequestExtensions
         => ProcessArgumentResult<string>(argumentName, functionCallRequest.FunctionCall.GetArgumentStringValueResult(index, argumentName, functionCallRequest, defaultValue));
 
     public static Result<T> GetArgumentExpressionResult<T>(this FunctionCallContext functionCallRequest, int index, string argumentName)
-        => GetArgumentValueExpression<T>(functionCallRequest, index, argumentName).EvaluateTyped(functionCallRequest.Context);
+        => functionCallRequest.GetArgumentValueExpression<T>(index, argumentName).EvaluateTyped(functionCallRequest.Context);
 
     public static Result<T> GetArgumentExpressionResult<T>(this FunctionCallContext functionCallRequest, int index, string argumentName, T? defaultValue)
-        => GetArgumentValueExpression(functionCallRequest, index, argumentName, defaultValue).EvaluateTyped(functionCallRequest.Context);
+        => functionCallRequest.GetArgumentValueExpression(index, argumentName, defaultValue).EvaluateTyped(functionCallRequest.Context);
 
     public static ITypedExpression<IEnumerable> GetTypedExpressionsArgumentValueExpression(this FunctionCallContext functionCallRequest, int index, string argumentName)
     {
-        var expressions = GetArgumentValueExpression<IEnumerable>(functionCallRequest, index, argumentName).EvaluateTyped(functionCallRequest.Context);
+        var expressions = functionCallRequest.GetArgumentValueExpression<IEnumerable>(index, argumentName).EvaluateTyped(functionCallRequest.Context);
 
         return new TypedConstantExpression<IEnumerable>(expressions.IsSuccessful()
             ? expressions.Value!.OfType<object?>().Select(x => new ConstantExpression(x))
@@ -1086,7 +1086,7 @@ public static class FunctionCallRequestExtensions
 
     public static IEnumerable<Expression> GetExpressionsArgumentValueResult(this FunctionCallContext functionCallRequest, int index, string argumentName)
     {
-        var expressions = GetArgumentValueExpression<IEnumerable>(functionCallRequest, index, argumentName).EvaluateTyped(functionCallRequest.Context);
+        var expressions = functionCallRequest.GetArgumentValueExpression<IEnumerable>(index, argumentName).EvaluateTyped(functionCallRequest.Context);
 
         return expressions.IsSuccessful()
             ? expressions.Value!.OfType<object?>().Select(x => new ConstantExpression(x))

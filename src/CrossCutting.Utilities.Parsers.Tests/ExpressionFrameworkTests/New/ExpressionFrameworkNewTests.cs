@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+﻿using CrossCutting.Utilities.Parsers.Tests.ExpressionFrameworkTests.Current;
+
+namespace CrossCutting.Utilities.Parsers.Tests.ExpressionFrameworkTests.New;
 
 public class ExpressionFrameworkNewTests
 {
