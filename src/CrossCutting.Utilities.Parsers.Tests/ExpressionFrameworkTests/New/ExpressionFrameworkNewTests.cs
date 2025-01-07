@@ -12,14 +12,8 @@ public class ExpressionFrameworkNewTests
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
-        //var functionCall = new FunctionCallBuilder()
-        //    .WithName("ToLowerCase")
-        //    .AddArguments(new ConstantArgumentBuilder()
-        //    .WithValue("Hello world!"))
-        //    .Build();
         var functionCall = new ToLowerCaseExpressionBuilder()
             .WithExpression(new TypedConstantExpressionBuilder<string>().WithValue("Hello world!"))
-            //.BuildTyped()
             .ToFunctionCall();
         var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
@@ -40,7 +34,6 @@ public class ExpressionFrameworkNewTests
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new ToLowerCaseExpressionBuilder()
             .WithExpression(new TypedConstantExpressionBuilder<string>().WithValue("Hello world!"))
-            //.BuildTyped()
             .ToFunctionCall();
         var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
@@ -95,8 +88,8 @@ public class ToLowerCaseFunction : IFunction
 
 #pragma warning disable CA1308 // Normalize strings to uppercase
         return Result.Success<object?>(cultureInfoResult is null
-            ? expressionResult.Value!.ToLowerInvariant()
-            : expressionResult.Value!.ToLower(cultureInfoResult.Value!));
+            ? expressionResult.Value?.ToLowerInvariant()
+            : expressionResult.Value?.ToLower(cultureInfoResult.Value!));
 #pragma warning restore CA1308 // Normalize strings to uppercase
     }
 
@@ -144,16 +137,6 @@ public record ToLowerCaseExpression : Expression, ITypedExpression<string>
     {
         return Result.Success(Expression.ToUntyped());
     }
-
-    //public override FunctionCall ToFunctionCall()
-    //{
-    //    return new FunctionCallBuilder()
-    //        .WithName("ToLowerCase")
-    //        .AddArguments(
-    //            new ExpressionArgumentBuilder().WithExpression(Expression.ToUntyped().ToBuilder()),
-    //            new ExpressionArgumentBuilder().WithExpression(Culture?.ToUntyped().ToBuilder()))
-    //        .Build();
-    //}
 }
 
 public partial class ToLowerCaseExpressionBuilder : ExpressionBuilder<ToLowerCaseExpressionBuilder, ToLowerCaseExpression>, ITypedExpressionBuilder<string>
@@ -254,11 +237,13 @@ public partial class ToLowerCaseExpressionBuilder : ExpressionBuilder<ToLowerCas
         return this;
     }
 
-    public /*override*/ FunctionCall ToFunctionCall()
+    //TODO: Check whether we can add this to interface or base class
+    public FunctionCall ToFunctionCall()
     {
         return new FunctionCallBuilder()
             .WithName("ToLowerCase")
             .AddArguments(
+                //TODO: Simplify these expressions. We would like to use ITypedExpressionBuilder<T> here, but this interface does not derive from ExpressionBuilder, nor can be cast or converted to an untyped one...
                 new ExpressionArgumentBuilder().WithExpression(Expression.Build().ToUntyped().ToBuilder()),
                 new ExpressionArgumentBuilder().WithExpression(Culture?.Build().ToUntyped().ToBuilder()))
             .Build();
