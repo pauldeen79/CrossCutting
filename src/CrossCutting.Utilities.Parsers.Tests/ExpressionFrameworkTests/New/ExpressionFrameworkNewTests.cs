@@ -74,22 +74,15 @@ public class ToLowerCaseFunction : IFunction
     {
         request = ArgumentGuard.IsNotNull(request, nameof(request));
 
-        var expressionResult = request.FunctionCall.Arguments.First().GetValueResult(request).TryCast<string>();
-        if (!expressionResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(expressionResult);
-        }
-
-        var cultureInfoResult = request.FunctionCall.Arguments.ElementAtOrDefault(1)?.GetValueResult(request).TryCast<CultureInfo>();
-        if (cultureInfoResult is not null && !cultureInfoResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(cultureInfoResult);
-        }
-
+        return new ResultDictionaryBuilder()
+            .Add("Expression", () => request.FunctionCall.Arguments.ElementAtOrDefault(0)?.GetValueResult(request).TryCast<string>() ?? Result.NotFound<string>())
+            .Add("Culture", () => request.FunctionCall.Arguments.ElementAtOrDefault(1)?.GetValueResult(request).TryCast<CultureInfo>() ?? Result.NotFound<CultureInfo>())
+            .Build()
+            .OnSuccess(results => 
 #pragma warning disable CA1308 // Normalize strings to uppercase
-        return Result.Success<object?>(cultureInfoResult is null
-            ? expressionResult.Value?.ToLowerInvariant()
-            : expressionResult.Value?.ToLower(cultureInfoResult.Value!));
+                Result.Success<object?>(results["Culture"].GetValue() is null
+                    ? results["Expression"].CastValueAs<string>()?.ToLowerInvariant()
+                    : results["Expression"].CastValueAs<string>()?.ToLower(results["Culture"].CastValueAs<CultureInfo>())));
 #pragma warning restore CA1308 // Normalize strings to uppercase
     }
 
@@ -132,7 +125,7 @@ public record ToLowerCaseExpression : Expression, ITypedExpression<string>
     public Result<string> EvaluateTyped(object? context)
         => StringExpression.EvaluateCultureExpression(Expression, Culture, context, (culture, value) => value.ToUpper(culture), value => value.ToUpperInvariant());
 
-    // niet meer nodig
+    // not needed anymore
     public override Result<Expression> GetSingleContainedExpression()
     {
         return Result.Success(Expression.ToUntyped());

@@ -120,6 +120,28 @@ public record Result
 
     public virtual object? GetValue() => null;
 
+    public T? GetValueAs<T>()
+    {
+        var value = GetValue();
+        if (value is T t)
+        {
+            return t;
+        }
+
+        return default;
+    }
+
+    public T CastValueAs<T>()
+    {
+        var value = GetValue();
+        if (value is null)
+        {
+            throw new InvalidOperationException("Value is null");
+        }
+
+        return (T)value;
+    }
+
     public bool IsSuccessful() => Status is ResultStatus.Ok or ResultStatus.NoContent or ResultStatus.Continue;
     public string? ErrorMessage { get; }
     public Exception? Exception { get; }

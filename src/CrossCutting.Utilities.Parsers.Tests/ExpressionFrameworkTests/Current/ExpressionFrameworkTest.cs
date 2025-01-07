@@ -112,6 +112,7 @@ public partial record ToUpperCaseExpression : Expression, ITypedExpression<strin
         return new ToUpperCaseExpressionBuilder(this);
     }
 
+    // not needed anymore
     public override Result<Expression> GetSingleContainedExpression()
     {
         return Result.Success(Expression.ToUntyped());
