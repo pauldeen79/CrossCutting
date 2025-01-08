@@ -98,7 +98,7 @@ public partial record FunctionCall
         return ProcessDateTimeArgumentResult(argumentName, context , GetArgumentValueResult(index, argumentName, context, defaultValue));
     }
 
-    private static Result<int> ProcessInt32ArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
+    public static Result<int> ProcessInt32ArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -126,7 +126,7 @@ public partial record FunctionCall
             : Result.Invalid<int>($"{argumentName} is not of type integer");
     }
 
-    private static Result<long> ProcessInt64ArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
+    public static Result<long> ProcessInt64ArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -154,7 +154,7 @@ public partial record FunctionCall
             : Result.Invalid<long>($"{argumentName} is not of type long integer");
     }
 
-    private static Result<decimal> ProcessDecimalArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
+    public static Result<decimal> ProcessDecimalArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -182,7 +182,7 @@ public partial record FunctionCall
             : Result.Invalid<decimal>($"{argumentName} is not of type decimal");
     }
 
-    private static Result<bool> ProcessBooleanArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
+    public static Result<bool> ProcessBooleanArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -210,7 +210,7 @@ public partial record FunctionCall
             : Result.Invalid<bool>($"{argumentName} is not of type boolean");
     }
 
-    private static Result<DateTime> ProcessDateTimeArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
+    public static Result<DateTime> ProcessDateTimeArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -237,7 +237,7 @@ public partial record FunctionCall
             : Result.Invalid<DateTime>($"{argumentName} is not of type datetime");
     }
 
-    private static Result<string> ProcessStringArgumentResult(string argumentName, Result<object?> argumentValueResult)
+    public static Result<string> ProcessStringArgumentResult(string argumentName, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {

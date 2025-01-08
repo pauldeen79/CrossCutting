@@ -75,15 +75,14 @@ public class ToLowerCaseFunction : IFunction
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return new ResultDictionaryBuilder()
-            //TODO: Review if the extension method can be added to FunctionCallContext as well, so we don't need the last parameter
-            .Add("Expression", () => context.FunctionCall.GetTypedArgumentValueResult<string>(0, "Expression", context))
-            .Add("Culture", () => context.FunctionCall.GetTypedArgumentValueResult<CultureInfo?>(1, "Culture", context, null))
+            .Add("Expression", () => context.GetTypedArgumentValueResult<string>(0, "Expression"))
+            .Add("Culture", () => context.GetTypedArgumentValueResult<CultureInfo?>(1, "Culture", null))
             .Build()
             .OnSuccess(results => 
 #pragma warning disable CA1308 // Normalize strings to uppercase
                 Result.Success<object?>(results["Culture"].GetValue() is null
-                    ? results["Expression"].CastValueAs<string>()?.ToLowerInvariant()
-                    : results["Expression"].CastValueAs<string>()?.ToLower(results["Culture"].CastValueAs<CultureInfo>())));
+                    ? results["Expression"].CastValueAs<string>().ToLowerInvariant()
+                    : results["Expression"].CastValueAs<string>().ToLower(results["Culture"].CastValueAs<CultureInfo>())));
 #pragma warning restore CA1308 // Normalize strings to uppercase
     }
 
