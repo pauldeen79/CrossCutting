@@ -89,7 +89,7 @@ public class ToLowerCaseFunction : IFunction
 #pragma warning restore CA1308 // Normalize strings to uppercase
     }
 
-    public Result Validate(FunctionCallContext request)
+    public Result Validate(FunctionCallContext context)
     {
         // No additional validation needed
         return Result.Success();

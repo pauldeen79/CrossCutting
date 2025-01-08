@@ -879,7 +879,7 @@ public interface IUntypedExpressionProvider
 
 public interface IExpressionResolver
 {
-    Result<Expression> Parse(FunctionCallContext request);
+    Result<Expression> Parse(FunctionCallContext context);
 }
 
 public static class StringExpression
