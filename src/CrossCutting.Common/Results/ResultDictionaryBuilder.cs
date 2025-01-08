@@ -19,7 +19,7 @@ public class ResultDictionaryBuilder
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, () => item);
-            // For now, make it fail fast: stop on first error (but it still gets added to the results, so you can simply check for the first error)
+            // For now, make it fail fast just like TakeWhileWithFirstNonMatching: stop on first error (but it still gets added to the results, so you can simply check for the first error)
             if (!item.IsSuccessful())
             {
                 break;
@@ -67,7 +67,7 @@ public class ResultDictionaryBuilder<T>
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, () => item);
-            // For now, make it fail fast: stop on first error (but it still gets added to the results, so you can simply check for the first error)
+            // For now, make it fail fast just like TakeWhileWithFirstNonMatching: stop on first error (but it still gets added to the results, so you can simply check for the first error)
             if (!item.IsSuccessful())
             {
                 break;
