@@ -1372,12 +1372,12 @@ public class ExpressionStringEvaluatorTests : IDisposable
 
     private sealed class ErrorFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallContext request)
+        public Result<object?> Evaluate(FunctionCallContext context)
         {
             return Result.Error<object?>("Kaboom");
         }
 
-        public Result Validate(FunctionCallContext request)
+        public Result Validate(FunctionCallContext context)
         {
             return Result.Success();
         }
@@ -1386,15 +1386,15 @@ public class ExpressionStringEvaluatorTests : IDisposable
     [FunctionArgument("Expression", typeof(string))]
     private sealed class ToUpperFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallContext request)
+        public Result<object?> Evaluate(FunctionCallContext context)
         {
             return Result.Success<object?>(
-                request.Context?.ToString()?.ToUpperInvariant()
-                ?? request.FunctionCall.Arguments.FirstOrDefault()?.GetValueResult(request).Value?.ToString()?.ToUpperInvariant()
+                context.Context?.ToString()?.ToUpperInvariant()
+                ?? context.FunctionCall.Arguments.FirstOrDefault()?.GetValueResult(context).Value?.ToString()?.ToUpperInvariant()
                 ?? string.Empty);
         }
 
-        public Result Validate(FunctionCallContext request)
+        public Result Validate(FunctionCallContext context)
         {
             return Result.Success();
         }
@@ -1403,12 +1403,12 @@ public class ExpressionStringEvaluatorTests : IDisposable
     [FunctionName("MyFunction")]
     private sealed class MyFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallContext request)
+        public Result<object?> Evaluate(FunctionCallContext context)
         {
             return Result.Success<object?>(ReplacedValue);
         }
 
-        public Result Validate(FunctionCallContext request)
+        public Result Validate(FunctionCallContext context)
         {
             return Result.Success();
         }

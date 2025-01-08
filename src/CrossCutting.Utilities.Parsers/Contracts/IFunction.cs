@@ -1,9 +1,8 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Contracts;
 
-//TODO: Rename request to Context
 public interface IFunction
 {
-    Result Validate(FunctionCallContext request);
+    Result Validate(FunctionCallContext context);
 
-    Result<object?> Evaluate(FunctionCallContext request);
+    Result<object?> Evaluate(FunctionCallContext context);
 }

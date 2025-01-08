@@ -51,10 +51,10 @@ public class FunctionDescriptorProviderTests
 
         private sealed class MyFunction1 : IFunction
         {
-            public Result<object?> Evaluate(FunctionCallContext request)
+            public Result<object?> Evaluate(FunctionCallContext context)
                 => throw new NotImplementedException();
 
-            public Result Validate(FunctionCallContext request)
+            public Result Validate(FunctionCallContext context)
                 => throw new NotImplementedException();
         }
 
@@ -64,10 +64,10 @@ public class FunctionDescriptorProviderTests
         [Description("This is a very cool function")]
         private sealed class MyFunction2 : IFunction
         {
-            public Result<object?> Evaluate(FunctionCallContext request)
+            public Result<object?> Evaluate(FunctionCallContext context)
                 => throw new NotImplementedException();
 
-            public Result Validate(FunctionCallContext request)
+            public Result Validate(FunctionCallContext context)
                 => throw new NotImplementedException();
         }
     }

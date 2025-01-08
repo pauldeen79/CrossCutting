@@ -120,7 +120,7 @@ public record Result
 
     public virtual object? GetValue() => null;
 
-    public T? GetValueAs<T>()
+    public T? TryCastValueAs<T>()
     {
         var value = GetValue();
         if (value is T t)

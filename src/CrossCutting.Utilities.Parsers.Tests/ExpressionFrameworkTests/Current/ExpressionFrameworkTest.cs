@@ -230,12 +230,12 @@ public partial class ToUpperCaseExpressionBuilder : ExpressionBuilder<ToUpperCas
 [FunctionResult(ResultStatus.Invalid, "Expression must be of type string")]
 public class ToUpperCaseExpressionResolver : ExpressionResolverBase
 {
-    protected override Result<Expression> DoParse(FunctionCallContext request)
+    protected override Result<Expression> DoParse(FunctionCallContext context)
     {
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         return Result.Success<Expression>(new ToUpperCaseExpression(
-            request.GetArgumentStringValueExpression(0, @"Expression"),
-            request.GetArgumentValueExpression<CultureInfo>(1, @"Culture", default)));
+            context.GetArgumentStringValueExpression(0, @"Expression"),
+            context.GetArgumentValueExpression<CultureInfo>(1, @"Culture", default)));
 #pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
     }
 }
@@ -809,28 +809,28 @@ public partial class TypedDelegateExpressionBuilder<T> : ExpressionBuilder<Typed
 
 public abstract class ExpressionResolverBase : IFunction, IExpressionResolver
 {
-    public Result<object?> Evaluate(FunctionCallContext request)
+    public Result<object?> Evaluate(FunctionCallContext context)
     {
-        var result = Parse(request);
+        var result = Parse(context);
 
         return result.IsSuccessful() && result.Status != ResultStatus.Continue
-            ? result.Value?.Evaluate(request.Context) ?? Result.Success<object?>(null)
+            ? result.Value?.Evaluate(context.Context) ?? Result.Success<object?>(null)
             : Result.FromExistingResult<object?>(result);
     }
 
-    public Result Validate(FunctionCallContext request)
+    public Result Validate(FunctionCallContext context)
     {
-        return Parse(request);
+        return Parse(context);
     }
 
-    public Result<Expression> Parse(FunctionCallContext request)
+    public Result<Expression> Parse(FunctionCallContext context)
     {
-        request = request.IsNotNull(nameof(request));
+        context = context.IsNotNull(nameof(context));
 
-        return DoParse(request);
+        return DoParse(context);
     }
 
-    protected abstract Result<Expression> DoParse(FunctionCallContext request);
+    protected abstract Result<Expression> DoParse(FunctionCallContext context);
 
     protected static Result<Expression> ParseTypedExpression(Type expressionType, int index, string argumentName, FunctionCallContext request)
     {

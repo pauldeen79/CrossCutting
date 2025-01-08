@@ -70,16 +70,16 @@ public class ExpressionFrameworkNewTests
 [FunctionResult(ResultStatus.Invalid, "CultureInfo must be of type CultureInfo")]
 public class ToLowerCaseFunction : IFunction
 {
-    public Result<object?> Evaluate(FunctionCallContext request)
+    public Result<object?> Evaluate(FunctionCallContext context)
     {
-        request = ArgumentGuard.IsNotNull(request, nameof(request));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return new ResultDictionaryBuilder()
             //TODO: Use GetArgumentValueResult<T>
             //TODO: Review if the extension method can be added to FunctionCallContext as well, so we don't need the last parameter
-            //request.FunctionCall.GetArgumentValueResult<string>(0, "Expression", request);
-            .Add("Expression", () => request.FunctionCall.Arguments.ElementAtOrDefault(0)?.GetValueResult(request).TryCast<string>() ?? Result.NotFound<string>())
-            .Add("Culture", () => request.FunctionCall.Arguments.ElementAtOrDefault(1)?.GetValueResult(request).TryCast<CultureInfo>() ?? Result.NotFound<CultureInfo>())
+            //request.FunctionCall.GetArgumentValueResult<string>(0, "Expression", context);
+            .Add("Expression", () => context.FunctionCall.Arguments.ElementAtOrDefault(0)?.GetValueResult(context).TryCast<string>() ?? Result.NotFound<string>())
+            .Add("Culture", () => context.FunctionCall.Arguments.ElementAtOrDefault(1)?.GetValueResult(context).TryCast<CultureInfo>() ?? Result.NotFound<CultureInfo>())
             .Build()
             .OnSuccess(results => 
 #pragma warning disable CA1308 // Normalize strings to uppercase
