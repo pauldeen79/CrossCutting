@@ -14,7 +14,7 @@ public class ExpressionFrameworkNewTests
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new ToLowerCaseExpressionBuilder()
             .WithExpression(new TypedConstantExpressionBuilder<string>().WithValue("Hello world!"))
-            .ToFunctionCall();
+            .BuildFunctionCall();
         var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
@@ -34,7 +34,7 @@ public class ExpressionFrameworkNewTests
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new ToLowerCaseExpressionBuilder()
             .WithExpression(new TypedConstantExpressionBuilder<string>().WithValue("Hello world!"))
-            .ToFunctionCall();
+            .BuildFunctionCall();
         var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
@@ -132,7 +132,7 @@ public record ToLowerCaseExpression : Expression, ITypedExpression<string>
     }
 }
 
-public partial class ToLowerCaseExpressionBuilder : ExpressionBuilder<ToLowerCaseExpressionBuilder, ToLowerCaseExpression>, ITypedExpressionBuilder<string>
+public partial class ToLowerCaseExpressionBuilder : ExpressionBuilder<ToLowerCaseExpressionBuilder, ToLowerCaseExpression>, ITypedExpressionBuilder<string>, IFunctionCallBuilder
 {
     private ITypedExpressionBuilder<string> _expression;
 
@@ -230,8 +230,7 @@ public partial class ToLowerCaseExpressionBuilder : ExpressionBuilder<ToLowerCas
         return this;
     }
 
-    //TODO: Check whether we can add this to interface
-    public FunctionCall ToFunctionCall()
+    public FunctionCall BuildFunctionCall()
     {
         return new FunctionCallBuilder()
             .WithName("ToLowerCase")
@@ -332,4 +331,9 @@ public record ExpressionArgument<T> : FunctionCallArgument
     {
         return new ExpressionArgumentBuilder<T>(this);
     }
+}
+
+public interface IFunctionCallBuilder
+{
+    FunctionCall BuildFunctionCall();
 }
