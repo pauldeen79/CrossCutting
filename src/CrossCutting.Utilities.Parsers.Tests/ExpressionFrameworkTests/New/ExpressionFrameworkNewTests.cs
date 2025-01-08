@@ -230,15 +230,14 @@ public partial class ToLowerCaseExpressionBuilder : ExpressionBuilder<ToLowerCas
         return this;
     }
 
-    //TODO: Check whether we can add this to interface or base class
+    //TODO: Check whether we can add this to interface
     public FunctionCall ToFunctionCall()
     {
         return new FunctionCallBuilder()
             .WithName("ToLowerCase")
             .AddArguments(
-                //TODO: Simplify these expressions. We would like to use ITypedExpressionBuilder<T> here, but this interface does not derive from ExpressionBuilder, nor can be cast or converted to an untyped one...
-                new ExpressionArgumentBuilder().WithExpression(Expression.Build().ToUntyped().ToBuilder()),
-                new ExpressionArgumentBuilder().WithExpression(Culture?.Build().ToUntyped().ToBuilder()))
+                new ExpressionArgumentBuilder<string>().WithExpression(Expression),
+                new ExpressionArgumentBuilder<CultureInfo>().WithExpression(Culture))
             .Build();
     }
 }
@@ -286,5 +285,51 @@ public record ExpressionArgument : FunctionCallArgument
     public override FunctionCallArgumentBuilder ToBuilder()
     {
         return new ExpressionArgumentBuilder(this);
+    }
+}
+
+public class ExpressionArgumentBuilder<T> : FunctionCallArgumentBuilder
+{
+    public ExpressionArgumentBuilder(ExpressionArgument<T> source) : base(source)
+    {
+        Expression = source?.Expression?.ToBuilder();
+    }
+
+    public ExpressionArgumentBuilder() : base()
+    {
+    }
+
+    public ITypedExpressionBuilder<T>? Expression { get; set; }
+
+    public ExpressionArgumentBuilder<T> WithExpression(ITypedExpressionBuilder<T>? expression)
+    {
+        Expression = expression;
+        return this;
+    }
+
+    public override FunctionCallArgument Build()
+    {
+        return new ExpressionArgument<T>(Expression?.Build());
+    }
+}
+
+public record ExpressionArgument<T> : FunctionCallArgument
+{
+    public ExpressionArgument(ITypedExpression<T>? expression)
+    {
+        Expression = expression;
+    }
+
+    public ITypedExpression<T>? Expression { get; }
+
+    public override Result<object?> GetValueResult(FunctionCallContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+        return Expression?.ToUntyped().Evaluate(context.Context) ?? Result.Success<object?>(null);
+    }
+
+    public override FunctionCallArgumentBuilder ToBuilder()
+    {
+        return new ExpressionArgumentBuilder<T>(this);
     }
 }
