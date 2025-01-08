@@ -75,8 +75,8 @@ public class ToLowerCaseFunction : IFunction
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return new ResultDictionaryBuilder()
-            .Add("Expression", () => context.GetTypedArgumentValueResult<string>(0, "Expression"))
-            .Add("Culture", () => context.GetTypedArgumentValueResult<CultureInfo?>(1, "Culture", null))
+            .Add("Expression", () => context.GetArgumentValueResult<string>(0, "Expression"))
+            .Add("Culture", () => context.GetArgumentValueResult<CultureInfo?>(1, "Culture", null))
             .Build()
             .OnSuccess(results => 
 #pragma warning disable CA1308 // Normalize strings to uppercase

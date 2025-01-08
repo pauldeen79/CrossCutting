@@ -68,7 +68,7 @@ public sealed class FunctionCallTests : IDisposable
         var request = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", request, "ignored");
+        var result = argument.GetArgumentValueResult(0, "SomeName", request, (object)"ignored");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -98,7 +98,7 @@ public sealed class FunctionCallTests : IDisposable
         var request = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), _evaluatorMock, _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", request, "some value");
+        var result = argument.GetArgumentValueResult(0, "SomeName", request, (object)"some value");
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
