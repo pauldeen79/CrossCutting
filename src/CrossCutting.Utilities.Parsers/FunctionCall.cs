@@ -2,7 +2,6 @@
 
 public partial record FunctionCall
 {
-    //TODO: Add overload for <T> (any type)
     public Result<object?> GetArgumentValueResult(int index, string argumentName, FunctionCallContext context)
         => index + 1 > Arguments.Count
             ? Result.Invalid<object?>($"Missing argument: {argumentName}")
@@ -12,6 +11,16 @@ public partial record FunctionCall
         => index + 1 > Arguments.Count
             ? Result.Success(defaultValue)
             : Arguments.ElementAt(index).GetValueResult(context);
+
+    public Result<T> GetTypedArgumentValueResult<T>(int index, string argumentName, FunctionCallContext context)
+        => index + 1 > Arguments.Count
+            ? Result.Invalid<T>($"Missing argument: {argumentName}")
+            : Arguments.ElementAt(index).GetValueResult(context).TryCast<T>();
+
+    public Result<T> GetTypedArgumentValueResult<T>(int index, string argumentName, FunctionCallContext context, T defaultValue)
+        => index + 1 > Arguments.Count
+            ? Result.Success(defaultValue)
+            : Arguments.ElementAt(index).GetValueResult(context).TryCast<T>();
 
     public Result<string> GetArgumentStringValueResult(int index, string argumentName, FunctionCallContext context)
         => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, context));
