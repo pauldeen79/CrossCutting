@@ -131,16 +131,7 @@ public record Result
         return default;
     }
 
-    public T CastValueAs<T>()
-    {
-        var value = GetValue();
-        if (value is null)
-        {
-            throw new InvalidOperationException("Value is null");
-        }
-
-        return (T)value;
-    }
+    public T? CastValueAs<T>() => (T?)GetValue();
 
     public bool IsSuccessful() => Status is ResultStatus.Ok or ResultStatus.NoContent or ResultStatus.Continue;
     public string? ErrorMessage { get; }

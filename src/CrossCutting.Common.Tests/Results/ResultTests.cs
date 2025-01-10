@@ -3231,4 +3231,67 @@ public class ResultTests
         result.Status.Should().Be(ResultStatus.Error);
         success.Should().BeFalse();
     }
+
+    [Fact]
+    public void TryCastValueAs_Returns_Cast_Value_When_Cast_Is_Possible()
+    {
+        // Arrange
+        Result sut = Result.Success("Hello world!");
+
+        // Act
+        var value = sut.TryCastValueAs<string>();
+
+        // Assert
+        value.Should().Be("Hello world!");
+    }
+
+    [Fact]
+    public void TryCastValueAs_Returns_Default_Value_From_ValueType_When_Cast_Is_Not_Possible()
+    {
+        // Arrange
+        Result sut = Result.Success("Hello world!");
+
+        // Act
+        var value = sut.TryCastValueAs<int>();
+
+        // Assert
+        value.Should().Be(0);
+    }
+
+    [Fact]
+    public void TryCastValueAs_Returns_Default_Value_From_Nullable_ValueType_When_Cast_Is_Not_Possible()
+    {
+        // Arrange
+        Result sut = Result.Success("Hello world!");
+
+        // Act
+        var value = sut.TryCastValueAs<int?>();
+
+        // Assert
+        value.Should().BeNull();
+    }
+
+    [Fact]
+    public void CastValueAs_Returns_Cast_Value_When_Cast_Is_Possible()
+    {
+        // Arrange
+        Result sut = Result.Success("Hello world!");
+
+        // Act
+        var value = sut.CastValueAs<string>();
+
+        // Assert
+        value.Should().Be("Hello world!");
+    }
+
+    [Fact]
+    public void CastValueAs_Throws_When_Cast_Is_Not_Possible()
+    {
+        // Arrange
+        Result sut = Result.Success("Hello world!");
+
+        // Act
+        sut.Invoking(x => x.CastValueAs<int>())
+           .Should().Throw<InvalidCastException>();
+    }
 }
