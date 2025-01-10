@@ -58,6 +58,12 @@ public class ResultDictionaryBuilder<T>
         return this;
     }
 
+    public ResultDictionaryBuilder<T> Add(string name, Func<Result> value)
+    {
+        _resultset.Add(name, () => Result.FromExistingResult<T>(value()));
+        return this;
+    }
+
     public ResultDictionaryBuilder<T> AddRange(string nameFormatString, Func<IEnumerable<Result<T>>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
@@ -76,6 +82,10 @@ public class ResultDictionaryBuilder<T>
         }
 
         return this;
+    }
+    public ResultDictionaryBuilder<T> AddRange(string nameFormatString, Func<IEnumerable<Result>> value)
+    {
+        return AddRange(nameFormatString, () => value().Select(x => Result.FromExistingResult<T>(x)));
     }
 
     public Dictionary<string, Result<T>> Build()
