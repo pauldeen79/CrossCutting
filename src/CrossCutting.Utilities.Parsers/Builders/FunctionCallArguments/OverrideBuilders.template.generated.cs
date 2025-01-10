@@ -54,6 +54,115 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             return this;
         }
     }
+    public partial class DelegateArgumentBuilder : FunctionCallArgumentBuilder<DelegateArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument>
+    {
+        private System.Func<object?> _delegate;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Func<object?> Delegate
+        {
+            get
+            {
+                return _delegate;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<System.Object?>>.Default.Equals(_delegate!, value!);
+                _delegate = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Delegate));
+            }
+        }
+
+        public DelegateArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _delegate = source.Delegate;
+        }
+
+        public DelegateArgumentBuilder() : base()
+        {
+            _delegate = default(System.Func<System.Object?>)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument BuildTyped()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument(Delegate);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder WithDelegate(System.Func<object?> @delegate)
+        {
+            if (@delegate is null) throw new System.ArgumentNullException(nameof(@delegate));
+            Delegate = @delegate;
+            return this;
+        }
+    }
+    public partial class DelegateResultArgumentBuilder : FunctionCallArgumentBuilder<DelegateResultArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument>
+    {
+        private System.Func<CrossCutting.Common.Results.Result<object?>> _delegate;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Func<CrossCutting.Common.Results.Result<object?>> Delegate
+        {
+            get
+            {
+                return _delegate;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<System.Object?>>>.Default.Equals(_delegate!, value!);
+                _delegate = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Delegate));
+            }
+        }
+
+        public DelegateResultArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _delegate = source.Delegate;
+        }
+
+        public DelegateResultArgumentBuilder() : base()
+        {
+            _delegate = default(System.Func<CrossCutting.Common.Results.Result<System.Object?>>)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument BuildTyped()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument(Delegate);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder WithDelegate(System.Func<CrossCutting.Common.Results.Result<object?>> @delegate)
+        {
+            if (@delegate is null) throw new System.ArgumentNullException(nameof(@delegate));
+            Delegate = @delegate;
+            return this;
+        }
+    }
+    public partial class EmptyArgumentBuilder : FunctionCallArgumentBuilder<EmptyArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument>
+    {
+        public EmptyArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+        }
+
+        public EmptyArgumentBuilder() : base()
+        {
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument BuildTyped()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument();
+        }
+
+        partial void SetDefaultValues();
+    }
     public partial class FunctionArgumentBuilder : FunctionCallArgumentBuilder<FunctionArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument>
     {
         private CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder _function;
@@ -99,25 +208,6 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             Function = function;
             return this;
         }
-    }
-    public partial class EmptyArgumentBuilder : FunctionCallArgumentBuilder<EmptyArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument>
-    {
-        public EmptyArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument source) : base(source)
-        {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
-        }
-
-        public EmptyArgumentBuilder() : base()
-        {
-            SetDefaultValues();
-        }
-
-        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument BuildTyped()
-        {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument();
-        }
-
-        partial void SetDefaultValues();
     }
 }
 #nullable disable

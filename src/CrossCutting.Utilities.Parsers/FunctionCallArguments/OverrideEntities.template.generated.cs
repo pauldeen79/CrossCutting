@@ -33,6 +33,71 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder(this);
         }
     }
+    public partial record DelegateArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Func<object?> Delegate
+        {
+            get;
+        }
+
+        public DelegateArgument(System.Func<object?> @delegate) : base()
+        {
+            this.Delegate = @delegate;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder(this);
+        }
+    }
+    public partial record DelegateResultArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Func<CrossCutting.Common.Results.Result<object?>> Delegate
+        {
+            get;
+        }
+
+        public DelegateResultArgument(System.Func<CrossCutting.Common.Results.Result<object?>> @delegate) : base()
+        {
+            this.Delegate = @delegate;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder(this);
+        }
+    }
+    public partial record EmptyArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
+    {
+        public EmptyArgument() : base()
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder(this);
+        }
+    }
     public partial record FunctionArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
@@ -56,23 +121,6 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.FunctionArgumentBuilder ToTypedBuilder()
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.FunctionArgumentBuilder(this);
-        }
-    }
-    public partial record EmptyArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
-    {
-        public EmptyArgument() : base()
-        {
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder()
-        {
-            return ToTypedBuilder();
-        }
-
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder ToTypedBuilder()
-        {
-            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder(this);
         }
     }
 }
