@@ -54,7 +54,7 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             return this;
         }
     }
-    public partial class DynamicArgumentBuilder : FunctionCallArgumentBuilder<DynamicArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.DynamicArgument>
+    public partial class FunctionArgumentBuilder : FunctionCallArgumentBuilder<FunctionArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument>
     {
         private CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder _function;
 
@@ -74,26 +74,26 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             }
         }
 
-        public DynamicArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.DynamicArgument source) : base(source)
+        public FunctionArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _function = source.Function.ToBuilder();
         }
 
-        public DynamicArgumentBuilder() : base()
+        public FunctionArgumentBuilder() : base()
         {
             _function = new CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder()!;
             SetDefaultValues();
         }
 
-        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.DynamicArgument BuildTyped()
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DynamicArgument(Function.Build());
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument(Function.Build());
         }
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DynamicArgumentBuilder WithFunction(CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder function)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.FunctionArgumentBuilder WithFunction(CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder function)
         {
             if (function is null) throw new System.ArgumentNullException(nameof(function));
             Function = function;

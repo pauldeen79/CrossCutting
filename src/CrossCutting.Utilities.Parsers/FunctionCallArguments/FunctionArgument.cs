@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
 
-public partial record DynamicArgument
+public partial record FunctionArgument
 {
     public override Result<object?> GetValueResult(FunctionCallContext context)
     {

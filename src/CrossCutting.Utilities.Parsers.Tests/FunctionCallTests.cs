@@ -711,6 +711,6 @@ public sealed class FunctionCallTests : IDisposable
     private static FunctionCall CreateFunctionParseResultWithFunctionArgument(string functionName)
         => new FunctionCallBuilder()
             .WithName("Test")
-            .AddArguments(new DynamicArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName(functionName)))
+            .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName(functionName)))
             .Build();
 }

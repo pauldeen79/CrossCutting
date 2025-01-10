@@ -226,6 +226,7 @@ public partial class ToUpperCaseExpressionBuilder : ExpressionBuilder<ToUpperCas
 [FunctionName(@"ToUpperCase")]
 [Description("Converts the expression to upper case")]
 [FunctionArgument("Expression", typeof(string), "String to get the upper case for", true)]
+[FunctionArgument("Culture", typeof(CultureInfo), "Optional CultureInfo to use", false)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
 [FunctionResult(ResultStatus.Invalid, "Expression must be of type string")]
 public class ToUpperCaseExpressionResolver : ExpressionResolverBase

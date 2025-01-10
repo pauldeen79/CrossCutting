@@ -33,7 +33,7 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder(this);
         }
     }
-    public partial record DynamicArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
+    public partial record FunctionArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -42,7 +42,7 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
             get;
         }
 
-        public DynamicArgument(CrossCutting.Utilities.Parsers.FunctionCall function) : base()
+        public FunctionArgument(CrossCutting.Utilities.Parsers.FunctionCall function) : base()
         {
             this.Function = function;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
@@ -53,9 +53,9 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
             return ToTypedBuilder();
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DynamicArgumentBuilder ToTypedBuilder()
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.FunctionArgumentBuilder ToTypedBuilder()
         {
-            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DynamicArgumentBuilder(this);
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.FunctionArgumentBuilder(this);
         }
     }
     public partial record EmptyArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
