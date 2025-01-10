@@ -3294,4 +3294,39 @@ public class ResultTests
         sut.Invoking(x => x.CastValueAs<int>())
            .Should().Throw<InvalidCastException>();
     }
+
+    [Fact]
+    public void CastValueAs_Throws_When_Value_Is_Null()
+    {
+        // Arrange
+        Result sut = Result.Success<string?>(default);
+
+        // Act & Assert
+        sut.Invoking(x => x.CastValueAs<int>())
+           .Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void CastValueAs_Does_Not_Throw_When_Value_Is_Null_But_Type_Is_Nullable_ValueType()
+    {
+        // Arrange
+        Result sut = Result.Success<string?>(default);
+
+        // Act & Assert
+        sut.Invoking(x => x.CastValueAs<int?>())
+           .Should().NotThrow<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void CastValueAs_Throws_When_Value_Is_Null_But_Type_Is_Nullable_ReferenceType()
+    {
+        // Arrange
+        var sut = Result.Success<string>(default!);
+
+        // Act & Assert
+        sut.Invoking(x => x.CastValueAs<string?>())
+           .Should().Throw<InvalidOperationException>();
+
+        // Note that if you don't know if the value is null, you can simply use TryCast<string> because this will return a nullable string.
+    }
 }
