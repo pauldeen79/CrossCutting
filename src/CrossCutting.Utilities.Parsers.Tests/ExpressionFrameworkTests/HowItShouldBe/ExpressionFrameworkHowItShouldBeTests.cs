@@ -45,6 +45,28 @@ public class ExpressionFrameworkHowItShouldBeTests
     }
 
     [Fact]
+    public void Can_Evaluate_ToUpperCaseExpression_Typed()
+    {
+        // Arrange
+        var sut = new ToUpperCaseFunction();
+        var functionEvaluator = Substitute.For<IFunctionEvaluator>();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
+        var functionCall = new ToUpperCaseFunctionCallBuilder()
+            .WithExpression("Hello world!")
+            .Build();
+        var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+
+        // Act
+        var result = sut.EvaluateTyped(request);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeOfType<string>();
+        result.Value!.Should().Be("HELLO WORLD!");
+    }
+
+    [Fact]
     public void Can_Get_FunctionDescriptor()
     {
         // Arrange
@@ -56,7 +78,7 @@ public class ExpressionFrameworkHowItShouldBeTests
         // Assert
         functionDescriptors.Should().ContainSingle();
         functionDescriptors.Single().Arguments.Should().HaveCount(2);
-        functionDescriptors.Single().Results.Should().HaveCount(3);
+        functionDescriptors.Single().Results.Should().ContainSingle();
     }
 }
 
@@ -65,11 +87,15 @@ public class ExpressionFrameworkHowItShouldBeTests
 [FunctionArgument("Expression", typeof(string), "String to get the upper case for", true)]
 [FunctionArgument("Culture", typeof(CultureInfo), "Optional CultureInfo to use", false)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
-[FunctionResult(ResultStatus.Invalid, "Expression must be of type string")]
-[FunctionResult(ResultStatus.Invalid, "CultureInfo must be of type CultureInfo")]
-public class ToUpperCaseFunction : IFunction
+// No need to tell what is returned on in valid types of arguments, the framework can do this for you
+public class ToUpperCaseFunction : ITypedFunction<string>
 {
     public Result<object?> Evaluate(FunctionCallContext context)
+    {
+        return Result.FromExistingResult<object?>(EvaluateTyped(context));
+    }
+
+    public Result<string> EvaluateTyped(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -81,7 +107,7 @@ public class ToUpperCaseFunction : IFunction
             .Build()
             .OnFailure(error => Result.Error<object?>([error], "ToUpperCase evaluation failed, see inner results for details"))
             .OnSuccess(results =>
-                Result.Success<object?>(results["Culture"].GetValue() is null
+                Result.Success(results["Culture"].GetValue() is null
                     ? results["Expression"].CastValueAs<string>().ToUpperInvariant()
                     : results["Expression"].CastValueAs<string>().ToUpper(results["Culture"].CastValueAs<CultureInfo>())));
     }

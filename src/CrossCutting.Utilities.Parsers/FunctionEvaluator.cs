@@ -40,6 +40,24 @@ public class FunctionEvaluator : IFunctionEvaluator
             .Transform(result => result.Evaluate(functionCallContext));
     }
 
+    public Result<T> EvaluateTyped<T>(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+    {
+        if (functionCall is null)
+        {
+            return Result.Invalid<T>("Function call is required");
+        }
+
+        var functionCallContext = new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context);
+
+        var functionResult = ResolveFunction(functionCallContext);
+        if (functionResult.Value is ITypedFunction<T> typedFunction)
+        {
+            return typedFunction.EvaluateTyped(functionCallContext);
+        }
+
+        return functionResult.Transform(result => result.Evaluate(functionCallContext).TryCast<T>());
+    }
+
     public Result Validate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
     {
         if (functionCall is null)

@@ -36,7 +36,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Evaluate_Returns_First_Success_Result_From_FunctionResultParser()
+    public void Evaluate_Returns_Success_Result_On_Valid_Input()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
@@ -52,7 +52,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Evaluate_Returns_First_Failure_Result_From_FunctionResultParser()
+    public void Evaluate_Returns_Failure_Result_On_Valid_Input()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("Error").Build();
@@ -68,7 +68,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Evaluate_Returns_Invalid_When_FunctionCall_Is_Unknown()
+    public void Evaluate_Returns_Invalid_Result_When_FunctionCall_Is_Unknown()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("WrongName").Build();
@@ -84,7 +84,87 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Validate_Returns_Invalid_On_Null_Input()
+    public void EvaluateTyped_Returns_Invalid_Result_On_Null_Input()
+    {
+        // Arrange
+        var functionCall = default(FunctionCall);
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.EvaluateTyped<string>(functionCall!, expressionEvaluator);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Function call is required");
+    }
+
+    [Fact]
+    public void EvaluateTyped_Returns_Invalid_Result_On_Wrong_Return_Type()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.EvaluateTyped<int>(functionCall!, expressionEvaluator);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Could not cast System.String to System.Int32");
+    }
+
+    [Fact]
+    public void EvaluateTyped_Returns_Success_Result_On_Valid_Input()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.EvaluateTyped<string>(functionCall!, expressionEvaluator, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("function result");
+    }
+
+    [Fact]
+    public void EvaluateTyped_Returns_Failure_Result_On_Valid_Input()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("Error").Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.EvaluateTyped<string>(functionCall!, expressionEvaluator, default(object?));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom");
+    }
+
+    [Fact]
+    public void EvaluateTyped_Returns_Invalid_Result_When_FunctionCall_Is_Unknown()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("WrongName").Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.EvaluateTyped<string>(functionCall!, expressionEvaluator);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Unknown function: WrongName");
+    }
+
+    [Fact]
+    public void Validate_Returns_Invalid_Result_On_Null_Input()
     {
         // Arrange
         var functionCall = default(FunctionCall);
@@ -100,7 +180,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Validate_Returns_First_Success_Result_From_FunctionResultParser()
+    public void Validate_Returns_Success_Result_On_Valid_Input()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
@@ -115,7 +195,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Validate_Returns_First_Failure_Result_From_FunctionResultParser()
+    public void Validate_Returns_Failure_Result_On_Valid_Input()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("Error").Build();
@@ -131,7 +211,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Validate_Returns_Invalid_When_FunctionCall_Is_Unknown()
+    public void Validate_Returns_Invalid_Result_When_FunctionCall_Is_Unknown()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("WrongName").Build();
@@ -147,7 +227,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Validate_Returns_Invalid_When_Overload_Does_Not_Have_The_Right_Amount_Of_Arguments()
+    public void Validate_Returns_Invalid_Result_When_Overload_Does_Not_Have_The_Right_Amount_Of_Arguments()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("Overload").Build();
@@ -163,7 +243,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Validate_Returns_Invalid_When_Overload_ArgumentCount_Is_Registered_Twice()
+    public void Validate_Returns_Invalid_Result_When_Overload_ArgumentCount_Is_Registered_Twice()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new EmptyArgumentBuilder(), new EmptyArgumentBuilder()).Build();
@@ -256,7 +336,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Validate_Returns_Error_When_Function_Could_Not_Be_Found_For_FunctionDescriptor()
+    public void Validate_Returns_Error_Result_When_Function_Could_Not_Be_Found_For_FunctionDescriptor()
     {
         // Arrange
         var functionDescriptorProvider = Substitute.For<IFunctionDescriptorProvider>();
