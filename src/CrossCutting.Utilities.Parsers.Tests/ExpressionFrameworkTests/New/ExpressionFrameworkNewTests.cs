@@ -57,7 +57,7 @@ public class ExpressionFrameworkNewTests
 
         // Assert
         functionDescriptors.Should().ContainSingle();
-        functionDescriptors.Single().Arguments.Should().ContainSingle();
+        functionDescriptors.Single().Arguments.Should().HaveCount(2);
         functionDescriptors.Single().Results.Should().HaveCount(3);
     }
 }
