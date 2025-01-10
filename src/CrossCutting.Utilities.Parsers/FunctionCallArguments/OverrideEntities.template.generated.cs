@@ -33,6 +33,30 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder(this);
         }
     }
+    public partial record ConstantResultArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public CrossCutting.Common.Results.Result<object?> Result
+        {
+            get;
+        }
+
+        public ConstantResultArgument(CrossCutting.Common.Results.Result<object?> result) : base()
+        {
+            this.Result = result;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantResultArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantResultArgumentBuilder(this);
+        }
+    }
     public partial record DelegateArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]

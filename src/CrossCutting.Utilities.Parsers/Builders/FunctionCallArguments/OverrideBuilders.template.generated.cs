@@ -54,6 +54,51 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             return this;
         }
     }
+    public partial class ConstantResultArgumentBuilder : FunctionCallArgumentBuilder<ConstantResultArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument>
+    {
+        private CrossCutting.Common.Results.Result<object?> _result;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public CrossCutting.Common.Results.Result<object?> Result
+        {
+            get
+            {
+                return _result;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Common.Results.Result<System.Object?>>.Default.Equals(_result!, value!);
+                _result = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Result));
+            }
+        }
+
+        public ConstantResultArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _result = source.Result;
+        }
+
+        public ConstantResultArgumentBuilder() : base()
+        {
+            _result = default(CrossCutting.Common.Results.Result<System.Object?>)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument BuildTyped()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument(Result);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantResultArgumentBuilder WithResult(CrossCutting.Common.Results.Result<object?> result)
+        {
+            if (result is null) throw new System.ArgumentNullException(nameof(result));
+            Result = result;
+            return this;
+        }
+    }
     public partial class DelegateArgumentBuilder : FunctionCallArgumentBuilder<DelegateArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument>
     {
         private System.Func<object?> _delegate;
