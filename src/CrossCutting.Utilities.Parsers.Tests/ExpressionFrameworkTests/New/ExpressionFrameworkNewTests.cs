@@ -74,18 +74,18 @@ public class ToLowerCaseFunction : IFunction
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        //example for Either that has a custom result, with an inner result that contains the details.
-        //if you don't want an error message stating that this is the source, then simply use OnSuccess instead of Either, and remove the error delegate argument.
+        //example for OnFailure that has a custom result, with an inner result that contains the details.
+        //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
         return new ResultDictionaryBuilder()
             .Add("Expression", () => context.GetArgumentValueResult<string>(0, "Expression"))
             .Add("Culture", () => context.GetArgumentValueResult<CultureInfo?>(1, "Culture", null))
             .Build()
-            .Either(results => 
+            .OnFailure(error => Result.Error<object?>([error], "ToLowerCase evaluation failed, see inner results for details"))
+            .OnSuccess(results => 
 #pragma warning disable CA1308 // Normalize strings to uppercase
                 Result.Success<object?>(results["Culture"].GetValue() is null
                     ? results["Expression"].CastValueAs<string>().ToLowerInvariant()
-                    : results["Expression"].CastValueAs<string>().ToLower(results["Culture"].CastValueAs<CultureInfo>())),
-                error => Result.Error<object?>([error], "ToLowerCase evaluation failed, see inner results for details"));
+                    : results["Expression"].CastValueAs<string>().ToLower(results["Culture"].CastValueAs<CultureInfo>())));
 #pragma warning restore CA1308 // Normalize strings to uppercase
     }
 

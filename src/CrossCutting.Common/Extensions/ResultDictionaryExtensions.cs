@@ -100,4 +100,30 @@ public static class ResultDictionaryExtensions
 
     public static Result Either(this Dictionary<string, Result> resultDictionary, Action<Dictionary<string, Result>> successDelegate, Func<Result, Result> errorDelegate)
         => resultDictionary.Either(_ => { successDelegate(resultDictionary); return Result.Success(); }, errorDelegate);
+
+    public static Dictionary<string, Result<T>> OnFailure<T>(this Dictionary<string, Result<T>> resultDictionary, Action<Result<T>> errorDelegate)
+    {
+        errorDelegate = ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+
+        var error = resultDictionary.GetError();
+        if (error is not null)
+        {
+            errorDelegate(error);
+        }
+
+        return resultDictionary;
+    }
+
+    public static Dictionary<string, Result> OnFailure(this Dictionary<string, Result> resultDictionary, Action<Result> errorDelegate)
+    {
+        errorDelegate = ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+
+        var error = resultDictionary.GetError();
+        if (error is not null)
+        {
+            errorDelegate(error);
+        }
+
+        return resultDictionary;
+    }
 }
