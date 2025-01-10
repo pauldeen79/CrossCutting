@@ -31,26 +31,6 @@ public record Result<T> : Result
             ? $"Result: {Status}"
             : $"Result: {Status}, ErrorMessage: {ErrorMessage}");
 
-    public Result<TCast> TryCast<TCast>(string? errorMessage = null)
-    {
-        if (!IsSuccessful())
-        {
-            return FromExistingResult<TCast>(this);
-        }
-
-        if (Value is null)
-        {
-            return new Result<TCast>(default, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
-        }
-
-        if (Value is not TCast castValue)
-        {
-            return Invalid<TCast>(errorMessage ?? $"Could not cast {Value.GetType().FullName} to {typeof(TCast).FullName}");
-        }
-
-        return new Result<TCast>(castValue, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
-    }
-
     public Result<TTarget> Transform<TTarget>(Func<T, TTarget> transformDelegate)
     {
         ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
@@ -119,6 +99,27 @@ public record Result
     }
 
     public virtual object? GetValue() => null;
+
+    public Result<TCast> TryCast<TCast>(string? errorMessage = null)
+    {
+        if (!IsSuccessful())
+        {
+            return FromExistingResult<TCast>(this);
+        }
+
+        var value = GetValue();
+        if (value is null)
+        {
+            return new Result<TCast>(default, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
+        }
+
+        if (value is not TCast castValue)
+        {
+            return Invalid<TCast>(errorMessage ?? $"Could not cast {value.GetType().FullName} to {typeof(TCast).FullName}");
+        }
+
+        return new Result<TCast>(castValue, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
+    }
 
     public T? TryCastValueAs<T>()
     {
