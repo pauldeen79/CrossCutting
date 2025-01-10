@@ -126,4 +126,13 @@ public static class ResultDictionaryExtensions
 
         return resultDictionary;
     }
+
+    public static T GetValue<T>(this Dictionary<string, Result> resultDictionary, string resultKey)
+        => resultDictionary[resultKey].CastValueAs<T>();
+
+    public static T? TryGetValue<T>(this Dictionary<string, Result> resultDictionary, string resultKey)
+        => resultDictionary[resultKey].TryCastValueAs<T>();
+
+    public static T? TryGetValue<T>(this Dictionary<string, Result> resultDictionary, string resultKey, T? defaultValue)
+        => resultDictionary[resultKey].TryCastValueAs(defaultValue);
 }

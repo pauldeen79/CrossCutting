@@ -71,7 +71,7 @@ public sealed class ExpressionFrameworkTest
         // Assert
         functionDescriptors.Should().ContainSingle();
         functionDescriptors.Single().Arguments.Should().HaveCount(2);
-        functionDescriptors.Single().Results.Should().HaveCount(2);
+        functionDescriptors.Single().Results.Should().ContainSingle();
     }
 }
 
@@ -228,7 +228,7 @@ public partial class ToUpperCaseExpressionBuilder : ExpressionBuilder<ToUpperCas
 [FunctionArgument("Expression", typeof(string), "String to get the upper case for", true)]
 [FunctionArgument("Culture", typeof(CultureInfo), "Optional CultureInfo to use", false)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
-[FunctionResult(ResultStatus.Invalid, "Expression must be of type string")]
+// No need to tell what is returned on invalid types of arguments, the framework can do this for you
 public class ToUpperCaseExpressionResolver : ExpressionResolverBase
 {
     protected override Result<Expression> DoParse(FunctionCallContext context)

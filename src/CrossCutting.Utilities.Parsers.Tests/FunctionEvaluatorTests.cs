@@ -52,7 +52,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Evaluate_Returns_Failure_Result_On_Valid_Input()
+    public void Evaluate_Returns_Failure_Result_On_Failure()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("Error").Build();
@@ -65,6 +65,24 @@ public sealed class FunctionEvaluatorTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
         result.ErrorMessage.Should().Be("Kaboom");
+    }
+
+    [Fact]
+    public void Evaluate_Returns_Success_Failure_On_Non_Valid_Input()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("MyFunction2").AddArguments(new EmptyArgumentBuilder()).Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(functionCall!, expressionEvaluator, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Validation for function MyFunction2 failed, see inner results for more details");
+        result.InnerResults.Should().ContainSingle();
+        result.InnerResults.Single().ErrorMessage.Should().Be("Argument Argument1 is required");
     }
 
     [Fact]
@@ -132,7 +150,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void EvaluateTyped_Returns_Failure_Result_On_Valid_Input()
+    public void EvaluateTyped_Returns_Failure_Result_On_Failure()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("Error").Build();

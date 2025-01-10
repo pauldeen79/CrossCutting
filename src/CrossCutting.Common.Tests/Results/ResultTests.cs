@@ -3272,6 +3272,19 @@ public class ResultTests
     }
 
     [Fact]
+    public void TryCastValueAs_Returns_Provided_Default_Value_From_Nullable_ValueType_When_Cast_Is_Not_Possible()
+    {
+        // Arrange
+        Result sut = Result.Success("Hello world!");
+
+        // Act
+        var value = sut.TryCastValueAs<int?>(13);
+
+        // Assert
+        value.Should().Be(13);
+    }
+
+    [Fact]
     public void CastValueAs_Returns_Cast_Value_When_Cast_Is_Possible()
     {
         // Arrange

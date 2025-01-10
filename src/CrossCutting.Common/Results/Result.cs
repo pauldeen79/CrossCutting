@@ -131,6 +131,17 @@ public record Result
         return default;
     }
 
+    public T? TryCastValueAs<T>(T? defaultValue)
+    {
+        var value = GetValue();
+        if (value is T t)
+        {
+            return t;
+        }
+
+        return defaultValue;
+    }
+
     public T CastValueAs<T>()
     {
         var value = GetValue();

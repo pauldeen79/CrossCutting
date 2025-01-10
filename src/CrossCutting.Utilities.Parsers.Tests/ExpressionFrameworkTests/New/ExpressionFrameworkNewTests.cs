@@ -11,7 +11,6 @@ public class ExpressionFrameworkNewTests
         var sut = new ToLowerCaseFunction();
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new ToLowerCaseExpressionBuilder()
             .WithExpression(new TypedConstantExpressionBuilder<string>().WithValue("Hello world!"))
             .BuildFunctionCall();
@@ -58,7 +57,7 @@ public class ExpressionFrameworkNewTests
         // Assert
         functionDescriptors.Should().ContainSingle();
         functionDescriptors.Single().Arguments.Should().HaveCount(2);
-        functionDescriptors.Single().Results.Should().HaveCount(3);
+        functionDescriptors.Single().Results.Should().ContainSingle();
     }
 }
 
@@ -67,8 +66,7 @@ public class ExpressionFrameworkNewTests
 [FunctionArgument("Expression", typeof(string), "String to get the lower case for", true)]
 [FunctionArgument("Culture", typeof(CultureInfo), "Optional CultureInfo to use", false)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to lower case", "This result will be returned when the expression is of type string")]
-[FunctionResult(ResultStatus.Invalid, "Expression must be of type string")]
-[FunctionResult(ResultStatus.Invalid, "CultureInfo must be of type CultureInfo")]
+// No need to tell what is returned on invalid types of arguments, the framework can do this for you
 public class ToLowerCaseFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)

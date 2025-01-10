@@ -9,7 +9,6 @@ public class ExpressionFrameworkHowItShouldBeTests
         var sut = new ToUpperCaseFunction();
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new ToUpperCaseFunctionCallBuilder()
             .WithExpression("Hello world!")
             .Build();
@@ -29,7 +28,6 @@ public class ExpressionFrameworkHowItShouldBeTests
         var sut = new ToUpperCaseFunction();
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new ToUpperCaseFunctionCallBuilder()
             .WithExpression("Hello world!")
             .Build();
@@ -51,7 +49,6 @@ public class ExpressionFrameworkHowItShouldBeTests
         var sut = new ToUpperCaseFunction();
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new ToUpperCaseFunctionCallBuilder()
             .WithExpression("Hello world!")
             .Build();
@@ -87,29 +84,29 @@ public class ExpressionFrameworkHowItShouldBeTests
 [FunctionArgument("Expression", typeof(string), "String to get the upper case for", true)]
 [FunctionArgument("Culture", typeof(CultureInfo), "Optional CultureInfo to use", false)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
-// No need to tell what is returned on in valid types of arguments, the framework can do this for you
+// No need to tell what is returned on invalid types of arguments, the framework can do this for you
 public class ToUpperCaseFunction : ITypedFunction<string>
 {
     public Result<object?> Evaluate(FunctionCallContext context)
     {
-        return Result.FromExistingResult<object?>(EvaluateTyped(context));
+        return EvaluateTyped(context).TryCast<object?>();
     }
 
     public Result<string> EvaluateTyped(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        //example for OnFailure that has a custom result, with an inner result that contains the details.
-        //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
         return new ResultDictionaryBuilder()
             .Add("Expression", () => context.GetArgumentValueResult<string>(0, "Expression"))
             .Add("Culture", () => context.GetArgumentValueResult<CultureInfo?>(1, "Culture", null))
             .Build()
+            //example for OnFailure that has a custom result, with an inner result that contains the details.
+            //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
             .OnFailure(error => Result.Error<object?>([error], "ToUpperCase evaluation failed, see inner results for details"))
             .OnSuccess(results =>
                 Result.Success(results["Culture"].GetValue() is null
-                    ? results["Expression"].CastValueAs<string>().ToUpperInvariant()
-                    : results["Expression"].CastValueAs<string>().ToUpper(results["Culture"].CastValueAs<CultureInfo>())));
+                    ? results.GetValue<string>("Expression").ToUpperInvariant()
+                    : results.GetValue<string>("Expression").ToUpper(results.GetValue<CultureInfo>("Culture"))));
     }
 
     public Result Validate(FunctionCallContext context)
