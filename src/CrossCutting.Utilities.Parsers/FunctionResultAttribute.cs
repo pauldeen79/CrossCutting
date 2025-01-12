@@ -5,10 +5,10 @@ public sealed class FunctionResultAttribute : Attribute
 {
     public ResultStatus Status { get; }
     public string Value { get; }
-    public string ValueType { get; }
+    public Type? ValueType { get; }
     public string Description { get; }
 
-    public FunctionResultAttribute(ResultStatus status, string valueType, string value, string description)
+    public FunctionResultAttribute(ResultStatus status, Type valueType, string value, string description)
     {
         ArgumentGuard.IsNotNull(valueType, nameof(valueType));
         ArgumentGuard.IsNotNull(value, nameof(value));
@@ -20,25 +20,13 @@ public sealed class FunctionResultAttribute : Attribute
         Description = description;
     }
 
-    public FunctionResultAttribute(ResultStatus status, Type valueType, string value, string description)
-    {
-        valueType = ArgumentGuard.IsNotNull(valueType, nameof(valueType));
-        ArgumentGuard.IsNotNull(value, nameof(value));
-        ArgumentGuard.IsNotNull(description, nameof(description));
-
-        Status = status;
-        ValueType = valueType.FullName;
-        Value = value;
-        Description = description;
-    }
-
     public FunctionResultAttribute(ResultStatus status, string description)
     {
         ArgumentGuard.IsNotNull(description, nameof(description));
 
         Status = status;
         Value = string.Empty;
-        ValueType = string.Empty;
+        ValueType = null;
         Description = description;
     }
 
@@ -46,7 +34,7 @@ public sealed class FunctionResultAttribute : Attribute
     {
         Status = status;
         Value = string.Empty;
-        ValueType = string.Empty;
+        ValueType = null;
         Description = string.Empty;
     }
 }

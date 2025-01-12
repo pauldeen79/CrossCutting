@@ -554,7 +554,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         private string _value;
 
-        private string _valueType;
+        private System.Type? _valueType;
 
         private string _description;
 
@@ -589,8 +589,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
             }
         }
 
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string ValueType
+        public System.Type? ValueType
         {
             get
             {
@@ -598,8 +597,8 @@ namespace CrossCutting.Utilities.Parsers.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_valueType!, value!);
-                _valueType = value ?? throw new System.ArgumentNullException(nameof(value));
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Type>.Default.Equals(_valueType!, value!);
+                _valueType = value;
                 if (hasChanged) HandlePropertyChanged(nameof(ValueType));
             }
         }
@@ -631,7 +630,6 @@ namespace CrossCutting.Utilities.Parsers.Builders
         public FunctionDescriptorResultBuilder()
         {
             _value = string.Empty;
-            _valueType = string.Empty;
             _description = string.Empty;
             SetDefaultValues();
         }
@@ -656,9 +654,8 @@ namespace CrossCutting.Utilities.Parsers.Builders
             return this;
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorResultBuilder WithValueType(string valueType)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorResultBuilder WithValueType(System.Type? valueType)
         {
-            if (valueType is null) throw new System.ArgumentNullException(nameof(valueType));
             ValueType = valueType;
             return this;
         }

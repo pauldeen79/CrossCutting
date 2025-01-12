@@ -184,8 +184,7 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string ValueType
+        public System.Type? ValueType
         {
             get;
         }
@@ -196,7 +195,7 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        public FunctionDescriptorResult(CrossCutting.Common.Results.ResultStatus status, string value, string valueType, string description)
+        public FunctionDescriptorResult(CrossCutting.Common.Results.ResultStatus status, string value, System.Type? valueType, string description)
         {
             this.Status = status;
             this.Value = value;
