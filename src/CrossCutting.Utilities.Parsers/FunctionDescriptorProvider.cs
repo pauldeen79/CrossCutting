@@ -12,10 +12,12 @@ public class FunctionDescriptorProvider : IFunctionDescriptorProvider
     }
 
     public IReadOnlyCollection<FunctionDescriptor> GetAll()
-        => _functions.SelectMany(CreateFunction).ToList();
+        => _functions.SelectMany(x => CreateFunction(x, null)).ToList();
 
-    private static IEnumerable<FunctionDescriptor> CreateFunction(IFunction source)
+    public IEnumerable<FunctionDescriptor> CreateFunction(IFunction source, Type? customFunctionType)
     {
+        source = ArgumentGuard.IsNotNull(source, nameof(source));
+
         var type = source.GetType();
 
         if (source is IDynamicDescriptorsFunction dynamicDescriptorsFunction)
@@ -30,7 +32,7 @@ public class FunctionDescriptorProvider : IFunctionDescriptorProvider
             yield return new FunctionDescriptorBuilder()
                 .WithName(type.GetCustomAttribute<FunctionNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
                 .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
-                .WithFunctionType(type)
+                .WithFunctionType(customFunctionType ?? type)
                 .WithReturnValueType(type.GetCustomAttribute<FunctionResultTypeAttribute>()?.Type)
                 .AddArguments(type.GetCustomAttributes<FunctionArgumentAttribute>().Select(CreateFunctionArgument))
                 .AddResults(type.GetCustomAttributes<FunctionResultAttribute>().Select(CreateFunctionResult))
