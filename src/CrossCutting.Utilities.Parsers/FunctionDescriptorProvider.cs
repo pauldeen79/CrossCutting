@@ -18,9 +18,9 @@ public class FunctionDescriptorProvider : IFunctionDescriptorProvider
     {
         var type = source.GetType();
 
-        if (source is IPassThroughFunction passThroughFunction)
+        if (source is IDynamicDescriptorsFunction dynamicDescriptorsFunction)
         {
-            foreach (var descriptor in passThroughFunction.GetDescriptors())
+            foreach (var descriptor in dynamicDescriptorsFunction.GetDescriptors())
             {
                 yield return descriptor;
             }

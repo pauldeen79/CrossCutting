@@ -108,7 +108,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Evaluate_Returns_Result_Of_First_PassThroughFunction_When_Available()
+    public void Evaluate_Returns_Result_Of_DyamicDescriptorsFunction_When_Available()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("PassThrough").Build();
@@ -543,7 +543,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         }
     }
 
-    private sealed class PassThroughFunction : IPassThroughFunction
+    private sealed class PassThroughFunction : IDynamicDescriptorsFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
         {

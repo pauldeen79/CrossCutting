@@ -68,7 +68,7 @@ public class FunctionDescriptorProviderTests
                 => throw new NotImplementedException();
         }
 
-        private sealed class PassThroughFunction : IPassThroughFunction
+        private sealed class PassThroughFunction : IDynamicDescriptorsFunction
         {
             public Result<object?> Evaluate(FunctionCallContext context)
             {
