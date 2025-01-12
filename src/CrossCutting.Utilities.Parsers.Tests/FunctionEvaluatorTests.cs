@@ -341,12 +341,36 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_But_Argument_Has_Non_Succesful_Result()
+    public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_But_Argument_Has_Non_Succesful_Result_Constant()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder()
             .WithName("Overload")
             .AddArguments(new ConstantResultArgumentBuilder().WithResult(Result.Error<object?>("Kaboom")))
+            .Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                           .Returns(Result.Success<object?>(13));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall!, expressionEvaluator);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Could not evaluate function Overload, see inner results for more details");
+        result.InnerResults.Should().ContainSingle();
+        result.InnerResults.Single().Status.Should().Be(ResultStatus.Error);
+        result.InnerResults.Single().ErrorMessage.Should().Be("Kaboom");
+    }
+
+    [Fact]
+    public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_But_Argument_Has_Non_Succesful_Result_Delegate()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Overload")
+            .AddArguments(new DelegateResultArgumentBuilder().WithDelegate(() => Result.Error<object?>("Kaboom")))
             .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
