@@ -1,7 +1,41 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
-public class FunctionCallContextTests
+public class FunctionCallContextTests : IDisposable
 {
+    private readonly IFunctionEvaluator _functionEvaluatorMock = Substitute.For<IFunctionEvaluator>();
+    private readonly IExpressionEvaluator _expressionEvaluatorMock = Substitute.For<IExpressionEvaluator>();
+    private readonly ServiceProvider _provider;
+    private readonly IServiceScope _scope;
+    private bool disposedValue;
+
+    public FunctionCallContextTests()
+    {
+        _functionEvaluatorMock
+            //<FunctionParseResult, IExpressionParser, object?>((result, _, _)
+            .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IExpressionEvaluator>(), Arg.Any<object?>())
+            .Returns(x => x.ArgAt<FunctionCall>(0).Name switch
+            {
+                "MyNestedFunction" => Result.Success<object?>("Evaluated result"),
+                "NumericFunction" => Result.Success<object?>(1),
+                "NumericFunctionAsString" => Result.Success<object?>("13"),
+                "LongFunction" => Result.Success<object?>(1L),
+                "LongFunctionAsString" => Result.Success<object?>("13L"),
+                "DecimalFunction" => Result.Success<object?>(1M),
+                "DecimalFunctionAsString" => Result.Success<object?>("13M"),
+                "DateTimeFunctionAsString" => Result.Success<object?>(DateTime.Today.ToString(CultureInfo.InvariantCulture)),
+                "DateTimeFunction" => Result.Success<object?>(DateTime.Today),
+                "BooleanFunction" => Result.Success<object?>(true),
+                "BooleanFunctionAsString" => Result.Success<object?>("true"),
+                "UnknownExpressionString" => Result.Success<object?>("%#$&"),
+                _ => Result.NotSupported<object?>("Only Parsed result function is supported")
+            });
+        _expressionEvaluatorMock
+            .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+            .Returns(Result.Success<object?>("some value"));
+        _provider = new ServiceCollection().AddParsers().BuildServiceProvider(true);
+        _scope = _provider.CreateScope();
+    }
+
     public class Constructor : FunctionCallContextTests
     {
         [Fact]
@@ -35,5 +69,162 @@ public class FunctionCallContextTests
             this.Invoking(_ => new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), null!, null))
                 .Should().Throw<ArgumentNullException>();
         }
+    }
+
+    public class GetArgumentValueResultNoDefaultValue : FunctionCallContextTests
+    {
+        [Fact]
+        public void Returns_Success_When_Argument_Is_Present_And_Constant()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithConstantArgument();
+
+            // Act
+            var result = sut.GetArgumentValueResult(0, "SomeName");
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be("some value");
+        }
+    }
+
+    public class GetArgumentValueResultDefaultValue : FunctionCallContextTests
+    {
+        [Fact]
+        public void Returns_Success_When_Argument_Is_Present_And_Constant()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithConstantArgument();
+
+            // Act
+            var result = sut.GetArgumentValueResult(0, "SomeName", "ignored default value");
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be("some value");
+        }
+    }
+
+    public class GetArgumentValueResultGenericNoDefaultValue : FunctionCallContextTests
+    {
+        [Fact]
+        public void Returns_Success_When_Argument_Is_Present_And_Constant()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithConstantArgument();
+
+            // Act
+            var result = sut.GetArgumentValueResult<string>(0, "SomeName");
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be("some value");
+        }
+    }
+
+    public class GetArgumentValueResultGenericDefaultValue : FunctionCallContextTests
+    {
+        [Fact]
+        public void Returns_Success_When_Argument_Is_Present_And_Constant()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithConstantArgument();
+
+            // Act
+            var result = sut.GetArgumentValueResult(0, "SomeName", "ignored default value");
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be("some value");
+        }
+    }
+
+    public class GetArgumentStringValueResultNoDefaultValue : FunctionCallContextTests
+    {
+        [Fact]
+        public void Returns_Success_When_Argument_Is_Present_And_Constant()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithConstantArgument();
+
+            // Act
+            var result = sut.GetArgumentStringValueResult(0, "SomeName");
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be("some value");
+        }
+    }
+
+    public class GetArgumentStringValueResultDefaultValue : FunctionCallContextTests
+    {
+        [Fact]
+        public void Returns_Success_When_Argument_Is_Present_And_Constant()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithConstantArgument();
+
+            // Act
+            var result = sut.GetArgumentStringValueResult(0, "SomeName", "ignored default value");
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be("some value");
+        }
+    }
+
+    public class GetArgumentInt32ValueResult : FunctionCallContextTests
+    {
+        [Fact]
+        public void Returns_Success_When_ArgumentValue_Is_Of_Type_Int32()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithFunctionArgument("NumericFunction");
+
+            // Act
+            var result = sut.GetArgumentInt32ValueResult(0, "SomeName");
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(1);
+        }
+    }
+
+    protected FunctionCallContext CreateFunctionCallContextWithoutArguments()
+        => new FunctionCallContext(new FunctionCallBuilder()
+            .WithName("Test")
+            .Build(), _functionEvaluatorMock, _expressionEvaluatorMock, CultureInfo.InvariantCulture, null);
+
+    protected FunctionCallContext CreateFunctionCallContextWithConstantArgument()
+        => new FunctionCallContext(new FunctionCallBuilder()
+            .WithName("Test")
+            .AddArguments(new ConstantArgumentBuilder().WithValue("some value"))
+            .Build(), _functionEvaluatorMock, _expressionEvaluatorMock, CultureInfo.InvariantCulture, null);
+
+    protected FunctionCallContext CreateFunctionCallContextWithFunctionArgument(string functionName)
+        => new FunctionCallContext(new FunctionCallBuilder()
+            .WithName("Test")
+            .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName(functionName)))
+            .Build(), _functionEvaluatorMock, _expressionEvaluatorMock, CultureInfo.InvariantCulture, null);
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                _scope.Dispose();
+                _provider.Dispose();
+            }
+
+            disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }
