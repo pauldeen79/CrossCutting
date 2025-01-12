@@ -97,16 +97,15 @@ public class ToUpperCaseFunction : ITypedFunction<string>
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return new ResultDictionaryBuilder()
-            .Add("Expression", () => context.GetArgumentValueResult<string>(0, "Expression"))
-            .Add("Culture", () => context.GetArgumentValueResult<CultureInfo?>(1, "Culture", null))
+            //note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult
+            .Add("Expression", () => context.GetArgumentStringValueResult(0, "Expression"))
+            .Add("Culture", () => context.GetArgumentValueResult<CultureInfo?>(1, "Culture", default))
             .Build()
             //example for OnFailure that has a custom result, with an inner result that contains the details.
             //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
             .OnFailure(error => Result.Error<object?>([error], "ToUpperCase evaluation failed, see inner results for details"))
             .OnSuccess(results =>
-                Result.Success(results["Culture"].GetValue() is null
-                    ? results.GetValue<string>("Expression").ToUpperInvariant()
-                    : results.GetValue<string>("Expression").ToUpper(results.GetValue<CultureInfo>("Culture"))));
+                Result.Success(results.GetValue<string>("Expression").ToUpper(results.TryGetValue("Culture", context.FormatProvider.ToCultureInfo()))));
     }
 
     public Result Validate(FunctionCallContext context)
