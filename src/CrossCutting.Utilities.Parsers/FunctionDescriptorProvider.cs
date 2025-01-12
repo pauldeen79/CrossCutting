@@ -12,20 +12,30 @@ public class FunctionDescriptorProvider : IFunctionDescriptorProvider
     }
 
     public IReadOnlyCollection<FunctionDescriptor> GetAll()
-        => _functions.Select(CreateFunction).ToList();
+        => _functions.SelectMany(CreateFunction).ToList();
 
-    private static FunctionDescriptor CreateFunction(IFunction source)
+    private static IEnumerable<FunctionDescriptor> CreateFunction(IFunction source)
     {
         var type = source.GetType();
 
-        return new FunctionDescriptorBuilder()
-            .WithName(type.GetCustomAttribute<FunctionNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
-            .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
-            .WithFunctionType(type)
-            .WithReturnValueType(type.GetCustomAttribute<FunctionResultTypeAttribute>()?.Type)
-            .AddArguments(type.GetCustomAttributes<FunctionArgumentAttribute>().Select(CreateFunctionArgument))
-            .AddResults(type.GetCustomAttributes<FunctionResultAttribute>().Select(CreateFunctionResult))
-            .Build();
+        if (source is IPassThroughFunction passThroughFunction)
+        {
+            foreach (var descriptor in passThroughFunction.GetDescriptors())
+            {
+                yield return descriptor;
+            }
+        }
+        else
+        {
+            yield return new FunctionDescriptorBuilder()
+                .WithName(type.GetCustomAttribute<FunctionNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
+                .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
+                .WithFunctionType(type)
+                .WithReturnValueType(type.GetCustomAttribute<FunctionResultTypeAttribute>()?.Type)
+                .AddArguments(type.GetCustomAttributes<FunctionArgumentAttribute>().Select(CreateFunctionArgument))
+                .AddResults(type.GetCustomAttributes<FunctionResultAttribute>().Select(CreateFunctionResult))
+                .Build();
+        }
     }
 
     private static FunctionDescriptorArgumentBuilder CreateFunctionArgument(FunctionArgumentAttribute attribute)

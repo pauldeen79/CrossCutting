@@ -1,4 +1,5 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+﻿
+namespace CrossCutting.Utilities.Parsers.Tests;
 
 public sealed class FunctionEvaluatorTests : IDisposable
 {
@@ -16,6 +17,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddSingleton<IFunction, OverloadTest1>()
             .AddSingleton<IFunction, OverloadTest2>()
             .AddSingleton<IFunction, OverloadTest3>()
+            .AddSingleton<IFunction, PassThroughFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -103,6 +105,23 @@ public sealed class FunctionEvaluatorTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
         result.ErrorMessage.Should().Be("Unknown function: WrongName");
+    }
+
+    [Fact]
+    public void Evaluate_Returns_Result_Of_First_PassThroughFunction_When_Available()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("PassThrough").Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(functionCall!, expressionEvaluator, default(object?));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("Custom value");
+
     }
 
     [Fact]
@@ -521,6 +540,29 @@ public sealed class FunctionEvaluatorTests : IDisposable
         public Result Validate(FunctionCallContext context)
         {
             return Result.Invalid("Custom validation message");
+        }
+    }
+
+    private sealed class PassThroughFunction : IPassThroughFunction
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            if (context.FunctionCall.Name != "PassThrough")
+            {
+                return Result.Continue<object?>();
+            }
+
+            return Result.Success<object?>("Custom value");
+        }
+
+        public IEnumerable<FunctionDescriptor> GetDescriptors()
+        {
+            yield return new FunctionDescriptorBuilder().WithName("PassThrough").WithFunctionType(GetType()).Build();
+        }
+
+        public Result Validate(FunctionCallContext context)
+        {
+            return Result.Success();
         }
     }
 
