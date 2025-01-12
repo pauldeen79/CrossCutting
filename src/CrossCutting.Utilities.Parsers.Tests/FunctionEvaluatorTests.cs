@@ -69,10 +69,13 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void Evaluate_Returns_Success_Failure_On_Non_Valid_Input()
+    public void Evaluate_Returns_Failure_On_Non_Valid_Input()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithName("MyFunction2").AddArguments(new EmptyArgumentBuilder()).Build();
+        var functionCall = new FunctionCallBuilder()
+            .WithName("MyFunction2")
+            .AddArguments(new EmptyArgumentBuilder())
+            .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
@@ -281,7 +284,10 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public void Validate_Returns_Invalid_Result_When_Overload_ArgumentCount_Is_Registered_Twice()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new EmptyArgumentBuilder(), new EmptyArgumentBuilder()).Build();
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Overload")
+            .AddArguments(new EmptyArgumentBuilder(), new EmptyArgumentBuilder())
+            .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
@@ -314,7 +320,10 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_But_Argument_Is_Of_Wrong_Type()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new ConstantArgumentBuilder().WithValue("13")).Build();
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Overload")
+            .AddArguments(new ConstantArgumentBuilder().WithValue("13"))
+            .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                            .Returns(Result.Success<object?>(13));
@@ -335,7 +344,10 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_But_Argument_Has_Non_Succesful_Result()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new ConstantResultArgumentBuilder().WithResult(Result.Error<object?>("Kaboom"))).Build();
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Overload")
+            .AddArguments(new ConstantResultArgumentBuilder().WithResult(Result.Error<object?>("Kaboom")))
+            .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                            .Returns(Result.Success<object?>(13));
@@ -356,7 +368,10 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_But_Required_Argument_Is_Missing()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new ConstantArgumentBuilder().WithValue("null")).Build();
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Overload")
+            .AddArguments(new ConstantArgumentBuilder().WithValue("null"))
+            .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                            .Returns(Result.Success<object?>(null));
@@ -377,7 +392,10 @@ public sealed class FunctionEvaluatorTests : IDisposable
     public void Validate_Returns_Non_Successful_Result_As_Invalid_From_Validation_When_Overload_ArgumentCount_Is_Correct_And_Registered_Once()
     {
         // Arrange
-        var functionCall = new FunctionCallBuilder().WithName("MyFunction2").AddArguments(new ConstantArgumentBuilder().WithValue("some value")).Build();
+        var functionCall = new FunctionCallBuilder()
+            .WithName("MyFunction2")
+            .AddArguments(new DelegateArgumentBuilder().WithDelegate(() => "some value"))
+            .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                            .Returns(Result.Success<object?>("some value"));
