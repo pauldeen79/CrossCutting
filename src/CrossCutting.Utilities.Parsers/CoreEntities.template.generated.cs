@@ -92,7 +92,12 @@ namespace CrossCutting.Utilities.Parsers
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Type Type
+        public System.Type FunctionType
+        {
+            get;
+        }
+
+        public System.Type? ReturnValueType
         {
             get;
         }
@@ -117,10 +122,11 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        public FunctionDescriptor(string name, System.Type type, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorResult> results)
+        public FunctionDescriptor(string name, System.Type functionType, System.Type? returnValueType, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument> arguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionDescriptorResult> results)
         {
             this.Name = name;
-            this.Type = type;
+            this.FunctionType = functionType;
+            this.ReturnValueType = returnValueType;
             this.Description = description;
             this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorArgument>(arguments);
             this.Results = results is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionDescriptorResult>(results);

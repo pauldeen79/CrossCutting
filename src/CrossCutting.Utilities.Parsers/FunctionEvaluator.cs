@@ -91,10 +91,10 @@ public class FunctionEvaluator : IFunctionEvaluator
 
     private Result<IFunction> GetFunctionByDescriptor(FunctionCallContext functionCallContext, FunctionDescriptor functionDescriptor)
     {
-        var function = _functions.FirstOrDefault(x => x.GetType() == functionDescriptor.Type);
+        var function = _functions.FirstOrDefault(x => x.GetType() == functionDescriptor.FunctionType);
         if (function is null)
         {
-            return Result.Error<IFunction>($"Could not find function with type name {functionDescriptor.Type.FullName}");
+            return Result.Error<IFunction>($"Could not find function with type name {functionDescriptor.FunctionType.FullName}");
         }
 
         var arguments = functionDescriptor.Arguments.Zip(functionCallContext.FunctionCall.Arguments, (descriptor, call) => new { DescriptorArgument = descriptor, CallArgument = call });

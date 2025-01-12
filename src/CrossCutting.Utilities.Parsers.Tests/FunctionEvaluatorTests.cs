@@ -358,7 +358,10 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionDescriptorProvider = Substitute.For<IFunctionDescriptorProvider>();
-        var functionDescriptor = new FunctionDescriptorBuilder().WithName("MyFunction").WithType(typeof(string)).Build();
+        var functionDescriptor = new FunctionDescriptorBuilder()
+            .WithName("MyFunction")
+            .WithFunctionType(typeof(string))
+            .Build();
         functionDescriptorProvider.GetAll().Returns([functionDescriptor]);
         var sut = new FunctionEvaluator(functionDescriptorProvider, Enumerable.Empty<IFunction>());
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();

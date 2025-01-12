@@ -380,7 +380,9 @@ namespace CrossCutting.Utilities.Parsers.Builders
     {
         private string _name;
 
-        private System.Type _type;
+        private System.Type _functionType;
+
+        private System.Type? _returnValueType;
 
         private string _description;
 
@@ -406,17 +408,31 @@ namespace CrossCutting.Utilities.Parsers.Builders
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Type Type
+        public System.Type FunctionType
         {
             get
             {
-                return _type;
+                return _functionType;
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Type>.Default.Equals(_type!, value!);
-                _type = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Type));
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Type>.Default.Equals(_functionType!, value!);
+                _functionType = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FunctionType));
+            }
+        }
+
+        public System.Type? ReturnValueType
+        {
+            get
+            {
+                return _returnValueType;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Type>.Default.Equals(_returnValueType!, value!);
+                _returnValueType = value;
+                if (hasChanged) HandlePropertyChanged(nameof(ReturnValueType));
             }
         }
 
@@ -473,7 +489,8 @@ namespace CrossCutting.Utilities.Parsers.Builders
             _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder>();
             _results = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorResultBuilder>();
             _name = source.Name;
-            _type = source.Type;
+            _functionType = source.FunctionType;
+            _returnValueType = source.ReturnValueType;
             _description = source.Description;
             if (source.Arguments is not null) foreach (var item in source.Arguments.Select(x => x.ToBuilder())) _arguments.Add(item);
             if (source.Results is not null) foreach (var item in source.Results.Select(x => x.ToBuilder())) _results.Add(item);
@@ -484,14 +501,14 @@ namespace CrossCutting.Utilities.Parsers.Builders
             _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder>();
             _results = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorResultBuilder>();
             _name = string.Empty;
-            _type = default(System.Type)!;
+            _functionType = default(System.Type)!;
             _description = string.Empty;
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.Parsers.FunctionDescriptor Build()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionDescriptor(Name, Type, Description, Arguments.Select(x => x.Build()!).ToList().AsReadOnly(), Results.Select(x => x.Build()!).ToList().AsReadOnly());
+            return new CrossCutting.Utilities.Parsers.FunctionDescriptor(Name, FunctionType, ReturnValueType, Description, Arguments.Select(x => x.Build()!).ToList().AsReadOnly(), Results.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         partial void SetDefaultValues();
@@ -529,10 +546,16 @@ namespace CrossCutting.Utilities.Parsers.Builders
             return this;
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorBuilder WithType(System.Type type)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorBuilder WithFunctionType(System.Type functionType)
         {
-            if (type is null) throw new System.ArgumentNullException(nameof(type));
-            Type = type;
+            if (functionType is null) throw new System.ArgumentNullException(nameof(functionType));
+            FunctionType = functionType;
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorBuilder WithReturnValueType(System.Type? returnValueType)
+        {
+            ReturnValueType = returnValueType;
             return this;
         }
 
