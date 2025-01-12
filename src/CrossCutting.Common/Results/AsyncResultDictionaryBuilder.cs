@@ -33,6 +33,28 @@ public  class AsyncResultDictionaryBuilder
 
         return results;
     }
+
+    public async Task<Dictionary<string, Result>> BuildParallel()
+    {
+        var results = new Dictionary<string, Result>();
+
+        var resultTasks = await Task.WhenAll(_resultset.Select(x => x.Value())).ConfigureAwait(false);
+        var index = 0;
+
+        foreach (var item in _resultset)
+        {
+            var result = resultTasks[index];
+            index++;
+            results.Add(item.Key, result);
+            // For now, make it fail fast just like TakeWhileWithFirstNonMatching: stop on first error (but it still gets added to the results, so you can simply check for the first error)
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        return results;
+    }
 }
 
 public class AsyncResultDictionaryBuilder<T>
@@ -52,6 +74,27 @@ public class AsyncResultDictionaryBuilder<T>
         foreach (var item in _resultset)
         {
             var result = await item.Value().ConfigureAwait(false);
+            results.Add(item.Key, result);
+            // For now, make it fail fast just like TakeWhileWithFirstNonMatching: stop on first error (but it still gets added to the results, so you can simply check for the first error)
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        return results;
+    }
+    public async Task<Dictionary<string, Result<T>>> BuildParallel()
+    {
+        var results = new Dictionary<string, Result<T>>();
+
+        var resultTasks = await Task.WhenAll(_resultset.Select(x => x.Value())).ConfigureAwait(false);
+        var index = 0;
+
+        foreach (var item in _resultset)
+        {
+            var result = resultTasks[index];
+            index++;
             results.Add(item.Key, result);
             // For now, make it fail fast just like TakeWhileWithFirstNonMatching: stop on first error (but it still gets added to the results, so you can simply check for the first error)
             if (!result.IsSuccessful())

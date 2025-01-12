@@ -105,6 +105,41 @@ public class AsyncResultDictionaryBuilderTests
                 result.Keys.Should().BeEquivalentTo("Test1", "Test2");
             }
         }
+
+        public class BuildParallel : NonGeneric
+        {
+            [Fact]
+            public async Task Builds_Results_Correctly()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+                sut.Add("Test1", NonGenericTask);
+                sut.Add("Test2", GenericTask);
+
+                // Act
+                var result = await sut.BuildParallel();
+
+                // Assert
+                result.Should().HaveCount(2);
+            }
+
+            [Fact]
+            public async Task Stops_On_First_NonSuccessful_Result()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+                sut.Add("Test1", NonGenericTask);
+                sut.Add("Test2", GenericErrorTask); // This one returns an error
+                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
+
+                // Act
+                var result = await sut.BuildParallel();
+
+                // Assert
+                result.Should().HaveCount(2);
+                result.Keys.Should().BeEquivalentTo("Test1", "Test2");
+            }
+        }
     }
 
     public class Generic : AsyncResultDictionaryBuilderTests
@@ -168,6 +203,41 @@ public class AsyncResultDictionaryBuilderTests
 
                 // Act
                 var result = await sut.Build();
+
+                // Assert
+                result.Should().HaveCount(2);
+                result.Keys.Should().BeEquivalentTo("Test1", "Test2");
+            }
+        }
+
+        public class BuildParallel : Generic
+        {
+            [Fact]
+            public async Task Builds_Results_Correctly()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+                sut.Add("Test1", GenericTask);
+                sut.Add("Test2", GenericTask);
+
+                // Act
+                var result = await sut.BuildParallel();
+
+                // Assert
+                result.Should().HaveCount(2);
+            }
+
+            [Fact]
+            public async Task Stops_On_First_NonSuccessful_Result()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+                sut.Add("Test1", GenericTask);
+                sut.Add("Test2", GenericErrorTask); // This one returns an error
+                sut.Add("Test3", GenericTask); // This one will not get returned because of the error
+
+                // Act
+                var result = await sut.BuildParallel();
 
                 // Assert
                 result.Should().HaveCount(2);
