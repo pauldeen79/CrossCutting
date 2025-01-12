@@ -14,33 +14,16 @@ public class VariableExpression : IExpression
     }
 
     public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
-    {
-        if (expression is null)
+        => expression?.StartsWith("$") switch
         {
-            return Result.Continue<object?>();
-        }
-
-        if (expression.StartsWith("$") && expression.Length > 1)
-        {
-            return _variableProcessor.Evaluate(expression.Substring(1), context);
-        }
-
-        return Result.Continue<object?>();
-    }
+            true when expression.Length > 1 => _variableProcessor.Evaluate(expression.Substring(1), context),
+            _ => Result.Continue<object?>()
+        };
 
     public Result Validate(string expression, IFormatProvider formatProvider, object? context)
-    {
-        if (expression is null)
+        => expression?.StartsWith("$") switch
         {
-            return Result.Continue();
-        }
-
-        if (expression.StartsWith("$") && expression.Length > 1)
-        {
-            return _variableProcessor.Validate(expression.Substring(1), context);
-        }
-
-        // Other values are ignored, so the expression parser knows whether an expression is supported
-        return Result.Continue();
-    }
+            true when expression.Length > 1 => _variableProcessor.Validate(expression.Substring(1), context),
+            _ => Result.Continue()
+        };
 }
