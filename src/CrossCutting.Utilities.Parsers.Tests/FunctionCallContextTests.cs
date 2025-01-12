@@ -97,7 +97,7 @@ public class FunctionCallContextTests : IDisposable
             var sut = CreateFunctionCallContextWithConstantArgument();
 
             // Act
-            var result = sut.GetArgumentValueResult(0, "SomeName", "ignored default value");
+            var result = sut.GetArgumentValueResult(0, "SomeName", (object?)"ignored default value");
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -187,6 +187,144 @@ public class FunctionCallContextTests : IDisposable
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
             result.Value.Should().Be(1);
+        }
+
+        [Fact]
+        public void Returns_Success_When_ArgumentValue_Is_Of_Type_Int32_Ignored_DefaultValue()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithFunctionArgument("NumericFunction");
+
+            // Act
+            var result = sut.GetArgumentInt32ValueResult(0, "SomeName", 13);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(1);
+        }
+    }
+
+    public class GetArgumentInt64ValueResult : FunctionCallContextTests
+    {
+        [Fact]
+        public void Returns_Success_When_ArgumentValue_Is_Of_Type_Int64()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithFunctionArgument("LongFunction");
+
+            // Act
+            var result = sut.GetArgumentInt64ValueResult(0, "SomeName");
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(1L);
+        }
+
+        [Fact]
+        public void Returns_Success_When_ArgumentValue_Is_Of_Type_Int64_Ignored_DefaultValue()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithFunctionArgument("LongFunction");
+
+            // Act
+            var result = sut.GetArgumentInt64ValueResult(0, "SomeName", 13);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(1L);
+        }
+    }
+
+    public class GetArgumentDecimalValueResult : FunctionCallContextTests
+    {
+        [Fact]
+        public void Returns_Success_When_ArgumentValue_Is_Of_Type_Decimal()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithFunctionArgument("DecimalFunction");
+
+            // Act
+            var result = sut.GetArgumentDecimalValueResult(0, "SomeName");
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(1L);
+        }
+
+        [Fact]
+        public void Returns_Success_When_ArgumentValue_Is_Of_Type_Decimal_Ignored_DefaultValue()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithFunctionArgument("DecimalFunction");
+
+            // Act
+            var result = sut.GetArgumentDecimalValueResult(0, "SomeName", 3.4M);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(1L);
+        }
+    }
+
+    public class GetArgumentBooleanValueResult : FunctionCallContextTests
+    {
+        [Fact]
+        public void GetArgumentBooleanValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_Boolean()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithFunctionArgument("BooleanFunction");
+
+            // Act
+            var result = sut.GetArgumentBooleanValueResult(0, "SomeName");
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(true);
+        }
+
+        [Fact]
+        public void GetArgumentBooleanValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_Boolean_Ignored_DefaultValue()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithFunctionArgument("BooleanFunction");
+
+            // Act
+            var result = sut.GetArgumentBooleanValueResult(0, "SomeName", false);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(true);
+        }
+    }
+
+    public class GetArgumentDateTimeValueResult : FunctionCallContextTests
+    {
+        [Fact]
+        public void GetArgumentDateTimeValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_DateTime()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithFunctionArgument("DateTimeFunction");
+
+            // Act
+            var result = sut.GetArgumentDateTimeValueResult(0, "SomeName");
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(DateTime.Today);
+        }
+
+        [Fact]
+        public void GetArgumentDateTimeValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_DateTime_Ignored_DefautValue()
+        {
+            // Arrange
+            var sut = CreateFunctionCallContextWithFunctionArgument("DateTimeFunction");
+
+            // Act
+            var result = sut.GetArgumentDateTimeValueResult(0, "SomeName", DateTime.Today.AddDays(-1));
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(DateTime.Today);
         }
     }
 
