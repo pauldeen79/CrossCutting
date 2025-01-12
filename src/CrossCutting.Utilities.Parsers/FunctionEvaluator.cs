@@ -119,7 +119,7 @@ public class FunctionEvaluator : IFunctionEvaluator
 
         if (errors.Count > 0)
         {
-            return Result.Invalid<IFunction>($"Validation for function {functionCallContext.FunctionCall.Name} failed, see inner results for more details", errors);
+            return Result.Invalid<IFunction>($"Could not evaluate function {functionCallContext.FunctionCall.Name}, see inner results for more details", errors);
         }
 
         return Result.Success(function);

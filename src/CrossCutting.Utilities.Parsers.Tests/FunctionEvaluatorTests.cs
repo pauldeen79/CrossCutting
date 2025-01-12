@@ -81,7 +81,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Validation for function MyFunction2 failed, see inner results for more details");
+        result.ErrorMessage.Should().Be("Could not evaluate function MyFunction2, see inner results for more details");
         result.InnerResults.Should().ContainSingle();
         result.InnerResults.Single().ErrorMessage.Should().Be("Argument Argument1 is required");
     }
@@ -325,10 +325,31 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Validation for function Overload failed, see inner results for more details");
+        result.ErrorMessage.Should().Be("Could not evaluate function Overload, see inner results for more details");
         result.InnerResults.Should().ContainSingle();
         result.InnerResults.Single().Status.Should().Be(ResultStatus.Invalid);
         result.InnerResults.Single().ErrorMessage.Should().Be("Argument Argument1 is not of type System.String");
+    }
+
+    [Fact]
+    public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_But_Argument_Has_Non_Succesful_Result()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new ConstantResultArgumentBuilder().WithResult(Result.Error<object?>("Kaboom"))).Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                           .Returns(Result.Success<object?>(13));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall!, expressionEvaluator);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Could not evaluate function Overload, see inner results for more details");
+        result.InnerResults.Should().ContainSingle();
+        result.InnerResults.Single().Status.Should().Be(ResultStatus.Error);
+        result.InnerResults.Single().ErrorMessage.Should().Be("Kaboom");
     }
 
     [Fact]
@@ -346,7 +367,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Validation for function Overload failed, see inner results for more details");
+        result.ErrorMessage.Should().Be("Could not evaluate function Overload, see inner results for more details");
         result.InnerResults.Should().ContainSingle();
         result.InnerResults.Single().Status.Should().Be(ResultStatus.Invalid);
         result.InnerResults.Single().ErrorMessage.Should().Be("Argument Argument1 is required");
