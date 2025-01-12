@@ -10,7 +10,7 @@ public sealed class FunctionParserTests : IDisposable
     {
         _provider = new ServiceCollection()
             .AddParsers()
-            .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
+            .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -26,10 +26,10 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
-        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
+        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
+        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
     }
 
     [Fact]
@@ -43,10 +43,10 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(2);
-        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
-        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a,b", "c");
+        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
+        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a,b", "c");
     }
 
     [Fact]
@@ -60,10 +60,10 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(2);
-        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
-        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("  a,b  ", "c");
+        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
+        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("  a,b  ", "c");
     }
 
     [Fact]
@@ -77,10 +77,10 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
-        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("Hello, replaced name!", "b", "c");
+        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
+        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("Hello, replaced name!", "b", "c");
     }
 
     [Fact]
@@ -94,10 +94,10 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
-        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("  Hello, replaced name!  ", "b", "c");
+        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
+        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("  Hello, replaced name!  ", "b", "c");
     }
 
     [Fact]
@@ -111,7 +111,7 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().BeEmpty();
     }
 
@@ -126,9 +126,9 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().AllBe(string.Empty);
+        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().AllBe(string.Empty);
     }
 
     [Fact]
@@ -142,10 +142,10 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
-        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("FN1(a)", "FN2(b)", "FN3(c)");
+        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
+        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("FN1(a)", "FN2(b)", "FN3(c)");
     }
 
     [Fact]
@@ -159,11 +159,11 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value!.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b");
-        result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.FunctionName).Should().BeEquivalentTo("MYNESTEDFUNCTION");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("c", "d", "e");
+        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b");
+        result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.Name).Should().BeEquivalentTo("MYNESTEDFUNCTION");
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("c", "d", "e");
     }
 
     [Fact]
@@ -177,17 +177,17 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value!.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b");
-        result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.FunctionName).Should().BeEquivalentTo("MYNESTEDFUNCTION");
+        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b");
+        result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.Name).Should().BeEquivalentTo("MYNESTEDFUNCTION");
         result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Should().HaveCount(3);
         result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Should().AllBeOfType<FunctionArgument>();
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().Select(x => x.Function.FunctionName).Should().BeEquivalentTo("SUB1", "SUB1", "SUB1");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(LiteralArgument), nameof(LiteralArgument), nameof(FunctionArgument));
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.FunctionName.Should().Be("SUB2");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(LiteralArgument));
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.OfType<LiteralArgument>().First().Value.Should().Be("e");
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().Select(x => x.Function.Name).Should().BeEquivalentTo("SUB1", "SUB1", "SUB1");
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(ConstantArgument), nameof(ConstantArgument), nameof(FunctionArgument));
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Name.Should().Be("SUB2");
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(ConstantArgument));
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.OfType<ConstantArgument>().First().Value.Should().Be("e");
     }
 
     [Fact]
@@ -274,7 +274,7 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Input cannot be null or empty");
+        result.ErrorMessage.Should().Be("No function found");
     }
 
     [Fact]
@@ -350,10 +350,10 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
-        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
+        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
+        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
     }
 
     [Fact]
@@ -367,10 +367,10 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
-        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
+        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
+        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
     }
 
     [Fact]
@@ -384,10 +384,10 @@ public sealed class FunctionParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.FunctionName.Should().Be("MYFUNCTION");
+        result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<LiteralArgument>();
-        result.Value.Arguments.OfType<LiteralArgument>().Select(x => x.Value).Should().BeEquivalentTo("a ", " b ", " c");
+        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
+        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a ", " b ", " c");
     }
 
     public void Dispose()
@@ -402,8 +402,8 @@ public sealed class FunctionParserTests : IDisposable
     {
         public int Order => 1;
 
-        public Result<FunctionParseResultArgument> Process(string stringArgument, IReadOnlyCollection<FunctionParseResult> results, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
-            => Result.Error<FunctionParseResultArgument>("Kaboom");
+        public Result<FunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, IFormatProvider formatProvider, IFormattableStringParser? formattableStringParser, object? context)
+            => Result.Error<FunctionCallArgument>("Kaboom");
     }
 
     private sealed class ErrorNameProcessor : IFunctionParserNameProcessor
@@ -413,13 +413,18 @@ public sealed class FunctionParserTests : IDisposable
         public Result<string> Process(string input) => Result.Error<string>("Kaboom");
     }
 
-    private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
+    private sealed class MyPlaceholderProcessor : IPlaceholder
     {
         public int Order => 10;
 
-        public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
-                ? Result.Success<FormattableStringParserResult>(ReplacedValue)
-                : Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}");
+                ? Result.Success<GenericFormattableString>(ReplacedValue)
+                : Result.Error<GenericFormattableString>($"Unsupported placeholder name: {value}");
+
+        public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+            => value == "Name"
+                ? Result.Success()
+                : Result.Error($"Unsupported placeholder name: {value}");
     }
 }

@@ -2,5 +2,5 @@
 
 public interface IFunctionParser
 {
-    Result<FunctionParseResult> Parse(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser);
+    Result<FunctionCall> Parse(string function, IFormatProvider formatProvider, IFormattableStringParser? formattableStringParser, object? context);
 }

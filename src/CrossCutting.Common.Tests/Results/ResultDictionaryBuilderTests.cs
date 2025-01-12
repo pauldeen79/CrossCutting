@@ -1,0 +1,314 @@
+﻿namespace CrossCutting.Common.Tests.Results;
+
+public class ResultDictionaryBuilderTests
+{
+    protected static Result NonGenericDelegate() => Result.Success();
+    protected static Result<string> GenericDelegate() => Result.Success(string.Empty);
+    protected static Result NonGenericErrorDelegate() => Result.Error("Kaboom");
+    protected static Result<string> GenericErrorDelegate() => Result.Error<string>("Kaboom");
+
+    protected static IEnumerable<Result> NonGenericRangeDelegate() => [Result.Success(), Result.Success()];
+    protected static IEnumerable<Result<string>> GenericRangeDelegate() => [Result.Success(string.Empty), Result.Success(string.Empty)];
+    protected static IEnumerable<Result> NonGenericErrorRangeDelegate() => [Result.Success(), Result.Error("Kaboom"), Result.Success()];
+    protected static IEnumerable<Result<string>> GenericErrorRangeDelegate() => [Result.Success(string.Empty), Result.Error<string>("Kaboom"), Result.Success(string.Empty)];
+
+    public class NonGeneric : ResultDictionaryBuilderTests
+    {
+        public class Add : NonGeneric
+        {
+            [Fact]
+            public void Adds_Non_Generic_Result_Delegate_Successfully()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder();
+
+                // Act
+                sut.Add("Test", NonGenericDelegate);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Should().ContainSingle();
+                dictionary.First().Key.Should().Be("Test");
+            }
+
+            [Fact]
+            public void Adds_Generic_Result_Delegate_Successfully()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder();
+
+                // Act
+                sut.Add("Test", GenericDelegate);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Should().ContainSingle();
+                dictionary.First().Key.Should().Be("Test");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder();
+                sut.Add("Test", NonGenericDelegate);
+
+                // Act & Assert
+                sut.Invoking(x => x.Add("Test", NonGenericDelegate))
+                   .Should().Throw<ArgumentException>()
+                   .WithMessage("An item with the same key has already been added. Key: Test");
+            }
+        }
+
+        public class AddRange : NonGeneric
+        {
+            [Fact]
+            public void Adds_Non_Generic_Result_Delegate_Successfully()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder();
+
+                // Act
+                sut.AddRange("Test.{0}", NonGenericRangeDelegate);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Should().HaveCount(2);
+                dictionary.First().Key.Should().Be("Test.0");
+                dictionary.Last().Key.Should().Be("Test.1");
+            }
+
+            [Fact]
+            public void Adds_Generic_Result_Delegate_Successfully()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder();
+
+                // Act
+                sut.AddRange("Test.{0}", GenericRangeDelegate);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Should().HaveCount(2);
+                dictionary.First().Key.Should().Be("Test.0");
+                dictionary.Last().Key.Should().Be("Test.1");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder();
+                sut.AddRange("Test.{0}", NonGenericRangeDelegate);
+
+                // Act & Assert
+                sut.Invoking(x => x.AddRange("Test.{0}", NonGenericRangeDelegate))
+                   .Should().Throw<ArgumentException>()
+                   .WithMessage("An item with the same key has already been added. Key: Test.0");
+            }
+
+            [Fact]
+            public void Stops_On_First_NonSuccessful_Result()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder();
+
+                // Act
+                sut.AddRange("Test.{0}", NonGenericErrorRangeDelegate);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Should().HaveCount(2);
+                dictionary.First().Key.Should().Be("Test.0");
+                dictionary.First().Value.Status.Should().Be(ResultStatus.Ok);
+                dictionary.Last().Key.Should().Be("Test.1");
+                dictionary.Last().Value.Status.Should().Be(ResultStatus.Error);
+            }
+        }
+
+        public class Build : NonGeneric
+        {
+            [Fact]
+            public void Builds_Results_Correctly()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder();
+                sut.Add("Test1", NonGenericDelegate);
+                sut.Add("Test2", GenericDelegate);
+
+                // Act
+                var result = sut.Build();
+
+                // Assert
+                result.Should().HaveCount(2);
+            }
+
+            [Fact]
+            public void Stops_On_First_NonSuccessful_Result()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder();
+                sut.Add("Test1", NonGenericDelegate);
+                sut.Add("Test2", GenericErrorDelegate); // This one returns an error
+                sut.Add("Test3", GenericDelegate); // This one will not get executed because of the error
+
+                // Act
+                var result = sut.Build();
+
+                // Assert
+                result.Should().HaveCount(2);
+                result.Keys.Should().BeEquivalentTo("Test1", "Test2");
+            }
+        }
+    }
+
+    public class Generic : ResultDictionaryBuilderTests
+    {
+        public class Add : Generic
+        {
+            [Fact]
+            public void Adds_Non_Generic_Result_Delegate_Successfully()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+
+                // Act
+                sut.Add("Test", NonGenericDelegate);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Should().ContainSingle();
+                dictionary.First().Key.Should().Be("Test");
+            }
+
+            [Fact]
+            public void Adds_Generic_Result_Delegate_Successfully()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+
+                // Act
+                sut.Add("Test", GenericDelegate);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Should().ContainSingle();
+                dictionary.First().Key.Should().Be("Test");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+                sut.Add("Test", GenericDelegate);
+
+                // Act & Assert
+                sut.Invoking(x => x.Add("Test", GenericDelegate))
+                   .Should().Throw<ArgumentException>()
+                   .WithMessage("An item with the same key has already been added. Key: Test");
+            }
+        }
+
+        public class AddRange : Generic
+        {
+            [Fact]
+            public void Adds_Non_Generic_Result_Delegate_Successfully()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+
+                // Act
+                sut.AddRange("Test.{0}", NonGenericRangeDelegate);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Should().HaveCount(2);
+                dictionary.First().Key.Should().Be("Test.0");
+                dictionary.Last().Key.Should().Be("Test.1");
+            }
+
+            [Fact]
+            public void Adds_Generic_Result_Delegate_Successfully()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+
+                // Act
+                sut.AddRange("Test.{0}", GenericRangeDelegate);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Should().HaveCount(2);
+                dictionary.First().Key.Should().Be("Test.0");
+                dictionary.Last().Key.Should().Be("Test.1");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+                sut.AddRange("Test.{0}", GenericRangeDelegate);
+
+                // Act & Assert
+                sut.Invoking(x => x.AddRange("Test.{0}", GenericRangeDelegate))
+                   .Should().Throw<ArgumentException>()
+                   .WithMessage("An item with the same key has already been added. Key: Test.0");
+            }
+
+            [Fact]
+            public void Stops_On_First_NonSuccessful_Result()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+
+                // Act
+                sut.AddRange("Test.{0}", GenericErrorRangeDelegate);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Should().HaveCount(2);
+                dictionary.First().Key.Should().Be("Test.0");
+                dictionary.First().Value.Status.Should().Be(ResultStatus.Ok);
+                dictionary.Last().Key.Should().Be("Test.1");
+                dictionary.Last().Value.Status.Should().Be(ResultStatus.Error);
+            }
+        }
+
+        public class Build : Generic
+        {
+            [Fact]
+            public void Builds_Results_Correctly()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+                sut.Add("Test1", NonGenericDelegate);
+                sut.Add("Test2", GenericDelegate);
+
+                // Act
+                var result = sut.Build();
+
+                // Assert
+                result.Should().HaveCount(2);
+            }
+
+            [Fact]
+            public void Stops_On_First_NonSuccessful_Result()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+                sut.Add("Test1", NonGenericDelegate);
+                sut.Add("Test2", GenericErrorDelegate); // This one returns an error
+                sut.Add("Test3", GenericDelegate); // This one will not get executed because of the error
+
+                // Act
+                var result = sut.Build();
+
+                // Assert
+                result.Should().HaveCount(2);
+                result.Keys.Should().BeEquivalentTo("Test1", "Test2");
+            }
+        }
+    }
+}

@@ -2216,14 +2216,14 @@ public class ResultTests
     public void TryCast_Returns_Invalid_With_Default_ErrorMessage_When_Value_Could_Not_Be_Cast()
     {
         // Arrange
-        var sut = Result.Success<object?>("test");
+        var sut = Result.Success("test");
 
         // Act
         var result = sut.TryCast<bool>();
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not cast System.Object to System.Boolean");
+        result.ErrorMessage.Should().Be("Could not cast System.String to System.Boolean");
     }
 
     [Fact]
@@ -2281,6 +2281,20 @@ public class ResultTests
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().BeTrue();
+    }
+
+    [Fact]
+    public void TryCast_Returns_Success_With_Default_Value_When_Value_Is_Null()
+    {
+        // Arrange
+        var sut = Result.Success<object?>(null);
+
+        // Act
+        var result = sut.TryCast<bool?>();
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeNull();
     }
 
     [Fact]
@@ -2405,13 +2419,13 @@ public class ResultTests
     }
 
     [Fact]
-    public void TransformValue_Can_TransformValue_The_Value_On_Success()
+    public void Transform_Can_Transform_The_Value_On_Success_With_Value_Delegate()
     {
         // Arrange
         var source = Result.Success(1);
 
         // Act
-        var result = source.TransformValue(x => x.ToString());
+        var result = source.Transform(x => x.ToString());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -2419,18 +2433,74 @@ public class ResultTests
     }
 
     [Fact]
-    public void TransformValue_Returns_Same_Error_On_Failure()
+    public void Transform_Returns_Same_Error_On_Failure_With_Value_Delegate()
     {
         // Arrange
         var source = Result.Error<int>("Kaboom!");
 
         // Act
-        var result = source.TransformValue(x => x.ToString());
+        var result = source.Transform(x => x.ToString());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
         result.ErrorMessage.Should().Be("Kaboom!");
         result.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Transform_Can_Transform_The_Value_On_Success_With_Typed_Result_Delegate()
+    {
+        // Arrange
+        var source = Result.Success(1);
+
+        // Act
+        var result = source.Transform(x => Result.Success(x.ToString()));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("1");
+    }
+
+    [Fact]
+    public void Transform_Returns_Same_Error_On_Failure_With_Typed_Result_Delegate()
+    {
+        // Arrange
+        var source = Result.Error<int>("Kaboom!");
+
+        // Act
+        var result = source.Transform(x => Result.Success(x.ToString()));
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom!");
+        result.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Transform_Can_Transform_The_Value_On_Success_With_Untyped_Result_Delegate()
+    {
+        // Arrange
+        var source = Result.Success(1);
+
+        // Act
+        var result = source.Transform(_ => Result.Success());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Transform_Returns_Same_Error_On_Failure_With_Untyped_Result_Delegate()
+    {
+        // Arrange
+        var source = Result.Error<int>("Kaboom!");
+
+        // Act
+        var result = source.Transform(_ => Result.Success());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Kaboom!");
     }
 
     [Fact]
@@ -3160,5 +3230,116 @@ public class ResultTests
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
         success.Should().BeFalse();
+    }
+
+    [Fact]
+    public void TryCastValueAs_Returns_Cast_Value_When_Cast_Is_Possible()
+    {
+        // Arrange
+        Result sut = Result.Success("Hello world!");
+
+        // Act
+        var value = sut.TryCastValueAs<string>();
+
+        // Assert
+        value.Should().Be("Hello world!");
+    }
+
+    [Fact]
+    public void TryCastValueAs_Returns_Default_Value_From_ValueType_When_Cast_Is_Not_Possible()
+    {
+        // Arrange
+        Result sut = Result.Success("Hello world!");
+
+        // Act
+        var value = sut.TryCastValueAs<int>();
+
+        // Assert
+        value.Should().Be(0);
+    }
+
+    [Fact]
+    public void TryCastValueAs_Returns_Default_Value_From_Nullable_ValueType_When_Cast_Is_Not_Possible()
+    {
+        // Arrange
+        Result sut = Result.Success("Hello world!");
+
+        // Act
+        var value = sut.TryCastValueAs<int?>();
+
+        // Assert
+        value.Should().BeNull();
+    }
+
+    [Fact]
+    public void TryCastValueAs_Returns_Provided_Default_Value_From_Nullable_ValueType_When_Cast_Is_Not_Possible()
+    {
+        // Arrange
+        Result sut = Result.Success("Hello world!");
+
+        // Act
+        var value = sut.TryCastValueAs<int?>(13);
+
+        // Assert
+        value.Should().Be(13);
+    }
+
+    [Fact]
+    public void CastValueAs_Returns_Cast_Value_When_Cast_Is_Possible()
+    {
+        // Arrange
+        Result sut = Result.Success("Hello world!");
+
+        // Act
+        var value = sut.CastValueAs<string>();
+
+        // Assert
+        value.Should().Be("Hello world!");
+    }
+
+    [Fact]
+    public void CastValueAs_Throws_When_Cast_Is_Not_Possible()
+    {
+        // Arrange
+        Result sut = Result.Success("Hello world!");
+
+        // Act
+        sut.Invoking(x => x.CastValueAs<int>())
+           .Should().Throw<InvalidCastException>();
+    }
+
+    [Fact]
+    public void CastValueAs_Throws_When_Value_Is_Null()
+    {
+        // Arrange
+        Result sut = Result.Success<string?>(default);
+
+        // Act & Assert
+        sut.Invoking(x => x.CastValueAs<int>())
+           .Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void CastValueAs_Does_Not_Throw_When_Value_Is_Null_But_Type_Is_Nullable_ValueType()
+    {
+        // Arrange
+        Result sut = Result.Success<string?>(default);
+
+        // Act & Assert
+        sut.Invoking(x => x.CastValueAs<int?>())
+           .Should().NotThrow<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void CastValueAs_Throws_When_Value_Is_Null_But_Type_Is_Nullable_ReferenceType()
+    {
+        // Arrange
+        var sut = Result.Success<string>(default!);
+
+        // Act & Assert
+        sut.Invoking(x => x.CastValueAs<string?>())
+           .Should().Throw<InvalidOperationException>();
+
+        // Note that if you don't know if the value is null, you can simply use TryCast<string> because this will return a nullable string.
     }
 }

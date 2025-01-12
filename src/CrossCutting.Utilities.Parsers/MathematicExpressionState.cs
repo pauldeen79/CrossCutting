@@ -14,9 +14,11 @@ public class MathematicExpressionState
     public IReadOnlyCollection<int> PreviousIndexes { get; private set; }
     public string LeftPart { get; private set; }
     public Result<object?> LeftPartResult { get; private set; }
+    public Result LeftPartValidationResult { get; private set; }
     public IReadOnlyCollection<int> NextIndexes { get; private set; }
     public string RightPart { get; private set; }
     public Result<object?> RightPartResult { get; private set; }
+    public Result RightPartValidationResult { get; private set; }
 
     public MathematicExpressionState(
         string input,
@@ -39,9 +41,11 @@ public class MathematicExpressionState
         PreviousIndexes = [];
         LeftPart = string.Empty;
         LeftPartResult = Result.NoContent<object?>();
+        LeftPartValidationResult = Result.NoContent();
         NextIndexes = [];
         RightPart = string.Empty;
         RightPartResult = Result.NoContent<object?>();
+        RightPartValidationResult = Result.NoContent();
     }
 
     internal void SetPosition(IGrouping<int, AggregatorBase> aggregators)
@@ -55,14 +59,14 @@ public class MathematicExpressionState
             : -1;
     }
 
-    internal void SetPreviousIndexes(int[] aggregatorPositions, IExpressionParser expressionParser)
+    internal void SetPreviousIndexes(int[] aggregatorPositions, IExpressionEvaluator expressionParser)
     {
         PreviousIndexes = aggregatorPositions;
         LeftPart = GetLeftPart();
         LeftPartResult = GetPartResult(LeftPart, expressionParser);
     }
 
-    internal void SetNextIndexes(int[] aggregatorPositions, IExpressionParser expressionParser)
+    internal void SetNextIndexes(int[] aggregatorPositions, IExpressionEvaluator expressionParser)
     {
         NextIndexes = aggregatorPositions;
         RightPart = GetRightPart();
@@ -92,7 +96,7 @@ public class MathematicExpressionState
                     ? PreviousIndexes.First() + 1
                     : 0
             ),
-            FormattableString.Invariant($"{MathematicExpressionParser.TemporaryDelimiter}{Results.Count}{MathematicExpressionParser.TemporaryDelimiter}"),
+            FormattableString.Invariant($"{MathematicExpressionEvaluator.TemporaryDelimiter}{Results.Count}{MathematicExpressionEvaluator.TemporaryDelimiter}"),
                 NextIndexes.Count > 0
                     ? Remainder.Substring(NextIndexes.First())
                     : string.Empty
@@ -110,8 +114,8 @@ public class MathematicExpressionState
             ? Remainder.Substring(Position + 1, NextIndexes.First() - Position - 1).Trim()
             : Remainder.Substring(Position + 1).Trim();
 
-    private Result<object?> GetPartResult(string part, IExpressionParser expressionParser)
-        => part.StartsWith(MathematicExpressionParser.TemporaryDelimiter) && part.EndsWith(MathematicExpressionParser.TemporaryDelimiter)
-            ? Results.ElementAt(int.Parse(part.Substring(MathematicExpressionParser.TemporaryDelimiter.Length, part.Length - (MathematicExpressionParser.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture))
-            : expressionParser.Parse(part, FormatProvider, Context);
+    private Result<object?> GetPartResult(string part, IExpressionEvaluator expressionParser)
+        => part.StartsWith(MathematicExpressionEvaluator.TemporaryDelimiter) && part.EndsWith(MathematicExpressionEvaluator.TemporaryDelimiter)
+            ? Results.ElementAt(int.Parse(part.Substring(MathematicExpressionEvaluator.TemporaryDelimiter.Length, part.Length - (MathematicExpressionEvaluator.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture))
+            : expressionParser.Evaluate(part, FormatProvider, Context);
 }

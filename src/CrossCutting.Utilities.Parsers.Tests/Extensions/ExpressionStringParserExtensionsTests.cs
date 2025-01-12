@@ -2,7 +2,7 @@
 
 public class ExpressionStringParserExtensionsTests
 {
-    private IExpressionStringParser SutMock { get; } = Substitute.For<IExpressionStringParser>();
+    private IExpressionStringEvaluator SutMock { get; } = Substitute.For<IExpressionStringEvaluator>();
     private IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
     private const string Input = "Some input";
     private object Context { get; } = new object();
@@ -12,29 +12,59 @@ public class ExpressionStringParserExtensionsTests
     public void Parse_Without_Context_And_FormattableStringParser_Gets_Processed_Correctly()
     {
         // Act
-        _ = SutMock.Parse(Input, FormatProvider);
+        _ = SutMock.Evaluate(Input, FormatProvider);
 
         // Assert
-        SutMock.Received().Parse(Input, FormatProvider, null, null);
+        SutMock.Received().Evaluate(Input, FormatProvider, null, null);
     }
 
     [Fact]
     public void Parse_Without_Context_Gets_Processed_Correctly()
     {
         // Act
-        _ = SutMock.Parse(Input, FormatProvider, FormattableStringParserMock);
+        _ = SutMock.Evaluate(Input, FormatProvider, FormattableStringParserMock);
 
         // Assert
-        SutMock.Received().Parse(Input, FormatProvider, null, FormattableStringParserMock);
+        SutMock.Received().Evaluate(Input, FormatProvider, null, FormattableStringParserMock);
     }
 
     [Fact]
     public void Parse_Without_FormattableStringParser_Gets_Processed_Correctly()
     {
         // Act
-        _ = SutMock.Parse(Input, FormatProvider, Context);
+        _ = SutMock.Evaluate(Input, FormatProvider, Context);
 
         // Assert
-        SutMock.Received().Parse(Input, FormatProvider, Context, null);
+        SutMock.Received().Evaluate(Input, FormatProvider, Context, null);
+    }
+
+    [Fact]
+    public void Validate_Without_Context_And_FormattableStringParser_Gets_Processed_Correctly()
+    {
+        // Act
+        _ = SutMock.Validate(Input, FormatProvider);
+
+        // Assert
+        SutMock.Received().Validate(Input, FormatProvider, null, null);
+    }
+
+    [Fact]
+    public void Validate_Without_Context_Gets_Processed_Correctly()
+    {
+        // Act
+        _ = SutMock.Validate(Input, FormatProvider, FormattableStringParserMock);
+
+        // Assert
+        SutMock.Received().Validate(Input, FormatProvider, null, FormattableStringParserMock);
+    }
+
+    [Fact]
+    public void Validate_Without_FormattableStringParser_Gets_Processed_Correctly()
+    {
+        // Act
+        _ = SutMock.Validate(Input, FormatProvider, Context);
+
+        // Assert
+        SutMock.Received().Validate(Input, FormatProvider, Context, null);
     }
 }

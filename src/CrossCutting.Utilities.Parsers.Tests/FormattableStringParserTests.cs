@@ -11,7 +11,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Parse_Returns_Success_On_Null_Input()
     {
         // Arrange
-        var input = default(string?);
+        var input = default(string);
         var sut = CreateSut();
 
         // Act
@@ -90,7 +90,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotSupported);
+        result.Status.Should().Be(ResultStatus.Invalid);
         result.ErrorMessage.Should().Be("Unknown variable found: unknownVariable");
     }
 
@@ -107,7 +107,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValueOrThrow().Format.Should().Be(input + input); //need to duplicate because of FormatException on FormattableStringParserResult
+        result.GetValueOrThrow().Format.Should().Be(input + input); //need to duplicate because of FormatException on FormattableString
     }
 
     [Fact]
@@ -144,6 +144,143 @@ public sealed class FormattableStringParserTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.ToString().Should().Be(expectedValue);
+    }
+    [Fact]
+    public void Validate_Returns_Success_On_Null_Input()
+    {
+        // Arrange
+        var input = default(string);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input!, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Validate_Returns_Success_On_Empty_Input()
+    {
+        // Arrange
+        var input = string.Empty;
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input!, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Validate_Throws_On_Null_Settings()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act & Assert
+        sut.Invoking(x => x.Validate("some input", settings: null!))
+           .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+    }
+
+    [Fact]
+    public void Validate_Returns_Success_When_Using_Nested_Open_Signs()
+    {
+        // Arrange
+        var input = "Hello {Name {nested}} you are welcome";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Validate_Returns_Invalid_When_Open_Sign_Is_Missing()
+    {
+        // Arrange
+        var input = "}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
+    [Fact]
+    public void Validate_Returns_Invalid_When_Variable_Is_Unknown()
+    {
+        // Arrange
+        var input = "{$unknownVariable}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Validation failed, see inner results for details");
+        result.InnerResults.Single().ErrorMessage.Should().Be("Unknown variable found: unknownVariable");
+    }
+
+    [Fact]
+    public void Validate_Returns_Success_When_Close_Sign_Is_Missing()
+    {
+        // Arrange
+        var input = "{";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Validate_Returns_Invalid_When_Not_Successful()
+    {
+        // Arrange
+        var input = "{Unsupported placeholder}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Validation failed, see inner results for details");
+        result.InnerResults.Single().ErrorMessage.Should().Be("Unsupported placeholder name: Unsupported placeholder");
+    }
+
+    [Theory,
+        InlineData("Hello {Name}!"),
+        InlineData("Hello {Context}!"),
+        InlineData("Hello {{Name}}!"),
+        InlineData("Data without accolades"),
+        InlineData("public class Bla {{ /* implementation goes here */ }}"),
+        InlineData("public class Bla {{ {Name} }}")]
+    public void Validate_Returns_Success_On_Valid_Input(string input)
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(input, CultureInfo.InvariantCulture, "[value from context]");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
     }
 
     [Fact]
@@ -282,6 +419,52 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Validate_Works_With_ExpressionString_Containing_Nested_Function()
+    {
+        // Arrange
+        const string Input = "Hello {ToUpperCase(MyFunction())}!";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(Input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Parse_Works_With_ExpressionString_Using_EmptyArgument()
+    {
+        // Arrange
+        const string Input = "Hello {ToUpperCase(null)}!";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(Input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value!.ToString().Should().Be("Hello !");
+    }
+
+    [Fact]
+    public void Validate_Works_With_ExpressionString_Using_EmptyArgument()
+    {
+        // Arrange
+        const string Input = "Hello {ToUpperCase(null)}!";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(Input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
     public void Parse_Works_With_ExpressionString()
     {
         // Arrange
@@ -343,6 +526,38 @@ public sealed class FormattableStringParserTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
         result.ErrorMessage.Should().Be("Unknown placeholder in value: Unknown placeholder");
+    }
+
+    [Fact]
+    public void Validate_Works_With_Placeholder_That_Returns_Another_Placeholder()
+    {
+        // Arrange
+        const string Input = "Hello {ReplaceWithPlaceholder}!";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(Input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Validate_Returns_Invalid_On_Unknown_Placeholder()
+    {
+        // Arrange
+        const string Input = "{Unknown placeholder}";
+        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(Input, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Validation failed, see inner results for details");
+        result.InnerResults.Single().ErrorMessage.Should().Be("Unknown placeholder in value: Unknown placeholder");
     }
 
     [Fact]
@@ -493,7 +708,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Can_Implicitly_Convert_Null_ParseStringResult_To_String()
     {
         // Arrange
-        var parsedResult = default(FormattableStringParserResult);
+        var parsedResult = default(GenericFormattableString);
 
         // Act
         string result = parsedResult!;
@@ -506,7 +721,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void FromString_Creates_New_Instance_From_String_Correclty()
     {
         // Act
-        var instance = FormattableStringParserResult.FromString("hello world");
+        var instance = GenericFormattableString.FromString("hello world");
 
         // Assert
         instance.Format.Should().Be("{0}");
@@ -517,7 +732,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void FromString_Creates_New_Instance_From_String_With_Braces_Correclty()
     {
         // Act
-        var instance = FormattableStringParserResult.FromString("hello {world}");
+        var instance = GenericFormattableString.FromString("hello {world}");
 
         // Assert
         instance.Format.Should().Be("{0}");
@@ -528,7 +743,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void ToString_Override_Returns_Correct_Result()
     {
         // Arrange
-        FormattableStringParserResult result = "Hello world!";
+        GenericFormattableString result = "Hello world!";
 
         // Act
         var stringResult = result.ToString();
@@ -541,7 +756,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Implicit_Operator_Returns_Correct_Result()
     {
         // Arrange
-        FormattableStringParserResult result = "Hello world!";
+        GenericFormattableString result = "Hello world!";
 
         // Act
         string stringResult = result;
@@ -560,67 +775,84 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         _variable = Substitute.For<IVariable>();
 
-        _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "variable"
+        _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "variable"
             ? Result.Success<object?>(1)
             : Result.Continue<object?>());
 
         _provider = new ServiceCollection()
             .AddParsers()
-            .AddSingleton<IPlaceholderProcessor, MyPlaceholderProcessor>()
-            .AddSingleton<IFunctionResultParser, MyFunctionResultParser>()
-            .AddSingleton<IFunctionResultParser, ToUpperCaseResultParser>()
+            .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
+            .AddSingleton<IFunction, MyFunction>()
+            .AddSingleton<IFunction, ToUppercaseFunction>()
             .AddSingleton(_variable)
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
         return _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>();
     }
 
-    private sealed class MyPlaceholderProcessor : IPlaceholderProcessor
+    private sealed class MyPlaceholderProcessor : IPlaceholder
     {
         public int Order => 10;
 
-        public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
         {
             return value switch
             {
-                "Name" => Result.Success<FormattableStringParserResult>(ReplacedValue),
-                "Context" => Result.Success<FormattableStringParserResult>(context.ToStringWithDefault()),
-                "Unsupported placeholder" => Result.Error<FormattableStringParserResult>($"Unsupported placeholder name: {value}"),
-                "ReplaceWithPlaceholder" => Result.Success<FormattableStringParserResult>("{Name}"),
-                _ => Result.Continue<FormattableStringParserResult>()
+                "Name" => Result.Success<GenericFormattableString>(ReplacedValue),
+                "Context" => Result.Success<GenericFormattableString>(context.ToStringWithDefault()),
+                "Unsupported placeholder" => Result.Error<GenericFormattableString>($"Unsupported placeholder name: {value}"),
+                "ReplaceWithPlaceholder" => Result.Success<GenericFormattableString>("{Name}"),
+                _ => Result.Continue<GenericFormattableString>()
+            };
+        }
+
+        public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        {
+            return value switch
+            {
+                "Name" => Result.Success(),
+                "Context" => Result.Success(),
+                "Unsupported placeholder" => Result.Error($"Unsupported placeholder name: {value}"),
+                "ReplaceWithPlaceholder" => Result.Success(),
+                _ => Result.Continue()
             };
         }
     }
 
-    private sealed class MyFunctionResultParser : IFunctionResultParser
+    [FunctionName("MyFunction")]
+    private sealed class MyFunction : IFunction
     {
-        public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Evaluate(FunctionCallContext context)
         {
-            if (functionParseResult.FunctionName != "MyFunction")
-            {
-                return Result.Continue<object?>();
-            }
-
             return Result.Success<object?>("function result");
+        }
+
+        public Result Validate(FunctionCallContext context)
+        {
+            // Aparently, this function does not care about the given arguments
+            return Result.Success();
         }
     }
 
-    private sealed class ToUpperCaseResultParser : IFunctionResultParser
+    [FunctionArgument("expression", typeof(string), false)]
+    private sealed class ToUppercaseFunction : IFunction
     {
-        public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Evaluate(FunctionCallContext context)
         {
-            if (functionParseResult.FunctionName != "ToUpperCase")
-            {
-                return Result.Continue<object?>();
-            }
-
-            var valueResult = functionParseResult.Arguments.First().GetValueResult(context, evaluator, parser, functionParseResult.FormatProvider);
+            var valueResult = context.FunctionCall.Arguments.First().GetValueResult(context);
             if (!valueResult.IsSuccessful())
             {
                 return valueResult;
             }
 
             return Result.Success<object?>(valueResult.Value.ToStringWithDefault().ToUpperInvariant());
+        }
+
+        public Result Validate(FunctionCallContext context)
+        {
+            // No need to check for argument count, the FunctionDescriptor will take care of this
+
+            return Result.Success();
         }
     }
 }

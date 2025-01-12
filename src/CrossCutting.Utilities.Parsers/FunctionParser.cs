@@ -18,41 +18,41 @@ public class FunctionParser : IFunctionParser
         _argumentProcessors = argumentProcessors;
     }
 
-    public Result<FunctionParseResult> Parse(string input, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    public Result<FunctionCall> Parse(string function, IFormatProvider formatProvider, IFormattableStringParser? formattableStringParser, object? context)
     {
         ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
 
-        if (string.IsNullOrEmpty(input))
+        if (string.IsNullOrEmpty(function))
         {
-            return Result.NotFound<FunctionParseResult>("Input cannot be null or empty");
+            return Result.NotFound<FunctionCall>("No function found");
         }
 
-        if (input.Contains(TemporaryDelimiter))
+        if (function.Contains(TemporaryDelimiter))
         {
-            return Result.NotSupported<FunctionParseResult>($"Input cannot contain {TemporaryDelimiter}, as this is used internally for formatting");
+            return Result.NotSupported<FunctionCall>($"Input cannot contain {TemporaryDelimiter}, as this is used internally for formatting");
         }
 
-        var results = new List<FunctionParseResult>();
-        var remainder = input;
+        var results = new List<FunctionCall>();
+        var remainder = function;
         do
         {
             var quoteMap = BuildQuoteMap(remainder);
             var closeIndex = remainder.Select((character, index) => new { character, index }).FirstOrDefault(x => x.character == ')' && !IsInQuoteMap(x.index, quoteMap))?.index;
             if (closeIndex is null)
             {
-                return Result.NotFound<FunctionParseResult>("Missing close bracket");
+                return Result.NotFound<FunctionCall>("Missing close bracket");
             }
 
             var openIndex = remainder.Select((character, index) => new { character, index }).LastOrDefault(x => x.index < closeIndex.Value && x.character == '(' && !IsInQuoteMap(x.index, quoteMap))?.index;
             if (openIndex is null)
             {
-                return Result.NotFound<FunctionParseResult>("Missing open bracket");
+                return Result.NotFound<FunctionCall>("Missing open bracket");
             }
 
             var nameResult = FindFunctionName(remainder.Substring(0, openIndex.Value));
             if (!nameResult.IsSuccessful())
             {
-                return Result.FromExistingResult<FunctionParseResult>(nameResult);
+                return Result.FromExistingResult<FunctionCall>(nameResult);
             }
 
             var stringArguments = remainder.Substring(openIndex.Value + 1, closeIndex.Value - openIndex.Value - 1);
@@ -60,8 +60,8 @@ public class FunctionParser : IFunctionParser
                 .SplitDelimited(',', '\"', trimItems: true, leaveTextQualifier: true)
                 .Select(RemoveStringQualifiers);
 
-            var arguments = new List<FunctionParseResultArgument>();
-            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, formatProvider, context, formattableStringParser);
+            var arguments = new List<FunctionCallArgument>();
+            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, formatProvider, formattableStringParser, context);
             if (!addArgumentsResult.IsSuccessful())
             {
                 return addArgumentsResult;
@@ -69,12 +69,12 @@ public class FunctionParser : IFunctionParser
 
             var found = $"{nameResult.Value}({stringArguments})";
             remainder = remainder.Replace(found, FormattableString.Invariant($"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"));
-            results.Add(new FunctionParseResult(nameResult.Value!.Trim(), arguments, formatProvider, context));
+            results.Add(new FunctionCall(nameResult.Value!.Trim(), arguments));
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
         return remainder.EndsWith(TemporaryDelimiter)
             ? Result.Success(results[results.Count - 1])
-            : Result.NotFound<FunctionParseResult>("Input has additional characters after last close bracket");
+            : Result.NotFound<FunctionCall>("Input has additional characters after last close bracket");
     }
 
     private static string RemoveStringQualifiers(string value)
@@ -119,36 +119,38 @@ public class FunctionParser : IFunctionParser
         }
     }
 
-    private Result<FunctionParseResult> AddArguments(List<FunctionParseResult> results, IEnumerable<string> stringArgumentsSplit, List<FunctionParseResultArgument> arguments, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    private Result<FunctionCall> AddArguments(List<FunctionCall> results, IEnumerable<string> argumentsSplit, List<FunctionCallArgument> arguments, IFormatProvider formatProvider, IFormattableStringParser? formattableStringParser, object? context)
     {
-        foreach (var stringArgument in stringArgumentsSplit)
+        foreach (var argument in argumentsSplit)
         {
-            if (stringArgument.StartsWith(TemporaryDelimiter) && stringArgument.EndsWith(TemporaryDelimiter))
+            if (argument.StartsWith(TemporaryDelimiter) && argument.EndsWith(TemporaryDelimiter))
             {
-                arguments.Add(new FunctionArgument(results[int.Parse(stringArgument.Substring(TemporaryDelimiter.Length, stringArgument.Length - (TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]));
+                arguments.Add(new FunctionArgument(results[int.Parse(argument.Substring(TemporaryDelimiter.Length, argument.Length - (TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]));
                 continue;
             }
 
             var processValueResult = _argumentProcessors
                 .OrderBy(x => x.Order)
-                .Select(x => x.Process(stringArgument, results, formatProvider, context, formattableStringParser))
+                .Select(x => x.Process(argument, results, formatProvider, formattableStringParser, context))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue);
             if (processValueResult is not null)
             {
                 if (!processValueResult.IsSuccessful())
                 {
-                    return Result.FromExistingResult<FunctionParseResult>(processValueResult);
+                    return Result.FromExistingResult<FunctionCall>(processValueResult);
                 }
 
                 arguments.Add(processValueResult.Value!);
             }
             else
             {
-                arguments.Add(new LiteralArgument(stringArgument));
+                arguments.Add(string.IsNullOrEmpty(argument)
+                    ? new EmptyArgument()
+                    : new ConstantArgument(argument));
             }
         }
 
-        return Result.Continue<FunctionParseResult>();
+        return Result.Continue<FunctionCall>();
     }
 
     private Result<string> FindFunctionName(string input)

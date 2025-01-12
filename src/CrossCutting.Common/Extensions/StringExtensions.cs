@@ -358,4 +358,17 @@ public static class StringExtensions
         => string.IsNullOrEmpty(value)
             ? value
             : string.Concat(value.Substring(0, 1).ToLower(cultureInfo), value.Substring(1));
+
+    public static string ReplaceSuffix(this string instance, string find, string replace, StringComparison stringComparison)
+    {
+        find = find.IsNotNull(nameof(find));
+
+        var index = instance.LastIndexOf(find, stringComparison);
+        if (index == -1 || index < instance.Length - find.Length)
+        {
+            return instance;
+        }
+
+        return instance.Substring(0, instance.Length - find.Length) + replace;
+    }
 }

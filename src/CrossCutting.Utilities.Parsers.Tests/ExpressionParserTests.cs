@@ -26,7 +26,7 @@ public class ExpressionParserTests : IDisposable
             var input = "true";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -40,7 +40,7 @@ public class ExpressionParserTests : IDisposable
             var input = "false";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -54,7 +54,7 @@ public class ExpressionParserTests : IDisposable
             var input = "null";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -68,7 +68,7 @@ public class ExpressionParserTests : IDisposable
             var input = "context";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, "context value");
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, "context value");
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -82,7 +82,7 @@ public class ExpressionParserTests : IDisposable
             var input = "1.5";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -96,7 +96,7 @@ public class ExpressionParserTests : IDisposable
             var input = "1M";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -110,7 +110,7 @@ public class ExpressionParserTests : IDisposable
             var input = "2";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -124,7 +124,7 @@ public class ExpressionParserTests : IDisposable
             var input = "3147483647";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -138,7 +138,7 @@ public class ExpressionParserTests : IDisposable
             var input = "13L";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -152,7 +152,7 @@ public class ExpressionParserTests : IDisposable
             var input = "\"Hello world!\"";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -166,7 +166,7 @@ public class ExpressionParserTests : IDisposable
             var input = "01/02/2019";
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -178,10 +178,10 @@ public class ExpressionParserTests : IDisposable
         {
             // Arrange
             var input = "$classname";
-            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
+            _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -194,12 +194,12 @@ public class ExpressionParserTests : IDisposable
             // Arrange
             var input = "$classname";
             var context = new MyContext("HelloWorldClass");
-            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "classname"
+            _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "classname"
                 ? Result.Success<object?>((x.ArgAt<object?>(1) as MyContext)?.ClassName)
                 : Result.Continue<object?>());
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, context);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -207,29 +207,29 @@ public class ExpressionParserTests : IDisposable
         }
 
         [Fact]
-        public void Parse_Returns_NotSupported_On_Empty_String()
+        public void Returns_NotSupported_On_Empty_String()
         {
             // Arrange
             var input = "";
-            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
+            _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Unknown expression type found in fragment: ");
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Value is required");
         }
 
         [Fact]
-        public void Parse_Returns_NotSupported_On_DollarSign()
+        public void Returns_NotSupported_On_DollarSign()
         {
             // Arrange
             var input = "$";
-            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
+            _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.Should().Be(ResultStatus.NotSupported);
@@ -237,27 +237,246 @@ public class ExpressionParserTests : IDisposable
         }
 
         [Fact]
-        public void Parse_Returns_NotSupported_On_Unknown_Variable()
+        public void Returns_Invalid_On_Unknown_Variable()
         {
             // Arrange
             var input = "$unknownvariable";
-            _variable.Process(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Continue<object?>());
+            _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Continue<object?>());
 
             // Act
-            var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
+            result.Status.Should().Be(ResultStatus.Invalid);
             result.ErrorMessage.Should().Be("Unknown variable found: unknownvariable");
-        }
-
-        private sealed class MyContext(string className)
-        {
-            public string ClassName { get; } = className;
         }
     }
 
-    private IExpressionParser CreateSut() => _scope.ServiceProvider.GetRequiredService<IExpressionParser>();
+    public class Validate : ExpressionParserTests
+    {
+        [Fact]
+        public void Validates_true_Correctly()
+        {
+            // Arrange
+            var input = "true";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Validates_false_Correctly()
+        {
+            // Arrange
+            var input = "false";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Validates_null_Correctly()
+        {
+            // Arrange
+            var input = "null";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Validates_context_Correctly()
+        {
+            // Arrange
+            var input = "context";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, "context value");
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Validates_decimal_Correctly()
+        {
+            // Arrange
+            var input = "1.5";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Validates_forced_decimal_Correctly()
+        {
+            // Arrange
+            var input = "1M";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Parses_int_Correctly()
+        {
+            // Arrange
+            var input = "2";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().BeEquivalentTo(2);
+        }
+
+        [Fact]
+        public void Validates_long_Correctly()
+        {
+            // Arrange
+            var input = "3147483647";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Validates_forced_long_Correctly()
+        {
+            // Arrange
+            var input = "13L";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Parses_string_Correctly()
+        {
+            // Arrange
+            var input = "\"Hello world!\"";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().BeEquivalentTo("Hello world!");
+        }
+
+        [Fact]
+        public void Validates_DateTime_Correctly()
+        {
+            // Arrange
+            var input = "01/02/2019";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Validates_Variable_Correctly()
+        {
+            // Arrange
+            var input = "$classname";
+            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success());
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Validates_Variable_Correctly_Using_Context()
+        {
+            // Arrange
+            var input = "$classname";
+            var context = new MyContext("HelloWorldClass");
+            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "classname"
+                ? Result.Success()
+                : Result.Continue());
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Invalid_On_Empty_String()
+        {
+            // Arrange
+            var input = "";
+            _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Value is required");
+        }
+
+        [Fact]
+        public void Returns_Invalid_On_DollarSign()
+        {
+            // Arrange
+            var input = "$";
+            _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("HelloWorld"));
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Unknown expression type found in fragment: $");
+        }
+
+        [Fact]
+        public void Returns_Invalid_On_Unknown_Variable()
+        {
+            // Arrange
+            var input = "$unknownvariable";
+            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Continue());
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Unknown variable found: unknownvariable");
+        }
+    }
+
+    private IExpressionEvaluator CreateSut() => _scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>();
 
     protected virtual void Dispose(bool disposing)
     {
@@ -278,5 +497,10 @@ public class ExpressionParserTests : IDisposable
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
+    }
+
+    private sealed class MyContext(string className)
+    {
+        public string ClassName { get; } = className;
     }
 }

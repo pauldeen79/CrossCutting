@@ -2,39 +2,46 @@
 
 public class FormattableStringParser : IFormattableStringParser
 {
-    private readonly IEnumerable<IPlaceholderProcessor> _processors;
+    private readonly IEnumerable<IPlaceholder> _placeholders;
 
     private const string TemporaryDelimiter = "\uE002";
 
-    public FormattableStringParser(IEnumerable<IPlaceholderProcessor> processors)
+    public FormattableStringParser(IEnumerable<IPlaceholder> placeholders)
     {
-        processors = processors.IsNotNull(nameof(processors));
+        placeholders = placeholders.IsNotNull(nameof(placeholders));
 
-        _processors = processors;
+        _placeholders = placeholders;
     }
 
-    public Result<FormattableStringParserResult> Parse(string input, FormattableStringParserSettings settings, object? context)
+    public Result<GenericFormattableString> Parse(string format, FormattableStringParserSettings settings, object? context)
     {
         settings = settings.IsNotNull(nameof(settings));
 
-        return ParseRecursive(input, settings, context, 0);
+        return ProcessRecursive(format, settings, context, false, 0);
     }
 
-    private Result<FormattableStringParserResult> ParseRecursive(string input, FormattableStringParserSettings settings, object? context, int currentRecursionLevel)
+    public Result Validate(string format, FormattableStringParserSettings settings, object? context)
     {
-        if (string.IsNullOrEmpty(input))
+        settings = settings.IsNotNull(nameof(settings));
+
+        return ProcessRecursive(format, settings, context, true, 0);
+    }
+
+    private Result<GenericFormattableString> ProcessRecursive(string format, FormattableStringParserSettings settings, object? context, bool validateOnly, int currentRecursionLevel)
+    {
+        if (string.IsNullOrEmpty(format))
         {
-            return Result.Success(new FormattableStringParserResult(input ?? string.Empty, []));
+            return Result.Success(new GenericFormattableString(string.Empty, []));
         }
 
         // Handle escaped markers (e.g., {{ -> {)
         var escapedStart = settings.PlaceholderStart + settings.PlaceholderStart;
         var escapedEnd = settings.PlaceholderEnd + settings.PlaceholderEnd;
 
-        var remainder = input.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
+        var remainder = format.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
                              .Replace(escapedEnd, "\uE001");  // Temporarily replace escaped end marker
 
-        var results = new List<Result<FormattableStringParserResult>>();
+        var results = new List<Result<GenericFormattableString>>();
         do
         {
             var closeIndex = remainder.LastIndexOf(settings.PlaceholderEnd);
@@ -46,74 +53,102 @@ public class FormattableStringParser : IFormattableStringParser
             var openIndex = remainder.LastIndexOf(settings.PlaceholderStart);
             if (openIndex == -1)
             {
-                return Result.Invalid<FormattableStringParserResult>($"PlaceholderStart sign '{settings.PlaceholderStart}' is missing");
+                return Result.Invalid<GenericFormattableString>($"PlaceholderStart sign '{settings.PlaceholderStart}' is missing");
             }
 
             var placeholder = remainder.Substring(openIndex + settings.PlaceholderStart.Length, closeIndex - openIndex - settings.PlaceholderStart.Length);
             var found = $"{settings.PlaceholderStart}{placeholder}{settings.PlaceholderEnd}";
             remainder = remainder.Replace(found, $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}");
-            var placeholderResult = _processors
-                .OrderBy(x => x.Order)
-                .Select(x => x.Process(placeholder, settings.FormatProvider, context, this))
-                .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                    ?? Result.Invalid<FormattableStringParserResult>($"Unknown placeholder in value: {placeholder}");
+            var placeholderResult = ProcessOnPlaceholders(settings, context, validateOnly, placeholder);
 
-            if (!placeholderResult.IsSuccessful())
-            {
-                return placeholderResult;
-            }
-
-            placeholderResult = ProcessRecurse(input, settings, context, placeholderResult, currentRecursionLevel + 1);
-            if (!placeholderResult.IsSuccessful())
+            placeholderResult = CombineResults(placeholderResult, validateOnly, () => ProcessRecursive(format, settings, context, placeholderResult, validateOnly, currentRecursionLevel + 1));
+            if (!placeholderResult.IsSuccessful() && !validateOnly)
             {
                 return placeholderResult;
             }
 
             results.Add(placeholderResult);
-        } while (remainder.IndexOf(settings.PlaceholderStart) > -1 || remainder.IndexOf(settings.PlaceholderEnd) > -1);
+        } while (NeedToRepeat(settings, remainder));
 
         if (settings.EscapeBraces)
         {
-            // Fix FormatException when using ToString on FormattableStringParserResult
+            // Fix FormatException when using ToString on FormattableString
             remainder = remainder.Replace("{", "{{")
                                  .Replace("}", "}}");
         }
 
         // Restore escaped markers
-        // First, fix invalid format string {bla} to {{bla}} when escaped, else the ToString operation on FormattableStringParserResult fails
-        var start = settings.PlaceholderStart.StartsWith("{") ? settings.PlaceholderStart + settings.PlaceholderStart : settings.PlaceholderStart;
-        var end = settings.PlaceholderEnd.StartsWith("}") ? settings.PlaceholderEnd + settings.PlaceholderEnd : settings.PlaceholderEnd;
+        // First, fix invalid format string {bla} to {{bla}} when escaped, else the ToString operation on FormattableString fails
+        var start = settings.PlaceholderStart.StartsWith("{")
+            ? settings.PlaceholderStart + settings.PlaceholderStart
+            : settings.PlaceholderStart;
+        var end = settings.PlaceholderEnd.StartsWith("}")
+            ? settings.PlaceholderEnd + settings.PlaceholderEnd
+            : settings.PlaceholderEnd;
+
         remainder = remainder.Replace("\uE000", start)
                              .Replace("\uE001", end);
 
-        for (var i = 0; i < results.Count; i++)
-        {
-            remainder = remainder.Replace($"{TemporaryDelimiter}{i}{TemporaryDelimiter}", $"{{{i}}}");
-        }
+        remainder = ReplaceTemporaryDelimiters(remainder, results);
 
-        return Result.Success(new FormattableStringParserResult(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
+        return validateOnly
+            ? Result.Aggregate(results, Result.Success(new GenericFormattableString(string.Empty, [])), validationResults => Result.Invalid<GenericFormattableString>("Validation failed, see inner results for details", validationResults))
+            : Result.Success(new GenericFormattableString(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
     }
 
-    private Result<FormattableStringParserResult> ProcessRecurse(string input, FormattableStringParserSettings settings, object? context, Result<FormattableStringParserResult> placeholderResult, int currentRecursionLevel)
+    private Result<GenericFormattableString> ProcessRecursive(string format, FormattableStringParserSettings settings, object? context, Result<GenericFormattableString> placeholderResult, bool validateOnly, int currentRecursionLevel)
     {
         if (placeholderResult.Value?.Format == "{0}"
             && placeholderResult.Value.ArgumentCount == 1
             && placeholderResult.Value.GetArgument(0) is string placeholderResultValue
-            && NeedRecurse(placeholderResultValue, settings, input)) //compare with input to prevent infinitive loop
+            && NeedRecurse(format, settings, placeholderResultValue)) //compare with input to prevent infinitive loop
         {
             if (currentRecursionLevel >= settings.MaximumRecursion)
             {
-                return Result.Error<FormattableStringParserResult>($"Maximum of {settings.MaximumRecursion} recursions is reached");
+                return Result.Error<GenericFormattableString>($"Maximum of {settings.MaximumRecursion} recursions is reached");
             }
 
-            placeholderResult = ParseRecursive(placeholderResultValue, settings, context, currentRecursionLevel);
+            placeholderResult = ProcessRecursive(placeholderResultValue, settings, context, validateOnly, currentRecursionLevel);
         }
 
         return placeholderResult;
     }
 
-    private static bool NeedRecurse(string placeholderResultValue, FormattableStringParserSettings settings, string input)
+    private Result<GenericFormattableString> ProcessOnPlaceholders(FormattableStringParserSettings settings, object? context, bool validateOnly, string value)
+        => _placeholders
+            .OrderBy(x => x.Order)
+            .Select(placeholder => validateOnly
+                ? Result.FromExistingResult<GenericFormattableString>(placeholder.Validate(value, settings.FormatProvider, context, this))
+                : placeholder.Evaluate(value, settings.FormatProvider, context, this))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.Invalid<GenericFormattableString>($"Unknown placeholder in value: {value}");
+
+    private static string ReplaceTemporaryDelimiters(string remainder, List<Result<GenericFormattableString>> results)
+    {
+        for (var i = 0; i < results.Count; i++)
+        {
+            remainder = remainder.Replace($"{TemporaryDelimiter}{i}{TemporaryDelimiter}", $"{{{i}}}");
+        }
+
+        return remainder;
+    }
+
+    private static Result<GenericFormattableString> CombineResults(Result<GenericFormattableString> placeholderResult, bool validateOnly, Func<Result<GenericFormattableString>> dlg)
+    {
+        if (!placeholderResult.IsSuccessful() && !validateOnly)
+        {
+            return placeholderResult;
+        }
+
+        return dlg();
+    }
+
+    private static bool NeedToRepeat(FormattableStringParserSettings settings, string remainder)
+        => remainder.IndexOf(settings.PlaceholderStart) > -1
+        || remainder.IndexOf(settings.PlaceholderEnd) > -1;
+
+    private static bool NeedRecurse(string format, FormattableStringParserSettings settings, string placeholderResultValue)
         => placeholderResultValue.Contains(settings.PlaceholderStart)
             && placeholderResultValue.Contains(settings.PlaceholderEnd)
-            && placeholderResultValue != input;
+            && placeholderResultValue != format;
 }

@@ -2,12 +2,12 @@
 
 public static class FunctionParserExtensions
 {
-    public static Result<FunctionParseResult> Parse(this IFunctionParser instance, string input, IFormatProvider formatProvider)
+    public static Result<FunctionCall> Parse(this IFunctionParser instance, string input, IFormatProvider formatProvider)
         => instance.Parse(input, formatProvider, null, null);
 
-    public static Result<FunctionParseResult> Parse(this IFunctionParser instance, string input, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser)
-        => instance.Parse(input, formatProvider, null, formattableStringParser);
+    public static Result<FunctionCall> Parse(this IFunctionParser instance, string input, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser)
+        => instance.Parse(input, formatProvider, formattableStringParser, null);
 
-    public static Result<FunctionParseResult> Parse(this IFunctionParser instance, string input, IFormatProvider formatProvider, object? context)
-        => instance.Parse(input, formatProvider, context, null);
+    public static Result<FunctionCall> Parse(this IFunctionParser instance, string input, IFormatProvider formatProvider, object? context)
+        => instance.Parse(input, formatProvider, null, context);
 }
