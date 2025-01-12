@@ -10,6 +10,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         _provider = new ServiceCollection()
             .AddParsers()
             .AddSingleton<IFunction, MyFunction>()
+            .AddSingleton<IFunction, MyTypedFunction>()
             .AddSingleton<IFunction, MyFunction2>()
             .AddSingleton<IFunction, ErrorFunction>()
             .AddSingleton<IFunction, OverloadTest1>()
@@ -134,10 +135,26 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
-    public void EvaluateTyped_Returns_Success_Result_On_Valid_Input()
+    public void EvaluateTyped_Returns_Success_Result_On_Valid_Input_Untyped()
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.EvaluateTyped<string>(functionCall!, expressionEvaluator, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("function result");
+    }
+
+    [Fact]
+    public void EvaluateTyped_Returns_Success_Result_On_Valid_Input_Typed()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("MyTypedFunction").Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
@@ -402,6 +419,25 @@ public sealed class FunctionEvaluatorTests : IDisposable
         public Result<object?> Evaluate(FunctionCallContext context)
         {
             return Result.Success<object?>("function result");
+        }
+
+        public Result Validate(FunctionCallContext context)
+        {
+            return Result.Success();
+        }
+    }
+
+    [FunctionName("MyTypedFunction")]
+    private sealed class MyTypedFunction : ITypedFunction<string>
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            return Result.Success<object?>("function result");
+        }
+
+        public Result<string> EvaluateTyped(FunctionCallContext context)
+        {
+            return Result.Success<string>("function result");
         }
 
         public Result Validate(FunctionCallContext context)
