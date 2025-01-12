@@ -14,10 +14,10 @@ public class ExpressionFrameworkNewTests
         var functionCall = new ToLowerCaseExpressionBuilder()
             .WithExpression(new TypedConstantExpressionBuilder<string>().WithValue("Hello world!"))
             .BuildFunctionCall();
-        var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = sut.Validate(request);
+        var result = sut.Validate(context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -34,10 +34,10 @@ public class ExpressionFrameworkNewTests
         var functionCall = new ToLowerCaseExpressionBuilder()
             .WithExpression(new TypedConstantExpressionBuilder<string>().WithValue("Hello world!"))
             .BuildFunctionCall();
-        var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = sut.Evaluate(request);
+        var result = sut.Evaluate(context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);

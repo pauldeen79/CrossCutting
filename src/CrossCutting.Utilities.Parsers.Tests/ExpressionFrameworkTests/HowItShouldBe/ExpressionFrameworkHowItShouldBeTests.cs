@@ -12,10 +12,10 @@ public class ExpressionFrameworkHowItShouldBeTests
         var functionCall = new ToUpperCaseFunctionCallBuilder()
             .WithExpression("Hello world!")
             .Build();
-        var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = sut.Validate(request);
+        var result = sut.Validate(context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -31,10 +31,10 @@ public class ExpressionFrameworkHowItShouldBeTests
         var functionCall = new ToUpperCaseFunctionCallBuilder()
             .WithExpression("Hello world!")
             .Build();
-        var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = sut.Evaluate(request);
+        var result = sut.Evaluate(context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -52,10 +52,10 @@ public class ExpressionFrameworkHowItShouldBeTests
         var functionCall = new ToUpperCaseFunctionCallBuilder()
             .WithExpression("Hello world!")
             .Build();
-        var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = sut.EvaluateTyped(request);
+        var result = sut.EvaluateTyped(context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);

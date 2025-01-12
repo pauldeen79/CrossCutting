@@ -11,10 +11,10 @@ public sealed class ExpressionFrameworkTest
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new FunctionCallBuilder().WithName("ToUpperCase").AddArguments(new ConstantArgumentBuilder().WithValue("Hello world!")).Build();
-        var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = sut.Parse(request);
+        var result = sut.Parse(context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -30,10 +30,10 @@ public sealed class ExpressionFrameworkTest
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new FunctionCallBuilder().WithName("ToUpperCase").AddArguments(new ConstantArgumentBuilder().WithValue("Hello world!")).Build();
-        var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = sut.Validate(request);
+        var result = sut.Validate(context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -48,10 +48,10 @@ public sealed class ExpressionFrameworkTest
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new FunctionCallBuilder().WithName("ToUpperCase").AddArguments(new ConstantArgumentBuilder().WithValue("Hello world!")).Build();
-        var request = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = sut.Evaluate(request);
+        var result = sut.Evaluate(context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
