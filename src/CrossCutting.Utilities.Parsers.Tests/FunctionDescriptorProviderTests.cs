@@ -13,7 +13,7 @@ public class FunctionDescriptorProviderTests
                 new MyFunction1(),
                 new MyFunction2()
             };
-            var sut = new FunctionDescriptorProvider(functions);
+            var sut = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), functions);
 
             // Act
             var result = sut.GetAll();

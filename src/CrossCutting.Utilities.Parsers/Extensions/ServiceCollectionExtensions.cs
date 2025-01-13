@@ -7,7 +7,6 @@ public static class ServiceCollectionExtensions
         .AddExpressionParser()
         .AddExpressionStringParser()
         .AddFunctionParser()
-        .AddFunctionDescriptorProvider()
         .AddFormattableStringParser()
         .AddMathematicExpressionParser()
         .AddObjectResolver()
@@ -46,11 +45,9 @@ public static class ServiceCollectionExtensions
         .AddScoped<IFunctionParser, FunctionParser>()
         .AddScoped<IFunctionParserNameProcessor, DefaultFunctionParserNameProcessor>()
         .AddScoped<IFunctionParserArgumentProcessor, FormattableStringFunctionParserArgumentProcessor>()
-        .AddScoped<IFunctionEvaluator, FunctionEvaluator>();
-
-    private static IServiceCollection AddFunctionDescriptorProvider(this IServiceCollection services)
-        => services
-        .AddScoped<IFunctionDescriptorProvider, FunctionDescriptorProvider>();
+        .AddScoped<IFunctionEvaluator, FunctionEvaluator>()
+        .AddScoped<IFunctionDescriptorProvider, FunctionDescriptorProvider>()
+        .AddScoped<IFunctionDescriptorMapper, FunctionDescriptorMapper>();
 
     private static IServiceCollection AddFormattableStringParser(this IServiceCollection services)
         => services

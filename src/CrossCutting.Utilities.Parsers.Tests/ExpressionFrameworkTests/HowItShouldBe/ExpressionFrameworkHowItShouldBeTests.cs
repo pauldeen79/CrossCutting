@@ -67,7 +67,7 @@ public class ExpressionFrameworkHowItShouldBeTests
     public void Can_Get_FunctionDescriptor()
     {
         // Arrange
-        var functionDescriptorProvider = new FunctionDescriptorProvider([new ToUpperCaseFunction()]);
+        var functionDescriptorProvider = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), [new ToUpperCaseFunction()]);
 
         // Act
         var functionDescriptors = functionDescriptorProvider.GetAll();

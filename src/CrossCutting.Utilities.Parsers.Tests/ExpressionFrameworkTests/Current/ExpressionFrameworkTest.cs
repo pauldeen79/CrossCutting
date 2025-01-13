@@ -63,7 +63,7 @@ public sealed class ExpressionFrameworkTest
     public void Can_Get_FunctionDescriptor()
     {
         // Arrange
-        var functionDescriptorProvider = new FunctionDescriptorProvider([new ToUpperCaseExpressionResolver()]);
+        var functionDescriptorProvider = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), [new ToUpperCaseExpressionResolver()]);
 
         // Act
         var functionDescriptors = functionDescriptorProvider.GetAll();
