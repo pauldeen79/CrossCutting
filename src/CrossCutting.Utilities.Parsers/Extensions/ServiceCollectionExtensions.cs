@@ -4,15 +4,15 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddParsers(this IServiceCollection services)
         => services
-        .AddExpressionParser()
-        .AddExpressionStringParser()
+        .AddExpressionEvaluator()
+        .AddExpressionStringEvaluator()
         .AddFunctionParser()
         .AddFormattableStringParser()
         .AddMathematicExpressionParser()
         .AddObjectResolver()
         .AddVariableProcessor();
 
-    private static IServiceCollection AddExpressionParser(this IServiceCollection services)
+    private static IServiceCollection AddExpressionEvaluator(this IServiceCollection services)
         => services
         .AddScoped<IExpressionEvaluator, ExpressionEvaluator>()
         .AddScoped<IExpression, BooleanExpression>()
@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
         .AddScoped<IExpression, NumericExpression>()
         .AddScoped<IExpression, DateTimeExpression>();
 
-    private static IServiceCollection AddExpressionStringParser(this IServiceCollection services)
+    private static IServiceCollection AddExpressionStringEvaluator(this IServiceCollection services)
         => services
         .AddScoped<IExpressionStringEvaluator, ExpressionStringEvaluator>()
         .AddScoped<IExpressionString, EmptyExpressionString>()
@@ -47,7 +47,8 @@ public static class ServiceCollectionExtensions
         .AddScoped<IFunctionParserArgumentProcessor, FormattableStringFunctionParserArgumentProcessor>()
         .AddScoped<IFunctionEvaluator, FunctionEvaluator>()
         .AddScoped<IFunctionDescriptorProvider, FunctionDescriptorProvider>()
-        .AddScoped<IFunctionDescriptorMapper, FunctionDescriptorMapper>();
+        .AddScoped<IFunctionDescriptorMapper, FunctionDescriptorMapper>()
+        .AddScoped<IFunctionCallArgumentValidator, FunctionCallArgumentValidator>();
 
     private static IServiceCollection AddFormattableStringParser(this IServiceCollection services)
         => services

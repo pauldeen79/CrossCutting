@@ -4,6 +4,7 @@ public class FunctionEvaluator : IFunctionEvaluator
 {
     private readonly IFunctionDescriptorProvider _functionDescriptorProvider;
     private readonly IEnumerable<IFunction> _functions;
+    private readonly IFunctionCallArgumentValidator _functionCallArgumentValidator;
 
     private IReadOnlyCollection<FunctionDescriptor>? _descriptors;
     private IReadOnlyCollection<FunctionDescriptor> Descriptors
@@ -18,12 +19,14 @@ public class FunctionEvaluator : IFunctionEvaluator
         }
     }
     
-    public FunctionEvaluator(IFunctionDescriptorProvider functionDescriptorProvider, IEnumerable<IFunction> functions)
+    public FunctionEvaluator(IFunctionDescriptorProvider functionDescriptorProvider, IFunctionCallArgumentValidator functionCallArgumentValidator, IEnumerable<IFunction> functions)
     {
         ArgumentGuard.IsNotNull(functionDescriptorProvider, nameof(functionDescriptorProvider));
+        ArgumentGuard.IsNotNull(functionCallArgumentValidator, nameof(functionCallArgumentValidator));
         ArgumentGuard.IsNotNull(functions, nameof(functions));
 
         _functionDescriptorProvider = functionDescriptorProvider;
+        _functionCallArgumentValidator = functionCallArgumentValidator;
         _functions = functions;
     }
 
@@ -36,8 +39,7 @@ public class FunctionEvaluator : IFunctionEvaluator
 
         var functionCallContext = new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context);
 
-        return ResolveFunction(functionCallContext)
-            .Transform(result => result.Evaluate(functionCallContext));
+        return ResolveFunction(functionCallContext).Transform(result => result.Evaluate(functionCallContext));
     }
 
     public Result<T> EvaluateTyped<T>(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
@@ -67,8 +69,7 @@ public class FunctionEvaluator : IFunctionEvaluator
 
         var functionCallContext = new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context);
 
-        return ResolveFunction(functionCallContext)
-            .Transform(result => result.Validate(functionCallContext));
+        return ResolveFunction(functionCallContext).Transform(result => result.Validate(functionCallContext));
     }
 
     private Result<IFunction> ResolveFunction(FunctionCallContext functionCallContext)
@@ -104,19 +105,7 @@ public class FunctionEvaluator : IFunctionEvaluator
         var errors = new List<Result>();
         foreach (var argument in arguments)
         {
-            var result = argument.CallArgument.GetValueResult(functionCallContext);
-            if (!result.IsSuccessful())
-            {
-                errors.Add(result);
-            }
-            else if (result.Value is not null && !argument.DescriptorArgument.Type.IsInstanceOfType(result.Value))
-            {
-                errors.Add(Result.Invalid($"Argument {argument.DescriptorArgument.Name} is not of type {argument.DescriptorArgument.Type.FullName}"));
-            }
-            else if (result.Value is null && argument.DescriptorArgument.IsRequired)
-            {
-                errors.Add(Result.Invalid($"Argument {argument.DescriptorArgument.Name} is required"));
-            }
+            errors.AddRange(_functionCallArgumentValidator.Validate(argument.DescriptorArgument, argument.CallArgument, functionCallContext));
         }
 
         if (errors.Count > 0)
