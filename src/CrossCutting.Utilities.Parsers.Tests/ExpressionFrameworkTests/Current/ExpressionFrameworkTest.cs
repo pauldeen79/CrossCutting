@@ -923,7 +923,7 @@ public static class ExpressionExtensions
     public static Result<T> EvaluateTyped<T>(this Expression instance, object? context = null, string? errorMessage = null)
         => instance is ITypedExpression<T> typedExpression
             ? typedExpression.EvaluateTyped(context)
-            : instance.Evaluate(context).TryCast<T>(errorMessage);
+            : instance.Evaluate(context).TryCast<T>(allowNull: true, errorMessage);
 
     public static Result<T> EvaluateTypedWithTypeCheck<T>(this ITypedExpression<T> instance, object? context = null, string? errorMessage = null)
         => instance.EvaluateTyped(context).Transform(result => result.IsSuccessful() && result.Value is T t

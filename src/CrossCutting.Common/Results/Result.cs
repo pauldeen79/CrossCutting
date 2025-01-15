@@ -100,7 +100,16 @@ public record Result
 
     public virtual object? GetValue() => null;
 
-    public Result<TCast> TryCast<TCast>(string? errorMessage = null)
+    public Result<TCast> TryCast<TCast>(string? errorMessage)
+        => TryCast<TCast>(false, errorMessage);
+
+    public Result<TCast> TryCast<TCast>(bool allowNull)
+        => TryCast<TCast>(allowNull, null);
+
+    public Result<TCast> TryCast<TCast>()
+        => TryCast<TCast>(false, null);
+
+    public Result<TCast> TryCast<TCast>(bool allowNull, string? errorMessage)
     {
         if (!IsSuccessful())
         {
@@ -108,14 +117,14 @@ public record Result
         }
 
         var value = GetValue();
-        if (value is null)
+        if (allowNull && value is null)
         {
             return new Result<TCast>(default, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
         }
 
         if (value is not TCast castValue)
         {
-            return Invalid<TCast>(errorMessage ?? $"Could not cast {value.GetType().FullName} to {typeof(TCast).FullName}");
+            return Invalid<TCast>(errorMessage ?? $"Could not cast {value?.GetType().FullName} to {typeof(TCast).FullName}");
         }
 
         return new Result<TCast>(castValue, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);

@@ -89,7 +89,7 @@ public class ToUpperCaseFunction : ITypedFunction<string>
 {
     public Result<object?> Evaluate(FunctionCallContext context)
     {
-        return EvaluateTyped(context).TryCast<object?>();
+        return EvaluateTyped(context).TryCast<object?>(allowNull: true);
     }
 
     public Result<string> EvaluateTyped(FunctionCallContext context)

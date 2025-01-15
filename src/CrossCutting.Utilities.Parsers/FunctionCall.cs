@@ -20,7 +20,7 @@ public partial record FunctionCall
     public Result<T> GetArgumentValueResult<T>(int index, string argumentName, FunctionCallContext context, T? defaultValue)
         => index + 1 > Arguments.Count
             ? Result.Success(defaultValue!)
-            : Arguments.ElementAt(index).GetValueResult(context).TryCast<T>();
+            : Arguments.ElementAt(index).GetValueResult(context).TryCast<T>(allowNull: true);
 
     public Result<string> GetArgumentStringValueResult(int index, string argumentName, FunctionCallContext context)
         => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, context));
