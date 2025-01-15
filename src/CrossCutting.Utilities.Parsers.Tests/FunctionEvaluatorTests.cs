@@ -18,6 +18,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddSingleton<IFunction, OverloadTest2>()
             .AddSingleton<IFunction, OverloadTest3>()
             .AddSingleton<IFunction, PassThroughFunction>()
+            .AddSingleton<IFunction, OptionalParameterTest>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -52,6 +53,22 @@ public sealed class FunctionEvaluatorTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be("function result");
+    }
+
+    [Fact]
+    public void Evaluate_Returns_Success_Result_On_Valid_Input_With_Optional_Parameter()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("Optional").Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(functionCall!, expressionEvaluator, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(string.Empty);
     }
 
     [Fact]
@@ -241,6 +258,21 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall!, expressionEvaluator, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Validate_Returns_Success_Result_On_Valid_Input_With_Optional_Parameter()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("Optional").Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var sut = CreateSut();
 
@@ -611,5 +643,19 @@ public sealed class FunctionEvaluatorTests : IDisposable
         {
             return Result.Continue();
         }
+    }
+
+    [FunctionName("Optional")]
+    [FunctionArgument("Argument", typeof(string), false)]
+    private sealed class OptionalParameterTest : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            var argumentResult = context.GetArgumentStringValueResult(0, "Argument", string.Empty);
+            return Result.FromExistingResult<object?>(argumentResult);
+        }
+
+        public Result Validate(FunctionCallContext context)
+            => Result.Success();
     }
 }

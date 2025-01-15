@@ -79,7 +79,9 @@ public class FunctionEvaluator : IFunctionEvaluator
             return Result.Invalid<IFunction>($"Unknown function: {functionCallContext.FunctionCall.Name}");
         }
 
-        var functionsWithRightArgumentCount = functionsByName.Where(x => x.Arguments.Count == functionCallContext.FunctionCall.Arguments.Count).ToArray();
+        var functionsWithRightArgumentCount = functionsByName.Length == 1
+            ? functionsByName.Where(x => x.Arguments.Count(x => x.IsRequired) <= functionCallContext.FunctionCall.Arguments.Count).ToArray()
+            : functionsByName.Where(x => x.Arguments.Count == functionCallContext.FunctionCall.Arguments.Count).ToArray();
 
         return functionsWithRightArgumentCount.Length switch
         {
