@@ -21,8 +21,4 @@
     <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="7.0.0" />
-  </ItemGroup>
-
 </Project>
