@@ -126,12 +126,6 @@ public record ToLowerCaseExpression : Expression, ITypedExpression<string>
 
     public Result<string> EvaluateTyped(object? context)
         => StringExpression.EvaluateCultureExpression(Expression, Culture, context, (culture, value) => value.ToUpper(culture), value => value.ToUpperInvariant());
-
-    // not needed anymore
-    public override Result<Expression> GetSingleContainedExpression()
-    {
-        return Result.Success(Expression.ToUntyped());
-    }
 }
 
 public partial class ToLowerCaseExpressionBuilder : ExpressionBuilder<ToLowerCaseExpressionBuilder, ToLowerCaseExpression>, ITypedExpressionBuilder<string>, IFunctionCallBuilder

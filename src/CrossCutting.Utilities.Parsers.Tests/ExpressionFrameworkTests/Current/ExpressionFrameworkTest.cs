@@ -112,12 +112,6 @@ public partial record ToUpperCaseExpression : Expression, ITypedExpression<strin
         return new ToUpperCaseExpressionBuilder(this);
     }
 
-    // not needed anymore
-    public override Result<Expression> GetSingleContainedExpression()
-    {
-        return Result.Success(Expression.ToUntyped());
-    }
-
     public Expression ToUntyped()
     {
         return this;
@@ -252,8 +246,6 @@ public abstract partial record Expression
     public Result<object?> Evaluate() => Evaluate(null);
 
     public abstract Result<object?> Evaluate(object? context);
-
-    public abstract Result<Expression> GetSingleContainedExpression();
 }
 
 public abstract partial class ExpressionBuilder : INotifyPropertyChanged
@@ -325,11 +317,6 @@ public partial record ConstantExpression : Expression
     {
         return new ConstantExpressionBuilder(this);
     }
-
-    public override Result<Expression> GetSingleContainedExpression()
-    {
-        return Result.NotFound<Expression>();
-    }
 }
 
 public partial record ConstantResultExpression : Expression
@@ -358,11 +345,6 @@ public partial record ConstantResultExpression : Expression
     public ConstantResultExpressionBuilder ToTypedBuilder()
     {
         return new ConstantResultExpressionBuilder(this);
-    }
-
-    public override Result<Expression> GetSingleContainedExpression()
-    {
-        return Result.NotFound<Expression>();
     }
 }
 
@@ -439,11 +421,6 @@ public partial record DelegateExpression : Expression
     {
         return new DelegateExpressionBuilder(this);
     }
-
-    public override Result<Expression> GetSingleContainedExpression()
-    {
-        return Result.NotFound<Expression>();
-    }
 }
 
 public partial record TypedConstantExpression<T> : Expression, ITypedExpression<T>
@@ -476,11 +453,6 @@ public partial record TypedConstantExpression<T> : Expression, ITypedExpression<
     public TypedConstantExpressionBuilder<T> ToTypedBuilder()
     {
         return new TypedConstantExpressionBuilder<T>(this);
-    }
-
-    public override Result<Expression> GetSingleContainedExpression()
-    {
-        return Result.NotFound<Expression>();
     }
 }
 
@@ -516,11 +488,6 @@ public partial record TypedConstantResultExpression<T> : Expression, ITypedExpre
     {
         return new TypedConstantResultExpressionBuilder<T>(this);
     }
-
-    public override Result<Expression> GetSingleContainedExpression()
-    {
-        return Result.NotFound<Expression>();
-    }
 }
 
 public partial record TypedDelegateExpression<T> : Expression, ITypedExpression<T>
@@ -554,11 +521,6 @@ public partial record TypedDelegateExpression<T> : Expression, ITypedExpression<
     public TypedDelegateExpressionBuilder<T> ToTypedBuilder()
     {
         return new TypedDelegateExpressionBuilder<T>(this);
-    }
-
-    public override Result<Expression> GetSingleContainedExpression()
-    {
-        return Result.NotFound<Expression>();
     }
 }
 
