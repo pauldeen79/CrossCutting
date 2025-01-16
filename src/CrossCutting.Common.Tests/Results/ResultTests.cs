@@ -2290,7 +2290,7 @@ public class ResultTests
         var sut = Result.Success<object?>(null);
 
         // Act
-        var result = sut.TryCast<bool?>();
+        var result = sut.TryCast<bool?>(allowNull: true);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -2309,6 +2309,32 @@ public class ResultTests
         // Assert
         result.Status.Should().Be(ResultStatus.Continue);
         result.Value.Should().BeTrue();
+    }
+
+    [Fact]
+    public void TryCast_Returns_Invalid_When_AllowNull_Is_False_And_Value_Is_Null()
+    {
+        // Arrange
+        var sut = Result.Continue<object?>(null);
+
+        // Act
+        var result = sut.TryCast<bool>(allowNull : false);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
+    [Fact]
+    public void TryCast_Returns_Success_When_AllowNull_Is_True_And_Value_Is_Null()
+    {
+        // Arrange
+        var sut = Result.Continue<object?>(null);
+
+        // Act
+        var result = sut.TryCast<bool>(allowNull: true);
+
+        // Assert
+        result.Status.Should().Be(sut.Status);
     }
 
     [Fact]

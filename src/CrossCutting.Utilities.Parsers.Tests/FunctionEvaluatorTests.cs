@@ -489,12 +489,13 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionDescriptorProvider = Substitute.For<IFunctionDescriptorProvider>();
+        var functionCallArgumentValidator = Substitute.For<IFunctionCallArgumentValidator>();
         var functionDescriptor = new FunctionDescriptorBuilder()
             .WithName("MyFunction")
             .WithFunctionType(typeof(string))
             .Build();
         functionDescriptorProvider.GetAll().Returns([functionDescriptor]);
-        var sut = new FunctionEvaluator(functionDescriptorProvider, Enumerable.Empty<IFunction>());
+        var sut = new FunctionEvaluator(functionDescriptorProvider, functionCallArgumentValidator, Enumerable.Empty<IFunction>());
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
 
