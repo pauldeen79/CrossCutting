@@ -116,8 +116,8 @@ public class ToUpperCaseFunction : ITypedFunction<string>
 
 public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
 {
-    public ITypedFunctionCallArgumentBuilder<string> Expression { get; set; }
-    public ITypedFunctionCallArgumentBuilder<CultureInfo?> CultureInfo { get; set; }
+    public TypedFunctionCallArgumentBuilder<string> Expression { get; set; }
+    public TypedFunctionCallArgumentBuilder<CultureInfo?> CultureInfo { get; set; }
 
     public ToUpperCaseFunctionCallBuilder()
     {
@@ -128,7 +128,28 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
 
     public ToUpperCaseFunctionCallBuilder WithExpression(string expression)
     {
+        ArgumentNullException.ThrowIfNull(expression);
         Expression = new TypedConstantArgumentBuilder<string>().WithValue(expression);
+        return this;
+    }
+
+    public ToUpperCaseFunctionCallBuilder WithExpression(TypedFunctionCallArgumentBuilder<string> expression)
+    {
+        ArgumentNullException.ThrowIfNull(expression);
+        Expression = expression;
+        return this;
+    }
+
+    public ToUpperCaseFunctionCallBuilder WithCultureInfo(CultureInfo? cultureInfo)
+    {
+        CultureInfo = new TypedConstantArgumentBuilder<CultureInfo?>().WithValue(cultureInfo);
+        return this;
+    }
+
+    public ToUpperCaseFunctionCallBuilder WithCultureInfo(TypedFunctionCallArgumentBuilder<CultureInfo?> cultureInfo)
+    {
+        ArgumentNullException.ThrowIfNull(cultureInfo);
+        CultureInfo = cultureInfo;
         return this;
     }
 
@@ -136,10 +157,7 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
     {
         return new FunctionCallBuilder()
             .WithName(@"ToUpperCase")
-            .AddArguments(
-                Expression.ToUntyped(),
-                CultureInfo.ToUntyped()
-            )
+            .AddArguments(Expression, CultureInfo)
             .Build();
     }
 }

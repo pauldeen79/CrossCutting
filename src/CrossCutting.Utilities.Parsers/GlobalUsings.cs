@@ -14,6 +14,7 @@ global using CrossCutting.Common.Results;
 global using CrossCutting.Utilities.Aggregators;
 global using CrossCutting.Utilities.Operators;
 global using CrossCutting.Utilities.Parsers.Builders;
+global using CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
 global using CrossCutting.Utilities.Parsers.Contracts;
 global using CrossCutting.Utilities.Parsers.Expressions;
 global using CrossCutting.Utilities.Parsers.ExpressionStrings;
