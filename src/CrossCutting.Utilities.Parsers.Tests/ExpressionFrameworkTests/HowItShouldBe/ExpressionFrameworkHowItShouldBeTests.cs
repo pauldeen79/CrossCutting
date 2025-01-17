@@ -116,18 +116,20 @@ public class ToUpperCaseFunction : ITypedFunction<string>
 
 public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
 {
-    public string Expression { get; set; }
-    public CultureInfo? CultureInfo { get; set; }
+    //TODO: Create an typed interface or class IFunctionAllArgumentBuilder<T>, so you can work in a typesafe manner on function call builders (a.k.a. expression builders)
+    public FunctionCallArgumentBuilder Expression { get; set; }
+    public FunctionCallArgumentBuilder CultureInfo { get; set; }
 
     public ToUpperCaseFunctionCallBuilder()
     {
         // Same functionality as in ClassFramework.Pipelines: When it's a non-nullable string, then assign String.Empty. (and also, initialize collections and required builder-typed properties to new instances)
-        Expression = string.Empty;
+        Expression = new ConstantArgumentBuilder().WithValue(string.Empty);
+        CultureInfo = new EmptyArgumentBuilder();
     }
 
     public ToUpperCaseFunctionCallBuilder WithExpression(string expression)
     {
-        Expression = expression;
+        Expression = new ConstantArgumentBuilder().WithValue(expression);
         return this;
     }
 
@@ -136,8 +138,8 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
         return new FunctionCallBuilder()
             .WithName(@"ToUpperCase")
             .AddArguments(
-                new ConstantArgumentBuilder().WithValue(Expression),
-                new ConstantArgumentBuilder().WithValue(CultureInfo)
+                Expression,
+                CultureInfo
             )
             .Build();
     }
