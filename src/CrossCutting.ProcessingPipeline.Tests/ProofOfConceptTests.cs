@@ -2,20 +2,26 @@
 
 public class ProofOfConceptTests
 {
-    protected static Pipeline<object?> CreateResponselessSut(Func<CallInfo, Result> processDelegate, Action<object?, PipelineContext<object?>>? validationDelegate = null)
+    protected static Pipeline<object?> CreateResponselessSut(Func<CallInfo, Result> processDelegate)
     {
         var pipelineComponent = Substitute.For<IPipelineComponent<object?>>();
-        pipelineComponent.ProcessAsync(Arg.Any<PipelineContext<object?>>(), Arg.Any<CancellationToken>())
-                         .Returns(processDelegate);
-        return new Pipeline<object?>(validationDelegate ?? new Action<object?, PipelineContext<object?>>((_, _) => { }), [pipelineComponent]);
+
+        pipelineComponent
+            .ProcessAsync(Arg.Any<PipelineContext<object?>>(), Arg.Any<CancellationToken>())
+            .Returns(processDelegate);
+
+        return new Pipeline<object?>([pipelineComponent]);
     }
 
-    protected static Pipeline<object?, StringBuilder> CreateResponsefulSut(Func<CallInfo, Result> processDelegate, Action<object?, PipelineContext<object?, StringBuilder>>? validationDelegate = null)
+    protected static Pipeline<object?, StringBuilder> CreateResponsefulSut(Func<CallInfo, Result> processDelegate)
     {
         var pipelineComponent = Substitute.For<IPipelineComponent<object?, StringBuilder>>();
-        pipelineComponent.ProcessAsync(Arg.Any<PipelineContext<object?, StringBuilder>>(), Arg.Any<CancellationToken>())
-                         .Returns(processDelegate);
-        return new Pipeline<object?, StringBuilder>(validationDelegate ?? new Action<object?, PipelineContext<object?, StringBuilder>>((_, _) => { }), [pipelineComponent]);
+
+        pipelineComponent
+            .ProcessAsync(Arg.Any<PipelineContext<object?, StringBuilder>>(), Arg.Any<CancellationToken>())
+            .Returns(processDelegate);
+
+        return new Pipeline<object?, StringBuilder>([pipelineComponent]);
     }
 
     public class Pipeline_With_Response : ProofOfConceptTests
@@ -69,19 +75,12 @@ public class ProofOfConceptTests
             result.Status.Should().Be(ResultStatus.Error);
             result.ErrorMessage.Should().Be("An error occured while processing the pipeline. See the inner results for more details.");
         }
-        [Fact]
-        public void Constructing_Pipeline_Using_Null_ValidationDelegate_Throws_ArgumentNullException()
-        {
-            // Act & Assert
-            this.Invoking(_ => new Pipeline<object?>(validationDelegate: null!, components: []))
-                .Should().Throw<ArgumentNullException>().WithParameterName("validationDelegate");
-        }
 
         [Fact]
         public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?>((_, _) => { }, components: null!))
+            this.Invoking(_ => new Pipeline<object?>(components: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("components");
         }
     }
@@ -137,18 +136,10 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Constructing_Pipeline_Using_Null_ValidationDelegate_Throws_ArgumentNullException()
-        {
-            // Act & Assert
-            this.Invoking(_ => new Pipeline<object?, StringBuilder>(validationDelegate: null!, components: []))
-                .Should().Throw<ArgumentNullException>().WithParameterName("validationDelegate");
-        }
-
-        [Fact]
         public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?, StringBuilder>((_, _) => { }, components: null!))
+            this.Invoking(_ => new Pipeline<object?, StringBuilder>(components: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("components");
         }
     }
@@ -190,16 +181,12 @@ public class ProofOfConceptTests
     private sealed class MyReplacedResponselessComponent : IPipelineComponent<object?>
     {
         public Task<Result> ProcessAsync(PipelineContext<object?> context, CancellationToken token)
-        {
-            return Task.FromResult(Result.NotImplemented());
-        }
+            => Task.FromResult(Result.NotImplemented());
     }
 
     private sealed class MyReplacedComponentWithContext : IPipelineComponent<object?, StringBuilder>
     {
         public Task<Result> ProcessAsync(PipelineContext<object?, StringBuilder> context, CancellationToken token)
-        {
-            return Task.FromResult(Result.NotImplemented());
-        }
+            => Task.FromResult(Result.NotImplemented());
     }
 }

@@ -2,14 +2,9 @@
 
 public class Pipeline<TRequest> : PipelineBase<TRequest>, IPipeline<TRequest>
 {
-    private readonly Action<TRequest, PipelineContext<TRequest>> _validationDelegate;
-
-    public Pipeline(Action<TRequest, PipelineContext<TRequest>> validationDelegate, IEnumerable<IPipelineComponent<TRequest>> components) : base(components)
+    public Pipeline(IEnumerable<IPipelineComponent<TRequest>> components) : base(components)
     {
-        ArgumentGuard.IsNotNull(validationDelegate, nameof(validationDelegate));
         ArgumentGuard.IsNotNull(components, nameof(components)); //note that the base class allows null
-
-        _validationDelegate = validationDelegate;
     }
 
     public async Task<Result> ProcessAsync(TRequest request, CancellationToken token)
@@ -18,9 +13,8 @@ public class Pipeline<TRequest> : PipelineBase<TRequest>, IPipeline<TRequest>
 
         var pipelineContext = new PipelineContext<TRequest>(request);
 
-        _validationDelegate(request, pipelineContext);
-
         var results = await Task.WhenAll(Components.Select(x => x.ProcessAsync(pipelineContext, token))).ConfigureAwait(false);
+
         return Result.Aggregate
         (
             results,
@@ -32,14 +26,9 @@ public class Pipeline<TRequest> : PipelineBase<TRequest>, IPipeline<TRequest>
 
 public class Pipeline<TRequest, TResponse> : PipelineBase<TRequest, TResponse>, IPipeline<TRequest, TResponse>
 {
-    private readonly Action<TRequest, PipelineContext<TRequest, TResponse>> _validationDelegate;
-
-    public Pipeline(Action<TRequest, PipelineContext<TRequest, TResponse>> validationDelegate, IEnumerable<IPipelineComponent<TRequest, TResponse>> components) : base(components)
+    public Pipeline(IEnumerable<IPipelineComponent<TRequest, TResponse>> components) : base(components)
     {
-        ArgumentGuard.IsNotNull(validationDelegate, nameof(validationDelegate));
         ArgumentGuard.IsNotNull(components, nameof(components)); //note that the base class allows null
-
-        _validationDelegate = validationDelegate;
     }
 
     public async Task<Result<TResponse>> ProcessAsync(TRequest request, TResponse seed, CancellationToken token)
@@ -48,9 +37,8 @@ public class Pipeline<TRequest, TResponse> : PipelineBase<TRequest, TResponse>, 
 
         var pipelineContext = new PipelineContext<TRequest, TResponse>(request, seed);
 
-        _validationDelegate(request, pipelineContext);
-
         var results = await Task.WhenAll(Components.Select(x => x.ProcessAsync(pipelineContext, token))).ConfigureAwait(false);
+
         return Result.Aggregate
         (
             results,
