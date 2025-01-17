@@ -12,12 +12,12 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
     public partial record ConstantArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
     {
-        public string Value
+        public object? Value
         {
             get;
         }
 
-        public ConstantArgument(string value) : base()
+        public ConstantArgument(object? value) : base()
         {
             this.Value = value;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
@@ -120,6 +120,30 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder ToTypedBuilder()
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder(this);
+        }
+    }
+    public partial record ExpressionArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Value
+        {
+            get;
+        }
+
+        public ExpressionArgument(string value) : base()
+        {
+            this.Value = value;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ExpressionArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ExpressionArgumentBuilder(this);
         }
     }
     public partial record FunctionArgument : CrossCutting.Utilities.Parsers.FunctionCallArgument

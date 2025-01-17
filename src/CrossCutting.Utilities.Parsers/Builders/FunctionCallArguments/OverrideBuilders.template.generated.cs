@@ -12,9 +12,9 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
     public partial class ConstantArgumentBuilder : FunctionCallArgumentBuilder<ConstantArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument>
     {
-        private string _value;
+        private object? _value;
 
-        public string Value
+        public object? Value
         {
             get
             {
@@ -22,8 +22,8 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_value!, value!);
-                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Object>.Default.Equals(_value!, value!);
+                _value = value;
                 if (hasChanged) HandlePropertyChanged(nameof(Value));
             }
         }
@@ -36,7 +36,6 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 
         public ConstantArgumentBuilder() : base()
         {
-            _value = string.Empty;
             SetDefaultValues();
         }
 
@@ -47,9 +46,8 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder WithValue(string value)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder WithValue(object? value)
         {
-            if (value is null) throw new System.ArgumentNullException(nameof(value));
             Value = value;
             return this;
         }
@@ -207,6 +205,51 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
         }
 
         partial void SetDefaultValues();
+    }
+    public partial class ExpressionArgumentBuilder : FunctionCallArgumentBuilder<ExpressionArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument>
+    {
+        private string _value;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_value!, value!);
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Value));
+            }
+        }
+
+        public ExpressionArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = source.Value;
+        }
+
+        public ExpressionArgumentBuilder() : base()
+        {
+            _value = string.Empty;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument BuildTyped()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(Value);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ExpressionArgumentBuilder WithValue(string value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
     }
     public partial class FunctionArgumentBuilder : FunctionCallArgumentBuilder<FunctionArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument>
     {

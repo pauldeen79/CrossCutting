@@ -373,11 +373,9 @@ public sealed class FunctionEvaluatorTests : IDisposable
         // Arrange
         var functionCall = new FunctionCallBuilder()
             .WithName("Overload")
-            .AddArguments(new ConstantArgumentBuilder().WithValue("13"))
+            .AddArguments(new ConstantArgumentBuilder().WithValue(13))
             .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
-                           .Returns(Result.Success<object?>(13));
         var sut = CreateSut();
 
         // Act
@@ -445,11 +443,9 @@ public sealed class FunctionEvaluatorTests : IDisposable
         // Arrange
         var functionCall = new FunctionCallBuilder()
             .WithName("Overload")
-            .AddArguments(new ConstantArgumentBuilder().WithValue("null"))
+            .AddArguments(new ConstantArgumentBuilder().WithValue(null))
             .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
-                           .Returns(Result.Success<object?>(null));
         var sut = CreateSut();
 
         // Act

@@ -6,10 +6,6 @@ public partial record ConstantArgument
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var result = context.ExpressionEvaluator.Evaluate(Value, context.FormatProvider, context.Context);
-
-        return result.Status == ResultStatus.NotSupported
-            ? Result.Success<object?>(Value)
-            : result;
+        return Result.Success(Value);
     }
 }
