@@ -11,12 +11,12 @@ public class ResultExtensionsTests : TestBase
             var pipeline = Fixture.Freeze<IPipeline<ClassContext>>();
             // note that by doing nothing on the received builder in the builder context, the name will be empty, and this is a required field.
             // thus, we are creating an invalid result 8-)
-            pipeline.Process(Arg.Any<ClassContext>(), Arg.Any<CancellationToken>()).Returns(_ => Result.Success());
+            pipeline.ProcessAsync(Arg.Any<ClassContext>(), Arg.Any<CancellationToken>()).Returns(_ => Result.Success());
             var sourceModel = new Model(null!);
             var context = new ClassContext(sourceModel);
 
             // Act
-            var result = (await pipeline.Process(context)).ProcessResult(context.Builder, context.Builder.Build);
+            var result = (await pipeline.ProcessAsync(context)).ProcessResult(context.Builder, context.Builder.Build);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -27,12 +27,12 @@ public class ResultExtensionsTests : TestBase
         {
             // Arrange
             var pipeline = Fixture.Freeze<IPipeline<ClassContext>>();
-            pipeline.Process(Arg.Any<ClassContext>(), Arg.Any<CancellationToken>()).Returns(x => Result.Error("Kaboom!"));
+            pipeline.ProcessAsync(Arg.Any<ClassContext>(), Arg.Any<CancellationToken>()).Returns(x => Result.Error("Kaboom!"));
             var sourceModel = new Model("Ok");
             var context = new ClassContext(sourceModel);
 
             // Act
-            var result = (await pipeline.Process(context)).ProcessResult(context.Builder, context.Builder.Build);
+            var result = (await pipeline.ProcessAsync(context)).ProcessResult(context.Builder, context.Builder.Build);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -45,12 +45,12 @@ public class ResultExtensionsTests : TestBase
         {
             // Arrange
             var pipeline = Fixture.Freeze<IPipeline<ClassContext>>();
-            pipeline.Process(Arg.Any<ClassContext>(), Arg.Any<CancellationToken>()).Returns(_ => Result.Success());
+            pipeline.ProcessAsync(Arg.Any<ClassContext>(), Arg.Any<CancellationToken>()).Returns(_ => Result.Success());
             var sourceModel = new Model("Ok");
             var context = new ClassContext(sourceModel);
 
             // Act
-            var result = (await pipeline.Process(context)).ProcessResult(context.Builder, context.Builder.Build);
+            var result = (await pipeline.ProcessAsync(context)).ProcessResult(context.Builder, context.Builder.Build);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);

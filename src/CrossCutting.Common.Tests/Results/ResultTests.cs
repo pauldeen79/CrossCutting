@@ -2290,7 +2290,7 @@ public class ResultTests
         var sut = Result.Success<object?>(null);
 
         // Act
-        var result = sut.TryCast<bool?>(allowNull: true);
+        var result = sut.TryCastAllowNull<bool?>();
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -2318,7 +2318,7 @@ public class ResultTests
         var sut = Result.Continue<object?>(null);
 
         // Act
-        var result = sut.TryCast<bool>(allowNull : false);
+        var result = sut.TryCast<bool>();
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -2331,7 +2331,7 @@ public class ResultTests
         var sut = Result.Continue<object?>(null);
 
         // Act
-        var result = sut.TryCast<bool>(allowNull: true);
+        var result = sut.TryCastAllowNull<bool>("some custom error message");
 
         // Assert
         result.Status.Should().Be(sut.Status);

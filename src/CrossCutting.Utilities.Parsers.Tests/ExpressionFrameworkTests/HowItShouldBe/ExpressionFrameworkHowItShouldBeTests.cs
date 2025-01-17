@@ -89,7 +89,7 @@ public class ToUpperCaseFunction : ITypedFunction<string>
 {
     public Result<object?> Evaluate(FunctionCallContext context)
     {
-        return EvaluateTyped(context).TryCast<object?>(allowNull: true);
+        return EvaluateTyped(context).Transform<object?>(value => value);
     }
 
     public Result<string> EvaluateTyped(FunctionCallContext context)
@@ -99,13 +99,12 @@ public class ToUpperCaseFunction : ITypedFunction<string>
         return new ResultDictionaryBuilder()
             //note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult
             .Add("Expression", () => context.GetArgumentStringValueResult(0, "Expression"))
-            .Add("Culture", () => context.GetArgumentValueResult<CultureInfo?>(1, "Culture", default))
+            .Add("Culture", () => context.GetArgumentValueResult<CultureInfo>(1, "Culture", default))
             .Build()
             //example for OnFailure that has a custom result, with an inner result that contains the details.
             //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
             .OnFailure(error => Result.Error<object?>([error], "ToUpperCase evaluation failed, see inner results for details"))
-            .OnSuccess(results =>
-                Result.Success(results.GetValue<string>("Expression").ToUpper(results.TryGetValue("Culture", context.FormatProvider.ToCultureInfo()))));
+            .OnSuccess(results => Result.Success(results.GetValue<string>("Expression").ToUpper(results.TryGetValue("Culture", context.FormatProvider.ToCultureInfo()))));
     }
 
     public Result Validate(FunctionCallContext context)
@@ -137,8 +136,8 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
         return new FunctionCallBuilder()
             .WithName(@"ToUpperCase")
             .AddArguments(
-                new DelegateArgumentBuilder().WithDelegate(() => Expression),
-                new DelegateArgumentBuilder().WithDelegate(() => CultureInfo)
+                new ConstantArgumentBuilder().WithValue(Expression),
+                new ConstantArgumentBuilder().WithValue(CultureInfo)
             )
             .Build();
     }

@@ -28,8 +28,8 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
-        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
+        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a", "b", "c");
     }
 
     [Fact]
@@ -45,8 +45,8 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(2);
-        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
-        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a,b", "c");
+        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a,b", "c");
     }
 
     [Fact]
@@ -62,8 +62,8 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(2);
-        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
-        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("  a,b  ", "c");
+        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("  a,b  ", "c");
     }
 
     [Fact]
@@ -79,8 +79,8 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
-        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("Hello, replaced name!", "b", "c");
+        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("Hello, replaced name!", "b", "c");
     }
 
     [Fact]
@@ -96,8 +96,8 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
-        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("  Hello, replaced name!  ", "b", "c");
+        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("  Hello, replaced name!  ", "b", "c");
     }
 
     [Fact]
@@ -128,7 +128,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().AllBe(string.Empty);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().AllBe(string.Empty);
     }
 
     [Fact]
@@ -144,8 +144,8 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
-        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("FN1(a)", "FN2(b)", "FN3(c)");
+        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("FN1(a)", "FN2(b)", "FN3(c)");
     }
 
     [Fact]
@@ -161,9 +161,9 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value!.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b");
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a", "b");
         result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.Name).Should().BeEquivalentTo("MYNESTEDFUNCTION");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("c", "d", "e");
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("c", "d", "e");
     }
 
     [Fact]
@@ -179,15 +179,15 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value!.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b");
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a", "b");
         result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.Name).Should().BeEquivalentTo("MYNESTEDFUNCTION");
         result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Should().HaveCount(3);
         result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Should().AllBeOfType<FunctionArgument>();
         result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().Select(x => x.Function.Name).Should().BeEquivalentTo("SUB1", "SUB1", "SUB1");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(ConstantArgument), nameof(ConstantArgument), nameof(FunctionArgument));
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(ExpressionArgument), nameof(ExpressionArgument), nameof(FunctionArgument));
         result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Name.Should().Be("SUB2");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(ConstantArgument));
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.OfType<ConstantArgument>().First().Value.Should().Be("e");
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(ExpressionArgument));
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.OfType<ExpressionArgument>().First().Value.Should().Be("e");
     }
 
     [Fact]
@@ -352,8 +352,8 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
-        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
+        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a", "b", "c");
     }
 
     [Fact]
@@ -369,8 +369,8 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
-        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a", "b", "c");
+        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a", "b", "c");
     }
 
     [Fact]
@@ -386,8 +386,8 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value!.Name.Should().Be("MYFUNCTION");
         result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ConstantArgument>();
-        result.Value.Arguments.OfType<ConstantArgument>().Select(x => x.Value).Should().BeEquivalentTo("a ", " b ", " c");
+        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a ", " b ", " c");
     }
 
     public void Dispose()

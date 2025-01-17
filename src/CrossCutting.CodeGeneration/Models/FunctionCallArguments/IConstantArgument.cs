@@ -2,5 +2,5 @@
 
 internal interface IConstantArgument : IFunctionCallArgument
 {
-    string Value { get; }
+    object? Value { get; }
 }

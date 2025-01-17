@@ -146,7 +146,7 @@ public class FunctionParser : IFunctionParser
             {
                 arguments.Add(string.IsNullOrEmpty(argument)
                     ? new EmptyArgument()
-                    : new ConstantArgument(argument));
+                    : new ExpressionArgument(argument));
             }
         }
 
