@@ -4,15 +4,15 @@ public class Pipeline<TRequest> : PipelineBase<TRequest>, IPipeline<TRequest>
 {
     private readonly Action<TRequest, PipelineContext<TRequest>> _validationDelegate;
 
-    public Pipeline(Action<TRequest, PipelineContext<TRequest>> validationDelegate, IEnumerable<IPipelineComponent<TRequest>> features) : base(features)
+    public Pipeline(Action<TRequest, PipelineContext<TRequest>> validationDelegate, IEnumerable<IPipelineComponent<TRequest>> components) : base(components)
     {
         ArgumentGuard.IsNotNull(validationDelegate, nameof(validationDelegate));
-        ArgumentGuard.IsNotNull(features, nameof(features)); //note that the base class allows null
+        ArgumentGuard.IsNotNull(components, nameof(components)); //note that the base class allows null
 
         _validationDelegate = validationDelegate;
     }
 
-    public async Task<Result> Process(TRequest request, CancellationToken token)
+    public async Task<Result> ProcessAsync(TRequest request, CancellationToken token)
     {
         ArgumentGuard.IsNotNull(request, nameof(request));
 
@@ -20,7 +20,7 @@ public class Pipeline<TRequest> : PipelineBase<TRequest>, IPipeline<TRequest>
 
         _validationDelegate(request, pipelineContext);
 
-        var results = await Task.WhenAll(Components.Select(x => x.Process(pipelineContext, token))).ConfigureAwait(false);
+        var results = await Task.WhenAll(Components.Select(x => x.ProcessAsync(pipelineContext, token))).ConfigureAwait(false);
         return Result.Aggregate
         (
             results,
@@ -34,15 +34,15 @@ public class Pipeline<TRequest, TResponse> : PipelineBase<TRequest, TResponse>, 
 {
     private readonly Action<TRequest, PipelineContext<TRequest, TResponse>> _validationDelegate;
 
-    public Pipeline(Action<TRequest, PipelineContext<TRequest, TResponse>> validationDelegate, IEnumerable<IPipelineComponent<TRequest, TResponse>> features) : base(features)
+    public Pipeline(Action<TRequest, PipelineContext<TRequest, TResponse>> validationDelegate, IEnumerable<IPipelineComponent<TRequest, TResponse>> components) : base(components)
     {
         ArgumentGuard.IsNotNull(validationDelegate, nameof(validationDelegate));
-        ArgumentGuard.IsNotNull(features, nameof(features)); //note that the base class allows null
+        ArgumentGuard.IsNotNull(components, nameof(components)); //note that the base class allows null
 
         _validationDelegate = validationDelegate;
     }
 
-    public async Task<Result<TResponse>> Process(TRequest request, TResponse seed, CancellationToken token)
+    public async Task<Result<TResponse>> ProcessAsync(TRequest request, TResponse seed, CancellationToken token)
     {
         ArgumentGuard.IsNotNull(request, nameof(request));
 
@@ -50,7 +50,7 @@ public class Pipeline<TRequest, TResponse> : PipelineBase<TRequest, TResponse>, 
 
         _validationDelegate(request, pipelineContext);
 
-        var results = await Task.WhenAll(Components.Select(x => x.Process(pipelineContext, token))).ConfigureAwait(false);
+        var results = await Task.WhenAll(Components.Select(x => x.ProcessAsync(pipelineContext, token))).ConfigureAwait(false);
         return Result.Aggregate
         (
             results,

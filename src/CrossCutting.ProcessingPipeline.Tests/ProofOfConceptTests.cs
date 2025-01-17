@@ -2,146 +2,35 @@
 
 public class ProofOfConceptTests
 {
-    protected IEnumerable<IPipelineComponent<TRequest>> GetComponents<TRequest>(IPipeline<TRequest> instance)
-        => (instance.GetType().GetProperty(nameof(IPipelineBuilder<object>.Components))!.GetValue(instance) as IEnumerable<IPipelineComponent<TRequest>>)!;
+    protected static Pipeline<object?> CreateResponselessSut(Func<CallInfo, Result> processDelegate, Action<object?, PipelineContext<object?>>? validationDelegate = null)
+    {
+        var pipelineComponent = Substitute.For<IPipelineComponent<object?>>();
+        pipelineComponent.ProcessAsync(Arg.Any<PipelineContext<object?>>(), Arg.Any<CancellationToken>())
+                         .Returns(processDelegate);
+        return new Pipeline<object?>(validationDelegate ?? new Action<object?, PipelineContext<object?>>((_, _) => { }), [pipelineComponent]);
+    }
 
-    protected IEnumerable<IPipelineComponent<TRequest, TResponse>> GetComponents<TRequest, TResponse>(IPipeline<TRequest, TResponse> instance)
-        => (instance.GetType().GetProperty(nameof(IPipelineBuilder<object>.Components))!.GetValue(instance) as IEnumerable<IPipelineComponent<TRequest, TResponse>>)!;
+    protected static Pipeline<object?, StringBuilder> CreateResponsefulSut(Func<CallInfo, Result> processDelegate, Action<object?, PipelineContext<object?, StringBuilder>>? validationDelegate = null)
+    {
+        var pipelineComponent = Substitute.For<IPipelineComponent<object?, StringBuilder>>();
+        pipelineComponent.ProcessAsync(Arg.Any<PipelineContext<object?, StringBuilder>>(), Arg.Any<CancellationToken>())
+                         .Returns(processDelegate);
+        return new Pipeline<object?, StringBuilder>(validationDelegate ?? new Action<object?, PipelineContext<object?, StringBuilder>>((_, _) => { }), [pipelineComponent]);
+    }
 
     public class Pipeline_With_Response : ProofOfConceptTests
     {
         [Fact]
-        public void Can_Create_Pipeline()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?, StringBuilder>();
-
-            // Act
-            var pipeline = builder
-                .AddComponent(new MyComponentWithContextBuilder())
-                .Build();
-
-            // Assert
-            GetComponents(pipeline).Should().ContainSingle();
-            GetComponents(pipeline).Single().Should().BeOfType<MyComponentWithContext>();
-        }
-
-        [Fact]
-        public void Can_Add_Multiple_Features_Using_Array()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?, StringBuilder>();
-
-            // Act
-            var pipeline = builder
-                .AddComponents(new MyComponentWithContextBuilder(), new MyComponentWithContextBuilder())
-                .Build();
-
-            // Assert
-            GetComponents(pipeline).Should().HaveCount(2);
-            GetComponents(pipeline).Should().AllBeOfType<MyComponentWithContext>();
-        }
-
-        [Fact]
-        public void Can_Add_Multiple_Features_Using_Enumerable()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?, StringBuilder>();
-
-            // Act
-            var pipeline = builder
-                .AddComponents(new[] { new MyComponentWithContextBuilder(), new MyComponentWithContextBuilder() }.AsEnumerable())
-                .Build();
-
-            // Assert
-            GetComponents(pipeline).Should().HaveCount(2);
-            GetComponents(pipeline).Should().AllBeOfType<MyComponentWithContext>();
-        }
-
-        [Fact]
-        public void Can_Replace_Feature_On_Pipeline()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?, StringBuilder>()
-                .AddComponent(new MyComponentWithContextBuilder());
-
-            // Act
-            var pipeline = builder
-                .ReplaceComponent<MyComponentWithContextBuilder>(new MyReplacedComponentWithContextBuilder())
-                .Build();
-
-            // Assert
-            GetComponents(pipeline).Should().ContainSingle();
-            GetComponents(pipeline).Single().Should().BeOfType<MyReplacedComponentWithContext>();
-        }
-
-        [Fact]
-        public void Can_Remove_Feature_On_Pipeline()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?, StringBuilder>()
-                .AddComponent(new MyComponentWithContextBuilder());
-
-            // Act
-            var pipeline = builder
-                .RemoveComponent<MyComponentWithContextBuilder>()
-                .Build();
-
-            // Assert
-            GetComponents(pipeline).Should().BeEmpty();
-        }
-
-        [Fact]
-        public void Can_Validate_PipelineBuilder_With_Null_Features_List()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?, StringBuilder> { Components = null! };
-            var validationResults = new List<ValidationResult>();
-
-            // Act
-            _ = builder.TryValidate(validationResults);
-
-            // Assert
-            validationResults.Should().ContainSingle();
-        }
-
-        [Fact]
-        public void Can_Validate_PipelineBuilder_With_Empty_Features_List()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?, StringBuilder> { Components = [] };
-            var validationResults = new List<ValidationResult>();
-
-            // Act
-            _ = builder.TryValidate(validationResults);
-
-            // Assert
-            validationResults.Should().BeEmpty();
-        }
-
-        [Fact]
-        public void Can_Validate_PipelineBuilder_With_NonEmpty_Features_List()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?, StringBuilder> { Components = new List<IBuilder<IPipelineComponent<object?, StringBuilder>>>(new[] { new MyComponentWithContextBuilder() }) };
-            var validationResults = new List<ValidationResult>();
-
-            // Act
-            _ = builder.TryValidate(validationResults);
-
-            // Assert
-            validationResults.Should().BeEmpty();
-        }
-
-        [Fact]
-        public async Task Can_Process_Pipeline_With_Feature()
+        public async Task Can_ProcessAsync_Pipeline_With_Component()
         {
             // Arrange
             PipelineContext<object?, StringBuilder>? context = null;
-            Func<PipelineContext<object?, StringBuilder>, Result> processCallback = new(ctx => { context = ctx; ctx.Response.Append("2"); return Result.Continue<object?>(); });
-            var sut = new PipelineBuilder<object?, StringBuilder>()
-                .AddComponent(new MyComponentWithContextBuilder().WithProcessCallback(processCallback))
-                .Build();
+            var sut = CreateResponsefulSut(x =>
+            {
+                context = x.ArgAt<PipelineContext<object?, StringBuilder>>(0);
+                x.ArgAt<PipelineContext<object?, StringBuilder>>(0).Response.Append("2");
+                return Result.Continue<object?>();
+            });
 
             // Act
             var result = await sut.Process(request: 1, seed: new StringBuilder());
@@ -154,13 +43,10 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public async Task Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status()
+        public async Task Can_Abort_Pipeline_With_Component_Using_Non_Success_Status()
         {
             // Arrange
-            Func<PipelineContext<object?, StringBuilder>, Result> processCallback = new(_ => Result.Error<object?>("Kaboom"));
-            var sut = new PipelineBuilder<object?, StringBuilder>()
-                .AddComponent(new MyComponentWithContextBuilder().WithProcessCallback(processCallback))
-                .Build();
+            var sut = CreateResponsefulSut(x => Result.Error<object?>("Kaboom"));
 
             // Act
             var result = await sut.Process(request: 1);
@@ -171,13 +57,10 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public async Task Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status_And_CancellationToken()
+        public async Task Can_Abort_Pipeline_With_Component_Using_Non_Success_Status_And_CancellationToken()
         {
             // Arrange
-            Func<PipelineContext<object?, StringBuilder>, Result> processCallback = new(_ => Result.Error<object?>("Kaboom"));
-            var sut = new PipelineBuilder<object?, StringBuilder>()
-                .AddComponent(new MyComponentWithContextBuilder().WithProcessCallback(processCallback))
-                .Build();
+            var sut = CreateResponsefulSut(x => Result.Error<object?>("Kaboom"));
 
             // Act
             var result = await sut.Process(request: 1, cancellationToken: new CancellationToken());
@@ -190,168 +73,31 @@ public class ProofOfConceptTests
         public void Constructing_Pipeline_Using_Null_ValidationDelegate_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?>(validationDelegate: null!, features: []))
+            this.Invoking(_ => new Pipeline<object?>(validationDelegate: null!, components: []))
                 .Should().Throw<ArgumentNullException>().WithParameterName("validationDelegate");
         }
 
         [Fact]
-        public void Constructing_Pipeline_Using_Null_Features_Throws_ArgumentNullException()
+        public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?>((_, _) => { }, features: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("features");
+            this.Invoking(_ => new Pipeline<object?>((_, _) => { }, components: null!))
+                .Should().Throw<ArgumentNullException>().WithParameterName("components");
         }
     }
 
     public class Pipeline_Without_Response : ProofOfConceptTests
     {
         [Fact]
-        public void Can_Create_Pipeline()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?>();
-
-            // Act
-            var pipeline = builder
-                .AddComponent(new MyResponselessComponentBuilder())
-                .Build();
-
-            // Assert
-            GetComponents(pipeline).Should().ContainSingle();
-            GetComponents(pipeline).Single().Should().BeOfType<MyResponselessComponent>();
-        }
-
-        [Fact]
-        public void Can_Add_Multiple_Features_Using_Array()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?>();
-
-            // Act
-            var pipeline = builder
-                .AddComponents(new MyResponselessComponentBuilder(), new MyResponselessComponentBuilder())
-                .Build();
-
-            // Assert
-            GetComponents(pipeline).Should().HaveCount(2);
-            GetComponents(pipeline).Should().AllBeOfType<MyResponselessComponent>();
-        }
-
-        [Fact]
-        public void Can_Add_Multiple_Features_Using_Enumerable()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?>();
-
-            // Act
-            var pipeline = builder
-                .AddComponents(new[] { new MyResponselessComponentBuilder(), new MyResponselessComponentBuilder() }.AsEnumerable())
-                .Build();
-
-            // Assert
-            GetComponents(pipeline).Should().HaveCount(2);
-            GetComponents(pipeline).Should().AllBeOfType<MyResponselessComponent>();
-        }
-
-        [Fact]
-        public void Can_Replace_Feature_On_Pipeline()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?>()
-                .AddComponent(new MyResponselessComponentBuilder());
-
-            // Act
-            var pipeline = builder
-                .ReplaceComponent<MyResponselessComponentBuilder>(new MyReplacedResponselessComponentBuilder())
-                .Build();
-
-            // Assert
-            GetComponents(pipeline).Should().ContainSingle();
-            GetComponents(pipeline).Single().Should().BeOfType<MyReplacedResponselessComponent>();
-        }
-
-        [Fact]
-        public void Can_Remove_Feature_On_Pipeline()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?>()
-                .AddComponent(new MyResponselessComponentBuilder());
-
-            // Act
-            var pipeline = builder
-                .RemoveComponent<MyResponselessComponentBuilder>()
-                .Build();
-
-            // Assert
-            GetComponents(pipeline).Should().BeEmpty();
-        }
-
-        [Fact]
-        public void Can_Validate_PipelineBuilder_With_Null_Features_List()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?> { Components = null! };
-            var validationResults = new List<ValidationResult>();
-
-            // Act
-            _ = builder.TryValidate(validationResults);
-
-            // Assert
-            validationResults.Should().ContainSingle();
-        }
-
-        [Fact]
-        public void Can_Validate_PipelineBuilder_With_Empty_Features_List()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?> { Components = [] };
-            var validationResults = new List<ValidationResult>();
-
-            // Act
-            _ = builder.TryValidate(validationResults);
-
-            // Assert
-            validationResults.Should().BeEmpty();
-        }
-
-        [Fact]
-        public void Can_Validate_PipelineBuilder_With_NonEmpty_Features_List()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?> { Components = new List<IBuilder<IPipelineComponent<object?>>>(new[] { new MyResponselessComponentBuilder() }) };
-            var validationResults = new List<ValidationResult>();
-
-            // Act
-            _ = builder.TryValidate(validationResults);
-
-            // Assert
-            validationResults.Should().BeEmpty();
-        }
-
-        [Fact]
-        public void Can_Validate_PipelineBuilder_With_NonEmpty_Features_List_Validatable_Component()
-        {
-            // Arrange
-            var builder = new PipelineBuilder<object?> { Components = new List<IBuilder<IPipelineComponent<object?>>>(new[] { new MyResponselessValidatableComponentBuilder().WithProcessCallback(null!) }) };
-            var validationResults = new List<ValidationResult>();
-
-            // Act
-            _ = builder.TryValidate(validationResults);
-
-            // Assert
-            validationResults.Should().ContainSingle();
-            validationResults.Single().ErrorMessage.Should().Be("The field Components is invalid.");
-        }
-
-        [Fact]
-        public async Task Can_Process_Pipeline_With_Feature()
+        public async Task Can_ProcessAsync_Pipeline_With_Component()
         {
             // Arrange
             PipelineContext<object?>? context = null;
-            Func<PipelineContext<object?>, Result<object?>> processCallback = new(ctx => { context = ctx; return Result.Continue<object?>(); });
-            var sut = new PipelineBuilder<object?>()
-                .AddComponent(new MyResponselessComponentBuilder().WithProcessCallback(processCallback))
-                .Build();
+            var sut = CreateResponsefulSut(x =>
+            {
+                context = x.ArgAt<PipelineContext<object?>>(0);
+                return Result.Continue<object?>();
+            });
 
             // Act
             var result = await sut.Process(request: 1);
@@ -363,13 +109,10 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public async Task Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status()
+        public async Task Can_Abort_Pipeline_With_Component_Using_Non_Success_Status()
         {
             // Arrange
-            Func<PipelineContext<object?>, Result<object?>> processCallback = new(_ => Result.Error<object?>("Kaboom"));
-            var sut = new PipelineBuilder<object?>()
-                .AddComponent(new MyResponselessComponentBuilder().WithProcessCallback(processCallback))
-                .Build();
+            var sut = CreateResponsefulSut(x => Result.Error<object?>("Kaboom"));
 
             // Act
             var result = await sut.Process(request: 1);
@@ -380,13 +123,10 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public async Task Can_Abort_Pipeline_With_Feature_Using_Non_Success_Status_And_CancellationToken()
+        public async Task Can_Abort_Pipeline_With_Component_Using_Non_Success_Status_And_CancellationToken()
         {
             // Arrange
-            Func<PipelineContext<object?>, Result<object?>> processCallback = new(_ => Result.Error<object?>("Kaboom"));
-            var sut = new PipelineBuilder<object?>()
-                .AddComponent(new MyResponselessComponentBuilder().WithProcessCallback(processCallback))
-                .Build();
+            var sut = CreateResponsefulSut(x => Result.Error<object?>("Kaboom"));
 
             // Act
             var result = await sut.Process(request: 1, new CancellationToken());
@@ -400,50 +140,30 @@ public class ProofOfConceptTests
         public void Constructing_Pipeline_Using_Null_ValidationDelegate_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?, StringBuilder>(validationDelegate: null!, features: []))
+            this.Invoking(_ => new Pipeline<object?, StringBuilder>(validationDelegate: null!, components: []))
                 .Should().Throw<ArgumentNullException>().WithParameterName("validationDelegate");
         }
 
         [Fact]
-        public void Constructing_Pipeline_Using_Null_Features_Throws_ArgumentNullException()
+        public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?, StringBuilder>((_, _) => { }, features: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("features");
-        }
-    }
-
-    public class Pipeline_With_Dependencies
-    {
-        [Fact]
-        public void Can_Use_Dependency_Injection_To_Allow_Features_To_Have_Dependencies()
-        {
-            // Arrange
-            using var provider = new ServiceCollection()
-                .AddScoped<IMyService, MyService>()
-                .AddScoped<IPipelineFeatureBuilderWithDependencies, PipelineComponentBuilderWithDependencies>()
-                .BuildServiceProvider();
-            using var scope = provider.CreateScope();
-
-            // Act
-            var sut = scope.ServiceProvider.GetRequiredService<IPipelineFeatureBuilderWithDependencies>();
-
-            // Assert
-            sut.MyService.Should().NotBeNull();
+            this.Invoking(_ => new Pipeline<object?, StringBuilder>((_, _) => { }, components: null!))
+                .Should().Throw<ArgumentNullException>().WithParameterName("components");
         }
     }
 
     public class PipelineComponent_Without_Context()
     {
         [Fact]
-        public async Task Can_Call_Process_Without_CancellationToken()
+        public async Task Can_Call_ProcessAsync_Without_CancellationToken()
         {
             // Arrange
             var sut = new MyReplacedResponselessComponent();
             var context = new PipelineContext<object?>(1);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.NotImplemented);
@@ -453,143 +173,33 @@ public class ProofOfConceptTests
     public class PipelineComponent_With_Context()
     {
         [Fact]
-        public async Task Can_Call_Process_Without_CancellationToken()
+        public async Task Can_Call_ProcessAsync_Without_CancellationToken()
         {
             // Arrange
             var sut = new MyReplacedComponentWithContext();
             var context = new PipelineContext<object?, StringBuilder>(1, new StringBuilder());
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.NotImplemented);
         }
     }
 
-    private sealed class MyResponselessComponent : IPipelineComponent<object?>
-    {
-        public Func<PipelineContext<object?>, Result> ProcessCallback { get; }
-
-        public MyResponselessComponent()
-            => ProcessCallback = new Func<PipelineContext<object?>, Result>(_ => Result.NoContent());
-
-        public MyResponselessComponent(Func<PipelineContext<object?>, Result> processCallback)
-            => ProcessCallback = processCallback;
-
-        public Task<Result> Process(PipelineContext<object?> context, CancellationToken token)
-            => Task.FromResult(ProcessCallback.Invoke(context));
-    }
-
-    private sealed class MyResponselessComponentBuilder : IPipelineComponentBuilder<object?>
-    {
-        public Func<PipelineContext<object?>, Result<object?>> ProcessCallback { get; set; } = new(_ => Result.NoContent<object?>());
-
-        public MyResponselessComponentBuilder WithProcessCallback(Func<PipelineContext<object?>, Result<object?>> processCallback)
-        {
-            ProcessCallback = processCallback;
-            return this;
-        }
-
-        public IPipelineComponent<object?> Build()
-            => new MyResponselessComponent(ProcessCallback);
-    }
-
-    private sealed class MyResponselessValidatableComponentBuilder : IPipelineComponentBuilder<object?>
-    {
-        [Required]
-        public Func<PipelineContext<object?>, Result<object?>> ProcessCallback { get; set; } = new(_ => Result.NoContent<object?>());
-
-        public MyResponselessValidatableComponentBuilder WithProcessCallback(Func<PipelineContext<object?>, Result<object?>> processCallback)
-        {
-            ProcessCallback = processCallback;
-            return this;
-        }
-
-        public IPipelineComponent<object?> Build()
-            => new MyResponselessComponent(ProcessCallback);
-    }
-
     private sealed class MyReplacedResponselessComponent : IPipelineComponent<object?>
     {
-        public Task<Result> Process(PipelineContext<object?> context, CancellationToken token)
+        public Task<Result> ProcessAsync(PipelineContext<object?> context, CancellationToken token)
         {
             return Task.FromResult(Result.NotImplemented());
         }
-    }
-
-    private sealed class MyReplacedResponselessComponentBuilder : IPipelineComponentBuilder<object?>
-    {
-        public IPipelineComponent<object?> Build()
-            => new MyReplacedResponselessComponent();
-    }
-
-    private sealed class MyComponentWithContext : IPipelineComponent<object?, StringBuilder>
-    {
-        public Func<PipelineContext<object?, StringBuilder>, Result> ProcessCallback { get; }
-
-        public MyComponentWithContext()
-            => ProcessCallback = new Func<PipelineContext<object?, StringBuilder>, Result>(_ => Result.NoContent());
-
-        public MyComponentWithContext(Func<PipelineContext<object?, StringBuilder>, Result> processCallback)
-            => ProcessCallback = processCallback;
-
-        public Task<Result> Process(PipelineContext<object?, StringBuilder> context, CancellationToken token)
-            => Task.FromResult(ProcessCallback.Invoke(context));
-    }
-
-    private sealed class MyComponentWithContextBuilder : IPipelineComponentBuilder<object?, StringBuilder>
-    {
-        public Func<PipelineContext<object?, StringBuilder>, Result> ProcessCallback { get; set; } = new(_ => Result.NoContent());
-
-        public MyComponentWithContextBuilder WithProcessCallback(Func<PipelineContext<object?, StringBuilder>, Result> processCallback)
-        {
-            ProcessCallback = processCallback;
-            return this;
-        }
-
-        public IPipelineComponent<object?, StringBuilder> Build()
-            => new MyComponentWithContext(ProcessCallback);
     }
 
     private sealed class MyReplacedComponentWithContext : IPipelineComponent<object?, StringBuilder>
     {
-        public Task<Result> Process(PipelineContext<object?, StringBuilder> context, CancellationToken token)
+        public Task<Result> ProcessAsync(PipelineContext<object?, StringBuilder> context, CancellationToken token)
         {
             return Task.FromResult(Result.NotImplemented());
         }
-    }
-
-    private sealed class MyReplacedComponentWithContextBuilder : IPipelineComponentBuilder<object?, StringBuilder>
-    {
-        public IPipelineComponent<object?, StringBuilder> Build()
-            => new MyReplacedComponentWithContext();
-    }
-
-    private interface IPipelineFeatureBuilderWithDependencies : IPipelineComponentBuilder<object?>
-    {
-        IMyService MyService { get; }
-    }
-
-    public sealed class PipelineComponentBuilderWithDependencies(IMyService myService) : IPipelineFeatureBuilderWithDependencies
-    {
-        private readonly IMyService _myService = myService;
-
-        public IPipelineComponent<object?> Build()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IMyService MyService => _myService;
-    }
-
-    public interface IMyService
-    {
-        void DoSomething();
-    }
-
-    private sealed class MyService : IMyService
-    {
-        public void DoSomething() => throw new NotImplementedException();
     }
 }

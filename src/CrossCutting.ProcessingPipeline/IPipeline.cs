@@ -2,10 +2,10 @@
 
 public interface IPipeline<TRequest>
 {
-    Task<Result> Process(TRequest request, CancellationToken token);
+    Task<Result> ProcessAsync(TRequest request, CancellationToken token);
 }
 
 public interface IPipeline<TRequest, TResponse>
 {
-    Task<Result<TResponse>> Process(TRequest request, TResponse seed, CancellationToken token);
+    Task<Result<TResponse>> ProcessAsync(TRequest request, TResponse seed, CancellationToken token);
 }
