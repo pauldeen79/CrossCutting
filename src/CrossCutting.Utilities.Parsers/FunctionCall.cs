@@ -17,10 +17,10 @@ public partial record FunctionCall
             ? Result.Invalid<T>($"Missing argument: {argumentName}")
             : Arguments.ElementAt(index).GetValueResult(context).TryCast<T>();
 
-    public Result<T> GetArgumentValueResult<T>(int index, string argumentName, FunctionCallContext context, T? defaultValue)
+    public Result<T?> GetArgumentValueResult<T>(int index, string argumentName, FunctionCallContext context, T? defaultValue)
         => index + 1 > Arguments.Count
-            ? Result.Success(defaultValue!)
-            : Arguments.ElementAt(index).GetValueResult(context).TryCast<T>(allowNull: true);
+            ? Result.Success(defaultValue)
+            : Arguments.ElementAt(index).GetValueResult(context).TryCastAllowNull<T>().Transform(value => value is null ? defaultValue : value);
 
     public Result<string> GetArgumentStringValueResult(int index, string argumentName, FunctionCallContext context)
         => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, context));
