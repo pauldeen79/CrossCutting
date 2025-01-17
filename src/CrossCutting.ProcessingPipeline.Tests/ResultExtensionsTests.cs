@@ -16,7 +16,7 @@ public class ResultExtensionsTests : TestBase
             var context = new ClassContext(sourceModel);
 
             // Act
-            var result = (await pipeline.Process(context)).ProcessResult(context.Builder, context.Builder.Build);
+            var result = (await pipeline.ProcessAsync(context)).ProcessResult(context.Builder, context.Builder.Build);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -32,7 +32,7 @@ public class ResultExtensionsTests : TestBase
             var context = new ClassContext(sourceModel);
 
             // Act
-            var result = (await pipeline.Process(context)).ProcessResult(context.Builder, context.Builder.Build);
+            var result = (await pipeline.ProcessAsync(context)).ProcessResult(context.Builder, context.Builder.Build);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -50,7 +50,7 @@ public class ResultExtensionsTests : TestBase
             var context = new ClassContext(sourceModel);
 
             // Act
-            var result = (await pipeline.Process(context)).ProcessResult(context.Builder, context.Builder.Build);
+            var result = (await pipeline.ProcessAsync(context)).ProcessResult(context.Builder, context.Builder.Build);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);

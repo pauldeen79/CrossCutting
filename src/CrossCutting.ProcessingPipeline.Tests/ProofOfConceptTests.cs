@@ -39,7 +39,7 @@ public class ProofOfConceptTests
             });
 
             // Act
-            var result = await sut.Process(request: 1, seed: new StringBuilder());
+            var result = await sut.ProcessAsync(request: 1, seed: new StringBuilder());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -55,7 +55,7 @@ public class ProofOfConceptTests
             var sut = CreateResponsefulSut(x => Result.Error<object?>("Kaboom"));
 
             // Act
-            var result = await sut.Process(request: 1);
+            var result = await sut.ProcessAsync(request: 1);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -69,7 +69,7 @@ public class ProofOfConceptTests
             var sut = CreateResponsefulSut(x => Result.Error<object?>("Kaboom"));
 
             // Act
-            var result = await sut.Process(request: 1, cancellationToken: new CancellationToken());
+            var result = await sut.ProcessAsync(request: 1, cancellationToken: new CancellationToken());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -92,14 +92,14 @@ public class ProofOfConceptTests
         {
             // Arrange
             PipelineContext<object?>? context = null;
-            var sut = CreateResponsefulSut(x =>
+            var sut = CreateResponselessSut(x =>
             {
                 context = x.ArgAt<PipelineContext<object?>>(0);
                 return Result.Continue<object?>();
             });
 
             // Act
-            var result = await sut.Process(request: 1);
+            var result = await sut.ProcessAsync(request: 1);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -111,10 +111,10 @@ public class ProofOfConceptTests
         public async Task Can_Abort_Pipeline_With_Component_Using_Non_Success_Status()
         {
             // Arrange
-            var sut = CreateResponsefulSut(x => Result.Error<object?>("Kaboom"));
+            var sut = CreateResponselessSut(x => Result.Error<object?>("Kaboom"));
 
             // Act
-            var result = await sut.Process(request: 1);
+            var result = await sut.ProcessAsync(request: 1);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -125,10 +125,10 @@ public class ProofOfConceptTests
         public async Task Can_Abort_Pipeline_With_Component_Using_Non_Success_Status_And_CancellationToken()
         {
             // Arrange
-            var sut = CreateResponsefulSut(x => Result.Error<object?>("Kaboom"));
+            var sut = CreateResponselessSut(x => Result.Error<object?>("Kaboom"));
 
             // Act
-            var result = await sut.Process(request: 1, new CancellationToken());
+            var result = await sut.ProcessAsync(request: 1, new CancellationToken());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -139,7 +139,7 @@ public class ProofOfConceptTests
         public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?, StringBuilder>(components: null!))
+            this.Invoking(_ => new Pipeline<object?>(components: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("components");
         }
     }
@@ -150,7 +150,10 @@ public class ProofOfConceptTests
         public async Task Can_Call_ProcessAsync_Without_CancellationToken()
         {
             // Arrange
-            var sut = new MyReplacedResponselessComponent();
+            var sut = Substitute.For<IPipelineComponent<object?>>();
+            sut
+                .ProcessAsync(Arg.Any<PipelineContext<object?>>(), Arg.Any<CancellationToken>())
+                .Returns(Result.NotImplemented());
             var context = new PipelineContext<object?>(1);
 
             // Act
@@ -167,7 +170,10 @@ public class ProofOfConceptTests
         public async Task Can_Call_ProcessAsync_Without_CancellationToken()
         {
             // Arrange
-            var sut = new MyReplacedComponentWithContext();
+            var sut = Substitute.For<IPipelineComponent<object?, StringBuilder>>();
+            sut
+                .ProcessAsync(Arg.Any<PipelineContext<object?, StringBuilder>>(), Arg.Any<CancellationToken>())
+                .Returns(Result.NotImplemented());
             var context = new PipelineContext<object?, StringBuilder>(1, new StringBuilder());
 
             // Act
@@ -176,17 +182,5 @@ public class ProofOfConceptTests
             // Assert
             result.Status.Should().Be(ResultStatus.NotImplemented);
         }
-    }
-
-    private sealed class MyReplacedResponselessComponent : IPipelineComponent<object?>
-    {
-        public Task<Result> ProcessAsync(PipelineContext<object?> context, CancellationToken token)
-            => Task.FromResult(Result.NotImplemented());
-    }
-
-    private sealed class MyReplacedComponentWithContext : IPipelineComponent<object?, StringBuilder>
-    {
-        public Task<Result> ProcessAsync(PipelineContext<object?, StringBuilder> context, CancellationToken token)
-            => Task.FromResult(Result.NotImplemented());
     }
 }
