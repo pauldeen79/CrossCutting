@@ -77,7 +77,7 @@ public class ToLowerCaseFunction : IFunction
         //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
         return new ResultDictionaryBuilder()
             .Add("Expression", () => context.GetArgumentValueResult<string>(0, "Expression"))
-            .Add("Culture", () => context.GetArgumentValueResult<CultureInfo?>(1, "Culture", null))
+            .Add("Culture", () => context.GetArgumentValueResult<CultureInfo>(1, "Culture", null))
             .Build()
             .OnFailure(error => Result.Error<object?>([error], "ToLowerCase evaluation failed, see inner results for details"))
             .OnSuccess(results => 

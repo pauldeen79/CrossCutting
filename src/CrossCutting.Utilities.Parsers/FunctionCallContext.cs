@@ -26,7 +26,7 @@ public class FunctionCallContext
     public Result<T> GetArgumentValueResult<T>(int index, string argumentName)
         => FunctionCall.GetArgumentValueResult<T>(index, argumentName, this);
 
-    public Result<T> GetArgumentValueResult<T>(int index, string argumentName, T defaultValue)
+    public Result<T?> GetArgumentValueResult<T>(int index, string argumentName, T? defaultValue)
         => FunctionCall.GetArgumentValueResult(index, argumentName, this, defaultValue);
 
     public Result<string> GetArgumentStringValueResult(int index, string argumentName)

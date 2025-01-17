@@ -99,7 +99,7 @@ public class ToUpperCaseFunction : ITypedFunction<string>
         return new ResultDictionaryBuilder()
             //note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult
             .Add("Expression", () => context.GetArgumentStringValueResult(0, "Expression"))
-            .Add("Culture", () => context.GetArgumentValueResult<CultureInfo?>(1, "Culture", default))
+            .Add("Culture", () => context.GetArgumentValueResult<CultureInfo>(1, "Culture", default))
             .Build()
             //example for OnFailure that has a custom result, with an inner result that contains the details.
             //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
