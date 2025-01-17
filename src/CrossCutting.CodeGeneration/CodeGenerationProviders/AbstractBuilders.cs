@@ -6,7 +6,6 @@ public class AbstractBuilders(IPipelineService pipelineService) : CrossCuttingCS
     public override string Path => $"{Constants.Namespaces.UtilitiesParsers}/Builders";
 
     protected override bool EnableEntityInheritance => true;
-    protected override bool EnableBuilderInhericance => true;
     protected override bool IsAbstract => true;
 
     // Do not generate 'With' methods. Do this on the interfaces instead.

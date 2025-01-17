@@ -9,7 +9,6 @@ public class AbstractNonGenericBuilders(IPipelineService pipelineService) : Cros
     protected override bool AddBackingFields => true; // backing fields are added when using null checks... so we need to add this explicitly
 
     protected override bool EnableEntityInheritance => true;
-    protected override bool EnableBuilderInhericance => true;
     protected override bool CreateAsObservable => true;
     protected override bool IsAbstract => true;
     protected override string FilenameSuffix => ".nongeneric.template.generated";
