@@ -113,9 +113,10 @@ public class ToUpperCaseFunction : ITypedFunction<string>
         return results => Result.Success(results.GetValue<string>("Expression").ToUpper(results.TryGetValue("Culture", context.FormatProvider.ToCultureInfo())));
     }
 
-    private static Action<Result> OnFailure()
+    private static Func<Result, Result> OnFailure()
     {
-        return error => Result.Error<object?>([error], "ToUpperCase evaluation failed, see inner results for details");
+        // If you want to return the error unchanged, just use return error => error
+        return error => Result.Error([error], "ToUpperCase evaluation failed, see inner results for details");
     }
 
     public Result Validate(FunctionCallContext context)

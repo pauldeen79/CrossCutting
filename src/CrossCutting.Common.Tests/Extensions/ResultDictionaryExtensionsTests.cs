@@ -319,6 +319,23 @@ public class ResultDictionaryExtensionsTests
         }
 
         [Fact]
+        public void Returns_Delegate_Result_When_Non_Successful_Result_Is_Present()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder<string>()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericErrorDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.OnFailure(results => Result.Error<string>("Kaboom"));
+
+            // Assert
+            result.GetError().ErrorMessage.Should().Be("Kaboom");
+        }
+
+        [Fact]
         public void Does_Not_Perform_Action_When_Non_Successful_Result_Is_Not_Present()
         {
             // Arrange
@@ -355,6 +372,23 @@ public class ResultDictionaryExtensionsTests
 
             // Assert
             counter.Should().Be(1);
+        }
+
+        [Fact]
+        public void Returns_Delegate_Result_When_Non_Successful_Result_Is_Present()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericErrorDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.OnFailure(results => Result.Error("Kaboom"));
+
+            // Assert
+            result.GetError().ErrorMessage.Should().Be("Kaboom");
         }
 
         [Fact]

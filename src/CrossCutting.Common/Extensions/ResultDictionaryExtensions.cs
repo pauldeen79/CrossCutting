@@ -79,6 +79,40 @@ public static class ResultDictionaryExtensions
         return resultDictionary;
     }
 
+    public static Dictionary<string, Result<T>> OnFailure<T>(this Dictionary<string, Result<T>> resultDictionary, Func<Result<T>, Result<T>> errorDelegate)
+    {
+        errorDelegate = ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+
+        var error = resultDictionary.Select(x => new { x.Key, x.Value }).FirstOrDefault(x => !x.Value.IsSuccessful());
+        if (error is not null)
+        {
+            // note that for now, we take all success results until the first error, and then replace the error with the delegate result
+            var result = new Dictionary<string, Result<T>>();
+            result.AddRange(resultDictionary.TakeWhile(x => x.Value.IsSuccessful()));
+            result.Add(error.Key, errorDelegate(error.Value));
+            return result;
+        }
+
+        return resultDictionary;
+    }
+
+    public static Dictionary<string, Result> OnFailure(this Dictionary<string, Result> resultDictionary, Func<Result, Result> errorDelegate)
+    {
+        errorDelegate = ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+
+        var error = resultDictionary.Select(x => new { x.Key, x.Value }).FirstOrDefault(x => !x.Value.IsSuccessful());
+        if (error is not null)
+        {
+            // note that for now, we take all success results until the first error, and then replace the error with the delegate result
+            var result = new Dictionary<string, Result>();
+            result.AddRange(resultDictionary.TakeWhile(x => x.Value.IsSuccessful()));
+            result.Add(error.Key, errorDelegate(error.Value));
+            return result;
+        }
+
+        return resultDictionary;
+    }
+
     public static T GetValue<T>(this Dictionary<string, Result> resultDictionary, string resultKey)
         => resultDictionary[resultKey].CastValueAs<T>();
 
