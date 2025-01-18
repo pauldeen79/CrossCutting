@@ -104,8 +104,18 @@ public class ToUpperCaseFunction : ITypedFunction<string>
             .Build()
             //example for OnFailure that has a custom result, with an inner result that contains the details.
             //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
-            .OnFailure(error => Result.Error<object?>([error], "ToUpperCase evaluation failed, see inner results for details"))
-            .OnSuccess(results => Result.Success(results.GetValue<string>("Expression").ToUpper(results.TryGetValue("Culture", context.FormatProvider.ToCultureInfo()))));
+            .OnFailure(OnFailure())
+            .OnSuccess(OnSuccess(context));
+    }
+
+    private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(FunctionCallContext context)
+    {
+        return results => Result.Success(results.GetValue<string>("Expression").ToUpper(results.TryGetValue("Culture", context.FormatProvider.ToCultureInfo())));
+    }
+
+    private static Action<Result> OnFailure()
+    {
+        return error => Result.Error<object?>([error], "ToUpperCase evaluation failed, see inner results for details");
     }
 
     public Result Validate(FunctionCallContext context)
