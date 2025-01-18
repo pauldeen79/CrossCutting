@@ -51,6 +51,7 @@ public class ExpressionFrameworkHowItShouldBeTests
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var functionCall = new ToUpperCaseFunctionCallBuilder()
             .WithExpression("Hello world!")
+            .WithCultureInfo(CultureInfo.InvariantCulture)
             .Build();
         var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
 
@@ -126,23 +127,10 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
         CultureInfo = new ConstantArgumentBuilder<CultureInfo?>();
     }
 
-    public ToUpperCaseFunctionCallBuilder WithExpression(string expression)
-    {
-        ArgumentNullException.ThrowIfNull(expression);
-        Expression = new ConstantArgumentBuilder<string>().WithValue(expression);
-        return this;
-    }
-
     public ToUpperCaseFunctionCallBuilder WithExpression(FunctionCallArgumentBuilder<string> expression)
     {
         ArgumentNullException.ThrowIfNull(expression);
         Expression = expression;
-        return this;
-    }
-
-    public ToUpperCaseFunctionCallBuilder WithCultureInfo(CultureInfo? cultureInfo)
-    {
-        CultureInfo = new ConstantArgumentBuilder<CultureInfo?>().WithValue(cultureInfo);
         return this;
     }
 
