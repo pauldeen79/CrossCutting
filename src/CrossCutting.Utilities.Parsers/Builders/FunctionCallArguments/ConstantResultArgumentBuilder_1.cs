@@ -9,7 +9,7 @@ public partial class ConstantResultArgumentBuilder<T> : FunctionCallArgumentBuil
         => new ConstantResultArgument<T>(Result);
 
     public override FunctionCallArgument Build()
-        => new ConstantResultArgument<T>(Result);
+        => new ConstantResultArgument(Result.Transform<object?>(value => value));
 
     public Result<T> Result { get; set; } = default!;
 

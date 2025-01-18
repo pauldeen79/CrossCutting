@@ -6,6 +6,9 @@ public abstract class FunctionCallArgumentBuilder<T> : FunctionCallArgumentBuild
 
 #pragma warning disable CA2225 // Operator overloads have named alternates
     public static implicit operator FunctionCallArgumentBuilder<T>(T value)
-#pragma warning restore CA2225 // Operator overloads have named alternates
         => new ConstantArgumentBuilder<T> { Value = value };
+
+    public static implicit operator FunctionCallArgumentBuilder<T>(Result<T> result)
+        => new ConstantResultArgumentBuilder<T> { Result = result };
+#pragma warning restore CA2225 // Operator overloads have named alternates
 }

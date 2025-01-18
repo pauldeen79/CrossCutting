@@ -50,7 +50,7 @@ public class ExpressionFrameworkHowItShouldBeTests
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var functionCall = new ToUpperCaseFunctionCallBuilder()
-            .WithExpression("Hello world!")
+            .WithExpression(Result.Success("Hello world!"))
             .WithCultureInfo(CultureInfo.InvariantCulture)
             .Build();
         var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);

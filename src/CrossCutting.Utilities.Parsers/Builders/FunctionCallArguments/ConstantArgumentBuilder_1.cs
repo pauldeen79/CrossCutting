@@ -9,7 +9,7 @@ public partial class ConstantArgumentBuilder<T> : FunctionCallArgumentBuilder<T>
         => new ConstantArgument<T>(Value);
 
     public override FunctionCallArgument Build()
-        => new ConstantArgument<T>(Value);
+        => new ConstantArgument(Value);
 
     public T Value { get; set; } = default!;
 
