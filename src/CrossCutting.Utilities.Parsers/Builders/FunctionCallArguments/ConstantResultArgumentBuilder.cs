@@ -1,19 +1,19 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
 
-public partial class TypedConstantResultArgumentBuilder<T> : TypedFunctionCallArgumentBuilder<T>
+public partial class ConstantResultArgumentBuilder<T> : FunctionCallArgumentBuilder<T>
 {
     public FunctionCallArgumentBuilder ToUntyped()
         => new ConstantResultArgumentBuilder().WithResult(Result.Transform<object?>(value => value));
 
-    public override TypedFunctionCallArgument<T> BuildTyped()
-        => new TypedConstantResultArgument<T>(Result);
+    public override FunctionCallArgument<T> BuildTyped()
+        => new ConstantResultArgument<T>(Result);
 
     public override FunctionCallArgument Build()
-        => new TypedConstantResultArgument<T>(Result);
+        => new ConstantResultArgument<T>(Result);
 
     public Result<T> Result { get; set; } = default!;
 
-    public TypedConstantResultArgumentBuilder<T> WithResult(Result<T> result)
+    public ConstantResultArgumentBuilder<T> WithResult(Result<T> result)
     {
         Result = result;
         return this;

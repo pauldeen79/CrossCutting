@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
 
-public partial record TypedConstantArgument<T> : TypedFunctionCallArgument<T>
+public partial record ConstantArgument<T> : FunctionCallArgument<T>
 {
     public Result<T> GetTypedValueResult(FunctionCallContext context)
         => Result.Success(Value);
@@ -9,14 +9,14 @@ public partial record TypedConstantArgument<T> : TypedFunctionCallArgument<T>
         => Result.Success<object?>(Value);
 
     public override FunctionCallArgumentBuilder ToBuilder()
-        => new TypedConstantArgumentBuilder<T>().WithValue(Value);
+        => new ConstantArgumentBuilder<T>().WithValue(Value);
 
-    public override TypedFunctionCallArgumentBuilder<T> ToTypedBuilder()
-        => new TypedConstantArgumentBuilder<T>().WithValue(Value);
+    public override FunctionCallArgumentBuilder<T> ToTypedBuilder()
+        => new ConstantArgumentBuilder<T>().WithValue(Value);
 
     public T Value { get; }
 
-    public TypedConstantArgument(T value)
+    public ConstantArgument(T value)
     {
         Value = value;
     }

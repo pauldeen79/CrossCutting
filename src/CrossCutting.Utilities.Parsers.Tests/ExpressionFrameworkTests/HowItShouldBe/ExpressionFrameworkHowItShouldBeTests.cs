@@ -116,24 +116,24 @@ public class ToUpperCaseFunction : ITypedFunction<string>
 
 public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
 {
-    public TypedFunctionCallArgumentBuilder<string> Expression { get; set; }
-    public TypedFunctionCallArgumentBuilder<CultureInfo?> CultureInfo { get; set; }
+    public FunctionCallArgumentBuilder<string> Expression { get; set; }
+    public FunctionCallArgumentBuilder<CultureInfo?> CultureInfo { get; set; }
 
     public ToUpperCaseFunctionCallBuilder()
     {
         // Same functionality as in ClassFramework.Pipelines: When it's a non-nullable string, then assign String.Empty. (and also, initialize collections and required builder-typed properties to new instances)
-        Expression = new TypedConstantArgumentBuilder<string>().WithValue(string.Empty);
-        CultureInfo = new TypedConstantArgumentBuilder<CultureInfo?>();
+        Expression = new ConstantArgumentBuilder<string>().WithValue(string.Empty);
+        CultureInfo = new ConstantArgumentBuilder<CultureInfo?>();
     }
 
     public ToUpperCaseFunctionCallBuilder WithExpression(string expression)
     {
         ArgumentNullException.ThrowIfNull(expression);
-        Expression = new TypedConstantArgumentBuilder<string>().WithValue(expression);
+        Expression = new ConstantArgumentBuilder<string>().WithValue(expression);
         return this;
     }
 
-    public ToUpperCaseFunctionCallBuilder WithExpression(TypedFunctionCallArgumentBuilder<string> expression)
+    public ToUpperCaseFunctionCallBuilder WithExpression(FunctionCallArgumentBuilder<string> expression)
     {
         ArgumentNullException.ThrowIfNull(expression);
         Expression = expression;
@@ -142,11 +142,11 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
 
     public ToUpperCaseFunctionCallBuilder WithCultureInfo(CultureInfo? cultureInfo)
     {
-        CultureInfo = new TypedConstantArgumentBuilder<CultureInfo?>().WithValue(cultureInfo);
+        CultureInfo = new ConstantArgumentBuilder<CultureInfo?>().WithValue(cultureInfo);
         return this;
     }
 
-    public ToUpperCaseFunctionCallBuilder WithCultureInfo(TypedFunctionCallArgumentBuilder<CultureInfo?> cultureInfo)
+    public ToUpperCaseFunctionCallBuilder WithCultureInfo(FunctionCallArgumentBuilder<CultureInfo?> cultureInfo)
     {
         ArgumentNullException.ThrowIfNull(cultureInfo);
         CultureInfo = cultureInfo;
