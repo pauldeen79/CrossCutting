@@ -80,6 +80,7 @@ public class ExpressionFrameworkHowItShouldBeTests
     }
 }
 
+// *** Generated code
 [FunctionName(@"ToUpperCase")]
 [Description("Converts the expression to upper case")]
 [FunctionArgument("Expression", typeof(string), "String to get the upper case for", true)]
@@ -98,30 +99,36 @@ public class ToUpperCaseFunction : ITypedFunction<string>
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return new ResultDictionaryBuilder()
-            //note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult
+            //note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult.
             .Add("Expression", () => context.GetArgumentStringValueResult(0, "Expression"))
             .Add("Culture", () => context.GetArgumentValueResult<CultureInfo>(1, "Culture", default))
             .Build()
             //example for OnFailure that has a custom result, with an inner result that contains the details.
             //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
-            .OnFailure(OnFailure())
+            .OnFailure(OnFailure)
             .OnSuccess(OnSuccess(context));
     }
 
+    // Strongly-typed access to arguments
+    private static string Expression(Dictionary<string, Result> resultDictionary) => resultDictionary.GetValue<string>("Expression");
+    private static CultureInfo? CultureInfo(Dictionary<string, Result> resultsDictionary, CultureInfo? defaultValue) => resultsDictionary.TryGetValue("Culture", defaultValue);
+
+    // *** Scaffold code, by default throw a NotImplementedException.
     private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(FunctionCallContext context)
     {
-        return results => Result.Success(results.GetValue<string>("Expression").ToUpper(results.TryGetValue("Culture", context.FormatProvider.ToCultureInfo())));
+        return results => Result.Success(Expression(results).ToUpper(CultureInfo(results, context.FormatProvider.ToCultureInfo())));
     }
 
-    private static Func<Result, Result> OnFailure()
+    private static Result OnFailure(Result error)
     {
-        // If you want to return the error unchanged, just use return error => error
-        return error => Result.Error([error], "ToUpperCase evaluation failed, see inner results for details");
+        // If you want to return the error unchanged, just use return error to let it bubble up (default behavior?)
+        return error;
+        ///example for custom error: return Result.Error([error], "ToUpperCase evaluation failed, see inner results for details");
     }
 
     public Result Validate(FunctionCallContext context)
     {
-        // No additional validation needed
+        // No additional validation needed (default behavior)
         return Result.Success();
     }
 }
