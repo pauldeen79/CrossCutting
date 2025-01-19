@@ -203,6 +203,23 @@ public class ResultDictionaryContainerExtensionsTests
             // Assert
             counter.Should().Be(1);
         }
+
+        [Fact]
+        public void Returns_Delegate_Result_When_Non_Successful_Result_Is_Present()
+        {
+            // Arrange
+            var sut = CreateSut(new ResultDictionaryBuilder<string>()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericErrorDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build());
+
+            // Act
+            var result = sut.OnFailure(results => Result.Error<string>("Kaboom"));
+
+            // Assert
+            result.GetError().ErrorMessage.Should().Be("Kaboom");
+        }
     }
 
     public class OnFailureNonGeneric : ResultDictionaryContainerExtensionsTests
@@ -223,6 +240,23 @@ public class ResultDictionaryContainerExtensionsTests
 
             // Assert
             counter.Should().Be(1);
+        }
+
+        [Fact]
+        public void Returns_Delegate_Result_When_Non_Successful_Result_Is_Present()
+        {
+            // Arrange
+            var sut = CreateSut(new ResultDictionaryBuilder()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericErrorDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build());
+
+            // Act
+            var result = sut.OnFailure(results => Result.Error("Kaboom"));
+
+            // Assert
+            result.GetError().ErrorMessage.Should().Be("Kaboom");
         }
     }
 
