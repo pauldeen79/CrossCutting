@@ -98,49 +98,49 @@ public class ToUpperCaseFunction : ITypedFunction<string>
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return new ResultDictionaryBuilder()
-            //note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult.
-            .Add("Expression", () => context.GetArgumentStringValueResult(0, "Expression"))
-            .Add("Culture", () => context.GetArgumentValueResult<CultureInfo>(1, "Culture", default))
-            .Build()
+        var typedContext = new ToUpperCaseFunctionCallContext(context);
+        return typedContext
             //example for OnFailure that has a custom result, with an inner result that contains the details.
             //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
             .OnFailure(OnFailure)
-            .OnSuccess(OnSuccess(context));
+            .OnSuccess(OnSuccess(typedContext));
     }
 
-    // Strongly-typed access to arguments
-    private static string Expression(Dictionary<string, Result> resultDictionary) => resultDictionary.GetValue<string>("Expression");
-    private static CultureInfo? CultureInfo(Dictionary<string, Result> resultsDictionary, CultureInfo? defaultValue) => resultsDictionary.TryGetValue("Culture", defaultValue);
-
-    // *** Scaffold code, by default throw a NotImplementedException.
-    private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(FunctionCallContext context)
+    // *** Scaffold code, by default throw a NotImplementedException
+    private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(ToUpperCaseFunctionCallContext context)
     {
-        return results => Result.Success(Expression(results).ToUpper(CultureInfo(results, context.FormatProvider.ToCultureInfo())));
+        return results => Result.Success(context.Expression().ToUpper(context.CultureInfo(context.FormatProvider.ToCultureInfo())));
     }
 
+    // *** Scaffold code, by default return error
     private static Result OnFailure(Result error)
     {
-        // If you want to return the error unchanged, just use return error to let it bubble up (default behavior?)
+        // If you want to return the error unchanged, just use return error to let it bubble up (default behavior)
+        // Or, maybe using settings you can choose the behavior of this method. (bubble, wrap, skip the OnFailure entirely, not implemented exception)
         return error;
         ///example for custom error: return Result.Error([error], "ToUpperCase evaluation failed, see inner results for details");
     }
 
+    // *** Scaffold code, by default return Result.Success()
     public Result Validate(FunctionCallContext context)
     {
         // No additional validation needed (default behavior)
+        // Or, maybe using settings you can choose whether to return Result.Success(), or throw a NotImplementedException for clarity.
         return Result.Success();
     }
 }
 
+// *** Generated code
 public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
 {
+    // You might be able to re-use the default builder pipeline, but then you have to do some typemapping.
     public FunctionCallArgumentBuilder<string> Expression { get; set; }
     public FunctionCallArgumentBuilder<CultureInfo?> CultureInfo { get; set; }
 
     public ToUpperCaseFunctionCallBuilder()
     {
         // Same functionality as in ClassFramework.Pipelines: When it's a non-nullable string, then assign String.Empty. (and also, initialize collections and required builder-typed properties to new instances)
+        // Not sure if you can plug into the Builder pipeline to customize this...
         Expression = new ConstantArgumentBuilder<string>().WithValue(string.Empty);
         CultureInfo = new ConstantArgumentBuilder<CultureInfo?>();
     }
@@ -161,9 +161,51 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
 
     public FunctionCall Build()
     {
+        // This definitely doesn't work out of the box.
+        // You have to customize this also.
+
+        // Strongly-typed FunctionCall: (maybe too much overhead)
+        ///return new ToUpperCaseFunctionCall(Expression.BuildTyped(), CultureInfo.BuildTyped());
+
+        // Generic FunctionCall:
         return new FunctionCallBuilder()
             .WithName(@"ToUpperCase")
             .AddArguments(Expression, CultureInfo)
             .Build();
     }
+}
+
+// *** Generated code (optional)
+///public record ToUpperCaseFunctionCall : FunctionCall
+///{
+///    public ToUpperCaseFunctionCall(FunctionCallArgument<string> expression, FunctionCallArgument<CultureInfo?> cultureInfo) : base("ToUpperCase", new FunctionCallArgument[] { expression, cultureInfo } )
+///    {
+///    }
+///
+///    protected ToUpperCaseFunctionCall(FunctionCall original) : base(original)
+///    {
+///    }
+///}
+
+// *** Generated code
+public class ToUpperCaseFunctionCallContext : FunctionCallContext, IResultDictionaryContainer
+{
+    public Dictionary<string, Result> Results { get; }
+
+    public ToUpperCaseFunctionCallContext(FunctionCallContext context) : base(context?.FunctionCall ?? throw new ArgumentNullException(nameof(context)), context.FunctionEvaluator, context.ExpressionEvaluator, context.FormatProvider, context.Context)
+    {
+        Results = new ResultDictionaryBuilder()
+            // Note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult.
+            // This is exactly the same. For Int32, Boolean etc we have special cases, so we might do this for string too.
+            // But maybe we'll just skip this, I'm not seeing the difference. (unless the GetArgumentStringValueResult performs a ToString())
+            .Add("Expression", () => GetArgumentStringValueResult(0, "Expression"))
+            .Add("Culture", () => GetArgumentValueResult<CultureInfo>(1, "Culture", default))
+            .Build();
+    }
+
+    // Strongly-typed access to arguments
+    public string Expression() => Results.GetValue<string>("Expression");
+    // For optional arguments, generate two overloads (with and without default value)
+    public CultureInfo? CultureInfo() => Results.TryGetValue<CultureInfo>("Culture");
+    public CultureInfo? CultureInfo(CultureInfo? defaultValue) => Results.TryGetValue("Culture", defaultValue);
 }
