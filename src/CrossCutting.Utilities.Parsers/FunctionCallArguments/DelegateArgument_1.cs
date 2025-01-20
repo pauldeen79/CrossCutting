@@ -5,8 +5,11 @@ public partial record DelegateArgument<T> : FunctionCallArgument<T>
     public Result<T> GetTypedValueResult(FunctionCallContext context)
         => Result.Success(Delegate());
 
-    public override Result<object?> GetValueResult(FunctionCallContext context)
+    public override Result<object?> Evaluate(FunctionCallContext context)
         => Result.Success<object?>(Delegate());
+
+    public override Result<Type> Validate(FunctionCallContext context)
+        => Result.Success(ValidationDelegate?.Invoke()!);
 
     public override FunctionCallArgumentBuilder ToBuilder()
         => new DelegateArgumentBuilder<T>().WithDelegate(Delegate);
@@ -15,9 +18,13 @@ public partial record DelegateArgument<T> : FunctionCallArgument<T>
         => new DelegateArgumentBuilder<T>().WithDelegate(Delegate);
 
     public Func<T> Delegate { get; }
+    public Func<Type>? ValidationDelegate { get; }
 
-    public DelegateArgument(Func<T> @delegate)
+    public DelegateArgument(Func<T> @delegate, Func<Type>? validationDelegate)
     {
+        ArgumentGuard.IsNotNull(@delegate, nameof(@delegate));
+
         Delegate = @delegate;
+        ValidationDelegate = validationDelegate;
     }
 }

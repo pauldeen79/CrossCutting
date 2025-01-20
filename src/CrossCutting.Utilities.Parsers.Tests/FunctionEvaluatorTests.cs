@@ -419,7 +419,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         // Arrange
         var functionCall = new FunctionCallBuilder()
             .WithName("Overload")
-            .AddArguments(new DelegateResultArgumentBuilder().WithDelegate(() => Result.Error<object?>("Kaboom")))
+            .AddArguments(new DelegateResultArgumentBuilder().WithDelegate(() => Result.Error<object?>("Kaboom")).WithValidationDelegate(() => Result.Error<Type>("Kaboom")))
             .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
@@ -465,7 +465,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         // Arrange
         var functionCall = new FunctionCallBuilder()
             .WithName("MyFunction2")
-            .AddArguments(new DelegateArgumentBuilder().WithDelegate(() => "some value"))
+            .AddArguments(new DelegateArgumentBuilder().WithDelegate(() => "some value").WithValidationDelegate(() => typeof(int)))
             .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
@@ -477,7 +477,9 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Custom validation message");
+        result.ErrorMessage.Should().Be("Could not evaluate function MyFunction2, see inner results for more details");
+        result.InnerResults.Should().ContainSingle();
+        result.InnerResults.Single().ErrorMessage.Should().Be("Argument Argument1 is not of type System.String");
     }
 
     [Fact]

@@ -1390,7 +1390,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         {
             return Result.Success<object?>(
                 context.Context?.ToString()?.ToUpperInvariant()
-                ?? context.FunctionCall.Arguments.FirstOrDefault()?.GetValueResult(context).Value?.ToString()?.ToUpperInvariant()
+                ?? context.FunctionCall.Arguments.FirstOrDefault()?.Evaluate(context).Value?.ToString()?.ToUpperInvariant()
                 ?? string.Empty);
         }
 

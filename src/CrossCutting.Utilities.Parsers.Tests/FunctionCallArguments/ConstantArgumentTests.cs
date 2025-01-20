@@ -25,7 +25,7 @@ public class ConstantArgumentTests
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = sut.GetValueResult(context);
+        var result = sut.Evaluate(context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);

@@ -839,7 +839,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         public Result<object?> Evaluate(FunctionCallContext context)
         {
-            var valueResult = context.FunctionCall.Arguments.First().GetValueResult(context);
+            var valueResult = context.FunctionCall.Arguments.First().Evaluate(context);
             if (!valueResult.IsSuccessful())
             {
                 return valueResult;

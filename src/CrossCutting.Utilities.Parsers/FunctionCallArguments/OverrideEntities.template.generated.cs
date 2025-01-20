@@ -65,9 +65,15 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
             get;
         }
 
-        public DelegateArgument(System.Func<object?> @delegate) : base()
+        public System.Func<System.Type>? ValidationDelegate
+        {
+            get;
+        }
+
+        public DelegateArgument(System.Func<object?> @delegate, System.Func<System.Type>? validationDelegate) : base()
         {
             this.Delegate = @delegate;
+            this.ValidationDelegate = validationDelegate;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -89,9 +95,15 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
             get;
         }
 
-        public DelegateResultArgument(System.Func<CrossCutting.Common.Results.Result<object?>> @delegate) : base()
+        public System.Func<CrossCutting.Common.Results.Result<System.Type>>? ValidationDelegate
+        {
+            get;
+        }
+
+        public DelegateResultArgument(System.Func<CrossCutting.Common.Results.Result<object?>> @delegate, System.Func<CrossCutting.Common.Results.Result<System.Type>>? validationDelegate) : base()
         {
             this.Delegate = @delegate;
+            this.ValidationDelegate = validationDelegate;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 

@@ -105,7 +105,11 @@ public class FunctionEvaluator : IFunctionEvaluator
         var errors = new List<Result>();
         foreach (var argument in arguments)
         {
-            errors.AddRange(_functionCallArgumentValidator.Validate(argument.DescriptorArgument, argument.CallArgument, functionCallContext));
+            var validationResult = _functionCallArgumentValidator.Validate(argument.DescriptorArgument, argument.CallArgument, functionCallContext);
+            if (!validationResult.IsSuccessful())
+            {
+                errors.Add(validationResult);
+            }
         }
 
         if (errors.Count > 0)

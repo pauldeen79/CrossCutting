@@ -2,5 +2,5 @@
 
 public interface IFunctionCallArgumentValidator
 {
-    IEnumerable<Result> Validate(FunctionDescriptorArgument descriptorArgument, FunctionCallArgument callArgument, FunctionCallContext functionCallContext);
+    Result Validate(FunctionDescriptorArgument descriptorArgument, FunctionCallArgument callArgument, FunctionCallContext functionCallContext);
 }

@@ -11,10 +11,10 @@ public class ContextExpression : IExpression
             _ => Result.Continue<object?>()
         };
 
-    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
         => expression switch
         {
-            "context" => Result.Success(),
-            _ => Result.Continue()
+            "context" => Result.Success(context?.GetType()!),
+            _ => Result.Continue<Type>()
         };
 }

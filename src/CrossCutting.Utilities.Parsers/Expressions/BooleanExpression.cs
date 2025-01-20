@@ -12,11 +12,11 @@ public class BooleanExpression : IExpression
             _ => Result.Continue<object?>()
         };
 
-    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
         => expression switch
         {
-            "true" => Result.Success(),
-            "false" => Result.Success(),
-            _ => Result.Continue()
+            "true" => Result.Success(typeof(bool)),
+            "false" => Result.Success(typeof(bool)),
+            _ => Result.Continue<Type>()
         };
 }

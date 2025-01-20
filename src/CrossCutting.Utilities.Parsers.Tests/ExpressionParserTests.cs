@@ -404,7 +404,7 @@ public class ExpressionParserTests : IDisposable
         {
             // Arrange
             var input = "$classname";
-            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success());
+            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<Type>(default!));
 
             // Act
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
@@ -420,8 +420,8 @@ public class ExpressionParserTests : IDisposable
             var input = "$classname";
             var context = new MyContext("HelloWorldClass");
             _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "classname"
-                ? Result.Success()
-                : Result.Continue());
+                ? Result.Success<Type>(default!)
+                : Result.Continue<Type>());
 
             // Act
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, context);
@@ -465,7 +465,7 @@ public class ExpressionParserTests : IDisposable
         {
             // Arrange
             var input = "$unknownvariable";
-            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Continue());
+            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Continue<Type>());
 
             // Act
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);

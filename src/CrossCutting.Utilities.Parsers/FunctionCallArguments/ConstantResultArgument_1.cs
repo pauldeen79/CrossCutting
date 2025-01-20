@@ -5,8 +5,11 @@ public partial record ConstantResultArgument<T> : FunctionCallArgument<T>
     public Result<T> GetTypedValueResult(FunctionCallContext context)
         => Result;
 
-    public override Result<object?> GetValueResult(FunctionCallContext context)
+    public override Result<object?> Evaluate(FunctionCallContext context)
         => Result.Transform<object?>(value => value);
+
+    public override Result<Type> Validate(FunctionCallContext context)
+        => Result.Transform(x => x?.GetType()!);
 
     public override FunctionCallArgumentBuilder ToBuilder()
         => new ConstantResultArgumentBuilder<T>().WithResult(Result);
