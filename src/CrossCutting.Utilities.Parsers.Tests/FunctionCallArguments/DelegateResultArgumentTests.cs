@@ -33,7 +33,7 @@ public class DelegateResultArgumentTests
     }
 
     [Fact]
-    public void UNtyped_Evaluate_Returns_Correct_Result()
+    public void Untyped_Evaluate_Returns_Correct_Result()
     {
         // Arrange
         var sut = new DelegateResultArgument(() => Result.Success<object?>("Hello world!"), null);
