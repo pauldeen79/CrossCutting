@@ -33,10 +33,40 @@ public class ConstantResultArgumentTests
     }
 
     [Fact]
+    public void Untyped_Evaluate_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new ConstantResultArgument(Result.Success<object?>("Hello world!"));
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+
+        // Act
+        var result = sut.Evaluate(context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("Hello world!");
+    }
+
+    [Fact]
     public void Validate_Returns_Correct_Result()
     {
         // Arrange
         var sut = new ConstantResultArgument<string>(Result.Success("Hello world!"));
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+
+        // Act
+        var result = sut.Validate(context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be<string>();
+    }
+
+    [Fact]
+    public void Untyped_Validate_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new ConstantResultArgument(Result.Success<object?>("Hello world!"));
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
 
         // Act
