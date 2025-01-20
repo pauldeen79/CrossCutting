@@ -3,14 +3,14 @@
 public class DelegateResultArgumentTests
 {
     [Fact]
-    public void GetTypedValueResult_Returns_Correct_Result()
+    public void EvaluateTyped_Returns_Correct_Result()
     {
         // Arrange
         var sut = new DelegateResultArgument<string>(() => Result.Success("Hello world!"), null);
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = sut.GetTypedValueResult(context);
+        var result = sut.EvaluateTyped(context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);

@@ -2,7 +2,7 @@
 
 public partial record DelegateArgument<T> : FunctionCallArgument<T>
 {
-    public Result<T> GetTypedValueResult(FunctionCallContext context)
+    public override Result<T> EvaluateTyped(FunctionCallContext context)
         => Result.Success(Delegate());
 
     public override Result<object?> Evaluate(FunctionCallContext context)

@@ -2,7 +2,7 @@
 
 public partial record ConstantArgument<T> : FunctionCallArgument<T>
 {
-    public Result<T> GetTypedValueResult(FunctionCallContext context)
+    public override Result<T> EvaluateTyped(FunctionCallContext context)
         => Result.Success(Value);
 
     public override Result<object?> Evaluate(FunctionCallContext context)
