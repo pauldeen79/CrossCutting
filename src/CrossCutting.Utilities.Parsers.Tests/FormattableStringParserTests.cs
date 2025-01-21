@@ -779,7 +779,7 @@ public sealed class FormattableStringParserTests : IDisposable
             ? Result.Success<object?>(1)
             : Result.Continue<object?>());
 
-        _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<Type>(default!));
+        _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.NoContent<Type>());
 
         _provider = new ServiceCollection()
             .AddParsers()

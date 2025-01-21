@@ -14,7 +14,7 @@ public class NullExpression : IExpression
     public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
         => expression switch
         {
-            "null" => Result.Success<Type>(default!),
+            "null" => Result.NoContent<Type>(),
             _ => Result.Continue<Type>()
         };
 }

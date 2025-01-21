@@ -18,7 +18,7 @@ public class ExpressionFrameworkHowItShouldBeTests
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.NoContent);
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
     {
         // No additional validation needed (default behavior)
         // Or, maybe using settings you can choose whether to return Result.Success(), or throw a NotImplementedException for clarity.
-        return Result.Success<Type>(default!);
+        return Result.NoContent<Type>();
     }
 }
 

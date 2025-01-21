@@ -9,7 +9,7 @@ public partial record DelegateResultArgument<T> : FunctionCallArgument<T>
         => Delegate().Transform<object?>(value => value);
 
     public override Result<Type> Validate(FunctionCallContext context)
-        => ValidationDelegate?.Invoke() ?? Result.Success<Type>(default!);
+        => ValidationDelegate?.Invoke() ?? Result.NoContent<Type>();
 
     public override FunctionCallArgumentBuilder ToBuilder()
         => new DelegateResultArgumentBuilder<T>().WithDelegate(Delegate);

@@ -20,7 +20,7 @@ public class ExpressionFrameworkNewTests
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.NoContent);
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class ToLowerCaseFunction : IValidatableFunction
     public Result<Type> Validate(FunctionCallContext context)
     {
         // No additional validation needed
-        return Result.Success<Type>(default!);
+        return Result.NoContent<Type>();
     }
 }
 

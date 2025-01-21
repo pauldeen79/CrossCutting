@@ -6,5 +6,5 @@ public partial record DelegateResultArgument
         => Delegate();
 
     public override Result<Type> Validate(FunctionCallContext context)
-        => ValidationDelegate?.Invoke() ?? Result.Success<Type>(default!);
+        => ValidationDelegate?.Invoke() ?? Result.NoContent<Type>();
 }
