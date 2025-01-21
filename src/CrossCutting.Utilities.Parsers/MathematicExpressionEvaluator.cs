@@ -58,7 +58,6 @@ public class MathematicExpressionEvaluator : IMathematicExpressionEvaluator
 
         var state = new MathematicExpressionState(expression, formatProvider, context, Evaluate);
         var error = _expressions
-            .OfType<Validate>()
             .Select(x => x.Evaluate(state))
             .FirstOrDefault(x => !x.IsSuccessful());
 

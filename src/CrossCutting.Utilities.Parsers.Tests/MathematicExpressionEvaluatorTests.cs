@@ -402,7 +402,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateInt64).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NoContent);
+        result.Status.Should().Be(ResultStatus.Ok);
     }
 
     [Fact]
@@ -415,7 +415,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateDecimal).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NoContent);
+        result.Status.Should().Be(ResultStatus.Ok);
     }
 
     [Fact]
@@ -428,7 +428,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateSingle).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NoContent);
+        result.Status.Should().Be(ResultStatus.Ok);
     }
 
     [Fact]
@@ -441,7 +441,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateDouble).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NoContent);
+        result.Status.Should().Be(ResultStatus.Ok);
     }
 
     [Fact]
@@ -454,7 +454,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateByte).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NoContent);
+        result.Status.Should().Be(ResultStatus.Ok);
 
     }
 
@@ -468,7 +468,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateInt16).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NoContent);
+        result.Status.Should().Be(ResultStatus.Ok);
     }
 
     [Fact]

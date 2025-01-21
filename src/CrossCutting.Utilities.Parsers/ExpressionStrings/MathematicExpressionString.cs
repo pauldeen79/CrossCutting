@@ -25,12 +25,12 @@ public class MathematicExpressionString(IMathematicExpressionEvaluator parser) :
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
         // try =1+1 -> mathematic expression, no functions/formattable strings
-        var mathResult = _parser.Evaluate(state.Input.Substring(1), state.FormatProvider, state.Context); //TODO: Use Validate instead of Evaluate
+        var mathResult = _parser.Validate(state.Input.Substring(1), state.FormatProvider, state.Context);
         if (mathResult.Status is ResultStatus.Ok or not ResultStatus.NotFound)
         {
             // both success and failure need to be returned.
             // not found can be ignored, we can try formattable string and function in that case
-            return Result.FromExistingResult(mathResult, mathResult.Value?.GetType()!);
+            return mathResult;
         }
 
         return Result.Continue<Type>();
