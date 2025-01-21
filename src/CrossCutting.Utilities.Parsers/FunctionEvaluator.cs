@@ -39,7 +39,7 @@ public class FunctionEvaluator : IFunctionEvaluator
 
         var functionCallContext = new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context);
 
-        return ResolveFunction(functionCallContext).Transform(result => result.Evaluate(functionCallContext));
+        return ResolveFunction(functionCallContext).Transform(result => result.Function.Evaluate(functionCallContext));
     }
 
     public Result<T> EvaluateTyped<T>(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
@@ -57,7 +57,7 @@ public class FunctionEvaluator : IFunctionEvaluator
             return typedFunction.EvaluateTyped(functionCallContext);
         }
 
-        return functionResult.Transform(result => result.Evaluate(functionCallContext).TryCast<T>());
+        return functionResult.Transform(result => result.Function.Evaluate(functionCallContext).TryCast<T>());
     }
 
     public Result<Type> Validate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
@@ -70,26 +70,15 @@ public class FunctionEvaluator : IFunctionEvaluator
         var functionCallContext = new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context);
 
         return ResolveFunction(functionCallContext)
-            .Transform(result => (result.Value as IValidatableFunction)?.Validate(functionCallContext) ?? Result.FromExistingResult(result, TryGetTypeFromResult(result)));
+            .Transform(result => (result.Value?.Function as IValidatableFunction)?.Validate(functionCallContext) ?? Result.FromExistingResult(result, result.Value?.ReturnValueType!));
     }
 
-    private static Type TryGetTypeFromResult(Result<IFunction> result)
-    {
-        if (result.InnerResults.Count != 1)
-        {
-            //TODO: Find first ITypedExpression<T> implementation, then get the generic argument, and return this type.
-            return null!;
-        }
-
-        return result.InnerResults.First().TryCastValueAs<Type>()!;
-    }
-
-    private Result<IFunction> ResolveFunction(FunctionCallContext functionCallContext)
+    private Result<FunctionAndTypeDescriptor> ResolveFunction(FunctionCallContext functionCallContext)
     {
         var functionsByName = Descriptors.Where(x => x.Name.Equals(functionCallContext.FunctionCall.Name, StringComparison.OrdinalIgnoreCase)).ToArray();
         if (functionsByName.Length == 0)
         {
-            return Result.Invalid<IFunction>($"Unknown function: {functionCallContext.FunctionCall.Name}");
+            return Result.Invalid<FunctionAndTypeDescriptor>($"Unknown function: {functionCallContext.FunctionCall.Name}");
         }
 
         var functionsWithRightArgumentCount = functionsByName.Length == 1
@@ -98,18 +87,18 @@ public class FunctionEvaluator : IFunctionEvaluator
 
         return functionsWithRightArgumentCount.Length switch
         {
-            0 => Result.Invalid<IFunction>($"No overload of the {functionCallContext.FunctionCall.Name} function takes {functionCallContext.FunctionCall.Arguments.Count} arguments"),
+            0 => Result.Invalid<FunctionAndTypeDescriptor>($"No overload of the {functionCallContext.FunctionCall.Name} function takes {functionCallContext.FunctionCall.Arguments.Count} arguments"),
             1 => GetFunctionByDescriptor(functionCallContext, functionsWithRightArgumentCount[0]),
-            _ => Result.Invalid<IFunction>($"Function {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely")
+            _ => Result.Invalid<FunctionAndTypeDescriptor>($"Function {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely")
         };
     }
 
-    private Result<IFunction> GetFunctionByDescriptor(FunctionCallContext functionCallContext, FunctionDescriptor functionDescriptor)
+    private Result<FunctionAndTypeDescriptor> GetFunctionByDescriptor(FunctionCallContext functionCallContext, FunctionDescriptor functionDescriptor)
     {
         var function = _functions.FirstOrDefault(x => x.GetType() == functionDescriptor.FunctionType);
         if (function is null)
         {
-            return Result.Error<IFunction>($"Could not find function with type name {functionDescriptor.FunctionType.FullName}");
+            return Result.Error<FunctionAndTypeDescriptor>($"Could not find function with type name {functionDescriptor.FunctionType.FullName}");
         }
 
         var arguments = functionDescriptor.Arguments.Zip(functionCallContext.FunctionCall.Arguments, (descriptor, call) => new { DescriptorArgument = descriptor, CallArgument = call });
@@ -126,9 +115,23 @@ public class FunctionEvaluator : IFunctionEvaluator
 
         if (errors.Count > 0)
         {
-            return Result.Invalid<IFunction>($"Could not evaluate function {functionCallContext.FunctionCall.Name}, see inner results for more details", errors);
+            return Result.Invalid<FunctionAndTypeDescriptor>($"Could not evaluate function {functionCallContext.FunctionCall.Name}, see inner results for more details", errors);
         }
 
-        return Result.Success([Result.Success(functionDescriptor.ReturnValueType!)], function);
+        return Result.Success(new FunctionAndTypeDescriptor(function, functionDescriptor.ReturnValueType));
     }
+}
+
+public class FunctionAndTypeDescriptor
+{
+    public FunctionAndTypeDescriptor(IFunction function, Type? returnValueType)
+    {
+        ArgumentGuard.IsNotNull(function, nameof(function));
+
+        ReturnValueType = returnValueType;
+        Function = function;
+    }
+
+    public Type? ReturnValueType { get; }
+    public IFunction Function { get; }
 }
