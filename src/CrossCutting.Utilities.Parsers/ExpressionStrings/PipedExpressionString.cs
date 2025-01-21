@@ -31,7 +31,7 @@ public class PipedExpressionString : IExpressionString
         (
             state,
             '|',
-            split => Result.Aggregate(split.Select(item => state.Parser.Validate($"={item}", state.FormatProvider, state.Context, state.FormattableStringParser)), Result.NoContent<Type>(), validationResults => Result.Invalid<Type>("Validation failed, see inner results for details", validationResults))
+            BaseProcessor.Parse(state)
         );
     }
 }

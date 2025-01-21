@@ -33,4 +33,7 @@ internal static class BaseProcessor
 
         return validDelegate(split);
     }
+
+    internal static Func<string[], Result<Type>> Parse(ExpressionStringEvaluatorState state)
+        => split => Result.Aggregate(split.Select(item => state.Parser.Validate($"={item}", state.FormatProvider, state.Context, state.FormattableStringParser)), Result.NoContent<Type>(), validationResults => Result.Invalid<Type>("Validation failed, see inner results for details", validationResults));
 }
