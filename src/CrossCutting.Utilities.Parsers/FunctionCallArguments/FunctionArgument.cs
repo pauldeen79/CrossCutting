@@ -13,6 +13,6 @@ public partial record FunctionArgument
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.FunctionEvaluator.Validate(Function, context.ExpressionEvaluator, context.FormatProvider, context.Context).TryCastAllowNull<Type>()!;
+        return context.FunctionEvaluator.Validate(Function, context.ExpressionEvaluator, context.FormatProvider, context.Context);
     }
 }

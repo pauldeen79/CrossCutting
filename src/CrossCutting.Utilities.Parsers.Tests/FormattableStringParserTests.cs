@@ -779,6 +779,8 @@ public sealed class FormattableStringParserTests : IDisposable
             ? Result.Success<object?>(1)
             : Result.Continue<object?>());
 
+        _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<Type>(default!));
+
         _provider = new ServiceCollection()
             .AddParsers()
             .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
@@ -826,12 +828,6 @@ public sealed class FormattableStringParserTests : IDisposable
         {
             return Result.Success<object?>("function result");
         }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            // Aparently, this function does not care about the given arguments
-            return Result.Success();
-        }
     }
 
     [FunctionArgument("expression", typeof(string), false)]
@@ -846,13 +842,6 @@ public sealed class FormattableStringParserTests : IDisposable
             }
 
             return Result.Success<object?>(valueResult.Value.ToStringWithDefault().ToUpperInvariant());
-        }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            // No need to check for argument count, the FunctionDescriptor will take care of this
-
-            return Result.Success();
         }
     }
 }

@@ -87,7 +87,7 @@ public class ExpressionFrameworkHowItShouldBeTests
 [FunctionArgument("Culture", typeof(CultureInfo), "Optional CultureInfo to use", false)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
 // No need to tell what is returned on invalid types of arguments, the framework can do this for you
-public class ToUpperCaseFunction : ITypedFunction<string>
+public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)
     {
@@ -150,11 +150,12 @@ public class ToUpperCaseFunction : ITypedFunction<string>
     ///}
 
     // *** Scaffold code, by default return Result.Success()
-    public Result Validate(FunctionCallContext context)
+    // Only if you implement IValidatableFunction
+    public Result<Type> Validate(FunctionCallContext context)
     {
         // No additional validation needed (default behavior)
         // Or, maybe using settings you can choose whether to return Result.Success(), or throw a NotImplementedException for clarity.
-        return Result.Success();
+        return Result.Success<Type>(default!);
     }
 }
 

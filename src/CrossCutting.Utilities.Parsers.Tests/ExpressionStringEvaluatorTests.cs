@@ -1376,11 +1376,6 @@ public class ExpressionStringEvaluatorTests : IDisposable
         {
             return Result.Error<object?>("Kaboom");
         }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Success();
-        }
     }
 
     [FunctionArgument("Expression", typeof(string))]
@@ -1393,11 +1388,6 @@ public class ExpressionStringEvaluatorTests : IDisposable
                 ?? context.FunctionCall.Arguments.FirstOrDefault()?.Evaluate(context).Value?.ToString()?.ToUpperInvariant()
                 ?? string.Empty);
         }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Success();
-        }
     }
 
     [FunctionName("MyFunction")]
@@ -1406,11 +1396,6 @@ public class ExpressionStringEvaluatorTests : IDisposable
         public Result<object?> Evaluate(FunctionCallContext context)
         {
             return Result.Success<object?>(ReplacedValue);
-        }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Success();
         }
     }
 

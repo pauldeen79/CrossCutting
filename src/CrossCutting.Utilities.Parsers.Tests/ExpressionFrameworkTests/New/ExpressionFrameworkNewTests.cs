@@ -67,7 +67,7 @@ public class ExpressionFrameworkNewTests
 [FunctionArgument("Culture", typeof(CultureInfo), "Optional CultureInfo to use", false)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to lower case", "This result will be returned when the expression is of type string")]
 // No need to tell what is returned on invalid types of arguments, the framework can do this for you
-public class ToLowerCaseFunction : IFunction
+public class ToLowerCaseFunction : IValidatableFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)
     {
@@ -88,10 +88,11 @@ public class ToLowerCaseFunction : IFunction
 #pragma warning restore CA1308 // Normalize strings to uppercase
     }
 
-    public Result Validate(FunctionCallContext context)
+    // Only needed if you implement IValidatableFunction
+    public Result<Type> Validate(FunctionCallContext context)
     {
         // No additional validation needed
-        return Result.Success();
+        return Result.Success<Type>(default!);
     }
 }
 

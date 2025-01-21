@@ -364,7 +364,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall!, expressionEvaluator);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
+        result.Status.Should().Be(ResultStatus.Ok);
     }
 
     [Fact]
@@ -513,16 +513,16 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
     private IFunctionEvaluator CreateSut() => _scope.ServiceProvider.GetRequiredService<IFunctionEvaluator>();
 
-    private sealed class ErrorFunction : IFunction
+    private sealed class ErrorFunction : IValidatableFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
         {
             return Result.Error<object?>("Kaboom");
         }
 
-        public Result Validate(FunctionCallContext context)
+        public Result<Type> Validate(FunctionCallContext context)
         {
-            return Result.Error<object?>("Kaboom");
+            return Result.Error<Type>("Kaboom");
         }
     }
 
@@ -532,11 +532,6 @@ public sealed class FunctionEvaluatorTests : IDisposable
         public Result<object?> Evaluate(FunctionCallContext context)
         {
             return Result.Success<object?>("function result");
-        }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Success();
         }
     }
 
@@ -552,25 +547,20 @@ public sealed class FunctionEvaluatorTests : IDisposable
         {
             return Result.Success<string>("function result");
         }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Success();
-        }
     }
 
     [FunctionName("MyFunction2")]
     [FunctionArgument("Argument1", typeof(string))]
-    private sealed class MyFunction2 : IFunction
+    private sealed class MyFunction2 : IValidatableFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
         {
             return Result.Success<object?>("function result");
         }
 
-        public Result Validate(FunctionCallContext context)
+        public Result<Type> Validate(FunctionCallContext context)
         {
-            return Result.Invalid("Custom validation message");
+            return Result.Invalid<Type>("Custom validation message");
         }
     }
 
@@ -590,11 +580,6 @@ public sealed class FunctionEvaluatorTests : IDisposable
         {
             yield return new FunctionDescriptorBuilder().WithName("PassThrough").WithFunctionType(GetType()).Build();
         }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Success();
-        }
     }
 
     [FunctionName("Overload")]
@@ -604,11 +589,6 @@ public sealed class FunctionEvaluatorTests : IDisposable
         public Result<object?> Evaluate(FunctionCallContext context)
         {
             throw new NotImplementedException();
-        }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Continue();
         }
     }
 
@@ -621,11 +601,6 @@ public sealed class FunctionEvaluatorTests : IDisposable
         {
             throw new NotImplementedException();
         }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Continue();
-        }
     }
 
     [FunctionName("Overload")]
@@ -636,11 +611,6 @@ public sealed class FunctionEvaluatorTests : IDisposable
         public Result<object?> Evaluate(FunctionCallContext context)
         {
             throw new NotImplementedException();
-        }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Continue();
         }
     }
 
@@ -653,8 +623,5 @@ public sealed class FunctionEvaluatorTests : IDisposable
             var argumentResult = context.GetArgumentStringValueResult(0, "Argument", string.Empty);
             return Result.FromExistingResult<object?>(argumentResult);
         }
-
-        public Result Validate(FunctionCallContext context)
-            => Result.Success();
     }
 }

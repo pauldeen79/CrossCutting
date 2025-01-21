@@ -2,9 +2,12 @@
 
 public interface IFunction
 {
-    Result Validate(FunctionCallContext context);
-
     Result<object?> Evaluate(FunctionCallContext context);
+}
+
+public interface IValidatableFunction : IFunction
+{
+    Result<Type> Validate(FunctionCallContext context);
 }
 
 public interface ITypedFunction<T> : IFunction
