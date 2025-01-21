@@ -2,8 +2,6 @@
 
 public class ConcatenateExpressionString : IExpressionString
 {
-    public int Order => 190;
-
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));

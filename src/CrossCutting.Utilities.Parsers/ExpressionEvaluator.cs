@@ -19,7 +19,6 @@ public class ExpressionEvaluator : IExpressionEvaluator
         }
 
         return _expressions
-            .OrderBy(x => x.Order)
             .Select(x => x.Evaluate(expression, formatProvider, context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.NotSupported<object?>($"Unknown expression type found in fragment: {expression}");
@@ -33,7 +32,6 @@ public class ExpressionEvaluator : IExpressionEvaluator
         }
 
         return _expressions
-            .OrderBy(x => x.Order)
             .Select(x => x.Validate(expression, formatProvider, context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Invalid<Type>($"Unknown expression type found in fragment: {expression}");

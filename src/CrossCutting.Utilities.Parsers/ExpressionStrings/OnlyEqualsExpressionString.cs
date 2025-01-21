@@ -2,8 +2,6 @@
 
 public class OnlyEqualsExpressionString : IExpressionString
 {
-    public int Order => 300;
-
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));

@@ -2,8 +2,6 @@
 
 public class NullExpression : IExpression
 {
-    public int Order => 30;
-
     public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
         => expression switch
         {

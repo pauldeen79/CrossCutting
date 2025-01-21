@@ -2,8 +2,6 @@
 
 public class ContextExpression : IExpression
 {
-    public int Order => 20;
-
     public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
         => expression switch
         {

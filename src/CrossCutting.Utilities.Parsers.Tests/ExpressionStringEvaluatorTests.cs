@@ -1357,8 +1357,6 @@ public class ExpressionStringEvaluatorTests : IDisposable
 
     private sealed class MyPlaceholderProcessor : IPlaceholder
     {
-        public int Order => 10;
-
         public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result.Success(new GenericFormattableString(ReplacedValue))

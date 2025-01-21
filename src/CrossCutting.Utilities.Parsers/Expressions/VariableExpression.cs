@@ -2,8 +2,6 @@
 
 public class VariableExpression : IExpression
 {
-    public int Order => 50;
-
     private readonly IVariableProcessor _variableProcessor;
 
     public VariableExpression(IVariableProcessor variableProcessor)

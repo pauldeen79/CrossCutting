@@ -2,8 +2,6 @@
 
 public class BooleanExpression : IExpression
 {
-    public int Order => 10;
-
     public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
         => expression switch
         {

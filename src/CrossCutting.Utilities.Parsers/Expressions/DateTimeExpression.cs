@@ -2,8 +2,6 @@
 
 public class DateTimeExpression : IExpression
 {
-    public int Order => 70;
-
     public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
         => expression switch
         {

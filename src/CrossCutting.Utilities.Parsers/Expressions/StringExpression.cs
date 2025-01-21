@@ -2,8 +2,6 @@
 
 public class StringExpression : IExpression
 {
-    public int Order => 40;
-
     public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
         => expression?.StartsWith("\"") switch
         {
