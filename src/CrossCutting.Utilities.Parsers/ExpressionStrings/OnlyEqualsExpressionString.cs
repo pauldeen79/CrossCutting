@@ -14,15 +14,15 @@ public class OnlyEqualsExpressionString : IExpressionString
         return Result.Continue<object?>();
     }
 
-    public Result Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
         if (state.Input == "=")
         {
-            return Result.Success();
+            return Result.Success(typeof(string));
         }
 
-        return Result.Continue();
+        return Result.Continue<Type>();
     }
 }

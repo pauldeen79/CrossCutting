@@ -39,11 +39,11 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
                 ?? EvaluateSimpleExpression(state);
     }
 
-    public Result Validate(string expressionString, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    public Result<Type> Validate(string expressionString, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
     {
         if (expressionString is null)
         {
-            return Result.Invalid("Expression string is required");
+            return Result.Invalid<Type>("Expression string is required");
         }
 
         var state = new ExpressionStringEvaluatorState(expressionString, formatProvider, context, this, formattableStringParser);
@@ -66,13 +66,13 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
         return _functionEvaluator.Evaluate(functionResult.Value!, _expressionEvaluator, state.FormatProvider, state.Context);
     }
 
-    private Result ValidateSimpleExpression(ExpressionStringEvaluatorState state)
+    private Result<Type> ValidateSimpleExpression(ExpressionStringEvaluatorState state)
     {
         // =something else, we can try function
         var functionResult = _functionParser.Parse(state.Input.Substring(1), state.FormatProvider, state.FormattableStringParser, state.Context);
         if (!functionResult.IsSuccessful())
         {
-            return functionResult;
+            return Result.FromExistingResult<Type>(functionResult);
         }
 
         return _functionEvaluator.Validate(functionResult.Value!, _expressionEvaluator, state.FormatProvider, state.Context);

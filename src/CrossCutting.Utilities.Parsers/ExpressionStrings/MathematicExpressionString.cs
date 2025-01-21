@@ -20,19 +20,19 @@ public class MathematicExpressionString(IMathematicExpressionEvaluator parser) :
         return Result.Continue<object?>();
     }
 
-    public Result Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
         // try =1+1 -> mathematic expression, no functions/formattable strings
-        var mathResult = _parser.Evaluate(state.Input.Substring(1), state.FormatProvider, state.Context);
+        var mathResult = _parser.Evaluate(state.Input.Substring(1), state.FormatProvider, state.Context); //TODO: Use Validate instead of Evaluate
         if (mathResult.Status is ResultStatus.Ok or not ResultStatus.NotFound)
         {
             // both success and failure need to be returned.
             // not found can be ignored, we can try formattable string and function in that case
-            return mathResult;
+            return Result.FromExistingResult(mathResult, mathResult.Value?.GetType()!);
         }
 
-        return Result.Continue();
+        return Result.Continue<Type>();
     }
 }

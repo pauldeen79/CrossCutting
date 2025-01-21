@@ -22,7 +22,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         _scope = _provider.CreateScope();
     }
 
-    public class Parse : ExpressionStringEvaluatorTests
+    public class Evaluate : ExpressionStringEvaluatorTests
     {
         [Fact]
         public void Returns_Success_With_Input_Value_On_Empty_String()
@@ -1016,7 +1016,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.Should().Be(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -1029,7 +1029,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.Should().Be(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -1042,7 +1042,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.Should().Be(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -1055,7 +1055,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.Should().Be(ResultStatus.NoContent);
         }
 
         [Fact]

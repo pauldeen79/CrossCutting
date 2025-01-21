@@ -2,17 +2,17 @@
 
 internal static class BaseProcessor
 {
-    internal static Result<object?> SplitDelimited(ExpressionStringEvaluatorState state, char splitDelimiter, Func<string[], Result<object?>> validDelegate)
+    internal static Result<T> SplitDelimited<T>(ExpressionStringEvaluatorState state, char splitDelimiter, Func<string[], Result<T>> validDelegate)
     {
         if (state.Input.IndexOf(splitDelimiter) == -1)
         {
-            return Result.Continue<object?>();
+            return Result.Continue<T>();
         }
 
         var split = state.Input.Substring(1).SplitDelimited(splitDelimiter, '\"', true, true);
         if (split.Length == 1)
         {
-            return Result.Continue<object?>();
+            return Result.Continue<T>();
         }
 
         return validDelegate(split);

@@ -17,7 +17,7 @@ public class ExpressionParserTests : IDisposable
         _scope = _provider.CreateScope();
     }
 
-    public class Parse : ExpressionParserTests
+    public class Evaluate : ExpressionParserTests
     {
         [Fact]
         public void Parses_true_Correctly()
