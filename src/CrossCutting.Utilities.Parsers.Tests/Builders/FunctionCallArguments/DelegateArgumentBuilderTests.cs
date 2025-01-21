@@ -70,4 +70,20 @@ public class DelegateArgumentBuilderTests
         result.Should().BeSameAs(sut);
         result.Delegate().Should().Be("Altered value");
     }
+
+
+    [Fact]
+    public void WithValidationDelegate_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new DelegateArgumentBuilder<string>().WithDelegate(() => "Some value");
+
+        // Act
+        var result = sut.WithValidationDelegate(() => typeof(string));
+
+        // Assert
+        result.Should().BeSameAs(sut);
+        result.ValidationDelegate.Should().NotBeNull();
+        result.ValidationDelegate!().Should().Be<string>();
+    }
 }

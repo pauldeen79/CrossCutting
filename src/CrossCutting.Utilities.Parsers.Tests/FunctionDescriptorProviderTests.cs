@@ -50,9 +50,6 @@ public class FunctionDescriptorProviderTests
         {
             public Result<object?> Evaluate(FunctionCallContext context)
                 => throw new NotImplementedException();
-
-            public Result Validate(FunctionCallContext context)
-                => throw new NotImplementedException();
         }
 
         [FunctionName("MyCustomFunctionName")]
@@ -62,9 +59,6 @@ public class FunctionDescriptorProviderTests
         private sealed class MyFunction2 : IFunction
         {
             public Result<object?> Evaluate(FunctionCallContext context)
-                => throw new NotImplementedException();
-
-            public Result Validate(FunctionCallContext context)
                 => throw new NotImplementedException();
         }
 
@@ -83,11 +77,6 @@ public class FunctionDescriptorProviderTests
             public IEnumerable<FunctionDescriptor> GetDescriptors()
             {
                 yield return new FunctionDescriptorBuilder().WithName("PassThrough").WithFunctionType(GetType()).Build();
-            }
-
-            public Result Validate(FunctionCallContext context)
-            {
-                return Result.Success();
             }
         }
     }

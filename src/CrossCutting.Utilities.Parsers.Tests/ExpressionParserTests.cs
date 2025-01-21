@@ -290,7 +290,7 @@ public class ExpressionParserTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.Should().Be(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -404,13 +404,13 @@ public class ExpressionParserTests : IDisposable
         {
             // Arrange
             var input = "$classname";
-            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success());
+            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.NoContent<Type>());
 
             // Act
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.Should().Be(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -420,14 +420,14 @@ public class ExpressionParserTests : IDisposable
             var input = "$classname";
             var context = new MyContext("HelloWorldClass");
             _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "classname"
-                ? Result.Success()
-                : Result.Continue());
+                ? Result.NoContent<Type>()
+                : Result.Continue<Type>());
 
             // Act
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.Should().Be(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -465,7 +465,7 @@ public class ExpressionParserTests : IDisposable
         {
             // Arrange
             var input = "$unknownvariable";
-            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Continue());
+            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Continue<Type>());
 
             // Act
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);

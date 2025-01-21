@@ -2,7 +2,6 @@
 
 public abstract class OperatorExpressionProcessorBase : IExpressionString
 {
-    public abstract int Order { get; }
     protected abstract string Sign { get; }
 
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)

@@ -2,8 +2,6 @@
 
 public class LiteralExpressionString : IExpressionString
 {
-    public int Order => 200;
-
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));

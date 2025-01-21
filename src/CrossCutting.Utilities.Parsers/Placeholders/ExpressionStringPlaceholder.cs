@@ -11,8 +11,6 @@ public class ExpressionStringPlaceholder : IPlaceholder
         _expressionStringEvaluator = expressionStringEvaluator;
     }
 
-    public int Order => 990;
-
     public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         var result = _expressionStringEvaluator.Evaluate($"={value}", formatProvider, context, formattableStringParser);

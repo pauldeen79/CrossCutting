@@ -4,8 +4,6 @@ public class MathematicExpressionString(IMathematicExpressionEvaluator parser) :
 {
     private readonly IMathematicExpressionEvaluator _parser = parser;
 
-    public int Order => 500;
-
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));

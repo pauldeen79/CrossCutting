@@ -2,8 +2,6 @@
 
 public class FormattableStringExpressionString : IExpressionString
 {
-    public int Order => 400;
-
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));

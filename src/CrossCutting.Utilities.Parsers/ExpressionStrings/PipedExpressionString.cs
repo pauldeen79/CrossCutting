@@ -2,8 +2,6 @@
 
 public class PipedExpressionString : IExpressionString
 {
-    public int Order => 180;
-
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));

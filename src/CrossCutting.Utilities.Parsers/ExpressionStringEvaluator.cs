@@ -34,7 +34,6 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
         var state = new ExpressionStringEvaluatorState(expressionString, formatProvider, context, this, formattableStringParser);
 
         return _expressionStrings
-            .OrderBy(x => x.Order)
             .Select(x => x.Evaluate(state))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? EvaluateSimpleExpression(state);
@@ -50,7 +49,6 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
         var state = new ExpressionStringEvaluatorState(expressionString, formatProvider, context, this, formattableStringParser);
 
         return _expressionStrings
-            .OrderBy(x => x.Order)
             .Select(x => x.Validate(state))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? ValidateSimpleExpression(state);

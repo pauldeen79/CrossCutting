@@ -56,7 +56,7 @@ public class VariableProcessorTests
         {
             // Arrange
             var myVariable = Substitute.For<IVariable>();
-            myVariable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success<object?>("result value"));
+            myVariable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(Result.Success(typeof(string)));
             var sut = new VariableProcessor([myVariable]);
 
             // Act

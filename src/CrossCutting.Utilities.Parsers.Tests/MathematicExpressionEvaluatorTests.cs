@@ -402,7 +402,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateInt64).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.NoContent);
     }
 
     [Fact]
@@ -415,7 +415,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateDecimal).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.NoContent);
     }
 
     [Fact]
@@ -428,7 +428,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateSingle).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.NoContent);
     }
 
     [Fact]
@@ -441,7 +441,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateDouble).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.NoContent);
     }
 
     [Fact]
@@ -454,7 +454,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateByte).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.NoContent);
 
     }
 
@@ -468,7 +468,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateInt16).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.NoContent);
     }
 
     [Fact]
@@ -664,10 +664,10 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
     {
         private readonly Func<string, IFormatProvider, Result<object?>> _dlg = dlg;
 
-        public Result<object?> Evaluate(string value, IFormatProvider formatProvider, object? context)
-            => _dlg.Invoke(value, formatProvider);
+        public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
+            => _dlg.Invoke(expression, formatProvider);
 
-        public Result Validate(string value, IFormatProvider formatProvider, object? context)
-            => Result.Success();
+        public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
+            => Result.NoContent<Type>();
     }
 }

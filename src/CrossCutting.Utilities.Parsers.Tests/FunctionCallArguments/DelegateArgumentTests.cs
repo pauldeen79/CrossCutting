@@ -3,14 +3,14 @@
 public class DelegateArgumentTests
 {
     [Fact]
-    public void GetTypedValueResult_Returns_Correct_Result()
+    public void EvaluateTyped_Returns_Correct_Result()
     {
         // Arrange
-        var sut = new DelegateArgument<string>(() => "Hello world!");
+        var sut = new DelegateArgument<string>(() => "Hello world!", null);
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = sut.GetTypedValueResult(context);
+        var result = sut.EvaluateTyped(context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -18,26 +18,70 @@ public class DelegateArgumentTests
     }
 
     [Fact]
-    public void GetValueResult_Returns_Correct_Result()
+    public void Evaluate_Returns_Correct_Result()
     {
         // Arrange
-        var sut = new DelegateArgument<string>(() => "Hello world!");
+        var sut = new DelegateArgument<string>(() => "Hello world!", null);
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
 
         // Act
-        var result = sut.GetValueResult(context);
+        var result = sut.Evaluate(context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be("Hello world!");
+    }
+
+    [Fact]
+    public void Untyped_Evaluate_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new DelegateArgument(() => "Hello world!", null);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+
+        // Act
+        var result = sut.Evaluate(context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be("Hello world!");
+    }
+
+    [Fact]
+    public void Validate_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new DelegateArgument<string>(() => "Hello world!", () => typeof(string));
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+
+        // Act
+        var result = sut.Validate(context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be<string>();
+    }
+
+    [Fact]
+    public void Untyped_Validate_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new DelegateArgument(() => "Hello world!", () => typeof(string));
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+
+        // Act
+        var result = sut.Validate(context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be<string>();
     }
 
     [Fact]
     public void ToBuilder_Returns_Correct_Result()
     {
         // Arrange
-        var sut = new DelegateArgument<string>(() => "Hello world!");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+        var sut = new DelegateArgument<string>(() => "Hello world!", null);
 
         // Act
         var result = sut.ToBuilder();
@@ -51,8 +95,7 @@ public class DelegateArgumentTests
     public void ToTypedBuilder_Returns_Correct_Result()
     {
         // Arrange
-        var sut = new DelegateArgument<string>(() => "Hello world!");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+        var sut = new DelegateArgument<string>(() => "Hello world!", null);
 
         // Act
         var result = sut.ToTypedBuilder();
@@ -66,8 +109,7 @@ public class DelegateArgumentTests
     public void Delegate_Returns_Correct_Result()
     {
         // Arrange
-        var sut = new DelegateArgument<string>(() => "Hello world!");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+        var sut = new DelegateArgument<string>(() => "Hello world!", null);
 
         // Act
         var result = sut.Delegate();

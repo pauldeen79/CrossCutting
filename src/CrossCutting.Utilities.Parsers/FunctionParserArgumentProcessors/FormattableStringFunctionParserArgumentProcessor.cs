@@ -2,8 +2,6 @@
 
 public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserArgumentProcessor
 {
-    public int Order => 10;
-
     public Result<FunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, IFormatProvider formatProvider, IFormattableStringParser? formattableStringParser, object? context)
     {
         if (argument?.StartsWith("@") == true && formattableStringParser is not null)

@@ -2,8 +2,6 @@
 
 public class EmptyExpressionString : IExpressionString
 {
-    public int Order => 100;
-
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));

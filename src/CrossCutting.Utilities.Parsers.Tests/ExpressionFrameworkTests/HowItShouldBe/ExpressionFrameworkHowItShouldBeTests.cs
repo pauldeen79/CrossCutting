@@ -18,7 +18,7 @@ public class ExpressionFrameworkHowItShouldBeTests
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.NoContent);
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class ExpressionFrameworkHowItShouldBeTests
 [FunctionArgument("Culture", typeof(CultureInfo), "Optional CultureInfo to use", false)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
 // No need to tell what is returned on invalid types of arguments, the framework can do this for you
-public class ToUpperCaseFunction : ITypedFunction<string>
+public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)
     {
@@ -98,35 +98,64 @@ public class ToUpperCaseFunction : ITypedFunction<string>
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var typedContext = new ToUpperCaseFunctionCallContext(context);
-        return typedContext
-            //example for OnFailure that has a custom result, with an inner result that contains the details.
-            //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
+        /// *** With strongly-typed function call context:
+        ///var typedContext = new ToUpperCaseFunctionCallContext(context);
+        ///return typedContext
+        ///    //example for OnFailure that has a custom result, with an inner result that contains the details.
+        ///    //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
+        ///    .OnFailure(OnFailure)
+        ///    .OnSuccess(OnSuccess(typedContext));
+
+        // *** Without strongly-typed function call context:
+        return new ResultDictionaryBuilder()
+            // Note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult.
+            // This is exactly the same. For Int32, Boolean etc we have special cases, so we might do this for string too.
+            // But maybe we'll just skip this, I'm not seeing the difference. (unless the GetArgumentStringValueResult performs a ToString())
+            .Add("Expression", () => context.GetArgumentStringValueResult(0, "Expression"))
+            .Add("Culture", () => context.GetArgumentValueResult<CultureInfo>(1, "Culture", default))
+            .Build()
             .OnFailure(OnFailure)
-            .OnSuccess(OnSuccess(typedContext));
+            .OnSuccess(OnSuccess(context));
     }
 
-    // *** Scaffold code, by default throw a NotImplementedException
-    private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(ToUpperCaseFunctionCallContext context)
+    // *** Strongly-typed access to arguments
+    private static string Expression(Dictionary<string, Result> resultDictionary) => resultDictionary.GetValue<string>("Expression");
+    private static CultureInfo? CultureInfo(Dictionary<string, Result> resultsDictionary, CultureInfo? defaultValue) => resultsDictionary.TryGetValue("Culture", defaultValue);
+
+    // *** Scaffold code, by default throw a NotImplementedException.
+    private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(FunctionCallContext context)
     {
-        return results => Result.Success(context.Expression().ToUpper(context.CultureInfo(context.FormatProvider.ToCultureInfo())));
+        return results => Result.Success(Expression(results).ToUpper(CultureInfo(results, context.FormatProvider.ToCultureInfo())));
     }
 
-    // *** Scaffold code, by default return error
     private static Result OnFailure(Result error)
     {
-        // If you want to return the error unchanged, just use return error to let it bubble up (default behavior)
-        // Or, maybe using settings you can choose the behavior of this method. (bubble, wrap, skip the OnFailure entirely, not implemented exception)
+        // If you want to return the error unchanged, just use return error to let it bubble up (default behavior?)
         return error;
         ///example for custom error: return Result.Error([error], "ToUpperCase evaluation failed, see inner results for details");
     }
+    /// *** Scaffold code, by default throw a NotImplementedException
+    ///private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(ToUpperCaseFunctionCallContext context)
+    ///{
+    ///    return results => Result.Success(context.Expression().ToUpper(context.CultureInfo(context.FormatProvider.ToCultureInfo())));
+    ///}
+
+    /// *** Scaffold code, by default return error
+    ///private static Result OnFailure(Result error)
+    ///{
+    ///    // If you want to return the error unchanged, just use return error to let it bubble up (default behavior)
+    ///    // Or, maybe using settings you can choose the behavior of this method. (bubble, wrap, skip the OnFailure entirely, not implemented exception)
+    ///    return error;
+    ///    ///example for custom error: return Result.Error([error], "ToUpperCase evaluation failed, see inner results for details");
+    ///}
 
     // *** Scaffold code, by default return Result.Success()
-    public Result Validate(FunctionCallContext context)
+    // Only if you implement IValidatableFunction
+    public Result<Type> Validate(FunctionCallContext context)
     {
         // No additional validation needed (default behavior)
         // Or, maybe using settings you can choose whether to return Result.Success(), or throw a NotImplementedException for clarity.
-        return Result.Success();
+        return Result.NoContent<Type>();
     }
 }
 

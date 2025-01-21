@@ -2,6 +2,9 @@
 
 public partial record DelegateArgument
 {
-    public override Result<object?> GetValueResult(FunctionCallContext context)
+    public override Result<object?> Evaluate(FunctionCallContext context)
         => Result.Success(Delegate());
+
+    public override Result<Type> Validate(FunctionCallContext context)
+        => Result.Success(ValidationDelegate?.Invoke()!);
 }

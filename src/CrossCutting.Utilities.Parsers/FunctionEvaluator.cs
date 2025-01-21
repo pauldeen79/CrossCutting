@@ -60,16 +60,17 @@ public class FunctionEvaluator : IFunctionEvaluator
         return functionResult.Transform(result => result.Evaluate(functionCallContext).TryCast<T>());
     }
 
-    public Result Validate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+    public Result<Type> Validate(FunctionCall functionCall, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
     {
         if (functionCall is null)
         {
-            return Result.Invalid("Function call is required");
+            return Result.Invalid<Type>("Function call is required");
         }
 
         var functionCallContext = new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context);
 
-        return ResolveFunction(functionCallContext).Transform(result => result.Validate(functionCallContext));
+        return ResolveFunction(functionCallContext)
+            .Transform(result => (result.Value as IValidatableFunction)?.Validate(functionCallContext) ?? Result.FromExistingResult<Type>(result));
     }
 
     private Result<IFunction> ResolveFunction(FunctionCallContext functionCallContext)
@@ -105,7 +106,11 @@ public class FunctionEvaluator : IFunctionEvaluator
         var errors = new List<Result>();
         foreach (var argument in arguments)
         {
-            errors.AddRange(_functionCallArgumentValidator.Validate(argument.DescriptorArgument, argument.CallArgument, functionCallContext));
+            var validationResult = _functionCallArgumentValidator.Validate(argument.DescriptorArgument, argument.CallArgument, functionCallContext);
+            if (!validationResult.IsSuccessful())
+            {
+                errors.Add(validationResult);
+            }
         }
 
         if (errors.Count > 0)
