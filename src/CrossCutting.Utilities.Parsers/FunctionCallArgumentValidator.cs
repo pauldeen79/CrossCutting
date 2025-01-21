@@ -2,7 +2,7 @@
 
 public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
 {
-    public Result Validate(FunctionDescriptorArgument descriptorArgument, FunctionCallArgument callArgument, FunctionCallContext functionCallContext)
+    public Result<Type> Validate(FunctionDescriptorArgument descriptorArgument, FunctionCallArgument callArgument, FunctionCallContext functionCallContext)
     {
         descriptorArgument = descriptorArgument.IsNotNull(nameof(descriptorArgument));
         callArgument = callArgument.IsNotNull(nameof(callArgument));
@@ -15,13 +15,13 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         }
         else if (callArgumentResult.Value is not null && !descriptorArgument.Type.IsAssignableFrom(callArgumentResult.Value))
         {
-            return Result.Invalid($"Argument {descriptorArgument.Name} is not of type {descriptorArgument.Type.FullName}");
+            return Result.Invalid<Type>($"Argument {descriptorArgument.Name} is not of type {descriptorArgument.Type.FullName}");
         }
         else if (callArgumentResult.Value is null && descriptorArgument.IsRequired)
         {
-            return Result.Invalid($"Argument {descriptorArgument.Name} is required");
+            return Result.Invalid<Type>($"Argument {descriptorArgument.Name} is required");
         }
 
-        return Result.Success();
+        return callArgumentResult;
     }
 }

@@ -1,5 +1,4 @@
-﻿
-namespace CrossCutting.Utilities.Parsers.Tests;
+﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
 public sealed class FunctionEvaluatorTests : IDisposable
 {
@@ -266,6 +265,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be<string>();
     }
 
     [Fact]
@@ -527,6 +527,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [FunctionName("MyFunction")]
+    [FunctionResultType(typeof(string))]
     private sealed class MyFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)

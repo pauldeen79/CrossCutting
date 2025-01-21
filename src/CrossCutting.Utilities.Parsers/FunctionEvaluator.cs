@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.Parsers;
+﻿using CrossCutting.Common.Extensions;
+
+namespace CrossCutting.Utilities.Parsers;
 
 public class FunctionEvaluator : IFunctionEvaluator
 {
@@ -70,7 +72,18 @@ public class FunctionEvaluator : IFunctionEvaluator
         var functionCallContext = new FunctionCallContext(functionCall, this, expressionEvaluator, formatProvider, context);
 
         return ResolveFunction(functionCallContext)
-            .Transform(result => (result.Value as IValidatableFunction)?.Validate(functionCallContext) ?? Result.FromExistingResult<Type>(result));
+            .Transform(result => (result.Value as IValidatableFunction)?.Validate(functionCallContext) ?? Result.FromExistingResult(result, TryGetTypeFromResult(result)));
+    }
+
+    private static Type TryGetTypeFromResult(Result<IFunction> result)
+    {
+        if (result.InnerResults.Count != 1)
+        {
+            //TODO: Find first ITypedExpression<T> implementation, then get the generic argument, and return this type.
+            return null!;
+        }
+
+        return result.InnerResults.First().TryCastValueAs<Type>()!;
     }
 
     private Result<IFunction> ResolveFunction(FunctionCallContext functionCallContext)
@@ -118,6 +131,6 @@ public class FunctionEvaluator : IFunctionEvaluator
             return Result.Invalid<IFunction>($"Could not evaluate function {functionCallContext.FunctionCall.Name}, see inner results for more details", errors);
         }
 
-        return Result.Success(function);
+        return Result.Success([Result.Success(functionDescriptor.ReturnValueType!)], function);
     }
 }

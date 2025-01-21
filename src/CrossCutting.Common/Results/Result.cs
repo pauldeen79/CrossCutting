@@ -175,6 +175,7 @@ public record Result
 
     public static Result Success() => new(ResultStatus.Ok, null, [], [], null);
     public static Result<T> Success<T>(T value) => new(value, ResultStatus.Ok, null, [], [], null);
+    public static Result<T> Success<T>(IEnumerable<Result> innerResults, T value) => new(value, ResultStatus.Ok, null, [], innerResults, null);
     public static Result Error() => new(ResultStatus.Error, null, [], [], null);
     public static Result Error(string errorMessage) => new(ResultStatus.Error, errorMessage, [], [], null);
     public static Result Error(Exception exception, string errorMessage) => new(ResultStatus.Error, errorMessage, [], [], exception);
