@@ -30,13 +30,13 @@ public class FormattableStringExpressionString : IExpressionString
         {
             // =@"string value" -> literal, no functions but formattable strings possible
             return state.FormattableStringParser is not null
-                ? Result.FromExistingResult(state.FormattableStringParser.Validate(state.Input.Substring(3, state.Input.Length - 4), new FormattableStringParserSettingsBuilder().WithFormatProvider(state.FormatProvider).Build(), state.Context), typeof(string))
-                : Result.Success(typeof(string));
+                ? Result.FromExistingResult(state.FormattableStringParser.Validate(state.Input.Substring(3, state.Input.Length - 4), new FormattableStringParserSettingsBuilder().WithFormatProvider(state.FormatProvider).Build(), state.Context), typeof(FormattableString))
+                : Result.Success(typeof(FormattableString));
         }
         else if (state.Input.StartsWith("=\"") && state.Input.EndsWith("\""))
         {
             // ="string value" -> literal, no functions and no formattable strings possible
-            return Result.Success(typeof(string));
+            return Result.Success(typeof(FormattableString));
         }
 
         return Result.Continue<Type>();
