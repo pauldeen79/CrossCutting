@@ -75,15 +75,18 @@ public class FunctionEvaluator : IFunctionEvaluator
 
     private Result<FunctionAndTypeDescriptor> ResolveFunction(FunctionCallContext functionCallContext)
     {
-        var functionsByName = Descriptors.Where(x => x.Name.Equals(functionCallContext.FunctionCall.Name, StringComparison.OrdinalIgnoreCase)).ToArray();
+        var functionsByName = Descriptors
+            .Where(x => x.Name.Equals(functionCallContext.FunctionCall.Name, StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+
         if (functionsByName.Length == 0)
         {
             return Result.Invalid<FunctionAndTypeDescriptor>($"Unknown function: {functionCallContext.FunctionCall.Name}");
         }
 
         var functionsWithRightArgumentCount = functionsByName.Length == 1
-            ? functionsByName.Where(x => x.Arguments.Count(x => x.IsRequired) <= functionCallContext.FunctionCall.Arguments.Count).ToArray()
-            : functionsByName.Where(x => x.Arguments.Count == functionCallContext.FunctionCall.Arguments.Count).ToArray();
+            ? functionsByName.Where(x => functionCallContext.FunctionCall.Arguments.Count >= x.Arguments.Count(x => x.IsRequired)).ToArray()
+            : functionsByName.Where(x => functionCallContext.FunctionCall.Arguments.Count == x.Arguments.Count).ToArray();
 
         return functionsWithRightArgumentCount.Length switch
         {
@@ -120,18 +123,4 @@ public class FunctionEvaluator : IFunctionEvaluator
 
         return Result.Success(new FunctionAndTypeDescriptor(function, functionDescriptor.ReturnValueType));
     }
-}
-
-public class FunctionAndTypeDescriptor
-{
-    public FunctionAndTypeDescriptor(IFunction function, Type? returnValueType)
-    {
-        ArgumentGuard.IsNotNull(function, nameof(function));
-
-        ReturnValueType = returnValueType;
-        Function = function;
-    }
-
-    public Type? ReturnValueType { get; }
-    public IFunction Function { get; }
 }
