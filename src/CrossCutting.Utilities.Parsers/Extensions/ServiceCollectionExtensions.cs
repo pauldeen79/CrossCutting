@@ -74,5 +74,5 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddVariableProcessor(this IServiceCollection services)
         => services
-        .AddScoped<IVariableProcessor, VariableProcessor>();
+        .AddScoped<IVariableEvaluator, VariableEvaluator>();
 }

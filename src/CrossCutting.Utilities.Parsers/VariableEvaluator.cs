@@ -1,10 +1,10 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public class VariableProcessor : IVariableProcessor
+public class VariableEvaluator : IVariableEvaluator
 {
     private readonly IEnumerable<IVariable> _variables;
 
-    public VariableProcessor(IEnumerable<IVariable> variables)
+    public VariableEvaluator(IEnumerable<IVariable> variables)
     {
         ArgumentGuard.IsNotNull(variables, nameof(variables));
 

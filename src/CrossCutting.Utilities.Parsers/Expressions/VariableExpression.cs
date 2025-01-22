@@ -2,9 +2,9 @@
 
 public class VariableExpression : IExpression
 {
-    private readonly IVariableProcessor _variableProcessor;
+    private readonly IVariableEvaluator _variableProcessor;
 
-    public VariableExpression(IVariableProcessor variableProcessor)
+    public VariableExpression(IVariableEvaluator variableProcessor)
     {
         ArgumentGuard.IsNotNull(variableProcessor, nameof(variableProcessor));
 

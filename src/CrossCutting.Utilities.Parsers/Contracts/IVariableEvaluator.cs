@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Contracts;
 
-public interface IVariableProcessor
+public interface IVariableEvaluator
 {
     Result<Type> Validate(string expression, object? context);
 
