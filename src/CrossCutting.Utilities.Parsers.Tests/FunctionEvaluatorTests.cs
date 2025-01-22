@@ -269,6 +269,22 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
+    public void Validate_Returns_Success_Result_On_Valid_Input_With_Typed_Result()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder().WithName("MyTypedFunction").Build();
+        var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall!, expressionEvaluator, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be<string>();
+    }
+
+    [Fact]
     public void Validate_Returns_Success_Result_On_Valid_Input_With_Optional_Parameter()
     {
         // Arrange

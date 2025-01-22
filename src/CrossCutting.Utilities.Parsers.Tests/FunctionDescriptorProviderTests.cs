@@ -46,6 +46,25 @@ public class FunctionDescriptorProviderTests
             result.Should().HaveCount(3);
         }
 
+        [Fact]
+        public void Returns_Typed_Function_Correctly()
+        {
+            // Arrange
+            var functions = new IFunction[]
+            {
+                new MyTypedFunction()
+            };
+            var sut = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), functions);
+
+            // Act
+            var result = sut.GetAll();
+
+            // Assert
+            result.Should().ContainSingle();
+            result.First().Name.Should().Be("MyTyped"); // note that the Function suffix is removed, which seems logical for stuff like "ToUpperCaseFunction"
+            result.First().ReturnValueType.Should().Be<string>(); // because of implementation of ITypedFunction<string>
+        }
+
         private sealed class MyFunction1 : IFunction
         {
             public Result<object?> Evaluate(FunctionCallContext context)
@@ -60,6 +79,19 @@ public class FunctionDescriptorProviderTests
         {
             public Result<object?> Evaluate(FunctionCallContext context)
                 => throw new NotImplementedException();
+        }
+
+        private sealed class MyTypedFunction : ITypedFunction<string>
+        {
+            public Result<object?> Evaluate(FunctionCallContext context)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Result<string> EvaluateTyped(FunctionCallContext context)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private sealed class PassThroughFunction : IDynamicDescriptorsFunction

@@ -21,11 +21,23 @@ public class FunctionDescriptorMapper : IFunctionDescriptorMapper
                 .WithName(type.GetCustomAttribute<FunctionNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
                 .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
                 .WithFunctionType(customFunctionType ?? type)
-                .WithReturnValueType(type.GetCustomAttribute<FunctionResultTypeAttribute>()?.Type)
+                .WithReturnValueType(type.GetCustomAttribute<FunctionResultTypeAttribute>()?.Type ?? GetTypedResultType(type))
                 .AddArguments(type.GetCustomAttributes<FunctionArgumentAttribute>().Select(CreateFunctionArgument))
                 .AddResults(type.GetCustomAttributes<FunctionResultAttribute>().Select(CreateFunctionResult))
                 .Build();
         }
+    }
+
+    private static Type? GetTypedResultType(Type type)
+    {
+        // Only when you implement one ITypedFunction<T>!
+        var typedFunctions = type.GetInterfaces().Where(x => x.FullName.StartsWith("CrossCutting.Utilities.Parsers.Contracts.ITypedFunction")).ToArray();
+        if (typedFunctions.Length == 1)
+        {
+            return typedFunctions[0].GenericTypeArguments[0];
+        }
+
+        return null;
     }
 
     private static FunctionDescriptorArgumentBuilder CreateFunctionArgument(FunctionArgumentAttribute attribute)
