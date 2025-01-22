@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-internal class FunctionAndTypeDescriptor
+internal sealed class FunctionAndTypeDescriptor
 {
     public FunctionAndTypeDescriptor(IFunction function, Type? returnValueType)
     {
