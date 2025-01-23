@@ -65,6 +65,21 @@ public class ExpressionFrameworkHowItShouldBeTests
     }
 
     [Fact]
+    public void Can_Evaluate_ToUpperCaseExpression_Typed_Without_FunctionCallContext()
+    {
+        // Arrange
+        var sut = new ToUpperCaseFunction();
+
+        // Act
+        var result = sut.EvaluateTyped("Hello world!", null);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().BeOfType<string>();
+        result.Value!.Should().Be("HELLO WORLD!");
+    }
+
+    [Fact]
     public void Can_Get_FunctionDescriptor()
     {
         // Arrange
@@ -83,7 +98,7 @@ public class ExpressionFrameworkHowItShouldBeTests
 // *** Generated code
 [FunctionName(@"ToUpperCase")]
 [Description("Converts the expression to upper case")]
-[FunctionArgument("Expression", typeof(string), "String to get the upper case for", true)]
+[FunctionArgument("Expression", typeof(string), "String to get the upper c00ase for", true)]
 [FunctionArgument("Culture", typeof(CultureInfo), "Optional CultureInfo to use", false)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
 // No need to tell what is returned on invalid types of arguments, the framework can do this for you
@@ -118,6 +133,20 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
             .OnSuccess(OnSuccess(context));
     }
 
+    // When not implementing ITypedFunction<T>, this should be Result<object?> Evaluate instead
+    public Result<string> EvaluateTyped(string expression, CultureInfo? cultureInfo)
+    {
+        // *** Without strongly-typed function call context:
+        return new ResultDictionaryBuilder()
+            // Note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult.
+            // This is exactly the same. For Int32, Boolean etc we have special cases, so we might do this for string too.
+            // But maybe we'll just skip this, I'm not seeing the difference. (unless the GetArgumentStringValueResult performs a ToString())
+            .Add("Expression", () => Result.Success(expression))
+            .Add("Culture", () => Result.Success(cultureInfo))
+            .Build()
+            // No OnFailure, because both results are always succesful
+            .OnSuccess(OnSuccess(null!)); // We can force null, as long as you don't use the FunctionCallContext
+    }
     // *** Strongly-typed access to arguments
     private static string Expression(Dictionary<string, Result> resultDictionary) => resultDictionary.GetValue<string>("Expression");
     private static CultureInfo? CultureInfo(Dictionary<string, Result> resultsDictionary, CultureInfo? defaultValue) => resultsDictionary.TryGetValue("Culture", defaultValue);
@@ -125,7 +154,7 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
     // *** Scaffold code, by default throw a NotImplementedException.
     private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(FunctionCallContext context)
     {
-        return results => Result.Success(Expression(results).ToUpper(CultureInfo(results, context.FormatProvider.ToCultureInfo())));
+        return results => Result.Success(Expression(results).ToUpper(CultureInfo(results, context?.FormatProvider.ToCultureInfo())));
     }
 
     private static Result OnFailure(Result error)
@@ -160,7 +189,7 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
 }
 
 // *** Generated code
-public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
+public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall> // Inheriting from IBuilder<T> is optional. Maybe we can add ITypedBuilder<TBase, TTyped> to Abstractions as well?
 {
     // You might be able to re-use the default builder pipeline, but then you have to do some typemapping.
     public FunctionCallArgumentBuilder<string> Expression { get; set; }
@@ -187,6 +216,12 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall>
         CultureInfo = cultureInfo;
         return this;
     }
+
+    // Only works if you use strongly-typed FunctionCall
+    ///public ToUpperCaseFunctionCall BuildTyped()
+    ///{
+    ///    return new ToUpperCaseFunctionCall(Expression.BuildTyped(), CultureInfo.BuildTyped());
+    ///}
 
     public FunctionCall Build()
     {
