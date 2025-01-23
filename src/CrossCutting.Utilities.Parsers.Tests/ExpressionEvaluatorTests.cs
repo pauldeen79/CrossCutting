@@ -1,13 +1,13 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
-public class ExpressionParserTests : IDisposable
+public class ExpressionEvaluatorTests : IDisposable
 {
     private readonly ServiceProvider _provider;
     private readonly IServiceScope _scope;
     private readonly IVariable _variable;
     private bool disposedValue;
 
-    public ExpressionParserTests()
+    public ExpressionEvaluatorTests()
     {
         _variable = Substitute.For<IVariable>();
         _provider = new ServiceCollection()
@@ -17,7 +17,7 @@ public class ExpressionParserTests : IDisposable
         _scope = _provider.CreateScope();
     }
 
-    public class Evaluate : ExpressionParserTests
+    public class Evaluate : ExpressionEvaluatorTests
     {
         [Fact]
         public void Parses_true_Correctly()
@@ -252,7 +252,7 @@ public class ExpressionParserTests : IDisposable
         }
     }
 
-    public class Validate : ExpressionParserTests
+    public class Validate : ExpressionEvaluatorTests
     {
         [Fact]
         public void Validates_true_Correctly()
