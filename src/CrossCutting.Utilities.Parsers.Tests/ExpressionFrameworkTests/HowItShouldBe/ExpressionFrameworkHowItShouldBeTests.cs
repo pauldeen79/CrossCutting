@@ -154,6 +154,7 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
     // *** Scaffold code, by default throw a NotImplementedException.
     private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(FunctionCallContext context)
     {
+        // Note that if you provide a static Evaluate method without FunctionCallContext, then you can't use the function call context (format provider, expression evaluator etc.)
         return results => Result.Success(Expression(results).ToUpper(CultureInfo(results, context?.FormatProvider.ToCultureInfo())));
     }
 
