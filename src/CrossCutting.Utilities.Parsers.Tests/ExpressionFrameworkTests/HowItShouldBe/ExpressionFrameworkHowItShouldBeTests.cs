@@ -67,11 +67,8 @@ public class ExpressionFrameworkHowItShouldBeTests
     [Fact]
     public void Can_Evaluate_ToUpperCaseExpression_Typed_Without_FunctionCallContext()
     {
-        // Arrange
-        var sut = new ToUpperCaseFunction();
-
         // Act
-        var result = sut.EvaluateTyped("Hello world!", null);
+        var result = ToUpperCaseFunction.Evaluate("Hello world!", null);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -134,7 +131,9 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
     }
 
     // When not implementing ITypedFunction<T>, this should be Result<object?> Evaluate instead
-    public Result<string> EvaluateTyped(string expression, CultureInfo? cultureInfo)
+    // Note that this can only be generated, if you don't use FunctionCallContext. So this should be an option in the generator.
+    // Also note that we can generate it statically, and in this case, we might also just call it Evaluate instead of EvaluateTyped. The Typed suffix is only for method resolution.
+    public static Result<string> Evaluate(string expression, CultureInfo? cultureInfo)
     {
         // *** Without strongly-typed function call context:
         return new ResultDictionaryBuilder()
@@ -147,6 +146,7 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
             // No OnFailure, because both results are always succesful
             .OnSuccess(OnSuccess(null!)); // We can force null, as long as you don't use the FunctionCallContext
     }
+
     // *** Strongly-typed access to arguments
     private static string Expression(Dictionary<string, Result> resultDictionary) => resultDictionary.GetValue<string>("Expression");
     private static CultureInfo? CultureInfo(Dictionary<string, Result> resultsDictionary, CultureInfo? defaultValue) => resultsDictionary.TryGetValue("Culture", defaultValue);
