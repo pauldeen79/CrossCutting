@@ -3,23 +3,19 @@
 public class ExpressionStringEvaluator : IExpressionStringEvaluator
 {
     private readonly IFunctionParser _functionParser;
-    private readonly IExpressionEvaluator _expressionEvaluator;
     private readonly IFunctionEvaluator _functionEvaluator;
     private readonly IEnumerable<IExpressionString> _expressionStrings;
 
     public ExpressionStringEvaluator(
         IFunctionParser functionParser,
-        IExpressionEvaluator expressionEvaluator,
         IFunctionEvaluator functionEvaluator,
         IEnumerable<IExpressionString> expressionStrings)
     {
         ArgumentGuard.IsNotNull(functionParser, nameof(functionParser));
-        ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
         ArgumentGuard.IsNotNull(functionEvaluator, nameof(functionEvaluator));
         ArgumentGuard.IsNotNull(expressionStrings, nameof(expressionStrings));
 
         _functionParser = functionParser;
-        _expressionEvaluator = expressionEvaluator;
         _functionEvaluator = functionEvaluator;
         _expressionStrings = expressionStrings;
     }
@@ -63,7 +59,7 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
             return Result.FromExistingResult<object?>(functionResult);
         }
 
-        return _functionEvaluator.Evaluate(functionResult.Value!, _expressionEvaluator, state.FormatProvider, state.Context);
+        return _functionEvaluator.Evaluate(functionResult.Value!, state.FormatProvider, state.Context);
     }
 
     private Result<Type> ValidateSimpleExpression(ExpressionStringEvaluatorState state)
@@ -75,6 +71,6 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
             return Result.FromExistingResult<Type>(functionResult);
         }
 
-        return _functionEvaluator.Validate(functionResult.Value!, _expressionEvaluator, state.FormatProvider, state.Context);
+        return _functionEvaluator.Validate(functionResult.Value!, state.FormatProvider, state.Context);
     }
 }

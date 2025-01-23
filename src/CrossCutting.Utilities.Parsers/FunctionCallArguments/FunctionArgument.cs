@@ -6,13 +6,13 @@ public partial record FunctionArgument
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.FunctionEvaluator.Evaluate(Function, context.ExpressionEvaluator, context.FormatProvider, context.Context);
+        return context.FunctionEvaluator.Evaluate(Function, context.FormatProvider, context.Context);
     }
 
     public override Result<Type> Validate(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.FunctionEvaluator.Validate(Function, context.ExpressionEvaluator, context.FormatProvider, context.Context);
+        return context.FunctionEvaluator.Validate(Function, context.FormatProvider, context.Context);
     }
 }
