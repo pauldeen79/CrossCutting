@@ -2,8 +2,6 @@
 
 public class EmptyExpressionString : IExpressionString
 {
-    public int Order => 100;
-
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
@@ -16,15 +14,15 @@ public class EmptyExpressionString : IExpressionString
         return Result.Continue<object?>();
     }
 
-    public Result Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
         if (string.IsNullOrEmpty(state.Input))
         {
-            return Result.Success();
+            return Result.Success(typeof(string));
         }
 
-        return Result.Continue();
+        return Result.Continue<Type>();
     }
 }

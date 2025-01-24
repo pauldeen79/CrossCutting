@@ -27,18 +27,18 @@ public static class ServiceCollectionExtensions
         => services
         .AddScoped<IExpressionStringEvaluator, ExpressionStringEvaluator>()
         .AddScoped<IExpressionString, EmptyExpressionString>()
+        .AddScoped<IExpressionString, EqualOperator>()
+        .AddScoped<IExpressionString, NotEqualOperator>()
+        .AddScoped<IExpressionString, GreaterOrEqualThanOperator>()
+        .AddScoped<IExpressionString, GreaterThanOperator>()
+        .AddScoped<IExpressionString, SmallerOrEqualThanOperator>()
+        .AddScoped<IExpressionString, SmallerThanOperator>()
         .AddScoped<IExpressionString, PipedExpressionString>()
         .AddScoped<IExpressionString, ConcatenateExpressionString>()
         .AddScoped<IExpressionString, LiteralExpressionString>()
         .AddScoped<IExpressionString, OnlyEqualsExpressionString>()
         .AddScoped<IExpressionString, FormattableStringExpressionString>()
-        .AddScoped<IExpressionString, MathematicExpressionString>()
-        .AddScoped<IExpressionString, EqualOperator>()
-        .AddScoped<IExpressionString, NotEqualOperator>()
-        .AddScoped<IExpressionString, GreaterThanOperator>()
-        .AddScoped<IExpressionString, GreaterOrEqualThanOperator>()
-        .AddScoped<IExpressionString, SmallerThanOperator>()
-        .AddScoped<IExpressionString, SmallerOrEqualThanOperator>();
+        .AddScoped<IExpressionString, MathematicExpressionString>();
 
     private static IServiceCollection AddFunctionParser(this IServiceCollection services)
         => services
@@ -74,5 +74,5 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddVariableProcessor(this IServiceCollection services)
         => services
-        .AddScoped<IVariableProcessor, VariableProcessor>();
+        .AddScoped<IVariableEvaluator, VariableEvaluator>();
 }

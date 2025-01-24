@@ -2,8 +2,6 @@
 
 public class LiteralExpressionString : IExpressionString
 {
-    public int Order => 200;
-
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
@@ -23,22 +21,22 @@ public class LiteralExpressionString : IExpressionString
         return Result.Continue<object?>();
     }
 
-    public Result Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
         if (state.Input.StartsWith("\'="))
         {
             // escaped expression string
-            return Result.Success();
+            return Result.Success(typeof(string));
         }
 
         if (!state.Input.StartsWith("="))
         {
             // literal
-            return Result.Success();
+            return Result.Success(typeof(string));
         }
 
-        return Result.Continue();
+        return Result.Continue<Type>();
     }
 }

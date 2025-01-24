@@ -2,8 +2,6 @@
 
 public class DefaultFunctionParserNameProcessor : IFunctionParserNameProcessor
 {
-    public int Order => 10;
-
     public Result<string> Process(string input)
     {
         if (string.IsNullOrEmpty(input))

@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests.Extensions;
 
-public class ExpressionStringParserExtensionsTests
+public class ExpressionStringEvaluatorExtensionsTests
 {
     private IExpressionStringEvaluator SutMock { get; } = Substitute.For<IExpressionStringEvaluator>();
     private IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
@@ -9,7 +9,7 @@ public class ExpressionStringParserExtensionsTests
     private IFormatProvider FormatProvider { get; } = CultureInfo.InvariantCulture;
 
     [Fact]
-    public void Parse_Without_Context_And_FormattableStringParser_Gets_Processed_Correctly()
+    public void Evaluate_Without_Context_And_FormattableStringParser_Gets_Processed_Correctly()
     {
         // Act
         _ = SutMock.Evaluate(Input, FormatProvider);
@@ -19,7 +19,7 @@ public class ExpressionStringParserExtensionsTests
     }
 
     [Fact]
-    public void Parse_Without_Context_Gets_Processed_Correctly()
+    public void Evaluate_Without_Context_Gets_Processed_Correctly()
     {
         // Act
         _ = SutMock.Evaluate(Input, FormatProvider, FormattableStringParserMock);
@@ -29,7 +29,7 @@ public class ExpressionStringParserExtensionsTests
     }
 
     [Fact]
-    public void Parse_Without_FormattableStringParser_Gets_Processed_Correctly()
+    public void Evaluate_Without_FormattableStringParser_Gets_Processed_Correctly()
     {
         // Act
         _ = SutMock.Evaluate(Input, FormatProvider, Context);

@@ -2,8 +2,6 @@
 
 public class FormattableStringExpressionString : IExpressionString
 {
-    public int Order => 400;
-
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
@@ -24,7 +22,7 @@ public class FormattableStringExpressionString : IExpressionString
         return Result.Continue<object?>();
     }
 
-    public Result Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
@@ -32,15 +30,15 @@ public class FormattableStringExpressionString : IExpressionString
         {
             // =@"string value" -> literal, no functions but formattable strings possible
             return state.FormattableStringParser is not null
-                ? state.FormattableStringParser.Validate(state.Input.Substring(3, state.Input.Length - 4), new FormattableStringParserSettingsBuilder().WithFormatProvider(state.FormatProvider).Build(), state.Context)
-                : Result.Success();
+                ? Result.FromExistingResult(state.FormattableStringParser.Validate(state.Input.Substring(3, state.Input.Length - 4), new FormattableStringParserSettingsBuilder().WithFormatProvider(state.FormatProvider).Build(), state.Context), typeof(FormattableString))
+                : Result.Success(typeof(FormattableString));
         }
         else if (state.Input.StartsWith("=\"") && state.Input.EndsWith("\""))
         {
             // ="string value" -> literal, no functions and no formattable strings possible
-            return Result.Success();
+            return Result.Success(typeof(FormattableString));
         }
 
-        return Result.Continue();
+        return Result.Continue<Type>();
     }
 }

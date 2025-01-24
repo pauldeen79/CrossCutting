@@ -20,7 +20,7 @@ public class ExpressionFrameworkNewTests
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.Should().Be(ResultStatus.NoContent);
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class ExpressionFrameworkNewTests
 [FunctionArgument("Culture", typeof(CultureInfo), "Optional CultureInfo to use", false)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to lower case", "This result will be returned when the expression is of type string")]
 // No need to tell what is returned on invalid types of arguments, the framework can do this for you
-public class ToLowerCaseFunction : IFunction
+public class ToLowerCaseFunction : IValidatableFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)
     {
@@ -75,23 +75,24 @@ public class ToLowerCaseFunction : IFunction
 
         //example for OnFailure that has a custom result, with an inner result that contains the details.
         //if you don't want an error message stating that this is the source, then simply remove the OnFailure line.
+#pragma warning disable CA1308 // Normalize strings to uppercase
         return new ResultDictionaryBuilder()
             .Add("Expression", () => context.GetArgumentValueResult<string>(0, "Expression"))
             .Add("Culture", () => context.GetArgumentValueResult<CultureInfo>(1, "Culture", null))
             .Build()
             .OnFailure(error => Result.Error<object?>([error], "ToLowerCase evaluation failed, see inner results for details"))
             .OnSuccess(results => 
-#pragma warning disable CA1308 // Normalize strings to uppercase
                 Result.Success<object?>(results["Culture"].GetValue() is null
                     ? results["Expression"].CastValueAs<string>().ToLowerInvariant()
                     : results["Expression"].CastValueAs<string>().ToLower(results["Culture"].CastValueAs<CultureInfo>())));
 #pragma warning restore CA1308 // Normalize strings to uppercase
     }
 
-    public Result Validate(FunctionCallContext context)
+    // Only needed if you implement IValidatableFunction
+    public Result<Type> Validate(FunctionCallContext context)
     {
         // No additional validation needed
-        return Result.Success();
+        return Result.NoContent<Type>();
     }
 }
 
@@ -271,10 +272,29 @@ public record ExpressionArgument : FunctionCallArgument
 
     public Expression? Expression { get; }
 
-    public override Result<object?> GetValueResult(FunctionCallContext context)
+    public override Result<object?> Evaluate(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         return Expression?.Evaluate(context.Context) ?? Result.Success<object?>(null);
+    }
+
+    public override Result<Type> Validate(FunctionCallContext context)
+    {
+        if (Expression is null)
+        {
+            // In case of required argument this needs to be Result.Invalid("The Expression argument is required")
+            return Result.Continue<Type>();
+        }
+
+        var validationResults = new List<ValidationResult>();
+        var isValid = Expression.TryValidate(validationResults);
+        if (!isValid)
+        {
+            return Result.Invalid<Type>("Expression validation failed", validationResults.Select(x => new ValidationError(x.ErrorMessage ?? string.Empty, x.MemberNames)));
+        }
+
+        // Can we somehow determine if the Expression is ITypedExpression<T>, and if so, return typeof(T)?
+        return Result.Continue<Type>();
     }
 
     public override FunctionCallArgumentBuilder ToBuilder()
@@ -317,10 +337,28 @@ public record ExpressionArgument<T> : FunctionCallArgument
 
     public ITypedExpression<T>? Expression { get; }
 
-    public override Result<object?> GetValueResult(FunctionCallContext context)
+    public override Result<object?> Evaluate(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         return Expression?.ToUntyped().Evaluate(context.Context) ?? Result.Success<object?>(null);
+    }
+
+    public override Result<Type> Validate(FunctionCallContext context)
+    {
+        if (Expression is null)
+        {
+            // In case of required argument this needs to be Result.Invalid("The Expression argument is required")
+            return Result.Continue<Type>();
+        }
+
+        var validationResults = new List<ValidationResult>();
+        var isValid = Expression.TryValidate(validationResults);
+        if (!isValid)
+        {
+            return Result.Invalid<Type>("Expression validation failed", validationResults.Select(x => new ValidationError(x.ErrorMessage ?? string.Empty, x.MemberNames)));
+        }
+
+        return Result.Success<Type>(typeof(T));
     }
 
     public override FunctionCallArgumentBuilder ToBuilder()

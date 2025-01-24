@@ -8,8 +8,6 @@ public class NumericExpression : IExpression
     private static readonly Regex _wholeDecimalRegEx = new("^[0-9]*M$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
     private static readonly Regex _floatingPointDecimalRegEx = new(@"^[0-9]*(?:\.[0-9]*)?$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
 
-    public int Order => 60;
-
     public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
     {
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
@@ -48,6 +46,41 @@ public class NumericExpression : IExpression
         return Result.Continue<object?>();
     }
 
-    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
-        => Evaluate(expression, formatProvider, context);
+    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
+    {
+        expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
+
+        var isFloatingPoint = new Lazy<bool>(() => _floatingPointRegEx.IsMatch(expression));
+        var isWholeNumber = new Lazy<bool>(() => _wholeNumberRegEx.IsMatch(expression));
+        var isLongNumber = new Lazy<bool>(() => _longNumberRegEx.IsMatch(expression));
+        var isWholeDecimal = new Lazy<bool>(() => _wholeDecimalRegEx.IsMatch(expression));
+        var isFloatingPointDecimal = new Lazy<bool>(() => _floatingPointDecimalRegEx.IsMatch(expression));
+
+        if (isWholeNumber.Value && int.TryParse(expression, NumberStyles.AllowDecimalPoint, formatProvider, out _))
+        {
+            return Result.Success(typeof(int));
+        }
+
+        if (isWholeNumber.Value && long.TryParse(expression, NumberStyles.AllowDecimalPoint, formatProvider, out _))
+        {
+            return Result.Success(typeof(long));
+        }
+
+        if (isLongNumber.Value && long.TryParse(expression.Substring(0, expression.Length - 1), NumberStyles.AllowDecimalPoint, formatProvider, out _))
+        {
+            return Result.Success(typeof(long));
+        }
+
+        if (isFloatingPoint.Value && expression.Contains('.') && decimal.TryParse(expression, NumberStyles.AllowDecimalPoint, formatProvider, out _))
+        {
+            return Result.Success(typeof(decimal));
+        }
+
+        if ((isWholeDecimal.Value || isFloatingPointDecimal.Value) && decimal.TryParse(expression.Substring(0, expression.Length - 1), NumberStyles.AllowDecimalPoint, formatProvider, out _))
+        {
+            return Result.Success(typeof(decimal));
+        }
+
+        return Result.Continue<Type>();
+    }
 }

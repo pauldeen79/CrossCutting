@@ -2,8 +2,6 @@
 
 public class PipedExpressionString : IExpressionString
 {
-    public int Order => 180;
-
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
@@ -25,7 +23,7 @@ public class PipedExpressionString : IExpressionString
         });
     }
 
-    public Result Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
@@ -33,7 +31,7 @@ public class PipedExpressionString : IExpressionString
         (
             state,
             '|',
-            split => Result.Aggregate(split.Select(item => state.Parser.Validate($"={item}", state.FormatProvider, state.Context, state.FormattableStringParser)), Result.Success(), validationResults => Result.Invalid("Validation failed, see inner results for details", validationResults))
+            BaseProcessor.Parse(state)
         );
     }
 }

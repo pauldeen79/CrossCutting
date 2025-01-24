@@ -22,7 +22,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         _scope = _provider.CreateScope();
     }
 
-    public class Parse : ExpressionStringEvaluatorTests
+    public class Evaluate : ExpressionStringEvaluatorTests
     {
         [Fact]
         public void Returns_Success_With_Input_Value_On_Empty_String()
@@ -838,7 +838,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         {
             // Arrange
             var input = "=$myvariable";
-            _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<object?>("MyVariableValue") : Result.Continue<object?>());
+            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<Type>(typeof(string)) : Result.Continue<Type>());
 
             // Act
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
@@ -1016,7 +1016,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.Should().Be(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -1029,7 +1029,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.Should().Be(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -1042,7 +1042,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.Should().Be(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -1055,7 +1055,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.Should().Be(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -1357,8 +1357,6 @@ public class ExpressionStringEvaluatorTests : IDisposable
 
     private sealed class MyPlaceholderProcessor : IPlaceholder
     {
-        public int Order => 10;
-
         public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result.Success(new GenericFormattableString(ReplacedValue))
@@ -1376,11 +1374,6 @@ public class ExpressionStringEvaluatorTests : IDisposable
         {
             return Result.Error<object?>("Kaboom");
         }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Success();
-        }
     }
 
     [FunctionArgument("Expression", typeof(string))]
@@ -1390,13 +1383,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
         {
             return Result.Success<object?>(
                 context.Context?.ToString()?.ToUpperInvariant()
-                ?? context.FunctionCall.Arguments.FirstOrDefault()?.GetValueResult(context).Value?.ToString()?.ToUpperInvariant()
+                ?? context.FunctionCall.Arguments.FirstOrDefault()?.Evaluate(context).Value?.ToString()?.ToUpperInvariant()
                 ?? string.Empty);
-        }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Success();
         }
     }
 
@@ -1406,11 +1394,6 @@ public class ExpressionStringEvaluatorTests : IDisposable
         public Result<object?> Evaluate(FunctionCallContext context)
         {
             return Result.Success<object?>(ReplacedValue);
-        }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Success();
         }
     }
 

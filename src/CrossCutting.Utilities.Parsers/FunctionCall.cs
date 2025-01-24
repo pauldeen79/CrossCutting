@@ -5,22 +5,22 @@ public partial record FunctionCall
     public Result<object?> GetArgumentValueResult(int index, string argumentName, FunctionCallContext context)
         => index + 1 > Arguments.Count
             ? Result.Invalid<object?>($"Missing argument: {argumentName}")
-            : Arguments.ElementAt(index).GetValueResult(context);
+            : Arguments.ElementAt(index).Evaluate(context);
 
     public Result<object?> GetArgumentValueResult(int index, string argumentName, FunctionCallContext context, object? defaultValue)
         => index + 1 > Arguments.Count
             ? Result.Success(defaultValue)
-            : Arguments.ElementAt(index).GetValueResult(context);
+            : Arguments.ElementAt(index).Evaluate(context);
 
     public Result<T> GetArgumentValueResult<T>(int index, string argumentName, FunctionCallContext context)
         => index + 1 > Arguments.Count
             ? Result.Invalid<T>($"Missing argument: {argumentName}")
-            : Arguments.ElementAt(index).GetValueResult(context).TryCast<T>();
+            : Arguments.ElementAt(index).Evaluate(context).TryCast<T>();
 
     public Result<T?> GetArgumentValueResult<T>(int index, string argumentName, FunctionCallContext context, T? defaultValue)
         => index + 1 > Arguments.Count
             ? Result.Success(defaultValue)
-            : Arguments.ElementAt(index).GetValueResult(context).TryCastAllowNull<T>().Transform(value => value is null ? defaultValue : value);
+            : Arguments.ElementAt(index).Evaluate(context).TryCastAllowNull<T>().Transform(value => value is null ? defaultValue : value);
 
     public Result<string> GetArgumentStringValueResult(int index, string argumentName, FunctionCallContext context)
         => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, context));

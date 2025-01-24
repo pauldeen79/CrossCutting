@@ -2,11 +2,9 @@
 
 public class VariableExpression : IExpression
 {
-    public int Order => 50;
+    private readonly IVariableEvaluator _variableProcessor;
 
-    private readonly IVariableProcessor _variableProcessor;
-
-    public VariableExpression(IVariableProcessor variableProcessor)
+    public VariableExpression(IVariableEvaluator variableProcessor)
     {
         ArgumentGuard.IsNotNull(variableProcessor, nameof(variableProcessor));
 
@@ -20,10 +18,10 @@ public class VariableExpression : IExpression
             _ => Result.Continue<object?>()
         };
 
-    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
         => expression?.StartsWith("$") switch
         {
             true when expression.Length > 1 => _variableProcessor.Validate(expression.Substring(1), context),
-            _ => Result.Continue()
+            _ => Result.Continue<Type>()
         };
 }

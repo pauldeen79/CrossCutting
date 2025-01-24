@@ -116,7 +116,6 @@ public class FormattableStringParser : IFormattableStringParser
 
     private Result<GenericFormattableString> ProcessOnPlaceholders(FormattableStringParserSettings settings, object? context, bool validateOnly, string value)
         => _placeholders
-            .OrderBy(x => x.Order)
             .Select(placeholder => validateOnly
                 ? Result.FromExistingResult<GenericFormattableString>(placeholder.Validate(value, settings.FormatProvider, context, this))
                 : placeholder.Evaluate(value, settings.FormatProvider, context, this))

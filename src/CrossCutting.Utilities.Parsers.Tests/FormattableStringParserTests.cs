@@ -779,6 +779,10 @@ public sealed class FormattableStringParserTests : IDisposable
             ? Result.Success<object?>(1)
             : Result.Continue<object?>());
 
+        _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "variable"
+            ? Result.Success<Type>(typeof(int))
+            : Result.Continue<Type>());
+
         _provider = new ServiceCollection()
             .AddParsers()
             .AddSingleton<IPlaceholder, MyPlaceholderProcessor>()
@@ -792,8 +796,6 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private sealed class MyPlaceholderProcessor : IPlaceholder
     {
-        public int Order => 10;
-
         public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
         {
             return value switch
@@ -826,12 +828,6 @@ public sealed class FormattableStringParserTests : IDisposable
         {
             return Result.Success<object?>("function result");
         }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            // Aparently, this function does not care about the given arguments
-            return Result.Success();
-        }
     }
 
     [FunctionArgument("expression", typeof(string), false)]
@@ -839,20 +835,13 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         public Result<object?> Evaluate(FunctionCallContext context)
         {
-            var valueResult = context.FunctionCall.Arguments.First().GetValueResult(context);
+            var valueResult = context.FunctionCall.Arguments.First().Evaluate(context);
             if (!valueResult.IsSuccessful())
             {
                 return valueResult;
             }
 
             return Result.Success<object?>(valueResult.Value.ToStringWithDefault().ToUpperInvariant());
-        }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            // No need to check for argument count, the FunctionDescriptor will take care of this
-
-            return Result.Success();
         }
     }
 }

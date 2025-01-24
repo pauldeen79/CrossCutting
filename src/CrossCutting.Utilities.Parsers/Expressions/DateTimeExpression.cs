@@ -2,8 +2,6 @@
 
 public class DateTimeExpression : IExpression
 {
-    public int Order => 70;
-
     public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
         => expression switch
         {
@@ -11,10 +9,10 @@ public class DateTimeExpression : IExpression
             _ => Result.Continue<object?>()
         };
 
-    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
         => expression switch
         {
-            not null when DateTime.TryParse(expression, formatProvider, DateTimeStyles.None, out _) => Result.Success(),
-            _ => Result.Continue()
+            not null when DateTime.TryParse(expression, formatProvider, DateTimeStyles.None, out _) => Result.Success(typeof(DateTime)),
+            _ => Result.Continue<Type>()
         };
 }

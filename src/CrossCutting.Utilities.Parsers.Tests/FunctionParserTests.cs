@@ -326,7 +326,10 @@ public sealed class FunctionParserTests : IDisposable
     public void Parse_Returns_Error_When_NameProcessor_Returns_Error()
     {
         // Arrange
-        using var provider = new ServiceCollection().AddParsers().AddSingleton<IFunctionParserNameProcessor, ErrorNameProcessor>().BuildServiceProvider(true);
+        using var provider = new ServiceCollection()
+            .AddSingleton<IFunctionParserNameProcessor, ErrorNameProcessor>() // important to add this before the default parser name processor because of the order...
+            .AddParsers()
+            .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
         var sut = scope.ServiceProvider.GetRequiredService<IFunctionParser>();
         var input = "MYFUNCTION(some argument)";
@@ -400,23 +403,17 @@ public sealed class FunctionParserTests : IDisposable
 
     private sealed class ErrorArgumentProcessor : IFunctionParserArgumentProcessor
     {
-        public int Order => 1;
-
         public Result<FunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, IFormatProvider formatProvider, IFormattableStringParser? formattableStringParser, object? context)
             => Result.Error<FunctionCallArgument>("Kaboom");
     }
 
     private sealed class ErrorNameProcessor : IFunctionParserNameProcessor
     {
-        public int Order => 1;
-
         public Result<string> Process(string input) => Result.Error<string>("Kaboom");
     }
 
     private sealed class MyPlaceholderProcessor : IPlaceholder
     {
-        public int Order => 10;
-
         public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result.Success<GenericFormattableString>(ReplacedValue)

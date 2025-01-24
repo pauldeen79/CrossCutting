@@ -49,30 +49,29 @@ public class MathematicExpressionEvaluator : IMathematicExpressionEvaluator
                     : x);
     }
 
-    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
     {
         if (expression is null)
         {
-            return Result.Invalid("Expression is required");
+            return Result.Invalid<Type>("Expression is required");
         }
 
         var state = new MathematicExpressionState(expression, formatProvider, context, Evaluate);
         var error = _expressions
-            .OfType<Validate>()
             .Select(x => x.Evaluate(state))
             .FirstOrDefault(x => !x.IsSuccessful());
 
         if (error is not null)
         {
-            return error;
+            return Result.FromExistingResult<Type>(error);
         }
 
         return state.Results.Count > 0
-            ? state.Results.ElementAt(state.Results.Count - 1)
+            ? Result.FromExistingResult(state.Results.ElementAt(state.Results.Count - 1), state.Results.ElementAt(state.Results.Count - 1).Value?.GetType()!)
             : _expressionEvaluator
                 .Validate(expression, formatProvider, context)
                 .Transform(x => x.ErrorMessage?.StartsWith("Unknown expression type found in fragment: ") == true
-                    ? Result.NotFound()
+                    ? Result.NotFound<Type>()
                     : x);
     }
 }

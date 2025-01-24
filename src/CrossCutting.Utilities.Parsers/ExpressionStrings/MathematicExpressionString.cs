@@ -4,8 +4,6 @@ public class MathematicExpressionString(IMathematicExpressionEvaluator parser) :
 {
     private readonly IMathematicExpressionEvaluator _parser = parser;
 
-    public int Order => 500;
-
     public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
@@ -22,12 +20,12 @@ public class MathematicExpressionString(IMathematicExpressionEvaluator parser) :
         return Result.Continue<object?>();
     }
 
-    public Result Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
         // try =1+1 -> mathematic expression, no functions/formattable strings
-        var mathResult = _parser.Evaluate(state.Input.Substring(1), state.FormatProvider, state.Context);
+        var mathResult = _parser.Validate(state.Input.Substring(1), state.FormatProvider, state.Context);
         if (mathResult.Status is ResultStatus.Ok or not ResultStatus.NotFound)
         {
             // both success and failure need to be returned.
@@ -35,6 +33,6 @@ public class MathematicExpressionString(IMathematicExpressionEvaluator parser) :
             return mathResult;
         }
 
-        return Result.Continue();
+        return Result.Continue<Type>();
     }
 }

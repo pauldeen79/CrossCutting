@@ -770,7 +770,7 @@ public partial class TypedDelegateExpressionBuilder<T> : ExpressionBuilder<Typed
     }
 }
 
-public abstract class ExpressionResolverBase : IFunction, IExpressionResolver
+public abstract class ExpressionResolverBase : IValidatableFunction, IExpressionResolver
 {
     public Result<object?> Evaluate(FunctionCallContext context)
     {
@@ -781,9 +781,9 @@ public abstract class ExpressionResolverBase : IFunction, IExpressionResolver
             : Result.FromExistingResult<object?>(result);
     }
 
-    public Result Validate(FunctionCallContext context)
+    public Result<Type> Validate(FunctionCallContext context)
     {
-        return Parse(context);
+        return Result.FromExistingResult<Type>(Parse(context));
     }
 
     public Result<Expression> Parse(FunctionCallContext context)

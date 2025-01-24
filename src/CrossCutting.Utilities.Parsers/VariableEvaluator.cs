@@ -1,10 +1,10 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public class VariableProcessor : IVariableProcessor
+public class VariableEvaluator : IVariableEvaluator
 {
     private readonly IEnumerable<IVariable> _variables;
 
-    public VariableProcessor(IEnumerable<IVariable> variables)
+    public VariableEvaluator(IEnumerable<IVariable> variables)
     {
         ArgumentGuard.IsNotNull(variables, nameof(variables));
 
@@ -24,16 +24,16 @@ public class VariableProcessor : IVariableProcessor
                 ?? Result.Invalid<object?>($"Unknown variable found: {expression}");
     }
 
-    public Result Validate(string expression, object? context)
+    public Result<Type> Validate(string expression, object? context)
     {
         if (string.IsNullOrEmpty(expression))
         {
-            return Result.Invalid("Variable is required");
+            return Result.Invalid<Type>("Variable is required");
         }
 
         return _variables
             .Select(x => x.Validate(expression, context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid($"Unknown variable found: {expression}");
+                ?? Result.Invalid<Type>($"Unknown variable found: {expression}");
     }
 }

@@ -130,7 +130,6 @@ public class FunctionParser : IFunctionParser
             }
 
             var processValueResult = _argumentProcessors
-                .OrderBy(x => x.Order)
                 .Select(x => x.Process(argument, results, formatProvider, formattableStringParser, context))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue);
             if (processValueResult is not null)
@@ -155,7 +154,6 @@ public class FunctionParser : IFunctionParser
 
     private Result<string> FindFunctionName(string input)
         => _nameProcessors
-            .OrderBy(x => x.Order)
             .Select(x => x.Process(input))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.NotFound<string>("No function name found");

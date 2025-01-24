@@ -10,8 +10,7 @@ public sealed class FunctionCallTests : IDisposable
     public FunctionCallTests()
     {
         _functionEvaluatorMock
-            //<FunctionParseResult, IExpressionParser, object?>((result, _, _)
-            .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IExpressionEvaluator>(), Arg.Any<object?>())
+            .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<object?>())
             .Returns(x => x.ArgAt<FunctionCall>(0).Name switch
             {
                 "MyNestedFunction" => Result.Success<object?>("Evaluated result"),

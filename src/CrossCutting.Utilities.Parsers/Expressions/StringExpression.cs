@@ -2,8 +2,6 @@
 
 public class StringExpression : IExpression
 {
-    public int Order => 40;
-
     public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
         => expression?.StartsWith("\"") switch
         {
@@ -11,10 +9,10 @@ public class StringExpression : IExpression
             _ => Result.Continue<object?>()
         };
 
-    public Result Validate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
         => expression?.StartsWith("\"") switch
         {
-            true when expression.EndsWith("\"") => Result.Success(),
-            _ => Result.Continue()
+            true when expression.EndsWith("\"") => Result.Success(typeof(string)),
+            _ => Result.Continue<Type>()
         };
 }
