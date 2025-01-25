@@ -668,6 +668,6 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
             => _dlg.Invoke(expression, formatProvider);
 
         public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
-            => Result.NoContent<Type>();
+            => Result.Success(typeof(object));
     }
 }
