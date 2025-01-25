@@ -13,7 +13,7 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         {
             return callArgumentResult;
         }
-        else if (callArgumentResult.Value is not null && !descriptorArgument.Type.IsAssignableFrom(callArgumentResult.Value))
+        else if (!IsTypeValid(descriptorArgument, callArgumentResult))
         {
             return Result.Invalid<Type>($"Argument {descriptorArgument.Name} is not of type {descriptorArgument.Type.FullName}");
         }
@@ -23,5 +23,20 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         }
 
         return callArgumentResult;
+    }
+
+    private static bool IsTypeValid(FunctionDescriptorArgument descriptorArgument, Result<Type> callArgumentResult)
+    {
+        if (descriptorArgument.Type == typeof(object))
+        {
+            return true;
+        }
+
+        if (callArgumentResult.Value is null)
+        {
+            return true;
+        }
+
+        return callArgumentResult.Value.IsAssignableFrom(descriptorArgument.Type);
     }
 }

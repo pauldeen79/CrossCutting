@@ -498,6 +498,24 @@ public sealed class FunctionEvaluatorTests : IDisposable
         result.ErrorMessage.Should().Be("Could not find function with type name System.String");
     }
 
+    [Fact]
+    public void Validate_Returns_Correct_Result_When_Using_Function_Argument()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Overload")
+            .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Optional")))
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be<object>();
+    }
+
     public void Dispose()
     {
         _scope.Dispose();
