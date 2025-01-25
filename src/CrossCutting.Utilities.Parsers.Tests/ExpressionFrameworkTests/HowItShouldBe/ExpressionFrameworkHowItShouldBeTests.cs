@@ -95,7 +95,7 @@ public class ExpressionFrameworkHowItShouldBeTests
 // *** Generated code
 [FunctionName(@"ToUpperCase")]
 [Description("Converts the expression to upper case")]
-[FunctionArgument("Expression", typeof(string), "String to get the upper c00ase for", true)]
+[FunctionArgument("Expression", typeof(string), "String to get the upper case for", true)]
 [FunctionArgument("Culture", typeof(CultureInfo), "Optional CultureInfo to use", false)]
 [FunctionResult(ResultStatus.Ok, typeof(string), "The value of the expression converted to upper case", "This result will be returned when the expression is of type string")]
 // No need to tell what is returned on invalid types of arguments, the framework can do this for you
