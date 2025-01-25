@@ -55,7 +55,7 @@ public class FunctionEvaluator : IFunctionEvaluator
         var functionCallContext = new FunctionCallContext(functionCall, this, _expressionEvaluator, formatProvider, context);
 
         var functionResult = ResolveFunction(functionCallContext);
-        if (functionResult.Value is ITypedFunction<T> typedFunction)
+        if (functionResult.Value?.Function is ITypedFunction<T> typedFunction)
         {
             return typedFunction.EvaluateTyped(functionCallContext);
         }
@@ -73,7 +73,7 @@ public class FunctionEvaluator : IFunctionEvaluator
         var functionCallContext = new FunctionCallContext(functionCall, this, _expressionEvaluator, formatProvider, context);
 
         return ResolveFunction(functionCallContext)
-            .Transform(result => (result.Value?.Function as IValidatableFunction)?.Validate(functionCallContext) ?? Result.FromExistingResult(result, result.Value?.ReturnValueType!));
+            .Transform(result => (result.Value?.Function as IValidatableFunction)?.Validate(functionCallContext) ?? Result.FromExistingResult(result, result.Value?.ReturnValueType ?? typeof(object)));
     }
 
     private Result<FunctionAndTypeDescriptor> ResolveFunction(FunctionCallContext functionCallContext)
