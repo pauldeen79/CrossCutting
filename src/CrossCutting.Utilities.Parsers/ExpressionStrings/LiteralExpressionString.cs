@@ -2,36 +2,36 @@
 
 public class LiteralExpressionString : IExpressionString
 {
-    public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
+    public Result<object?> Evaluate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (state.Input.StartsWith("\'="))
+        if (context.Input.StartsWith("\'="))
         {
             // escaped expression string
-            return Result.Success<object?>(state.Input.Substring(1));
+            return Result.Success<object?>(context.Input.Substring(1));
         }
 
-        if (!state.Input.StartsWith("="))
+        if (!context.Input.StartsWith("="))
         {
             // literal
-            return Result.Success<object?>(state.Input);
+            return Result.Success<object?>(context.Input);
         }
 
         return Result.Continue<object?>();
     }
 
-    public Result<Type> Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (state.Input.StartsWith("\'="))
+        if (context.Input.StartsWith("\'="))
         {
             // escaped expression string
             return Result.Success(typeof(string));
         }
 
-        if (!state.Input.StartsWith("="))
+        if (!context.Input.StartsWith("="))
         {
             // literal
             return Result.Success(typeof(string));

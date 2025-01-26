@@ -2,16 +2,16 @@
 
 public class PipedExpressionString : IExpressionString
 {
-    public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
+    public Result<object?> Evaluate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return BaseProcessor.SplitDelimited(state, '|', split =>
+        return BaseProcessor.SplitDelimited(context, '|', split =>
         {
-            var resultValue = state.Context;
+            var resultValue = context.Context;
             foreach (var item in split)
             {
-                var result = state.Parser.Evaluate($"={item}", state.FormatProvider, resultValue, state.FormattableStringParser);
+                var result = context.Parser.Evaluate($"={item}", context.FormatProvider, resultValue, context.FormattableStringParser);
                 if (!result.IsSuccessful())
                 {
                     return result;
@@ -23,15 +23,15 @@ public class PipedExpressionString : IExpressionString
         });
     }
 
-    public Result<Type> Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return BaseProcessor.SplitDelimited
         (
-            state,
+            context,
             '|',
-            BaseProcessor.Parse(state)
+            BaseProcessor.Parse(context)
         );
     }
 }

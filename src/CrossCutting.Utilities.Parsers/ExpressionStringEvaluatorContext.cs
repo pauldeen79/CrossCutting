@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers;
 
-public class ExpressionStringEvaluatorState
+public class ExpressionStringEvaluatorContext
 {
     public string Input { get; }
     public IFormatProvider FormatProvider { get; }
@@ -8,7 +8,7 @@ public class ExpressionStringEvaluatorState
     public IExpressionStringEvaluator Parser { get; }
     public IFormattableStringParser? FormattableStringParser { get; }
 
-    public ExpressionStringEvaluatorState(
+    public ExpressionStringEvaluatorContext(
         string input,
         IFormatProvider formatProvider,
         object? context,

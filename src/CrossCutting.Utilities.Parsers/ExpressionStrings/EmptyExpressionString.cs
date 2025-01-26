@@ -2,11 +2,11 @@
 
 public class EmptyExpressionString : IExpressionString
 {
-    public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
+    public Result<object?> Evaluate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (string.IsNullOrEmpty(state.Input))
+        if (string.IsNullOrEmpty(context.Input))
         {
             return Result.Success<object?>(string.Empty);
         }
@@ -14,11 +14,11 @@ public class EmptyExpressionString : IExpressionString
         return Result.Continue<object?>();
     }
 
-    public Result<Type> Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (string.IsNullOrEmpty(state.Input))
+        if (string.IsNullOrEmpty(context.Input))
         {
             return Result.Success(typeof(string));
         }

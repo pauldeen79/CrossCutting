@@ -4,28 +4,28 @@ public abstract class OperatorExpressionProcessorBase : IExpressionString
 {
     protected abstract string Sign { get; }
 
-    public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
+    public Result<object?> Evaluate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (state.Input.IndexOf(Sign) == -1)
+        if (context.Input.IndexOf(Sign) == -1)
         {
             return Result.Continue<object?>();
         }
 
-        var split = state.Input.Substring(1).SplitDelimited(Sign, '\"', true, true);
+        var split = context.Input.Substring(1).SplitDelimited(Sign, '\"', true, true);
         if (split.Length != 2)
         {
             return Result.Continue<object?>();
         }
 
-        var leftResult = state.Parser.Evaluate($"={split[0]}", state.FormatProvider, state.Context, state.FormattableStringParser);
+        var leftResult = context.Parser.Evaluate($"={split[0]}", context.FormatProvider, context.Context, context.FormattableStringParser);
         if (!leftResult.IsSuccessful())
         {
             return leftResult;
         }
 
-        var rightResult = state.Parser.Evaluate($"={split[1]}", state.FormatProvider, state.Context, state.FormattableStringParser);
+        var rightResult = context.Parser.Evaluate($"={split[1]}", context.FormatProvider, context.Context, context.FormattableStringParser);
         if (!rightResult.IsSuccessful())
         {
             return rightResult;
@@ -34,28 +34,28 @@ public abstract class OperatorExpressionProcessorBase : IExpressionString
         return Result.FromExistingResult<object?>(PerformOperator(leftResult.Value, rightResult.Value));
     }
 
-    public Result<Type> Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (state.Input.IndexOf(Sign) == -1)
+        if (context.Input.IndexOf(Sign) == -1)
         {
             return Result.Continue<Type>();
         }
 
-        var split = state.Input.Substring(1).SplitDelimited(Sign, '\"', true, true);
+        var split = context.Input.Substring(1).SplitDelimited(Sign, '\"', true, true);
         if (split.Length != 2)
         {
             return Result.Continue<Type>();
         }
 
-        var leftResult = state.Parser.Validate($"={split[0]}", state.FormatProvider, state.Context, state.FormattableStringParser);
+        var leftResult = context.Parser.Validate($"={split[0]}", context.FormatProvider, context.Context, context.FormattableStringParser);
         if (!leftResult.IsSuccessful())
         {
             return leftResult;
         }
 
-        var rightResult = state.Parser.Validate($"={split[1]}", state.FormatProvider, state.Context, state.FormattableStringParser);
+        var rightResult = context.Parser.Validate($"={split[1]}", context.FormatProvider, context.Context, context.FormattableStringParser);
         if (!rightResult.IsSuccessful())
         {
             return rightResult;
