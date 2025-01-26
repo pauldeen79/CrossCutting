@@ -20,6 +20,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddSingleton<IFunction, OptionalParameterTest>()
             .AddSingleton<IFunction, AnimalFunction>()
             .AddSingleton<IFunction, MyInterfaceFunction>()
+            .AddSingleton<IFunction, ObjectArgumentFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -311,6 +312,23 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("Optional").Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Validate_Returns_Success_Result_On_Valid_Input_With_Object_Argument()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("ObjectArgumentFunction")
+            .AddArguments(new ConstantArgumentBuilder().WithValue(13)) // Int32 is a value type, which needs a special case on Type.IsAssignablFrom
+            .Build();
         var sut = CreateSut();
 
         // Act
@@ -688,6 +706,16 @@ public sealed class FunctionEvaluatorTests : IDisposable
     [FunctionName("MyInterfaceFunction")]
     [FunctionArgument("Argument", typeof(IMyInterface))]
     private sealed class MyInterfaceFunction : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [FunctionName("ObjectArgumentFunction")]
+    [FunctionArgument("Argument", typeof(object))]
+    private sealed class ObjectArgumentFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
         {
