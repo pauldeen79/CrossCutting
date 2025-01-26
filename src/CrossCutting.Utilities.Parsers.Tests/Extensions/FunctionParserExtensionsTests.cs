@@ -15,7 +15,7 @@ public class FunctionParserExtensionsTests
         _ = SutMock.Parse(Input, FormatProvider);
 
         // Assert
-        SutMock.Received().Parse(Input, FormatProvider, null, null);
+        SutMock.Received().Parse(Input, Arg.Is<FunctionParserSettings>(x => x.FormatProvider == FormatProvider && x.FormattableStringParser == null), Arg.Any<object?>());
     }
 
     [Fact]
@@ -25,7 +25,7 @@ public class FunctionParserExtensionsTests
         _ = SutMock.Parse(Input, FormatProvider, FormattableStringParserMock);
 
         // Assert
-        SutMock.Received().Parse(Input, FormatProvider, FormattableStringParserMock, null);
+        SutMock.Received().Parse(Input, Arg.Is<FunctionParserSettings>(x => x.FormatProvider == FormatProvider && x.FormattableStringParser == FormattableStringParserMock), Arg.Any<object?>());
     }
 
     [Fact]
@@ -35,6 +35,6 @@ public class FunctionParserExtensionsTests
         _ = SutMock.Parse(Input, FormatProvider, Context);
 
         // Assert
-        SutMock.Received().Parse(Input, FormatProvider, null, Context);
+        SutMock.Received().Parse(Input, Arg.Is<FunctionParserSettings>(x => x.FormatProvider == FormatProvider && x.FormattableStringParser ==  null), Context);
     }
 }

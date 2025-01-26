@@ -403,7 +403,7 @@ public sealed class FunctionParserTests : IDisposable
 
     private sealed class ErrorArgumentProcessor : IFunctionParserArgumentProcessor
     {
-        public Result<FunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, IFormatProvider formatProvider, IFormattableStringParser? formattableStringParser, object? context)
+        public Result<FunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, FunctionParserSettings settings, object? context)
             => Result.Error<FunctionCallArgument>("Kaboom");
     }
 

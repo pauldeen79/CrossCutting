@@ -53,7 +53,7 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
     private Result<object?> EvaluateSimpleExpression(ExpressionStringEvaluatorContext context)
     {
         // =something else, we can try function
-        var functionResult = _functionParser.Parse(context.Input.Substring(1), context.FormatProvider, context.FormattableStringParser, context.Context);
+        var functionResult = _functionParser.Parse(context.Input.Substring(1), new FunctionParserSettings(context.FormatProvider, context.FormattableStringParser), context.Context);
         if (!functionResult.IsSuccessful())
         {
             return Result.FromExistingResult<object?>(functionResult);
@@ -65,7 +65,7 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
     private Result<Type> ValidateSimpleExpression(ExpressionStringEvaluatorContext context)
     {
         // =something else, we can try function
-        var functionResult = _functionParser.Parse(context.Input.Substring(1), context.FormatProvider, context.FormattableStringParser, context.Context);
+        var functionResult = _functionParser.Parse(context.Input.Substring(1), new FunctionParserSettings(context.FormatProvider, context.FormattableStringParser), context.Context);
         if (!functionResult.IsSuccessful())
         {
             return Result.FromExistingResult<Type>(functionResult);

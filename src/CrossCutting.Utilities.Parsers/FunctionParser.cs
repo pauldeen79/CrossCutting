@@ -18,9 +18,9 @@ public class FunctionParser : IFunctionParser
         _argumentProcessors = argumentProcessors;
     }
 
-    public Result<FunctionCall> Parse(string function, IFormatProvider formatProvider, IFormattableStringParser? formattableStringParser, object? context)
+    public Result<FunctionCall> Parse(string function, FunctionParserSettings settings, object? context)
     {
-        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+        ArgumentGuard.IsNotNull(settings, nameof(settings));
 
         if (string.IsNullOrEmpty(function))
         {
@@ -61,7 +61,7 @@ public class FunctionParser : IFunctionParser
                 .Select(RemoveStringQualifiers);
 
             var arguments = new List<FunctionCallArgument>();
-            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, formatProvider, formattableStringParser, context);
+            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, settings, context);
             if (!addArgumentsResult.IsSuccessful())
             {
                 return addArgumentsResult;
@@ -119,7 +119,7 @@ public class FunctionParser : IFunctionParser
         }
     }
 
-    private Result<FunctionCall> AddArguments(List<FunctionCall> results, IEnumerable<string> argumentsSplit, List<FunctionCallArgument> arguments, IFormatProvider formatProvider, IFormattableStringParser? formattableStringParser, object? context)
+    private Result<FunctionCall> AddArguments(List<FunctionCall> results, IEnumerable<string> argumentsSplit, List<FunctionCallArgument> arguments, FunctionParserSettings settings, object? context)
     {
         foreach (var argument in argumentsSplit)
         {
@@ -130,7 +130,7 @@ public class FunctionParser : IFunctionParser
             }
 
             var processValueResult = _argumentProcessors
-                .Select(x => x.Process(argument, results, formatProvider, formattableStringParser, context))
+                .Select(x => x.Process(argument, results, settings, context))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue);
             if (processValueResult is not null)
             {

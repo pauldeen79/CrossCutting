@@ -2,13 +2,15 @@
 
 public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserArgumentProcessor
 {
-    public Result<FunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, IFormatProvider formatProvider, IFormattableStringParser? formattableStringParser, object? context)
+    public Result<FunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, FunctionParserSettings settings, object? context)
     {
-        if (argument?.StartsWith("@") == true && formattableStringParser is not null)
+        settings = settings.IsNotNull(nameof(settings));
+
+        if (argument?.StartsWith("@") == true && settings.FormattableStringParser is not null)
         {
-            var result = formattableStringParser.Parse(argument.Substring(1), new FormattableStringParserSettingsBuilder().WithFormatProvider(formatProvider).Build(), context);
+            var result = settings.FormattableStringParser.Parse(argument.Substring(1), new FormattableStringParserSettingsBuilder().WithFormatProvider(settings.FormatProvider).Build(), context);
             return result.IsSuccessful()
-                ? Result.Success<FunctionCallArgument>(new ExpressionArgument(result.Value!.ToString(formatProvider)))
+                ? Result.Success<FunctionCallArgument>(new ExpressionArgument(result.Value!.ToString(settings.FormatProvider)))
                 : Result.FromExistingResult<FunctionCallArgument>(result);
         }
 

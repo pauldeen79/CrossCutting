@@ -4,10 +4,15 @@ public class FunctionCallContext
 {
     public FunctionCallContext(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
     {
-        FunctionCall = functionCall ?? throw new ArgumentNullException(nameof(functionCall));
-        FunctionEvaluator = functionEvaluator ?? throw new ArgumentNullException(nameof(functionEvaluator));
-        ExpressionEvaluator = expressionEvaluator ?? throw new ArgumentNullException(nameof(expressionEvaluator));
-        FormatProvider = formatProvider ?? throw new ArgumentNullException(nameof(formatProvider));
+        ArgumentGuard.IsNotNull(functionCall, nameof(functionCall));
+        ArgumentGuard.IsNotNull(functionEvaluator, nameof(functionEvaluator));
+        ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
+        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+
+        FunctionCall = functionCall;
+        FunctionEvaluator = functionEvaluator;
+        ExpressionEvaluator = expressionEvaluator;
+        FormatProvider = formatProvider;
         Context = context;
     }
 
