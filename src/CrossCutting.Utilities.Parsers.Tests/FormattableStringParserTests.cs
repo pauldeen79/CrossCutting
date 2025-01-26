@@ -822,6 +822,7 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [FunctionName("MyFunction")]
+    [FunctionResultType(typeof(string))]
     private sealed class MyFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)

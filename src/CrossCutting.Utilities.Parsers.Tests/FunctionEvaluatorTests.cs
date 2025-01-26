@@ -18,6 +18,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddSingleton<IFunction, OverloadTest3>()
             .AddSingleton<IFunction, PassThroughFunction>()
             .AddSingleton<IFunction, OptionalParameterTest>()
+            .AddSingleton<IFunction, AnimalFunction>()
+            .AddSingleton<IFunction, MyInterfaceFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -251,6 +253,42 @@ public sealed class FunctionEvaluatorTests : IDisposable
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be<string>();
+    }
+
+    [Fact]
+    public void Validate_Returns_Success_Result_On_Valid_Input_With_Derived_Type()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("AnimalFunction")
+            .AddArguments(new ConstantArgumentBuilder().WithValue(new Monkey()))
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be<object>();
+    }
+
+    [Fact]
+    public void Validate_Returns_Success_Result_On_Valid_Input_With_Interface_Type()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("MyInterfaceFunction")
+            .AddArguments(new ConstantArgumentBuilder().WithValue(new MyImplementation()))
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Validate(functionCall, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be<object>();
     }
 
     [Fact]
@@ -504,7 +542,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         // Arrange
         var functionCall = new FunctionCallBuilder()
             .WithName("Overload")
-            .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Optional")))
+            .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("MyTypedFunction")))
             .Build();
         var sut = CreateSut();
 
@@ -636,4 +674,32 @@ public sealed class FunctionEvaluatorTests : IDisposable
             return Result.FromExistingResult<object?>(argumentResult);
         }
     }
+
+    [FunctionName("AnimalFunction")]
+    [FunctionArgument("Argument", typeof(Animal))]
+    private sealed class AnimalFunction : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [FunctionName("MyInterfaceFunction")]
+    [FunctionArgument("Argument", typeof(IMyInterface))]
+    private sealed class MyInterfaceFunction : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+#pragma warning disable S2094 // Classes should not be empty
+    private abstract class Animal { }
+#pragma warning restore S2094 // Classes should not be empty
+    private sealed class Monkey : Animal { }
+
+    private interface IMyInterface { }
+    private sealed class MyImplementation : IMyInterface { }
 }

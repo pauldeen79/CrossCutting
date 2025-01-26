@@ -37,6 +37,6 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
             return true;
         }
 
-        return callArgumentResult.Value.IsAssignableFrom(descriptorArgument.Type);
+        return descriptorArgument.Type.IsAssignableFrom(callArgumentResult.Value);
     }
 }
