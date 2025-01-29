@@ -9,7 +9,7 @@ public class FunctionCallContextTests : IDisposable
     private bool disposedValue;
 
     protected static FunctionEvaluatorSettings CreateSettings()
-        => new FunctionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture).Build();
+        => new FunctionEvaluatorSettingsBuilder().Build();
 
     public FunctionCallContextTests()
     {

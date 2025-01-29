@@ -8,7 +8,7 @@ public sealed class FunctionCallTests : IDisposable
     private readonly IServiceScope _scope;
 
     private static FunctionEvaluatorSettings CreateSettings()
-        => new FunctionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture).Build();
+        => new FunctionEvaluatorSettingsBuilder().Build();
 
     public FunctionCallTests()
     {

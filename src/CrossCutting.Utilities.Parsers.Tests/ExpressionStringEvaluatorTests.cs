@@ -22,9 +22,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
         _scope = _provider.CreateScope();
     }
 
-
     protected static ExpressionStringEvaluatorSettings CreateSettings()
-        => new ExpressionStringEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture).Build();
+        => new ExpressionStringEvaluatorSettingsBuilder().Build();
 
     public class Evaluate : ExpressionStringEvaluatorTests
     {

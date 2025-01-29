@@ -3,7 +3,7 @@
 public sealed class ExpressionFrameworkTest
 {
     private static FunctionEvaluatorSettings CreateSettings()
-        => new FunctionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture).Build();
+        => new FunctionEvaluatorSettingsBuilder().Build();
 
     [Fact]
     public void Can_Parse_ToUpperCaseExpression()

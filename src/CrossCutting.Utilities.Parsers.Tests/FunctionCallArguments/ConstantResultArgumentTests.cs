@@ -3,7 +3,7 @@
 public class ConstantResultArgumentTests
 {
     private static FunctionEvaluatorSettings CreateSettings()
-        => new FunctionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture).Build();
+        => new FunctionEvaluatorSettingsBuilder().Build();
 
     [Fact]
     public void EvaluateTyped_Returns_Correct_Result()

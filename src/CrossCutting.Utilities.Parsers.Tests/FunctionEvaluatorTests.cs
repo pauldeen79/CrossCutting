@@ -449,7 +449,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .Build();
         var sut = CreateSut();
         var settings = new FunctionEvaluatorSettingsBuilder()
-            .WithFormatProvider(CultureInfo.InvariantCulture)
+            
             .WithValidateArgumentTypes(false)
             .Build();
 
@@ -603,7 +603,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         => _scope.ServiceProvider.GetRequiredService<IFunctionEvaluator>();
 
     private static FunctionEvaluatorSettings CreateSettings()
-        => new FunctionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture).Build();
+        => new FunctionEvaluatorSettingsBuilder().Build();
 
     private sealed class ErrorFunction : IValidatableFunction
     {

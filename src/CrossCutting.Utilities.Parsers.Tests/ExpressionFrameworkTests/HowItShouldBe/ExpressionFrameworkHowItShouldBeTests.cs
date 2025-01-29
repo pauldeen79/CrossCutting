@@ -3,7 +3,7 @@
 public class ExpressionFrameworkHowItShouldBeTests
 {
     private static FunctionEvaluatorSettings CreateSettings()
-        => new FunctionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture).Build();
+        => new FunctionEvaluatorSettingsBuilder().Build();
 
     [Fact]
     public void Can_Validate_ToUpperCaseExpression()
