@@ -440,6 +440,27 @@ public sealed class FunctionEvaluatorTests : IDisposable
     }
 
     [Fact]
+    public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_And_Argument_Is_Of_Wrong_Type_But_ValidateArgumentTypes_Setting_Is_False()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Overload")
+            .AddArguments(new ConstantArgumentBuilder().WithValue(13))
+            .Build();
+        var sut = CreateSut();
+        var settings = new FunctionEvaluatorSettingsBuilder()
+            .WithFormatProvider(CultureInfo.InvariantCulture)
+            .WithValidateArgumentTypes(false)
+            .Build();
+
+        // Act
+        var result = sut.Validate(functionCall, settings);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+    }
+
+    [Fact]
     public void Validate_Returns_Result_From_Validation_When_Overload_ArgumentCount_Is_Correct_But_Argument_Has_Non_Succesful_Result_Constant()
     {
         // Arrange
