@@ -403,7 +403,7 @@ public sealed class FunctionParserTests : IDisposable
 
     private sealed class ErrorArgumentProcessor : IFunctionParserArgumentProcessor
     {
-        public Result<FunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, IFormatProvider formatProvider, IFormattableStringParser? formattableStringParser, object? context)
+        public Result<FunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, FunctionParserSettings settings, object? context)
             => Result.Error<FunctionCallArgument>("Kaboom");
     }
 
@@ -414,12 +414,12 @@ public sealed class FunctionParserTests : IDisposable
 
     private sealed class MyPlaceholderProcessor : IPlaceholder
     {
-        public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<GenericFormattableString> Evaluate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result.Success<GenericFormattableString>(ReplacedValue)
                 : Result.Error<GenericFormattableString>($"Unsupported placeholder name: {value}");
 
-        public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result Validate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result.Success()
                 : Result.Error($"Unsupported placeholder name: {value}");

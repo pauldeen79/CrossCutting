@@ -2,6 +2,9 @@
 
 public class ExpressionFrameworkHowItShouldBeTests
 {
+    private static FunctionEvaluatorSettings CreateSettings()
+        => new FunctionEvaluatorSettingsBuilder().Build();
+
     [Fact]
     public void Can_Validate_ToUpperCaseExpression()
     {
@@ -12,7 +15,7 @@ public class ExpressionFrameworkHowItShouldBeTests
         var functionCall = new ToUpperCaseFunctionCallBuilder()
             .WithExpression("Hello world!")
             .Build();
-        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CreateSettings(), null);
 
         // Act
         var result = sut.Validate(context);
@@ -31,7 +34,7 @@ public class ExpressionFrameworkHowItShouldBeTests
         var functionCall = new ToUpperCaseFunctionCallBuilder()
             .WithExpression("Hello world!")
             .Build();
-        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CreateSettings(), null);
 
         // Act
         var result = sut.Evaluate(context);
@@ -53,7 +56,7 @@ public class ExpressionFrameworkHowItShouldBeTests
             .WithExpression(Result.Success("Hello world!"))
             .WithCultureInfo(CultureInfo.InvariantCulture)
             .Build();
-        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CreateSettings(), null);
 
         // Act
         var result = sut.EvaluateTyped(context);
@@ -155,7 +158,7 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
     private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(FunctionCallContext context)
     {
         // Note that if you provide a static Evaluate method without FunctionCallContext, then you can't use the function call context (format provider, expression evaluator etc.)
-        return results => Result.Success(Expression(results).ToUpper(CultureInfo(results, context?.FormatProvider.ToCultureInfo())));
+        return results => Result.Success(Expression(results).ToUpper(CultureInfo(results, context?.Settings.FormatProvider.ToCultureInfo())));
     }
 
     private static Result OnFailure(Result error)
@@ -257,7 +260,7 @@ public class ToUpperCaseFunctionCallContext : FunctionCallContext, IResultDictio
 {
     public Dictionary<string, Result> Results { get; }
 
-    public ToUpperCaseFunctionCallContext(FunctionCallContext context) : base(context?.FunctionCall ?? throw new ArgumentNullException(nameof(context)), context.FunctionEvaluator, context.ExpressionEvaluator, context.FormatProvider, context.Context)
+    public ToUpperCaseFunctionCallContext(FunctionCallContext context) : base(context?.FunctionCall ?? throw new ArgumentNullException(nameof(context)), context.FunctionEvaluator, context.ExpressionEvaluator, context.Settings, context.Context)
     {
         Results = new ResultDictionaryBuilder()
             // Note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult.

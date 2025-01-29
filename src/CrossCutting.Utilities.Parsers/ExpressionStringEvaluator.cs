@@ -20,14 +20,14 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
         _expressionStrings = expressionStrings;
     }
 
-    public Result<object?> Evaluate(string expressionString, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    public Result<object?> Evaluate(string expressionString, ExpressionStringEvaluatorSettings settings, object? context, IFormattableStringParser? formattableStringParser)
     {
         if (expressionString is null)
         {
             return Result.Invalid<object?>("Expression string is required");
         }
 
-        var state = new ExpressionStringEvaluatorState(expressionString, formatProvider, context, this, formattableStringParser);
+        var state = new ExpressionStringEvaluatorContext(expressionString, settings, context, this, formattableStringParser);
 
         return _expressionStrings
             .Select(x => x.Evaluate(state))
@@ -35,14 +35,14 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
                 ?? EvaluateSimpleExpression(state);
     }
 
-    public Result<Type> Validate(string expressionString, IFormatProvider formatProvider, object? context, IFormattableStringParser? formattableStringParser)
+    public Result<Type> Validate(string expressionString, ExpressionStringEvaluatorSettings settings, object? context, IFormattableStringParser? formattableStringParser)
     {
         if (expressionString is null)
         {
             return Result.Invalid<Type>("Expression string is required");
         }
 
-        var state = new ExpressionStringEvaluatorState(expressionString, formatProvider, context, this, formattableStringParser);
+        var state = new ExpressionStringEvaluatorContext(expressionString, settings, context, this, formattableStringParser);
 
         return _expressionStrings
             .Select(x => x.Validate(state))
@@ -50,27 +50,27 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
                 ?? ValidateSimpleExpression(state);
     }
 
-    private Result<object?> EvaluateSimpleExpression(ExpressionStringEvaluatorState state)
+    private Result<object?> EvaluateSimpleExpression(ExpressionStringEvaluatorContext context)
     {
         // =something else, we can try function
-        var functionResult = _functionParser.Parse(state.Input.Substring(1), state.FormatProvider, state.FormattableStringParser, state.Context);
+        var functionResult = _functionParser.Parse(context.Input.Substring(1), new FunctionParserSettings(context.Settings.FormatProvider, context.FormattableStringParser), context.Context);
         if (!functionResult.IsSuccessful())
         {
             return Result.FromExistingResult<object?>(functionResult);
         }
 
-        return _functionEvaluator.Evaluate(functionResult.Value!, state.FormatProvider, state.Context);
+        return _functionEvaluator.Evaluate(functionResult.Value!, new FunctionEvaluatorSettings(context.Settings.FormatProvider, context.Settings.ValidateArgumentTypes), context.Context);
     }
 
-    private Result<Type> ValidateSimpleExpression(ExpressionStringEvaluatorState state)
+    private Result<Type> ValidateSimpleExpression(ExpressionStringEvaluatorContext context)
     {
         // =something else, we can try function
-        var functionResult = _functionParser.Parse(state.Input.Substring(1), state.FormatProvider, state.FormattableStringParser, state.Context);
+        var functionResult = _functionParser.Parse(context.Input.Substring(1), new FunctionParserSettings(context.Settings.FormatProvider, context.FormattableStringParser), context.Context);
         if (!functionResult.IsSuccessful())
         {
             return Result.FromExistingResult<Type>(functionResult);
         }
 
-        return _functionEvaluator.Validate(functionResult.Value!, state.FormatProvider, state.Context);
+        return _functionEvaluator.Validate(functionResult.Value!, new FunctionEvaluatorSettings(context.Settings.FormatProvider, context.Settings.ValidateArgumentTypes), context.Context);
     }
 }

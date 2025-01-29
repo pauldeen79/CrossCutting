@@ -22,6 +22,9 @@ public class ExpressionStringEvaluatorTests : IDisposable
         _scope = _provider.CreateScope();
     }
 
+    protected static ExpressionStringEvaluatorSettings CreateSettings()
+        => new ExpressionStringEvaluatorSettingsBuilder().Build();
+
     public class Evaluate : ExpressionStringEvaluatorTests
     {
         [Fact]
@@ -31,7 +34,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = string.Empty;
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -45,7 +48,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = default(string);
 
             // Act
-            var result = CreateSut().Evaluate(input!, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input!, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -59,7 +62,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -73,7 +76,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "string that does not begin with =";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -87,7 +90,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=1+1";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -102,7 +105,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             _variable.Evaluate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<object?>("MyVariableValue") : Result.Continue<object?>());
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -116,7 +119,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=1+error";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.NotSupported);
@@ -130,7 +133,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=@\"Hello {Name}!\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+            var result = CreateSut().Evaluate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -144,7 +147,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=@\"Hello {Name}!\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -158,7 +161,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=@\"Hello {Kaboom}!\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+            var result = CreateSut().Evaluate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -172,7 +175,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello {Name}!\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -186,7 +189,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello | {Name}!\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -200,7 +203,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello & {Name}!\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -214,7 +217,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"a\" == \"b\" == \"c\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -228,7 +231,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=MYFUNCTION()";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -242,7 +245,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=toupper(@\"Hello {Name}!\")";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+            var result = CreateSut().Evaluate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -256,7 +259,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=error()";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -270,7 +273,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "some string that does not start with = sign";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -284,7 +287,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"some string that starts with = sign but does not contain any formattable string, function or mathematical expression\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -298,7 +301,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello {Name}!\" | ToUpper(context)";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -312,7 +315,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello \" & \"Name!\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -326,7 +329,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello \" & @\"{Name}!\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+            var result = CreateSut().Evaluate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -340,7 +343,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello \" & \"{Name}!\" | ToUpper(context)";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -354,7 +357,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello\" == \"Hello\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -368,7 +371,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=1 == 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -382,7 +385,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=null == \"Hello\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -396,7 +399,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello\" == null";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -410,7 +413,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=null == null";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -424,7 +427,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=error() == \"Hello\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -437,7 +440,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello\" == error()";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -450,7 +453,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello\" != \"Hello\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -464,7 +467,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=null > 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -478,7 +481,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=2 > null";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -492,7 +495,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=3 > 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -506,7 +509,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"hello\" > 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -520,7 +523,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=null >= 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -534,7 +537,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=2 >= null";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -548,7 +551,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=3 >= 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -562,7 +565,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"hello\" >= 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -576,7 +579,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=null < 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -590,7 +593,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=2 < null";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -604,7 +607,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=3 < 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -618,7 +621,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"hello\" < 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -632,7 +635,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=null <= 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -646,7 +649,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=2 <= null";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -660,7 +663,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=3 <= 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -674,7 +677,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"hello\" <= 2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -688,7 +691,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=somefunction(\uE002)";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -702,7 +705,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=()";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.NotFound);
@@ -721,7 +724,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=MYFUNCTION()";
 
             // Act
-            var result = scope.ServiceProvider.GetRequiredService<IExpressionStringEvaluator>().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = scope.ServiceProvider.GetRequiredService<IExpressionStringEvaluator>().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -735,7 +738,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "\'=error()";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -754,10 +757,10 @@ public class ExpressionStringEvaluatorTests : IDisposable
                 .BuildServiceProvider(true);
             using var scope = provider.CreateScope();
 
-            var parser = scope.ServiceProvider.GetRequiredService<IExpressionStringEvaluator>();
+            var sut = scope.ServiceProvider.GetRequiredService<IExpressionStringEvaluator>();
 
             // Act
-            var result = parser.Evaluate(input, CultureInfo.InvariantCulture, scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+            var result = sut.Evaluate(input, CreateSettings(), scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -774,7 +777,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = string.Empty;
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -787,7 +790,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = default(string);
 
             // Act
-            var result = CreateSut().Validate(input!, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input!, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -801,7 +804,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -814,7 +817,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "string that does not begin with =";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -827,7 +830,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=1+1";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -841,7 +844,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<Type>(typeof(string)) : Result.Continue<Type>());
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -854,7 +857,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=1+error";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.NotSupported);
@@ -868,7 +871,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=@\"Hello {Name}!\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+            var result = CreateSut().Validate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -881,7 +884,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=@\"Hello {Name}!\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -894,7 +897,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=@\"Hello {Kaboom}!\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+            var result = CreateSut().Validate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -909,7 +912,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello {Name}!\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -922,7 +925,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello | {Name}!\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -935,7 +938,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello & {Name}!\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -948,7 +951,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"a\" == \"b\" == \"c\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -961,7 +964,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=MYFUNCTION()";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -974,7 +977,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=TOUPPER(@\"Hello {Name}!\")";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+            var result = CreateSut().Validate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -987,7 +990,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "some string that does not start with = sign";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1000,7 +1003,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"some string that starts with = sign but does not contain any formattable string, function or mathematical expression\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1013,7 +1016,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello {Name}!\" | ToUpper(\"bla\")";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.NoContent);
@@ -1026,7 +1029,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello \" & \"Name!\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.NoContent);
@@ -1039,7 +1042,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello \" & @\"{Name}!\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
+            var result = CreateSut().Validate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.NoContent);
@@ -1052,7 +1055,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello \" & \"{Name}!\" | ToUpper(\"bla\")";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.NoContent);
@@ -1065,7 +1068,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello\" == \"Hello\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1078,7 +1081,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=1 == 2";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1091,7 +1094,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=null == \"Hello\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1104,7 +1107,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello\" == null";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1117,7 +1120,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=null == null";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1130,7 +1133,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=\"Hello\" != \"Hello\"";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1143,7 +1146,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=null > 2";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1156,7 +1159,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=2 > null";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1169,7 +1172,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=3 > 2";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1182,7 +1185,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=null >= 2";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1195,7 +1198,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=2 >= null";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1208,7 +1211,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=3 >= 2";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1221,7 +1224,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=null < 2";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1234,7 +1237,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=2 < null";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1247,7 +1250,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=3 < 2";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1260,7 +1263,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=null <= 2";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1273,7 +1276,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=2 <= null";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1286,7 +1289,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=3 <= 2";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1299,7 +1302,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=somefunction(\uE002)";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -1313,7 +1316,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=()";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.NotFound);
@@ -1332,7 +1335,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=MYFUNCTION()";
 
             // Act
-            var result = scope.ServiceProvider.GetRequiredService<IExpressionStringEvaluator>().Validate(input, CultureInfo.InvariantCulture);
+            var result = scope.ServiceProvider.GetRequiredService<IExpressionStringEvaluator>().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -1346,7 +1349,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "\'=error()";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -1357,12 +1360,12 @@ public class ExpressionStringEvaluatorTests : IDisposable
 
     private sealed class MyPlaceholderProcessor : IPlaceholder
     {
-        public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<GenericFormattableString> Evaluate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result.Success(new GenericFormattableString(ReplacedValue))
                 : Result.Error<GenericFormattableString>($"Unsupported placeholder name: {value}");
 
-        public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result Validate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result.Success()
                 : Result.Error($"Unsupported placeholder name: {value}");

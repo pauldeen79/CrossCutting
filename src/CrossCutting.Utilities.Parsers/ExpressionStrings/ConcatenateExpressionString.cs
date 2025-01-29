@@ -2,36 +2,36 @@
 
 public class ConcatenateExpressionString : IExpressionString
 {
-    public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
+    public Result<object?> Evaluate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return BaseProcessor.SplitDelimited(state, '&', split =>
+        return BaseProcessor.SplitDelimited(context, '&', split =>
         {
             var builder = new StringBuilder();
             foreach (var item in split)
             {
-                var result = state.Parser.Evaluate($"={item}", state.FormatProvider, state.Context, state.FormattableStringParser);
+                var result = context.Parser.Evaluate($"={item}", context.Settings, context.Context, context.FormattableStringParser);
                 if (!result.IsSuccessful())
                 {
                     return result;
                 }
-                builder.Append(result.Value.ToString(state.FormatProvider));
+                builder.Append(result.Value.ToString(context.Settings.FormatProvider));
             }
 
             return Result.Success<object?>(builder.ToString());
         });
     }
 
-    public Result<Type> Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return BaseProcessor.SplitDelimited
         (
-            state,
+            context,
             '&',
-            BaseProcessor.Parse(state)
+            BaseProcessor.Parse(context)
         );
     }
 }

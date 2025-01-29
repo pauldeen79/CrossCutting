@@ -11,9 +11,11 @@ public class ExpressionStringPlaceholder : IPlaceholder
         _expressionStringEvaluator = expressionStringEvaluator;
     }
 
-    public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<GenericFormattableString> Evaluate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
     {
-        var result = _expressionStringEvaluator.Evaluate($"={value}", formatProvider, context, formattableStringParser);
+        settings = ArgumentGuard.IsNotNull(settings, nameof(settings));
+
+        var result = _expressionStringEvaluator.Evaluate($"={value}", new ExpressionStringEvaluatorSettings(settings.FormatProvider, settings.ValidateArgumentTypes), context, formattableStringParser);
 
         return result.Status switch
         {
@@ -22,9 +24,11 @@ public class ExpressionStringPlaceholder : IPlaceholder
         };
     }
 
-    public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result Validate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
     {
-        var result = _expressionStringEvaluator.Validate($"={value}", formatProvider, context, formattableStringParser);
+        settings = ArgumentGuard.IsNotNull(settings, nameof(settings));
+
+        var result = _expressionStringEvaluator.Validate($"={value}", new ExpressionStringEvaluatorSettings(settings.FormatProvider, settings.ValidateArgumentTypes), context, formattableStringParser);
 
         return result.Status switch
         {

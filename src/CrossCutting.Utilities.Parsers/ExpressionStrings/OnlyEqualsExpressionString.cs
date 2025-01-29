@@ -2,23 +2,23 @@
 
 public class OnlyEqualsExpressionString : IExpressionString
 {
-    public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
+    public Result<object?> Evaluate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (state.Input == "=")
+        if (context.Input == "=")
         {
-            return Result.Success<object?>(state.Input);
+            return Result.Success<object?>(context.Input);
         }
 
         return Result.Continue<object?>();
     }
 
-    public Result<Type> Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (state.Input == "=")
+        if (context.Input == "=")
         {
             return Result.Success(typeof(string));
         }

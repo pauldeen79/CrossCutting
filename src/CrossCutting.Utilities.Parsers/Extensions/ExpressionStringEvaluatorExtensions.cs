@@ -2,21 +2,21 @@
 
 public static class ExpressionStringEvaluatorExtensions
 {
-    public static Result<object?> Evaluate(this IExpressionStringEvaluator instance, string input, IFormatProvider formatProvider)
-        => instance.Evaluate(input, formatProvider, null, null);
+    public static Result<object?> Evaluate(this IExpressionStringEvaluator instance, string input, ExpressionStringEvaluatorSettings settings)
+        => instance.Evaluate(input, settings, null, null);
 
-    public static Result<object?> Evaluate(this IExpressionStringEvaluator instance, string input, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser)
-        => instance.Evaluate(input, formatProvider, null, formattableStringParser);
+    public static Result<object?> Evaluate(this IExpressionStringEvaluator instance, string input, ExpressionStringEvaluatorSettings settings, IFormattableStringParser formattableStringParser)
+        => instance.Evaluate(input, settings, null, formattableStringParser);
 
-    public static Result<object?> Evaluate(this IExpressionStringEvaluator instance, string input, IFormatProvider formatProvider, object? context)
-        => instance.Evaluate(input, formatProvider, context, null);
+    public static Result<object?> Evaluate(this IExpressionStringEvaluator instance, string input, ExpressionStringEvaluatorSettings settings, object? context)
+        => instance.Evaluate(input, settings, context, null);
 
-    public static Result<Type> Validate(this IExpressionStringEvaluator instance, string input, IFormatProvider formatProvider)
-        => instance.Validate(input, formatProvider, null, null);
+    public static Result<Type> Validate(this IExpressionStringEvaluator instance, string input, ExpressionStringEvaluatorSettings settings)
+        => instance.Validate(input, settings, null, null);
 
-    public static Result<Type> Validate(this IExpressionStringEvaluator instance, string input, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser)
-        => instance.Validate(input, formatProvider, null, formattableStringParser);
+    public static Result<Type> Validate(this IExpressionStringEvaluator instance, string input, ExpressionStringEvaluatorSettings settings, IFormattableStringParser formattableStringParser)
+        => instance.Validate(input, settings, null, formattableStringParser);
 
-    public static Result<Type> Validate(this IExpressionStringEvaluator instance, string input, IFormatProvider formatProvider, object? context)
-        => instance.Validate(input, formatProvider, context, null);
+    public static Result<Type> Validate(this IExpressionStringEvaluator instance, string input, ExpressionStringEvaluatorSettings settings, object? context)
+        => instance.Validate(input, settings, context, null);
 }

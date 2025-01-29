@@ -117,8 +117,8 @@ public class FormattableStringParser : IFormattableStringParser
     private Result<GenericFormattableString> ProcessOnPlaceholders(FormattableStringParserSettings settings, object? context, bool validateOnly, string value)
         => _placeholders
             .Select(placeholder => validateOnly
-                ? Result.FromExistingResult<GenericFormattableString>(placeholder.Validate(value, settings.FormatProvider, context, this))
-                : placeholder.Evaluate(value, settings.FormatProvider, context, this))
+                ? Result.FromExistingResult<GenericFormattableString>(placeholder.Validate(value, new PlaceholderSettings(settings.FormatProvider, settings.ValidateArgumentTypes), context, this))
+                : placeholder.Evaluate(value, new PlaceholderSettings(settings.FormatProvider, settings.ValidateArgumentTypes), context, this))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Invalid<GenericFormattableString>($"Unknown placeholder in value: {value}");
 

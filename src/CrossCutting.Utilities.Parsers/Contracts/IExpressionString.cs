@@ -2,7 +2,7 @@
 
 public interface IExpressionString
 {
-    Result<Type> Validate(ExpressionStringEvaluatorState state);
+    Result<Type> Validate(ExpressionStringEvaluatorContext context);
 
-    Result<object?> Evaluate(ExpressionStringEvaluatorState state);
+    Result<object?> Evaluate(ExpressionStringEvaluatorContext context);
 }

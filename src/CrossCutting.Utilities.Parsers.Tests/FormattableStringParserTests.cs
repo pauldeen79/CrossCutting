@@ -315,7 +315,7 @@ public sealed class FormattableStringParserTests : IDisposable
         // Arrange
         var input = "public class Bla {{ /* implementation goes here with {Name} */ }}";
         var settings = new FormattableStringParserSettingsBuilder()
-            .WithFormatProvider(CultureInfo.InvariantCulture)
+            
             .WithPlaceholderStart("{")
             .WithPlaceholderEnd("}")
             .Build();
@@ -335,7 +335,7 @@ public sealed class FormattableStringParserTests : IDisposable
         // Arrange
         var input = "public class Bla { /* implementation goes here with {{Name}} */ }";
         var settings = new FormattableStringParserSettingsBuilder()
-            .WithFormatProvider(CultureInfo.InvariantCulture)
+            
             .WithPlaceholderStart("{{")
             .WithPlaceholderEnd("}}")
             .Build();
@@ -371,7 +371,7 @@ public sealed class FormattableStringParserTests : IDisposable
         // Arrange
         var input = "public class Bla {{ /* implementation goes here with <Name> */ }}";
         var settings = new FormattableStringParserSettingsBuilder()
-            .WithFormatProvider(CultureInfo.InvariantCulture)
+            
             .WithPlaceholderStart("<")
             .WithPlaceholderEnd(">")
             .WithEscapeBraces(false)
@@ -648,7 +648,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var input = "Hello {{Name}}!";
         var sut = CreateSut();
         var settings = new FormattableStringParserSettingsBuilder()
-            .WithFormatProvider(CultureInfo.InvariantCulture)
+            
             .WithPlaceholderStart("{{")
             .WithPlaceholderEnd("}}")
             .Build();
@@ -676,7 +676,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var input = $"Hello {start}Name{end}!";
         var sut = CreateSut();
         var settings = new FormattableStringParserSettingsBuilder()
-            .WithFormatProvider(CultureInfo.InvariantCulture)
+            
             .WithPlaceholderStart(start)
             .WithPlaceholderEnd(end)
             .Build();
@@ -796,7 +796,7 @@ public sealed class FormattableStringParserTests : IDisposable
 
     private sealed class MyPlaceholderProcessor : IPlaceholder
     {
-        public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<GenericFormattableString> Evaluate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
         {
             return value switch
             {
@@ -808,7 +808,7 @@ public sealed class FormattableStringParserTests : IDisposable
             };
         }
 
-        public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result Validate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
         {
             return value switch
             {

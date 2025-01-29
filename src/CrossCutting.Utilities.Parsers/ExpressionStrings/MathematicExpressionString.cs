@@ -1,15 +1,15 @@
 ﻿namespace CrossCutting.Utilities.Parsers.ExpressionStrings;
 
-public class MathematicExpressionString(IMathematicExpressionEvaluator parser) : IExpressionString
+public class MathematicExpressionString(IMathematicExpressionEvaluator evaluator) : IExpressionString
 {
-    private readonly IMathematicExpressionEvaluator _parser = parser;
+    private readonly IMathematicExpressionEvaluator _evaluator = evaluator;
 
-    public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
+    public Result<object?> Evaluate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         // try =1+1 -> mathematic expression, no functions/formattable strings
-        var mathResult = _parser.Evaluate(state.Input.Substring(1), state.FormatProvider, state.Context);
+        var mathResult = _evaluator.Evaluate(context.Input.Substring(1), context.Settings.FormatProvider, context.Context);
         if (mathResult.Status is ResultStatus.Ok or not ResultStatus.NotFound)
         {
             // both success and failure need to be returned.
@@ -20,12 +20,12 @@ public class MathematicExpressionString(IMathematicExpressionEvaluator parser) :
         return Result.Continue<object?>();
     }
 
-    public Result<Type> Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         // try =1+1 -> mathematic expression, no functions/formattable strings
-        var mathResult = _parser.Validate(state.Input.Substring(1), state.FormatProvider, state.Context);
+        var mathResult = _evaluator.Validate(context.Input.Substring(1), context.Settings.FormatProvider, context.Context);
         if (mathResult.Status is ResultStatus.Ok or not ResultStatus.NotFound)
         {
             // both success and failure need to be returned.

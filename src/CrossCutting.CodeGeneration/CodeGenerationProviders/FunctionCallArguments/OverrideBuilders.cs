@@ -1,4 +1,4 @@
-﻿namespace ExpressionFramework.CodeGeneration.CodeGenerationProviders.FunctionCallArguments;
+﻿namespace CrossCutting.CodeGeneration.CodeGenerationProviders.FunctionCallArguments;
 
 [ExcludeFromCodeCoverage]
 public class OverrideBuilders(IPipelineService pipelineService) : CrossCuttingCSharpClassBase(pipelineService)

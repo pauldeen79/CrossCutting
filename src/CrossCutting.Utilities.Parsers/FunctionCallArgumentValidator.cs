@@ -13,7 +13,7 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         {
             return callArgumentResult;
         }
-        else if (!IsTypeValid(descriptorArgument, callArgumentResult))
+        else if (functionCallContext.Settings.ValidateArgumentTypes && !IsTypeValid(descriptorArgument, callArgumentResult))
         {
             return Result.Invalid<Type>($"Argument {descriptorArgument.Name} is not of type {descriptorArgument.Type.FullName}");
         }

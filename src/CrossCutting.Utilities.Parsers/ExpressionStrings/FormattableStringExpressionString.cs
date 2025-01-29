@@ -2,38 +2,38 @@
 
 public class FormattableStringExpressionString : IExpressionString
 {
-    public Result<object?> Evaluate(ExpressionStringEvaluatorState state)
+    public Result<object?> Evaluate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (state.Input.StartsWith("=@\"") && state.Input.EndsWith("\""))
+        if (context.Input.StartsWith("=@\"") && context.Input.EndsWith("\""))
         {
             // =@"string value" -> literal, no functions but formattable strings possible
-            return state.FormattableStringParser is not null
-                ? Result.FromExistingResult<GenericFormattableString, object?>(state.FormattableStringParser.Parse(state.Input.Substring(3, state.Input.Length - 4), new FormattableStringParserSettingsBuilder().WithFormatProvider(state.FormatProvider).Build(), state.Context), value => value.ToString(state.FormatProvider))
-                : Result.Success<object?>(state.Input.Substring(3, state.Input.Length - 4));
+            return context.FormattableStringParser is not null
+                ? Result.FromExistingResult<GenericFormattableString, object?>(context.FormattableStringParser.Parse(context.Input.Substring(3, context.Input.Length - 4), new FormattableStringParserSettingsBuilder().WithFormatProvider(context.Settings.FormatProvider).Build(), context.Context), value => value.ToString(context.Settings.FormatProvider))
+                : Result.Success<object?>(context.Input.Substring(3, context.Input.Length - 4));
         }
-        else if (state.Input.StartsWith("=\"") && state.Input.EndsWith("\""))
+        else if (context.Input.StartsWith("=\"") && context.Input.EndsWith("\""))
         {
             // ="string value" -> literal, no functions and no formattable strings possible
-            return Result.Success<object?>(state.Input.Substring(2, state.Input.Length - 3));
+            return Result.Success<object?>(context.Input.Substring(2, context.Input.Length - 3));
         }
 
         return Result.Continue<object?>();
     }
 
-    public Result<Type> Validate(ExpressionStringEvaluatorState state)
+    public Result<Type> Validate(ExpressionStringEvaluatorContext context)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (state.Input.StartsWith("=@\"") && state.Input.EndsWith("\""))
+        if (context.Input.StartsWith("=@\"") && context.Input.EndsWith("\""))
         {
             // =@"string value" -> literal, no functions but formattable strings possible
-            return state.FormattableStringParser is not null
-                ? Result.FromExistingResult(state.FormattableStringParser.Validate(state.Input.Substring(3, state.Input.Length - 4), new FormattableStringParserSettingsBuilder().WithFormatProvider(state.FormatProvider).Build(), state.Context), typeof(FormattableString))
+            return context.FormattableStringParser is not null
+                ? Result.FromExistingResult(context.FormattableStringParser.Validate(context.Input.Substring(3, context.Input.Length - 4), new FormattableStringParserSettingsBuilder().WithFormatProvider(context.Settings.FormatProvider).Build(), context.Context), typeof(FormattableString))
                 : Result.Success(typeof(FormattableString));
         }
-        else if (state.Input.StartsWith("=\"") && state.Input.EndsWith("\""))
+        else if (context.Input.StartsWith("=\"") && context.Input.EndsWith("\""))
         {
             // ="string value" -> literal, no functions and no formattable strings possible
             return Result.Success(typeof(FormattableString));
