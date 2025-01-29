@@ -9,7 +9,7 @@ public class MathematicExpressionString(IMathematicExpressionEvaluator evaluator
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         // try =1+1 -> mathematic expression, no functions/formattable strings
-        var mathResult = _evaluator.Evaluate(context.Input.Substring(1), context.FormatProvider, context.Context);
+        var mathResult = _evaluator.Evaluate(context.Input.Substring(1), context.Settings.FormatProvider, context.Context);
         if (mathResult.Status is ResultStatus.Ok or not ResultStatus.NotFound)
         {
             // both success and failure need to be returned.
@@ -25,7 +25,7 @@ public class MathematicExpressionString(IMathematicExpressionEvaluator evaluator
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         // try =1+1 -> mathematic expression, no functions/formattable strings
-        var mathResult = _evaluator.Validate(context.Input.Substring(1), context.FormatProvider, context.Context);
+        var mathResult = _evaluator.Validate(context.Input.Substring(1), context.Settings.FormatProvider, context.Context);
         if (mathResult.Status is ResultStatus.Ok or not ResultStatus.NotFound)
         {
             // both success and failure need to be returned.

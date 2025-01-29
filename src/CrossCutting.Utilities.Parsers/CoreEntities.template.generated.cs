@@ -10,9 +10,40 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers
 {
+    public partial record ExpressionStringEvaluatorSettings
+    {
+        public System.IFormatProvider FormatProvider
+        {
+            get;
+        }
+
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool ValidateArgumentTypes
+        {
+            get;
+        }
+
+        public ExpressionStringEvaluatorSettings(System.IFormatProvider formatProvider, bool validateArgumentTypes)
+        {
+            this.FormatProvider = formatProvider;
+            this.ValidateArgumentTypes = validateArgumentTypes;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.ExpressionStringEvaluatorSettingsBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.ExpressionStringEvaluatorSettingsBuilder(this);
+        }
+    }
     public partial record FormattableStringParserSettings
     {
         public System.IFormatProvider FormatProvider
+        {
+            get;
+        }
+
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool ValidateArgumentTypes
         {
             get;
         }
@@ -41,9 +72,10 @@ namespace CrossCutting.Utilities.Parsers
             get;
         }
 
-        public FormattableStringParserSettings(System.IFormatProvider formatProvider, string placeholderStart, string placeholderEnd, bool escapeBraces, int maximumRecursion)
+        public FormattableStringParserSettings(System.IFormatProvider formatProvider, bool validateArgumentTypes, string placeholderStart, string placeholderEnd, bool escapeBraces, int maximumRecursion)
         {
             this.FormatProvider = formatProvider;
+            this.ValidateArgumentTypes = validateArgumentTypes;
             this.PlaceholderStart = placeholderStart;
             this.PlaceholderEnd = placeholderEnd;
             this.EscapeBraces = escapeBraces;
@@ -213,6 +245,56 @@ namespace CrossCutting.Utilities.Parsers
         public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorResultBuilder ToBuilder()
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorResultBuilder(this);
+        }
+    }
+    public partial record FunctionEvaluatorSettings
+    {
+        public System.IFormatProvider FormatProvider
+        {
+            get;
+        }
+
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool ValidateArgumentTypes
+        {
+            get;
+        }
+
+        public FunctionEvaluatorSettings(System.IFormatProvider formatProvider, bool validateArgumentTypes)
+        {
+            this.FormatProvider = formatProvider;
+            this.ValidateArgumentTypes = validateArgumentTypes;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionEvaluatorSettingsBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionEvaluatorSettingsBuilder(this);
+        }
+    }
+    public partial record PlaceholderSettings
+    {
+        public System.IFormatProvider FormatProvider
+        {
+            get;
+        }
+
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool ValidateArgumentTypes
+        {
+            get;
+        }
+
+        public PlaceholderSettings(System.IFormatProvider formatProvider, bool validateArgumentTypes)
+        {
+            this.FormatProvider = formatProvider;
+            this.ValidateArgumentTypes = validateArgumentTypes;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.PlaceholderSettingsBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.PlaceholderSettingsBuilder(this);
         }
     }
 }

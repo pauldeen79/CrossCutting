@@ -33,26 +33,26 @@ public class FunctionEvaluator : IFunctionEvaluator
         _functions = functions;
     }
 
-    public Result<object?> Evaluate(FunctionCall functionCall, IFormatProvider formatProvider, object? context)
+    public Result<object?> Evaluate(FunctionCall functionCall, FunctionEvaluatorSettings settings, object? context)
     {
         if (functionCall is null)
         {
             return Result.Invalid<object?>("Function call is required");
         }
 
-        var functionCallContext = new FunctionCallContext(functionCall, this, _expressionEvaluator, formatProvider, context);
+        var functionCallContext = new FunctionCallContext(functionCall, this, _expressionEvaluator, settings, context);
 
         return ResolveFunction(functionCallContext).Transform(result => result.Function.Evaluate(functionCallContext));
     }
 
-    public Result<T> EvaluateTyped<T>(FunctionCall functionCall, IFormatProvider formatProvider, object? context)
+    public Result<T> EvaluateTyped<T>(FunctionCall functionCall, FunctionEvaluatorSettings settings, object? context)
     {
         if (functionCall is null)
         {
             return Result.Invalid<T>("Function call is required");
         }
 
-        var functionCallContext = new FunctionCallContext(functionCall, this, _expressionEvaluator, formatProvider, context);
+        var functionCallContext = new FunctionCallContext(functionCall, this, _expressionEvaluator, settings, context);
 
         var functionResult = ResolveFunction(functionCallContext);
         if (functionResult.Value?.Function is ITypedFunction<T> typedFunction)
@@ -63,14 +63,14 @@ public class FunctionEvaluator : IFunctionEvaluator
         return functionResult.Transform(result => result.Function.Evaluate(functionCallContext).TryCast<T>());
     }
 
-    public Result<Type> Validate(FunctionCall functionCall, IFormatProvider formatProvider, object? context)
+    public Result<Type> Validate(FunctionCall functionCall, FunctionEvaluatorSettings settings, object? context)
     {
         if (functionCall is null)
         {
             return Result.Invalid<Type>("Function call is required");
         }
 
-        var functionCallContext = new FunctionCallContext(functionCall, this, _expressionEvaluator, formatProvider, context);
+        var functionCallContext = new FunctionCallContext(functionCall, this, _expressionEvaluator, settings, context);
 
         return ResolveFunction(functionCallContext)
             .Transform(result => (result.Value?.Function as IValidatableFunction)?.Validate(functionCallContext) ?? Result.FromExistingResult(result, result.Value?.ReturnValueType ?? typeof(object)));

@@ -414,12 +414,12 @@ public sealed class FunctionParserTests : IDisposable
 
     private sealed class MyPlaceholderProcessor : IPlaceholder
     {
-        public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result<GenericFormattableString> Evaluate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result.Success<GenericFormattableString>(ReplacedValue)
                 : Result.Error<GenericFormattableString>($"Unsupported placeholder name: {value}");
 
-        public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+        public Result Validate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
             => value == "Name"
                 ? Result.Success()
                 : Result.Error($"Unsupported placeholder name: {value}");

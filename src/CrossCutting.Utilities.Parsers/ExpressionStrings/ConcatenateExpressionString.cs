@@ -11,12 +11,12 @@ public class ConcatenateExpressionString : IExpressionString
             var builder = new StringBuilder();
             foreach (var item in split)
             {
-                var result = context.Parser.Evaluate($"={item}", context.FormatProvider, context.Context, context.FormattableStringParser);
+                var result = context.Parser.Evaluate($"={item}", context.Settings, context.Context, context.FormattableStringParser);
                 if (!result.IsSuccessful())
                 {
                     return result;
                 }
-                builder.Append(result.Value.ToString(context.FormatProvider));
+                builder.Append(result.Value.ToString(context.Settings.FormatProvider));
             }
 
             return Result.Success<object?>(builder.ToString());

@@ -8,11 +8,14 @@ public class FunctionCallContextTests : IDisposable
     private readonly IServiceScope _scope;
     private bool disposedValue;
 
+    protected static FunctionEvaluatorSettings CreateSettings()
+        => new FunctionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture).Build();
+
     public FunctionCallContextTests()
     {
         _functionEvaluatorMock
             //<FunctionParseResult, IExpressionParser, object?>((result, _, _)
-            .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<object?>())
+            .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
             .Returns(x => x.ArgAt<FunctionCall>(0).Name switch
             {
                 "MyNestedFunction" => Result.Success<object?>("Evaluated result"),
@@ -42,7 +45,7 @@ public class FunctionCallContextTests : IDisposable
         public void Throws_On_Null_FunctionCall()
         {
             // Act & Assert
-            this.Invoking(_ => new FunctionCallContext(null!, Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), Substitute.For<IFormatProvider>(), null))
+            this.Invoking(_ => new FunctionCallContext(null!, Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CreateSettings(), null))
                 .Should().Throw<ArgumentNullException>();
         }
 
@@ -50,7 +53,7 @@ public class FunctionCallContextTests : IDisposable
         public void Throws_On_Null_FunctionEvaluator()
         {
             // Act & Assert
-            this.Invoking(_ => new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), null!, Substitute.For<IExpressionEvaluator>(), Substitute.For<IFormatProvider>(), null))
+            this.Invoking(_ => new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), null!, Substitute.For<IExpressionEvaluator>(), CreateSettings(), null))
                 .Should().Throw<ArgumentNullException>();
         }
 
@@ -58,7 +61,7 @@ public class FunctionCallContextTests : IDisposable
         public void Throws_On_Null_ExpressionEvaluator()
         {
             // Act & Assert
-            this.Invoking(_ => new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), null!, Substitute.For<IFormatProvider>(), null))
+            this.Invoking(_ => new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), null!, CreateSettings(), null))
                 .Should().Throw<ArgumentNullException>();
         }
 
@@ -331,19 +334,19 @@ public class FunctionCallContextTests : IDisposable
     protected FunctionCallContext CreateFunctionCallContextWithoutArguments()
         => new FunctionCallContext(new FunctionCallBuilder()
             .WithName("Test")
-            .Build(), _functionEvaluatorMock, _expressionEvaluatorMock, CultureInfo.InvariantCulture, null);
+            .Build(), _functionEvaluatorMock, _expressionEvaluatorMock, CreateSettings(), null);
 
     protected FunctionCallContext CreateFunctionCallContextWithConstantArgument()
         => new FunctionCallContext(new FunctionCallBuilder()
             .WithName("Test")
             .AddArguments(new ConstantArgumentBuilder().WithValue("some value"))
-            .Build(), _functionEvaluatorMock, _expressionEvaluatorMock, CultureInfo.InvariantCulture, null);
+            .Build(), _functionEvaluatorMock, _expressionEvaluatorMock, CreateSettings(), null);
 
     protected FunctionCallContext CreateFunctionCallContextWithFunctionArgument(string functionName)
         => new FunctionCallContext(new FunctionCallBuilder()
             .WithName("Test")
             .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName(functionName)))
-            .Build(), _functionEvaluatorMock, _expressionEvaluatorMock, CultureInfo.InvariantCulture, null);
+            .Build(), _functionEvaluatorMock, _expressionEvaluatorMock, CreateSettings(), null);
 
     protected virtual void Dispose(bool disposing)
     {

@@ -2,24 +2,24 @@
 
 public class FunctionCallContext
 {
-    public FunctionCallContext(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, IFormatProvider formatProvider, object? context)
+    public FunctionCallContext(FunctionCall functionCall, IFunctionEvaluator functionEvaluator, IExpressionEvaluator expressionEvaluator, FunctionEvaluatorSettings settings, object? context)
     {
         ArgumentGuard.IsNotNull(functionCall, nameof(functionCall));
         ArgumentGuard.IsNotNull(functionEvaluator, nameof(functionEvaluator));
         ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
-        ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
+        ArgumentGuard.IsNotNull(settings, nameof(settings));
 
         FunctionCall = functionCall;
         FunctionEvaluator = functionEvaluator;
         ExpressionEvaluator = expressionEvaluator;
-        FormatProvider = formatProvider;
+        Settings = settings;
         Context = context;
     }
 
     public FunctionCall FunctionCall { get; }
     public IFunctionEvaluator FunctionEvaluator { get; }
     public IExpressionEvaluator ExpressionEvaluator { get; }
-    public IFormatProvider FormatProvider { get; }
+    public FunctionEvaluatorSettings Settings { get; }
     public object? Context { get; }
 
     public Result<object?> GetArgumentValueResult(int index, string argumentName)

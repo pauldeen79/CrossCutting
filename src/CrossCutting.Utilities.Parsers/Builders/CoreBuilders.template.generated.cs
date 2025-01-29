@@ -10,9 +10,87 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders
 {
+    public partial class ExpressionStringEvaluatorSettingsBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private System.IFormatProvider _formatProvider;
+
+        private bool _validateArgumentTypes;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public System.IFormatProvider FormatProvider
+        {
+            get
+            {
+                return _formatProvider;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.IFormatProvider>.Default.Equals(_formatProvider!, value!);
+                _formatProvider = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FormatProvider));
+            }
+        }
+
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool ValidateArgumentTypes
+        {
+            get
+            {
+                return _validateArgumentTypes;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_validateArgumentTypes, value);
+                _validateArgumentTypes = value;
+                if (hasChanged) HandlePropertyChanged(nameof(ValidateArgumentTypes));
+            }
+        }
+
+        public ExpressionStringEvaluatorSettingsBuilder(CrossCutting.Utilities.Parsers.ExpressionStringEvaluatorSettings source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _formatProvider = source.FormatProvider;
+            _validateArgumentTypes = source.ValidateArgumentTypes;
+        }
+
+        public ExpressionStringEvaluatorSettingsBuilder()
+        {
+            _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
+            _validateArgumentTypes = true;
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.Parsers.ExpressionStringEvaluatorSettings Build()
+        {
+            return new CrossCutting.Utilities.Parsers.ExpressionStringEvaluatorSettings(FormatProvider, ValidateArgumentTypes);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.Parsers.Builders.ExpressionStringEvaluatorSettingsBuilder WithFormatProvider(System.IFormatProvider formatProvider)
+        {
+            if (formatProvider is null) throw new System.ArgumentNullException(nameof(formatProvider));
+            FormatProvider = formatProvider;
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.ExpressionStringEvaluatorSettingsBuilder WithValidateArgumentTypes(bool validateArgumentTypes = true)
+        {
+            ValidateArgumentTypes = validateArgumentTypes;
+            return this;
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
     public partial class FormattableStringParserSettingsBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         private System.IFormatProvider _formatProvider;
+
+        private bool _validateArgumentTypes;
 
         private string _placeholderStart;
 
@@ -35,6 +113,21 @@ namespace CrossCutting.Utilities.Parsers.Builders
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.IFormatProvider>.Default.Equals(_formatProvider!, value!);
                 _formatProvider = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(FormatProvider));
+            }
+        }
+
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool ValidateArgumentTypes
+        {
+            get
+            {
+                return _validateArgumentTypes;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_validateArgumentTypes, value);
+                _validateArgumentTypes = value;
+                if (hasChanged) HandlePropertyChanged(nameof(ValidateArgumentTypes));
             }
         }
 
@@ -102,6 +195,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _formatProvider = source.FormatProvider;
+            _validateArgumentTypes = source.ValidateArgumentTypes;
             _placeholderStart = source.PlaceholderStart;
             _placeholderEnd = source.PlaceholderEnd;
             _escapeBraces = source.EscapeBraces;
@@ -111,6 +205,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
         public FormattableStringParserSettingsBuilder()
         {
             _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
+            _validateArgumentTypes = true;
             _placeholderStart = string.Empty;
             _placeholderEnd = string.Empty;
             _escapeBraces = true;
@@ -120,7 +215,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         public CrossCutting.Utilities.Parsers.FormattableStringParserSettings Build()
         {
-            return new CrossCutting.Utilities.Parsers.FormattableStringParserSettings(FormatProvider, PlaceholderStart, PlaceholderEnd, EscapeBraces, MaximumRecursion);
+            return new CrossCutting.Utilities.Parsers.FormattableStringParserSettings(FormatProvider, ValidateArgumentTypes, PlaceholderStart, PlaceholderEnd, EscapeBraces, MaximumRecursion);
         }
 
         partial void SetDefaultValues();
@@ -129,6 +224,12 @@ namespace CrossCutting.Utilities.Parsers.Builders
         {
             if (formatProvider is null) throw new System.ArgumentNullException(nameof(formatProvider));
             FormatProvider = formatProvider;
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FormattableStringParserSettingsBuilder WithValidateArgumentTypes(bool validateArgumentTypes = true)
+        {
+            ValidateArgumentTypes = validateArgumentTypes;
             return this;
         }
 
@@ -687,6 +788,158 @@ namespace CrossCutting.Utilities.Parsers.Builders
         {
             if (description is null) throw new System.ArgumentNullException(nameof(description));
             Description = description;
+            return this;
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+    public partial class FunctionEvaluatorSettingsBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private System.IFormatProvider _formatProvider;
+
+        private bool _validateArgumentTypes;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public System.IFormatProvider FormatProvider
+        {
+            get
+            {
+                return _formatProvider;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.IFormatProvider>.Default.Equals(_formatProvider!, value!);
+                _formatProvider = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FormatProvider));
+            }
+        }
+
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool ValidateArgumentTypes
+        {
+            get
+            {
+                return _validateArgumentTypes;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_validateArgumentTypes, value);
+                _validateArgumentTypes = value;
+                if (hasChanged) HandlePropertyChanged(nameof(ValidateArgumentTypes));
+            }
+        }
+
+        public FunctionEvaluatorSettingsBuilder(CrossCutting.Utilities.Parsers.FunctionEvaluatorSettings source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _formatProvider = source.FormatProvider;
+            _validateArgumentTypes = source.ValidateArgumentTypes;
+        }
+
+        public FunctionEvaluatorSettingsBuilder()
+        {
+            _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
+            _validateArgumentTypes = true;
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionEvaluatorSettings Build()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionEvaluatorSettings(FormatProvider, ValidateArgumentTypes);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionEvaluatorSettingsBuilder WithFormatProvider(System.IFormatProvider formatProvider)
+        {
+            if (formatProvider is null) throw new System.ArgumentNullException(nameof(formatProvider));
+            FormatProvider = formatProvider;
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionEvaluatorSettingsBuilder WithValidateArgumentTypes(bool validateArgumentTypes = true)
+        {
+            ValidateArgumentTypes = validateArgumentTypes;
+            return this;
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+    public partial class PlaceholderSettingsBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private System.IFormatProvider _formatProvider;
+
+        private bool _validateArgumentTypes;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public System.IFormatProvider FormatProvider
+        {
+            get
+            {
+                return _formatProvider;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.IFormatProvider>.Default.Equals(_formatProvider!, value!);
+                _formatProvider = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FormatProvider));
+            }
+        }
+
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool ValidateArgumentTypes
+        {
+            get
+            {
+                return _validateArgumentTypes;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_validateArgumentTypes, value);
+                _validateArgumentTypes = value;
+                if (hasChanged) HandlePropertyChanged(nameof(ValidateArgumentTypes));
+            }
+        }
+
+        public PlaceholderSettingsBuilder(CrossCutting.Utilities.Parsers.PlaceholderSettings source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _formatProvider = source.FormatProvider;
+            _validateArgumentTypes = source.ValidateArgumentTypes;
+        }
+
+        public PlaceholderSettingsBuilder()
+        {
+            _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
+            _validateArgumentTypes = true;
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.Parsers.PlaceholderSettings Build()
+        {
+            return new CrossCutting.Utilities.Parsers.PlaceholderSettings(FormatProvider, ValidateArgumentTypes);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.Parsers.Builders.PlaceholderSettingsBuilder WithFormatProvider(System.IFormatProvider formatProvider)
+        {
+            if (formatProvider is null) throw new System.ArgumentNullException(nameof(formatProvider));
+            FormatProvider = formatProvider;
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.PlaceholderSettingsBuilder WithValidateArgumentTypes(bool validateArgumentTypes = true)
+        {
+            ValidateArgumentTypes = validateArgumentTypes;
             return this;
         }
 

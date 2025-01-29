@@ -4,6 +4,9 @@ namespace CrossCutting.Utilities.Parsers.Tests.ExpressionFrameworkTests.New;
 
 public class ExpressionFrameworkNewTests
 {
+    private static FunctionEvaluatorSettings CreateSettings()
+        => new FunctionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture).Build();
+
     [Fact]
     public void Can_Validate_ToLowerCaseExpression()
     {
@@ -14,7 +17,7 @@ public class ExpressionFrameworkNewTests
         var functionCall = new ToLowerCaseExpressionBuilder()
             .WithExpression(new TypedConstantExpressionBuilder<string>().WithValue("Hello world!"))
             .BuildFunctionCall();
-        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CreateSettings(), null);
 
         // Act
         var result = sut.Validate(context);
@@ -34,7 +37,7 @@ public class ExpressionFrameworkNewTests
         var functionCall = new ToLowerCaseExpressionBuilder()
             .WithExpression(new TypedConstantExpressionBuilder<string>().WithValue("Hello world!"))
             .BuildFunctionCall();
-        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CreateSettings(), null);
 
         // Act
         var result = sut.Evaluate(context);

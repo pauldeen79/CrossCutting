@@ -11,7 +11,7 @@ public class PipedExpressionString : IExpressionString
             var resultValue = context.Context;
             foreach (var item in split)
             {
-                var result = context.Parser.Evaluate($"={item}", context.FormatProvider, resultValue, context.FormattableStringParser);
+                var result = context.Parser.Evaluate($"={item}", context.Settings, resultValue, context.FormattableStringParser);
                 if (!result.IsSuccessful())
                 {
                     return result;

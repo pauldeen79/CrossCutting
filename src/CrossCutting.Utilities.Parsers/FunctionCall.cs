@@ -115,7 +115,7 @@ public partial record FunctionCall
             return Result.Invalid<int>($"{argumentName} is not of type integer");
         }
 
-        var parseResult = context.ExpressionEvaluator.Evaluate(s, context.FormatProvider, context.Context);
+        var parseResult = context.ExpressionEvaluator.Evaluate(s, context.Settings.FormatProvider, context.Context);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<int>($"{argumentName} is not of type integer");
@@ -143,7 +143,7 @@ public partial record FunctionCall
             return Result.Invalid<long>($"{argumentName} is not of type long integer");
         }
 
-        var parseResult = context.ExpressionEvaluator.Evaluate(s, context.FormatProvider, context.Context);
+        var parseResult = context.ExpressionEvaluator.Evaluate(s, context.Settings.FormatProvider, context.Context);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<long>($"{argumentName} is not of type long integer");
@@ -171,7 +171,7 @@ public partial record FunctionCall
             return Result.Invalid<decimal>($"{argumentName} is not of type decimal");
         }
 
-        var parseResult = context.ExpressionEvaluator.Evaluate(s, context.FormatProvider, context.Context);
+        var parseResult = context.ExpressionEvaluator.Evaluate(s, context.Settings.FormatProvider, context.Context);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<decimal>($"{argumentName} is not of type decimal");
@@ -199,7 +199,7 @@ public partial record FunctionCall
             return Result.Invalid<bool>($"{argumentName} is not of type boolean");
         }
 
-        var parseResult = context.ExpressionEvaluator.Evaluate(s, context.FormatProvider, context.Context);
+        var parseResult = context.ExpressionEvaluator.Evaluate(s, context.Settings.FormatProvider, context.Context);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<bool>($"{argumentName} is not of type boolean");
@@ -226,7 +226,7 @@ public partial record FunctionCall
         {
             return Result.Invalid<DateTime>($"{argumentName} is not of type datetime");
         }
-        var parseResult = context.ExpressionEvaluator.Evaluate(s, context.FormatProvider, context.Context);
+        var parseResult = context.ExpressionEvaluator.Evaluate(s, context.Settings.FormatProvider, context.Context);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<DateTime>($"{argumentName} is not of type datetime");

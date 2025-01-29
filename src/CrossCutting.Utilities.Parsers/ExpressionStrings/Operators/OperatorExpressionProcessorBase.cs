@@ -19,13 +19,13 @@ public abstract class OperatorExpressionProcessorBase : IExpressionString
             return Result.Continue<object?>();
         }
 
-        var leftResult = context.Parser.Evaluate($"={split[0]}", context.FormatProvider, context.Context, context.FormattableStringParser);
+        var leftResult = context.Parser.Evaluate($"={split[0]}", context.Settings, context.Context, context.FormattableStringParser);
         if (!leftResult.IsSuccessful())
         {
             return leftResult;
         }
 
-        var rightResult = context.Parser.Evaluate($"={split[1]}", context.FormatProvider, context.Context, context.FormattableStringParser);
+        var rightResult = context.Parser.Evaluate($"={split[1]}", context.Settings, context.Context, context.FormattableStringParser);
         if (!rightResult.IsSuccessful())
         {
             return rightResult;
@@ -49,13 +49,13 @@ public abstract class OperatorExpressionProcessorBase : IExpressionString
             return Result.Continue<Type>();
         }
 
-        var leftResult = context.Parser.Validate($"={split[0]}", context.FormatProvider, context.Context, context.FormattableStringParser);
+        var leftResult = context.Parser.Validate($"={split[0]}", context.Settings, context.Context, context.FormattableStringParser);
         if (!leftResult.IsSuccessful())
         {
             return leftResult;
         }
 
-        var rightResult = context.Parser.Validate($"={split[1]}", context.FormatProvider, context.Context, context.FormattableStringParser);
+        var rightResult = context.Parser.Validate($"={split[1]}", context.Settings, context.Context, context.FormattableStringParser);
         if (!rightResult.IsSuccessful())
         {
             return rightResult;

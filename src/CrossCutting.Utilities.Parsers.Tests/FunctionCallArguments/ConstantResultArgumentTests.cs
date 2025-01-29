@@ -2,12 +2,15 @@
 
 public class ConstantResultArgumentTests
 {
+    private static FunctionEvaluatorSettings CreateSettings()
+        => new FunctionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture).Build();
+
     [Fact]
     public void EvaluateTyped_Returns_Correct_Result()
     {
         // Arrange
         var sut = new ConstantResultArgument<string>(Result.Success("Hello world!"));
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CreateSettings(), null);
 
         // Act
         var result = sut.EvaluateTyped(context);
@@ -22,7 +25,7 @@ public class ConstantResultArgumentTests
     {
         // Arrange
         var sut = new ConstantResultArgument<string>(Result.Success("Hello world!"));
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CreateSettings(), null);
 
         // Act
         var result = sut.Evaluate(context);
@@ -37,7 +40,7 @@ public class ConstantResultArgumentTests
     {
         // Arrange
         var sut = new ConstantResultArgument(Result.Success<object?>("Hello world!"));
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CreateSettings(), null);
 
         // Act
         var result = sut.Evaluate(context);
@@ -52,7 +55,7 @@ public class ConstantResultArgumentTests
     {
         // Arrange
         var sut = new ConstantResultArgument<string>(Result.Success("Hello world!"));
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CreateSettings(), null);
 
         // Act
         var result = sut.Validate(context);
@@ -67,7 +70,7 @@ public class ConstantResultArgumentTests
     {
         // Arrange
         var sut = new ConstantResultArgument(Result.Success<object?>("Hello world!"));
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CreateSettings(), null);
 
         // Act
         var result = sut.Validate(context);
@@ -82,7 +85,6 @@ public class ConstantResultArgumentTests
     {
         // Arrange
         var sut = new ConstantResultArgument<string>(Result.Success("Hello world!"));
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
 
         // Act
         var result = sut.ToBuilder();
@@ -97,7 +99,6 @@ public class ConstantResultArgumentTests
     {
         // Arrange
         var sut = new ConstantResultArgument<string>(Result.Success("Hello world!"));
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
 
         // Act
         var result = sut.ToTypedBuilder();
@@ -112,7 +113,6 @@ public class ConstantResultArgumentTests
     {
         // Arrange
         var sut = new ConstantResultArgument<string>(Result.Success("Hello world!"));
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CultureInfo.InvariantCulture, null);
 
         // Act
         var result = sut.Result;

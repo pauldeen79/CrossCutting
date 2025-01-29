@@ -35,5 +35,5 @@ internal static class BaseProcessor
     }
 
     internal static Func<string[], Result<Type>> Parse(ExpressionStringEvaluatorContext context)
-        => split => Result.Aggregate(split.Select(item => context.Parser.Validate($"={item}", context.FormatProvider, context.Context, context.FormattableStringParser)), Result.NoContent<Type>(), validationResults => Result.Invalid<Type>("Validation failed, see inner results for details", validationResults));
+        => split => Result.Aggregate(split.Select(item => context.Parser.Validate($"={item}", context.Settings, context.Context, context.FormattableStringParser)), Result.NoContent<Type>(), validationResults => Result.Invalid<Type>("Validation failed, see inner results for details", validationResults));
 }
