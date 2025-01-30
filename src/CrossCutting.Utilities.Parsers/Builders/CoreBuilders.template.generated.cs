@@ -81,6 +81,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
             return this;
         }
 
+        public static implicit operator CrossCutting.Utilities.Parsers.ExpressionStringEvaluatorSettings(ExpressionStringEvaluatorSettingsBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -259,6 +264,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
             return this;
         }
 
+        public static implicit operator CrossCutting.Utilities.Parsers.FormattableStringParserSettings(FormattableStringParserSettingsBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -343,6 +353,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
             if (name is null) throw new System.ArgumentNullException(nameof(name));
             Name = name;
             return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCall(FunctionCallBuilder entity)
+        {
+            return entity.Build();
         }
 
         protected void HandlePropertyChanged(string propertyName)
@@ -470,6 +485,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
         {
             IsRequired = isRequired;
             return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionDescriptorArgument(FunctionDescriptorArgumentBuilder entity)
+        {
+            return entity.Build();
         }
 
         protected void HandlePropertyChanged(string propertyName)
@@ -667,6 +687,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
             return this;
         }
 
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionDescriptor(FunctionDescriptorBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -791,6 +816,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
             return this;
         }
 
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionDescriptorResult(FunctionDescriptorResultBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -867,6 +897,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
             return this;
         }
 
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionEvaluatorSettings(FunctionEvaluatorSettingsBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -941,6 +976,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
         {
             ValidateArgumentTypes = validateArgumentTypes;
             return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.PlaceholderSettings(PlaceholderSettingsBuilder entity)
+        {
+            return entity.Build();
         }
 
         protected void HandlePropertyChanged(string propertyName)

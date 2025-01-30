@@ -28,6 +28,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
         }
 
         public abstract TEntity BuildTyped();
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArgument(FunctionCallArgumentBuilder<TBuilder, TEntity> entity)
+        {
+            return entity.BuildTyped();
+        }
     }
 }
 #nullable disable

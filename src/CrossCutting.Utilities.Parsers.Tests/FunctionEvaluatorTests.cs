@@ -603,7 +603,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         => _scope.ServiceProvider.GetRequiredService<IFunctionEvaluator>();
 
     private static FunctionEvaluatorSettings CreateSettings()
-        => new FunctionEvaluatorSettingsBuilder().Build();
+        => new FunctionEvaluatorSettingsBuilder();
 
     private sealed class ErrorFunction : IValidatableFunction
     {

@@ -17,6 +17,7 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
     protected override bool CreateRecord => true;
     protected override bool GenerateMultipleFiles => false;
     protected override bool EnableGlobalUsings => true;
+    protected override bool AddImplicitOperatorOnBuilder => true;
 
     protected override bool IsAbstractType(Type type)
     {

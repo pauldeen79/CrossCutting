@@ -6,7 +6,7 @@ public class ExpressionStringEvaluatorExtensionsTests
     private IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
     private const string Input = "Some input";
     private object Context { get; } = new object();
-    private ExpressionStringEvaluatorSettings Settings { get; } = new ExpressionStringEvaluatorSettingsBuilder().Build();
+    private ExpressionStringEvaluatorSettings Settings { get; } = new ExpressionStringEvaluatorSettingsBuilder();
 
     [Fact]
     public void Evaluate_Without_Context_And_FormattableStringParser_Gets_Processed_Correctly()

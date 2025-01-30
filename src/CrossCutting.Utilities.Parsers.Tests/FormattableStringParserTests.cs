@@ -26,7 +26,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = string.Empty;
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -52,7 +52,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "Hello {Name {nested}} you are welcome";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -68,7 +68,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "}";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -83,7 +83,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "{$unknownVariable}";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -99,7 +99,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "{";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -115,7 +115,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "{Unsupported placeholder}";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -164,7 +164,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = string.Empty;
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -190,7 +190,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "Hello {Name {nested}} you are welcome";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -205,7 +205,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "}";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -220,7 +220,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "{$unknownVariable}";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -237,7 +237,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "{";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -252,7 +252,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var input = "{Unsupported placeholder}";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -299,7 +299,7 @@ public sealed class FormattableStringParserTests : IDisposable
             // Assert
             //TODO
         }}";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -391,7 +391,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "Hello {MyFunction()}!";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -407,7 +407,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "Hello {ToUpperCase(MyFunction())}!";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -423,7 +423,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "Hello {ToUpperCase(MyFunction())}!";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -438,7 +438,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "Hello {ToUpperCase(null)}!";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -454,7 +454,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "Hello {ToUpperCase(null)}!";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -469,7 +469,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "I can add 1 to 2, this results in {1 + 1}";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -485,7 +485,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "I can add 1 to 2, this results in {$variable + $variable}";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -501,7 +501,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "Hello {ReplaceWithPlaceholder}!";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -517,7 +517,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "{Unknown placeholder}";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -533,7 +533,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "Hello {ReplaceWithPlaceholder}!";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -548,7 +548,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         const string Input = "{Unknown placeholder}";
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
 
         // Act
@@ -565,7 +565,7 @@ public sealed class FormattableStringParserTests : IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var preparsedResult = sut.Parse("Hello {Name}, you are called {{Name}}", settings).GetValueOrThrow();
 
         // Act
@@ -693,7 +693,7 @@ public sealed class FormattableStringParserTests : IDisposable
     public void Can_Implicitly_Convert_ParseStringResult_To_String()
     {
         // Arrange
-        var settings = new FormattableStringParserSettingsBuilder().Build();
+        var settings = new FormattableStringParserSettingsBuilder();
         var sut = CreateSut();
         var parsedResult = sut.Parse("Hello {Name}!", settings);
 

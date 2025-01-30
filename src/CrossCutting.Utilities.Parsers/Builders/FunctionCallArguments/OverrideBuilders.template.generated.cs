@@ -51,6 +51,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             Value = value;
             return this;
         }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument(ConstantArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
     }
     public partial class ConstantResultArgumentBuilder : FunctionCallArgumentBuilder<ConstantResultArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument>
     {
@@ -95,6 +100,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             if (result is null) throw new System.ArgumentNullException(nameof(result));
             Result = result;
             return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument(ConstantResultArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
         }
     }
     public partial class DelegateArgumentBuilder : FunctionCallArgumentBuilder<DelegateArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument>
@@ -164,6 +174,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             ValidationDelegate = validationDelegate;
             return this;
         }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument(DelegateArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
     }
     public partial class DelegateResultArgumentBuilder : FunctionCallArgumentBuilder<DelegateResultArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument>
     {
@@ -232,6 +247,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             ValidationDelegate = validationDelegate;
             return this;
         }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument(DelegateResultArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
     }
     public partial class EmptyArgumentBuilder : FunctionCallArgumentBuilder<EmptyArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument>
     {
@@ -251,6 +271,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
         }
 
         partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument(EmptyArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
     }
     public partial class ExpressionArgumentBuilder : FunctionCallArgumentBuilder<ExpressionArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument>
     {
@@ -295,6 +320,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             if (value is null) throw new System.ArgumentNullException(nameof(value));
             Value = value;
             return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(ExpressionArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
         }
     }
     public partial class FunctionArgumentBuilder : FunctionCallArgumentBuilder<FunctionArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument>
@@ -341,6 +371,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             if (function is null) throw new System.ArgumentNullException(nameof(function));
             Function = function;
             return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument(FunctionArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
         }
     }
 }

@@ -5,7 +5,7 @@ namespace CrossCutting.Utilities.Parsers.Tests.ExpressionFrameworkTests.New;
 public class ExpressionFrameworkNewTests
 {
     private static FunctionEvaluatorSettings CreateSettings()
-        => new FunctionEvaluatorSettingsBuilder().Build();
+        => new FunctionEvaluatorSettingsBuilder();
 
     [Fact]
     public void Can_Validate_ToLowerCaseExpression()

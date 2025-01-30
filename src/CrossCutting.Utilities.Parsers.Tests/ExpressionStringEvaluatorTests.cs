@@ -23,7 +23,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
     }
 
     protected static ExpressionStringEvaluatorSettings CreateSettings()
-        => new ExpressionStringEvaluatorSettingsBuilder().Build();
+        => new ExpressionStringEvaluatorSettingsBuilder();
 
     public class Evaluate : ExpressionStringEvaluatorTests
     {

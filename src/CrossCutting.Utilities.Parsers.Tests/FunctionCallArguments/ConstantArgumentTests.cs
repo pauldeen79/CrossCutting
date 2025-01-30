@@ -3,7 +3,7 @@
 public class ConstantArgumentTests
 {
     private static FunctionEvaluatorSettings CreateSettings()
-        => new FunctionEvaluatorSettingsBuilder().Build();
+        => new FunctionEvaluatorSettingsBuilder();
 
     [Fact]
     public void EvaluateTyped_Returns_Correct_Result()
