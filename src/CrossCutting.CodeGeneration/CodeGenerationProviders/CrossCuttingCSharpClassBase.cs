@@ -33,9 +33,10 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
 
         // Hacking here...
         // Types in Abstractions don't get converted to builders out of the box, not sure why
+        var type = typeof(Models.Abstractions.IFunctionCallArgument);
         yield return new TypenameMappingBuilder()
-            .WithSourceTypeName($"CrossCutting.Utilities.Parsers.Abstractions.{nameof(Models.Abstractions.IFunctionCallArgument)}")
-            .WithTargetTypeName($"CrossCutting.Utilities.Parsers.Abstractions.{nameof(Models.Abstractions.IFunctionCallArgument)}")
+            .WithSourceTypeName($"{CoreNamespace}.Abstractions.I{type.GetEntityClassName()}")
+            .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{type.GetEntityClassName()}")
             .AddMetadata
             (
                 new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderNamespace),
@@ -45,7 +46,7 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
                 new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderSourceExpression),
                 new MetadataBuilder().WithValue(new Literal($"default({CoreNamespace}.Builders.Abstractions.{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments(ClassName($property.TypeName), true)}})", null)).WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue),
                 new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderMethodParameterExpression),
-                new MetadataBuilder().WithName(ClassFramework.Pipelines.MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{CoreNamespace}.Abstractions.I{nameof(Models.Abstractions.IFunctionCallArgument)}")
+                new MetadataBuilder().WithName(ClassFramework.Pipelines.MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{CoreNamespace}.Abstractions.I{type.GetEntityClassName()}")
             );
     }
 }
