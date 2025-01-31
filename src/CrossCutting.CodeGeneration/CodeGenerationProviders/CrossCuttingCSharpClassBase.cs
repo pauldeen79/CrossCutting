@@ -43,7 +43,7 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
                 new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderInterfaceNamespace),
                 new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments(ClassName($property.TypeName), true)}").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderInterfaceName),
                 new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderSourceExpression),
-                new MetadataBuilder().WithValue(new Literal($"new {CoreNamespace}.Builders.EmptyArgumentBuilder()", null)).WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue),
+                new MetadataBuilder().WithValue(new Literal($"default({CoreNamespace}.Builders.Abstractions.{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments(ClassName($property.TypeName), true)}})", null)).WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue),
                 new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderMethodParameterExpression),
                 new MetadataBuilder().WithName(ClassFramework.Pipelines.MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{CoreNamespace}.Abstractions.I{nameof(Models.Abstractions.IFunctionCallArgument)}")
             );
