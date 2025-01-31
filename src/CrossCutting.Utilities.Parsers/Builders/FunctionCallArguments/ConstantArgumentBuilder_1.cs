@@ -1,21 +1,9 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
 
-public partial class ConstantArgumentBuilder<T> : FunctionCallArgumentBuilder<T>
+public partial class ConstantArgumentBuilder<T>
 {
-    public FunctionCallArgumentBuilder ToUntyped()
-        => new ConstantArgumentBuilder().WithValue(Value);
-
-    public override FunctionCallArgument<T> BuildTyped()
-        => new ConstantArgument<T>(Value);
-
-    public override FunctionCallArgument Build()
-        => new ConstantArgument(Value);
-
-    public T Value { get; set; } = default!;
-
-    public ConstantArgumentBuilder<T> WithValue(T value)
-    {
-        Value = value;
-        return this;
-    }
+#pragma warning disable CA2225 // Operator overloads have named alternates
+    public static implicit operator ConstantArgumentBuilder<T>(T value)
+        => new ConstantArgumentBuilder<T> { Value = value };
+#pragma warning restore CA2225 // Operator overloads have named alternates
 }

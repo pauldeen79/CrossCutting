@@ -1,6 +1,11 @@
 ﻿namespace CrossCutting.CodeGeneration.Models.FunctionCallArguments;
 
-internal interface IConstantArgument : IFunctionCallArgument
+internal interface IConstantArgument : IFunctionCallArgumentBase
 {
     object? Value { get; }
+}
+
+internal interface IConstantArgument<T> : IFunctionCallArgumentBase, Abstractions.IFunctionCallArgument<T>
+{
+    T Value { get; }
 }

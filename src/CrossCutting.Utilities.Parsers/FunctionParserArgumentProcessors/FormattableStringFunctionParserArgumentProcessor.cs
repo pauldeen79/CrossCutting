@@ -2,7 +2,7 @@
 
 public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserArgumentProcessor
 {
-    public Result<FunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, FunctionParserSettings settings, object? context)
+    public Result<IFunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, FunctionParserSettings settings, object? context)
     {
         settings = settings.IsNotNull(nameof(settings));
 
@@ -10,10 +10,10 @@ public class FormattableStringFunctionParserArgumentProcessor : IFunctionParserA
         {
             var result = settings.FormattableStringParser.Parse(argument.Substring(1), new FormattableStringParserSettingsBuilder().WithFormatProvider(settings.FormatProvider).Build(), context);
             return result.IsSuccessful()
-                ? Result.Success<FunctionCallArgument>(new ExpressionArgument(result.Value!.ToString(settings.FormatProvider)))
-                : Result.FromExistingResult<FunctionCallArgument>(result);
+                ? Result.Success<IFunctionCallArgument>(new ExpressionArgument(result.Value!.ToString(settings.FormatProvider)))
+                : Result.FromExistingResult<IFunctionCallArgument>(result);
         }
 
-        return Result.Continue<FunctionCallArgument>();
+        return Result.Continue<IFunctionCallArgument>();
     }
 }

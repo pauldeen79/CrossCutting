@@ -10,24 +10,24 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders
 {
-    public abstract partial class FunctionCallArgumentBuilder : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class FunctionCallArgumentBaseBuilder : CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
-        protected FunctionCallArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgument source)
+        protected FunctionCallArgumentBaseBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgumentBase source)
         {
         }
 
-        protected FunctionCallArgumentBuilder()
+        protected FunctionCallArgumentBaseBuilder()
         {
             SetDefaultValues();
         }
 
-        public abstract CrossCutting.Utilities.Parsers.FunctionCallArgument Build();
+        public abstract CrossCutting.Utilities.Parsers.FunctionCallArgumentBase Build();
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArgument(FunctionCallArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArgumentBase(FunctionCallArgumentBaseBuilder entity)
         {
             return entity.Build();
         }

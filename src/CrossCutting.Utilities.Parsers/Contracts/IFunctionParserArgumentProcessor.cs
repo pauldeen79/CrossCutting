@@ -2,5 +2,5 @@
 
 public interface IFunctionParserArgumentProcessor
 {
-    Result<FunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, FunctionParserSettings settings, object? context);
+    Result<IFunctionCallArgument> Process(string argument, IReadOnlyCollection<FunctionCall> functionCalls, FunctionParserSettings settings, object? context);
 }

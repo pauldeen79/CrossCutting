@@ -60,7 +60,7 @@ public class FunctionParser : IFunctionParser
                 .SplitDelimited(',', '\"', trimItems: true, leaveTextQualifier: true)
                 .Select(RemoveStringQualifiers);
 
-            var arguments = new List<FunctionCallArgument>();
+            var arguments = new List<IFunctionCallArgument>();
             var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, settings, context);
             if (!addArgumentsResult.IsSuccessful())
             {
@@ -119,7 +119,7 @@ public class FunctionParser : IFunctionParser
         }
     }
 
-    private Result<FunctionCall> AddArguments(List<FunctionCall> results, IEnumerable<string> argumentsSplit, List<FunctionCallArgument> arguments, FunctionParserSettings settings, object? context)
+    private Result<FunctionCall> AddArguments(List<FunctionCall> results, IEnumerable<string> argumentsSplit, List<IFunctionCallArgument> arguments, FunctionParserSettings settings, object? context)
     {
         foreach (var argument in argumentsSplit)
         {

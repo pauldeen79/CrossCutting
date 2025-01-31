@@ -2,7 +2,7 @@
 
 public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
 {
-    public Result<Type> Validate(FunctionDescriptorArgument descriptorArgument, FunctionCallArgument callArgument, FunctionCallContext functionCallContext)
+    public Result<Type> Validate(FunctionDescriptorArgument descriptorArgument, IFunctionCallArgument callArgument, FunctionCallContext functionCallContext)
     {
         descriptorArgument = descriptorArgument.IsNotNull(nameof(descriptorArgument));
         callArgument = callArgument.IsNotNull(nameof(callArgument));

@@ -196,8 +196,8 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
 public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall> // Inheriting from IBuilder<T> is optional. Maybe we can add ITypedBuilder<TBase, TTyped> to Abstractions as well?
 {
     // You might be able to re-use the default builder pipeline, but then you have to do some typemapping.
-    public FunctionCallArgumentBuilder<string> Expression { get; set; }
-    public FunctionCallArgumentBuilder<CultureInfo?> CultureInfo { get; set; }
+    public IFunctionCallArgumentBuilder<string> Expression { get; set; }
+    public IFunctionCallArgumentBuilder<CultureInfo?> CultureInfo { get; set; }
 
     public ToUpperCaseFunctionCallBuilder()
     {
@@ -207,14 +207,46 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall> // Inheriti
         CultureInfo = new ConstantArgumentBuilder<CultureInfo?>();
     }
 
-    public ToUpperCaseFunctionCallBuilder WithExpression(FunctionCallArgumentBuilder<string> expression)
+    public ToUpperCaseFunctionCallBuilder WithExpression(IFunctionCallArgumentBuilder<string> expression)
     {
         ArgumentNullException.ThrowIfNull(expression);
         Expression = expression;
         return this;
     }
 
-    public ToUpperCaseFunctionCallBuilder WithCultureInfo(FunctionCallArgumentBuilder<CultureInfo?> cultureInfo)
+    // Need this overload because implicit operators can't be created on interfaces :(
+    public ToUpperCaseFunctionCallBuilder WithExpression(ConstantArgumentBuilder<string> expression)
+    {
+        ArgumentNullException.ThrowIfNull(expression);
+        Expression = expression;
+        return this;
+    }
+
+    // Need this overload because implicit operators can't be created on interfaces :(
+    public ToUpperCaseFunctionCallBuilder WithExpression(ConstantResultArgumentBuilder<string> expression)
+    {
+        ArgumentNullException.ThrowIfNull(expression);
+        Expression = expression;
+        return this;
+    }
+
+    public ToUpperCaseFunctionCallBuilder WithCultureInfo(IFunctionCallArgumentBuilder<CultureInfo?> cultureInfo)
+    {
+        ArgumentNullException.ThrowIfNull(cultureInfo);
+        CultureInfo = cultureInfo;
+        return this;
+    }
+
+    // Need this overload because implicit operators can't be created on interfaces :(
+    public ToUpperCaseFunctionCallBuilder WithCultureInfo(ConstantArgumentBuilder<CultureInfo?> cultureInfo)
+    {
+        ArgumentNullException.ThrowIfNull(cultureInfo);
+        CultureInfo = cultureInfo;
+        return this;
+    }
+
+    // Need this overload because implicit operators can't be created on interfaces :(
+    public ToUpperCaseFunctionCallBuilder WithCultureInfo(ConstantResultArgumentBuilder<CultureInfo?> cultureInfo)
     {
         ArgumentNullException.ThrowIfNull(cultureInfo);
         CultureInfo = cultureInfo;

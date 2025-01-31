@@ -3,5 +3,5 @@
 internal interface IFunctionCall
 {
     [Required] string Name { get; }
-    [Required][ValidateObject] IReadOnlyCollection<IFunctionCallArgument> Arguments { get; }
+    [Required][ValidateObject] IReadOnlyCollection</*IFunctionCallArgumentBase*/ Abstractions.IFunctionCallArgument> Arguments { get; }
 }

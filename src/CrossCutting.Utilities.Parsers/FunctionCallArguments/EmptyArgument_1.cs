@@ -1,13 +1,13 @@
 ﻿namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
 
-public partial record DelegateResultArgument<T>
+public partial record EmptyArgument<T>
 {
     public Result<T> EvaluateTyped(FunctionCallContext context)
-        => Delegate();
+        => Result.Success(default(T)!);
 
     public override Result<object?> Evaluate(FunctionCallContext context)
-        => Delegate().Transform<object?>(value => value);
+        => Result.Success<object?>(default);
 
     public override Result<Type> Validate(FunctionCallContext context)
-        => ValidationDelegate?.Invoke() ?? Result.NoContent<Type>();
+        => Result.NoContent<Type>();
 }

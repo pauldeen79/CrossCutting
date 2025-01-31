@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.CodeGeneration.CodeGenerationProviders;
+﻿using ClassFramework.Pipelines;
+
+namespace CrossCutting.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
@@ -19,18 +21,6 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
     protected override bool EnableGlobalUsings => true;
     protected override bool AddImplicitOperatorOnBuilder => true;
 
-    protected override bool IsAbstractType(Type type)
-    {
-        ArgumentGuard.IsNotNull(type, nameof(type));
-
-        if (type.IsInterface && type.Namespace == $"{CodeGenerationRootNamespace}.Models" && type.Name[1..] == Constants.Types.FunctionCallArgument)
-        {
-            return true;
-        }
-
-        return base.IsAbstractType(type);
-    }
-
     protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
     {
         yield return new TypenameMappingBuilder()
@@ -41,6 +31,23 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
                 new MetadataBuilder()
                     .WithValue(new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}", null))
                     .WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue)
+            );
+
+        // Hacking here...
+        // Types in Abstractions don't get converted to builders out of the box, not sure why
+        yield return new TypenameMappingBuilder()
+            .WithSourceTypeName($"CrossCutting.Utilities.Parsers.Abstractions.{nameof(Models.Abstractions.IFunctionCallArgument)}")
+            .WithTargetTypeName($"CrossCutting.Utilities.Parsers.Abstractions.{nameof(Models.Abstractions.IFunctionCallArgument)}")
+            .AddMetadata
+            (
+                new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderNamespace),
+                new MetadataBuilder().WithValue("{ClassName($property.TypeName)}Builder").WithName(MetadataNames.CustomBuilderName),
+                new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderInterfaceNamespace),
+                new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments(ClassName($property.TypeName), true)}").WithName(MetadataNames.CustomBuilderInterfaceName),
+                new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
+                new MetadataBuilder().WithValue(new Literal($"new {CoreNamespace}.Builders.EmptyArgumentBuilder()", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
+                new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression),
+                new MetadataBuilder().WithName(MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{CoreNamespace}.Abstractions.I{nameof(Models.Abstractions.IFunctionCallArgument)}")
             );
     }
 }
