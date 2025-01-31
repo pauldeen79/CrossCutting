@@ -140,9 +140,6 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
     {
         // *** Without strongly-typed function call context:
         return new ResultDictionaryBuilder()
-            // Note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult.
-            // This is exactly the same. For Int32, Boolean etc we have special cases, so we might do this for string too.
-            // But maybe we'll just skip this, I'm not seeing the difference. (unless the GetArgumentStringValueResult performs a ToString())
             .Add("Expression", () => Result.Success(expression))
             .Add("Culture", () => Result.Success(cultureInfo))
             .Build()
