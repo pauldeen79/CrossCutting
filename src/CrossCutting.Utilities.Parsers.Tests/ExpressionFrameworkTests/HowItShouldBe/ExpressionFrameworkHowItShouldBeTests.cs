@@ -205,6 +205,8 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall> // Inheriti
         // Not sure if you can plug into the Builder pipeline to customize this...
         Expression = new ConstantArgumentBuilder<string>().WithValue(string.Empty);
         CultureInfo = new ConstantArgumentBuilder<CultureInfo?>();
+        // Alternative:
+        ///CultureInfo = new EmptyArgumentBuilder<CultureInfo?>();
     }
 
     public ToUpperCaseFunctionCallBuilder WithExpression(IFunctionCallArgumentBuilder<string> expression)

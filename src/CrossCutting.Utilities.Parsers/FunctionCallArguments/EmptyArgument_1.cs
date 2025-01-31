@@ -9,5 +9,5 @@ public partial record EmptyArgument<T>
         => Result.Success<object?>(default);
 
     public override Result<Type> Validate(FunctionCallContext context)
-        => Result.NoContent<Type>();
+        => Result.Continue<Type>();
 }
