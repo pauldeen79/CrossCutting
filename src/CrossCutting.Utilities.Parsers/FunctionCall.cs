@@ -248,5 +248,4 @@ public partial record FunctionCall
             ? Result.Success(stringValue)
             : Result.Invalid<string>($"{argumentName} is not of type string");
     }
-
 }
