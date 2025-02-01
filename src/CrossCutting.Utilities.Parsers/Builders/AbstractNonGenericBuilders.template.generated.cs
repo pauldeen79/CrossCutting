@@ -23,14 +23,9 @@ namespace CrossCutting.Utilities.Parsers.Builders
             SetDefaultValues();
         }
 
-        public abstract CrossCutting.Utilities.Parsers.FunctionCallArgumentBase Build();
+        public abstract CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument Build();
 
         partial void SetDefaultValues();
-
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArgumentBase(FunctionCallArgumentBaseBuilder entity)
-        {
-            return entity.Build();
-        }
 
         protected void HandlePropertyChanged(string propertyName)
         {

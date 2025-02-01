@@ -9,6 +9,7 @@ public class OverrideBuilders(IPipelineService pipelineService) : CrossCuttingCS
     protected override bool CreateAsObservable => true;
     protected override Task<Result<TypeBase>> GetBaseClass() => CreateBaseClass(typeof(IFunctionCallArgumentBase), CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsers);
     protected override string BaseClassBuilderNamespace => CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsersBuilders;
+    protected override bool UseBuilderAbstractions => false; //quirk
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
         => GetBuilders(

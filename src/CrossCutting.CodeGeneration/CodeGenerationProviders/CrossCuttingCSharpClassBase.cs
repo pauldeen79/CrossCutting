@@ -18,6 +18,7 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
     protected override bool GenerateMultipleFiles => false;
     protected override bool EnableGlobalUsings => true;
     protected override bool AddImplicitOperatorOnBuilder => true;
+    protected override bool UseBuilderAbstractions => true;
 
     protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
     {
@@ -31,22 +32,22 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
                     .WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue)
             );
 
-        // Hacking here...
-        // Types in Abstractions don't get converted to builders out of the box, not sure why
-        var type = typeof(Models.Abstractions.IFunctionCallArgument);
-        yield return new TypenameMappingBuilder()
-            .WithSourceTypeName($"{CoreNamespace}.Abstractions.I{type.GetEntityClassName()}")
-            .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{type.GetEntityClassName()}")
-            .AddMetadata
-            (
-                new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderNamespace),
-                new MetadataBuilder().WithValue("{ClassName($property.TypeName)}Builder").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderName),
-                new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderInterfaceNamespace),
-                new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments(ClassName($property.TypeName), true)}").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderInterfaceName),
-                new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderSourceExpression),
-                new MetadataBuilder().WithValue(new Literal($"default({CoreNamespace}.Builders.Abstractions.{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments(ClassName($property.TypeName), true)}})", null)).WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue),
-                new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderMethodParameterExpression),
-                new MetadataBuilder().WithName(ClassFramework.Pipelines.MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{CoreNamespace}.Abstractions.I{type.GetEntityClassName()}")
-            );
+        //// Hacking here...
+        //// Types in Abstractions don't get converted to builders out of the box, not sure why
+        //var type = typeof(Models.Abstractions.IFunctionCallArgument);
+        //yield return new TypenameMappingBuilder()
+        //    .WithSourceTypeName($"{CoreNamespace}.Abstractions.I{type.GetEntityClassName()}")
+        //    .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{type.GetEntityClassName()}")
+        //    .AddMetadata
+        //    (
+        //        new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderNamespace),
+        //        new MetadataBuilder().WithValue("{ClassName($property.TypeName)}Builder").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderName),
+        //        new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderInterfaceNamespace),
+        //        new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments(ClassName($property.TypeName), true)}").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderInterfaceName),
+        //        new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderSourceExpression),
+        //        new MetadataBuilder().WithValue(new Literal($"default({CoreNamespace}.Builders.Abstractions.{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments(ClassName($property.TypeName), true)}})", null)).WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue),
+        //        new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderMethodParameterExpression),
+        //        new MetadataBuilder().WithName(ClassFramework.Pipelines.MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{CoreNamespace}.Abstractions.I{type.GetEntityClassName()}")
+        //    );
     }
 }
