@@ -25,6 +25,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         public abstract CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument Build();
 
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return Build();
+        }
+
         partial void SetDefaultValues();
 
         protected void HandlePropertyChanged(string propertyName)
