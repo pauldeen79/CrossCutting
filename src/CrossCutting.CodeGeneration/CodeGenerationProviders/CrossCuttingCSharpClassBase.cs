@@ -18,7 +18,7 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
     protected override bool GenerateMultipleFiles => false;
     protected override bool EnableGlobalUsings => true;
     protected override bool AddImplicitOperatorOnBuilder => true;
-    protected override bool UseBuilderAbstractions => true;
+    protected override bool UseBuilderAbstractionsTypeConversion => true;
 
     protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
     {

@@ -7,7 +7,7 @@ public class OverrideEntities(IPipelineService pipelineService) : CrossCuttingCS
 
     protected override bool EnableEntityInheritance => true;
     protected override Task<Result<TypeBase>> GetBaseClass() => CreateBaseClass(typeof(IFunctionCallArgumentBase), CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsers);
-    protected override bool UseBuilderAbstractions => false; //quirk
+    protected override bool UseBuilderAbstractionsTypeConversion => false; //quirk
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
         => GetEntities(GetOverrideModels(typeof(IFunctionCallArgumentBase)), CurrentNamespace);
