@@ -17,6 +17,11 @@ namespace CrossCutting.Utilities.Parsers
         }
 
         public abstract CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBaseBuilder ToBuilder();
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToBuilder();
+        }
     }
 }
 #nullable disable

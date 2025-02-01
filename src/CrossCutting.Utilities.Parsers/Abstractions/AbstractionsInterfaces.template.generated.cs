@@ -12,7 +12,7 @@ namespace CrossCutting.Utilities.Parsers.Abstractions
 {
     public partial interface IFunctionCallArgument
     {
-        CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBaseBuilder ToBuilder();
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder ToBuilder();
     }
     public partial interface IFunctionCallArgument<T> : CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
     {
