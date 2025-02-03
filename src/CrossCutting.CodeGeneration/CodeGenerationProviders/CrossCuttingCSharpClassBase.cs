@@ -19,7 +19,6 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
     protected override bool EnableGlobalUsings => true;
     protected override bool AddImplicitOperatorOnBuilder => true;
     protected override bool UseBuilderAbstractionsTypeConversion => true;
-    protected override string[] GetBuilderAbstractionsTypeConversionNamespaces() => [ $"{CoreNamespace}.Abstractions" ];
 
     protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
     {
