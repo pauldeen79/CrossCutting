@@ -22,12 +22,17 @@ namespace CrossCutting.Utilities.Parsers.Builders
         {
         }
 
-        public override CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument Build()
+        public override CrossCutting.Utilities.Parsers.FunctionCallArgumentBase Build()
         {
             return BuildTyped();
         }
 
         public abstract TEntity BuildTyped();
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
     }
 }
 #nullable disable

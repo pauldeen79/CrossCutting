@@ -32,6 +32,11 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder(this);
         }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
     }
     public partial record ConstantArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
     {
@@ -54,6 +59,16 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder<T> ToTypedBuilder()
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder<T>(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T> CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>.ToBuilder()
+        {
+            return ToTypedBuilder();
         }
     }
     public partial record ConstantResultArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
@@ -79,6 +94,11 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantResultArgumentBuilder(this);
         }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
     }
     public partial record ConstantResultArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
     {
@@ -101,6 +121,16 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantResultArgumentBuilder<T> ToTypedBuilder()
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantResultArgumentBuilder<T>(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T> CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>.ToBuilder()
+        {
+            return ToTypedBuilder();
         }
     }
     public partial record DelegateArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
@@ -132,6 +162,11 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder(this);
         }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
     }
     public partial record DelegateArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
     {
@@ -161,6 +196,16 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder<T> ToTypedBuilder()
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder<T>(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T> CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>.ToBuilder()
+        {
+            return ToTypedBuilder();
         }
     }
     public partial record DelegateResultArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
@@ -192,6 +237,11 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder(this);
         }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
     }
     public partial record DelegateResultArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
     {
@@ -222,6 +272,16 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder<T>(this);
         }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T> CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
     }
     public partial record EmptyArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
     {
@@ -239,6 +299,11 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder(this);
         }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
     }
     public partial record EmptyArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
     {
@@ -255,6 +320,16 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder<T> ToTypedBuilder()
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.EmptyArgumentBuilder<T>(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T> CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>.ToBuilder()
+        {
+            return ToTypedBuilder();
         }
     }
     public partial record ExpressionArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
@@ -280,6 +355,11 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ExpressionArgumentBuilder(this);
         }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
     }
     public partial record FunctionArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
     {
@@ -304,6 +384,11 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.FunctionArgumentBuilder ToTypedBuilder()
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.FunctionArgumentBuilder(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
         }
     }
 }

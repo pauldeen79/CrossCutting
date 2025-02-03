@@ -44,6 +44,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument(Value);
         }
 
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
         partial void SetDefaultValues();
 
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder WithValue(object? value)
@@ -90,6 +95,16 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T> BuildTyped()
         {
             return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T>(Value);
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T> CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T>.Build()
+        {
+            return BuildTyped();
         }
 
         partial void SetDefaultValues();
@@ -141,6 +156,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument(Result);
         }
 
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
         partial void SetDefaultValues();
 
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantResultArgumentBuilder WithResult(CrossCutting.Common.Results.Result<object?> result)
@@ -188,6 +208,16 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T> BuildTyped()
         {
             return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T>(Result);
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T> CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T>.Build()
+        {
+            return BuildTyped();
         }
 
         partial void SetDefaultValues();
@@ -255,6 +285,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument BuildTyped()
         {
             return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument(Delegate, ValidationDelegate);
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
         }
 
         partial void SetDefaultValues();
@@ -330,6 +365,16 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument<T>(Delegate, ValidationDelegate);
         }
 
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T> CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T>.Build()
+        {
+            return BuildTyped();
+        }
+
         partial void SetDefaultValues();
 
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder<T> WithDelegate(System.Func<T> @delegate)
@@ -401,6 +446,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument BuildTyped()
         {
             return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument(Delegate, ValidationDelegate);
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
         }
 
         partial void SetDefaultValues();
@@ -476,6 +526,16 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument<T>(Delegate, ValidationDelegate);
         }
 
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T> CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T>.Build()
+        {
+            return BuildTyped();
+        }
+
         partial void SetDefaultValues();
 
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder<T> WithDelegate(System.Func<CrossCutting.Common.Results.Result<T>> @delegate)
@@ -513,6 +573,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             return new CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument();
         }
 
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
         partial void SetDefaultValues();
 
         public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument(EmptyArgumentBuilder entity)
@@ -535,6 +600,16 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument<T> BuildTyped()
         {
             return new CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument<T>();
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T> CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T>.Build()
+        {
+            return BuildTyped();
         }
 
         partial void SetDefaultValues();
@@ -578,6 +653,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument BuildTyped()
         {
             return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(Value);
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
         }
 
         partial void SetDefaultValues();
@@ -629,6 +709,11 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument BuildTyped()
         {
             return new CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument(Function.Build());
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
         }
 
         partial void SetDefaultValues();

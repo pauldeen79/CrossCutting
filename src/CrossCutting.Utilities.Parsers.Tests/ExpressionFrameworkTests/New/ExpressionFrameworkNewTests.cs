@@ -329,9 +329,14 @@ public class ExpressionArgumentBuilder<T> : FunctionCallArgumentBaseBuilder, IFu
     {
         return new ExpressionArgument<T>(Expression?.Build());
     }
+
+    IFunctionCallArgument<T> IFunctionCallArgumentBuilder<T>.Build()
+    {
+        return new ExpressionArgument<T>(Expression?.Build());
+    }
 }
 
-public record ExpressionArgument<T> : FunctionCallArgumentBase
+public record ExpressionArgument<T> : FunctionCallArgumentBase, IFunctionCallArgument<T>
 {
     public ExpressionArgument(ITypedExpression<T>? expression) : base()
     {
@@ -365,6 +370,11 @@ public record ExpressionArgument<T> : FunctionCallArgumentBase
     }
 
     public override FunctionCallArgumentBaseBuilder ToBuilder()
+    {
+        return new ExpressionArgumentBuilder<T>(this);
+    }
+
+    IFunctionCallArgumentBuilder<T> IFunctionCallArgument<T>.ToBuilder()
     {
         return new ExpressionArgumentBuilder<T>(this);
     }

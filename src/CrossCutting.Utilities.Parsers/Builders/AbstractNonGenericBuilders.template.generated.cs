@@ -23,7 +23,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
             SetDefaultValues();
         }
 
-        public abstract CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument Build();
+        public abstract CrossCutting.Utilities.Parsers.FunctionCallArgumentBase Build();
 
         CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
         {
