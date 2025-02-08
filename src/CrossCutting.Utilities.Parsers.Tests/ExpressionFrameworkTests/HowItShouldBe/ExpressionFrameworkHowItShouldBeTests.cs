@@ -14,7 +14,7 @@ public class ExpressionFrameworkHowItShouldBeTests
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var functionCall = new ToUpperCaseFunctionCallBuilder()
             .WithExpression("Hello world!")
-            .Build();
+            .BuildTyped();
         var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CreateSettings(), null);
 
         // Act
@@ -33,7 +33,7 @@ public class ExpressionFrameworkHowItShouldBeTests
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
         var functionCall = new ToUpperCaseFunctionCallBuilder()
             .WithExpression("Hello world!")
-            .Build();
+            .BuildTyped();
         var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CreateSettings(), null);
 
         // Act
@@ -55,7 +55,7 @@ public class ExpressionFrameworkHowItShouldBeTests
         var functionCall = new ToUpperCaseFunctionCallBuilder()
             .WithExpression(Result.Success("Hello world!"))
             .WithCultureInfo(CultureInfo.InvariantCulture)
-            .Build();
+            .BuildTyped();
         var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CreateSettings(), null);
 
         // Act
@@ -92,6 +92,25 @@ public class ExpressionFrameworkHowItShouldBeTests
         functionDescriptors.Should().ContainSingle();
         functionDescriptors.Single().Arguments.Should().HaveCount(2);
         functionDescriptors.Single().Results.Should().ContainSingle();
+    }
+
+    [Fact]
+    public void Can_Convert_Between_FunctionCallBuilder_And_FunctionCall_And_Back_To_FunctionCallBuilder_Again()
+    {
+        // Arrange
+        var functionCall = new ToUpperCaseFunctionCallBuilder()
+            .WithExpression(Result.Success("Hello world!"))
+            .WithCultureInfo(CultureInfo.InvariantCulture)
+            .BuildTyped();
+
+        // Act
+        var functionCallBuilder = functionCall.ToTypedBuilder();
+
+        // Assert
+        functionCallBuilder.Expression.Should().BeOfType<ConstantResultArgumentBuilder<string>>();
+        ((ConstantResultArgumentBuilder<string>)functionCallBuilder.Expression).Result.Value.Should().Be("Hello world!");
+        functionCallBuilder.CultureInfo.Should().BeOfType<ConstantArgumentBuilder<CultureInfo?>>();
+        ((ConstantArgumentBuilder<CultureInfo?>)functionCallBuilder.CultureInfo).Value.Should().Be(CultureInfo.InvariantCulture);
     }
 }
 
@@ -253,10 +272,10 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall> // Inheriti
     }
 
     // Only works if you use strongly-typed FunctionCall
-    ///public ToUpperCaseFunctionCall BuildTyped()
-    ///{
-    ///    return new ToUpperCaseFunctionCall(Expression.BuildTyped(), CultureInfo.BuildTyped());
-    ///}
+    public ToUpperCaseFunctionCall BuildTyped()
+    {
+        return new ToUpperCaseFunctionCall(Expression.Build(), CultureInfo.Build());
+    }
 
     public FunctionCall Build()
     {
@@ -275,36 +294,45 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall> // Inheriti
 }
 
 // *** Generated code (optional)
-///public record ToUpperCaseFunctionCall : FunctionCall
-///{
-///    public ToUpperCaseFunctionCall(FunctionCallArgument<string> expression, FunctionCallArgument<CultureInfo?> cultureInfo) : base("ToUpperCase", new FunctionCallArgument[] { expression, cultureInfo } )
-///    {
-///    }
-///
-///    protected ToUpperCaseFunctionCall(FunctionCall original) : base(original)
-///    {
-///    }
-///}
-
-// *** Generated code
-public class ToUpperCaseFunctionCallContext : FunctionCallContext, IResultDictionaryContainer
+public record ToUpperCaseFunctionCall : FunctionCall, IBuildableEntity<ToUpperCaseFunctionCallBuilder> // Inheriting from IBuildableEntity<T> is optional.
 {
-    public Dictionary<string, Result> Results { get; }
-
-    public ToUpperCaseFunctionCallContext(FunctionCallContext context) : base(context?.FunctionCall ?? throw new ArgumentNullException(nameof(context)), context.FunctionEvaluator, context.ExpressionEvaluator, context.Settings, context.Context)
+    public ToUpperCaseFunctionCall(IFunctionCallArgument<string> expression, IFunctionCallArgument<CultureInfo?> cultureInfo) : base("ToUpperCase", new IFunctionCallArgument[] { expression, cultureInfo } )
     {
-        Results = new ResultDictionaryBuilder()
-            // Note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult.
-            // This is exactly the same. For Int32, Boolean etc we have special cases, so we might do this for string too.
-            // But maybe we'll just skip this, I'm not seeing the difference. (unless the GetArgumentStringValueResult performs a ToString())
-            .Add("Expression", () => GetArgumentStringValueResult(0, "Expression"))
-            .Add("Culture", () => GetArgumentValueResult<CultureInfo>(1, "Culture", default))
-            .Build();
     }
 
-    // Strongly-typed access to arguments
-    public string Expression() => Results.GetValue<string>("Expression");
-    // For optional arguments, generate two overloads (with and without default value)
-    public CultureInfo? CultureInfo() => Results.TryGetValue<CultureInfo>("Culture");
-    public CultureInfo? CultureInfo(CultureInfo? defaultValue) => Results.TryGetValue("Culture", defaultValue);
+    // Only generate this when inheriting from IBuildableEntity<T>
+    ToUpperCaseFunctionCallBuilder IBuildableEntity<ToUpperCaseFunctionCallBuilder>.ToBuilder()
+    {
+        return ToTypedBuilder();
+    }
+
+    public ToUpperCaseFunctionCallBuilder ToTypedBuilder()
+    {
+        return new ToUpperCaseFunctionCallBuilder()
+            .WithExpression(((IFunctionCallArgument<string>)Arguments.ElementAt(0)).ToBuilder())
+            .WithCultureInfo(((IFunctionCallArgument<CultureInfo?>)Arguments.ElementAt(1)).ToBuilder());
+    }
 }
+
+// *** Generated code
+///public class ToUpperCaseFunctionCallContext : FunctionCallContext, IResultDictionaryContainer
+///{
+///    public Dictionary<string, Result> Results { get; }
+
+///    public ToUpperCaseFunctionCallContext(FunctionCallContext context) : base(context?.FunctionCall ?? throw new ArgumentNullException(nameof(context)), context.FunctionEvaluator, context.ExpressionEvaluator, context.Settings, context.Context)
+///    {
+///        Results = new ResultDictionaryBuilder()
+///            // Note that you can use both GetArgumentValueResult<string> or GetArgumentStringValueResult.
+///            // This is exactly the same. For Int32, Boolean etc we have special cases, so we might do this for string too.
+///            // But maybe we'll just skip this, I'm not seeing the difference. (unless the GetArgumentStringValueResult performs a ToString())
+///            .Add("Expression", () => GetArgumentStringValueResult(0, "Expression"))
+///            .Add("Culture", () => GetArgumentValueResult<CultureInfo>(1, "Culture", default))
+///            .Build();
+///    }
+
+///    // Strongly-typed access to arguments
+///    public string Expression() => Results.GetValue<string>("Expression");
+///    // For optional arguments, generate two overloads (with and without default value)
+///    public CultureInfo? CultureInfo() => Results.TryGetValue<CultureInfo>("Culture");
+///    public CultureInfo? CultureInfo(CultureInfo? defaultValue) => Results.TryGetValue("Culture", defaultValue);
+///}
