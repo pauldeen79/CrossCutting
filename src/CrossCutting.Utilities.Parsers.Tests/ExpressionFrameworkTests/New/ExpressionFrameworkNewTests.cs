@@ -241,9 +241,9 @@ public partial class ToLowerCaseExpressionBuilder : ExpressionBuilder<ToLowerCas
     }
 }
 
-public class ExpressionArgumentBuilder : FunctionCallArgumentBuilder
+public class ExpressionArgumentBuilder : FunctionCallArgumentBaseBuilder
 {
-    public ExpressionArgumentBuilder(ExpressionArgument source) : base(source)
+    public ExpressionArgumentBuilder(ExpressionArgument source)
     {
         Expression = source?.Expression?.ToBuilder();
     }
@@ -260,13 +260,13 @@ public class ExpressionArgumentBuilder : FunctionCallArgumentBuilder
         return this;
     }
 
-    public override FunctionCallArgument Build()
+    public override FunctionCallArgumentBase Build()
     {
         return new ExpressionArgument(Expression?.Build());
     }
 }
 
-public record ExpressionArgument : FunctionCallArgument
+public record ExpressionArgument : FunctionCallArgumentBase
 {
     public ExpressionArgument(Expression? expression)
     {
@@ -300,15 +300,15 @@ public record ExpressionArgument : FunctionCallArgument
         return Result.Continue<Type>();
     }
 
-    public override FunctionCallArgumentBuilder ToBuilder()
+    public override FunctionCallArgumentBaseBuilder ToBuilder()
     {
         return new ExpressionArgumentBuilder(this);
     }
 }
 
-public class ExpressionArgumentBuilder<T> : FunctionCallArgumentBuilder
+public class ExpressionArgumentBuilder<T> : FunctionCallArgumentBaseBuilder, IFunctionCallArgumentBuilder<T>
 {
-    public ExpressionArgumentBuilder(ExpressionArgument<T> source) : base(source)
+    public ExpressionArgumentBuilder(ExpressionArgument<T> source)
     {
         Expression = source?.Expression?.ToBuilder();
     }
@@ -325,15 +325,20 @@ public class ExpressionArgumentBuilder<T> : FunctionCallArgumentBuilder
         return this;
     }
 
-    public override FunctionCallArgument Build()
+    public override FunctionCallArgumentBase Build()
+    {
+        return new ExpressionArgument<T>(Expression?.Build());
+    }
+
+    IFunctionCallArgument<T> IFunctionCallArgumentBuilder<T>.Build()
     {
         return new ExpressionArgument<T>(Expression?.Build());
     }
 }
 
-public record ExpressionArgument<T> : FunctionCallArgument
+public record ExpressionArgument<T> : FunctionCallArgumentBase, IFunctionCallArgument<T>
 {
-    public ExpressionArgument(ITypedExpression<T>? expression)
+    public ExpressionArgument(ITypedExpression<T>? expression) : base()
     {
         Expression = expression;
     }
@@ -364,7 +369,12 @@ public record ExpressionArgument<T> : FunctionCallArgument
         return Result.Success<Type>(typeof(T));
     }
 
-    public override FunctionCallArgumentBuilder ToBuilder()
+    public override FunctionCallArgumentBaseBuilder ToBuilder()
+    {
+        return new ExpressionArgumentBuilder<T>(this);
+    }
+
+    IFunctionCallArgumentBuilder<T> IFunctionCallArgument<T>.ToBuilder()
     {
         return new ExpressionArgumentBuilder<T>(this);
     }

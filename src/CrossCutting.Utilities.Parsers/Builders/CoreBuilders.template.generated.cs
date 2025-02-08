@@ -278,7 +278,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
     {
         private string _name;
 
-        private System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder> _arguments;
+        private System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder> _arguments;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -299,7 +299,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder> Arguments
+        public System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder> Arguments
         {
             get
             {
@@ -307,7 +307,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder>>.Default.Equals(_arguments!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder>>.Default.Equals(_arguments!, value!);
                 _arguments = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Arguments));
             }
@@ -316,14 +316,14 @@ namespace CrossCutting.Utilities.Parsers.Builders
         public FunctionCallBuilder(CrossCutting.Utilities.Parsers.FunctionCall source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder>();
+            _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder>();
             _name = source.Name;
             if (source.Arguments is not null) foreach (var item in source.Arguments.Select(x => x.ToBuilder())) _arguments.Add(item);
         }
 
         public FunctionCallBuilder()
         {
-            _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder>();
+            _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder>();
             _name = string.Empty;
             SetDefaultValues();
         }
@@ -335,13 +335,13 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder AddArguments(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder> arguments)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder AddArguments(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder> arguments)
         {
             if (arguments is null) throw new System.ArgumentNullException(nameof(arguments));
             return AddArguments(arguments.ToArray());
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder AddArguments(params CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder[] arguments)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder AddArguments(params CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder[] arguments)
         {
             if (arguments is null) throw new System.ArgumentNullException(nameof(arguments));
             foreach (var item in arguments) Arguments.Add(item);

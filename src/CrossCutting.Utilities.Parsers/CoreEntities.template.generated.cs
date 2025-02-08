@@ -98,15 +98,15 @@ namespace CrossCutting.Utilities.Parsers
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.FunctionCallArgument> Arguments
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument> Arguments
         {
             get;
         }
 
-        public FunctionCall(string name, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.FunctionCallArgument> arguments)
+        public FunctionCall(string name, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument> arguments)
         {
             this.Name = name;
-            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.FunctionCallArgument>(arguments);
+            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument>(arguments);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 

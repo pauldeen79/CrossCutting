@@ -14,11 +14,6 @@ public static class Constants
         public const string UtilitiesParsersBuildersFunctionDescriptorArguments = "CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArguments";
     }
 
-    public static class Types
-    {
-        public const string FunctionCallArgument = "FunctionCallArgument";
-    }
-
     [ExcludeFromCodeCoverage]
     public static class Paths
     {

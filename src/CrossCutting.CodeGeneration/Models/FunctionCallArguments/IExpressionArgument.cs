@@ -1,5 +1,5 @@
 ﻿namespace CrossCutting.CodeGeneration.Models.FunctionCallArguments;
-internal interface IExpressionArgument : IFunctionCallArgument
+internal interface IExpressionArgument : IFunctionCallArgumentBase
 {
     [Required] string Value { get; }
 }

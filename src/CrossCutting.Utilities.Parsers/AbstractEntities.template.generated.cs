@@ -10,13 +10,18 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers
 {
-    public abstract partial record FunctionCallArgument
+    public abstract partial record FunctionCallArgumentBase : CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
     {
-        protected FunctionCallArgument()
+        protected FunctionCallArgumentBase()
         {
         }
 
-        public abstract CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder();
+        public abstract CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBaseBuilder ToBuilder();
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToBuilder();
+        }
     }
 }
 #nullable disable

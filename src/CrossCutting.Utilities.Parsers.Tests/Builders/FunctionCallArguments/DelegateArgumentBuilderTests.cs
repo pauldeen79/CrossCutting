@@ -3,20 +3,6 @@
 public class DelegateArgumentBuilderTests
 {
     [Fact]
-    public void ToUntyped_Returns_Correct_Result()
-    {
-        // Arrange
-        var sut = new DelegateArgumentBuilder<string>().WithDelegate(() => "Some value");
-
-        // Act
-        var result = sut.ToUntyped();
-
-        // Assert
-        result.Should().BeOfType<DelegateArgumentBuilder>();
-        ((DelegateArgumentBuilder)result).Delegate().Should().Be(sut.Delegate());
-    }
-
-    [Fact]
     public void BuildTyped_Returns_Correct_Result()
     {
         // Arrange
@@ -27,7 +13,7 @@ public class DelegateArgumentBuilderTests
 
         // Assert
         result.Should().BeOfType<DelegateArgument<string>>();
-        ((DelegateArgument<string>)result).Delegate().Should().Be(sut.Delegate());
+        result.Delegate().Should().Be(sut.Delegate());
     }
 
     [Fact]
@@ -40,8 +26,8 @@ public class DelegateArgumentBuilderTests
         var result = sut.Build();
 
         // Assert
-        result.Should().BeOfType<DelegateArgument>();
-        ((DelegateArgument)result).Delegate().Should().Be(sut.Delegate());
+        result.Should().BeOfType<DelegateArgument<string>>();
+        ((DelegateArgument<string>)result).Delegate().Should().Be(sut.Delegate());
     }
 
     [Fact]
@@ -70,7 +56,6 @@ public class DelegateArgumentBuilderTests
         result.Should().BeSameAs(sut);
         result.Delegate().Should().Be("Altered value");
     }
-
 
     [Fact]
     public void WithValidationDelegate_Returns_Correct_Result()

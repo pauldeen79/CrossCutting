@@ -17,19 +17,6 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
     protected override bool CreateRecord => true;
     protected override bool GenerateMultipleFiles => false;
     protected override bool EnableGlobalUsings => true;
-    protected override bool AddImplicitOperatorOnBuilder => true;
-
-    protected override bool IsAbstractType(Type type)
-    {
-        ArgumentGuard.IsNotNull(type, nameof(type));
-
-        if (type.IsInterface && type.Namespace == $"{CodeGenerationRootNamespace}.Models" && type.Name[1..] == Constants.Types.FunctionCallArgument)
-        {
-            return true;
-        }
-
-        return base.IsAbstractType(type);
-    }
 
     protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
     {

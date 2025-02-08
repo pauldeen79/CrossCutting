@@ -10,26 +10,31 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders
 {
-    public abstract partial class FunctionCallArgumentBuilder<TBuilder, TEntity> : FunctionCallArgumentBuilder
-        where TEntity : CrossCutting.Utilities.Parsers.FunctionCallArgument
-        where TBuilder : FunctionCallArgumentBuilder<TBuilder, TEntity>
+    public abstract partial class FunctionCallArgumentBaseBuilder<TBuilder, TEntity> : FunctionCallArgumentBaseBuilder, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
+        where TEntity : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase
+        where TBuilder : FunctionCallArgumentBaseBuilder<TBuilder, TEntity>
     {
-        protected FunctionCallArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgument source) : base(source)
+        protected FunctionCallArgumentBaseBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgumentBase source) : base(source)
         {
         }
 
-        protected FunctionCallArgumentBuilder() : base()
+        protected FunctionCallArgumentBaseBuilder() : base()
         {
         }
 
-        public override CrossCutting.Utilities.Parsers.FunctionCallArgument Build()
+        public override CrossCutting.Utilities.Parsers.FunctionCallArgumentBase Build()
         {
             return BuildTyped();
         }
 
         public abstract TEntity BuildTyped();
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArgument(FunctionCallArgumentBuilder<TBuilder, TEntity> entity)
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArgumentBase(FunctionCallArgumentBaseBuilder<TBuilder, TEntity> entity)
         {
             return entity.BuildTyped();
         }
