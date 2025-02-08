@@ -13,7 +13,6 @@ public class AbstractNonGenericBuilders(IPipelineService pipelineService) : Cros
     protected override bool CreateAsObservable => true;
     protected override bool IsAbstract => true;
     protected override string FilenameSuffix => ".nongeneric.template.generated";
-    protected override bool AddImplicitOperatorOnBuilder => false; // does not work when using builder abstraction interfaces
 
     // Do not generate 'With' methods. Do this on the interfaces instead.
     protected override string SetMethodNameFormatString => string.Empty;

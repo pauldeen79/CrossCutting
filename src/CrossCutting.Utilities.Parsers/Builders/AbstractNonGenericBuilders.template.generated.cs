@@ -32,6 +32,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         partial void SetDefaultValues();
 
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArgumentBase(FunctionCallArgumentBaseBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));

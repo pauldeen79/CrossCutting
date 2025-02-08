@@ -33,6 +33,11 @@ namespace CrossCutting.Utilities.Parsers.Builders
         {
             return BuildTyped();
         }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArgumentBase(FunctionCallArgumentBaseBuilder<TBuilder, TEntity> entity)
+        {
+            return entity.BuildTyped();
+        }
     }
 }
 #nullable disable
