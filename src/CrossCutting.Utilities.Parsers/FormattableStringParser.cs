@@ -93,7 +93,7 @@ public class FormattableStringParser : IFormattableStringParser
 
         return validateOnly
             ? Result.Aggregate(results, Result.Success(new GenericFormattableString(string.Empty, [])), validationResults => Result.Invalid<GenericFormattableString>("Validation failed, see inner results for details", validationResults))
-            : Result.Success(new GenericFormattableString(remainder, [.. results.Select(x => x.Value?.ToString(settings.FormatProvider))]));
+            : Result.Success(new GenericFormattableString(remainder, [.. results.Where(x => x.Value is not null).Select(x => x.Value!.ToString(settings.FormatProvider))]));
     }
 
     private Result<GenericFormattableString> ProcessRecursive(string format, FormattableStringParserSettings settings, object? context, Result<GenericFormattableString> placeholderResult, bool validateOnly, int currentRecursionLevel)
