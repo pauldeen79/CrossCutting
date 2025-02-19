@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+namespace CrossCutting.Utilities.Parsers.Tests;
 
 public sealed class FunctionCallTests : IDisposable
 {
@@ -46,8 +46,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentValueResult(1, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Missing argument: SomeName");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
     }
 
     [Fact]
@@ -61,8 +61,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("some value");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("some value");
     }
 
     [Fact]
@@ -76,8 +76,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("some value");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("some value");
     }
 
     [Fact]
@@ -91,8 +91,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentValueResult(0, "SomeName", context, (object)"ignored");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("some value");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("some value");
     }
 
     [Fact]
@@ -106,8 +106,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("Evaluated result");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("Evaluated result");
     }
 
     [Fact]
@@ -121,8 +121,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentValueResult(0, "SomeName", context, (object)"some value");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("some value");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("some value");
     }
 
     [Fact]
@@ -136,8 +136,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentStringValueResult(1, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Missing argument: SomeName");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
     }
 
     [Fact]
@@ -151,8 +151,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentStringValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type string");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type string");
     }
 
     [Fact]
@@ -166,8 +166,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentStringValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("some value");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("some value");
     }
 
     [Fact]
@@ -181,8 +181,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentStringValueResult(0, "SomeName", context, "default value");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("default value");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("default value");
     }
 
     [Fact]
@@ -196,8 +196,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt32ValueResult(1, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Missing argument: SomeName");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
     }
 
     [Fact]
@@ -211,8 +211,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(1);
     }
 
     [Fact]
@@ -226,8 +226,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type integer");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type integer");
     }
 
     [Fact]
@@ -241,8 +241,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type integer");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type integer");
     }
 
     [Fact]
@@ -256,8 +256,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type integer");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type integer");
     }
 
     [Fact]
@@ -271,8 +271,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(13);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(13);
     }
 
     [Fact]
@@ -286,8 +286,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context, 13);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(13);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(13);
     }
 
     [Fact]
@@ -301,8 +301,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt64ValueResult(1, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Missing argument: SomeName");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
     }
 
     [Fact]
@@ -316,8 +316,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(1L);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(1L);
     }
 
     [Fact]
@@ -331,8 +331,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type long integer");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type long integer");
     }
 
     [Fact]
@@ -346,8 +346,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type long integer");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type long integer");
     }
 
     [Fact]
@@ -361,8 +361,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type long integer");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type long integer");
     }
 
     [Fact]
@@ -376,8 +376,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(13L);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(13L);
     }
 
     [Fact]
@@ -391,8 +391,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context, 13L);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(13L);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(13L);
     }
 
     [Fact]
@@ -406,8 +406,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDecimalValueResult(1, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Missing argument: SomeName");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
     }
 
     [Fact]
@@ -421,8 +421,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(1L);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(1L);
     }
 
     [Fact]
@@ -436,8 +436,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type decimal");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type decimal");
     }
 
     [Fact]
@@ -451,8 +451,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type decimal");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type decimal");
     }
 
     [Fact]
@@ -466,8 +466,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type decimal");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type decimal");
     }
 
     [Fact]
@@ -481,8 +481,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(13M);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(13M);
     }
 
     [Fact]
@@ -496,8 +496,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context, 13.5M);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(13.5M);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(13.5M);
     }
 
     [Fact]
@@ -511,8 +511,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentBooleanValueResult(1, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Missing argument: SomeName");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
     }
 
     [Fact]
@@ -526,8 +526,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(true);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(true);
     }
 
     [Fact]
@@ -541,8 +541,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type boolean");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type boolean");
     }
 
     [Fact]
@@ -556,8 +556,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type boolean");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type boolean");
     }
 
     [Fact]
@@ -571,8 +571,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type boolean");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type boolean");
     }
 
     [Fact]
@@ -586,8 +586,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(true);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(true);
     }
 
     [Fact]
@@ -601,8 +601,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context, true);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeTrue();
     }
 
     [Fact]
@@ -616,8 +616,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDateTimeValueResult(1, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Missing argument: SomeName");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
     }
 
     [Fact]
@@ -631,8 +631,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(DateTime.Today);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(DateTime.Today);
     }
 
     [Fact]
@@ -646,8 +646,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type datetime");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type datetime");
     }
 
     [Fact]
@@ -661,8 +661,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type datetime");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type datetime");
     }
 
     [Fact]
@@ -676,8 +676,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("SomeName is not of type datetime");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("SomeName is not of type datetime");
     }
 
     [Fact]
@@ -691,8 +691,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(DateTime.Today);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(DateTime.Today);
     }
 
     [Fact]
@@ -707,8 +707,8 @@ public sealed class FunctionCallTests : IDisposable
         var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context, dt);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(dt);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dt);
     }
 
     public void Dispose()

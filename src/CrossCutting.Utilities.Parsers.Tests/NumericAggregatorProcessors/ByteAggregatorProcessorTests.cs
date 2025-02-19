@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests.NumericAggregatorProcessors;
+namespace CrossCutting.Utilities.Parsers.Tests.NumericAggregatorProcessors;
 
 public class ByteAggregatorProcessorTests
 {
@@ -9,7 +9,7 @@ public class ByteAggregatorProcessorTests
         var result = ByteAggregatorProcessor.Aggregate("no byte", (byte)2, CultureInfo.InvariantCulture, (x, y) => x + y);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
+        result.Status.ShouldBe(ResultStatus.Continue);
     }
 
     [Fact]
@@ -19,7 +19,7 @@ public class ByteAggregatorProcessorTests
         var result = ByteAggregatorProcessor.Aggregate((byte)2, (byte)3, CultureInfo.InvariantCulture, (x, y) => x + y);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(5);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(5);
     }
 }

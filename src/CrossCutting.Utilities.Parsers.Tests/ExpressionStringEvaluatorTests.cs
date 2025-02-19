@@ -37,8 +37,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(input);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(input);
         }
 
         [Fact]
@@ -51,8 +51,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input!, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Expression string is required");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Expression string is required");
         }
 
         [Fact]
@@ -65,8 +65,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(input);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(input);
         }
 
         [Fact]
@@ -79,8 +79,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(input);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(input);
         }
 
         [Fact]
@@ -93,8 +93,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(2);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(2);
         }
 
         [Fact]
@@ -108,8 +108,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("MyVariableValue");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("MyVariableValue");
         }
 
         [Fact]
@@ -122,8 +122,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Unknown expression type found in fragment: error");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Unknown expression type found in fragment: error");
         }
 
         [Fact]
@@ -136,8 +136,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("Hello replaced name!");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("Hello replaced name!");
         }
 
         [Fact]
@@ -150,8 +150,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("Hello {Name}!");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("Hello {Name}!");
         }
 
         [Fact]
@@ -164,8 +164,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Unsupported placeholder name: Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Unsupported placeholder name: Kaboom");
         }
 
         [Fact]
@@ -178,8 +178,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("Hello {Name}!");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("Hello {Name}!");
         }
 
         [Fact]
@@ -192,8 +192,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("Hello | {Name}!");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("Hello | {Name}!");
         }
 
         [Fact]
@@ -206,8 +206,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("Hello & {Name}!");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("Hello & {Name}!");
         }
 
         [Fact]
@@ -220,8 +220,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("a\" == \"b\" == \"c");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("a\" == \"b\" == \"c");
         }
 
         [Fact]
@@ -234,8 +234,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(ReplacedValue);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(ReplacedValue);
         }
 
         [Fact]
@@ -248,8 +248,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("HELLO REPLACED NAME!");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("HELLO REPLACED NAME!");
         }
 
         [Fact]
@@ -262,8 +262,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -276,8 +276,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(input);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(input);
         }
 
         [Fact]
@@ -290,8 +290,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(input[2..^1]);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(input[2..^1]);
         }
 
         [Fact]
@@ -304,8 +304,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("HELLO {NAME}!");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("HELLO {NAME}!");
         }
 
         [Fact]
@@ -318,8 +318,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("Hello Name!");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("Hello Name!");
         }
 
         [Fact]
@@ -332,8 +332,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("Hello replaced name!");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("Hello replaced name!");
         }
 
         [Fact]
@@ -346,8 +346,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("HELLO {NAME}!");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("HELLO {NAME}!");
         }
 
         [Fact]
@@ -360,8 +360,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(true);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(true);
         }
 
         [Fact]
@@ -374,8 +374,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -388,8 +388,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -402,8 +402,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -416,8 +416,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(true);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(true);
         }
 
         [Fact]
@@ -430,7 +430,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
+            result.Status.ShouldBe(ResultStatus.Error);
         }
 
         [Fact]
@@ -443,7 +443,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
+            result.Status.ShouldBe(ResultStatus.Error);
         }
 
         [Fact]
@@ -456,8 +456,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -470,8 +470,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -484,8 +484,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -498,8 +498,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(true);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(true);
         }
 
         [Fact]
@@ -512,8 +512,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Object must be of type String.");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Object must be of type String.");
         }
 
         [Fact]
@@ -526,8 +526,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -540,8 +540,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -554,8 +554,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(true);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(true);
         }
 
         [Fact]
@@ -568,8 +568,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Object must be of type String.");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Object must be of type String.");
         }
 
         [Fact]
@@ -582,8 +582,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -596,8 +596,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -610,8 +610,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -624,8 +624,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Object must be of type String.");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Object must be of type String.");
         }
 
         [Fact]
@@ -638,8 +638,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -652,8 +652,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -666,8 +666,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -680,8 +680,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Object must be of type String.");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Object must be of type String.");
         }
 
         [Fact]
@@ -694,8 +694,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Input cannot contain \uE002, as this is used internally for formatting");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Input cannot contain \uE002, as this is used internally for formatting");
         }
 
         [Fact]
@@ -708,8 +708,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotFound);
-            result.ErrorMessage.Should().Be("No function name found");
+            result.Status.ShouldBe(ResultStatus.NotFound);
+            result.ErrorMessage.ShouldBe("No function name found");
         }
 
         [Fact]
@@ -727,8 +727,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = scope.ServiceProvider.GetRequiredService<IExpressionStringEvaluator>().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Unknown function: MYFUNCTION");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown function: MYFUNCTION");
         }
 
         [Fact]
@@ -741,8 +741,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("=error()");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("=error()");
         }
 
         [Theory,
@@ -763,8 +763,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = sut.Evaluate(input, CreateSettings(), scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo("  SPACE  ");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo("  SPACE  ");
         }
     }
 
@@ -780,7 +780,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -793,8 +793,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input!, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Expression string is required");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Expression string is required");
         }
 
         [Fact]
@@ -807,7 +807,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -820,7 +820,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -833,7 +833,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -847,7 +847,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -860,8 +860,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Unknown expression type found in fragment: error");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Unknown expression type found in fragment: error");
         }
 
         [Fact]
@@ -874,7 +874,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -887,7 +887,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -900,9 +900,9 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Validation failed, see inner results for details");
-            result.InnerResults.Single().ErrorMessage.Should().Be("Unsupported placeholder name: Kaboom");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Validation failed, see inner results for details");
+            result.InnerResults.Single().ErrorMessage.ShouldBe("Unsupported placeholder name: Kaboom");
         }
 
         [Fact]
@@ -915,7 +915,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -928,7 +928,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -941,7 +941,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -954,7 +954,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -967,7 +967,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -980,7 +980,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -993,7 +993,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1006,7 +1006,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1019,7 +1019,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NoContent);
+            result.Status.ShouldBe(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -1032,7 +1032,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NoContent);
+            result.Status.ShouldBe(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -1045,7 +1045,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings(), _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NoContent);
+            result.Status.ShouldBe(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -1058,7 +1058,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NoContent);
+            result.Status.ShouldBe(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -1071,7 +1071,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1084,7 +1084,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1097,7 +1097,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1110,7 +1110,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1123,7 +1123,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1136,7 +1136,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1149,7 +1149,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1162,7 +1162,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1175,7 +1175,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1188,7 +1188,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1201,7 +1201,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1214,7 +1214,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1227,7 +1227,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1240,7 +1240,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1253,7 +1253,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1266,7 +1266,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1279,7 +1279,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1292,7 +1292,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -1305,8 +1305,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Input cannot contain \uE002, as this is used internally for formatting");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Input cannot contain \uE002, as this is used internally for formatting");
         }
 
         [Fact]
@@ -1319,8 +1319,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotFound);
-            result.ErrorMessage.Should().Be("No function name found");
+            result.Status.ShouldBe(ResultStatus.NotFound);
+            result.ErrorMessage.ShouldBe("No function name found");
         }
 
         [Fact]
@@ -1338,8 +1338,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = scope.ServiceProvider.GetRequiredService<IExpressionStringEvaluator>().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Unknown function: MYFUNCTION");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown function: MYFUNCTION");
         }
 
         [Fact]
@@ -1352,7 +1352,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
     }
 

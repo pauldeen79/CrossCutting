@@ -25,11 +25,11 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a", "b", "c");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(3);
+        result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
     }
 
     [Fact]
@@ -42,11 +42,11 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value.Arguments.Should().HaveCount(2);
-        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a,b", "c");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(2);
+        result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a,b", "c" });
     }
 
     [Fact]
@@ -59,11 +59,11 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value.Arguments.Should().HaveCount(2);
-        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("  a,b  ", "c");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(2);
+        result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "  a,b  ", "c" });
     }
 
     [Fact]
@@ -76,11 +76,11 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("Hello, replaced name!", "b", "c");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(3);
+        result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "Hello, replaced name!", "b", "c" });
     }
 
     [Fact]
@@ -93,11 +93,11 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture, _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("  Hello, replaced name!  ", "b", "c");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(3);
+        result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "  Hello, replaced name!  ", "b", "c" });
     }
 
     [Fact]
@@ -110,9 +110,9 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value.Arguments.Should().BeEmpty();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value.Arguments.ShouldBeEmpty();
     }
 
     [Fact]
@@ -125,10 +125,10 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().AllBe(string.Empty);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(3);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ShouldAllBe(x => x == string.Empty);
     }
 
     [Fact]
@@ -141,11 +141,11 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("FN1(a)", "FN2(b)", "FN3(c)");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(3);
+        result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "FN1(a)", "FN2(b)", "FN3(c)" });
     }
 
     [Fact]
@@ -158,12 +158,12 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value!.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a", "b");
-        result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.Name).Should().BeEquivalentTo("MYNESTEDFUNCTION");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("c", "d", "e");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value!.Arguments.Count.ShouldBe(3);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b" });
+        result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.Name).ToArray().ShouldBeEquivalentTo(new[] { "MYNESTEDFUNCTION" });
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "c", "d", "e" });
     }
 
     [Fact]
@@ -176,18 +176,18 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value!.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a", "b");
-        result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.Name).Should().BeEquivalentTo("MYNESTEDFUNCTION");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Should().HaveCount(3);
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Should().AllBeOfType<FunctionArgument>();
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().Select(x => x.Function.Name).Should().BeEquivalentTo("SUB1", "SUB1", "SUB1");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(ExpressionArgument), nameof(ExpressionArgument), nameof(FunctionArgument));
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Name.Should().Be("SUB2");
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.Select(x => x.GetType().Name).Should().BeEquivalentTo(nameof(ExpressionArgument));
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.OfType<ExpressionArgument>().First().Value.Should().Be("e");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value!.Arguments.Count.ShouldBe(3);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b" });
+        result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.Name).ToArray().ShouldBeEquivalentTo(new[] { "MYNESTEDFUNCTION" });
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Count().ShouldBe(3);
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).ShouldAllBe(x => x is FunctionArgument);
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().Select(x => x.Function.Name).ToArray().ShouldBeEquivalentTo(new[] { "SUB1", "SUB1", "SUB1" });
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Select(x => x.GetType().Name).ToArray().ShouldBeEquivalentTo(new[] { nameof(ExpressionArgument), nameof(ExpressionArgument), nameof(FunctionArgument) });
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Name.ShouldBe("SUB2");
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.Select(x => x.GetType().Name).ToArray().ShouldBeEquivalentTo(new[] { nameof(ExpressionArgument) });
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.OfType<ExpressionArgument>().First().Value.ShouldBe("e");
     }
 
     [Fact]
@@ -200,8 +200,8 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("No function name found");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("No function name found");
     }
 
     [Fact]
@@ -214,8 +214,8 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Input has additional characters after last close bracket");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Input has additional characters after last close bracket");
     }
 
     [Fact]
@@ -231,8 +231,8 @@ public sealed class FunctionParserTests : IDisposable
         var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("No function name found");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("No function name found");
     }
 
     [Fact]
@@ -245,8 +245,8 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Missing open bracket");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Missing open bracket");
     }
 
     [Fact]
@@ -259,8 +259,8 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Missing close bracket");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Missing close bracket");
     }
 
     [Fact]
@@ -273,8 +273,8 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("No function found");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("No function found");
     }
 
     [Fact]
@@ -287,8 +287,8 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Missing close bracket");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Missing close bracket");
     }
 
     [Fact]
@@ -301,8 +301,8 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotSupported);
-        result.ErrorMessage.Should().Be("Input cannot contain \uE002, as this is used internally for formatting");
+        result.Status.ShouldBe(ResultStatus.NotSupported);
+        result.ErrorMessage.ShouldBe("Input cannot contain \uE002, as this is used internally for formatting");
     }
 
     [Fact]
@@ -318,8 +318,8 @@ public sealed class FunctionParserTests : IDisposable
         var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Kaboom");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom");
     }
 
     [Fact]
@@ -338,8 +338,8 @@ public sealed class FunctionParserTests : IDisposable
         var result = sut.Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Kaboom");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom");
     }
 
     [Fact]
@@ -352,11 +352,11 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a", "b", "c");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(3);
+        result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
     }
 
     [Fact]
@@ -369,11 +369,11 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a", "b", "c");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(3);
+        result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
     }
 
     [Fact]
@@ -386,11 +386,11 @@ public sealed class FunctionParserTests : IDisposable
         var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.Name.Should().Be("MYFUNCTION");
-        result.Value.Arguments.Should().HaveCount(3);
-        result.Value.Arguments.Should().AllBeOfType<ExpressionArgument>();
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).Should().BeEquivalentTo("a ", " b ", " c");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(3);
+        result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a ", " b ", " c" });
     }
 
     public void Dispose()

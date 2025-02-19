@@ -17,7 +17,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetBoolean(0);
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -31,15 +31,15 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetByte(0);
 
         // Assert
-        actual.Should().Be(12);
+        actual.ShouldBe((byte)12);
     }
 
     [Fact]
     public void GetBytes_Throws_NotImplementedException()
     {
         // Act & Assert
-        _sut.Invoking(x => x.GetBytes(0, 0, [], 0, 0))
-            .Should().Throw<NotImplementedException>();
+        Action a = () => _sut.GetBytes(0, 0, [], 0, 0);
+        a.ShouldThrow<NotImplementedException>();
     }
 
     [Fact]
@@ -53,23 +53,23 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetChar(0);
 
         // Assert
-        actual.Should().Be('a');
+        actual.ShouldBe('a');
     }
 
     [Fact]
     public void GetChars_Throws_NotImplementedException()
     {
         // Act & Assert
-        _sut.Invoking(x => x.GetChars(0, 0, [], 0, 0))
-            .Should().Throw<NotImplementedException>();
+        Action a = () => _sut.GetChars(0, 0, [], 0, 0);
+        a.ShouldThrow<NotImplementedException>();
     }
 
     [Fact]
     public void GetData_Throws_NotSupportedException()
     {
         // Act & Assert
-        _sut.Invoking(x => x.GetData(0))
-            .Should().Throw<NotSupportedException>();
+        Action a = () => _sut.GetData(0);
+        a.ShouldThrow<NotSupportedException>();
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetDataTypeName(0);
 
         // Assert
-        actual.Should().Be(typeof(char).FullName);
+        actual.ShouldBe(typeof(char).FullName);
     }
 
     [Fact]
@@ -98,7 +98,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetDateTime(0);
 
         // Assert
-        actual.Should().Be(value);
+        actual.ShouldBe(value);
     }
 
     [Fact]
@@ -112,7 +112,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetDecimal(0);
 
         // Assert
-        actual.Should().Be(12.34M);
+        actual.ShouldBe(12.34M);
     }
 
     [Fact]
@@ -126,7 +126,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetDouble(0);
 
         // Assert
-        actual.Should().Be(12.34D);
+        actual.ShouldBe(12.34D);
     }
 
     [Fact]
@@ -140,7 +140,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetFieldType(0);
 
         // Assert
-        actual.Should().Be<char>();
+        actual.ShouldBe(typeof(char));
     }
 
     [Fact]
@@ -154,7 +154,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetFloat(0);
 
         // Assert
-        actual.Should().Be(12.34f);
+        actual.ShouldBe(12.34f);
     }
 
     [Fact]
@@ -169,7 +169,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetGuid(0);
 
         // Assert
-        actual.Should().Be(value);
+        actual.ShouldBe(value);
     }
 
     [Fact]
@@ -184,7 +184,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetInt16(0);
 
         // Assert
-        actual.Should().Be(value);
+        actual.ShouldBe(value);
     }
 
     [Fact]
@@ -199,7 +199,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetInt32(0);
 
         // Assert
-        actual.Should().Be(value);
+        actual.ShouldBe(value);
     }
 
     [Fact]
@@ -214,7 +214,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetInt64(0);
 
         // Assert
-        actual.Should().Be(value);
+        actual.ShouldBe(value);
     }
 
     [Fact]
@@ -228,7 +228,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetName(0);
 
         // Assert
-        actual.Should().Be("Value");
+        actual.ShouldBe("Value");
     }
 
     [Theory]
@@ -244,15 +244,15 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetOrdinal(columnName);
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     [Fact]
     public void GetSchemaTable_Throws_NotImplementedException()
     {
         // Act & Assert
-        _sut.Invoking(x => x.GetSchemaTable())
-            .Should().Throw<NotImplementedException>();
+        Action a = () => _sut.GetSchemaTable();
+        a.ShouldThrow<NotImplementedException>();
     }
 
     [Fact]
@@ -266,7 +266,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetString(0);
 
         // Assert
-        actual.Should().Be("Hello world!");
+        actual.ShouldBe("Hello world!");
     }
 
     [Fact]
@@ -280,7 +280,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.GetValue(0);
 
         // Assert
-        actual.Should().Be(12.34f);
+        actual.ShouldBe(12.34f);
     }
 
     [Fact]
@@ -290,7 +290,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.Read();
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -303,7 +303,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = _sut.Read();
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -313,7 +313,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = await _sut.ReadAsync();
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -326,7 +326,7 @@ public sealed class DataReaderTests : IDisposable
         var actual = await _sut.ReadAsync();
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     public void Dispose() => _sut.Dispose();

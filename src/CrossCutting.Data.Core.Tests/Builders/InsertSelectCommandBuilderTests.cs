@@ -9,9 +9,9 @@ public class InsertSelectCommandBuilderTests
         var input = new InsertSelectCommandBuilder();
 
         // Act & Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("table name is missing");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("table name is missing");
     }
 
     [Fact]
@@ -21,9 +21,9 @@ public class InsertSelectCommandBuilderTests
         var input = new InsertSelectCommandBuilder().Into("MyTable");
 
         // Act & Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("field names are missing");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("field names are missing");
     }
 
     [Fact]
@@ -33,9 +33,9 @@ public class InsertSelectCommandBuilderTests
         var input = new InsertSelectCommandBuilder().Into("MyTable").WithFieldNames("Field1", "Field2", "Field3");
 
         // Act & Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("FROM clause is missing");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("FROM clause is missing");
     }
 
     [Fact]
@@ -56,15 +56,15 @@ public class InsertSelectCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Insert);
-        actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) SELECT Field1, Field2, Field3 FROM SomeOtherTable WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.Operation.ShouldBe(DatabaseOperation.Insert);
+        actual.CommandText.ShouldBe("INSERT INTO MyTable(Field1, Field2, Field3) SELECT Field1, Field2, Field3 FROM SomeOtherTable WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
         {
-            parameters.Should().HaveCount(3);
-            parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");
-            parameters.Values.Should().BeEquivalentTo(new[] { "Value1", "Value2", "Value3" });
+            parameters.Count.ShouldBe(3);
+            parameters.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Field1", "Field2", "Field3" });
+            parameters.Values.ToArray().ShouldBeEquivalentTo(new object[] { "Value1", "Value2", "Value3" });
         }
     }
 
@@ -88,11 +88,11 @@ public class InsertSelectCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Insert);
-        actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) OUTPUT INSERTED.Field1, INSERTED.Field2, INSERTED.Field3 INTO @NewValues SELECT Field1, Field2, Field3 FROM SomeOtherTable WHERE Field1 = \"Value1\" AND Field2 = \"Value2\" AND Field3 = \"Value3\"");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.Operation.ShouldBe(DatabaseOperation.Insert);
+        actual.CommandText.ShouldBe("INSERT INTO MyTable(Field1, Field2, Field3) OUTPUT INSERTED.Field1, INSERTED.Field2, INSERTED.Field3 INTO @NewValues SELECT Field1, Field2, Field3 FROM SomeOtherTable WHERE Field1 = \"Value1\" AND Field2 = \"Value2\" AND Field3 = \"Value3\"");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        parameters.Should().BeEmpty();
+        parameters.ShouldBeEmpty();
     }
 
     [Fact]
@@ -126,15 +126,15 @@ public class InsertSelectCommandBuilderTests
             .Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Insert);
-        actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) SELECT Field1, Field2, Field3 FROM SomeOtherTable WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.Operation.ShouldBe(DatabaseOperation.Insert);
+        actual.CommandText.ShouldBe("INSERT INTO MyTable(Field1, Field2, Field3) SELECT Field1, Field2, Field3 FROM SomeOtherTable WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
         {
-            parameters.Should().HaveCount(3);
-            parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");
-            parameters.Values.Should().BeEquivalentTo(new[] { "Value1", "Value2", "Value3" });
+            parameters.Count.ShouldBe(3);
+            parameters.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Field1", "Field2", "Field3" });
+            parameters.Values.ToArray().ShouldBeEquivalentTo(new object[] { "Value1", "Value2", "Value3" });
         }
     }
 }

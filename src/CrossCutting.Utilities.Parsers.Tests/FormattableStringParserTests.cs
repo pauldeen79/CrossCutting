@@ -18,7 +18,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input!, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input!, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -43,8 +43,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var sut = CreateSut();
 
         // Act & Assert
-        sut.Invoking(x => x.Parse("some input", settings: null!))
-           .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+        Action a = () => sut.Parse("some input", settings: null!);
+        a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
     }
 
     [Fact]
@@ -59,8 +59,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValueOrThrow().Format.Should().Be("Hello {{Name {{nested}} you are welcome");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.GetValueOrThrow().Format.ShouldBe("Hello {{Name {{nested}} you are welcome");
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     [Fact]
@@ -90,8 +90,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Unknown variable found: unknownVariable");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Unknown variable found: unknownVariable");
     }
 
     [Fact]
@@ -106,8 +106,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValueOrThrow().Format.Should().Be(input + input); //need to duplicate because of FormatException on FormattableString
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.GetValueOrThrow().Format.ShouldBe(input + input); ///need to duplicate because of FormatException on FormattableString;
     }
 
     [Fact]
@@ -122,8 +122,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Unsupported placeholder name: Unsupported placeholder");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Unsupported placeholder name: Unsupported placeholder");
     }
 
     [Theory,
@@ -142,8 +142,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, CultureInfo.InvariantCulture, "[value from context]");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be(expectedValue);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe(expectedValue);
     }
     [Fact]
     public void Validate_Returns_Success_On_Null_Input()
@@ -156,7 +156,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Validate(input!, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -171,7 +171,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Validate(input!, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -181,8 +181,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var sut = CreateSut();
 
         // Act & Assert
-        sut.Invoking(x => x.Validate("some input", settings: null!))
-           .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+        Action a = () => sut.Validate("some input", settings: null!);
+        a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
     }
 
     [Fact]
@@ -197,7 +197,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Validate(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -212,7 +212,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Validate(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     [Fact]
@@ -227,9 +227,9 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Validate(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Validation failed, see inner results for details");
-        result.InnerResults.Single().ErrorMessage.Should().Be("Unknown variable found: unknownVariable");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Validation failed, see inner results for details");
+        result.InnerResults.Single().ErrorMessage.ShouldBe("Unknown variable found: unknownVariable");
     }
 
     [Fact]
@@ -244,7 +244,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Validate(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -259,9 +259,9 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Validate(input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Validation failed, see inner results for details");
-        result.InnerResults.Single().ErrorMessage.Should().Be("Unsupported placeholder name: Unsupported placeholder");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Validation failed, see inner results for details");
+        result.InnerResults.Single().ErrorMessage.ShouldBe("Unsupported placeholder name: Unsupported placeholder");
     }
 
     [Theory,
@@ -280,7 +280,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Validate(input, CultureInfo.InvariantCulture, "[value from context]");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -306,7 +306,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -325,8 +325,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings, "[value from context]");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be("public class Bla { /* implementation goes here with replaced name */ }");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe("public class Bla { /* implementation goes here with replaced name */ }");
     }
 
     [Fact]
@@ -345,8 +345,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings, "[value from context]");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be("public class Bla { /* implementation goes here with replaced name */ }");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe("public class Bla { /* implementation goes here with replaced name */ }");
     }
 
     [Fact]
@@ -361,8 +361,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Maximum of 0 recursions is reached");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Maximum of 0 recursions is reached");
     }
 
     [Fact]
@@ -382,8 +382,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings, "[value from context]");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be("public class Bla { /* implementation goes here with replaced name */ }");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe("public class Bla { /* implementation goes here with replaced name */ }");
     }
 
     [Fact]
@@ -398,8 +398,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be("Hello function result!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe("Hello function result!");
     }
 
     [Fact]
@@ -414,8 +414,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be("Hello FUNCTION RESULT!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe("Hello FUNCTION RESULT!");
     }
 
     [Fact]
@@ -430,7 +430,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Validate(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -445,8 +445,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be("Hello !");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe("Hello !");
     }
 
     [Fact]
@@ -461,7 +461,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Validate(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -476,8 +476,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be("I can add 1 to 2, this results in 2");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe("I can add 1 to 2, this results in 2");
     }
 
     [Fact]
@@ -492,8 +492,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be("I can add 1 to 2, this results in 2");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe("I can add 1 to 2, this results in 2");
     }
 
     [Fact]
@@ -508,8 +508,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe($"Hello {ReplacedValue}!");
     }
 
     [Fact]
@@ -524,8 +524,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Unknown placeholder in value: Unknown placeholder");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Unknown placeholder in value: Unknown placeholder");
     }
 
     [Fact]
@@ -540,7 +540,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Validate(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -555,9 +555,9 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Validate(Input, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Validation failed, see inner results for details");
-        result.InnerResults.Single().ErrorMessage.Should().Be("Unknown placeholder in value: Unknown placeholder");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Validation failed, see inner results for details");
+        result.InnerResults.Single().ErrorMessage.ShouldBe("Unknown placeholder in value: Unknown placeholder");
     }
 
     [Fact]
@@ -572,10 +572,10 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(preparsedResult, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
-        result.Value.ArgumentCount.Should().Be(1);
-        result.Value.GetArgument(0).Should().BeEquivalentTo(ReplacedValue);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe($"Hello {ReplacedValue}, you are called {ReplacedValue}");
+        result.Value.ArgumentCount.ShouldBe(1);
+        result.Value.GetArgument(0).ShouldBeEquivalentTo(ReplacedValue);
     }
 
     [Fact]
@@ -593,10 +593,10 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(preparsedResult, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
-        result.Value.ArgumentCount.Should().Be(1);
-        result.Value.GetArgument(0).Should().BeEquivalentTo(ReplacedValue);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe($"Hello {ReplacedValue}, you are called {ReplacedValue}");
+        result.Value.ArgumentCount.ShouldBe(1);
+        result.Value.GetArgument(0).ShouldBeEquivalentTo(ReplacedValue);
     }
 
     [Fact]
@@ -614,10 +614,10 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(preparsedResult, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
-        result.Value.ArgumentCount.Should().Be(1);
-        result.Value.GetArgument(0).Should().BeEquivalentTo(ReplacedValue);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe($"Hello {ReplacedValue}, you are called {ReplacedValue}");
+        result.Value.ArgumentCount.ShouldBe(1);
+        result.Value.GetArgument(0).ShouldBeEquivalentTo(ReplacedValue);
     }
 
     [Fact]
@@ -635,10 +635,10 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(preparsedResult, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}, you are called {ReplacedValue}");
-        result.Value.ArgumentCount.Should().Be(1);
-        result.Value.GetArgument(0).Should().BeEquivalentTo(ReplacedValue);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe($"Hello {ReplacedValue}, you are called {ReplacedValue}");
+        result.Value.ArgumentCount.ShouldBe(1);
+        result.Value.GetArgument(0).ShouldBeEquivalentTo(ReplacedValue);
     }
 
     [Fact]
@@ -657,8 +657,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings, "[value from context]");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe($"Hello {ReplacedValue}!");
     }
 
     [Theory]
@@ -685,8 +685,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var result = sut.Parse(input, settings, "[value from context]");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value!.ToString().Should().Be($"Hello {ReplacedValue}!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe($"Hello {ReplacedValue}!");
     }
 
     [Fact]
@@ -701,7 +701,7 @@ public sealed class FormattableStringParserTests : IDisposable
         string result = parsedResult.GetValueOrThrow();
 
         // Assert
-        result.Should().Be("Hello replaced name!");
+        result.ShouldBe("Hello replaced name!");
     }
 
     [Fact]
@@ -714,7 +714,7 @@ public sealed class FormattableStringParserTests : IDisposable
         string result = parsedResult!;
 
         // Assert
-        result.Should().BeNull();
+        result.ShouldBeNull();
     }
 
     [Fact]
@@ -724,8 +724,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var instance = GenericFormattableString.FromString("hello world");
 
         // Assert
-        instance.Format.Should().Be("{0}");
-        instance.ToString().Should().Be("hello world");
+        instance.Format.ShouldBe("{0}");
+        instance.ToString().ShouldBe("hello world");
     }
 
     [Fact]
@@ -735,8 +735,8 @@ public sealed class FormattableStringParserTests : IDisposable
         var instance = GenericFormattableString.FromString("hello {world}");
 
         // Assert
-        instance.Format.Should().Be("{0}");
-        instance.ToString().Should().Be("hello {world}");
+        instance.Format.ShouldBe("{0}");
+        instance.ToString().ShouldBe("hello {world}");
     }
 
     [Fact]
@@ -749,7 +749,7 @@ public sealed class FormattableStringParserTests : IDisposable
         var stringResult = result.ToString();
 
         // Assert
-        stringResult.Should().Be("Hello world!");
+        stringResult.ShouldBe("Hello world!");
     }
 
     [Fact]
@@ -762,7 +762,7 @@ public sealed class FormattableStringParserTests : IDisposable
         string stringResult = result;
 
         // Assert
-        stringResult.Should().Be("Hello world!");
+        stringResult.ShouldBe("Hello world!");
     }
 
     public void Dispose()

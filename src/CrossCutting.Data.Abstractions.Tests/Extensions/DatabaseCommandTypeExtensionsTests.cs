@@ -11,7 +11,7 @@ public class DatabaseCommandTypeExtensionsTests
         var actual = input.ToCommandType();
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     [Fact]
@@ -21,8 +21,8 @@ public class DatabaseCommandTypeExtensionsTests
         var unknownType = (DatabaseCommandType)123456;
 
         // Act
-        unknownType.Invoking(x => x.ToCommandType())
-                   .Should().Throw<ArgumentOutOfRangeException>()
-                   .And.ParamName.Should().Be("instance");
+        Action a = () => unknownType.ToCommandType();
+        a.ShouldThrow<ArgumentOutOfRangeException>()
+         .ParamName.ShouldBe("instance");
     }
 }

@@ -19,11 +19,11 @@ public class FunctionDescriptorProviderTests
             var result = sut.GetAll();
 
             // Assert
-            result.Should().HaveCount(2);
-            result.First().Name.Should().Be(nameof(MyFunction1));
-            result.First().Description.Should().BeEmpty();
-            result.Last().Name.Should().Be("MyCustomFunctionName");
-            result.Last().Description.Should().Be("This is a very cool function");
+            result.Count.ShouldBe(2);
+            result.First().Name.ShouldBe(nameof(MyFunction1));
+            result.First().Description.ShouldBeEmpty();
+            result.Last().Name.ShouldBe("MyCustomFunctionName");
+            result.Last().Description.ShouldBe("This is a very cool function");
         }
 
         [Fact]
@@ -43,7 +43,7 @@ public class FunctionDescriptorProviderTests
             var result = sut.GetAll();
 
             // Assert
-            result.Should().HaveCount(3);
+            result.Count.ShouldBe(3);
         }
 
         [Fact]
@@ -60,9 +60,9 @@ public class FunctionDescriptorProviderTests
             var result = sut.GetAll();
 
             // Assert
-            result.Should().ContainSingle();
-            result.First().Name.Should().Be("MyTyped"); // note that the Function suffix is removed, which seems logical for stuff like "ToUpperCaseFunction"
-            result.First().ReturnValueType.Should().Be<string>(); // because of implementation of ITypedFunction<string>
+            result.Count.ShouldBe(1);
+            result.First().Name.ShouldBe("MyTyped"); /// note that the Function suffix is removed, which seems logical for stuff like "ToUpperCaseFunction";
+            result.First().ReturnValueType.ShouldBe(typeof(string)); /// because of implementation of ITypedFunction<string>;
         }
 
         private sealed class MyFunction1 : IFunction

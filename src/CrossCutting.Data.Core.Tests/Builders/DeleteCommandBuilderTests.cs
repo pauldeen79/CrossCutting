@@ -9,9 +9,9 @@ public class DeleteCommandBuilderTests
         var input = new DeleteCommandBuilder();
 
         // Act & Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("table name is missing");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("table name is missing");
     }
 
     [Fact]
@@ -29,15 +29,15 @@ public class DeleteCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Delete);
-        actual.CommandText.Should().Be("DELETE FROM MyTable WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.Operation.ShouldBe(DatabaseOperation.Delete);
+        actual.CommandText.ShouldBe("DELETE FROM MyTable WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
         {
-            parameters.Should().HaveCount(3);
-            parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");
-            parameters.Values.Should().BeEquivalentTo(new[] { "Value1", "Value2", "Value3" });
+            parameters.Count.ShouldBe(3);
+            parameters.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Field1", "Field2", "Field3" });
+            parameters.Values.ToArray().ShouldBeEquivalentTo(new object[] { "Value1", "Value2", "Value3" });
         }
     }
 
@@ -51,11 +51,11 @@ public class DeleteCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Delete);
-        actual.CommandText.Should().Be("DELETE FROM MyTable");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.Operation.ShouldBe(DatabaseOperation.Delete);
+        actual.CommandText.ShouldBe("DELETE FROM MyTable");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        parameters.Should().BeEmpty();
+        parameters.ShouldBeEmpty();
     }
 
     [Fact]
@@ -73,8 +73,8 @@ public class DeleteCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Delete);
-        actual.CommandText.Should().Be("DELETE FROM MyTable OUTPUT Field1, Field2 WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
+        actual.Operation.ShouldBe(DatabaseOperation.Delete);
+        actual.CommandText.ShouldBe("DELETE FROM MyTable OUTPUT Field1, Field2 WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
     }
 
     [Fact]
@@ -93,8 +93,8 @@ public class DeleteCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Delete);
-        actual.CommandText.Should().Be("DELETE FROM MyTable OUTPUT Field1, Field2 INTO @NewValues WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
+        actual.Operation.ShouldBe(DatabaseOperation.Delete);
+        actual.CommandText.ShouldBe("DELETE FROM MyTable OUTPUT Field1, Field2 INTO @NewValues WHERE Field1 = @Field1 AND Field2 = @Field2 AND Field3 = @Field3");
     }
 
     [Fact]
@@ -110,10 +110,10 @@ public class DeleteCommandBuilderTests
         var actual = input.Clear().From("MyTable2").Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Delete);
-        actual.CommandText.Should().Be("DELETE FROM MyTable2");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.Operation.ShouldBe(DatabaseOperation.Delete);
+        actual.CommandText.ShouldBe("DELETE FROM MyTable2");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        parameters.Should().BeEmpty();
+        parameters.ShouldBeEmpty();
     }
 }

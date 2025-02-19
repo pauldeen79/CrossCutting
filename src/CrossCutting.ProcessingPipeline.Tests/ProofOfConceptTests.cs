@@ -42,10 +42,10 @@ public class ProofOfConceptTests
             var result = await sut.ProcessAsync(request: 1, seed: new StringBuilder());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Should().NotBeNull();
-            context!.Request.Should().BeEquivalentTo(1);
-            result.GetValueOrThrow().ToString().Should().Be("2");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.ShouldNotBeNull();
+            context!.Request.ShouldBeEquivalentTo(1);
+            result.GetValueOrThrow().ToString().ShouldBe("2");
         }
 
         [Fact]
@@ -58,8 +58,8 @@ public class ProofOfConceptTests
             var result = await sut.ProcessAsync(request: 1);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("An error occured while processing the pipeline. See the inner results for more details.");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("An error occured while processing the pipeline. See the inner results for more details.");
         }
 
         [Fact]
@@ -72,16 +72,17 @@ public class ProofOfConceptTests
             var result = await sut.ProcessAsync(request: 1, cancellationToken: new CancellationToken());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("An error occured while processing the pipeline. See the inner results for more details.");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("An error occured while processing the pipeline. See the inner results for more details.");
         }
 
         [Fact]
         public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?>(components: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("components");
+            Action a = () => _ = new Pipeline<object?>(components: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("components");
         }
     }
 
@@ -102,9 +103,9 @@ public class ProofOfConceptTests
             var result = await sut.ProcessAsync(request: 1);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Should().NotBeNull();
-            context!.Request.Should().BeEquivalentTo(1);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.ShouldNotBeNull();
+            context!.Request.ShouldBeEquivalentTo(1);
         }
 
         [Fact]
@@ -117,8 +118,8 @@ public class ProofOfConceptTests
             var result = await sut.ProcessAsync(request: 1);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("An error occured while processing the pipeline. See the inner results for more details.");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("An error occured while processing the pipeline. See the inner results for more details.");
         }
 
         [Fact]
@@ -131,16 +132,17 @@ public class ProofOfConceptTests
             var result = await sut.ProcessAsync(request: 1, new CancellationToken());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("An error occured while processing the pipeline. See the inner results for more details.");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("An error occured while processing the pipeline. See the inner results for more details.");
         }
 
         [Fact]
         public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            this.Invoking(_ => new Pipeline<object?>(components: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("components");
+            Action a = () => _ = new Pipeline<object?>(components: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("components");
         }
     }
 
@@ -160,7 +162,7 @@ public class ProofOfConceptTests
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotImplemented);
+            result.Status.ShouldBe(ResultStatus.NotImplemented);
         }
     }
 
@@ -180,7 +182,7 @@ public class ProofOfConceptTests
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotImplemented);
+            result.Status.ShouldBe(ResultStatus.NotImplemented);
         }
     }
 }

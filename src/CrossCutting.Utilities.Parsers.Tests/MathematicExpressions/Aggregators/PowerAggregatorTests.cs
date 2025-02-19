@@ -9,8 +9,8 @@ public class PowerAggregatorTests
         var result = new PowerAggregator().Aggregate((byte)2, (byte)4, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(16);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(16);
     }
 
     [Fact]
@@ -20,8 +20,8 @@ public class PowerAggregatorTests
         var result = new PowerAggregator().Aggregate((short)2, (short)4, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(16);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(16);
     }
 
     [Fact]
@@ -31,8 +31,8 @@ public class PowerAggregatorTests
         var result = new PowerAggregator().Aggregate(2, 4, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(16);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(16);
     }
 
     [Fact]
@@ -42,8 +42,8 @@ public class PowerAggregatorTests
         var result = new PowerAggregator().Aggregate((long)2, (long)4, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(16);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((long)16);
     }
 
     [Fact]
@@ -53,8 +53,8 @@ public class PowerAggregatorTests
         var result = new PowerAggregator().Aggregate((float)2, (float)4, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(16);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((double)16);
     }
 
     [Fact]
@@ -64,8 +64,8 @@ public class PowerAggregatorTests
         var result = new PowerAggregator().Aggregate((decimal)2, (decimal)4, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(16);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(16);
     }
 
     [Fact]
@@ -75,8 +75,7 @@ public class PowerAggregatorTests
         var result = new PowerAggregator().Aggregate((double)2, (double)4, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(16);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(16);
     }
 }
-

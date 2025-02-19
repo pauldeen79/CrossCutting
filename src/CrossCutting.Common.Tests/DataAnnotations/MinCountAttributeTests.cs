@@ -13,7 +13,7 @@ public class MinCountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().BeEmpty();
+        results.ShouldBeEmpty();
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class MinCountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().BeEmpty();
+        results.ShouldBeEmpty();
     }
 
     [Fact]
@@ -41,8 +41,8 @@ public class MinCountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().ContainSingle();
-        results.Single().ErrorMessage.Should().Be("The field MyProperty must be a collection type with a minimum length of '1'.");
+        results.Count.ShouldBe(1);
+        results.Single().ErrorMessage.ShouldBe("The field MyProperty must be a collection type with a minimum length of '1'.");
     }
 
     [Fact]
@@ -56,8 +56,8 @@ public class MinCountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().ContainSingle();
-        results.Single().ErrorMessage.Should().Be("The field MyProperty must be a collection type with a minimum length of '1'.");
+        results.Count.ShouldBe(1);
+        results.Single().ErrorMessage.ShouldBe("The field MyProperty must be a collection type with a minimum length of '1'.");
     }
 
     [Fact]
@@ -68,8 +68,8 @@ public class MinCountAttributeTests
         var results = new List<ValidationResult>();
 
         // Act & Assert
-        sut.Invoking(x => _ = x.TryValidate(results))
-           .Should().NotThrow<InvalidOperationException>();
+        Action a = () => sut.TryValidate(results);
+        a.ShouldNotThrow();
     }
 
     [Fact]
@@ -80,8 +80,8 @@ public class MinCountAttributeTests
         var results = new List<ValidationResult>();
 
         // Act & Assert
-        sut.Invoking(x => _ = x.TryValidate(results))
-           .Should().Throw<InvalidOperationException>().WithMessage("MinCountAttribute must have a Count value that is zero or greater.");
+        Action a = () => sut.TryValidate(results);
+        a.ShouldThrow<InvalidOperationException>().Message.ShouldBe("MinCountAttribute must have a Count value that is zero or greater.");
     }
 
     private sealed class MyClass

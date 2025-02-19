@@ -16,8 +16,8 @@ public class DelegateArgumentTests
         var result = sut.EvaluateTyped(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("Hello world!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("Hello world!");
     }
 
     [Fact]
@@ -31,8 +31,8 @@ public class DelegateArgumentTests
         var result = sut.Evaluate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("Hello world!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("Hello world!");
     }
 
     [Fact]
@@ -46,8 +46,8 @@ public class DelegateArgumentTests
         var result = sut.Evaluate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("Hello world!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("Hello world!");
     }
 
     [Fact]
@@ -61,8 +61,8 @@ public class DelegateArgumentTests
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be<string>();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(typeof(string));
     }
 
     [Fact]
@@ -76,8 +76,8 @@ public class DelegateArgumentTests
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be<string>();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(typeof(string));
     }
 
     [Fact]
@@ -90,8 +90,8 @@ public class DelegateArgumentTests
         var result = sut.ToBuilder();
 
         // Assert
-        result.Should().BeOfType<DelegateArgumentBuilder<string>>();
-        ((DelegateArgumentBuilder<string>)result).Delegate().Should().Be(sut.Delegate());
+        result.ShouldBeOfType<DelegateArgumentBuilder<string>>();
+        ((DelegateArgumentBuilder<string>)result).Delegate().ShouldBe(sut.Delegate());
     }
 
     [Fact]
@@ -104,8 +104,8 @@ public class DelegateArgumentTests
         var result = sut.ToTypedBuilder();
 
         // Assert
-        result.Should().BeOfType<DelegateArgumentBuilder<string>>();
-        ((DelegateArgumentBuilder<string>)result).Delegate().Should().Be(sut.Delegate());
+        result.ShouldBeOfType<DelegateArgumentBuilder<string>>();
+        ((DelegateArgumentBuilder<string>)result).Delegate().ShouldBe(sut.Delegate());
     }
 
     [Fact]
@@ -118,6 +118,6 @@ public class DelegateArgumentTests
         var result = sut.Delegate();
 
         // Assert
-        result.Should().Be("Hello world!");
+        result.ShouldBe("Hello world!");
     }
 }

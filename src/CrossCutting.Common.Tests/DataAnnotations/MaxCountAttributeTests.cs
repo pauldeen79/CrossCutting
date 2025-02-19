@@ -13,7 +13,7 @@ public class MaxCountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().BeEmpty();
+        results.ShouldBeEmpty();
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class MaxCountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().BeEmpty();
+        results.ShouldBeEmpty();
     }
 
     [Fact]
@@ -41,8 +41,8 @@ public class MaxCountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().ContainSingle();
-        results.Single().ErrorMessage.Should().Be("The field MyProperty must be a collection type with a maximum count of '10'.");
+        results.Count.ShouldBe(1);
+        results.Single().ErrorMessage.ShouldBe("The field MyProperty must be a collection type with a maximum count of '10'.");
     }
 
     [Fact]
@@ -56,8 +56,8 @@ public class MaxCountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().ContainSingle();
-        results.Single().ErrorMessage.Should().Be("The field MyProperty must be a collection type with a maximum count of '10'.");
+        results.Count.ShouldBe(1);
+        results.Single().ErrorMessage.ShouldBe("The field MyProperty must be a collection type with a maximum count of '10'.");
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class MaxCountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().BeEmpty();
+        results.ShouldBeEmpty();
     }
 
     [Fact]
@@ -82,8 +82,8 @@ public class MaxCountAttributeTests
         var results = new List<ValidationResult>();
 
         // Act & Assert
-        sut.Invoking(x => _ = x.TryValidate(results))
-           .Should().Throw<InvalidOperationException>().WithMessage("MaxCountAttribute must have a Count value that is greater than zero. Use MaxCount() without parameters to indicate that the collection can have the maximum allowable count.");
+        Action a = () => sut.TryValidate(results);
+        a.ShouldThrow<InvalidOperationException>().Message.ShouldBe("MaxCountAttribute must have a Count value that is greater than zero. Use MaxCount() without parameters to indicate that the collection can have the maximum allowable count.");
     }
 
     [Fact]
@@ -94,8 +94,8 @@ public class MaxCountAttributeTests
         var results = new List<ValidationResult>();
 
         // Act & Assert
-        sut.Invoking(x => _ = x.TryValidate(results))
-           .Should().Throw<InvalidOperationException>().WithMessage("MaxCountAttribute must have a Count value that is greater than zero. Use MaxCount() without parameters to indicate that the collection can have the maximum allowable count.");
+        Action a = () => sut.TryValidate(results);
+        a.ShouldThrow<InvalidOperationException>().Message.ShouldBe("MaxCountAttribute must have a Count value that is greater than zero. Use MaxCount() without parameters to indicate that the collection can have the maximum allowable count.");
     }
 
     private sealed class MyClass

@@ -18,10 +18,10 @@ public class DataTableDumperTests
 
         // Assert
         var lines = actual.GetLines();
-        lines.Should().BeEquivalentTo(
+        lines.ShouldBeEquivalentTo(new[] {
             "| Name                        | Age |",
             "| Person A                    | 42  |",
-            "| Person B with a longer name | 8   |"
+            "| Person B with a longer name | 8   |" }
         );
     }
 
@@ -41,10 +41,10 @@ public class DataTableDumperTests
 
         // Assert
         var lines = actual.GetLines();
-        lines.Should().BeEquivalentTo(
+        lines.ShouldBeEquivalentTo(new[] {
             "| Name                        | Age |",
             "| Person_A                    | 42  |",
-            "| Person_B with a longer name | 8   |"
+            "| Person_B with a longer name | 8   |" }
         );
     }
 
@@ -63,7 +63,7 @@ public class DataTableDumperTests
         var lines = dumpedString.GetLines().Skip(1).Select(x => x.UnescapePipes()).ToArray();
 
         // Assert
-        lines.Should().BeEquivalentTo("| Person|A | 42  |");
+        lines.ShouldBeEquivalentTo(new[] { "| Person|A | 42  |" });
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class DataTableDumperTests
             .ToArray();
 
         // Assert
-        lines.Should().BeEquivalentTo(input);
+        lines.ShouldBeEquivalentTo(input);
     }
 
     public record MyClass

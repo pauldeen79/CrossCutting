@@ -22,8 +22,8 @@ public class AsyncResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Should().ContainSingle();
-                dictionary.First().Key.Should().Be("Test");
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
             }
 
             [Fact]
@@ -34,9 +34,9 @@ public class AsyncResultDictionaryBuilderTests
                 sut.Add("Test", NonGenericTask);
 
                 // Act & Assert
-                sut.Invoking(x => x.Add("Test", NonGenericTask))
-                   .Should().Throw<ArgumentException>()
-                   .WithMessage("An item with the same key has already been added. Key: Test");
+                Action a = () => sut.Add("Test", NonGenericTask);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test");
             }
         }
 
@@ -53,8 +53,8 @@ public class AsyncResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Should().ContainSingle();
-                dictionary.First().Key.Should().Be("Test");
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
             }
 
             [Fact]
@@ -65,9 +65,9 @@ public class AsyncResultDictionaryBuilderTests
                 sut.Add("Test", GenericTask);
 
                 // Act & Assert
-                sut.Invoking(x => x.Add("Test", GenericTask))
-                   .Should().Throw<ArgumentException>()
-                   .WithMessage("An item with the same key has already been added. Key: Test");
+                Action a = () => sut.Add("Test", GenericTask);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test");
             }
         }
 
@@ -85,7 +85,7 @@ public class AsyncResultDictionaryBuilderTests
                 var result = await sut.Build();
 
                 // Assert
-                result.Should().HaveCount(2);
+                result.Count.ShouldBe(2);
             }
 
             [Fact]
@@ -101,8 +101,8 @@ public class AsyncResultDictionaryBuilderTests
                 var result = await sut.Build();
 
                 // Assert
-                result.Should().HaveCount(2);
-                result.Keys.Should().BeEquivalentTo("Test1", "Test2");
+                result.Count.ShouldBe(2);
+                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
             }
         }
 
@@ -120,7 +120,7 @@ public class AsyncResultDictionaryBuilderTests
                 var result = await sut.BuildParallel();
 
                 // Assert
-                result.Should().HaveCount(2);
+                result.Count.ShouldBe(2);
             }
 
             [Fact]
@@ -136,8 +136,8 @@ public class AsyncResultDictionaryBuilderTests
                 var result = await sut.BuildParallel();
 
                 // Assert
-                result.Should().HaveCount(2);
-                result.Keys.Should().BeEquivalentTo("Test1", "Test2");
+                result.Count.ShouldBe(2);
+                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
             }
         }
     }
@@ -157,8 +157,8 @@ public class AsyncResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Should().ContainSingle();
-                dictionary.First().Key.Should().Be("Test");
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
             }
 
             [Fact]
@@ -169,9 +169,9 @@ public class AsyncResultDictionaryBuilderTests
                 sut.Add("Test", GenericTask);
 
                 // Act & Assert
-                sut.Invoking(x => x.Add("Test", GenericTask))
-                   .Should().Throw<ArgumentException>()
-                   .WithMessage("An item with the same key has already been added. Key: Test");
+                Action a = () => sut.Add("Test", GenericTask);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test");
             }
         }
 
@@ -189,7 +189,7 @@ public class AsyncResultDictionaryBuilderTests
                 var result = await sut.Build();
 
                 // Assert
-                result.Should().HaveCount(2);
+                result.Count.ShouldBe(2);
             }
 
             [Fact]
@@ -205,8 +205,8 @@ public class AsyncResultDictionaryBuilderTests
                 var result = await sut.Build();
 
                 // Assert
-                result.Should().HaveCount(2);
-                result.Keys.Should().BeEquivalentTo("Test1", "Test2");
+                result.Count.ShouldBe(2);
+                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
             }
         }
 
@@ -224,7 +224,7 @@ public class AsyncResultDictionaryBuilderTests
                 var result = await sut.BuildParallel();
 
                 // Assert
-                result.Should().HaveCount(2);
+                result.Count.ShouldBe(2);
             }
 
             [Fact]
@@ -240,8 +240,8 @@ public class AsyncResultDictionaryBuilderTests
                 var result = await sut.BuildParallel();
 
                 // Assert
-                result.Should().HaveCount(2);
-                result.Keys.Should().BeEquivalentTo("Test1", "Test2");
+                result.Count.ShouldBe(2);
+                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
             }
         }
     }

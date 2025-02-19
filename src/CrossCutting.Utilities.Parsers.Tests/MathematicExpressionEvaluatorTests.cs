@@ -17,8 +17,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1 + 1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(1 + 1);
     }
 
     [Fact]
@@ -33,8 +33,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1 + 1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(1 + 1);
     }
 
     [Fact]
@@ -48,8 +48,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1 - 1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(1 - 1);
     }
 
     [Fact]
@@ -63,8 +63,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2 * 3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(2 * 3);
     }
 
     [Fact]
@@ -78,8 +78,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(6 / 2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(6 / 2);
     }
 
     [Fact]
@@ -93,8 +93,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(Math.Pow(2, 4));
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((int)Math.Pow(2, 4));
     }
 
     [Fact]
@@ -108,8 +108,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(5 % 2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(5 % 2);
     }
 
     [Fact]
@@ -123,8 +123,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1 + 2 + 3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(1 + 2 + 3);
     }
 
     [Fact]
@@ -138,8 +138,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo((1 + 2) * 3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((1 + 2) * 3);
     }
 
     [Fact]
@@ -153,8 +153,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1 + 2 * 3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(1 + 2 * 3);
     }
 
     [Fact]
@@ -168,8 +168,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(1);
     }
 
     [Fact]
@@ -183,8 +183,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Too many closing braces found");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Too many closing braces found");
     }
 
     [Fact]
@@ -198,8 +198,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Missing 1 close brace");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Missing 1 close brace");
     }
 
     [Fact]
@@ -213,8 +213,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Missing 2 close braces");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Missing 2 close braces");
     }
 
     [Fact]
@@ -228,8 +228,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Input cannot start with an operator");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Input cannot start with an operator");
     }
 
     [Fact]
@@ -243,8 +243,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Input cannot end with an operator");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Input cannot end with an operator");
     }
 
     [Fact]
@@ -258,8 +258,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Input cannot contain operators without values between them");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Input cannot contain operators without values between them");
     }
 
     [Fact]
@@ -273,8 +273,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
-        result.ErrorMessage.Should().Be("Input cannot contain operators without values between them");
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Input cannot contain operators without values between them");
     }
 
     [Fact]
@@ -288,8 +288,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Input cannot be null or empty");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Input cannot be null or empty");
     }
 
     [Fact]
@@ -303,8 +303,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Input cannot contain \uE002, as this is used internally for formatting");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Input cannot contain \uE002, as this is used internally for formatting");
     }
 
     [Fact]
@@ -317,8 +317,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateInt64).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1 + 1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((long)1 + 1);
     }
 
     [Fact]
@@ -331,8 +331,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateDecimal).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(7.1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((decimal)7.1);
     }
 
     [Fact]
@@ -345,9 +345,9 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateSingle).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeOfType<float>();
-        ((float)result.Value!).Should().BeApproximately(1.4f + 1.3f, 0.1f);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeOfType<float>();
+        ((float)result.Value!).ShouldBe(1.4f + 1.3f, 0.1f);
     }
 
     [Fact]
@@ -360,8 +360,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateDouble).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1.7 + 1.4);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(1.7 + 1.4);
     }
 
     [Fact]
@@ -374,8 +374,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateByte).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1 + 1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(1 + 1);
     }
 
     [Fact]
@@ -388,8 +388,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateInt16).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1 + 1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(1 + 1);
     }
 
     [Fact]
@@ -402,7 +402,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateInt64).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -415,7 +415,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateDecimal).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -428,7 +428,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateSingle).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -441,7 +441,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateDouble).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -454,7 +454,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateByte).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
 
     }
 
@@ -468,7 +468,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateInt16).Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -481,8 +481,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = CreateSut(ParseExpressionDelegateDouble).Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(11);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(11);
     }
 
     [Fact]
@@ -496,8 +496,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not parse bicycle to integer");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Could not parse bicycle to integer");
     }
 
     [Fact]
@@ -511,8 +511,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not parse bicycle to integer");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Could not parse bicycle to integer");
     }
 
     [Fact]
@@ -526,8 +526,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not parse bicycle to integer");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Could not parse bicycle to integer");
     }
 
     [Fact]
@@ -541,8 +541,8 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Aggregation failed. Error message: Attempted to divide by zero.");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Aggregation failed. Error message: Attempted to divide by zero.");
     }
 
     [Fact]
@@ -556,7 +556,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     [Fact]
@@ -570,7 +570,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Evaluate(input!, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     [Fact]
@@ -584,7 +584,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Validate(input, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     [Fact]
@@ -598,7 +598,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         var result = sut.Validate(input!, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     private IMathematicExpressionEvaluator CreateSut(Func<string, IFormatProvider, Result<object?>> dlg)

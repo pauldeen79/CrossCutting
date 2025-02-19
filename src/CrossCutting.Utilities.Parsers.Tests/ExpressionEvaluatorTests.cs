@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+namespace CrossCutting.Utilities.Parsers.Tests;
 
 public class ExpressionEvaluatorTests : IDisposable
 {
@@ -29,8 +29,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(true);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(true);
         }
 
         [Fact]
@@ -43,8 +43,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(false);
         }
 
         [Fact]
@@ -57,8 +57,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeNull();
         }
 
         [Fact]
@@ -71,8 +71,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, "context value");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo("context value");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo("context value");
         }
 
         [Fact]
@@ -85,8 +85,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(1.5M);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(1.5M);
         }
 
         [Fact]
@@ -99,8 +99,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(1M);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(1M);
         }
 
         [Fact]
@@ -113,8 +113,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(2);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(2);
         }
 
         [Fact]
@@ -127,8 +127,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(3147483647L);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(3147483647L);
         }
 
         [Fact]
@@ -141,8 +141,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(13L);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(13L);
         }
 
         [Fact]
@@ -155,8 +155,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo("Hello world!");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo("Hello world!");
         }
 
         [Fact]
@@ -169,8 +169,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(new DateTime(2019, 1, 2, 0, 0, 0, DateTimeKind.Unspecified));
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(new DateTime(2019, 1, 2, 0, 0, 0, DateTimeKind.Unspecified));
         }
 
         [Fact]
@@ -184,8 +184,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo("HelloWorld");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo("HelloWorld");
         }
 
         [Fact]
@@ -202,8 +202,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo("HelloWorldClass");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo("HelloWorldClass");
         }
 
         [Fact]
@@ -217,8 +217,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Value is required");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Value is required");
         }
 
         [Fact]
@@ -232,8 +232,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Unknown expression type found in fragment: $");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Unknown expression type found in fragment: $");
         }
 
         [Fact]
@@ -247,8 +247,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Unknown variable found: unknownvariable");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown variable found: unknownvariable");
         }
     }
 
@@ -264,7 +264,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -277,7 +277,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -290,7 +290,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NoContent);
+            result.Status.ShouldBe(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -303,7 +303,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, "context value");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -316,7 +316,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -329,7 +329,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -342,8 +342,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(2);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(2);
         }
 
         [Fact]
@@ -356,7 +356,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -369,7 +369,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -382,8 +382,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo("Hello world!");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo("Hello world!");
         }
 
         [Fact]
@@ -396,7 +396,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -410,7 +410,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NoContent);
+            result.Status.ShouldBe(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -427,7 +427,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NoContent);
+            result.Status.ShouldBe(ResultStatus.NoContent);
         }
 
         [Fact]
@@ -441,8 +441,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Value is required");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Value is required");
         }
 
         [Fact]
@@ -456,8 +456,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Unknown expression type found in fragment: $");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown expression type found in fragment: $");
         }
 
         [Fact]
@@ -471,8 +471,8 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Unknown variable found: unknownvariable");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown variable found: unknownvariable");
         }
     }
 

@@ -9,8 +9,8 @@ public class MultiplyAggregatorTests
         var result = new MultiplyAggregator().Aggregate((byte)2, (byte)3, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(6);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(6);
     }
 
     [Fact]
@@ -20,8 +20,8 @@ public class MultiplyAggregatorTests
         var result = new MultiplyAggregator().Aggregate((short)2, (short)3, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(6);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(6);
     }
 
     [Fact]
@@ -31,8 +31,8 @@ public class MultiplyAggregatorTests
         var result = new MultiplyAggregator().Aggregate(2, 3, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(6);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(6);
     }
 
     [Fact]
@@ -42,8 +42,8 @@ public class MultiplyAggregatorTests
         var result = new MultiplyAggregator().Aggregate((long)2, (long)3, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(6);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((long)6);
     }
 
     [Fact]
@@ -53,8 +53,8 @@ public class MultiplyAggregatorTests
         var result = new MultiplyAggregator().Aggregate((float)1.5, (float)2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((float)3);
     }
 
     [Fact]
@@ -64,8 +64,8 @@ public class MultiplyAggregatorTests
         var result = new MultiplyAggregator().Aggregate((decimal)1.5, (decimal)2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(3);
     }
 
     [Fact]
@@ -75,8 +75,7 @@ public class MultiplyAggregatorTests
         var result = new MultiplyAggregator().Aggregate(1.5, 2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(3);
     }
 }
-

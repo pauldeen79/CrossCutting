@@ -7,5 +7,5 @@ global using CrossCutting.Utilities.ObjectDumper.Extensions;
 global using CrossCutting.Utilities.ObjectDumper.Parts.Filters;
 global using CrossCutting.Utilities.ObjectDumper.Parts.Transforms;
 global using CrossCutting.Utilities.ObjectDumper.Tests.Helpers;
-global using FluentAssertions;
+global using Shouldly;
 global using Xunit;

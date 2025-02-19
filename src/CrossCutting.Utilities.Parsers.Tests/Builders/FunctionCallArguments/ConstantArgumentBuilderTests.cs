@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests.Builders.FunctionCallArguments;
+namespace CrossCutting.Utilities.Parsers.Tests.Builders.FunctionCallArguments;
 
 public class ConstantArgumentBuilderTests
 {
@@ -12,8 +12,8 @@ public class ConstantArgumentBuilderTests
         var result = sut.BuildTyped();
 
         // Assert
-        result.Should().BeOfType<ConstantArgument<string>>();
-        result.Value.Should().Be(sut.Value);
+        result.ShouldBeOfType<ConstantArgument<string>>();
+        result.Value.ShouldBe(sut.Value);
     }
 
     [Fact]
@@ -26,8 +26,8 @@ public class ConstantArgumentBuilderTests
         var result = sut.Build();
 
         // Assert
-        result.Should().BeOfType<ConstantArgument<string>>();
-        ((ConstantArgument<string>)result).Value.Should().Be(sut.Value);
+        result.ShouldBeOfType<ConstantArgument<string>>();
+        ((ConstantArgument<string>)result).Value.ShouldBe(sut.Value);
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class ConstantArgumentBuilderTests
         var result = sut.Value;
 
         // Assert
-        result.Should().Be("Some value");
+        result.ShouldBe("Some value");
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class ConstantArgumentBuilderTests
         var result = sut.WithValue("Altered value");
 
         // Assert
-        result.Should().BeSameAs(sut);
-        result.Value.Should().Be("Altered value");
+        result.ShouldBeSameAs(sut);
+        result.Value.ShouldBe("Altered value");
     }
 }

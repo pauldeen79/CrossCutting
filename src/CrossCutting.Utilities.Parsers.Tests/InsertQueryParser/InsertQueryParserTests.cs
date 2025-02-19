@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests.InsertQueryParser;
+namespace CrossCutting.Utilities.Parsers.Tests.InsertQueryParser;
 
 public class InsertQueryParserTests
 {
@@ -12,10 +12,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;0.5|Column B;'Hello world!'|ColumnC;@SqlParameter|Column_D;:OracleParameter");
+        contents.ShouldBe("Column A;0.5|Column B;'Hello world!'|ColumnC;@SqlParameter|Column_D;:OracleParameter");
     }
 
     [Fact]
@@ -40,10 +40,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;'A'|Column B;'B'|Column C;'C'");
+        contents.ShouldBe("Column A;'A'|Column B;'B'|Column C;'C'");
     }
 
     [Fact]
@@ -56,10 +56,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;0.5|Column B;'Hello world!'|ColumnC;@SqlParameter|Column_D;:OracleParameter");
+        contents.ShouldBe("Column A;0.5|Column B;'Hello world!'|ColumnC;@SqlParameter|Column_D;:OracleParameter");
     }
 
     [Fact]
@@ -72,10 +72,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;0.5|Column B;'Hello world!'|ColumnC;@SqlParameter|Column_D;:OracleParameter|#MISSING#;Missing1|#MISSING#;Missing2");
+        contents.ShouldBe("Column A;0.5|Column B;'Hello world!'|ColumnC;@SqlParameter|Column_D;:OracleParameter|#MISSING#;Missing1|#MISSING#;Missing2");
     }
 
     [Fact]
@@ -88,10 +88,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;0.5|Column B;'Hello world!'|ColumnC;@SqlParameter|Column_D;:OracleParameter|Missing1;#MISSING#|Missing2;#MISSING#");
+        contents.ShouldBe("Column A;0.5|Column B;'Hello world!'|ColumnC;@SqlParameter|Column_D;:OracleParameter|Missing1;#MISSING#|Missing2;#MISSING#");
     }
 
     [Fact]
@@ -104,10 +104,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;0.5|Column B;'Hello world!'|ColumnC;@SqlParameter|Column_D;:OracleParameter");
+        contents.ShouldBe("Column A;0.5|Column B;'Hello world!'|ColumnC;@SqlParameter|Column_D;:OracleParameter");
     }
 
     [Fact]
@@ -120,10 +120,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;0.5|Column B;'Hello world!'|ColumnC;@SqlParameter|Column_D;:OracleParameter");
+        contents.ShouldBe("Column A;0.5|Column B;'Hello world!'|ColumnC;@SqlParameter|Column_D;:OracleParameter");
     }
 
     [Fact]
@@ -136,10 +136,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;0.5|Column B;'Hello ''world!'''|ColumnC;@SqlParameter|Column_D;:OracleParameter");
+        contents.ShouldBe("Column A;0.5|Column B;'Hello ''world!'''|ColumnC;@SqlParameter|Column_D;:OracleParameter");
     }
 
     [Fact]
@@ -152,10 +152,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;0.5|Column B;'Hello world!'|ColumnC;FieldC|Column_D;FieldD");
+        contents.ShouldBe("Column A;0.5|Column B;'Hello world!'|ColumnC;FieldC|Column_D;FieldD");
     }
 
     [Fact]
@@ -168,10 +168,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;0.5|Column B;'Hello world!'|ColumnC;FieldC|Column_D;COALESCE(FieldD, 'Unknown')");
+        contents.ShouldBe("Column A;0.5|Column B;'Hello world!'|ColumnC;FieldC|Column_D;COALESCE(FieldD, 'Unknown')");
     }
 
     [Fact]
@@ -184,10 +184,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;0.5|Column B;'Hello world!'|ColumnC;FieldC|Column_D;FieldD|#MISSING#;Missing1|#MISSING#;Missing2");
+        contents.ShouldBe("Column A;0.5|Column B;'Hello world!'|ColumnC;FieldC|Column_D;FieldD|#MISSING#;Missing1|#MISSING#;Missing2");
     }
 
     [Fact]
@@ -200,10 +200,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;0.5|Column B;'Hello world!'|ColumnC;FieldC|Column_D;FieldD|Missing1;#MISSING#|Missing2;#MISSING#");
+        contents.ShouldBe("Column A;0.5|Column B;'Hello world!'|ColumnC;FieldC|Column_D;FieldD|Missing1;#MISSING#|Missing2;#MISSING#");
     }
 
     [Fact] // note that you probably better use ToInsertIntoString instead of string.Format in this test
@@ -225,7 +225,7 @@ public class InsertQueryParserTests
         );
 
         // Assert
-        insertQuery.Should().Be(InsertQuery);
+        insertQuery.ShouldBe(InsertQuery);
     }
 
     [Fact] // note that you probably better use ToInsertIntoString instead of string.Format in this test
@@ -247,7 +247,7 @@ public class InsertQueryParserTests
         );
 
         // Assert
-        insertQuery.Should().Be(InsertQuery);
+        insertQuery.ShouldBe(InsertQuery);
     }
 
     [Fact]
@@ -260,10 +260,10 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("Column A;0.5|Column B;CONVERT('Hello world!', 0.5, SYSDATE(), 'Alsjemenou')|ColumnC;@SqlParameter|Column_D;:OracleParameter");
+        contents.ShouldBe("Column A;0.5|Column B;CONVERT('Hello world!', 0.5, SYSDATE(), 'Alsjemenou')|ColumnC;@SqlParameter|Column_D;:OracleParameter");
     }
 
     [Fact]
@@ -277,7 +277,7 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.ToInsertIntoString(parseResult, "Tabel");
 
         // Assert
-        actual.Should().Be(input);
+        actual.ShouldBe(input);
     }
 
     [Fact]
@@ -290,7 +290,7 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.ToInsertIntoString(parseResult, "Tabel");
 
         // Assert
-        actual.Should().Be("Error: Parse result was not successful. Error messages: Some error");
+        actual.ShouldBe("Error: Parse result was not successful. Error messages: Some error");
     }
 
     [Fact]
@@ -303,9 +303,9 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
-        actual.ErrorMessages.First().Should().Be("Insert query is empty");
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
+        actual.ErrorMessages.First().ShouldBe("Insert query is empty");
     }
 
     [Fact]
@@ -318,8 +318,8 @@ public class InsertQueryParserTests
         var actual = Parsers.InsertQueryParser.InsertQueryParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
-        actual.ErrorMessages.First().Should().Be("INSERT INTO clause was not found");
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
+        actual.ErrorMessages.First().ShouldBe("INSERT INTO clause was not found");
     }
 }

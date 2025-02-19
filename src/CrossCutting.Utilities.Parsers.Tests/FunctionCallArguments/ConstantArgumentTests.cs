@@ -16,8 +16,8 @@ public class ConstantArgumentTests
         var result = sut.EvaluateTyped(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("Hello world!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("Hello world!");
     }
 
     [Fact]
@@ -31,8 +31,8 @@ public class ConstantArgumentTests
         var result = sut.Evaluate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("Hello world!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("Hello world!");
     }
 
     [Fact]
@@ -46,8 +46,8 @@ public class ConstantArgumentTests
         var result = sut.Evaluate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("Hello world!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("Hello world!");
     }
 
     [Fact]
@@ -61,8 +61,8 @@ public class ConstantArgumentTests
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be<string>();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(typeof(string));
     }
 
     [Fact]
@@ -76,8 +76,8 @@ public class ConstantArgumentTests
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be<string>();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(typeof(string));
     }
 
     [Fact]
@@ -90,8 +90,8 @@ public class ConstantArgumentTests
         var result = sut.ToBuilder();
 
         // Assert
-        result.Should().BeOfType<ConstantArgumentBuilder<string>>();
-        ((ConstantArgumentBuilder<string>)result).Value.Should().Be(sut.Value);
+        result.ShouldBeOfType<ConstantArgumentBuilder<string>>();
+        ((ConstantArgumentBuilder<string>)result).Value.ShouldBe(sut.Value);
     }
 
     [Fact]
@@ -104,8 +104,8 @@ public class ConstantArgumentTests
         var result = sut.ToTypedBuilder();
 
         // Assert
-        result.Should().BeOfType<ConstantArgumentBuilder<string>>();
-        ((ConstantArgumentBuilder<string>)result).Value.Should().Be(sut.Value);
+        result.ShouldBeOfType<ConstantArgumentBuilder<string>>();
+        ((ConstantArgumentBuilder<string>)result).Value.ShouldBe(sut.Value);
     }
 
     [Fact]
@@ -118,6 +118,6 @@ public class ConstantArgumentTests
         var result = sut.Value;
 
         // Assert
-        result.Should().Be("Hello world!");
+        result.ShouldBe("Hello world!");
     }
 }

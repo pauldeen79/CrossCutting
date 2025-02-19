@@ -10,6 +10,6 @@ global using CrossCutting.Common.Abstractions;
 global using CrossCutting.Common.DataAnnotations;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
-global using FluentAssertions;
 global using NSubstitute;
+global using Shouldly;
 global using Xunit;

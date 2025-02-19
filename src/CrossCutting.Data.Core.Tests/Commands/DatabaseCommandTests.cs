@@ -7,9 +7,9 @@ public class DatabaseCommandTests
     [InlineData("")]
     public void Ctor_Throws_On_CommandText(string? commandText)
     {
-        this.Invoking(_ => new DatabaseCommand<DatabaseCommandTests>(commandText!, DatabaseCommandType.Text, this, _ => null))
-            .Should().Throw<ArgumentOutOfRangeException>()
-            .And.ParamName.Should().Be("commandText");
+        Action a = () => _ = new DatabaseCommand<DatabaseCommandTests>(commandText!, DatabaseCommandType.Text, this, _ => null);
+        a.ShouldThrow<ArgumentOutOfRangeException>()
+         .ParamName.ShouldBe("commandText");
     }
 
     [Fact]
@@ -19,7 +19,7 @@ public class DatabaseCommandTests
         var actual = new DatabaseCommand<DatabaseCommandTests>("commandtext", DatabaseCommandType.Text, this, null);
 
         // Assert
-        actual.CommandParameters.Should().BeNull();
+        actual.CommandParameters.ShouldBeNull();
     }
 
     [Fact]
@@ -32,6 +32,6 @@ public class DatabaseCommandTests
         var actual = new DatabaseCommand<DatabaseCommandTests>("commandtext", DatabaseCommandType.Text, this, _ => expected);
 
         // Assert
-        actual.CommandParameters.Should().BeSameAs(expected);
+        actual.CommandParameters.ShouldBeSameAs(expected);
     }
 }

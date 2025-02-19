@@ -13,7 +13,7 @@ public class StringExtensionsTests
         var actual = input.EscapePipes();
 
         // Assert
-        actual.Should().Be(expectedOutput);
+        actual.ShouldBe(expectedOutput);
     }
 
     [Theory,
@@ -27,6 +27,6 @@ public class StringExtensionsTests
         var actual = input.UnescapePipes();
 
         // Assert
-        actual.Should().Be(expectedOutput);
+        actual.ShouldBe(expectedOutput);
     }
 }

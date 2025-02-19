@@ -9,7 +9,7 @@ public class ParseResultTests
         var result = ParseResult.Error<string, string>("Kaboom");
 
         // Assert
-        result.ErrorMessages.Should().BeEquivalentTo("Kaboom");
-        result.Values.Should().BeEmpty();
+        result.ErrorMessages.ToArray().ShouldBeEquivalentTo(new[] { "Kaboom" });
+        result.Values.ShouldBeEmpty();
     }
 }

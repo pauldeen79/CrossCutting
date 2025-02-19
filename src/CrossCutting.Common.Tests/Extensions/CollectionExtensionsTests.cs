@@ -12,6 +12,6 @@ public class CollectionExtensionsTests
         input.AddRange(["a", "b", "c"]);
 
         // Assert
-        input.Should().BeEquivalentTo("a", "b", "c");
+        input.ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
     }
 }

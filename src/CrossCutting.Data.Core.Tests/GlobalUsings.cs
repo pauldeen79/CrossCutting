@@ -12,6 +12,6 @@ global using CrossCutting.Data.Core.Builders;
 global using CrossCutting.Data.Core.CommandProviders;
 global using CrossCutting.Data.Core.Commands;
 global using CrossCutting.Data.Core.Tests.TestFixtures;
-global using FluentAssertions;
 global using NSubstitute;
+global using Shouldly;
 global using Xunit;

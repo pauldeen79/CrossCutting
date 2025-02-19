@@ -21,7 +21,7 @@ public class ExpressionFrameworkHowItShouldBeTests
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NoContent);
+        result.Status.ShouldBe(ResultStatus.NoContent);
     }
 
     [Fact]
@@ -40,9 +40,9 @@ public class ExpressionFrameworkHowItShouldBeTests
         var result = sut.Evaluate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeOfType<string>();
-        result.Value!.ToString().Should().Be("HELLO WORLD!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeOfType<string>();
+        result.Value!.ToString().ShouldBe("HELLO WORLD!");
     }
 
     [Fact]
@@ -62,9 +62,9 @@ public class ExpressionFrameworkHowItShouldBeTests
         var result = sut.EvaluateTyped(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeOfType<string>();
-        result.Value!.Should().Be("HELLO WORLD!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeOfType<string>();
+        result.Value!.ShouldBe("HELLO WORLD!");
     }
 
     [Fact]
@@ -74,9 +74,9 @@ public class ExpressionFrameworkHowItShouldBeTests
         var result = ToUpperCaseFunction.Evaluate("Hello world!", null);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeOfType<string>();
-        result.Value!.Should().Be("HELLO WORLD!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeOfType<string>();
+        result.Value!.ShouldBe("HELLO WORLD!");
     }
 
     [Fact]
@@ -89,9 +89,9 @@ public class ExpressionFrameworkHowItShouldBeTests
         var functionDescriptors = functionDescriptorProvider.GetAll();
 
         // Assert
-        functionDescriptors.Should().ContainSingle();
-        functionDescriptors.Single().Arguments.Should().HaveCount(2);
-        functionDescriptors.Single().Results.Should().ContainSingle();
+        functionDescriptors.Count.ShouldBe(1);
+        functionDescriptors.Single().Arguments.Count.ShouldBe(2);
+        functionDescriptors.Single().Results.Count.ShouldBe(1);
     }
 
     // Note that this scenario only works with strongly-typed function calls
@@ -108,10 +108,10 @@ public class ExpressionFrameworkHowItShouldBeTests
         var functionCallBuilder = functionCall.ToTypedBuilder();
 
         // Assert
-        functionCallBuilder.Expression.Should().BeOfType<ConstantResultArgumentBuilder<string>>();
-        ((ConstantResultArgumentBuilder<string>)functionCallBuilder.Expression).Result.Value.Should().Be("Hello world!");
-        functionCallBuilder.CultureInfo.Should().BeOfType<ConstantArgumentBuilder<CultureInfo?>>();
-        ((ConstantArgumentBuilder<CultureInfo?>)functionCallBuilder.CultureInfo).Value.Should().Be(CultureInfo.InvariantCulture);
+        functionCallBuilder.Expression.ShouldBeOfType<ConstantResultArgumentBuilder<string>>();
+        ((ConstantResultArgumentBuilder<string>)functionCallBuilder.Expression).Result.Value.ShouldBe("Hello world!");
+        functionCallBuilder.CultureInfo.ShouldBeOfType<ConstantArgumentBuilder<CultureInfo?>>();
+        ((ConstantArgumentBuilder<CultureInfo?>)functionCallBuilder.CultureInfo).Value.ShouldBe(CultureInfo.InvariantCulture);
     }
 }
 

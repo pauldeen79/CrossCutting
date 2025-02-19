@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Common.Tests.Extensions;
+namespace CrossCutting.Common.Tests.Extensions;
 
 public class FormatProviderExtensionsTests
 {
@@ -14,7 +14,7 @@ public class FormatProviderExtensionsTests
             var result = sut.ToCultureInfo();
 
             // Assert
-            result.Should().BeSameAs(sut);
+            result.ShouldBeSameAs(sut);
         }
 
         [Fact]
@@ -27,7 +27,7 @@ public class FormatProviderExtensionsTests
             var result = sut.ToCultureInfo();
 
             // Assert
-            result.Should().BeSameAs(CultureInfo.CurrentCulture);
+            result.ShouldBeSameAs(CultureInfo.CurrentCulture);
         }
     }
 }

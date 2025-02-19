@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using FluentAssertions;
 
 namespace CrossCutting.Common.Testing;
 
@@ -28,7 +27,10 @@ public static class TypeExtensions
         Func<ConstructorInfo, bool>? constructorPredicate = null)
     {
         var constructors = type.GetConstructors();
-        constructors.Should().Match<ConstructorInfo[]?>(x => x != null && x.Length > 0, $"Type {type.FullName} should have public constructors");
+        if (constructors.Length == 0)
+        {
+            throw new InvalidOperationException($"Type {type.FullName} should have public constructors");
+        }
 
         foreach (var constructor in constructors.Where(c => ShouldProcessConstructor(constructorPredicate, c)))
         {
@@ -51,14 +53,19 @@ public static class TypeExtensions
                     constructor.Invoke(mocksCopy);
                     if (!parameters[i].ParameterType.IsValueType)
                     {
-                        ((ArgumentNullException?)null).Should().NotBeNull($"ArgumentNullException expected for parameter {parameters[i].Name} of constructor, but no exception was thrown");
+                        throw new InvalidOperationException($"ArgumentNullException expected for parameter {parameters[i].Name} of constructor, but no exception was thrown");
                     }
                 }
                 catch (TargetInvocationException ex)
                 {
-                    ex.InnerException
-                        .Should().BeOfType<ArgumentNullException>()
-                        .And.Match<ArgumentNullException>(x => x.ParamName == parameters[i].Name);
+                    if (ex.InnerException is not ArgumentNullException argumentNullException)
+                    {
+                        throw;
+                    }
+                    if (argumentNullException.ParamName != parameters[i].Name)
+                    {
+                        throw;
+                    }
                 }
             }
         }

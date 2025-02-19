@@ -9,9 +9,9 @@ public class UpdateCommandBuilderTests
         var input = new UpdateCommandBuilder();
 
         // Act & Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("table name is missing");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("table name is missing");
     }
 
     [Fact]
@@ -21,9 +21,9 @@ public class UpdateCommandBuilderTests
         var input = new UpdateCommandBuilder().WithTable("MyTable");
 
         // Act & Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("field names are missing");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("field names are missing");
     }
 
     [Fact]
@@ -35,9 +35,9 @@ public class UpdateCommandBuilderTests
             .AddFieldNames("Field1", "Field2", "Field3");
 
         // Act & Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("field values are missing");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("field values are missing");
     }
 
     [Fact]
@@ -50,9 +50,9 @@ public class UpdateCommandBuilderTests
             .AddFieldValues("Value1", "Value2");
 
         // Act & Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("field name count should be equal to field value count");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("field name count should be equal to field value count");
     }
 
     [Fact]
@@ -69,15 +69,15 @@ public class UpdateCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Update);
-        actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = @Field1, Field2 = @Field2, Field3 = @Field3");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.Operation.ShouldBe(DatabaseOperation.Update);
+        actual.CommandText.ShouldBe("UPDATE MyTable SET Field1 = @Field1, Field2 = @Field2, Field3 = @Field3");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
         {
-            parameters.Should().HaveCount(3);
-            parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");
-            parameters.Values.Should().BeEquivalentTo(new[] { "Value1", "Value2", "Value3" });
+            parameters.Count.ShouldBe(3);
+            parameters.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Field1", "Field2", "Field3" });
+            parameters.Values.ToArray().ShouldBeEquivalentTo(new object[] { "Value1", "Value2", "Value3" });
         }
     }
 
@@ -97,11 +97,11 @@ public class UpdateCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Update);
-        actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = \"Field1\", Field2 = \"Field2\", Field3 = \"Field3\" WHERE Field1 = \"OldValue1\" AND Field2 = \"OldValue2\" AND Field3 = \"OldValue3\"");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.Operation.ShouldBe(DatabaseOperation.Update);
+        actual.CommandText.ShouldBe("UPDATE MyTable SET Field1 = \"Field1\", Field2 = \"Field2\", Field3 = \"Field3\" WHERE Field1 = \"OldValue1\" AND Field2 = \"OldValue2\" AND Field3 = \"OldValue3\"");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        parameters.Should().BeEmpty();
+        parameters.ShouldBeEmpty();
     }
 
     [Fact]
@@ -121,8 +121,8 @@ public class UpdateCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Update);
-        actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = \"Field1\", Field2 = \"Field2\", Field3 = \"Field3\" OUTPUT Field1, Field2 WHERE Field1 = \"OldValue1\" AND Field2 = \"OldValue2\" AND Field3 = \"OldValue3\"");
+        actual.Operation.ShouldBe(DatabaseOperation.Update);
+        actual.CommandText.ShouldBe("UPDATE MyTable SET Field1 = \"Field1\", Field2 = \"Field2\", Field3 = \"Field3\" OUTPUT Field1, Field2 WHERE Field1 = \"OldValue1\" AND Field2 = \"OldValue2\" AND Field3 = \"OldValue3\"");
     }
 
     [Fact]
@@ -143,8 +143,8 @@ public class UpdateCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Update);
-        actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = \"Field1\", Field2 = \"Field2\", Field3 = \"Field3\" OUTPUT Field1, Field2 INTO @NewValues WHERE Field1 = \"OldValue1\" AND Field2 = \"OldValue2\" AND Field3 = \"OldValue3\"");
+        actual.Operation.ShouldBe(DatabaseOperation.Update);
+        actual.CommandText.ShouldBe("UPDATE MyTable SET Field1 = \"Field1\", Field2 = \"Field2\", Field3 = \"Field3\" OUTPUT Field1, Field2 INTO @NewValues WHERE Field1 = \"OldValue1\" AND Field2 = \"OldValue2\" AND Field3 = \"OldValue3\"");
     }
 
     [Fact]
@@ -161,15 +161,15 @@ public class UpdateCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Update);
-        actual.CommandText.Should().Be("UPDATE MyTable SET Field1 = @Field1");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.Operation.ShouldBe(DatabaseOperation.Update);
+        actual.CommandText.ShouldBe("UPDATE MyTable SET Field1 = @Field1");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
         {
-            parameters.Should().HaveCount(1);
-            parameters.Keys.Should().BeEquivalentTo("Field1");
-            parameters.Values.Should().BeEquivalentTo(new[] { "Value1" });
+            parameters.Count.ShouldBe(1);
+            parameters.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Field1" });
+            parameters.Values.ToArray().ShouldBeEquivalentTo(new object[] { "Value1" });
         }
     }
 
@@ -192,15 +192,15 @@ public class UpdateCommandBuilderTests
             .Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Update);
-        actual.CommandText.Should().Be("UPDATE MyTable2 SET Field2 = @Field2");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.Operation.ShouldBe(DatabaseOperation.Update);
+        actual.CommandText.ShouldBe("UPDATE MyTable2 SET Field2 = @Field2");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
         {
-            parameters.Should().HaveCount(1);
-            parameters.Keys.Should().BeEquivalentTo("Field2");
-            parameters.Values.Should().BeEquivalentTo(new[] { "Value2" });
+            parameters.Count.ShouldBe(1);
+            parameters.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Field2" });
+            parameters.Values.ToArray().ShouldBeEquivalentTo(new object[] { "Value2" });
         }
     }
 }

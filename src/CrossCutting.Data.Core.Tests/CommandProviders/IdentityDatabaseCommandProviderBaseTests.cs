@@ -1,4 +1,4 @@
-namespace CrossCutting.Data.Core.Tests.CommandProviders;
+﻿namespace CrossCutting.Data.Core.Tests.CommandProviders;
 
 public class IdentityDatabaseCommandProviderBaseTests
 {
@@ -13,9 +13,9 @@ public class IdentityDatabaseCommandProviderBaseTests
         var sut = new IdentityDatabaseCommandProviderMock(new[] { new PagedDatabaseEntityRetrieverSettingsProviderMock() });
 
         // Act
-        sut.Invoking(x => x.Create(new TestEntityIdentity("A", "B"), operation))
-           .Should().Throw<ArgumentOutOfRangeException>()
-           .And.ParamName.Should().Be("operation");
+        Action a = () => sut.Create(new TestEntityIdentity("A", "B"), operation);
+        a.ShouldThrow<ArgumentOutOfRangeException>()
+         .ParamName.ShouldBe("operation");
     }
 
     [Fact]
@@ -25,9 +25,9 @@ public class IdentityDatabaseCommandProviderBaseTests
         var sut = new IdentityDatabaseCommandProviderMock([Substitute.For<IPagedDatabaseEntityRetrieverSettingsProvider>()]);
 
         // Act & Assert
-        sut.Invoking(x => x.Create(new TestEntityIdentity("NOTIMPLEMENTED", "NOTIMPLEMENTED"), DatabaseOperation.Select))
-           .Should().ThrowExactly<InvalidOperationException>()
-           .WithMessage("Could not obtain paged database entity retriever settings for type [CrossCutting.Data.Core.Tests.TestFixtures.TestEntityIdentity]");
+        Action a = () => sut.Create(new TestEntityIdentity("NOTIMPLEMENTED", "NOTIMPLEMENTED"), DatabaseOperation.Select);
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("Could not obtain paged database entity retriever settings for type [CrossCutting.Data.Core.Tests.TestFixtures.TestEntityIdentity]");
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class IdentityDatabaseCommandProviderBaseTests
         var actual = sut.Create(new TestEntityIdentity("A", "B"), DatabaseOperation.Select);
 
         // Assert
-        actual.CommandText.Should().Be(@"SELECT A, B, C FROM Table WHERE [Field1] = @Field1 AND [Field2] = @Field2Alias");
+        actual.CommandText.ShouldBe(@"SELECT A, B, C FROM Table WHERE [Field1] = @Field1 AND [Field2] = @Field2Alias");
     }
 
     private sealed class IdentityDatabaseCommandProviderMock(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders) : IdentityDatabaseCommandProviderBase<TestEntityIdentity>(settingsProviders)

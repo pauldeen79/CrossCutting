@@ -1,4 +1,4 @@
-namespace CrossCutting.Data.Sql.Tests.Repositories;
+﻿namespace CrossCutting.Data.Sql.Tests.Repositories;
 
 public class TestRepositoryTests : TestBase<TestRepository>
 {
@@ -17,7 +17,7 @@ public class TestRepositoryTests : TestBase<TestRepository>
         var actual = Sut.Find(new TestEntityIdentity(expected));
 
         // Assert
-        actual.Should().Be(expected);
+        actual.ShouldBe(expected);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class TestRepositoryTests : TestBase<TestRepository>
         var actual = Sut.FindOne();
 
         // Assert
-        actual.Should().Be(expected);
+        actual.ShouldBe(expected);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class TestRepositoryTests : TestBase<TestRepository>
         var actual = Sut.FindMany("Value");
 
         // Assert
-        actual.Should().BeSameAs(expected);
+        actual.ShouldBeSameAs(expected);
     }
 
     [Fact]
@@ -67,6 +67,6 @@ public class TestRepositoryTests : TestBase<TestRepository>
         var actual = Sut.FindPaged(0, 10);
 
         // Assert
-        actual.Should().BeEquivalentTo(expected);
+        actual.ToArray().ShouldBeEquivalentTo(expected);
     }
 }

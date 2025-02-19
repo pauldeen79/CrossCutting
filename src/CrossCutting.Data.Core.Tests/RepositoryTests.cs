@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Data.Core.Tests;
+namespace CrossCutting.Data.Core.Tests;
 
 public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentity>>
 {
@@ -23,7 +23,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var result = Sut.Add(entity);
 
         // Assert
-        result.Should().Be(entity);
+        result.ShouldBe(entity);
         CommandProcessorMock.Received().ExecuteCommand(commandMock, entity);
     }
 
@@ -41,7 +41,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var result = await Sut.AddAsync(entity);
 
         // Assert
-        result.Should().Be(entity);
+        result.ShouldBe(entity);
         await CommandProcessorMock.Received().ExecuteCommandAsync(commandMock, entity);
     }
 
@@ -59,7 +59,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var result = Sut.Update(entity);
 
         // Assert
-        result.Should().Be(entity);
+        result.ShouldBe(entity);
         CommandProcessorMock.Received().ExecuteCommand(commandMock, entity);
     }
 
@@ -77,7 +77,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var result = await Sut.UpdateAsync(entity);
 
         // Assert
-        result.Should().Be(entity);
+        result.ShouldBe(entity);
         await CommandProcessorMock.Received().ExecuteCommandAsync(commandMock, entity);
     }
 
@@ -95,7 +95,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var result = Sut.Delete(entity);
 
         // Assert
-        result.Should().Be(entity);
+        result.ShouldBe(entity);
         CommandProcessorMock.Received().ExecuteCommand(commandMock, entity);
     }
 
@@ -113,7 +113,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var result = await Sut.DeleteAsync(entity);
 
         // Assert
-        result.Should().Be(entity);
+        result.ShouldBe(entity);
         await CommandProcessorMock.Received().ExecuteCommandAsync(commandMock, entity);
     }
 
@@ -129,7 +129,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var actual = Sut.Find(new TestEntityIdentity(expected));
 
         // Assert
-        actual.Should().Be(expected);
+        actual.ShouldBe(expected);
     }
 
     [Fact]
@@ -144,7 +144,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var actual = await Sut.FindAsync(new TestEntityIdentity(expected));
 
         // Assert
-        actual.Should().Be(expected);
+        actual.ShouldBe(expected);
     }
 
     [Fact]
@@ -159,7 +159,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var actual = Sut.FindAll();
 
         // Assert
-        actual.Should().BeEquivalentTo(expected);
+        actual.ShouldBeEquivalentTo(expected);
     }
 
     [Fact]
@@ -174,7 +174,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var actual = await Sut.FindAllAsync();
 
         // Assert
-        actual.Should().BeEquivalentTo(expected);
+        actual.ShouldBeEquivalentTo(expected);
     }
 
     [Fact]
@@ -189,7 +189,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var actual = Sut.FindAllPaged(1, 10);
 
         // Assert
-        actual.Should().BeEquivalentTo(expected);
+        actual.ShouldBeEquivalentTo(expected);
     }
 
     [Fact]
@@ -204,6 +204,6 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var actual = await Sut.FindAllPagedAsync(1, 10);
 
         // Assert
-        actual.Should().BeEquivalentTo(expected);
+        actual.ShouldBeEquivalentTo(expected);
     }
 }

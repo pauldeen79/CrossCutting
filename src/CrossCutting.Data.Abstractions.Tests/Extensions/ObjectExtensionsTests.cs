@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Data.Abstractions.Tests.Extensions;
+namespace CrossCutting.Data.Abstractions.Tests.Extensions;
 
 public class ObjectExtensionsTests
 {
@@ -12,7 +12,7 @@ public class ObjectExtensionsTests
         var actual = input!.FixDbNull();
 
         // Asset
-        actual.Should().Be(expectedOutput);
+        actual.ShouldBe(expectedOutput);
     }
 
     [Theory]
@@ -25,7 +25,7 @@ public class ObjectExtensionsTests
         var actual = input.FixNull();
 
         // Asset
-        actual.Should().Be(expectedOutput);
+        actual.ShouldBe(expectedOutput);
     }
 
     public static TheoryData<object?, object?> FixDbNullData

@@ -14,7 +14,7 @@ public partial class StringExtensionsTests
             var actual = input.SplitCsv();
 
             // Assert
-            actual.Should().BeEmpty();
+            actual.ShouldBeEmpty();
         }
 
         [Fact]
@@ -27,7 +27,7 @@ public partial class StringExtensionsTests
             var actual = input.SplitCsv();
 
             // Assert
-            actual.Should().BeEquivalentTo("a", "b,c", string.Empty);
+            actual.ShouldBeEquivalentTo(new[] { "a", "b,c", string.Empty });
         }
 
         [Theory,
@@ -41,7 +41,7 @@ public partial class StringExtensionsTests
             var result = input.SplitCsv();
 
             // Assert
-            result.Skip(1).Should().BeEquivalentTo(expected);
+            result.Skip(1).ToArray().ShouldBeEquivalentTo(expected);
         }
     }
 }

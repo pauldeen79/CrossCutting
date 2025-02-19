@@ -6,7 +6,8 @@ public class FunctionResultTypeAttributeTests
     public void Should_Construct()
     {
         // Act & Assert
-        this.Invoking(_ => new FunctionResultTypeAttribute(typeof(string))).Should().NotThrow();
+        Action a = () => _ = new FunctionResultTypeAttribute(typeof(string));
+        a.ShouldNotThrow();
     }
 
     [Fact]
@@ -16,6 +17,6 @@ public class FunctionResultTypeAttributeTests
         var sut = new FunctionResultTypeAttribute(typeof(string));
 
         // Assert
-        sut.Type.Should().Be<string>();
+        sut.Type.ShouldBe(typeof(string));
     }
 }

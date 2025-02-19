@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Data.Sql.Tests.Extensions;
+namespace CrossCutting.Data.Sql.Tests.Extensions;
 
 public class IntExtensionsTests
 {
@@ -13,6 +13,6 @@ public class IntExtensionsTests
         var actual = queryLimit.IfNotGreaterThan(overrideLimit);
 
         // Asset
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 }

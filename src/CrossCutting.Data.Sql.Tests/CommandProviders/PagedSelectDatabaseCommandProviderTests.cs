@@ -12,18 +12,18 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
     public void CreatePaged_Throws_On_Unsupported_DatabaseOperation(DatabaseOperation operation)
     {
         // Act
-        Sut.Invoking(x => x.CreatePaged<TestEntity>(operation, 1, 1))
-           .Should().ThrowExactly<ArgumentOutOfRangeException>()
-           .And.ParamName.Should().Be("operation");
+        Action a = () => Sut.CreatePaged<TestEntity>(operation, 1, 1);
+        a.ShouldThrow<ArgumentOutOfRangeException>()
+         .ParamName.ShouldBe("operation");
     }
 
     [Fact]
     public void CreatePaged_Throws_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
     {
         // Act & Assert
-        Sut.Invoking(x => x.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10))
-           .Should().ThrowExactly<InvalidOperationException>()
-           .WithMessage("Could not obtain paged database entity retriever settings for type [CrossCutting.Data.Sql.Tests.Repositories.TestEntity]");
+        Action a = () => Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10);
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("Could not obtain paged database entity retriever settings for type [CrossCutting.Data.Sql.Tests.Repositories.TestEntity]");
     }
 
     [Fact]
@@ -44,8 +44,8 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10);
 
         // Assert
-        actual.DataCommand.CommandText.Should().Be(CommandSql);
-        actual.RecordCountCommand.CommandText.Should().Be(RecordCountSql);
+        actual.DataCommand.CommandText.ShouldBe(CommandSql);
+        actual.RecordCountCommand.CommandText.ShouldBe(RecordCountSql);
     }
 
     [Fact]
@@ -67,8 +67,8 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10);
 
         // Assert
-        actual.DataCommand.CommandText.Should().Be(CommandSql);
-        actual.RecordCountCommand.CommandText.Should().Be(RecordCountSql);
+        actual.DataCommand.CommandText.ShouldBe(CommandSql);
+        actual.RecordCountCommand.CommandText.ShouldBe(RecordCountSql);
     }
 
     [Fact]
@@ -88,8 +88,8 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10);
 
         // Assert
-        actual.DataCommand.CommandText.Should().Be(CommandSql);
-        actual.RecordCountCommand.CommandText.Should().Be(RecordCountSql);
+        actual.DataCommand.CommandText.ShouldBe(CommandSql);
+        actual.RecordCountCommand.CommandText.ShouldBe(RecordCountSql);
     }
 
     [Fact]
@@ -106,6 +106,6 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 1000);
 
         // Assert
-        actual.PageSize.Should().Be(100);
+        actual.PageSize.ShouldBe(100);
     }
 }

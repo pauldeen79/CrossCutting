@@ -9,8 +9,8 @@ public class ModulusAggregatorTests
         var result = new ModulusAggregator().Aggregate((byte)5, (byte)2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(1);
     }
 
     [Fact]
@@ -20,8 +20,8 @@ public class ModulusAggregatorTests
         var result = new ModulusAggregator().Aggregate((short)5, (short)2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(1);
     }
 
     [Fact]
@@ -31,8 +31,8 @@ public class ModulusAggregatorTests
         var result = new ModulusAggregator().Aggregate(5, 2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(1);
     }
 
     [Fact]
@@ -42,8 +42,8 @@ public class ModulusAggregatorTests
         var result = new ModulusAggregator().Aggregate((long)5, (long)2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((long)1);
     }
 
     [Fact]
@@ -53,8 +53,8 @@ public class ModulusAggregatorTests
         var result = new ModulusAggregator().Aggregate((float)5, (float)2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((float)1);
     }
 
     [Fact]
@@ -64,8 +64,8 @@ public class ModulusAggregatorTests
         var result = new ModulusAggregator().Aggregate((decimal)5, (decimal)2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(1);
     }
 
     [Fact]
@@ -75,8 +75,7 @@ public class ModulusAggregatorTests
         var result = new ModulusAggregator().Aggregate(5, 2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(1);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(1);
     }
 }
-

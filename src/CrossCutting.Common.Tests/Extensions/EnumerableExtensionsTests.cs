@@ -12,7 +12,7 @@ public class EnumerableExtensionsTests
         var actual = input.NotNull();
 
         // Assert
-        actual.Should().BeEmpty();
+        actual.ShouldBeEmpty();
     }
 
     [Fact]
@@ -25,7 +25,7 @@ public class EnumerableExtensionsTests
         var actual = input.NotNull(x => x.StartsWith('A'));
 
         // Assert
-        actual.Should().BeEmpty();
+        actual.ShouldBeEmpty();
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class EnumerableExtensionsTests
         var actual = input.NotNull(x => x.StartsWith('A'));
 
         // Assert
-        actual.Should().BeEquivalentTo("A");
+        actual.ToArray().ShouldBeEquivalentTo(new[] { "A" });
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class EnumerableExtensionsTests
         var actual = input.DefaultWhenNull();
 
         // Assert
-        actual.Should().BeEmpty();
+        actual.ShouldBeEmpty();
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class EnumerableExtensionsTests
         var actual = input.DefaultWhenNull(new[] { "a", "b", "c" });
 
         // Assert
-        actual.Should().BeEquivalentTo("a", "b", "c");
+        actual.ShouldBeEquivalentTo(new[] { "a", "b", "c" });
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class EnumerableExtensionsTests
         var actual = input.DefaultWhenNull(new[] { "A", "B", "C" });
 
         // Assert
-        actual.Should().BeEquivalentTo("a", "b", "c");
+        actual.ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class EnumerableExtensionsTests
         var actual = input.WhenEmpty(new[] { "4", "5", "6" });
 
         // Assert
-        actual.Should().BeEquivalentTo(input);
+        actual.ShouldBeEquivalentTo(input);
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public class EnumerableExtensionsTests
         var actual = input.WhenEmpty(() => ["4", "5", "6"]);
 
         // Assert
-        actual.Should().BeEquivalentTo(input);
+        actual.ShouldBeEquivalentTo(input);
     }
 
     [Fact]
@@ -116,7 +116,7 @@ public class EnumerableExtensionsTests
         var actual = input.WhenEmpty(new[] { "4", "5", "6" });
 
         // Assert
-        actual.Should().BeEquivalentTo("4", "5", "6");
+        actual.ShouldBeEquivalentTo(new[] { "4", "5", "6" });
     }
 
     [Fact]
@@ -129,7 +129,7 @@ public class EnumerableExtensionsTests
         var actual = input.WhenEmpty(() => ["4", "5", "6"]);
 
         // Assert
-        actual.Should().BeEquivalentTo("4", "5", "6");
+        actual.ToArray().ShouldBeEquivalentTo(new[] { "4", "5", "6" });
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class EnumerableExtensionsTests
         var result = items.Pipe(seed, (result, item) => Result.FromInstance(item), x => x.IsSuccessful());
 
         // Assert
-        result.Should().BeSameAs(seed);
+        result.ShouldBeSameAs(seed);
     }
 
     [Fact]
@@ -157,7 +157,7 @@ public class EnumerableExtensionsTests
         var result = items.Pipe(seed, (result, item) => item == "D" ? Result.FromInstance(item) : Result.Continue(item), x => x.Status == ResultStatus.Continue);
 
         // Assert
-        result.Value.Should().BeEquivalentTo("C");
+        result.Value.ShouldBeEquivalentTo("C");
     }
 
     [Fact]
@@ -171,7 +171,7 @@ public class EnumerableExtensionsTests
         var result = items.Pipe(seed, (result, item) => item == "D" ? Result.FromInstance(item) : Result.Continue<string>(), x => x.Status == ResultStatus.Continue, _ => Result.FromInstance("Default"));
 
         // Assert
-        result.Value.Should().BeEquivalentTo("Default");
+        result.Value.ShouldBeEquivalentTo("Default");
     }
 
     [Fact]
@@ -185,7 +185,7 @@ public class EnumerableExtensionsTests
         var result = items.Pipe(seed, (result, item) => item == "B" ? Result.FromInstance(item) : Result.Continue(item), x => x.Status == ResultStatus.Continue);
 
         // Assert
-        result.Value.Should().BeEquivalentTo("B");
+        result.Value.ShouldBeEquivalentTo("B");
     }
 
     [Fact]
@@ -195,8 +195,8 @@ public class EnumerableExtensionsTests
         var sequence = new[] { 1, 2, 3 };
 
         // Act & Assert
-        sequence.Invoking(x => x.TakeWhileWithFirstNonMatching(predicate: null!).ToArray())
-                .Should().Throw<ArgumentNullException>().WithParameterName("predicate");
+        Action a = () => _ = sequence.TakeWhileWithFirstNonMatching(predicate: null!).ToArray();
+        a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("predicate");
     }
 
     [Fact]
@@ -209,7 +209,7 @@ public class EnumerableExtensionsTests
         var result = sequence.TakeWhileWithFirstNonMatching(x => x < 2).ToArray();
 
         // Assert
-        result.Should().BeEquivalentTo(new[] { 1, 2 });
+        result.ShouldBeEquivalentTo(new[] { 1, 2 });
     }
 
     [Fact]
@@ -222,7 +222,7 @@ public class EnumerableExtensionsTests
         var result = sequence.TakeWhileWithFirstNonMatching(x => x < 100).ToArray();
 
         // Assert
-        result.Should().BeEquivalentTo(new[] { 1, 2, 3 });
+        result.ShouldBeEquivalentTo(new[] { 1, 2, 3 });
     }
 
     [Fact]
@@ -235,7 +235,7 @@ public class EnumerableExtensionsTests
         var result = await input.SelectAsync(MyAsyncFunction);
 
         // Assert
-        result.Should().BeEquivalentTo("A", "B", "C");
+        result.ShouldBeEquivalentTo(new[] { "A", "B", "C" });
     }
 
     [Fact]
@@ -259,8 +259,8 @@ public class EnumerableExtensionsTests
         });
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error); // error should be returned
-        counter.Should().Be(3); // last error should be skipped
+        result.Status.ShouldBe(ResultStatus.Error); /// error should be returned;
+        counter.ShouldBe(3); /// last error should be skipped;
     }
 
     [Fact]
@@ -282,9 +282,9 @@ public class EnumerableExtensionsTests
         });
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValue().Should().BeEquivalentTo("success 2"); // last result should be returned
-        counter.Should().Be(2); // all items should have been processed
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.GetValue().ShouldBeEquivalentTo("success 2"); /// last result should be returned;
+        counter.ShouldBe(2); /// all items should have been processed;
     }
 
     [Fact]
@@ -306,9 +306,9 @@ public class EnumerableExtensionsTests
         });
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValue().Should().BeEquivalentTo("success 2"); // last result should be returned
-        counter.Should().Be(2); // all items should have been processed
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.GetValue().ShouldBeEquivalentTo("success 2"); /// last result should be returned;
+        counter.ShouldBe(2); /// all items should have been processed;
     }
 
     [Fact]
@@ -326,8 +326,8 @@ public class EnumerableExtensionsTests
         });
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok); // default value should be returned
-        counter.Should().Be(0); // no items to process
+        result.Status.ShouldBe(ResultStatus.Ok); /// default value should be returned;
+        counter.ShouldBe(0); /// no items to process;
     }
 
     [Fact]
@@ -345,8 +345,8 @@ public class EnumerableExtensionsTests
         });
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound); // default value should be returned
-        counter.Should().Be(0); // no items to process
+        result.Status.ShouldBe(ResultStatus.NotFound); /// default value should be returned;
+        counter.ShouldBe(0); /// no items to process;
     }
 
     [Fact]
@@ -370,8 +370,8 @@ public class EnumerableExtensionsTests
         });
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error); // error should be returned
-        counter.Should().Be(3); // last error should be skipped
+        result.Status.ShouldBe(ResultStatus.Error); /// error should be returned;
+        counter.ShouldBe(3); /// last error should be skipped;
     }
 
     [Fact]
@@ -395,8 +395,8 @@ public class EnumerableExtensionsTests
         });
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error); // error should be returned
-        counter.Should().Be(3); // last error should be skipped
+        result.Status.ShouldBe(ResultStatus.Error); /// error should be returned;
+        counter.ShouldBe(3); /// last error should be skipped;
     }
 
     [Fact]
@@ -420,8 +420,8 @@ public class EnumerableExtensionsTests
         });
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error); // error should be returned
-        counter.Should().Be(3); // last error should be skipped
+        result.Status.ShouldBe(ResultStatus.Error); /// error should be returned;
+        counter.ShouldBe(3); /// last error should be skipped;
     }
 
     [Fact]
@@ -443,9 +443,9 @@ public class EnumerableExtensionsTests
         });
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok); // error should be returned
-        result.GetValue().Should().BeNull(); // no value is returned, we are just returning a new Result instance with status Ok and no value
-        counter.Should().Be(2); // last error should be skipped
+        result.Status.ShouldBe(ResultStatus.Ok); /// error should be returned;
+        result.GetValue().ShouldBeNull(); /// no value is returned, we are just returning a new Result instance with status Ok and no value;
+        counter.ShouldBe(2); /// last error should be skipped;
     }
 
     [Fact]
@@ -467,9 +467,9 @@ public class EnumerableExtensionsTests
         });
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok); // error should be returned
-        result.GetValue().Should().BeNull(); // no value is returned, we are just returning a new Result instance with status Ok and no value
-        counter.Should().Be(2); // last error should be skipped
+        result.Status.ShouldBe(ResultStatus.Ok); /// error should be returned;
+        result.GetValue().ShouldBeNull(); /// no value is returned, we are just returning a new Result instance with status Ok and no value;
+        counter.ShouldBe(2); /// last error should be skipped;
     }
 
     [Fact]
@@ -491,9 +491,9 @@ public class EnumerableExtensionsTests
         });
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValue().Should().BeEquivalentTo("default success"); // last result should be returned
-        counter.Should().Be(2); // all items should have been processed
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.GetValue().ShouldBeEquivalentTo("default success"); /// last result should be returned;
+        counter.ShouldBe(2); /// all items should have been processed;
     }
 
     private static Task<string> MyAsyncFunction(string input)

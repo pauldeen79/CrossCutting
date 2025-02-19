@@ -25,7 +25,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var actual = Sut.ExecuteScalar(command);
 
         // Assert
-        actual.Should().Be(12345);
+        actual.ShouldBe(12345);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var actual = await Sut.ExecuteScalarAsync(command);
 
         // Assert
-        actual.Should().Be(12345);
+        actual.ShouldBe(12345);
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var actual = Sut.ExecuteNonQuery(command);
 
         // Assert
-        actual.Should().Be(12345);
+        actual.ShouldBe(12345);
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var actual = await Sut.ExecuteNonQueryAsync(command);
 
         // Assert
-        actual.Should().Be(12345);
+        actual.ShouldBe(12345);
     }
 
     [Fact]
@@ -78,22 +78,22 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.CreateResultEntity.Returns((_, _) => null!);
 
         // Act
-        Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "filled" }))
-           .Should().Throw<InvalidOperationException>()
-           .WithMessage("Instance should be supplied, or result entity delegate should deliver an instance");
+        Action a = () => Sut.ExecuteCommand(command, new MyEntity { Property = "filled" });
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("Instance should be supplied, or result entity delegate should deliver an instance");
     }
 
     [Fact]
-    public void InvokeCommandAsync_Throws_When_ResultEntityDelegate_Returns_Null()
+    public async Task InvokeCommandAsync_Throws_When_ResultEntityDelegate_Returns_Null()
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
         ProviderMock.CreateResultEntity.Returns((_, _) => null!);
 
         // Act
-        Sut.Awaiting(x => x.ExecuteCommandAsync(command, new MyEntity { Property = "filled" }))
-           .Should().ThrowAsync<InvalidOperationException>()
-           .WithMessage("Instance should be supplied, or result entity delegate should deliver an instance");
+        Task t = Sut.ExecuteCommandAsync(command, new MyEntity { Property = "filled" });
+        (await t.ShouldThrowAsync<InvalidOperationException>())
+         .Message.ShouldBe("Instance should be supplied, or result entity delegate should deliver an instance");
     }
 
     [Fact]
@@ -105,12 +105,12 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
-        Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "filled" }))
-           .Should().NotThrow<InvalidOperationException>();
+        Action a = () => Sut.ExecuteCommand(command, new MyEntity { Property = "filled" });
+        a.ShouldNotThrow();
     }
 
     [Fact]
-    public void InvokeCommandAsync_Does_Not_Throw_When_OperationValidationDelegate_Returns_True()
+    public async Task InvokeCommandAsync_Does_Not_Throw_When_OperationValidationDelegate_Returns_True()
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
@@ -118,8 +118,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
-        Sut.Awaiting(x => x.ExecuteCommandAsync(command, new MyEntity { Property = "filled" }))
-           .Should().NotThrowAsync<InvalidOperationException>();
+        Task t = Sut.ExecuteCommandAsync(command, new MyEntity { Property = "filled" });
+        await t.ShouldNotThrowAsync();
     }
 
     [Fact]
@@ -131,13 +131,13 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
-        Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = null }))
-           .Should().Throw<ValidationException>()
-           .WithMessage("The Property field is required.");
+        Action a = () => Sut.ExecuteCommand(command, new MyEntity { Property = null });
+        a.ShouldThrow<ValidationException>()
+         .Message.ShouldBe("The Property field is required.");
     }
 
     [Fact]
-    public void InvokeCommandAsync_Throws_When_Instance_Validation_Fails()
+    public async Task InvokeCommandAsync_Throws_When_Instance_Validation_Fails()
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
@@ -145,9 +145,9 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
-        Sut.Awaiting(x => x.ExecuteCommandAsync(command, new MyEntity { Property = null }))
-           .Should().ThrowAsync<ValidationException>()
-           .WithMessage("The Property field is required.");
+        Task t = Sut.ExecuteCommandAsync(command, new MyEntity { Property = null });
+        (await t.ShouldThrowAsync<ValidationException>())
+         .Message.ShouldBe("The Property field is required.");
     }
 
     [Fact]
@@ -160,13 +160,13 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
-        Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added"))
-           .Should().Throw<DataException>()
-           .WithMessage("MyEntity entity was not added");
+        Action a = () => Sut.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added");
+        a.ShouldThrow<DataException>()
+         .Message.ShouldBe("MyEntity entity was not added");
     }
 
     [Fact]
-    public async Task InvokeCommandAsync_No_AfterReadDelegate_Throws_When_ExecuteNonQuery_Returns_0()
+    public void InvokeCommandAsync_No_AfterReadDelegate_Throws_When_ExecuteNonQuery_Returns_0()
     {
         // Arrange
         Connection.AddResultForNonQueryCommand(0); // 0 rows affected
@@ -175,9 +175,9 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
-        await Sut.Invoking(async x => (await x.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added"))
-                 .Should().ThrowAsync<DataException>()
-                 .WithMessage("MyEntity entity was not added");
+        Action a = async () => (await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added");
+        a.ShouldThrow<DataException>()
+         .Message.ShouldBe("MyEntity entity was not added");
     }
 
     [Fact]
@@ -188,8 +188,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
 
         // Act
-        Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "test" }))
-           .Should().NotThrow<DataException>();
+        Action a = () => Sut.ExecuteCommand(command, new MyEntity { Property = "test" });
+        a.ShouldNotThrow();
     }
 
     [Fact]
@@ -200,8 +200,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
 
         // Act
-        Sut.Awaiting(x => x.ExecuteCommandAsync(command, new MyEntity { Property = "test" }))
-           .Should().NotThrowAsync<DataException>();
+        Task t = Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" });
+        t.ShouldNotThrowAsync();
     }
 
     [Fact]
@@ -214,13 +214,13 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.AfterRead.Returns(new AfterReadHandler<MyEntity>((x, _, _) => x));
 
         // Act
-        Sut.Invoking(x => x.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added"))
-           .Should().Throw<DataException>()
-           .WithMessage("MyEntity entity was not added");
+        Action a = () => Sut.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added");
+        a.ShouldThrow<DataException>()
+         .Message.ShouldBe("MyEntity entity was not added");
     }
 
     [Fact]
-    public async Task InvokeCommandAsync_AfterReadDelegate_Throws_When_ExecuteReader_Read_Returns_False()
+    public void InvokeCommandAsync_AfterReadDelegate_Throws_When_ExecuteReader_Read_Returns_False()
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
@@ -229,9 +229,9 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.AfterRead.Returns(new AfterReadHandler<MyEntity>((x, _, _) => x));
 
         // Act
-        await Sut.Invoking(async x => (await x.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added"))
-                 .Should().ThrowAsync<DataException>()
-                 .WithMessage("MyEntity entity was not added");
+        Action a = async () => (await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added");
+        a.ShouldThrow<DataException>()
+         .Message.ShouldBe("MyEntity entity was not added");
     }
 
     [Fact]
@@ -248,7 +248,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var actual = Sut.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added");
 
         // Assert
-        actual.Property.Should().Be("test");
+        actual.Property.ShouldBe("test");
     }
 
     [Fact]
@@ -265,7 +265,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var actual = (await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added");
 
         // Assert
-        actual.Property.Should().Be("test");
+        actual.Property.ShouldBe("test");
     }
 
     [Fact]
@@ -276,10 +276,10 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var builderSut = new DatabaseCommandProcessor<TestEntity, TestEntityBuilder>(Connection, builderProviderMock);
         var entity = new TestEntity("A", "B", "C", true);
 
-        // Act & Assert
-        builderSut.Invoking(x => x.ExecuteCommand(Substitute.For<IDatabaseCommand>(), entity))
-                  .Should().Throw<InvalidOperationException>()
-                  .WithMessage("Builder instance was not constructed, create builder delegate should deliver an instance");
+        // Act & Assert4
+        Action a = () => builderSut.ExecuteCommand(Substitute.For<IDatabaseCommand>(), entity);
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("Builder instance was not constructed, create builder delegate should deliver an instance");
     }
 
     [Fact]
@@ -291,9 +291,9 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act & Assert
-        builderSut.Awaiting(x => x.ExecuteCommandAsync(Substitute.For<IDatabaseCommand>(), entity))
-                  .Should().ThrowAsync<InvalidOperationException>()
-                  .WithMessage("Builder instance was not constructed, create builder delegate should deliver an instance");
+        Action a = async () => await builderSut.ExecuteCommandAsync(Substitute.For<IDatabaseCommand>(), entity);
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("Builder instance was not constructed, create builder delegate should deliver an instance");
     }
 
     [Fact]
@@ -310,9 +310,9 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act & Assert
-        builderSut.Invoking(x => x.ExecuteCommand(command, entity))
-                  .Should().Throw<InvalidOperationException>()
-                  .WithMessage("Could not cast type [CrossCutting.Data.Sql.Tests.Repositories.TestEntityBuilder] to [CrossCutting.Data.Sql.Tests.Repositories.TestEntity]");
+        Action a = () => builderSut.ExecuteCommand(command, entity);
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("Could not cast type [CrossCutting.Data.Sql.Tests.Repositories.TestEntityBuilder] to [CrossCutting.Data.Sql.Tests.Repositories.TestEntity]");
     }
 
     [Fact]
@@ -329,9 +329,9 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act & Assert
-        builderSut.Awaiting(x => x.ExecuteCommandAsync(command, entity))
-                  .Should().ThrowAsync<InvalidOperationException>()
-                  .WithMessage("Could not cast type [CrossCutting.Data.Sql.Tests.Repositories.TestEntityBuilder] to [CrossCutting.Data.Sql.Tests.Repositories.TestEntity]");
+        Action a = async () => await builderSut.ExecuteCommandAsync(command, entity);
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("Could not cast type [CrossCutting.Data.Sql.Tests.Repositories.TestEntityBuilder] to [CrossCutting.Data.Sql.Tests.Repositories.TestEntity]");
     }
 
     [Fact]
@@ -353,10 +353,10 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var actual = builderSut.ExecuteCommand(command, entity).HandleResult("Something went wrong");
 
         // Assert
-        actual.Code.Should().Be(entity.Code);
-        actual.CodeType.Should().Be(entity.CodeType);
-        actual.Description.Should().Be(entity.Description);
-        actual.IsExistingEntity.Should().Be(entity.IsExistingEntity);
+        actual.Code.ShouldBe(entity.Code);
+        actual.CodeType.ShouldBe(entity.CodeType);
+        actual.Description.ShouldBe(entity.Description);
+        actual.IsExistingEntity.ShouldBe(entity.IsExistingEntity);
     }
 
     [Fact]
@@ -378,10 +378,10 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var actual = (await builderSut.ExecuteCommandAsync(command, entity)).HandleResult("Something went wrong");
 
         // Assert
-        actual.Code.Should().Be(entity.Code);
-        actual.CodeType.Should().Be(entity.CodeType);
-        actual.Description.Should().Be(entity.Description);
-        actual.IsExistingEntity.Should().Be(entity.IsExistingEntity);
+        actual.Code.ShouldBe(entity.Code);
+        actual.CodeType.ShouldBe(entity.CodeType);
+        actual.Description.ShouldBe(entity.Description);
+        actual.IsExistingEntity.ShouldBe(entity.IsExistingEntity);
     }
 
     public void Dispose()

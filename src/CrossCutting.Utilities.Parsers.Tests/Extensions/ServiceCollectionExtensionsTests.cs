@@ -9,8 +9,7 @@ public class ServiceCollectionExtensionsTests
         var serviceCollection = new ServiceCollection();
 
         // Act & Assert
-        serviceCollection
-            .Invoking(x => x.AddParsers().BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true }))
-            .Should().NotThrow();
+        Action a = () => _ = serviceCollection.AddParsers().BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+        a.ShouldNotThrow();
     }
 }

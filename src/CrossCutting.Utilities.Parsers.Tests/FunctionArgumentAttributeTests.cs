@@ -6,27 +6,31 @@ public class FunctionArgumentAttributeTests
     public void Should_Construct_1()
     {
         // Act & Assert
-        this.Invoking(_ => new FunctionArgumentAttribute("Name", typeof(string))).Should().NotThrow();
+        Action a = () => _ = new FunctionArgumentAttribute("Name", typeof(string));
+        a.ShouldNotThrow();
     }
 
     [Fact]
     public void Should_Construct_2()
     {
         // Act & Assert
-        this.Invoking(_ => new FunctionArgumentAttribute("Name", typeof(string), "Description")).Should().NotThrow();
+        Action a = () => _ = new FunctionArgumentAttribute("Name", typeof(string), "Description");
+        a.ShouldNotThrow();
     }
 
     [Fact]
     public void Should_Construct_3()
     {
         // Act & Assert
-        this.Invoking(_ => new FunctionArgumentAttribute("Name", typeof(string), true)).Should().NotThrow();
+        Action a = () => _ = new FunctionArgumentAttribute("Name", typeof(string), true);
+        a.ShouldNotThrow();
     }
 
     [Fact]
     public void Should_Construct_4()
     {
         // Act & Assert
-        this.Invoking(_ => new FunctionArgumentAttribute("Name", typeof(string), "Description", true)).Should().NotThrow();
+        Action a = () => _ = new FunctionArgumentAttribute("Name", typeof(string), "Description", true);
+        a.ShouldNotThrow();
     }
 }
