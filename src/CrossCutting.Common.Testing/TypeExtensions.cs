@@ -47,10 +47,7 @@ public static class TypeExtensions
                 try
                 {
                     constructor.Invoke(mocksCopy);
-                    if (!parameters[i].ParameterType.IsValueType)
-                    {
-                        throw new InvalidOperationException($"ArgumentNullException expected for parameter {parameters[i].Name} of constructor, but no exception was thrown");
-                    }
+                    VerifyValueType(parameters, i);
                 }
                 catch (TargetInvocationException ex)
                 {
@@ -61,6 +58,14 @@ public static class TypeExtensions
                     }
                 }
             }
+        }
+    }
+
+    private static void VerifyValueType(ParameterInfo[] parameters, int i)
+    {
+        if (!parameters[i].ParameterType.IsValueType)
+        {
+            throw new InvalidOperationException($"ArgumentNullException expected for parameter {parameters[i].Name} of constructor, but no exception was thrown");
         }
     }
 
