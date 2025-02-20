@@ -156,6 +156,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         // Arrange
         Connection.AddResultForNonQueryCommand(0); // 0 rows affected
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
+        ProviderMock.AfterRead.Returns(default(AfterReadHandler<MyEntity>?));
         ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
         ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
@@ -166,16 +167,18 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     }
 
     [Fact]
-    public void InvokeCommandAsync_No_AfterReadDelegate_Throws_When_ExecuteNonQuery_Returns_0()
+    public async Task InvokeCommandAsync_No_AfterReadDelegate_Throws_When_ExecuteNonQuery_Returns_0()
     {
         // Arrange
         Connection.AddResultForNonQueryCommand(0); // 0 rows affected
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
+        ProviderMock.AfterRead.Returns(default(AfterReadHandler<MyEntity>?));
         ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
         ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
-        Action a = async () => (await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added");
+        var result = await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" });
+        Action a = () => result.HandleResult("MyEntity entity was not added");
         a.ShouldThrow<DataException>()
          .Message.ShouldBe("MyEntity entity was not added");
     }
@@ -186,6 +189,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         // Arrange
         Connection.AddResultForNonQueryCommand(1); // 1 row affected
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
+        ProviderMock.AfterRead.Returns(default(AfterReadHandler<MyEntity>?));
+        ProviderMock.CreateResultEntity.Returns(default(CreateResultEntityHandler<MyEntity>?));
 
         // Act
         Action a = () => Sut.ExecuteCommand(command, new MyEntity { Property = "test" });
@@ -198,6 +203,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         // Arrange
         Connection.AddResultForNonQueryCommand(1); // 1 row affected
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
+        ProviderMock.AfterRead.Returns(default(AfterReadHandler<MyEntity>?));
 
         // Act
         Task t = Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" });
@@ -220,7 +226,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     }
 
     [Fact]
-    public void InvokeCommandAsync_AfterReadDelegate_Throws_When_ExecuteReader_Read_Returns_False()
+    public async Task InvokeCommandAsync_AfterReadDelegate_Throws_When_ExecuteReader_Read_Returns_False()
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
@@ -229,7 +235,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.AfterRead.Returns(new AfterReadHandler<MyEntity>((x, _, _) => x));
 
         // Act
-        Action a = async () => (await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added");
+        var result = await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" });
+        Action a = () => result.HandleResult("MyEntity entity was not added");
         a.ShouldThrow<DataException>()
          .Message.ShouldBe("MyEntity entity was not added");
     }
@@ -283,7 +290,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     }
 
     [Fact]
-    public void InvokeCommandAsync_Builder_To_Entity_Conversion_Throws_When_Builder_Could_Not_Be_Constructed()
+    public async Task InvokeCommandAsync_Builder_To_Entity_Conversion_Throws_When_Builder_Could_Not_Be_Constructed()
     {
         // Arrange
         var builderProviderMock = Substitute.For<IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>>();
@@ -291,8 +298,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act & Assert
-        Action a = async () => await builderSut.ExecuteCommandAsync(Substitute.For<IDatabaseCommand>(), entity);
-        a.ShouldThrow<InvalidOperationException>()
+        Task t = builderSut.ExecuteCommandAsync(Substitute.For<IDatabaseCommand>(), entity);
+        (await t.ShouldThrowAsync<InvalidOperationException>())
          .Message.ShouldBe("Builder instance was not constructed, create builder delegate should deliver an instance");
     }
 
@@ -316,7 +323,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     }
 
     [Fact]
-    public void InvokeCommandAsync_Entity_To_Builder_Conversion_Throws_When_Entity_Could_Not_Be_Constructed()
+    public async Task InvokeCommandAsync_Entity_To_Builder_Conversion_Throws_When_Entity_Could_Not_Be_Constructed()
     {
         // Arrange
         var builderProviderMock = Substitute.For<IDatabaseCommandEntityProvider<TestEntity, TestEntityBuilder>>();
@@ -329,8 +336,8 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act & Assert
-        Action a = async () => await builderSut.ExecuteCommandAsync(command, entity);
-        a.ShouldThrow<InvalidOperationException>()
+        var t = builderSut.ExecuteCommandAsync(command, entity);
+        (await t.ShouldThrowAsync<InvalidOperationException>())
          .Message.ShouldBe("Could not cast type [CrossCutting.Data.Sql.Tests.Repositories.TestEntityBuilder] to [CrossCutting.Data.Sql.Tests.Repositories.TestEntity]");
     }
 
