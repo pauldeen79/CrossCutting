@@ -26,11 +26,7 @@ public static class TypeExtensions
         Func<ParameterInfo, object?>? parameterReplaceDelegate = null,
         Func<ConstructorInfo, bool>? constructorPredicate = null)
     {
-        var constructors = type.GetConstructors();
-        if (constructors.Length == 0)
-        {
-            throw new InvalidOperationException($"Type {type.FullName} should have public constructors");
-        }
+        var constructors = GetConstructors(type);
 
         foreach (var constructor in constructors.Where(c => ShouldProcessConstructor(constructorPredicate, c)))
         {
@@ -58,17 +54,25 @@ public static class TypeExtensions
                 }
                 catch (TargetInvocationException ex)
                 {
-                    if (ex.InnerException is not ArgumentNullException argumentNullException)
-                    {
-                        throw;
-                    }
-                    if (argumentNullException.ParamName != parameters[i].Name)
+                    if (ex.InnerException is not ArgumentNullException argumentNullException
+                        || argumentNullException.ParamName != parameters[i].Name)
                     {
                         throw;
                     }
                 }
             }
         }
+    }
+
+    private static ConstructorInfo[] GetConstructors(Type type)
+    {
+        var constructors = type.GetConstructors();
+        if (constructors.Length == 0)
+        {
+            throw new InvalidOperationException($"Type {type.FullName} should have public constructors");
+        }
+
+        return constructors;
     }
 
     public static object? CreateInstance(
