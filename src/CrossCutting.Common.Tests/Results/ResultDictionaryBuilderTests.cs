@@ -27,8 +27,8 @@ public class ResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = sut.Build();
-                dictionary.Should().ContainSingle();
-                dictionary.First().Key.Should().Be("Test");
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
             }
 
             [Fact]
@@ -42,8 +42,8 @@ public class ResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = sut.Build();
-                dictionary.Should().ContainSingle();
-                dictionary.First().Key.Should().Be("Test");
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
             }
 
             [Fact]
@@ -54,9 +54,9 @@ public class ResultDictionaryBuilderTests
                 sut.Add("Test", NonGenericDelegate);
 
                 // Act & Assert
-                sut.Invoking(x => x.Add("Test", NonGenericDelegate))
-                   .Should().Throw<ArgumentException>()
-                   .WithMessage("An item with the same key has already been added. Key: Test");
+                Action a = () => sut.Add("Test", NonGenericDelegate);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test");
             }
         }
 
@@ -73,9 +73,9 @@ public class ResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = sut.Build();
-                dictionary.Should().HaveCount(2);
-                dictionary.First().Key.Should().Be("Test.0");
-                dictionary.Last().Key.Should().Be("Test.1");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test.0");
+                dictionary.Last().Key.ShouldBe("Test.1");
             }
 
             [Fact]
@@ -89,9 +89,9 @@ public class ResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = sut.Build();
-                dictionary.Should().HaveCount(2);
-                dictionary.First().Key.Should().Be("Test.0");
-                dictionary.Last().Key.Should().Be("Test.1");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test.0");
+                dictionary.Last().Key.ShouldBe("Test.1");
             }
 
             [Fact]
@@ -102,9 +102,9 @@ public class ResultDictionaryBuilderTests
                 sut.AddRange("Test.{0}", NonGenericRangeDelegate);
 
                 // Act & Assert
-                sut.Invoking(x => x.AddRange("Test.{0}", NonGenericRangeDelegate))
-                   .Should().Throw<ArgumentException>()
-                   .WithMessage("An item with the same key has already been added. Key: Test.0");
+                Action a = () => sut.AddRange("Test.{0}", NonGenericRangeDelegate);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test.0");
             }
 
             [Fact]
@@ -118,11 +118,11 @@ public class ResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = sut.Build();
-                dictionary.Should().HaveCount(2);
-                dictionary.First().Key.Should().Be("Test.0");
-                dictionary.First().Value.Status.Should().Be(ResultStatus.Ok);
-                dictionary.Last().Key.Should().Be("Test.1");
-                dictionary.Last().Value.Status.Should().Be(ResultStatus.Error);
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test.0");
+                dictionary.First().Value.Status.ShouldBe(ResultStatus.Ok);
+                dictionary.Last().Key.ShouldBe("Test.1");
+                dictionary.Last().Value.Status.ShouldBe(ResultStatus.Error);
             }
         }
 
@@ -140,7 +140,7 @@ public class ResultDictionaryBuilderTests
                 var result = sut.Build();
 
                 // Assert
-                result.Should().HaveCount(2);
+                result.Count.ShouldBe(2);
             }
 
             [Fact]
@@ -156,8 +156,8 @@ public class ResultDictionaryBuilderTests
                 var result = sut.Build();
 
                 // Assert
-                result.Should().HaveCount(2);
-                result.Keys.Should().BeEquivalentTo("Test1", "Test2");
+                result.Count.ShouldBe(2);
+                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
             }
         }
     }
@@ -177,8 +177,8 @@ public class ResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = sut.Build();
-                dictionary.Should().ContainSingle();
-                dictionary.First().Key.Should().Be("Test");
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
             }
 
             [Fact]
@@ -192,8 +192,8 @@ public class ResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = sut.Build();
-                dictionary.Should().ContainSingle();
-                dictionary.First().Key.Should().Be("Test");
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
             }
 
             [Fact]
@@ -204,9 +204,9 @@ public class ResultDictionaryBuilderTests
                 sut.Add("Test", GenericDelegate);
 
                 // Act & Assert
-                sut.Invoking(x => x.Add("Test", GenericDelegate))
-                   .Should().Throw<ArgumentException>()
-                   .WithMessage("An item with the same key has already been added. Key: Test");
+                Action a = () => sut.Add("Test", GenericDelegate);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test");
             }
         }
 
@@ -223,9 +223,9 @@ public class ResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = sut.Build();
-                dictionary.Should().HaveCount(2);
-                dictionary.First().Key.Should().Be("Test.0");
-                dictionary.Last().Key.Should().Be("Test.1");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test.0");
+                dictionary.Last().Key.ShouldBe("Test.1");
             }
 
             [Fact]
@@ -239,9 +239,9 @@ public class ResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = sut.Build();
-                dictionary.Should().HaveCount(2);
-                dictionary.First().Key.Should().Be("Test.0");
-                dictionary.Last().Key.Should().Be("Test.1");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test.0");
+                dictionary.Last().Key.ShouldBe("Test.1");
             }
 
             [Fact]
@@ -252,9 +252,9 @@ public class ResultDictionaryBuilderTests
                 sut.AddRange("Test.{0}", GenericRangeDelegate);
 
                 // Act & Assert
-                sut.Invoking(x => x.AddRange("Test.{0}", GenericRangeDelegate))
-                   .Should().Throw<ArgumentException>()
-                   .WithMessage("An item with the same key has already been added. Key: Test.0");
+                Action a = () => sut.AddRange("Test.{0}", GenericRangeDelegate);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test.0");
             }
 
             [Fact]
@@ -268,11 +268,11 @@ public class ResultDictionaryBuilderTests
 
                 // Assert
                 var dictionary = sut.Build();
-                dictionary.Should().HaveCount(2);
-                dictionary.First().Key.Should().Be("Test.0");
-                dictionary.First().Value.Status.Should().Be(ResultStatus.Ok);
-                dictionary.Last().Key.Should().Be("Test.1");
-                dictionary.Last().Value.Status.Should().Be(ResultStatus.Error);
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test.0");
+                dictionary.First().Value.Status.ShouldBe(ResultStatus.Ok);
+                dictionary.Last().Key.ShouldBe("Test.1");
+                dictionary.Last().Value.Status.ShouldBe(ResultStatus.Error);
             }
         }
 
@@ -290,7 +290,7 @@ public class ResultDictionaryBuilderTests
                 var result = sut.Build();
 
                 // Assert
-                result.Should().HaveCount(2);
+                result.Count.ShouldBe(2);
             }
 
             [Fact]
@@ -306,8 +306,8 @@ public class ResultDictionaryBuilderTests
                 var result = sut.Build();
 
                 // Assert
-                result.Should().HaveCount(2);
-                result.Keys.Should().BeEquivalentTo("Test1", "Test2");
+                result.Count.ShouldBe(2);
+                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
             }
         }
     }

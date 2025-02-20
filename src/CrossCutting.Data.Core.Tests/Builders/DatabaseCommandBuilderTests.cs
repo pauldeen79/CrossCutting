@@ -15,14 +15,14 @@ public class DatabaseCommandBuilderTests
                         .Build();
 
         // Assert
-        actual.CommandText.Should().Be("SELECT * FROM Fridge WHERE Alcohol > @percentage");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.CommandText.ShouldBe("SELECT * FROM Fridge WHERE Alcohol > @percentage");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
         {
-            parameters.Should().HaveCount(1);
-            parameters.First().Key.Should().Be("percentage");
-            parameters.First().Value.Should().Be(10);
+            parameters.Count.ShouldBe(1);
+            parameters.First().Key.ShouldBe("percentage");
+            parameters.First().Value.ShouldBe(10);
         }
     }
 
@@ -39,12 +39,12 @@ public class DatabaseCommandBuilderTests
         var actual = sut.Clear().Append("test").Build();
 
         // Assert
-        actual.CommandText.Should().Be("test");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.CommandText.ShouldBe("test");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
         {
-            parameters.Should().HaveCount(0);
+            parameters.Count.ShouldBe(0);
         }
     }
 }

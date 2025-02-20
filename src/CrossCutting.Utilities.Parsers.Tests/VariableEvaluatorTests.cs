@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+namespace CrossCutting.Utilities.Parsers.Tests;
 
 public class VariableEvaluatorTests
 {
@@ -16,8 +16,8 @@ public class VariableEvaluatorTests
             var result = sut.Evaluate("myVariable", null);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("result value");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("result value");
         }
 
         [Fact]
@@ -30,8 +30,8 @@ public class VariableEvaluatorTests
             var result = sut.Evaluate("myVariable", null);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Unknown variable found: myVariable");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown variable found: myVariable");
         }
 
         [Fact]
@@ -44,8 +44,8 @@ public class VariableEvaluatorTests
             var result = sut.Evaluate(string.Empty, null);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Variable is required");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Variable is required");
         }
     }
 
@@ -63,7 +63,7 @@ public class VariableEvaluatorTests
             var result = sut.Validate("myVariable", null);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -76,8 +76,8 @@ public class VariableEvaluatorTests
             var result = sut.Validate("myVariable", null);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Unknown variable found: myVariable");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown variable found: myVariable");
         }
 
         [Fact]
@@ -90,8 +90,8 @@ public class VariableEvaluatorTests
             var result = sut.Validate(string.Empty, null);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Variable is required");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Variable is required");
         }
     }
 }

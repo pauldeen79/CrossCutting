@@ -9,9 +9,12 @@ public class FormattableStringParserSettingsTests
         {
             // Arrange
             var builder = new FormattableStringParserSettingsBuilder();
+            builder.WithPlaceholderStart("\uE002");
 
             // Act & Assert
-            builder.WithPlaceholderStart("\uE002").Invoking(x => x.Build()).Should().Throw<ValidationException>().WithMessage("PlaceholderStart cannot contain the \uE002 character");
+            Action a = () => builder.Build();
+            a.ShouldThrow<ValidationException>()
+             .Message.ShouldBe("PlaceholderStart cannot contain the \uE002 character");
         }
 
         [Fact]
@@ -19,9 +22,12 @@ public class FormattableStringParserSettingsTests
         {
             // Arrange
             var builder = new FormattableStringParserSettingsBuilder();
+            builder.WithPlaceholderEnd("\uE002");
 
             // Act & Assert
-            builder.WithPlaceholderEnd("\uE002").Invoking(x => x.Build()).Should().Throw<ValidationException>().WithMessage("PlaceholderEnd cannot contain the \uE002 character");
+            Action a = () => builder.Build();
+            a.ShouldThrow<ValidationException>()
+             .Message.ShouldBe("PlaceholderEnd cannot contain the \uE002 character");
         }
 
         [Fact]
@@ -29,9 +35,12 @@ public class FormattableStringParserSettingsTests
         {
             // Arrange
             var builder = new FormattableStringParserSettingsBuilder();
+            builder.WithPlaceholderStart("x").WithPlaceholderEnd("x");
 
             // Act & Assert
-            builder.WithPlaceholderStart("x").WithPlaceholderEnd("x").Invoking(x => x.Build()).Should().Throw<ValidationException>().WithMessage("PlaceholderStart and PlaceholderEnd cannot have the same value");
+            Action a = () => builder.Build();
+            a.ShouldThrow<ValidationException>()
+             .Message.ShouldBe("PlaceholderStart and PlaceholderEnd cannot have the same value");
         }
     }
 }

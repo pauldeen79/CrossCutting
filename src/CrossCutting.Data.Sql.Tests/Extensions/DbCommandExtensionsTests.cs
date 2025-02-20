@@ -13,9 +13,9 @@ public class DbCommandExtensionsTests
 
         // Assert
         var parameters = command.Parameters.Cast<IDbDataParameter>();
-        parameters.Should().ContainSingle();
-        parameters.First().ParameterName.Should().Be("Name");
-        parameters.First().Value.Should().Be("Value");
+        parameters.Count().ShouldBe(1);
+        parameters.First().ParameterName.ShouldBe("Name");
+        parameters.First().Value.ShouldBe("Value");
     }
 
     [Fact]
@@ -34,11 +34,11 @@ public class DbCommandExtensionsTests
 
         // Assert
         var result = command.Parameters.Cast<IDbDataParameter>();
-        result.Should().HaveCount(2);
-        result.First().ParameterName.Should().Be("param1");
-        result.First().Value.Should().Be("value1");
-        result.Last().ParameterName.Should().Be("param2");
-        result.Last().Value.Should().Be(DBNull.Value);
+        result.Count().ShouldBe(2);
+        result.First().ParameterName.ShouldBe("param1");
+        result.First().Value.ShouldBe("value1");
+        result.Last().ParameterName.ShouldBe("param2");
+        result.Last().Value.ShouldBe(DBNull.Value);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class DbCommandExtensionsTests
         command.FillCommand($"Test", DatabaseCommandType.Text);
 
         // Assert
-        command.CommandText.Should().Be("Test");
+        command.CommandText.ShouldBe("Test");
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class DbCommandExtensionsTests
         command.FillCommand($"SELECT * FROM Table WHERE Field = {value}", DatabaseCommandType.Text);
 
         // Assert
-        command.CommandText.Should().Be("SELECT * FROM Table WHERE Field = @p0");
+        command.CommandText.ShouldBe("SELECT * FROM Table WHERE Field = @p0");
     }
 
     [Theory]
@@ -80,7 +80,7 @@ public class DbCommandExtensionsTests
         command.FillCommand($"Test", dbCommandType);
 
         // Assert
-        command.CommandType.Should().Be(expectedCommandType);
+        command.CommandType.ShouldBe(expectedCommandType);
     }
 
     [Fact]
@@ -99,11 +99,11 @@ public class DbCommandExtensionsTests
 
         // Assert
         var result = command.Parameters.Cast<IDbDataParameter>();
-        result.Should().HaveCount(2);
-        result.First().ParameterName.Should().Be("param1");
-        result.First().Value.Should().Be("value1");
-        result.Last().ParameterName.Should().Be("param2");
-        result.Last().Value.Should().Be(DBNull.Value);
+        result.Count().ShouldBe(2);
+        result.First().ParameterName.ShouldBe("param1");
+        result.First().Value.ShouldBe("value1");
+        result.Last().ParameterName.ShouldBe("param2");
+        result.Last().Value.ShouldBe(DBNull.Value);
     }
 
     [Fact]
@@ -118,9 +118,9 @@ public class DbCommandExtensionsTests
 
         // Assert
         var result = command.Parameters.Cast<IDbDataParameter>();
-        result.Should().ContainSingle();
-        result.First().ParameterName.Should().Be("p0");
-        result.First().Value.Should().Be("sql injection safe!");
+        result.Count().ShouldBe(1);
+        result.First().ParameterName.ShouldBe("p0");
+        result.First().Value.ShouldBe("sql injection safe!");
     }
 
     [Fact]
@@ -138,8 +138,8 @@ public class DbCommandExtensionsTests
         var result = command.FindOne($"SELECT TOP 1 * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, reader => new MyDataObject { Property = reader.GetString("Property") });
 
         // Assert
-        result.Should().NotBeNull();
-        result?.Property.Should().Be("test");
+        result.ShouldNotBeNull();
+        result?.Property.ShouldBe("test");
     }
 
     [Fact]
@@ -157,8 +157,8 @@ public class DbCommandExtensionsTests
         var result = await command.FindOneAsync($"SELECT TOP 1 * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, CancellationToken.None, reader => new MyDataObject { Property = reader.GetString("Property") });
 
         // Assert
-        result.Should().NotBeNull();
-        result?.Property.Should().Be("test");
+        result.ShouldNotBeNull();
+        result?.Property.ShouldBe("test");
     }
 
     [Fact]
@@ -177,9 +177,9 @@ public class DbCommandExtensionsTests
         var result = command.FindMany($"SELECT * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, reader => new MyDataObject { Property = reader.GetString("Property") });
 
         // Assert
-        result.Should().NotBeNull().And.HaveCount(2);
-        result.First().Property.Should().Be("test1");
-        result.Last().Property.Should().Be("test2");
+        result.ShouldNotBeNull().Count.ShouldBe(2);
+        result.First().Property.ShouldBe("test1");
+        result.Last().Property.ShouldBe("test2");
     }
 
     [Fact]
@@ -198,9 +198,9 @@ public class DbCommandExtensionsTests
         var result = await command.FindManyAsync($"SELECT * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, CancellationToken.None, reader => new MyDataObject { Property = reader.GetString("Property") });
 
         // Assert
-        result.Should().NotBeNull().And.HaveCount(2);
-        result.First().Property.Should().Be("test1");
-        result.Last().Property.Should().Be("test2");
+        result.ShouldNotBeNull().Count.ShouldBe(2);
+        result.First().Property.ShouldBe("test1");
+        result.Last().Property.ShouldBe("test2");
     }
     public class MyDataObject
     {

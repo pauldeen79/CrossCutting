@@ -16,7 +16,7 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var actual = sut.CreateCommand.Invoke(entity, operation);
 
         // Assert
-        actual.CommandText.Should().Be(expectedCommandText);
+        actual.CommandText.ShouldBe(expectedCommandText);
     }
 
     [Theory]
@@ -29,9 +29,9 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
         // Act
-        sut.Invoking(x => x.CreateCommand.Invoke(entity, operation))
-           .Should().Throw<ArgumentOutOfRangeException>()
-           .And.ParamName.Should().Be("operation");
+        Action a = () => sut.CreateCommand.Invoke(entity, operation);
+        a.ShouldThrow<ArgumentOutOfRangeException>()
+         .ParamName.ShouldBe("operation");
     }
 
     [Theory]
@@ -45,13 +45,13 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
         // Act
-        sut.CreateResultEntity.Should().NotBeNull();
+        sut.CreateResultEntity.ShouldNotBeNull();
         if (sut.CreateResultEntity is not null)
         {
             var actual = sut.CreateResultEntity.Invoke(entity, operation);
 
             // Assert
-            actual.Should().Be(entity);
+            actual.ShouldBe(entity);
         }
     }
 
@@ -65,12 +65,12 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var entity = new TestEntityBuilder(new TestEntity("", "", ""));
 
         // Act
-        sut.CreateResultEntity.Should().NotBeNull();
+        sut.CreateResultEntity.ShouldNotBeNull();
         if (sut.CreateResultEntity is not null)
         {
-            sut.Invoking(x => x.CreateResultEntity?.Invoke(entity, operation))
-               .Should().Throw<ArgumentOutOfRangeException>()
-               .And.ParamName.Should().Be("operation");
+            Action a = () => sut.CreateResultEntity?.Invoke(entity, operation);
+            a.ShouldThrow<ArgumentOutOfRangeException>()
+             .ParamName.ShouldBe("operation");
         }
     }
 
@@ -114,18 +114,18 @@ public class TestEntityDatabaseCommandEntityProviderTests
         );
 
         // Act
-        sut.AfterRead.Should().NotBeNull();
+        sut.AfterRead.ShouldNotBeNull();
         if (sut.AfterRead is not null)
         {
             var actual = sut.AfterRead.Invoke(entity, operation, readerMock);
 
             // Assert
-            actual.Should().Be(entity);
+            actual.ShouldBe(entity);
             if (operation != DatabaseOperation.Delete)
             {
-                actual.Code.Should().Be("new code");
-                actual.CodeType.Should().Be("new code type");
-                actual.Description.Should().Be("new description");
+                actual.Code.ShouldBe("new code");
+                actual.CodeType.ShouldBe("new code type");
+                actual.Description.ShouldBe("new description");
             }
         }
     }
@@ -141,12 +141,12 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var readerMock = Substitute.For<IDataReader>();
 
         // Act
-        sut.AfterRead.Should().NotBeNull();
+        sut.AfterRead.ShouldNotBeNull();
         if (sut.AfterRead is not null)
         {
-            sut.Invoking(x => x.AfterRead?.Invoke(entity, operation, readerMock))
-               .Should().Throw<ArgumentOutOfRangeException>()
-               .And.ParamName.Should().Be("operation");
+            Action a = () => sut.AfterRead?.Invoke(entity, operation, readerMock);
+            a.ShouldThrow<ArgumentOutOfRangeException>()
+             .ParamName.ShouldBe("operation");
         }
     }
 
@@ -158,16 +158,16 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act
-        sut.CreateBuilder.Should().NotBeNull();
+        sut.CreateBuilder.ShouldNotBeNull();
         if (sut.CreateBuilder is not null)
         {
             var actual = sut.CreateBuilder.Invoke(entity);
 
             // Assert
-            actual.Should().NotBeNull();
-            actual.Code.Should().Be(entity.Code);
-            actual.CodeType.Should().Be(entity.CodeType);
-            actual.Description.Should().Be(entity.Description);
+            actual.ShouldNotBeNull();
+            actual.Code.ShouldBe(entity.Code);
+            actual.CodeType.ShouldBe(entity.CodeType);
+            actual.Description.ShouldBe(entity.Description);
         }
     }
 
@@ -179,16 +179,16 @@ public class TestEntityDatabaseCommandEntityProviderTests
         var builder = new TestEntityBuilder(new TestEntity("A", "B", "C", true));
 
         // Act
-        sut.CreateEntity.Should().NotBeNull();
+        sut.CreateEntity.ShouldNotBeNull();
         if (sut.CreateEntity is not null)
         {
             var actual = sut.CreateEntity.Invoke(builder);
 
             // Assert
-            actual.Should().NotBeNull();
-            actual.Code.Should().Be(builder.Code);
-            actual.CodeType.Should().Be(builder.CodeType);
-            actual.Description.Should().Be(builder.Description);
+            actual.ShouldNotBeNull();
+            actual.Code.ShouldBe(builder.Code);
+            actual.CodeType.ShouldBe(builder.CodeType);
+            actual.Description.ShouldBe(builder.Description);
         }
     }
 }

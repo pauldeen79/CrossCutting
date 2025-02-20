@@ -1,4 +1,4 @@
-﻿namespace System.Data.Stub.Tests;
+namespace System.Data.Stub.Tests;
 
 public class DbParameterCollectionTests
 {
@@ -15,8 +15,8 @@ public class DbParameterCollectionTests
         var actual = sut["Parameter1"];
 
         // Assert
-        actual.Should().BeOfType<DbDataParameter>();
-        ((DbDataParameter)actual.Value!).Value.Should().Be("value1");
+        actual.ShouldBeOfType<DbDataParameter>();
+        ((DbDataParameter)actual.Value!).Value.ShouldBe("value1");
     }
 
     [Fact]
@@ -32,8 +32,8 @@ public class DbParameterCollectionTests
         var actual = sut[0];
 
         // Assert
-        actual.Should().BeOfType<DbDataParameter>();
-        ((DbDataParameter)actual.Value!).Value.Should().Be("value1");
+        actual.ShouldBeOfType<DbDataParameter>();
+        ((DbDataParameter)actual.Value!).Value.ShouldBe("value1");
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class DbParameterCollectionTests
         var actual = sut.Count;
 
         // Assert
-        actual.Should().Be(1);
+        actual.ShouldBe(1);
     }
 
     [Theory, InlineData("Parameter1", true), InlineData("NonExisiting", false)]
@@ -65,7 +65,7 @@ public class DbParameterCollectionTests
         var actual = sut.Contains(parameterName);
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     [Theory, InlineData("value1", true), InlineData("NonExisiting", false)]
@@ -81,7 +81,7 @@ public class DbParameterCollectionTests
         var actual = sut.Contains(parameterValue);
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public class DbParameterCollectionTests
         };
 
         // Assert
-        sut.Count.Should().Be(2);
+        sut.Count.ShouldBe(2);
     }
 
     [Fact]
@@ -112,6 +112,6 @@ public class DbParameterCollectionTests
         sut.Clear();
 
         // Assert
-        sut.Count.Should().Be(0);
+        sut.Count.ShouldBe(0);
     }
 }

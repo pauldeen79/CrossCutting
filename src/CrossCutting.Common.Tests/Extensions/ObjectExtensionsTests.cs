@@ -9,8 +9,8 @@ public class ObjectExtensionsTests
         var input = new MyPocoClass();
 
         // Act & Assert
-        input.Invoking(x => x.Validate())
-             .Should().Throw<ValidationException>();
+        Action a = () => input.Validate();
+        a.ShouldThrow<ValidationException>();
     }
 
     [Fact]
@@ -24,8 +24,8 @@ public class ObjectExtensionsTests
         var actual = input.TryValidate(validationResults);
 
         // Assert
-        actual.Should().BeFalse();
-        validationResults.Should().HaveCount(1);
+        actual.ShouldBeFalse();
+        validationResults.Count.ShouldBe(1);
     }
 
     [Fact]
@@ -35,8 +35,8 @@ public class ObjectExtensionsTests
         var input = new MyPocoClass();
 
         // Act & assert
-        input.Invoking(x => x.TryDispose())
-             .Should().NotThrow();
+        Action a = () => input.TryDispose();
+        a.ShouldNotThrow();
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class ObjectExtensionsTests
         input.TryDispose();
 
         // Assert
-        input.IsDisposed.Should().BeTrue();
+        input.IsDisposed.ShouldBeTrue();
     }
 
     [Theory,
@@ -62,7 +62,7 @@ public class ObjectExtensionsTests
         var actual = input.ToStringWithNullCheck();
 
         // Assert
-        actual.Should().Be(expectedOutput);
+        actual.ShouldBe(expectedOutput);
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class ObjectExtensionsTests
         var actual = ((object?)null).ToStringWithDefault(() => "default");
 
         // Assert
-        actual.Should().Be("default");
+        actual.ShouldBe("default");
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class ObjectExtensionsTests
         var actual = ((object?)null).ToStringWithDefault();
 
         // Assert
-        actual.Should().BeEmpty();
+        actual.ShouldBeEmpty();
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class ObjectExtensionsTests
         var actual = "non null value".ToStringWithDefault("default");
 
         // Assert
-        actual.Should().Be("non null value");
+        actual.ShouldBe("non null value");
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class ObjectExtensionsTests
         var result = input.ToString(CultureInfo.InvariantCulture, "default value");
 
         // Assert
-        result.Should().Be("default value");
+        result.ShouldBe("default value");
     }
 
     [Fact]
@@ -118,7 +118,7 @@ public class ObjectExtensionsTests
         var result = input.ToString(CultureInfo.InvariantCulture, "default value");
 
         // Assert
-        result.Should().Be("6.5");
+        result.ShouldBe("6.5");
     }
 
     [Fact]
@@ -131,7 +131,7 @@ public class ObjectExtensionsTests
         var result = input.ToString(CultureInfo.InvariantCulture, "default value");
 
         // Assert
-        result.Should().Be("some string value");
+        result.ShouldBe("some string value");
     }
 
     [Theory,
@@ -143,7 +143,7 @@ public class ObjectExtensionsTests
         var actual = input.IsTrue();
 
         // Assert
-        actual.Should().Be(input);
+        actual.ShouldBe(input);
     }
 
     [Theory,
@@ -157,7 +157,7 @@ public class ObjectExtensionsTests
         var actual = input.IsTrue();
 
         // Assert
-        actual.Should().Be(expectedOutput);
+        actual.ShouldBe(expectedOutput);
     }
 
     [Theory,
@@ -169,7 +169,7 @@ public class ObjectExtensionsTests
         var actual = input.IsFalse();
 
         // Assert
-        actual.Should().Be(!input);
+        actual.ShouldBe(!input);
     }
 
     [Theory,
@@ -183,7 +183,7 @@ public class ObjectExtensionsTests
         var actual = input.IsFalse();
 
         // Assert
-        actual.Should().Be(expectedOutput);
+        actual.ShouldBe(expectedOutput);
     }
     [Fact]
     public void IsTrue_With_Predicate_Returns_Correct_Result()
@@ -196,8 +196,8 @@ public class ObjectExtensionsTests
         var actual_false = input.IsTrue(x => x.Value != "A");
 
         // Assert
-        actual_true.Should().BeTrue();
-        actual_false.Should().BeFalse();
+        actual_true.ShouldBeTrue();
+        actual_false.ShouldBeFalse();
     }
 
     [Fact]
@@ -211,8 +211,8 @@ public class ObjectExtensionsTests
         var actual_false = input.IsFalse(x => x.Value != "A");
 
         // Assert
-        actual_true.Should().BeFalse();
-        actual_false.Should().BeTrue();
+        actual_true.ShouldBeFalse();
+        actual_false.ShouldBeTrue();
     }
 
     [Fact]
@@ -225,7 +225,7 @@ public class ObjectExtensionsTests
         var actual = input.In("A", "B", "C");
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -238,7 +238,7 @@ public class ObjectExtensionsTests
         var actual = input.In("A", "B", "C");
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -251,7 +251,7 @@ public class ObjectExtensionsTests
         var actual = input.In(new List<string> { "A", "B", "C" });
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -264,7 +264,7 @@ public class ObjectExtensionsTests
         var actual = input.In(new List<string> { "A", "B", "C" });
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -277,7 +277,7 @@ public class ObjectExtensionsTests
         var result = instance.In("A", "B", "C");
 
         // Assert
-        result.Should().BeFalse();
+        result.ShouldBeFalse();
     }
 
     [Fact]
@@ -290,7 +290,7 @@ public class ObjectExtensionsTests
         var result = instance.In(new List<string> { "A", "B", "C" });
 
         // Assert
-        result.Should().BeFalse();
+        result.ShouldBeFalse();
     }
 
     [Fact]
@@ -301,9 +301,9 @@ public class ObjectExtensionsTests
         string[] values = default!;
 
         // Act
-        instance.Invoking(x => _ = x.In(values))
-                .Should().Throw<ArgumentNullException>()
-                .WithParameterName("values");
+        Action a = () => instance.In(values);
+        a.ShouldThrow<ArgumentNullException>()
+         .ParamName.ShouldBe("values");
     }
 
     [Fact]
@@ -314,9 +314,9 @@ public class ObjectExtensionsTests
         IEnumerable<string> values = default!;
 
         // Act
-        instance.Invoking(x => _ = x.In(values))
-                .Should().Throw<ArgumentNullException>()
-                .WithParameterName("values");
+        Action a = () => instance.In(values);
+        a.ShouldThrow<ArgumentNullException>()
+         .ParamName.ShouldBe("values");
     }
 
     [Fact]
@@ -329,9 +329,9 @@ public class ObjectExtensionsTests
         var actual = input.ToExpandoObject();
 
         // Assert
-        actual.Should().HaveCount(1);
-        actual.First().Key.Should().Be("Value");
-        actual.First().Value.Should().Be("MyValue");
+        actual.Count().ShouldBe(1);
+        actual.First().Key.ShouldBe("Value");
+        actual.First().Value.ShouldBe("MyValue");
     }
 
     [Fact]
@@ -347,9 +347,9 @@ public class ObjectExtensionsTests
         var actual = input.ToExpandoObject();
 
         // Assert
-        actual.Should().HaveCount(1);
-        actual.First().Key.Should().Be("Value");
-        actual.First().Value.Should().Be("MyValue");
+        actual.Count().ShouldBe(1);
+        actual.First().Key.ShouldBe("Value");
+        actual.First().Value.ShouldBe("MyValue");
     }
 
     [Fact]
@@ -362,7 +362,7 @@ public class ObjectExtensionsTests
         var actual = input.Chain(() => { /* something interesting */ });
 
         // Assert
-        actual.Should().BeSameAs(input);
+        actual.ShouldBeSameAs(input);
     }
 
     [Fact]
@@ -375,7 +375,7 @@ public class ObjectExtensionsTests
         var actual = input.Chain(_ => { /* something interesting */ });
 
         // Assert
-        actual.Should().BeSameAs(input);
+        actual.ShouldBeSameAs(input);
     }
 
     [Fact]
@@ -388,8 +388,8 @@ public class ObjectExtensionsTests
         var actual = sut.ToResult();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Ok);
-        actual.Value.Should().BeSameAs(sut);
+        actual.Status.ShouldBe(ResultStatus.Ok);
+        actual.Value.ShouldBeSameAs(sut);
     }
 
     [Fact]
@@ -402,9 +402,9 @@ public class ObjectExtensionsTests
         var actual = sut.ToResult();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotFound);
-        actual.Value.Should().BeNull();
-        actual.ErrorMessage.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotFound);
+        actual.Value.ShouldBeNull();
+        actual.ErrorMessage.ShouldBeNull();
     }
 
     [Fact]
@@ -417,9 +417,9 @@ public class ObjectExtensionsTests
         var actual = sut.ToResult("My error message");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotFound);
-        actual.Value.Should().BeNull();
-        actual.ErrorMessage.Should().Be("My error message");
+        actual.Status.ShouldBe(ResultStatus.NotFound);
+        actual.Value.ShouldBeNull();
+        actual.ErrorMessage.ShouldBe("My error message");
     }
 
     [Fact]
@@ -432,7 +432,7 @@ public class ObjectExtensionsTests
         var actual = sut.Transform(x => x ? "true" : "false");
 
         // Assert
-        actual.Should().Be("true");
+        actual.ShouldBe("true");
     }
 
     [Fact]
@@ -447,7 +447,7 @@ public class ObjectExtensionsTests
         var actual = sut.WithAll(sut.Items, x => x.Value = x.Value!.ToUpper(CultureInfo.CurrentCulture));
 
         // Assert
-        actual.Items.Select(x => x.Value).Should().BeEquivalentTo("ITEM1", "ITEM2");
+        actual.Items.Select(x => x.Value).ToArray().ShouldBeEquivalentTo(new[] { "ITEM1", "ITEM2" });
     }
 
     [Fact]
@@ -462,7 +462,7 @@ public class ObjectExtensionsTests
         var actual = sut.WithAll(x => x.Items, x => x.Value = x.Value!.ToUpper(CultureInfo.CurrentCulture));
 
         // Assert
-        actual.Items.Select(x => x.Value).Should().BeEquivalentTo("ITEM1", "ITEM2");
+        actual.Items.Select(x => x.Value).ToArray().ShouldBeEquivalentTo(new[] { "ITEM1", "ITEM2" });
     }
 
     private sealed class MyPocoClass

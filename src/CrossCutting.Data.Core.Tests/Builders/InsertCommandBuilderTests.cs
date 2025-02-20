@@ -9,9 +9,9 @@ public class InsertCommandBuilderTests
         var input = new InsertCommandBuilder();
 
         // Act & Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("table name is missing");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("table name is missing");
     }
 
     [Fact]
@@ -21,9 +21,9 @@ public class InsertCommandBuilderTests
         var input = new InsertCommandBuilder().Into("MyTable");
 
         // Act & Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("field names are missing");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("field names are missing");
     }
 
     [Fact]
@@ -33,9 +33,9 @@ public class InsertCommandBuilderTests
         var input = new InsertCommandBuilder().Into("MyTable").AddFieldNames("Field1", "Field2", "Field3");
 
         // Act & Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("field values are missing");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("field values are missing");
     }
 
     [Fact]
@@ -47,9 +47,9 @@ public class InsertCommandBuilderTests
             .AddFieldValues(new[] { "Value1", "Value2" }.AsEnumerable());
 
         // Act & Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("field name count should be equal to field value count");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("field name count should be equal to field value count");
     }
 
     [Fact]
@@ -65,15 +65,15 @@ public class InsertCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Insert);
-        actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) VALUES(@Field1, @Field2, @Field3)");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.Operation.ShouldBe(DatabaseOperation.Insert);
+        actual.CommandText.ShouldBe("INSERT INTO MyTable(Field1, Field2, Field3) VALUES(@Field1, @Field2, @Field3)");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
         {
-            parameters.Should().HaveCount(3);
-            parameters.Keys.Should().BeEquivalentTo("Field1", "Field2", "Field3");
-            parameters.Values.Should().BeEquivalentTo(new[] { "Value1", "Value2", "Value3" });
+            parameters.Count.ShouldBe(3);
+            parameters.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Field1", "Field2", "Field3" });
+            parameters.Values.ToArray().ShouldBeEquivalentTo(new object[] { "Value1", "Value2", "Value3" });
         }
     }
 
@@ -92,11 +92,11 @@ public class InsertCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Insert);
-        actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) OUTPUT INSERTED.Field1, INSERTED.Field2, INSERTED.Field3 INTO @NewValues VALUES(\"Value1\", \"Value2\", \"Value3\")");
-        actual.CommandParameters.Should().BeAssignableTo<IDictionary<string, object>>();
+        actual.Operation.ShouldBe(DatabaseOperation.Insert);
+        actual.CommandText.ShouldBe("INSERT INTO MyTable(Field1, Field2, Field3) OUTPUT INSERTED.Field1, INSERTED.Field2, INSERTED.Field3 INTO @NewValues VALUES(\"Value1\", \"Value2\", \"Value3\")");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
-        parameters.Should().BeEmpty();
+        parameters.ShouldBeEmpty();
     }
 
     [Fact]
@@ -112,8 +112,8 @@ public class InsertCommandBuilderTests
         var actual = input.Build();
 
         // Assert
-        actual.Operation.Should().Be(DatabaseOperation.Insert);
-        actual.CommandText.Should().Be("INSERT INTO MyTable(Field1, Field2, Field3) OUTPUT INSERTED.Field1, INSERTED.Field2, INSERTED.Field3 VALUES(\"Value1\", \"Value2\", \"Value3\")");
+        actual.Operation.ShouldBe(DatabaseOperation.Insert);
+        actual.CommandText.ShouldBe("INSERT INTO MyTable(Field1, Field2, Field3) OUTPUT INSERTED.Field1, INSERTED.Field2, INSERTED.Field3 VALUES(\"Value1\", \"Value2\", \"Value3\")");
     }
 
     [Fact]
@@ -129,8 +129,8 @@ public class InsertCommandBuilderTests
         input.Clear();
 
         // Assert
-        input.Invoking(x => x.Build())
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("table name is missing");
+        Action a = () => input.Build();
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("table name is missing");
     }
 }

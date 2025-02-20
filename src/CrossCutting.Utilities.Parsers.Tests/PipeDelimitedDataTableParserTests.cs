@@ -116,16 +116,13 @@ Value 1|Value 2|Value 3";
         var actual = PipeDelimitedDataTableParser.Parse(input, 1, 1, 1, 1, null, formatFunction).ToArray();
 
         // Assert
-        actual.Should().NotBeNull().And.HaveCount(1, "One row should have been created");
-        actual[0].Values.Should().HaveCount(3, "Three columns should have been created");
-        using (new AssertionScope())
-        {
+        actual.ShouldNotBeNull().Length.ShouldBe(1, "One row should have been created");
+        actual[0].Values.Count().ShouldBe(3, "Three columns should have been created");
             Enumerable
                 .Range(0, 3)
                 .ToList()
-                .ForEach(index => actual[0].Values.ElementAt(index).Key.Should().Be($"Column {index + 1}", "Our provided column names should have been used"));
-            actual[0].Values.ElementAt(2).Value.Should().BeOfType<int>("Third column should have been parsed into an integer by our format function");
-        }
+                .ForEach(index => actual[0].Values.ElementAt(index).Key.ShouldBe($"Column {index + 1}", "Our provided column names should have been used"));
+            actual[0].Values.ElementAt(2).Value.ShouldBeOfType<int>("Third column should have been parsed into an integer by our format function");
     }
 
     private static void AssertParseResult(ParseResult<string, object>[] actual, string[]? columnNames = null)
@@ -135,19 +132,19 @@ Value 1|Value 2|Value 3";
             columnNames = ["1", "2", "3"];
         }
 
-        actual.Should().NotBeNull().And.HaveCount(1);
+        actual.ShouldNotBeNull().Length.ShouldBe(1);
 
         var firstRow = actual.FirstOrDefault();
 
-        firstRow.Should().NotBeNull();
+        firstRow.ShouldNotBeNull();
         if (firstRow is not null)
         {
-            firstRow.IsSuccessful.Should().BeTrue();
-            firstRow.ErrorMessages.Should().BeEmpty();
+            firstRow.IsSuccessful.ShouldBeTrue();
+            firstRow.ErrorMessages.ShouldBeEmpty();
 
             var contents = string.Join("|", firstRow.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
 
-            contents.Should().Be($"{columnNames[0]};Value 1|{columnNames[1]};Value 2|{columnNames[2]};Value 3");
+            contents.ShouldBe($"{columnNames[0]};Value 1|{columnNames[1]};Value 2|{columnNames[2]};Value 3");
         }
     }
 }

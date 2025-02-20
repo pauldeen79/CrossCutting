@@ -25,8 +25,8 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         var actual = Sut.FindOne(new SqlDatabaseCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text));
 
         // Assert
-        actual.Should().NotBeNull();
-        actual?.Property.Should().Be("test");
+        actual.ShouldNotBeNull();
+        actual?.Property.ShouldBe("test");
     }
 
     [Fact]
@@ -40,8 +40,8 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         var actual = await Sut.FindOneAsync(new SqlDatabaseCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text));
 
         // Assert
-        actual.Should().NotBeNull();
-        actual?.Property.Should().Be("test");
+        actual.ShouldNotBeNull();
+        actual?.Property.ShouldBe("test");
     }
 
     [Fact]
@@ -59,11 +59,11 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         var actual = Sut.FindMany(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text));
 
         // Assert
-        actual.Should().NotBeNull().And.HaveCount(2);
-        actual.First().Should().NotBeNull();
-        actual.First().Property.Should().Be("test1");
-        actual.Last().Should().NotBeNull();
-        actual.Last().Property.Should().Be("test2");
+        actual.ShouldNotBeNull().Count.ShouldBe(2);
+        actual.First().ShouldNotBeNull();
+        actual.First().Property.ShouldBe("test1");
+        actual.Last().ShouldNotBeNull();
+        actual.Last().Property.ShouldBe("test2");
     }
 
     [Fact]
@@ -81,11 +81,11 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         var actual = await Sut.FindManyAsync(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text));
 
         // Assert
-        actual.Should().NotBeNull().And.HaveCount(2);
-        actual.First().Should().NotBeNull();
-        actual.First().Property.Should().Be("test1");
-        actual.Last().Should().NotBeNull();
-        actual.Last().Property.Should().Be("test2");
+        actual.ShouldNotBeNull().Count.ShouldBe(2);
+        actual.First().ShouldNotBeNull();
+        actual.First().Property.ShouldBe("test1");
+        actual.Last().ShouldNotBeNull();
+        actual.Last().Property.ShouldBe("test2");
     }
 
     [Fact]
@@ -108,14 +108,14 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         var actual = Sut.FindPaged(command);
 
         // Assert
-        actual.Should().NotBeNull().And.HaveCount(2);
-        actual.First().Should().NotBeNull();
-        actual.First().Property.Should().Be("test1");
-        actual.Last().Should().NotBeNull();
-        actual.Last().Property.Should().Be("test2");
-        actual.TotalRecordCount.Should().Be(1);
-        actual.Offset.Should().Be(20);
-        actual.PageSize.Should().Be(10);
+        actual.ShouldNotBeNull().Count.ShouldBe(2);
+        actual.First().ShouldNotBeNull();
+        actual.First().Property.ShouldBe("test1");
+        actual.Last().ShouldNotBeNull();
+        actual.Last().Property.ShouldBe("test2");
+        actual.TotalRecordCount.ShouldBe(1);
+        actual.Offset.ShouldBe(20);
+        actual.PageSize.ShouldBe(10);
     }
 
     [Fact]
@@ -138,14 +138,14 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         var actual = await Sut.FindPagedAsync(command);
 
         // Assert
-        actual.Should().NotBeNull().And.HaveCount(2);
-        actual.First().Should().NotBeNull();
-        actual.First().Property.Should().Be("test1");
-        actual.Last().Should().NotBeNull();
-        actual.Last().Property.Should().Be("test2");
-        actual.TotalRecordCount.Should().Be(1);
-        actual.Offset.Should().Be(20);
-        actual.PageSize.Should().Be(10);
+        actual.ShouldNotBeNull().Count.ShouldBe(2);
+        actual.First().ShouldNotBeNull();
+        actual.First().Property.ShouldBe("test1");
+        actual.Last().ShouldNotBeNull();
+        actual.Last().Property.ShouldBe("test2");
+        actual.TotalRecordCount.ShouldBe(1);
+        actual.Offset.ShouldBe(20);
+        actual.PageSize.ShouldBe(10);
     }
 
     private void InitializeMapper()

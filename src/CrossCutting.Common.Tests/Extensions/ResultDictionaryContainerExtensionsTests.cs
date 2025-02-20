@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Common.Tests.Extensions;
+namespace CrossCutting.Common.Tests.Extensions;
 
 public class ResultDictionaryContainerExtensionsTests
 {
@@ -42,9 +42,9 @@ public class ResultDictionaryContainerExtensionsTests
             var result = sut.GetError();
 
             // Assert
-            result.Should().NotBeNull();
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
     }
 
@@ -64,9 +64,9 @@ public class ResultDictionaryContainerExtensionsTests
             var result = sut.GetError();
 
             // Assert
-            result.Should().NotBeNull();
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
     }
 
@@ -86,9 +86,9 @@ public class ResultDictionaryContainerExtensionsTests
             var result = sut.OnSuccess(results => Result.Success());
 
             // Assert
-            result.Should().NotBeNull();
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
     }
 
@@ -108,9 +108,9 @@ public class ResultDictionaryContainerExtensionsTests
             var result = sut.OnSuccess(results => Result.Success());
 
             // Assert
-            result.Should().NotBeNull();
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
     }
 
@@ -130,9 +130,9 @@ public class ResultDictionaryContainerExtensionsTests
             var result = sut.OnSuccess(results => Result.Continue<string>());
 
             // Assert
-            result.Should().NotBeNull();
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
     }
 
@@ -153,10 +153,10 @@ public class ResultDictionaryContainerExtensionsTests
             var result = sut.OnSuccess(results => { counter++; });
 
             // Assert
-            result.Should().NotBeNull();
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
-            counter.Should().Be(0);
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+            counter.ShouldBe(0);
         }
     }
 
@@ -177,10 +177,10 @@ public class ResultDictionaryContainerExtensionsTests
             var result = sut.OnSuccess(results => { counter++; });
 
             // Assert
-            result.Should().NotBeNull();
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
-            counter.Should().Be(0);
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+            counter.ShouldBe(0);
         }
     }
 
@@ -201,7 +201,7 @@ public class ResultDictionaryContainerExtensionsTests
             _ = sut.OnFailure(results => { counter++; });
 
             // Assert
-            counter.Should().Be(1);
+            counter.ShouldBe(1);
         }
 
         [Fact]
@@ -218,7 +218,7 @@ public class ResultDictionaryContainerExtensionsTests
             var result = sut.OnFailure(results => Result.Error<string>("Kaboom"));
 
             // Assert
-            result.GetError().ErrorMessage.Should().Be("Kaboom");
+            result.GetError().ErrorMessage.ShouldBe("Kaboom");
         }
     }
 
@@ -239,7 +239,7 @@ public class ResultDictionaryContainerExtensionsTests
             _ = sut.OnFailure(results => { counter++; });
 
             // Assert
-            counter.Should().Be(1);
+            counter.ShouldBe(1);
         }
 
         [Fact]
@@ -256,7 +256,7 @@ public class ResultDictionaryContainerExtensionsTests
             var result = sut.OnFailure(results => Result.Error("Kaboom"));
 
             // Assert
-            result.GetError().ErrorMessage.Should().Be("Kaboom");
+            result.GetError().ErrorMessage.ShouldBe("Kaboom");
         }
     }
 
@@ -276,7 +276,7 @@ public class ResultDictionaryContainerExtensionsTests
             var result = sut.GetValue<string>("Step1");
 
             // Assert
-            result.Should().Be("My value");
+            result.ShouldBe("My value");
         }
     }
 
@@ -296,7 +296,7 @@ public class ResultDictionaryContainerExtensionsTests
             var result = sut.TryGetValue<string>("Step1");
 
             // Assert
-            result.Should().Be("My value");
+            result.ShouldBe("My value");
         }
     }
 
@@ -316,7 +316,7 @@ public class ResultDictionaryContainerExtensionsTests
             var result = sut.TryGetValue<string>("Step1", "some default value");
 
             // Assert
-            result.Should().Be("My value");
+            result.ShouldBe("My value");
         }
     }
 }

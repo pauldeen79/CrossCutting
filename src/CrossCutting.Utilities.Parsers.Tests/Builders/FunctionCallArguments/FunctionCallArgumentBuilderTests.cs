@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests.Builders.FunctionCallArguments;
+namespace CrossCutting.Utilities.Parsers.Tests.Builders.FunctionCallArguments;
 
 public class FunctionCallArgumentBuilderTests
 {
@@ -9,8 +9,8 @@ public class FunctionCallArgumentBuilderTests
         ConstantArgumentBuilder<string> result = "Hello world";
 
         // Assert
-        result.Should().BeOfType<ConstantArgumentBuilder<string>>();
-        result.Value.Should().Be("Hello world");
+        result.ShouldBeOfType<ConstantArgumentBuilder<string>>();
+        result.Value.ShouldBe("Hello world");
     }
 
     [Fact]
@@ -20,7 +20,7 @@ public class FunctionCallArgumentBuilderTests
         ConstantResultArgumentBuilder<string> result = Result.Success("Hello world");
 
         // Assert
-        result.Should().BeOfType<ConstantResultArgumentBuilder<string>>();
-        result.Result.Value.Should().Be("Hello world");
+        result.ShouldBeOfType<ConstantResultArgumentBuilder<string>>();
+        result.Result.Value.ShouldBe("Hello world");
     }
 }

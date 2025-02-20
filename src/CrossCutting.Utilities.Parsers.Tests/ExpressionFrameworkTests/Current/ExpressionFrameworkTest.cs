@@ -20,8 +20,8 @@ public sealed class ExpressionFrameworkTest
         var result = sut.Parse(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeOfType<ToUpperCaseExpression>();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeOfType<ToUpperCaseExpression>();
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public sealed class ExpressionFrameworkTest
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -57,9 +57,9 @@ public sealed class ExpressionFrameworkTest
         var result = sut.Evaluate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeOfType<string>();
-        result.Value!.ToString().Should().Be("HELLO WORLD!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeOfType<string>();
+        result.Value!.ToString().ShouldBe("HELLO WORLD!");
     }
 
     [Fact]
@@ -72,9 +72,9 @@ public sealed class ExpressionFrameworkTest
         var functionDescriptors = functionDescriptorProvider.GetAll();
 
         // Assert
-        functionDescriptors.Should().ContainSingle();
-        functionDescriptors.Single().Arguments.Should().HaveCount(2);
-        functionDescriptors.Single().Results.Should().ContainSingle();
+        functionDescriptors.Count.ShouldBe(1);
+        functionDescriptors.Single().Arguments.Count.ShouldBe(2);
+        functionDescriptors.Single().Results.Count.ShouldBe(1);
     }
 }
 

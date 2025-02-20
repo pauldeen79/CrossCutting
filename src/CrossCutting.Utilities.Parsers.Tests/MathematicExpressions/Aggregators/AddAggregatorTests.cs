@@ -9,8 +9,8 @@ public class AddAggregatorTests
         var result = new AddAggregator().Aggregate((byte)1, (byte)1, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(2);
     }
 
     [Fact]
@@ -20,8 +20,8 @@ public class AddAggregatorTests
         var result = new AddAggregator().Aggregate((short)1, (short)1, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(2);
     }
 
     [Fact]
@@ -31,8 +31,8 @@ public class AddAggregatorTests
         var result = new AddAggregator().Aggregate(1, 1, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(2);
     }
 
     [Fact]
@@ -42,8 +42,8 @@ public class AddAggregatorTests
         var result = new AddAggregator().Aggregate((long)1, (long)1, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((long)2);
     }
 
     [Fact]
@@ -53,8 +53,8 @@ public class AddAggregatorTests
         var result = new AddAggregator().Aggregate((float)1.5, (float)1.5, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((float)3);
     }
 
     [Fact]
@@ -64,8 +64,8 @@ public class AddAggregatorTests
         var result = new AddAggregator().Aggregate((decimal)1.5, (decimal)1.5, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe((decimal)3);
     }
 
     [Fact]
@@ -75,8 +75,7 @@ public class AddAggregatorTests
         var result = new AddAggregator().Aggregate(1.5, 1.5, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe((double)3);
     }
 }
-

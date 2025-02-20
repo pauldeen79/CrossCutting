@@ -12,7 +12,7 @@ public class DataReaderExtensionsTests
         var result = reader.GetValue<string>("UnknownColumn", skipUnknownColumn: true);
 
         // Assert
-        result.Should().BeNull();
+        result.ShouldBeNull();
     }
 
     [Fact]
@@ -22,9 +22,9 @@ public class DataReaderExtensionsTests
         var reader = Substitute.For<IDataReader>();
 
         // Act & Assert
-        reader.Invoking(x => x.GetValue<string>("UnknownColumn", skipUnknownColumn: false))
-                     .Should().Throw<ArgumentOutOfRangeException>()
-                     .And.ParamName.Should().Be("columnName");
+        Action a = () => reader.GetValue<string>("UnknownColumn", skipUnknownColumn: false);
+        a.ShouldThrow<ArgumentOutOfRangeException>()
+         .ParamName.ShouldBe("columnName");
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class DataReaderExtensionsTests
         var result = reader.GetValue<string>("KnownColumn");
 
         // Assert
-        result.Should().BeNull();
+        result.ShouldBeNull();
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public class DataReaderExtensionsTests
         var result = reader.GetValue<string>("KnownColumn");
 
         // Assert
-        result.Should().Be("test");
+        result.ShouldBe("test");
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class DataReaderExtensionsTests
         var result = reader.GetValue("KnownColumn", "DefaultValue");
 
         // Assert
-        result.Should().Be("DefaultValue");
+        result.ShouldBe("DefaultValue");
     }
 
     [Theory]
@@ -95,7 +95,7 @@ public class DataReaderExtensionsTests
         var actual = reader.IsDBNull("KnownColumn");
 
         // Assert
-        actual.Should().Be(expectedOutput);
+        actual.ShouldBe(expectedOutput);
     }
 
     [Fact]
@@ -109,9 +109,9 @@ public class DataReaderExtensionsTests
         reader.IsDBNull(14).Returns(false);
 
         // Act
-        reader.Invoking(x => x.GetBoolean("UnknownColumn"))
-                     .Should().Throw<ArgumentOutOfRangeException>()
-                     .And.Message.Should().StartWith("Column [UnknownColumn] could not be found");
+        Action a = () => reader.GetBoolean("UnknownColumn");
+        a.ShouldThrow<ArgumentOutOfRangeException>()
+         .Message.ShouldStartWith("Column [UnknownColumn] could not be found");
     }
 
     [Fact]
@@ -125,9 +125,9 @@ public class DataReaderExtensionsTests
         reader.IsDBNull(14).Returns(true);
 
         // Act
-        reader.Invoking(x => x.GetBoolean("KnownColumn"))
-                     .Should().Throw<DataException>()
-                     .And.Message.Should().Be("Column [KnownColumn] is DBNull");
+        Action a = () => reader.GetBoolean("KnownColumn");
+        a.ShouldThrow<DataException>()
+         .Message.ShouldBe("Column [KnownColumn] is DBNull");
     }
 
     [Fact]
@@ -144,7 +144,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetBoolean("UnknownColumn", skipUnknownColumn: true);
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -162,7 +162,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetBoolean("KnownColumn");
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -179,7 +179,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetBoolean("UnknownColumn", false, skipUnknownColumn: true);
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -197,7 +197,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetBoolean("KnownColumn", false, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -215,7 +215,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetNullableBoolean("KnownColumn", false, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBe(true);
     }
 
     [Fact]
@@ -233,7 +233,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetByte("KnownColumn");
 
         // Assert
-        actual.Should().Be(55);
+        actual.ShouldBe((byte)55);
     }
 
     [Fact]
@@ -251,7 +251,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetByte("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(24);
+        actual.ShouldBe((byte)24);
     }
 
     [Fact]
@@ -269,7 +269,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetNullableByte("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(123);
+        actual.ShouldBe((byte?)123);
     }
 
     [Fact]
@@ -287,7 +287,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetDateTime("KnownColumn");
 
         // Assert
-        actual.Should().Be(new DateTime(2021, 2, 1, 0, 0, 0, DateTimeKind.Unspecified));
+        actual.ShouldBe(new DateTime(2021, 2, 1, 0, 0, 0, DateTimeKind.Unspecified));
     }
 
     [Fact]
@@ -305,7 +305,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetDateTime("KnownColumn", new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified), skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(new DateTime(2021, 2, 1, 0, 0, 0, DateTimeKind.Unspecified));
+        actual.ShouldBe(new DateTime(2021, 2, 1, 0, 0, 0, DateTimeKind.Unspecified));
     }
 
     [Fact]
@@ -323,7 +323,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetNullableDateTime("KnownColumn", new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Unspecified), skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(new DateTime(2020, 3, 1, 0, 0, 0, DateTimeKind.Unspecified));
+        actual.ShouldBe(new DateTime(2020, 3, 1, 0, 0, 0, DateTimeKind.Unspecified));
     }
 
     [Fact]
@@ -341,7 +341,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetDecimal("KnownColumn");
 
         // Assert
-        actual.Should().Be(55);
+        actual.ShouldBe(55);
     }
 
     [Fact]
@@ -359,7 +359,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetDecimal("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(24);
+        actual.ShouldBe(24);
     }
 
     [Fact]
@@ -377,7 +377,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetNullableDecimal("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(123);
+        actual.ShouldBe(123);
     }
 
     [Fact]
@@ -395,7 +395,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetDouble("KnownColumn");
 
         // Assert
-        actual.Should().Be(55);
+        actual.ShouldBe(55);
     }
 
     [Fact]
@@ -413,7 +413,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetDouble("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(24);
+        actual.ShouldBe(24);
     }
 
     [Fact]
@@ -431,7 +431,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetNullableDouble("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(123);
+        actual.ShouldBe(123);
     }
 
     [Fact]
@@ -449,7 +449,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetFloat("KnownColumn");
 
         // Assert
-        actual.Should().Be(55);
+        actual.ShouldBe(55);
     }
 
     [Fact]
@@ -467,7 +467,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetFloat("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(24);
+        actual.ShouldBe(24);
     }
 
     [Fact]
@@ -485,7 +485,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetNullableFloat("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(123);
+        actual.ShouldBe(123);
     }
 
     [Fact]
@@ -504,7 +504,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetGuid("KnownColumn");
 
         // Assert
-        actual.Should().Be(guid);
+        actual.ShouldBe(guid);
     }
 
     [Fact]
@@ -523,7 +523,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetGuid("KnownColumn", Guid.Empty, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(guid);
+        actual.ShouldBe(guid);
     }
 
     [Fact]
@@ -542,7 +542,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetNullableGuid("KnownColumn", Guid.Empty, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(guid);
+        actual.ShouldBe(guid);
     }
 
     [Fact]
@@ -560,7 +560,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetInt16("KnownColumn");
 
         // Assert
-        actual.Should().Be(55);
+        actual.ShouldBe((byte)55);
     }
 
     [Fact]
@@ -578,7 +578,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetInt16("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(24);
+        actual.ShouldBe((short)24);
     }
 
     [Fact]
@@ -596,7 +596,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetNullableInt16("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(123);
+        actual.ShouldBe((short?)123);
     }
 
     [Fact]
@@ -614,7 +614,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetInt32("KnownColumn");
 
         // Assert
-        actual.Should().Be(55);
+        actual.ShouldBe(55);
     }
 
     [Fact]
@@ -632,7 +632,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetInt32("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(24);
+        actual.ShouldBe(24);
     }
 
     [Fact]
@@ -650,7 +650,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetNullableInt32("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(123);
+        actual.ShouldBe(123);
     }
 
     [Fact]
@@ -668,7 +668,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetInt64("KnownColumn");
 
         // Assert
-        actual.Should().Be(55);
+        actual.ShouldBe(55);
     }
 
     [Fact]
@@ -686,7 +686,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetInt64("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(24);
+        actual.ShouldBe(24);
     }
 
     [Fact]
@@ -704,7 +704,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetNullableInt64("KnownColumn", 11, skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be(123);
+        actual.ShouldBe(123);
     }
 
     [Fact]
@@ -722,7 +722,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetString("KnownColumn");
 
         // Assert
-        actual.Should().Be("test");
+        actual.ShouldBe("test");
     }
 
     [Fact]
@@ -740,7 +740,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetString("KnownColumn", "Default", skipUnknownColumn: false);
 
         // Assert
-        actual.Should().Be("test");
+        actual.ShouldBe("test");
     }
 
     [Fact]
@@ -757,7 +757,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetByteArray("KnownColumn");
 
         // Assert
-        actual.Should().BeEmpty();
+        actual.ShouldBeEmpty();
     }
 
     [Fact]
@@ -776,7 +776,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetByteArray("KnownColumn");
 
         // Assert
-        actual.Should().BeEquivalentTo(expected);
+        actual.ShouldBeEquivalentTo(expected);
     }
 
     [Fact]
@@ -801,7 +801,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetByteArray("KnownColumn", length: 3);
 
         // Assert
-        actual.Should().BeEquivalentTo(expected.Take(3));
+        actual.ToArray().ShouldBeEquivalentTo(expected.Take(3).ToArray());
     }
 
     [Fact]
@@ -817,7 +817,7 @@ public class DataReaderExtensionsTests
         var actual = reader.GetByteArray("UnnownColumn", skipUnknownColumn: true);
 
         // Assert
-        actual.Should().BeEmpty();
+        actual.ShouldBeEmpty();
     }
 
     [Fact]
@@ -830,10 +830,9 @@ public class DataReaderExtensionsTests
         reader.GetOrdinal("KnownColumn").Returns(14);
 
         // Act & Assert
-        reader.Invoking(x => x.GetByteArray("UnkownColumn", skipUnknownColumn: false))
-                     .Should().Throw<ArgumentOutOfRangeException>()
-                     .And.Message.Should().StartWith("Column [UnkownColumn] could not be found");
-
+        Action a = () => reader.GetByteArray("UnkownColumn", skipUnknownColumn: false);
+        a.ShouldThrow<ArgumentOutOfRangeException>()
+         .Message.ShouldStartWith("Column [UnkownColumn] could not be found");
     }
 
     [Fact]
@@ -846,7 +845,7 @@ public class DataReaderExtensionsTests
         var result = reader.FindOne(Map);
 
         // Assert
-        result.Should().BeNull();
+        result.ShouldBeNull();
     }
 
     private MyEntity Map(IDataReader reader)

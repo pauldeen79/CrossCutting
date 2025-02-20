@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Common.Tests.Extensions;
+namespace CrossCutting.Common.Tests.Extensions;
 
 public partial class StringExtensionsTests
 {
@@ -14,8 +14,8 @@ public partial class StringExtensionsTests
         var actual_delegate = input.WhenNullOrEmpty(() => "replaced");
 
         // Assert
-        actual_noDelegate.Should().Be(expectedOutput);
-        actual_delegate.Should().Be(expectedOutput);
+        actual_noDelegate.ShouldBe(expectedOutput);
+        actual_delegate.ShouldBe(expectedOutput);
     }
 
     [Theory,
@@ -30,8 +30,8 @@ public partial class StringExtensionsTests
         var actual_delegate = input.WhenNullOrWhitespace(() => "replaced");
 
         // Assert
-        actual_noDelegate.Should().Be(expectedOutput);
-        actual_delegate.Should().Be(expectedOutput);
+        actual_noDelegate.ShouldBe(expectedOutput);
+        actual_delegate.ShouldBe(expectedOutput);
     }
 
     [Theory,
@@ -47,7 +47,7 @@ public partial class StringExtensionsTests
         var actual = input.IsTrue();
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     [Theory,
@@ -63,7 +63,7 @@ public partial class StringExtensionsTests
         var actual = input.IsFalse();
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     [Fact]
@@ -77,8 +77,8 @@ public partial class StringExtensionsTests
         var actual_enumerable = input.StartsWithAny(new List<string> { "A", "B", "C" });
 
         // Assert
-        actual_array.Should().BeTrue();
-        actual_enumerable.Should().BeTrue();
+        actual_array.ShouldBeTrue();
+        actual_enumerable.ShouldBeTrue();
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public partial class StringExtensionsTests
         var actual = input.StartsWithAny("A", "B", "C");
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -105,8 +105,8 @@ public partial class StringExtensionsTests
         var actual_enumerable = input.StartsWithAny(StringComparison.InvariantCultureIgnoreCase, new List<string> { "A", "B", "c" });
 
         // Assert
-        actual_array.Should().BeTrue();
-        actual_enumerable.Should().BeTrue();
+        actual_array.ShouldBeTrue();
+        actual_enumerable.ShouldBeTrue();
     }
 
     [Fact]
@@ -120,8 +120,8 @@ public partial class StringExtensionsTests
         var actual_enumerable = input.StartsWithAny(StringComparison.InvariantCultureIgnoreCase, new List<string> { "A", "B", "c" });
 
         // Assert
-        actual_array.Should().BeFalse();
-        actual_enumerable.Should().BeFalse();
+        actual_array.ShouldBeFalse();
+        actual_enumerable.ShouldBeFalse();
     }
 
     [Fact]
@@ -135,8 +135,8 @@ public partial class StringExtensionsTests
         var actual_enumerable = input.EndsWithAny(new List<string> { "A", "B", "C" });
 
         // Assert
-        actual_array.Should().BeTrue();
-        actual_enumerable.Should().BeTrue();
+        actual_array.ShouldBeTrue();
+        actual_enumerable.ShouldBeTrue();
     }
 
     [Fact]
@@ -150,8 +150,8 @@ public partial class StringExtensionsTests
         var actual_enumerable = input.EndsWithAny(new List<string> { "A", "B", "C" });
 
         // Assert
-        actual_array.Should().BeFalse();
-        actual_enumerable.Should().BeFalse();
+        actual_array.ShouldBeFalse();
+        actual_enumerable.ShouldBeFalse();
     }
 
     [Fact]
@@ -165,8 +165,8 @@ public partial class StringExtensionsTests
         var actual_enumerable = input.EndsWithAny(StringComparison.InvariantCultureIgnoreCase, new List<string> { "A", "B", "c" });
 
         // Assert
-        actual_array.Should().BeTrue();
-        actual_enumerable.Should().BeTrue();
+        actual_array.ShouldBeTrue();
+        actual_enumerable.ShouldBeTrue();
     }
 
     [Fact]
@@ -180,8 +180,8 @@ public partial class StringExtensionsTests
         var actual_enumerable = input.EndsWithAny(StringComparison.InvariantCultureIgnoreCase, new List<string> { "A", "B", "c" });
 
         // Assert
-        actual_array.Should().BeFalse();
-        actual_enumerable.Should().BeFalse();
+        actual_array.ShouldBeFalse();
+        actual_enumerable.ShouldBeFalse();
     }
 
     [Fact]
@@ -194,7 +194,7 @@ public partial class StringExtensionsTests
         var result = input.NormalizeLineEndings();
 
         // Assert
-        result.Should().Be($"some{Environment.NewLine}more{Environment.NewLine}data");
+        result.ShouldBe($"some{Environment.NewLine}more{Environment.NewLine}data");
     }
 
     [Theory]
@@ -209,7 +209,7 @@ public partial class StringExtensionsTests
         var actual = input.ToPascalCase(CultureInfo.InvariantCulture);
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -224,7 +224,7 @@ public partial class StringExtensionsTests
         var actual = input.ToCamelCase(CultureInfo.InvariantCulture);
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -238,6 +238,6 @@ public partial class StringExtensionsTests
         var actual = input.ReplaceSuffix(find, replace, StringComparison.InvariantCulture);
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 }

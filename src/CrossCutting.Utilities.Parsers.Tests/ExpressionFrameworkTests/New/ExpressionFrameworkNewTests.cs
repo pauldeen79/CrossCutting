@@ -1,4 +1,5 @@
 ﻿using CrossCutting.Utilities.Parsers.Tests.ExpressionFrameworkTests.Current;
+using Shouldly;
 
 namespace CrossCutting.Utilities.Parsers.Tests.ExpressionFrameworkTests.New;
 
@@ -23,7 +24,7 @@ public class ExpressionFrameworkNewTests
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NoContent);
+        result.Status.ShouldBe(ResultStatus.NoContent);
     }
 
     [Fact]
@@ -43,9 +44,9 @@ public class ExpressionFrameworkNewTests
         var result = sut.Evaluate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeOfType<string>();
-        result.Value!.ToString().Should().Be("hello world!");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeOfType<string>();
+        result.Value!.ToString().ShouldBe("hello world!");
     }
 
     [Fact]
@@ -58,9 +59,9 @@ public class ExpressionFrameworkNewTests
         var functionDescriptors = functionDescriptorProvider.GetAll();
 
         // Assert
-        functionDescriptors.Should().ContainSingle();
-        functionDescriptors.Single().Arguments.Should().HaveCount(2);
-        functionDescriptors.Single().Results.Should().ContainSingle();
+        functionDescriptors.Count.ShouldBe(1);
+        functionDescriptors.Single().Arguments.Count.ShouldBe(2);
+        functionDescriptors.Single().Results.Count.ShouldBe(1);
     }
 }
 

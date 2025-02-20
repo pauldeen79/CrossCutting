@@ -39,10 +39,10 @@ public sealed class IntegrationTests : IDisposable
         var actual = _repository.Add(entity);
 
         // Assert
-        actual.Code.Should().Be(entity.Code);
-        actual.CodeType.Should().Be(entity.CodeType);
-        actual.Description.Should().Be(entity.Description);
-        actual.IsExistingEntity.Should().BeTrue();
+        actual.Code.ShouldBe(entity.Code);
+        actual.CodeType.ShouldBe(entity.CodeType);
+        actual.Description.ShouldBe(entity.Description);
+        actual.IsExistingEntity.ShouldBeTrue();
     }
 
     [Fact]
@@ -57,10 +57,10 @@ public sealed class IntegrationTests : IDisposable
         var actual = _repository.Update(entity);
 
         // Assert
-        actual.Code.Should().Be(entity.Code + "1");
-        actual.CodeType.Should().Be(entity.CodeType + "1");
-        actual.Description.Should().Be(entity.Description + "1");
-        actual.IsExistingEntity.Should().BeTrue();
+        actual.Code.ShouldBe(entity.Code + "1");
+        actual.CodeType.ShouldBe(entity.CodeType + "1");
+        actual.Description.ShouldBe(entity.Description + "1");
+        actual.IsExistingEntity.ShouldBeTrue();
     }
 
     [Fact]
@@ -75,10 +75,10 @@ public sealed class IntegrationTests : IDisposable
         var actual = _repository.Delete(entity);
 
         // Assert
-        actual.Code.Should().Be(entity.Code);
-        actual.CodeType.Should().Be(entity.CodeType);
-        actual.Description.Should().Be(entity.Description);
-        actual.IsExistingEntity.Should().BeTrue();
+        actual.Code.ShouldBe(entity.Code);
+        actual.CodeType.ShouldBe(entity.CodeType);
+        actual.Description.ShouldBe(entity.Description);
+        actual.IsExistingEntity.ShouldBeTrue();
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = _repository.Find(identity);
 
         // Assert
-        actual.Should().BeEquivalentTo(expectedResult);
+        actual.ShouldBeEquivalentTo(expectedResult);
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = _repository.FindAll();
 
         // Assert
-        actual.Should().BeEquivalentTo(expectedResult);
+        actual.ToArray().ShouldBeEquivalentTo(expectedResult);
     }
 
     [Fact]
@@ -123,7 +123,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = _repository.FindAllPaged(0, 1);
 
         // Assert
-        actual.Should().BeEquivalentTo(expectedResult);
+        actual.ToArray().ShouldBeEquivalentTo(expectedResult);
     }
 
     public void Dispose()

@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests.NumericAggregatorProcessors;
+namespace CrossCutting.Utilities.Parsers.Tests.NumericAggregatorProcessors;
 
 public class Int32AggregatorProcessorTests
 {
@@ -9,7 +9,7 @@ public class Int32AggregatorProcessorTests
         var result = Int32AggregatorProcessor.Aggregate("no Int32", 2, CultureInfo.InvariantCulture, (x, y) => x + y);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
+        result.Status.ShouldBe(ResultStatus.Continue);
     }
 
     [Fact]
@@ -19,7 +19,7 @@ public class Int32AggregatorProcessorTests
         var result = Int32AggregatorProcessor.Aggregate(2, 3, CultureInfo.InvariantCulture, (x, y) => x + y);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(5);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(5);
     }
 }

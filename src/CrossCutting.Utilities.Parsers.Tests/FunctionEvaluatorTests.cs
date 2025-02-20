@@ -36,8 +36,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Evaluate(functionCall!, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Function call is required");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Function call is required");
     }
 
     [Fact]
@@ -51,8 +51,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Evaluate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("function result");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("function result");
     }
 
     [Fact]
@@ -66,8 +66,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Evaluate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(string.Empty);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(string.Empty);
     }
 
     [Fact]
@@ -81,8 +81,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Evaluate(functionCall, CreateSettings(), default(object?));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Kaboom");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom");
     }
 
     [Fact]
@@ -99,10 +99,10 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Evaluate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not evaluate function MyFunction2, see inner results for more details");
-        result.InnerResults.Should().ContainSingle();
-        result.InnerResults.Single().ErrorMessage.Should().Be("Argument Argument1 is required");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Could not evaluate function MyFunction2, see inner results for more details");
+        result.InnerResults.Count.ShouldBe(1);
+        result.InnerResults.Single().ErrorMessage.ShouldBe("Argument Argument1 is required");
     }
 
     [Fact]
@@ -116,8 +116,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Evaluate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Unknown function: WrongName");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Unknown function: WrongName");
     }
 
     [Fact]
@@ -131,8 +131,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Evaluate(functionCall, CreateSettings(), default(object?));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("Custom value");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("Custom value");
 
     }
 
@@ -147,8 +147,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.EvaluateTyped<string>(functionCall!, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Function call is required");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Function call is required");
     }
 
     [Fact]
@@ -162,8 +162,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.EvaluateTyped<int>(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not cast System.String to System.Int32");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Could not cast System.String to System.Int32");
     }
 
     [Fact]
@@ -177,8 +177,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.EvaluateTyped<string>(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("function result");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("function result");
     }
 
     [Fact]
@@ -192,8 +192,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.EvaluateTyped<string>(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("function result");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("function result");
     }
 
     [Fact]
@@ -207,8 +207,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.EvaluateTyped<string>(functionCall, CreateSettings(), default(object?));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Kaboom");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom");
     }
 
     [Fact]
@@ -222,8 +222,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.EvaluateTyped<string>(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Unknown function: WrongName");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Unknown function: WrongName");
     }
 
     [Fact]
@@ -237,8 +237,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall!, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Function call is required");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Function call is required");
     }
 
     [Fact]
@@ -252,8 +252,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be<string>();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(typeof(string));
     }
 
     [Fact]
@@ -270,8 +270,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be<object>();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(typeof(object));
     }
 
     [Fact]
@@ -288,8 +288,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be<object>();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(typeof(object));
     }
 
     [Fact]
@@ -303,8 +303,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be<string>();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(typeof(string));
     }
 
     [Fact]
@@ -318,7 +318,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -335,7 +335,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -349,8 +349,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings(), default(object?));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Kaboom");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom");
     }
 
     [Fact]
@@ -364,8 +364,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Unknown function: WrongName");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Unknown function: WrongName");
     }
 
     [Fact]
@@ -379,8 +379,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("No overload of the Overload function takes 0 arguments");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("No overload of the Overload function takes 0 arguments");
     }
 
     [Fact]
@@ -397,8 +397,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Function Overload with 2 arguments could not be identified uniquely");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Function Overload with 2 arguments could not be identified uniquely");
     }
 
     [Fact]
@@ -415,7 +415,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -432,11 +432,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not evaluate function Overload, see inner results for more details");
-        result.InnerResults.Should().ContainSingle();
-        result.InnerResults.Single().Status.Should().Be(ResultStatus.Invalid);
-        result.InnerResults.Single().ErrorMessage.Should().Be("Argument Argument1 is not of type System.String");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Could not evaluate function Overload, see inner results for more details");
+        result.InnerResults.Count.ShouldBe(1);
+        result.InnerResults.Single().Status.ShouldBe(ResultStatus.Invalid);
+        result.InnerResults.Single().ErrorMessage.ShouldBe("Argument Argument1 is not of type System.String");
     }
 
     [Fact]
@@ -457,7 +457,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, settings);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -477,11 +477,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not evaluate function Overload, see inner results for more details");
-        result.InnerResults.Should().ContainSingle();
-        result.InnerResults.Single().Status.Should().Be(ResultStatus.Error);
-        result.InnerResults.Single().ErrorMessage.Should().Be("Kaboom");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Could not evaluate function Overload, see inner results for more details");
+        result.InnerResults.Count.ShouldBe(1);
+        result.InnerResults.Single().Status.ShouldBe(ResultStatus.Error);
+        result.InnerResults.Single().ErrorMessage.ShouldBe("Kaboom");
     }
 
     [Fact]
@@ -501,11 +501,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not evaluate function Overload, see inner results for more details");
-        result.InnerResults.Should().ContainSingle();
-        result.InnerResults.Single().Status.Should().Be(ResultStatus.Error);
-        result.InnerResults.Single().ErrorMessage.Should().Be("Kaboom");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Could not evaluate function Overload, see inner results for more details");
+        result.InnerResults.Count.ShouldBe(1);
+        result.InnerResults.Single().Status.ShouldBe(ResultStatus.Error);
+        result.InnerResults.Single().ErrorMessage.ShouldBe("Kaboom");
     }
 
     [Fact]
@@ -522,11 +522,11 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not evaluate function Overload, see inner results for more details");
-        result.InnerResults.Should().ContainSingle();
-        result.InnerResults.Single().Status.Should().Be(ResultStatus.Invalid);
-        result.InnerResults.Single().ErrorMessage.Should().Be("Argument Argument1 is required");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Could not evaluate function Overload, see inner results for more details");
+        result.InnerResults.Count.ShouldBe(1);
+        result.InnerResults.Single().Status.ShouldBe(ResultStatus.Invalid);
+        result.InnerResults.Single().ErrorMessage.ShouldBe("Argument Argument1 is required");
     }
 
     [Fact]
@@ -546,10 +546,10 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not evaluate function MyFunction2, see inner results for more details");
-        result.InnerResults.Should().ContainSingle();
-        result.InnerResults.Single().ErrorMessage.Should().Be("Argument Argument1 is not of type System.String");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Could not evaluate function MyFunction2, see inner results for more details");
+        result.InnerResults.Count.ShouldBe(1);
+        result.InnerResults.Single().ErrorMessage.ShouldBe("Argument Argument1 is not of type System.String");
     }
 
     [Fact]
@@ -571,8 +571,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Arrange
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Could not find function with type name System.String");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Could not find function with type name System.String");
     }
 
     [Fact]
@@ -589,8 +589,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         var result = sut.Validate(functionCall, CreateSettings());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be<object>();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(typeof(object));
     }
 
     public void Dispose()

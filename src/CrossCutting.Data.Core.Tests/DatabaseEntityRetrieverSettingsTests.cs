@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Data.Core.Tests;
+namespace CrossCutting.Data.Core.Tests;
 
 public class DatabaseEntityRetrieverSettingsTests
 {
@@ -9,9 +9,9 @@ public class DatabaseEntityRetrieverSettingsTests
         var sut = new DatabaseEntityRetrieverSettings("table", "fields", "orderby", "where");
 
         // Assert
-        sut.TableName.Should().Be("table");
-        sut.Fields.Should().Be("fields");
-        sut.DefaultOrderBy.Should().Be("orderby");
-        sut.DefaultWhere.Should().Be("where");
+        sut.TableName.ShouldBe("table");
+        sut.Fields.ShouldBe("fields");
+        sut.DefaultOrderBy.ShouldBe("orderby");
+        sut.DefaultWhere.ShouldBe("where");
     }
 }

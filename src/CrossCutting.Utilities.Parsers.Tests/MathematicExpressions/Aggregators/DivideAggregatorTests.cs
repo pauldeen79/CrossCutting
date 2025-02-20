@@ -9,8 +9,8 @@ public class DivideAggregatorTests
         var result = new DivideAggregator().Aggregate((byte)4, (byte)2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(2);
     }
 
     [Fact]
@@ -20,8 +20,8 @@ public class DivideAggregatorTests
         var result = new DivideAggregator().Aggregate((short)4, (short)2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(2);
     }
 
     [Fact]
@@ -31,8 +31,8 @@ public class DivideAggregatorTests
         var result = new DivideAggregator().Aggregate(4, 2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(2);
     }
 
     [Fact]
@@ -42,8 +42,8 @@ public class DivideAggregatorTests
         var result = new DivideAggregator().Aggregate((long)4, (long)2, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((long)2);
     }
 
     [Fact]
@@ -53,8 +53,8 @@ public class DivideAggregatorTests
         var result = new DivideAggregator().Aggregate((float)4.5, (float)1.5, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((float)3);
     }
 
     [Fact]
@@ -64,8 +64,8 @@ public class DivideAggregatorTests
         var result = new DivideAggregator().Aggregate((decimal)4.5, (decimal)1.5, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(3);
     }
 
     [Fact]
@@ -75,8 +75,7 @@ public class DivideAggregatorTests
         var result = new DivideAggregator().Aggregate(4.5, 1.5, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(3);
     }
 }
-

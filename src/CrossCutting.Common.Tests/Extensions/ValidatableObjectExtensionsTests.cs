@@ -13,8 +13,8 @@ public class ValidatableObjectExtensionsTests
         var actual = input.Validate(results, input.Value, nameof(MyValidatableClass.Value), new[] { new RequiredAttribute() });
 
         // Assert
-        actual.Should().BeTrue();
-        results.Should().HaveCount(0);
+        actual.ShouldBe(true);
+        results.Count.ShouldBe(0);
     }
 
     [Fact]
@@ -28,8 +28,8 @@ public class ValidatableObjectExtensionsTests
         var actual = input.Validate(results, input.Value, nameof(MyValidatableClass.Value), new[] { new RequiredAttribute() });
 
         // Assert
-        actual.Should().BeFalse();
-        results.Should().HaveCount(1);
+        actual.ShouldBe(false);
+        results.Count.ShouldBe(1);
     }
 
     [Fact]
@@ -44,8 +44,8 @@ public class ValidatableObjectExtensionsTests
         var actual_empty = input.Validate(results, input.Value, nameof(MyValidatableClass.Value), Enumerable.Empty<RequiredAttribute>());
 
         // Assert
-        actual_null.Should().BeNull();
-        actual_empty.Should().BeNull();
+        actual_null.ShouldBeNull();
+        actual_empty.ShouldBeNull();
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class ValidatableObjectExtensionsTests
         var actual = input.Validate(nameof(MyValidatableClass.Value));
 
         // Assert
-        actual.Should().BeEmpty();
+        actual.ShouldBeEmpty();
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class ValidatableObjectExtensionsTests
         var actual = input.Validate(nameof(MyValidatableClass.Value));
 
         // Assert
-        actual.Should().Be("Value is required");
+        actual.ShouldBe("Value is required");
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class ValidatableObjectExtensionsTests
         var actual = input.Validate();
 
         // Assert
-        actual.Should().BeEmpty();
+        actual.ShouldBeEmpty();
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class ValidatableObjectExtensionsTests
         var actual = input.Validate();
 
         // Assert
-        actual.Should().Be("Value is required");
+        actual.ShouldBe("Value is required");
     }
 
     [Fact]
@@ -110,8 +110,8 @@ public class ValidatableObjectExtensionsTests
         var actual = input.Validate();
 
         // Assert
-        actual.Should().Contain("Value1 is required");
-        actual.Should().Contain("Value2 is required");
+        actual.ShouldContain("Value1 is required");
+        actual.ShouldContain("Value2 is required");
     }
 
     [Fact]
@@ -121,8 +121,8 @@ public class ValidatableObjectExtensionsTests
         var input = new MyValidatableClass { Value = "Filled" };
 
         // Act & Assert
-        input.Invoking(x => x.Validate<ValidationException>())
-             .Should().NotThrow();
+        Action a = () => input.Validate<ValidationException>();
+        a.ShouldNotThrow();
     }
 
     [Fact]
@@ -132,8 +132,8 @@ public class ValidatableObjectExtensionsTests
         var input = new MyValidatableClass { Value = null };
 
         // Act & Assert
-        input.Invoking(x => x.Validate<ValidationException>())
-             .Should().Throw<ValidationException>();
+        Action a = () => input.Validate<ValidationException>();
+        a.ShouldThrow<ValidationException>();
     }
 
     private sealed class MyValidatableClass : IValidatableObject

@@ -23,7 +23,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = await command.ExecuteNonQueryAsync();
 
         // Assert
-        actual.Should().Be(12345);
+        actual.ShouldBe(12345);
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = await command.ExecuteScalarAsync();
 
         // Assert
-        actual.Should().Be(2);
+        actual.ShouldBe(2);
     }
 
     [Fact]
@@ -114,10 +114,10 @@ public sealed class IntegrationTests : IDisposable
         command.CommandText = "SELECT * FROM [Fridge] WHERE Amount > 0";
         using var reader = command.ExecuteReader();
         var actual1 = reader.FieldCount;
-        actual1.Should().Be(0); // not initialized yet
+        actual1.ShouldBe(0); /// not initialized yet;
         reader.Read();
         var actual2 = reader.FieldCount;
-        actual2.Should().Be(2); // initialized because of Read
+        actual2.ShouldBe(2); /// initialized because of Read;
     }
 
     [Fact]
@@ -160,12 +160,12 @@ public sealed class IntegrationTests : IDisposable
         }
 
         // Assert
-        resultWithResults.Should().HaveCount(2);
-        resultWithResults[0].Name.Should().Be("Beer");
-        resultWithResults[0].Amount.Should().Be(1);
-        resultWithResults[1].Name.Should().Be("Milk");
-        resultWithResults[1].Amount.Should().Be(3);
-        resultWithoutResults.Should().HaveCount(0);
+        resultWithResults.Count.ShouldBe(2);
+        resultWithResults[0].Name.ShouldBe("Beer");
+        resultWithResults[0].Amount.ShouldBe(1);
+        resultWithResults[1].Name.ShouldBe("Milk");
+        resultWithResults[1].Amount.ShouldBe(3);
+        resultWithoutResults.Count.ShouldBe(0);
     }
 
     [Fact]
@@ -211,9 +211,9 @@ public sealed class IntegrationTests : IDisposable
         }
 
         // Assert
-        resultWithResults.Should().HaveCount(1);
-        resultWithResults[0].Name.Should().Be("Beer");
-        resultWithResults[0].Amount.Should().Be(1);
+        resultWithResults.Count.ShouldBe(1);
+        resultWithResults[0].Name.ShouldBe("Beer");
+        resultWithResults[0].Amount.ShouldBe(1);
     }
 
     [Fact]
@@ -258,11 +258,11 @@ public sealed class IntegrationTests : IDisposable
         }
 
         // Assert
-        result.Should().HaveCount(2);
-        result[0].Name.Should().Be("Beer");
-        result[0].Amount.Should().Be(1);
-        result[1].Name.Should().Be("Milk");
-        result[1].Amount.Should().Be(3);
+        result.Count.ShouldBe(2);
+        result[0].Name.ShouldBe("Beer");
+        result[0].Amount.ShouldBe(1);
+        result[1].Name.ShouldBe("Milk");
+        result[1].Amount.ShouldBe(3);
     }
 
     [Fact]
@@ -271,14 +271,14 @@ public sealed class IntegrationTests : IDisposable
         // Arrange
         using var transaction = Connection.BeginTransaction();
         var rolledBack = false;
-        _callback.Transactions.Should().HaveCount(1);
+        _callback.Transactions.Count().ShouldBe(1);
         _callback.Transactions.First().RolledBack += (sender, args) => rolledBack = true;
 
         // Act
         transaction.Rollback();
 
         // Assert
-        rolledBack.Should().BeTrue();
+        rolledBack.ShouldBeTrue();
     }
 
     [Fact]
@@ -287,14 +287,14 @@ public sealed class IntegrationTests : IDisposable
         // Arrange
         using var transaction = Connection.BeginTransaction();
         var committed = false;
-        _callback.Transactions.Should().HaveCount(1);
+        _callback.Transactions.Count().ShouldBe(1);
         _callback.Transactions.First().Committed += (sender, args) => committed = true;
 
         // Act
         transaction.Commit();
 
         // Assert
-        committed.Should().BeTrue();
+        committed.ShouldBeTrue();
     }
 
     [Fact]
@@ -309,7 +309,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = command.ExecuteNonQuery();
 
         // Assert
-        actual.Should().Be(12345);
+        actual.ShouldBe(12345);
     }
 
     [Fact]
@@ -324,7 +324,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = command.ExecuteNonQuery();
 
         // Assert
-        actual.Should().Be(0);
+        actual.ShouldBe(0);
     }
 
     [Fact]
@@ -339,7 +339,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = command.ExecuteNonQuery();
 
         // Assert
-        actual.Should().Be(12345);
+        actual.ShouldBe(12345);
     }
 
     [Fact]
@@ -354,7 +354,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = command.ExecuteNonQuery();
 
         // Assert
-        actual.Should().Be(12345);
+        actual.ShouldBe(12345);
     }
 
     [Fact]
@@ -369,7 +369,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = command.ExecuteScalar();
 
         // Assert
-        actual.Should().Be(12345);
+        actual.ShouldBe(12345);
     }
 
     [Fact]
@@ -384,7 +384,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = command.ExecuteScalar();
 
         // Assert
-        actual.Should().BeNull();
+        actual.ShouldBeNull();
     }
 
     [Fact]
@@ -399,7 +399,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = command.ExecuteScalar();
 
         // Assert
-        actual.Should().Be(12345);
+        actual.ShouldBe(12345);
     }
 
     [Fact]
@@ -414,7 +414,7 @@ public sealed class IntegrationTests : IDisposable
         var actual = command.ExecuteScalar();
 
         // Assert
-        actual.Should().Be(12345);
+        actual.ShouldBe(12345);
     }
 
     private async Task ReaderTest(Func<IDataReader, MyRecord> recordDelegate)
@@ -438,11 +438,11 @@ public sealed class IntegrationTests : IDisposable
         }
 
         // Assert
-        result.Should().HaveCount(2);
-        result[0].Name.Should().Be("Beer");
-        result[0].Amount.Should().Be(1);
-        result[1].Name.Should().Be("Milk");
-        result[1].Amount.Should().Be(3);
+        result.Count.ShouldBe(2);
+        result[0].Name.ShouldBe("Beer");
+        result[0].Amount.ShouldBe(1);
+        result[1].Name.ShouldBe("Milk");
+        result[1].Amount.ShouldBe(3);
     }
 
     public void Dispose() => Connection.Dispose();

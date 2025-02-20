@@ -9,8 +9,8 @@ public class SubtractAggregatorTests
         var result = new SubtractAggregator().Aggregate((byte)5, (byte)3, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(2);
     }
 
     [Fact]
@@ -20,8 +20,8 @@ public class SubtractAggregatorTests
         var result = new SubtractAggregator().Aggregate((short)5, (short)3, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(2);
     }
 
     [Fact]
@@ -31,8 +31,8 @@ public class SubtractAggregatorTests
         var result = new SubtractAggregator().Aggregate(5, 3, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo(2);
     }
 
     [Fact]
@@ -42,8 +42,8 @@ public class SubtractAggregatorTests
         var result = new SubtractAggregator().Aggregate((long)5, (long)3, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(2);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((long)2);
     }
 
     [Fact]
@@ -53,8 +53,8 @@ public class SubtractAggregatorTests
         var result = new SubtractAggregator().Aggregate((float)4.5, (float)1.5, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((float)3);
     }
 
     [Fact]
@@ -64,8 +64,8 @@ public class SubtractAggregatorTests
         var result = new SubtractAggregator().Aggregate((decimal)4.5, (decimal)1.5, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(3);
     }
 
     [Fact]
@@ -75,8 +75,7 @@ public class SubtractAggregatorTests
         var result = new SubtractAggregator().Aggregate(4.5, 1.5, CultureInfo.InvariantCulture);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(3);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(3);
     }
 }
-

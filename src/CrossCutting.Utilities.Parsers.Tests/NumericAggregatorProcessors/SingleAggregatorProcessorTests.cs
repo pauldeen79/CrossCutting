@@ -9,7 +9,7 @@ public class SingleAggregatorProcessorTests
         var result = SingleAggregatorProcessor.Aggregate("no Single", (float)2, CultureInfo.InvariantCulture, (x, y) => x + y);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
+        result.Status.ShouldBe(ResultStatus.Continue);
     }
 
     [Fact]
@@ -19,7 +19,7 @@ public class SingleAggregatorProcessorTests
         var result = SingleAggregatorProcessor.Aggregate((float)2, (float)3, CultureInfo.InvariantCulture, (x, y) => x + y);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(5);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((float)5);
     }
 }

@@ -9,14 +9,14 @@ public class ArgumentGuardTests
         var result = ArgumentGuard.IsNotNull(this, "instance");
 
         // Assert
-        result.Should().BeSameAs(this);
+        result.ShouldBeSameAs(this);
     }
 
     [Fact]
     public void IsNotNull_Throws_When_Instance_Is_Null()
     {
         // Act & Assert
-        this.Invoking(_ => ArgumentGuard.IsNotNull<string>(default, "the argument name"))
-            .Should().Throw<ArgumentNullException>().WithParameterName("the argument name");
+        Action a = () => ArgumentGuard.IsNotNull<string>(default, "the argument name");
+        a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("the argument name");
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+namespace CrossCutting.Utilities.Parsers.Tests;
 
 public class StringFormatParserTests
 {
@@ -13,10 +13,10 @@ public class StringFormatParserTests
         var actual = StringFormatParser.Parse(FormatString, args);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("0;world|1;!");
+        contents.ShouldBe("0;world|1;!");
     }
 
     [Fact]
@@ -30,11 +30,11 @@ public class StringFormatParserTests
         var actual = StringFormatParser.Parse(FormatString, args);
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
-        actual.ErrorMessages.ElementAt(0).Should().Be("Warning: Format value 1 was not found in format placeholders");
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
+        actual.ErrorMessages.ElementAt(0).ShouldBe("Warning: Format value 1 was not found in format placeholders");
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("0;world|1;!");
+        contents.ShouldBe("0;world|1;!");
     }
 
     [Fact]
@@ -48,11 +48,11 @@ public class StringFormatParserTests
         var actual = StringFormatParser.Parse(FormatString, args);
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
-        actual.ErrorMessages.ElementAt(0).Should().Be("Format placeholders count (2) is not equal to column values count (1), see #MISSING# in format values list (values)");
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
+        actual.ErrorMessages.ElementAt(0).ShouldBe("Format placeholders count (2) is not equal to column values count (1), see #MISSING# in format values list (values)");
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("0;world|1;#MISSING#");
+        contents.ShouldBe("0;world|1;#MISSING#");
     }
 
     [Fact]
@@ -66,10 +66,10 @@ public class StringFormatParserTests
         var actual = StringFormatParser.Parse(FormatString, args);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be($"0;world|1;!|2;{new DateTime(2018, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)}");
+        contents.ShouldBe($"0;world|1;!|2;{new DateTime(2018, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)}");
     }
 
     [Fact]
@@ -83,10 +83,10 @@ public class StringFormatParserTests
         var actual = StringFormatParser.Parse(FormatString, args);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("0;world|1;!");
+        contents.ShouldBe("0;world|1;!");
     }
 
     [Fact]
@@ -100,10 +100,10 @@ public class StringFormatParserTests
         var actual = StringFormatParser.ParseWithArgumentsString(FormatString, Args);
 
         // Assert
-        actual.IsSuccessful.Should().BeTrue();
-        actual.ErrorMessages.Should().BeEmpty();
+        actual.IsSuccessful.ShouldBeTrue();
+        actual.ErrorMessages.ShouldBeEmpty();
         var contents = string.Join("|", actual.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
-        contents.Should().Be("0;\"world\"|1;\"!\"");
+        contents.ShouldBe("0;\"world\"|1;\"!\"");
     }
 
     [Fact]
@@ -118,7 +118,7 @@ public class StringFormatParserTests
         var actual = string.Format(FormatString, parsedArguments);
 
         // Assert
-        actual.Should().Be("Hello, John Doe!");
+        actual.ShouldBe("Hello, John Doe!");
     }
 
     [Fact]
@@ -131,9 +131,9 @@ public class StringFormatParserTests
         var actual = StringFormatParser.Parse(input, "A");
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
-        actual.ErrorMessages.First().Should().Be("Format string is empty");
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
+        actual.ErrorMessages.First().ShouldBe("Format string is empty");
     }
 
     [Fact]
@@ -146,9 +146,9 @@ public class StringFormatParserTests
         var actual = StringFormatParser.ParseWithArgumentsString(input, "A");
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
-        actual.ErrorMessages.First().Should().Be("Format string is empty");
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
+        actual.ErrorMessages.First().ShouldBe("Format string is empty");
     }
 
     [Fact]
@@ -161,9 +161,9 @@ public class StringFormatParserTests
         var actual = StringFormatParser.ParseWithArgumentsString("something", input);
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
-        actual.ErrorMessages.First().Should().Be("Arguments string is empty");
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
+        actual.ErrorMessages.First().ShouldBe("Arguments string is empty");
     }
 
     [Fact]
@@ -176,9 +176,9 @@ public class StringFormatParserTests
         var actual = StringFormatParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
-        actual.ErrorMessages.First().Should().Be("Too many open braces found");
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
+        actual.ErrorMessages.First().ShouldBe("Too many open braces found");
     }
 
     [Fact]
@@ -191,9 +191,9 @@ public class StringFormatParserTests
         var actual = StringFormatParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
-        actual.ErrorMessages.First().Should().Be("Too many close braces found");
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
+        actual.ErrorMessages.First().ShouldBe("Too many close braces found");
     }
 
     [Fact]
@@ -206,8 +206,8 @@ public class StringFormatParserTests
         var actual = StringFormatParser.Parse(input);
 
         // Assert
-        actual.IsSuccessful.Should().BeFalse();
-        actual.ErrorMessages.Should().HaveCount(1);
-        actual.ErrorMessages.First().Should().Be("No format placeholders were found");
+        actual.IsSuccessful.ShouldBeFalse();
+        actual.ErrorMessages.Count().ShouldBe(1);
+        actual.ErrorMessages.First().ShouldBe("No format placeholders were found");
     }
 }

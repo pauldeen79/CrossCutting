@@ -14,7 +14,7 @@ public partial class StringExtensionsTests
             var actual = input.SplitDelimited('\t');
 
             // Assert
-            actual.Should().BeEquivalentTo("Value A", "Value B", "Value C");
+            actual.ShouldBeEquivalentTo(new[] { "Value A", "Value B", "Value C" });
         }
 
         [Fact]
@@ -27,7 +27,7 @@ public partial class StringExtensionsTests
             var actual = input.SplitDelimited(' ', '"');
 
             // Assert
-            actual.Should().BeEquivalentTo("Value A", "Value B", "Value C");
+            actual.ShouldBeEquivalentTo(new[] { "Value A", "Value B", "Value C" });
         }
 
         [Fact]
@@ -40,7 +40,7 @@ public partial class StringExtensionsTests
             var actual = input.SplitDelimited(' ', '"');
 
             // Assert
-            actual.Should().BeEquivalentTo("Value", "A", "Value", "B", "Value", "C");
+            actual.ShouldBeEquivalentTo(new[] { "Value", "A", "Value", "B", "Value", "C" });
         }
 
         [Fact]
@@ -53,7 +53,7 @@ public partial class StringExtensionsTests
             var actual = input.SplitDelimited(',', '"');
 
             // Assert
-            actual.Should().BeEquivalentTo("a", "b,c", string.Empty);
+            actual.ShouldBeEquivalentTo(new[] { "a", "b,c", string.Empty });
         }
 
         [Fact]
@@ -66,7 +66,7 @@ public partial class StringExtensionsTests
             var actual = input.SplitDelimited(',');
 
             // Assert
-            actual.Should().BeEquivalentTo("Value A", "Value B", "Value C", string.Empty);
+            actual.ShouldBeEquivalentTo(new[] { "Value A", "Value B", "Value C", string.Empty });
         }
 
         [Fact]
@@ -79,7 +79,7 @@ public partial class StringExtensionsTests
             var actual = input.SplitDelimited('+', '"');
 
             // Assert
-            actual.Should().BeEquivalentTo("A+B+C");
+            actual.ShouldBeEquivalentTo(new[] { "A+B+C" });
         }
 
         [Fact]
@@ -92,7 +92,7 @@ public partial class StringExtensionsTests
             var actual = input.SplitDelimited(',', '"', leaveTextQualifier: true);
 
             // Assert
-            actual.Should().BeEquivalentTo("a", "\"b,c\"");
+            actual.ShouldBeEquivalentTo(new[] { "a", "\"b,c\"" });
         }
 
         [Fact]
@@ -105,7 +105,7 @@ public partial class StringExtensionsTests
             var actual = input.SplitDelimited('\t', trimItems: true);
 
             // Assert
-            actual.Should().BeEquivalentTo("Value A", "Value B", "Value C");
+            actual.ShouldBeEquivalentTo(new[] { "Value A", "Value B", "Value C" });
         }
 
         [Fact]
@@ -115,7 +115,8 @@ public partial class StringExtensionsTests
             var input = "Value A \t Value B \t Value C";
 
             // Act
-            input.Invoking(x => x.SplitDelimited(null!)).Should().Throw<ArgumentNullException>();
+            Action a = () => input.SplitDelimited(null!);
+            a.ShouldThrow<ArgumentNullException>();
         }
 
         [Fact]
@@ -125,7 +126,8 @@ public partial class StringExtensionsTests
             var input = "Value A \t Value B \t Value C";
 
             // Act
-            input.Invoking(x => x.SplitDelimited("===")).Should().Throw<ArgumentOutOfRangeException>();
+            Action a = () => input.SplitDelimited("===");
+            a.ShouldThrow<ArgumentOutOfRangeException>();
         }
 
         [Fact]
@@ -137,7 +139,7 @@ public partial class StringExtensionsTests
             // Act
             var result = input.SplitDelimited("==", '\"', true, trimItems: true);
             // Assert
-            result.Should().BeEquivalentTo("\"My value with ==\"", "\"My other value with ==\"");
+            result.ShouldBeEquivalentTo(new[] { "\"My value with ==\"", "\"My other value with ==\"" });
         }
 
         [Fact]
@@ -150,7 +152,7 @@ public partial class StringExtensionsTests
             var result = input.SplitDelimited("==", '\"', true, trimItems: false);
 
             // Assert
-            result.Should().BeEquivalentTo("\"My value with ==\" ", " \"My other value with ==\"");
+            result.ShouldBeEquivalentTo(new[] { "\"My value with ==\" ", " \"My other value with ==\"" });
         }
 
         [Fact]
@@ -162,7 +164,7 @@ public partial class StringExtensionsTests
             // Act
             var result = input.SplitDelimited("==", '\"', true, trimItems: true);
             // Assert
-            result.Should().BeEquivalentTo("\"My value with ==\"", "\"My other value with ==\" =");
+            result.ShouldBeEquivalentTo(new[] { "\"My value with ==\"", "\"My other value with ==\" =" });
         }
 
         [Fact]
@@ -175,7 +177,7 @@ public partial class StringExtensionsTests
             var actual = input.SplitDelimited(',');
 
             // Assert
-            actual.Should().BeEmpty();
+            actual.ShouldBeEmpty();
         }
     }
 }

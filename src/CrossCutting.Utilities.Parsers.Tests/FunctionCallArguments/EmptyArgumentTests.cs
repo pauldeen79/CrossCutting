@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests.FunctionCallArguments;
+namespace CrossCutting.Utilities.Parsers.Tests.FunctionCallArguments;
 
 public class EmptyArgumentTests
 {
@@ -16,8 +16,8 @@ public class EmptyArgumentTests
         var result = sut.EvaluateTyped(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -31,8 +31,8 @@ public class EmptyArgumentTests
         var result = sut.Evaluate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -46,8 +46,8 @@ public class EmptyArgumentTests
         var result = sut.Evaluate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -61,8 +61,8 @@ public class EmptyArgumentTests
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
-        result.Value.Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Continue);
+        result.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -76,8 +76,8 @@ public class EmptyArgumentTests
         var result = sut.Validate(context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
-        result.Value.Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Continue);
+        result.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class EmptyArgumentTests
         var result = sut.ToBuilder();
 
         // Assert
-        result.Should().BeOfType<EmptyArgumentBuilder<string>>();
+        result.ShouldBeOfType<EmptyArgumentBuilder<string>>();
     }
 
     [Fact]
@@ -103,6 +103,6 @@ public class EmptyArgumentTests
         var result = sut.ToTypedBuilder();
 
         // Assert
-        result.Should().BeOfType<EmptyArgumentBuilder<string>>();
+        result.ShouldBeOfType<EmptyArgumentBuilder<string>>();
     }
 }

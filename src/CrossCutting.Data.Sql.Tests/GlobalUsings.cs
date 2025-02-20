@@ -20,7 +20,7 @@ global using CrossCutting.Data.Sql.Builders;
 global using CrossCutting.Data.Sql.CommandProviders;
 global using CrossCutting.Data.Sql.Extensions;
 global using CrossCutting.Data.Sql.Tests.Repositories;
-global using FluentAssertions;
 global using Microsoft.Extensions.DependencyInjection;
 global using NSubstitute;
+global using Shouldly;
 global using Xunit;

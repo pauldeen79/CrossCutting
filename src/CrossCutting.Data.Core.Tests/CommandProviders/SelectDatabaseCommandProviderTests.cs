@@ -12,18 +12,18 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
     public void Create_Throws_On_Unsupported_DatabaseOperation(DatabaseOperation operation)
     {
         // Act & Assert
-        Sut.Invoking(x => x.Create<TestEntity>(operation))
-           .Should().ThrowExactly<ArgumentOutOfRangeException>()
-           .And.ParamName.Should().Be("operation");
+        Action a = () => Sut.Create<TestEntity>(operation);
+        a.ShouldThrow<ArgumentOutOfRangeException>()
+         .ParamName.ShouldBe("operation");
     }
 
     [Fact]
     public void Create_Throws_On_Unsupported_DatabaseEntityRetrieverSettings()
     {
         // Act & Assert
-        Sut.Invoking(x => x.Create<TestEntity>(DatabaseOperation.Select))
-           .Should().ThrowExactly<InvalidOperationException>()
-           .WithMessage("Could not obtain database entity retriever settings for type [CrossCutting.Data.Core.Tests.TestFixtures.TestEntity]");
+        Action a = () => Sut.Create<TestEntity>(DatabaseOperation.Select);
+        a.ShouldThrow<InvalidOperationException>()
+         .Message.ShouldBe("Could not obtain database entity retriever settings for type [CrossCutting.Data.Core.Tests.TestFixtures.TestEntity]");
     }
 
     [Fact]
@@ -43,6 +43,6 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
         var actual = Sut.Create<TestEntity>(DatabaseOperation.Select);
 
         // Assert
-        actual.CommandText.Should().Be(Sql);
+        actual.CommandText.ShouldBe(Sql);
     }
 }

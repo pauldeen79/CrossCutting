@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.ProcessingPipeline.Tests;
+namespace CrossCutting.ProcessingPipeline.Tests;
 
 public class ResultExtensionsTests : TestBase
 {
@@ -19,7 +19,7 @@ public class ResultExtensionsTests : TestBase
             var result = (await pipeline.ProcessAsync(context)).ProcessResult(context.Builder, context.Builder.Build);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
+            result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
         [Fact]
@@ -35,9 +35,9 @@ public class ResultExtensionsTests : TestBase
             var result = (await pipeline.ProcessAsync(context)).ProcessResult(context.Builder, context.Builder.Build);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
-            result.Value.Should().BeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
+            result.Value.ShouldBeNull();
         }
 
         [Fact]
@@ -53,9 +53,9 @@ public class ResultExtensionsTests : TestBase
             var result = (await pipeline.ProcessAsync(context)).ProcessResult(context.Builder, context.Builder.Build);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
-            result.Value.Should().BeSameAs(sourceModel);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.ShouldBeSameAs(sourceModel);
         }
     }
 

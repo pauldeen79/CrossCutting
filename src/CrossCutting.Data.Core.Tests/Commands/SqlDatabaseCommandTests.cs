@@ -7,9 +7,9 @@ public class SqlDatabaseCommandTests
     [InlineData("")]
     public void Ctor_Throws_On_CommandText(string? commandText)
     {
-        this.Invoking(_ => new SqlDatabaseCommand(commandText!, DatabaseCommandType.Text))
-            .Should().Throw<ArgumentOutOfRangeException>()
-            .And.ParamName.Should().Be("commandText");
+        Action a = () => _ = new SqlDatabaseCommand(commandText!, DatabaseCommandType.Text);
+        a.ShouldThrow<ArgumentOutOfRangeException>()
+         .ParamName.ShouldBe("commandText");
     }
 
     [Fact]
@@ -19,15 +19,15 @@ public class SqlDatabaseCommandTests
         var actual = new SqlDatabaseCommand("A", DatabaseCommandType.StoredProcedure, DatabaseOperation.Update, new { Parameter = "Value" });
 
         // Assert
-        actual.CommandText.Should().Be("A");
-        actual.CommandType.Should().Be(DatabaseCommandType.StoredProcedure);
-        actual.Operation.Should().Be(DatabaseOperation.Update);
-        actual.CommandParameters.Should().NotBeNull();
+        actual.CommandText.ShouldBe("A");
+        actual.CommandType.ShouldBe(DatabaseCommandType.StoredProcedure);
+        actual.Operation.ShouldBe(DatabaseOperation.Update);
+        actual.CommandParameters.ShouldNotBeNull();
         var parameters = actual.CommandParameters.ToExpandoObject() as IDictionary<string, object>;
-        parameters.Should().NotBeNull();
+        parameters.ShouldNotBeNull();
         if (parameters is not null)
         {
-            parameters["Parameter"].Should().Be("Value");
+            parameters["Parameter"].ShouldBe("Value");
         }
     }
 }

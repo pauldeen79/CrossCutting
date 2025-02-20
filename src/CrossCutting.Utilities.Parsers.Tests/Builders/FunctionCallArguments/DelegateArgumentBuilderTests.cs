@@ -12,8 +12,8 @@ public class DelegateArgumentBuilderTests
         var result = sut.BuildTyped();
 
         // Assert
-        result.Should().BeOfType<DelegateArgument<string>>();
-        result.Delegate().Should().Be(sut.Delegate());
+        result.ShouldBeOfType<DelegateArgument<string>>();
+        result.Delegate().ShouldBe(sut.Delegate());
     }
 
     [Fact]
@@ -26,8 +26,8 @@ public class DelegateArgumentBuilderTests
         var result = sut.Build();
 
         // Assert
-        result.Should().BeOfType<DelegateArgument<string>>();
-        ((DelegateArgument<string>)result).Delegate().Should().Be(sut.Delegate());
+        result.ShouldBeOfType<DelegateArgument<string>>();
+        ((DelegateArgument<string>)result).Delegate().ShouldBe(sut.Delegate());
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class DelegateArgumentBuilderTests
         var result = sut.Delegate();
 
         // Assert
-        result.Should().Be("Some value");
+        result.ShouldBe("Some value");
     }
 
     [Fact]
@@ -53,8 +53,8 @@ public class DelegateArgumentBuilderTests
         var result = sut.WithDelegate(() => "Altered value");
 
         // Assert
-        result.Should().BeSameAs(sut);
-        result.Delegate().Should().Be("Altered value");
+        result.ShouldBeSameAs(sut);
+        result.Delegate().ShouldBe("Altered value");
     }
 
     [Fact]
@@ -67,8 +67,8 @@ public class DelegateArgumentBuilderTests
         var result = sut.WithValidationDelegate(() => typeof(string));
 
         // Assert
-        result.Should().BeSameAs(sut);
-        result.ValidationDelegate.Should().NotBeNull();
-        result.ValidationDelegate!().Should().Be<string>();
+        result.ShouldBeSameAs(sut);
+        result.ValidationDelegate.ShouldNotBeNull();
+        result.ValidationDelegate!().ShouldBe(typeof(string));
     }
 }

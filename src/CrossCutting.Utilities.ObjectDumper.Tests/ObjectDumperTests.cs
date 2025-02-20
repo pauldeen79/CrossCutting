@@ -12,7 +12,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be("2.1 [System.Single]");
+        actual.ShouldBe("2.1 [System.Single]");
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be(
+        actual.ShouldBe(
 @"{
     ""Name"": ""John Doe"" [System.String],
     ""Age"": 21 [System.Int32],
@@ -50,7 +50,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be(@"{
+        actual.ShouldBe(@"{
     ""Name"": NULL [System.String],
     ""Age"": 0 [System.Int32],
     ""Weight"": 0 [System.Double]
@@ -67,7 +67,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be("NULL [System.Object]");
+        actual.ShouldBe("NULL [System.Object]");
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be(
+        actual.ShouldBe(
 @"[
     {
         ""Name"": ""Name 1"" [System.String],
@@ -129,7 +129,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be(
+        actual.ShouldBe(
 @"{
     ""Name"": ""John Doe"" [System.String],
     ""Age"": 21 [System.Int32],
@@ -164,7 +164,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be(
+        actual.ShouldBe(
 @"{
     ""Name"": ""John Doe"" [System.String],
     ""Hobbies"": 
@@ -201,7 +201,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be(
+        actual.ShouldBe(
 @"{
     ""Name"": ""John Doe"" [System.String],
     ""Children"": 
@@ -232,7 +232,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be(@"{
+        actual.ShouldBe(@"{
     ""Name"": ""John Doe"" [System.String],
     ""Type"": ""System.Collections.Generic.List<CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType>"" [System.RuntimeType]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithTypeProperty]");
@@ -252,7 +252,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be(@"{
+        actual.ShouldBe(@"{
     ""Name"": ""John Doe"" [System.String],
     ""Type"": ""CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType"" [System.RuntimeType]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithTypeProperty]");
@@ -279,7 +279,7 @@ public class ObjectDumperTests
         var actual = input.Dump(new MaxDepthFilter(2));
 
         // Assert
-        actual.Should().Be(@"{
+        actual.ShouldBe(@"{
     ""Name"": ""Root"" [System.String],
     ""Child"": 
     {
@@ -310,7 +310,7 @@ public class ObjectDumperTests
         var actual = input.Dump(new PropertyNameExclusionFilter("Name", typeof(RecursiveType)?.FullName ?? string.Empty));
 
         // Assert
-        actual.Should().Be(@"{
+        actual.ShouldBe(@"{
     ""Child"": 
     {
         ""Child"": 
@@ -342,7 +342,7 @@ public class ObjectDumperTests
         var actual = input.Dump(new PropertyTypeNameExclusionFilter(typeof(string)?.FullName ?? string.Empty));
 
         // Assert
-        actual.Should().Be(@"{
+        actual.ShouldBe(@"{
     ""Child"": 
     {
         ""Child"": 
@@ -363,10 +363,10 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().StartWith(@"{
+        actual.ShouldStartWith(@"{
     ""Name"": ""Test"" [System.String],
     ""Error"": ""System.Reflection.TargetInvocationException: Property accessor 'Error' on object 'CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithExceptionProperty' threw the following exception:'Operation is not valid due to the current state of the object.'");
-        actual.Should().EndWith(@""" [System.Reflection.TargetInvocationException]
+        actual.ShouldEndWith(@""" [System.Reflection.TargetInvocationException]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithExceptionProperty]");
     }
 
@@ -380,7 +380,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be(@"{
+        actual.ShouldBe(@"{
     ""Name"": ""Test"" [System.String]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithSetterProperty]");
     }
@@ -398,7 +398,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be(@"{
+        actual.ShouldBe(@"{
     ""Name"": ""Hello world"" [System.String],
     ""Age"": 0 [System.Int32],
     ""Weight"": 0 [System.Double],
@@ -422,8 +422,8 @@ public class ObjectDumperTests
         var actual = input.Dump(new ExceptionThrowingPart());
 
         // Assert
-        actual.Should().StartWith(@"""System.InvalidOperationException: Operation is not valid due to the current state of the object.");
-        actual.Should().EndWith(@"[System.InvalidOperationException]");
+        actual.ShouldStartWith(@"""System.InvalidOperationException: Operation is not valid due to the current state of the object.");
+        actual.ShouldEndWith(@"[System.InvalidOperationException]");
     }
 
     [Fact]
@@ -445,7 +445,7 @@ public class ObjectDumperTests
         var actual = input.Dump(transform);
 
         // Assert
-        actual.Should().Be(@"{
+        actual.ShouldBe(@"{
     ""Name"": ""John Doe"" [System.String],
     ""Age"": 21 [System.Int32],
     ""Weight"": 80.1 [System.Double],
@@ -469,7 +469,7 @@ public class ObjectDumperTests
         var actual = input.Dump(transform);
 
         // Assert
-        actual.Should().Be(@"""CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType"" [System.String]");
+        actual.ShouldBe(@"""CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyType"" [System.String]");
     }
 
     [Fact]
@@ -482,7 +482,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be(
+        actual.ShouldBe(
 @"{
     ""Name"": ""John Doe"" [System.String],
     ""Age"": 20 [System.Int32]
@@ -503,7 +503,7 @@ public class ObjectDumperTests
         var actual = input.Dump();
 
         // Assert
-        actual.Should().Be(@"{
+        actual.ShouldBe(@"{
     ""Property1"": ""Test"" [System.String],
     ""Property2"": B [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.MyEnumeration]
 } [CrossCutting.Utilities.ObjectDumper.Tests.Helpers.TypeWithEnumProperty]");
@@ -519,7 +519,7 @@ public class ObjectDumperTests
         var dumpA = a.Dump();
         var dumpB = b.Dump();
 
-        dumpB.Should().Be(dumpA);
+        dumpB.ShouldBe(dumpA);
     }
 
     [Fact]
@@ -536,7 +536,7 @@ public class ObjectDumperTests
         var actual = input.Dump(new ContextDictionaryHandler());
 
         // Assert
-        actual.Should().Be(@"{
+        actual.ShouldBe(@"{
     ""Custom1"": ""custom1"" [System.String],
     ""Custom2"": 23 [System.Int32],
     {
@@ -561,7 +561,7 @@ public class ObjectDumperTests
         var a = new { Name = "Test", Weight = 2, Date = d }.Dump();
         var b = new { Name = "Test", Weight = 2, Date = d }.Dump();
 
-        a.Should().BeEquivalentTo(b);
+        a.ShouldBeEquivalentTo(b);
     }
 
     [Fact]
@@ -572,7 +572,7 @@ public class ObjectDumperTests
         var a = new { Name = "Test", Weight = 2, Date = d, Skip = "A" }.Dump(dumpConfig);
         var b = new { Name = "Test", Weight = 2, Date = d, Skip = "B" }.Dump(dumpConfig);
 
-        a.Should().BeEquivalentTo(b);
+        a.ShouldBeEquivalentTo(b);
     }
 
     [Fact]
@@ -583,7 +583,7 @@ public class ObjectDumperTests
         var a = new { Name = "Test", Weight = 2, Date = d, Skip = "A" }.Dump(dumpConfig);
         var b = new { Name = "Test", Weight = 2, Date = d, Skip = "B" }.Dump(dumpConfig);
 
-        a.Should().BeEquivalentTo(b);
+        a.ShouldBeEquivalentTo(b);
     }
 
     [Fact]
@@ -594,7 +594,7 @@ public class ObjectDumperTests
         var a = new { Name = "Test", Weight = 2, Date = d }.Dump(dumpConfig);
         var b = new { Name = "Test", Date = d, Weight = 2 }.Dump(dumpConfig);
 
-        a.Should().BeEquivalentTo(b);
+        a.ShouldBeEquivalentTo(b);
     }
 
     [Fact]
@@ -605,6 +605,6 @@ public class ObjectDumperTests
         var a = new { Name = "Test", Weight = 2, Date = d, Skip = "A" }.Dump(dumpConfig);
         var b = new { Name = "Test", Date = d, Weight = 2, Skip = "B" }.Dump(dumpConfig);
 
-        a.Should().BeEquivalentTo(b);
+        a.ShouldBeEquivalentTo(b);
     }
 }

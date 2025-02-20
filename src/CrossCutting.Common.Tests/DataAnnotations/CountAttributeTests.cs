@@ -13,7 +13,7 @@ public class CountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().BeEmpty();
+        results.ShouldBeEmpty();
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class CountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().BeEmpty();
+        results.ShouldBeEmpty();
     }
 
     [Fact]
@@ -41,8 +41,8 @@ public class CountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().ContainSingle();
-        results.Single().ErrorMessage.Should().Be("The field MyProperty must be a collection with a minimum count of 1 and a maximum count of 10.");
+        results.Count.ShouldBe(1);
+        results.Single().ErrorMessage.ShouldBe("The field MyProperty must be a collection with a minimum count of 1 and a maximum count of 10.");
     }
 
     [Fact]
@@ -56,8 +56,8 @@ public class CountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().ContainSingle();
-        results.Single().ErrorMessage.Should().Be("The field MyProperty must be a collection with a minimum count of 1 and a maximum count of 10.");
+        results.Count.ShouldBe(1);
+        results.Single().ErrorMessage.ShouldBe("The field MyProperty must be a collection with a minimum count of 1 and a maximum count of 10.");
     }
 
     [Fact]
@@ -71,8 +71,8 @@ public class CountAttributeTests
         _ = sut.TryValidate(results);
 
         // Assert
-        results.Should().ContainSingle();
-        results.Single().ErrorMessage.Should().Be("The field MyProperty must be a collection with a minimum count of 1 and a maximum count of 10.");
+        results.Count.ShouldBe(1);
+        results.Single().ErrorMessage.ShouldBe("The field MyProperty must be a collection with a minimum count of 1 and a maximum count of 10.");
     }
 
     [Fact]
@@ -83,8 +83,8 @@ public class CountAttributeTests
         var results = new List<ValidationResult>();
 
         // Act & Assert
-        sut.Invoking(x => _ = x.TryValidate(results))
-           .Should().Throw<InvalidOperationException>().WithMessage("The maximum count must be a nonnegative integer.");
+        Action a = () => _ = sut.TryValidate(results);
+        a.ShouldThrow<InvalidOperationException>().Message.ShouldBe("The maximum count must be a nonnegative integer.");
     }
 
     [Fact]
@@ -95,8 +95,8 @@ public class CountAttributeTests
         var results = new List<ValidationResult>();
 
         // Act & Assert
-        sut.Invoking(x => _ = x.TryValidate(results))
-           .Should().Throw<InvalidOperationException>().WithMessage("The maximum value '1' must be greater than or equal to the minimum value '10'.");
+        Action a = () => sut.TryValidate(results);
+        a.ShouldThrow<InvalidOperationException>().Message.ShouldBe("The maximum value '1' must be greater than or equal to the minimum value '10'.");
     }
 
     private sealed class MyClass

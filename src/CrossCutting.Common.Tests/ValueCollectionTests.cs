@@ -9,7 +9,7 @@ public class ValueCollectionTests
         var actual = new ValueCollection<string>();
 
         // Assert
-        actual.Should().BeEmpty();
+        actual.ShouldBeEmpty();
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class ValueCollectionTests
         var actual = new ValueCollection<string>(equalityComparerMock);
 
         // Assert
-        actual.Should().BeEmpty();
+        actual.ShouldBeEmpty();
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class ValueCollectionTests
         var actual = new ValueCollection<string>(["a", "b", "c"]);
 
         // Assert
-        actual.Should().BeEquivalentTo("a", "b", "c");
+        actual.ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class ValueCollectionTests
         var actual = new ValueCollection<string>(["a", "b", "c"], equalityComparerMock);
 
         // Assert
-        actual.Should().BeEquivalentTo("a", "b", "c");
+        actual.ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public class ValueCollectionTests
         var actual = value1.Equals(value2);
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class ValueCollectionTests
         var actual = value1.Equals(value2);
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -89,7 +89,7 @@ public class ValueCollectionTests
         var actual = value1.Equals(value2);
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class ValueCollectionTests
         var actual = value1.Equals(value2);
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class ValueCollectionTests
         var actual = value.Equals(null);
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -132,7 +132,7 @@ public class ValueCollectionTests
         var actual = value.Equals(value);
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -146,7 +146,7 @@ public class ValueCollectionTests
         var actual = value1.Equals((object)value2);
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -159,7 +159,7 @@ public class ValueCollectionTests
         var actual = value.Equals((object?)null);
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -173,7 +173,7 @@ public class ValueCollectionTests
         var actual = value1.Equals((object)value2);
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -186,7 +186,7 @@ public class ValueCollectionTests
         var actual = value.Equals((object)value);
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -199,7 +199,7 @@ public class ValueCollectionTests
         var actual = value.ToString();
 
         // Assert
-        actual.Should().Be("[∅, ∅]");
+        actual.ShouldBe("[∅, ∅]");
     }
 
     [Fact]
@@ -212,7 +212,7 @@ public class ValueCollectionTests
         var actual = value.ToString();
 
         // Assert
-        actual.Should().Be("[true, false]");
+        actual.ShouldBe("[true, false]");
     }
 
     [Fact]
@@ -225,7 +225,7 @@ public class ValueCollectionTests
         var actual = value.ToString();
 
         // Assert
-        actual.Should().Be(@"[""a"", ""b""]");
+        actual.ShouldBe(@"[""a"", ""b""]");
     }
 
     [Fact]
@@ -238,7 +238,7 @@ public class ValueCollectionTests
         var actual = value.ToString();
 
         // Assert
-        actual.Should().Be("['a', 'b']");
+        actual.ShouldBe("['a', 'b']");
     }
 
     [Fact]
@@ -251,7 +251,7 @@ public class ValueCollectionTests
         var actual = value.ToString(null, CultureInfo.InvariantCulture);
 
         // Assert
-        actual.Should().Be("[2020-02-01T00:00:00.0000000]");
+        actual.ShouldBe("[2020-02-01T00:00:00.0000000]");
     }
 
     [Fact]
@@ -264,6 +264,6 @@ public class ValueCollectionTests
         var actual = value.GetHashCode();
 
         // Assert
-        actual.Should().NotBe(default);
+        actual.ShouldNotBe(default);
     }
 }

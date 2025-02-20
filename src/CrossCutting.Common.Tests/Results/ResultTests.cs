@@ -12,7 +12,7 @@ public class ResultTests
         var actual = sut.GetValueOrThrow();
 
         // Assert
-        actual.Should().Be(sut.Value);
+        actual.ShouldBe(sut.Value);
     }
 
     [Fact]
@@ -25,7 +25,7 @@ public class ResultTests
         var act = new Action(() => _ = sut.GetValueOrThrow());
 
         // Assert
-        act.Should().ThrowExactly<InvalidOperationException>().WithMessage("Result: Invalid");
+        act.ShouldThrow<InvalidOperationException>().Message.ShouldBe("Result: Invalid");
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class ResultTests
         var act = new Action(() => _ = sut.GetValueOrThrow());
 
         // Assert
-        act.Should().ThrowExactly<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom");
+        act.ShouldThrow<InvalidOperationException>().Message.ShouldBe("Result: Error, ErrorMessage: Kaboom");
     }
 
     [Fact]
@@ -51,9 +51,9 @@ public class ResultTests
         var actual = Result.FromExistingResult<string>(voidResult);
 
         // Assert
-        actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
-        actual.Status.Should().Be(voidResult.Status);
-        actual.ValidationErrors.Should().BeEquivalentTo(voidResult.ValidationErrors);
+        actual.ErrorMessage.ShouldBe(voidResult.ErrorMessage);
+        actual.Status.ShouldBe(voidResult.Status);
+        actual.ValidationErrors.ShouldBeEquivalentTo(voidResult.ValidationErrors);
     }
 
     [Fact]
@@ -66,9 +66,9 @@ public class ResultTests
         var actual = Result.FromExistingResult<string>(voidResult);
 
         // Assert
-        actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
-        actual.Status.Should().Be(voidResult.Status);
-        actual.ValidationErrors.Should().BeEquivalentTo(voidResult.ValidationErrors);
+        actual.ErrorMessage.ShouldBe(voidResult.ErrorMessage);
+        actual.Status.ShouldBe(voidResult.Status);
+        actual.ValidationErrors.ShouldBeEquivalentTo(voidResult.ValidationErrors);
     }
 
     [Fact]
@@ -81,9 +81,9 @@ public class ResultTests
         var actual = Result.FromExistingResult<string>(voidResult);
 
         // Assert
-        actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
-        actual.Status.Should().Be(voidResult.Status);
-        actual.ValidationErrors.Should().BeEquivalentTo(voidResult.ValidationErrors);
+        actual.ErrorMessage.ShouldBe(voidResult.ErrorMessage);
+        actual.Status.ShouldBe(voidResult.Status);
+        actual.ValidationErrors.ShouldBeEquivalentTo(voidResult.ValidationErrors);
     }
 
     [Fact]
@@ -96,10 +96,10 @@ public class ResultTests
         var actual = Result.FromExistingResult<string>(voidResult);
 
         // Assert
-        actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
-        actual.Status.Should().Be(voidResult.Status);
-        actual.ValidationErrors.Should().BeEquivalentTo(voidResult.ValidationErrors);
-        actual.Value.Should().Be("success value");
+        actual.ErrorMessage.ShouldBe(voidResult.ErrorMessage);
+        actual.Status.ShouldBe(voidResult.Status);
+        actual.ValidationErrors.ShouldBeEquivalentTo(voidResult.ValidationErrors);
+        actual.Value.ShouldBe("success value");
     }
 
     [Fact]
@@ -112,10 +112,10 @@ public class ResultTests
         var actual = Result.FromExistingResult(voidResult, "yes");
 
         // Assert
-        actual.ErrorMessage.Should().Be(voidResult.ErrorMessage);
-        actual.Status.Should().Be(voidResult.Status);
-        actual.ValidationErrors.Should().BeEquivalentTo(voidResult.ValidationErrors);
-        actual.Value.Should().Be("yes");
+        actual.ErrorMessage.ShouldBe(voidResult.ErrorMessage);
+        actual.Status.ShouldBe(voidResult.Status);
+        actual.ValidationErrors.ShouldBeEquivalentTo(voidResult.ValidationErrors);
+        actual.Value.ShouldBe("yes");
     }
 
     [Fact]
@@ -128,8 +128,8 @@ public class ResultTests
         var actual = Result.FromExistingResult<bool, object?>(source, x => x);
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.Value.Should().Be(default(bool));
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.Value.ShouldBe(default(bool));
     }
 
     [Fact]
@@ -142,8 +142,8 @@ public class ResultTests
         var actual = Result.FromExistingResult<bool, object?>(source, x => x);
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Ok);
-        actual.Value.Should().BeEquivalentTo(true);
+        actual.Status.ShouldBe(ResultStatus.Ok);
+        actual.Value.ShouldBeEquivalentTo(true);
     }
 
     [Fact]
@@ -153,11 +153,11 @@ public class ResultTests
         var actual = Result.Success("test");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Ok);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().Be("test");
+        actual.Status.ShouldBe(ResultStatus.Ok);
+        actual.IsSuccessful().ShouldBeTrue();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBe("test");
     }
 
     [Fact]
@@ -167,12 +167,12 @@ public class ResultTests
         var actual = Result.Success<(string Name, string Address)>(("name", "address"));
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Ok);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Name.Should().Be("name");
-        actual.Value.Address.Should().Be("address");
+        actual.Status.ShouldBe(ResultStatus.Ok);
+        actual.IsSuccessful().ShouldBeTrue();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.Name.ShouldBe("name");
+        actual.Value.Address.ShouldBe("address");
     }
 
     [Fact]
@@ -182,11 +182,11 @@ public class ResultTests
         var actual = Result.FromInstance(this);
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Ok);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeSameAs(this);
+        actual.Status.ShouldBe(ResultStatus.Ok);
+        actual.IsSuccessful().ShouldBeTrue();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeSameAs(this);
     }
 
     [Fact]
@@ -196,11 +196,11 @@ public class ResultTests
         var actual = Result.FromInstance(this, "This gets ignored because the instance is not null");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Ok);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeSameAs(this);
+        actual.Status.ShouldBe(ResultStatus.Ok);
+        actual.IsSuccessful().ShouldBeTrue();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeSameAs(this);
     }
 
     [Fact]
@@ -210,11 +210,11 @@ public class ResultTests
         var actual = Result.FromInstance(this, new[] { new ValidationError("Ignored", ["Member1"]) });
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Ok);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeSameAs(this);
+        actual.Status.ShouldBe(ResultStatus.Ok);
+        actual.IsSuccessful().ShouldBeTrue();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeSameAs(this);
     }
 
     [Fact]
@@ -224,11 +224,11 @@ public class ResultTests
         var actual = Result.FromInstance(this, "This gets ignored because the instance is not null", [new ValidationError("Ignored", ["Member1"])]);
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Ok);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeSameAs(this);
+        actual.Status.ShouldBe(ResultStatus.Ok);
+        actual.IsSuccessful().ShouldBeTrue();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeSameAs(this);
     }
 
     [Fact]
@@ -238,11 +238,11 @@ public class ResultTests
         var actual = Result.Invalid<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Invalid);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Invalid);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -252,10 +252,10 @@ public class ResultTests
         var actual = Result.Invalid();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Invalid);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Invalid);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -265,11 +265,11 @@ public class ResultTests
         var actual = Result.Invalid<string>("Error");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Invalid);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Invalid);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Error");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -279,12 +279,12 @@ public class ResultTests
         var actual = Result.Invalid<string>("Error", new[] { Result.Error("Kaboom") });
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Invalid);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.InnerResults.Should().ContainSingle();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Invalid);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Error");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.InnerResults.Count.ShouldBe(1);
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -294,10 +294,10 @@ public class ResultTests
         var actual = Result.Invalid("Error");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Invalid);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Invalid);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Error");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -307,11 +307,11 @@ public class ResultTests
         var actual = Result.Invalid("Error", new[] { Result.Error("Kaboom") });
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Invalid);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.InnerResults.Should().ContainSingle();
+        actual.Status.ShouldBe(ResultStatus.Invalid);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Error");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.InnerResults.Count.ShouldBe(1);
     }
 
     [Fact]
@@ -321,11 +321,11 @@ public class ResultTests
         var actual = Result.Invalid<string>(new[] { new ValidationError("x", ["m1", "m2"]) });
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Invalid);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEquivalentTo(new[] { new ValidationError("x", ["m1", "m2"]) });
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Invalid);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ToArray().ShouldBeEquivalentTo(new[] { new ValidationError("x", ["m1", "m2"]) });
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -335,10 +335,10 @@ public class ResultTests
         var actual = Result.Invalid(new[] { new ValidationError("x", ["m1", "m2"]) });
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Invalid);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEquivalentTo(new[] { new ValidationError("x", ["m1", "m2"]) });
+        actual.Status.ShouldBe(ResultStatus.Invalid);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ToArray().ShouldBeEquivalentTo(new[] { new ValidationError("x", ["m1", "m2"]) });
     }
 
     [Fact]
@@ -348,11 +348,11 @@ public class ResultTests
         var actual = Result.Invalid<string>("Error", [new ValidationError("x", ["m1", "m2"])]);
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Invalid);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEquivalentTo(new[] { new ValidationError("x", ["m1", "m2"]) });
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Invalid);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Error");
+        actual.ValidationErrors.ToArray().ShouldBeEquivalentTo(new[] { new ValidationError("x", ["m1", "m2"]) });
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -362,10 +362,10 @@ public class ResultTests
         var actual = Result.Invalid("Error", [new ValidationError("x", ["m1", "m2"])]);
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Invalid);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEquivalentTo(new[] { new ValidationError("x", ["m1", "m2"]) });
+        actual.Status.ShouldBe(ResultStatus.Invalid);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Error");
+        actual.ValidationErrors.ToArray().ShouldBeEquivalentTo(new[] { new ValidationError("x", ["m1", "m2"]) });
     }
 
     [Fact]
@@ -375,11 +375,11 @@ public class ResultTests
         var actual = Result.FromInstance<ResultTests>(null, new[] { new ValidationError("Error", ["Name"]) });
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Invalid);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().ContainSingle();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Invalid);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.Count.ShouldBe(1);
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -389,11 +389,11 @@ public class ResultTests
         var actual = Result.FromInstance<ResultTests>(null, "My error message", [new ValidationError("Error", ["Name"])]);
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Invalid);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("My error message");
-        actual.ValidationErrors.Should().ContainSingle();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Invalid);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("My error message");
+        actual.ValidationErrors.Count.ShouldBe(1);
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -403,11 +403,11 @@ public class ResultTests
         var actual = Result.Error<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -417,10 +417,10 @@ public class ResultTests
         var actual = Result.Error();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -430,11 +430,11 @@ public class ResultTests
         var actual = Result.Error<string>("Error");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Error");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -444,12 +444,12 @@ public class ResultTests
         var actual = Result.Error<string>(new InvalidOperationException("Kaboom"), "Error");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
-        actual.Exception.Should().BeOfType<InvalidOperationException>().And.Match<InvalidOperationException>(x => x.Message == "Kaboom");
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Error");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
+        actual.Exception.ShouldBeOfType<InvalidOperationException>().Message.ShouldBe("Kaboom");
     }
 
     [Fact]
@@ -459,13 +459,13 @@ public class ResultTests
         var actual = Result.Error<string>([Result.Error("InnerError")], "Error");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
-        actual.Exception.Should().BeNull();
-        actual.InnerResults.Should().ContainSingle();
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Error");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
+        actual.Exception.ShouldBeNull();
+        actual.InnerResults.Count.ShouldBe(1);
     }
 
     [Fact]
@@ -475,10 +475,10 @@ public class ResultTests
         var actual = Result.Error("Error");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Error");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -488,11 +488,11 @@ public class ResultTests
         var actual = Result.Error(new InvalidOperationException("Kaboom"), "Error");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Exception.Should().BeOfType<InvalidOperationException>().And.Match<InvalidOperationException>(x => x.Message == "Kaboom");
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Error");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Exception.ShouldBeOfType<InvalidOperationException>().Message.ShouldBe("Kaboom");
     }
 
     [Fact]
@@ -502,12 +502,12 @@ public class ResultTests
         var actual = Result.Error([Result.Error("InnerError")], "Error");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Error");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Exception.Should().BeNull();
-        actual.InnerResults.Should().ContainSingle();
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Error");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Exception.ShouldBeNull();
+        actual.InnerResults.Count.ShouldBe(1);
     }
 
     [Fact]
@@ -517,11 +517,11 @@ public class ResultTests
         var actual = Result.NotFound<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotFound);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotFound);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -531,10 +531,10 @@ public class ResultTests
         var actual = Result.NotFound();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotFound);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NotFound);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -544,11 +544,11 @@ public class ResultTests
         var actual = Result.NotFound<string>("NotFound");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotFound);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("NotFound");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotFound);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("NotFound");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -558,10 +558,10 @@ public class ResultTests
         var actual = Result.NotFound("NotFound");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotFound);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("NotFound");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NotFound);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("NotFound");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -571,11 +571,11 @@ public class ResultTests
         var actual = Result.FromInstance<ResultTests>(null);
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotFound);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotFound);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -585,11 +585,11 @@ public class ResultTests
         var actual = Result.FromInstance<ResultTests>(null, "My error message");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotFound);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("My error message");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotFound);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("My error message");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -599,11 +599,11 @@ public class ResultTests
         var actual = Result.Unauthorized<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Unauthorized);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Unauthorized);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -613,10 +613,10 @@ public class ResultTests
         var actual = Result.Unauthorized();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Unauthorized);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Unauthorized);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -626,11 +626,11 @@ public class ResultTests
         var actual = Result.Unauthorized<string>("Not authorized");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Unauthorized);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Not authorized");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Unauthorized);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Not authorized");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -640,10 +640,10 @@ public class ResultTests
         var actual = Result.Unauthorized("Not authorized");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Unauthorized);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Not authorized");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Unauthorized);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Not authorized");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -653,11 +653,11 @@ public class ResultTests
         var actual = Result.NotAuthenticated<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotAuthenticated);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotAuthenticated);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -667,10 +667,10 @@ public class ResultTests
         var actual = Result.NotAuthenticated();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotAuthenticated);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NotAuthenticated);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -680,11 +680,11 @@ public class ResultTests
         var actual = Result.NotAuthenticated<string>("Not authenticated");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotAuthenticated);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Not authenticated");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotAuthenticated);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Not authenticated");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -694,10 +694,10 @@ public class ResultTests
         var actual = Result.NotAuthenticated("Not authenticated");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotAuthenticated);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Not authenticated");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NotAuthenticated);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Not authenticated");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -707,11 +707,11 @@ public class ResultTests
         var actual = Result.NotSupported<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotSupported);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotSupported);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -721,10 +721,10 @@ public class ResultTests
         var actual = Result.NotSupported();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotSupported);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NotSupported);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -734,11 +734,11 @@ public class ResultTests
         var actual = Result.NotSupported<string>("Not supported");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotSupported);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Not supported");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotSupported);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Not supported");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -748,10 +748,10 @@ public class ResultTests
         var actual = Result.NotSupported("Not supported");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotSupported);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Not supported");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NotSupported);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Not supported");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -761,11 +761,11 @@ public class ResultTests
         var actual = Result.Unavailable<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Unavailable);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Unavailable);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -775,10 +775,10 @@ public class ResultTests
         var actual = Result.Unavailable();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Unavailable);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Unavailable);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -788,11 +788,11 @@ public class ResultTests
         var actual = Result.Unavailable<string>("Not available");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Unavailable);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Not available");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Unavailable);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Not available");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -802,10 +802,10 @@ public class ResultTests
         var actual = Result.Unavailable("Not available");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Unavailable);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Not available");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Unavailable);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Not available");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -815,11 +815,11 @@ public class ResultTests
         var actual = Result.NotImplemented<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotImplemented);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotImplemented);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -829,10 +829,10 @@ public class ResultTests
         var actual = Result.NotImplemented();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotImplemented);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NotImplemented);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -842,11 +842,11 @@ public class ResultTests
         var actual = Result.NotImplemented<string>("Not implemented");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotImplemented);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Not implemented");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotImplemented);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Not implemented");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -856,10 +856,10 @@ public class ResultTests
         var actual = Result.NotImplemented("Not implemented");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotImplemented);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Not implemented");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NotImplemented);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Not implemented");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -869,11 +869,11 @@ public class ResultTests
         var actual = Result.NoContent<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NoContent);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NoContent);
+        actual.IsSuccessful().ShouldBeTrue();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -883,10 +883,10 @@ public class ResultTests
         var actual = Result.NoContent();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NoContent);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NoContent);
+        actual.IsSuccessful().ShouldBeTrue();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -896,11 +896,11 @@ public class ResultTests
         var actual = Result.NoContent<string>("No content");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NoContent);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().Be("No content");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NoContent);
+        actual.IsSuccessful().ShouldBeTrue();
+        actual.ErrorMessage.ShouldBe("No content");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -910,10 +910,10 @@ public class ResultTests
         var actual = Result.NoContent("No content");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NoContent);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().Be("No content");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NoContent);
+        actual.IsSuccessful().ShouldBeTrue();
+        actual.ErrorMessage.ShouldBe("No content");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -923,11 +923,11 @@ public class ResultTests
         var actual = Result.ResetContent<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.ResetContent);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.ResetContent);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -937,10 +937,10 @@ public class ResultTests
         var actual = Result.ResetContent();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.ResetContent);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.ResetContent);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -950,11 +950,11 @@ public class ResultTests
         var actual = Result.ResetContent<string>("Reset");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.ResetContent);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Reset");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.ResetContent);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Reset");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -964,10 +964,10 @@ public class ResultTests
         var actual = Result.ResetContent("Reset");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.ResetContent);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Reset");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.ResetContent);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Reset");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -977,11 +977,11 @@ public class ResultTests
         var actual = Result.Continue<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Continue);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Continue);
+        actual.IsSuccessful().ShouldBeTrue();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -991,10 +991,10 @@ public class ResultTests
         var actual = Result.Continue();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Continue);
-        actual.IsSuccessful().Should().BeTrue();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Continue);
+        actual.IsSuccessful().ShouldBeTrue();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1004,11 +1004,11 @@ public class ResultTests
         var actual = Result.Conflict<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Conflict);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Conflict);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1018,10 +1018,10 @@ public class ResultTests
         var actual = Result.Conflict();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Conflict);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Conflict);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1031,11 +1031,11 @@ public class ResultTests
         var actual = Result.Conflict<string>("There is a huge conflict");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Conflict);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("There is a huge conflict");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Conflict);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("There is a huge conflict");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1045,12 +1045,12 @@ public class ResultTests
         var actual = Result.Conflict<string>([Result.Error("Kaboom")], "There is a huge conflict");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Conflict);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("There is a huge conflict");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
-        actual.InnerResults.Should().ContainSingle();
+        actual.Status.ShouldBe(ResultStatus.Conflict);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("There is a huge conflict");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
+        actual.InnerResults.Count.ShouldBe(1);
     }
 
     [Fact]
@@ -1060,10 +1060,10 @@ public class ResultTests
         var actual = Result.Conflict("There is a huge conflict");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Conflict);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("There is a huge conflict");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Conflict);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("There is a huge conflict");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1073,11 +1073,11 @@ public class ResultTests
         var actual = Result.Conflict([Result.Error("Kaboom")], "There is a huge conflict");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Conflict);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("There is a huge conflict");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.InnerResults.Should().ContainSingle();
+        actual.Status.ShouldBe(ResultStatus.Conflict);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("There is a huge conflict");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.InnerResults.Count.ShouldBe(1);
     }
 
     [Fact]
@@ -1087,11 +1087,11 @@ public class ResultTests
         var actual = Result.Redirect("redirect address");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Redirect);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().Be("redirect address");
+        actual.Status.ShouldBe(ResultStatus.Redirect);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBe("redirect address");
     }
 
     [Fact]
@@ -1101,8 +1101,8 @@ public class ResultTests
         var result = Result.Created("Some value");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Created);
-        result.Value.Should().Be("Some value");
+        result.Status.ShouldBe(ResultStatus.Created);
+        result.Value.ShouldBe("Some value");
     }
 
     [Fact]
@@ -1112,8 +1112,8 @@ public class ResultTests
         var result = Result.Created();
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Created);
-        result.GetValue().Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Created);
+        result.GetValue().ShouldBeNull();
     }
 
     [Fact]
@@ -1123,8 +1123,8 @@ public class ResultTests
         var result = Result.Accepted("Some value");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Accepted);
-        result.Value.Should().Be("Some value");
+        result.Status.ShouldBe(ResultStatus.Accepted);
+        result.Value.ShouldBe("Some value");
     }
 
     [Fact]
@@ -1134,8 +1134,8 @@ public class ResultTests
         var result = Result.Accepted();
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Accepted);
-        result.GetValue().Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Accepted);
+        result.GetValue().ShouldBeNull();
     }
 
     [Fact]
@@ -1145,8 +1145,8 @@ public class ResultTests
         var result = Result.AlreadyReported("Some value");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.AlreadyReported);
-        result.Value.Should().Be("Some value");
+        result.Status.ShouldBe(ResultStatus.AlreadyReported);
+        result.Value.ShouldBe("Some value");
     }
 
     [Fact]
@@ -1156,8 +1156,8 @@ public class ResultTests
         var result = Result.AlreadyReported();
 
         // Assert
-        result.Status.Should().Be(ResultStatus.AlreadyReported);
-        result.GetValue().Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.AlreadyReported);
+        result.GetValue().ShouldBeNull();
     }
 
     [Fact]
@@ -1167,11 +1167,11 @@ public class ResultTests
         var actual = Result.Found<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Found);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Found);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1181,10 +1181,10 @@ public class ResultTests
         var actual = Result.Found();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Found);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Found);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1194,11 +1194,11 @@ public class ResultTests
         var actual = Result.Found<string>("Found");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Found);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Found");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Found);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Found");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1208,10 +1208,10 @@ public class ResultTests
         var actual = Result.Found("Found");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Found);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Found");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Found);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Found");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1221,11 +1221,11 @@ public class ResultTests
         var actual = Result.MovedPermanently<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.MovedPermanently);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.MovedPermanently);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1235,10 +1235,10 @@ public class ResultTests
         var actual = Result.MovedPermanently();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.MovedPermanently);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.MovedPermanently);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1248,11 +1248,11 @@ public class ResultTests
         var actual = Result.MovedPermanently<string>("MovedPermanently");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.MovedPermanently);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("MovedPermanently");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.MovedPermanently);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("MovedPermanently");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1262,10 +1262,10 @@ public class ResultTests
         var actual = Result.MovedPermanently("MovedPermanently");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.MovedPermanently);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("MovedPermanently");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.MovedPermanently);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("MovedPermanently");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1275,11 +1275,11 @@ public class ResultTests
         var actual = Result.Gone<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Gone);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Gone);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1289,10 +1289,10 @@ public class ResultTests
         var actual = Result.Gone();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Gone);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Gone);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1302,11 +1302,11 @@ public class ResultTests
         var actual = Result.Gone<string>("Gone");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Gone);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Gone");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Gone);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Gone");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1316,10 +1316,10 @@ public class ResultTests
         var actual = Result.Gone("Gone");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Gone);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Gone");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Gone);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Gone");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1329,11 +1329,11 @@ public class ResultTests
         var actual = Result.NotModified<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotModified);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotModified);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1343,10 +1343,10 @@ public class ResultTests
         var actual = Result.NotModified();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotModified);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NotModified);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1356,11 +1356,11 @@ public class ResultTests
         var actual = Result.NotModified<string>("NotModified");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotModified);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("NotModified");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotModified);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("NotModified");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1370,10 +1370,10 @@ public class ResultTests
         var actual = Result.NotModified("NotModified");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotModified);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("NotModified");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NotModified);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("NotModified");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1383,11 +1383,11 @@ public class ResultTests
         var actual = Result.TemporaryRedirect<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.TemporaryRedirect);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.TemporaryRedirect);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1397,10 +1397,10 @@ public class ResultTests
         var actual = Result.TemporaryRedirect();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.TemporaryRedirect);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.TemporaryRedirect);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1410,11 +1410,11 @@ public class ResultTests
         var actual = Result.TemporaryRedirect<string>("TemporaryRedirect");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.TemporaryRedirect);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("TemporaryRedirect");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.TemporaryRedirect);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("TemporaryRedirect");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1424,10 +1424,10 @@ public class ResultTests
         var actual = Result.TemporaryRedirect("TemporaryRedirect");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.TemporaryRedirect);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("TemporaryRedirect");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.TemporaryRedirect);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("TemporaryRedirect");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1437,11 +1437,11 @@ public class ResultTests
         var actual = Result.PermanentRedirect<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.PermanentRedirect);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.PermanentRedirect);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1451,10 +1451,10 @@ public class ResultTests
         var actual = Result.PermanentRedirect();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.PermanentRedirect);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.PermanentRedirect);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1464,11 +1464,11 @@ public class ResultTests
         var actual = Result.PermanentRedirect<string>("PermanentRedirect");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.PermanentRedirect);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("PermanentRedirect");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.PermanentRedirect);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("PermanentRedirect");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1478,10 +1478,10 @@ public class ResultTests
         var actual = Result.PermanentRedirect("PermanentRedirect");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.PermanentRedirect);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("PermanentRedirect");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.PermanentRedirect);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("PermanentRedirect");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1491,11 +1491,11 @@ public class ResultTests
         var actual = Result.Forbidden<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Forbidden);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Forbidden);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1505,10 +1505,10 @@ public class ResultTests
         var actual = Result.Forbidden();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Forbidden);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Forbidden);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1518,11 +1518,11 @@ public class ResultTests
         var actual = Result.Forbidden<string>("Forbidden");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Forbidden);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Forbidden");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Forbidden);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Forbidden");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1532,10 +1532,10 @@ public class ResultTests
         var actual = Result.Forbidden("Forbidden");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Forbidden);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Forbidden");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Forbidden);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Forbidden");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1545,11 +1545,11 @@ public class ResultTests
         var actual = Result.NotAcceptable<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotAcceptable);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotAcceptable);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1559,10 +1559,10 @@ public class ResultTests
         var actual = Result.NotAcceptable();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotAcceptable);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NotAcceptable);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1572,11 +1572,11 @@ public class ResultTests
         var actual = Result.NotAcceptable<string>("NotAcceptable");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotAcceptable);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("NotAcceptable");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.NotAcceptable);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("NotAcceptable");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1586,10 +1586,10 @@ public class ResultTests
         var actual = Result.NotAcceptable("NotAcceptable");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.NotAcceptable);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("NotAcceptable");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.NotAcceptable);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("NotAcceptable");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1599,11 +1599,11 @@ public class ResultTests
         var actual = Result.TimeOut<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.TimeOut);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.TimeOut);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1613,10 +1613,10 @@ public class ResultTests
         var actual = Result.TimeOut();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.TimeOut);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.TimeOut);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1626,11 +1626,11 @@ public class ResultTests
         var actual = Result.TimeOut<string>("TimeOut");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.TimeOut);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("TimeOut");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.TimeOut);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("TimeOut");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1640,10 +1640,10 @@ public class ResultTests
         var actual = Result.TimeOut("TimeOut");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.TimeOut);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("TimeOut");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.TimeOut);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("TimeOut");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1653,11 +1653,11 @@ public class ResultTests
         var actual = Result.Locked<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Locked);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Locked);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1667,10 +1667,10 @@ public class ResultTests
         var actual = Result.Locked();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Locked);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Locked);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1680,11 +1680,11 @@ public class ResultTests
         var actual = Result.Locked<string>("Locked");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Locked);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Locked");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.Locked);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Locked");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1694,10 +1694,10 @@ public class ResultTests
         var actual = Result.Locked("Locked");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.Locked);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("Locked");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.Locked);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("Locked");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1707,11 +1707,11 @@ public class ResultTests
         var actual = Result.ServiceUnavailable<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.ServiceUnavailable);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.ServiceUnavailable);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1721,10 +1721,10 @@ public class ResultTests
         var actual = Result.ServiceUnavailable();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.ServiceUnavailable);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.ServiceUnavailable);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1734,11 +1734,11 @@ public class ResultTests
         var actual = Result.ServiceUnavailable<string>("ServiceUnavailable");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.ServiceUnavailable);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("ServiceUnavailable");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.ServiceUnavailable);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("ServiceUnavailable");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1748,10 +1748,10 @@ public class ResultTests
         var actual = Result.ServiceUnavailable("ServiceUnavailable");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.ServiceUnavailable);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("ServiceUnavailable");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.ServiceUnavailable);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("ServiceUnavailable");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1761,11 +1761,11 @@ public class ResultTests
         var actual = Result.GatewayTimeout<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.GatewayTimeout);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.GatewayTimeout);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1775,10 +1775,10 @@ public class ResultTests
         var actual = Result.GatewayTimeout();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.GatewayTimeout);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.GatewayTimeout);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1788,11 +1788,11 @@ public class ResultTests
         var actual = Result.GatewayTimeout<string>("GatewayTimeout");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.GatewayTimeout);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("GatewayTimeout");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.GatewayTimeout);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("GatewayTimeout");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1802,10 +1802,10 @@ public class ResultTests
         var actual = Result.GatewayTimeout("GatewayTimeout");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.GatewayTimeout);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("GatewayTimeout");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.GatewayTimeout);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("GatewayTimeout");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1815,11 +1815,11 @@ public class ResultTests
         var actual = Result.BadGateway<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.BadGateway);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.BadGateway);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1829,10 +1829,10 @@ public class ResultTests
         var actual = Result.BadGateway();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.BadGateway);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.BadGateway);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1842,11 +1842,11 @@ public class ResultTests
         var actual = Result.BadGateway<string>("BadGateway");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.BadGateway);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("BadGateway");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.BadGateway);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("BadGateway");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1856,10 +1856,10 @@ public class ResultTests
         var actual = Result.BadGateway("BadGateway");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.BadGateway);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("BadGateway");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.BadGateway);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("BadGateway");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1869,11 +1869,11 @@ public class ResultTests
         var actual = Result.InsuficientStorage<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.InsuficientStorage);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.InsuficientStorage);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1883,10 +1883,10 @@ public class ResultTests
         var actual = Result.InsuficientStorage();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.InsuficientStorage);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.InsuficientStorage);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1896,11 +1896,11 @@ public class ResultTests
         var actual = Result.InsuficientStorage<string>("InsuficientStorage");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.InsuficientStorage);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("InsuficientStorage");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.InsuficientStorage);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("InsuficientStorage");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1910,10 +1910,10 @@ public class ResultTests
         var actual = Result.InsuficientStorage("InsuficientStorage");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.InsuficientStorage);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("InsuficientStorage");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.InsuficientStorage);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("InsuficientStorage");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1923,11 +1923,11 @@ public class ResultTests
         var actual = Result.UnprocessableContent<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.UnprocessableContent);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.UnprocessableContent);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1937,10 +1937,10 @@ public class ResultTests
         var actual = Result.UnprocessableContent();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.UnprocessableContent);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.UnprocessableContent);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1950,11 +1950,11 @@ public class ResultTests
         var actual = Result.UnprocessableContent<string>("UnprocessableContent");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.UnprocessableContent);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("UnprocessableContent");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.UnprocessableContent);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("UnprocessableContent");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1964,10 +1964,10 @@ public class ResultTests
         var actual = Result.UnprocessableContent("UnprocessableContent");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.UnprocessableContent);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("UnprocessableContent");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.UnprocessableContent);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("UnprocessableContent");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1977,11 +1977,11 @@ public class ResultTests
         var actual = Result.FailedDependency<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.FailedDependency);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.FailedDependency);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -1991,10 +1991,10 @@ public class ResultTests
         var actual = Result.FailedDependency();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.FailedDependency);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.FailedDependency);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -2004,11 +2004,11 @@ public class ResultTests
         var actual = Result.FailedDependency<string>("FailedDependency");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.FailedDependency);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("FailedDependency");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.FailedDependency);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("FailedDependency");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -2018,10 +2018,10 @@ public class ResultTests
         var actual = Result.FailedDependency("FailedDependency");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.FailedDependency);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("FailedDependency");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.FailedDependency);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("FailedDependency");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -2031,11 +2031,11 @@ public class ResultTests
         var actual = Result.PreconditionRequired<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.PreconditionRequired);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.PreconditionRequired);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -2045,10 +2045,10 @@ public class ResultTests
         var actual = Result.PreconditionRequired();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.PreconditionRequired);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.PreconditionRequired);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -2058,11 +2058,11 @@ public class ResultTests
         var actual = Result.PreconditionRequired<string>("PreconditionRequired");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.PreconditionRequired);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("PreconditionRequired");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.PreconditionRequired);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("PreconditionRequired");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -2072,10 +2072,10 @@ public class ResultTests
         var actual = Result.PreconditionRequired("PreconditionRequired");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.PreconditionRequired);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("PreconditionRequired");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.PreconditionRequired);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("PreconditionRequired");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -2085,11 +2085,11 @@ public class ResultTests
         var actual = Result.PreconditionFailed<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.PreconditionFailed);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.PreconditionFailed);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -2099,10 +2099,10 @@ public class ResultTests
         var actual = Result.PreconditionFailed();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.PreconditionFailed);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.PreconditionFailed);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -2112,11 +2112,11 @@ public class ResultTests
         var actual = Result.PreconditionFailed<string>("PreconditionFailed");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.PreconditionFailed);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("PreconditionFailed");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.PreconditionFailed);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("PreconditionFailed");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -2126,10 +2126,10 @@ public class ResultTests
         var actual = Result.PreconditionFailed("PreconditionFailed");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.PreconditionFailed);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("PreconditionFailed");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.PreconditionFailed);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("PreconditionFailed");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -2139,11 +2139,11 @@ public class ResultTests
         var actual = Result.TooManyRequests<string>();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.TooManyRequests);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.TooManyRequests);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -2153,10 +2153,10 @@ public class ResultTests
         var actual = Result.TooManyRequests();
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.TooManyRequests);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().BeNull();
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.TooManyRequests);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBeNull();
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -2166,11 +2166,11 @@ public class ResultTests
         var actual = Result.TooManyRequests<string>("TooManyRequests");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.TooManyRequests);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("TooManyRequests");
-        actual.ValidationErrors.Should().BeEmpty();
-        actual.Value.Should().BeNull();
+        actual.Status.ShouldBe(ResultStatus.TooManyRequests);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("TooManyRequests");
+        actual.ValidationErrors.ShouldBeEmpty();
+        actual.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -2180,10 +2180,10 @@ public class ResultTests
         var actual = Result.TooManyRequests("TooManyRequests");
 
         // Assert
-        actual.Status.Should().Be(ResultStatus.TooManyRequests);
-        actual.IsSuccessful().Should().BeFalse();
-        actual.ErrorMessage.Should().Be("TooManyRequests");
-        actual.ValidationErrors.Should().BeEmpty();
+        actual.Status.ShouldBe(ResultStatus.TooManyRequests);
+        actual.IsSuccessful().ShouldBeFalse();
+        actual.ErrorMessage.ShouldBe("TooManyRequests");
+        actual.ValidationErrors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -2196,7 +2196,7 @@ public class ResultTests
         var act = new Action(() => sut.GetValueOrThrow());
 
         // Assert
-        act.Should().ThrowExactly<InvalidOperationException>();
+        act.ShouldThrow<InvalidOperationException>();
     }
 
     [Fact]
@@ -2209,7 +2209,7 @@ public class ResultTests
         var value = sut.GetValueOrThrow();
 
         // Assert
-        value.Should().Be(sut.Value);
+        value.ShouldBe(sut.Value);
     }
 
     [Fact]
@@ -2222,8 +2222,8 @@ public class ResultTests
         var result = sut.TryCast<bool>();
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not cast System.String to System.Boolean");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Could not cast System.String to System.Boolean");
     }
 
     [Fact]
@@ -2236,8 +2236,8 @@ public class ResultTests
         var result = sut.TryCast<bool>("my custom error message");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("my custom error message");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("my custom error message");
     }
 
     [Fact]
@@ -2250,8 +2250,8 @@ public class ResultTests
         var result = sut.TryCast<bool>();
 
         // Assert
-        result.Status.Should().Be(sut.Status);
-        result.ErrorMessage.Should().Be(sut.ErrorMessage);
+        result.Status.ShouldBe(sut.Status);
+        result.ErrorMessage.ShouldBe(sut.ErrorMessage);
     }
 
     [Fact]
@@ -2264,9 +2264,9 @@ public class ResultTests
         var result = sut.TryCast<bool>();
 
         // Assert
-        result.Status.Should().Be(sut.Status);
-        result.ErrorMessage.Should().Be(sut.ErrorMessage);
-        result.ValidationErrors.Should().BeEquivalentTo(sut.ValidationErrors);
+        result.Status.ShouldBe(sut.Status);
+        result.ErrorMessage.ShouldBe(sut.ErrorMessage);
+        result.ValidationErrors.ShouldBeEquivalentTo(sut.ValidationErrors);
     }
 
     [Fact]
@@ -2279,8 +2279,8 @@ public class ResultTests
         var result = sut.TryCast<bool>();
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeTrue();
     }
 
     [Fact]
@@ -2293,8 +2293,8 @@ public class ResultTests
         var result = sut.TryCastAllowNull<bool?>();
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -2307,8 +2307,8 @@ public class ResultTests
         var result = sut.TryCast<bool>();
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
-        result.Value.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Continue);
+        result.Value.ShouldBeTrue();
     }
 
     [Fact]
@@ -2321,7 +2321,7 @@ public class ResultTests
         var result = sut.TryCast<bool>();
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     [Fact]
@@ -2334,7 +2334,7 @@ public class ResultTests
         var result = sut.TryCastAllowNull<bool>("some custom error message");
 
         // Assert
-        result.Status.Should().Be(sut.Status);
+        result.Status.ShouldBe(sut.Status);
     }
 
     [Fact]
@@ -2347,9 +2347,9 @@ public class ResultTests
         var result = Result.FromValidationErrors(validationErrors, "Kaboom");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Kaboom");
-        result.ValidationErrors.Select(x => x.ErrorMessage).Should().BeEquivalentTo("It's invalid, yo");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Kaboom");
+        result.ValidationErrors.Select(x => x.ErrorMessage).ToArray().ShouldBeEquivalentTo(new[] { "It's invalid, yo" });
     }
 
     [Fact]
@@ -2362,9 +2362,9 @@ public class ResultTests
         var result = Result.FromValidationErrors(validationErrors);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().BeNull();
-        result.ValidationErrors.Select(x => x.ErrorMessage).Should().BeEquivalentTo("It's invalid, yo");
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBeNull();
+        result.ValidationErrors.Select(x => x.ErrorMessage).ToArray().ShouldBeEquivalentTo(new[] { "It's invalid, yo" });
     }
 
     [Fact]
@@ -2377,8 +2377,8 @@ public class ResultTests
         var result = Result.FromValidationErrors(validationErrors, "Kaboom");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.ErrorMessage.Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ErrorMessage.ShouldBeNull();
     }
 
     [Fact]
@@ -2391,8 +2391,8 @@ public class ResultTests
         var result = Result.FromValidationErrors(validationErrors);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.ErrorMessage.Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ErrorMessage.ShouldBeNull();
     }
 
     [Fact]
@@ -2405,7 +2405,7 @@ public class ResultTests
         var result = typed.GetValue();
 
         // Assert
-        result.Should().BeEquivalentTo(13);
+        result.ShouldBeEquivalentTo(13);
     }
 
     [Fact]
@@ -2415,7 +2415,8 @@ public class ResultTests
         var sut = Result.Success("ok");
 
         // Act & Assert
-        sut.Invoking(x => x.ThrowIfInvalid()).Should().NotThrow();
+        Action a = () => sut.ThrowIfInvalid();
+        a.ShouldNotThrow();
     }
 
     [Fact]
@@ -2428,7 +2429,8 @@ public class ResultTests
         var act = new Action(sut.ThrowIfInvalid);
 
         // Assert
-        act.Should().ThrowExactly<InvalidOperationException>().WithMessage("Result: Invalid");
+        act.ShouldThrow<InvalidOperationException>()
+           .Message.ShouldBe("Result: Invalid");
     }
 
     [Fact]
@@ -2441,7 +2443,8 @@ public class ResultTests
         var act = new Action(sut.ThrowIfInvalid);
 
         // Assert
-        act.Should().ThrowExactly<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom");
+        act.ShouldThrow<InvalidOperationException>()
+           .Message.ShouldBe("Result: Error, ErrorMessage: Kaboom");
     }
 
     [Fact]
@@ -2454,8 +2457,8 @@ public class ResultTests
         var result = source.Transform(x => x.ToString());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("1");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("1");
     }
 
     [Fact]
@@ -2468,9 +2471,9 @@ public class ResultTests
         var result = source.Transform(x => x.ToString());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Kaboom!");
-        result.Value.Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom!");
+        result.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -2483,8 +2486,8 @@ public class ResultTests
         var result = source.Transform(x => Result.Success(x.ToString()));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("1");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("1");
     }
 
     [Fact]
@@ -2497,9 +2500,9 @@ public class ResultTests
         var result = source.Transform(x => Result.Success(x.ToString()));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Kaboom!");
-        result.Value.Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom!");
+        result.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -2512,7 +2515,7 @@ public class ResultTests
         var result = source.Transform(_ => Result.Success());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
@@ -2525,8 +2528,8 @@ public class ResultTests
         var result = source.Transform(_ => Result.Success());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Kaboom!");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom!");
     }
 
     [Fact]
@@ -2541,8 +2544,8 @@ public class ResultTests
         var result = Result.Aggregate(innerResults, successResult, errorResultDelegate);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.InnerResults.Should().BeEmpty();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.InnerResults.ShouldBeEmpty();
     }
 
     [Fact]
@@ -2557,8 +2560,8 @@ public class ResultTests
         var result = Result.Aggregate(innerResults, successResult, errorResultDelegate);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.InnerResults.Should().BeEmpty();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.InnerResults.ShouldBeEmpty();
     }
 
     [Fact]
@@ -2573,9 +2576,9 @@ public class ResultTests
         var result = Result.Aggregate(innerResults, successResult, errorResultDelegate);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Something went wrong. See inner results.");
-        result.InnerResults.Should().ContainSingle();
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Something went wrong. See inner results.");
+        result.InnerResults.Count.ShouldBe(1);
     }
 
     [Fact]
@@ -2590,9 +2593,9 @@ public class ResultTests
         var result = Result.Aggregate(innerResults, successResult, errorResultDelegate);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Something went wrong. See inner results.");
-        result.InnerResults.Should().HaveCount(2);
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Something went wrong. See inner results.");
+        result.InnerResults.Count.ShouldBe(2);
     }
 
     [Fact]
@@ -2607,8 +2610,8 @@ public class ResultTests
         sut.Either(_ => error = true, _ => success = true);
 
         // Assert
-        success.Should().BeTrue();
-        error.Should().BeFalse();
+        success.ShouldBeTrue();
+        error.ShouldBeFalse();
     }
 
     [Fact]
@@ -2623,8 +2626,8 @@ public class ResultTests
         await sut.Either(_ => error = true, x => Task.FromResult(x.Chain(() => success = true)));
 
         // Assert
-        success.Should().BeTrue();
-        error.Should().BeFalse();
+        success.ShouldBeTrue();
+        error.ShouldBeFalse();
     }
 
     [Fact]
@@ -2639,8 +2642,8 @@ public class ResultTests
         sut.Either(_ => error = true, _ => success = true);
 
         // Assert
-        success.Should().BeFalse();
-        error.Should().BeTrue();
+        success.ShouldBeFalse();
+        error.ShouldBeTrue();
     }
 
     [Fact]
@@ -2655,8 +2658,8 @@ public class ResultTests
         await sut.Either(_ => error = true, x => Task.FromResult(x.Chain(() => success = true)));
 
         // Assert
-        success.Should().BeFalse();
-        error.Should().BeTrue();
+        success.ShouldBeFalse();
+        error.ShouldBeTrue();
     }
 
     [Fact]
@@ -2671,8 +2674,8 @@ public class ResultTests
         sut.Either(_ => error = true, () => success = true);
 
         // Assert
-        success.Should().BeTrue();
-        error.Should().BeFalse();
+        success.ShouldBeTrue();
+        error.ShouldBeFalse();
     }
 
     [Fact]
@@ -2687,8 +2690,8 @@ public class ResultTests
         await sut.Either(_ => error = true, () => Task.FromResult(Result.Success().Chain(() => success = true)));
 
         // Assert
-        success.Should().BeTrue();
-        error.Should().BeFalse();
+        success.ShouldBeTrue();
+        error.ShouldBeFalse();
     }
 
     [Fact]
@@ -2703,8 +2706,8 @@ public class ResultTests
         sut.Either(_ => error = true, () => success = true);
 
         // Assert
-        success.Should().BeFalse();
-        error.Should().BeTrue();
+        success.ShouldBeFalse();
+        error.ShouldBeTrue();
     }
 
     [Fact]
@@ -2719,8 +2722,8 @@ public class ResultTests
         await sut.Either(_ => error = true, () => Task.FromResult(Result.Success().Chain(() => success = true)));
 
         // Assert
-        success.Should().BeFalse();
-        error.Should().BeTrue();
+        success.ShouldBeFalse();
+        error.ShouldBeTrue();
     }
 
     [Fact]
@@ -2735,9 +2738,9 @@ public class ResultTests
         var result = await sut.Either(x => x.Chain(() => error = true), _ => Task.FromResult(Result.Success().Chain(() => success = true)));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        success.Should().BeTrue();
-        error.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        success.ShouldBeTrue();
+        error.ShouldBeFalse();
     }
 
     [Fact]
@@ -2752,9 +2755,9 @@ public class ResultTests
         var result = await sut.Either(x => x.Chain(() => error = true), _ => Task.FromResult(Result.Success().Chain(() => success = true)));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        success.Should().BeFalse();
-        error.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Error);
+        success.ShouldBeFalse();
+        error.ShouldBeTrue();
     }
 
     [Fact]
@@ -2768,8 +2771,8 @@ public class ResultTests
         var result = sut.Either(x => x.Chain(() => error = true));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        error.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        error.ShouldBeFalse();
     }
 
     [Fact]
@@ -2783,9 +2786,9 @@ public class ResultTests
         var result = sut.Either(x => x.Chain(() => error = true));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Kaboom");
-        error.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom");
+        error.ShouldBeTrue();
     }
 
     [Fact]
@@ -2798,7 +2801,7 @@ public class ResultTests
         var result = sut.Either(_ => Result.Error("Custom"), _ => Result.Continue());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
+        result.Status.ShouldBe(ResultStatus.Continue);
     }
 
     [Fact]
@@ -2811,8 +2814,8 @@ public class ResultTests
         var result = sut.Either(_ => Result.Error("Custom"), _ => Result.Continue());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Custom");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Custom");
     }
 
     [Fact]
@@ -2825,8 +2828,8 @@ public class ResultTests
         var result = sut.Either(_ => Result.Error<string>("Custom"));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Custom");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Custom");
     }
 
     [Fact]
@@ -2839,7 +2842,7 @@ public class ResultTests
         var result = await sut.Either(_ => Result.Error<string>("Custom"), () => Task.FromResult(Result.Continue<string>()));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
+        result.Status.ShouldBe(ResultStatus.Continue);
     }
 
     [Fact]
@@ -2852,8 +2855,8 @@ public class ResultTests
         var result = sut.Either(_ => Result.Error<string>("Custom"));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("OK");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("OK");
     }
 
     [Fact]
@@ -2866,8 +2869,8 @@ public class ResultTests
         var result = sut.Either(_ => Result.Error<string>("Custom"), Result.Continue<string>);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
-        result.Value.Should().BeNull();
+        result.Status.ShouldBe(ResultStatus.Continue);
+        result.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -2880,8 +2883,8 @@ public class ResultTests
         var result = sut.Either(_ => Result.Error<string>("Custom"), Result.Continue<string>);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Custom");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Custom");
     }
 
     [Fact]
@@ -2894,8 +2897,8 @@ public class ResultTests
         var result = await sut.Either(_ => Result.Error<string>("Custom"), () => Task.FromResult(Result.Continue<string>()));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Custom");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Custom");
     }
 
     [Fact]
@@ -2909,8 +2912,8 @@ public class ResultTests
         var result = sut.OnFailure(_ => error = true);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        error.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        error.ShouldBeFalse();
     }
 
     [Fact]
@@ -2924,8 +2927,8 @@ public class ResultTests
         var result = sut.OnFailure(_ => error = true);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        error.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Error);
+        error.ShouldBeTrue();
     }
 
     [Fact]
@@ -2939,8 +2942,8 @@ public class ResultTests
         var result = sut.OnFailure(() => error = true);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        error.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        error.ShouldBeFalse();
     }
 
     [Fact]
@@ -2954,8 +2957,8 @@ public class ResultTests
         var result = sut.OnFailure(() => error = true);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        error.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Error);
+        error.ShouldBeTrue();
     }
 
     [Fact]
@@ -2969,8 +2972,8 @@ public class ResultTests
         var result = sut.OnFailure(() => Result.Continue().Then(() => error = true));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        error.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        error.ShouldBeFalse();
     }
 
     [Fact]
@@ -2984,8 +2987,8 @@ public class ResultTests
         var result = sut.OnFailure(() => Result.Invalid().Then(() => error = true));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        error.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        error.ShouldBeTrue();
     }
 
     [Fact]
@@ -2999,8 +3002,8 @@ public class ResultTests
         var result = sut.OnFailure(_ => Result.Continue().Then(() => error = true));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        error.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        error.ShouldBeFalse();
     }
 
     [Fact]
@@ -3014,8 +3017,8 @@ public class ResultTests
         var result = sut.OnFailure(_ => Result.Invalid().Then(() => error = true));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        error.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        error.ShouldBeTrue();
     }
 
     [Fact]
@@ -3029,8 +3032,8 @@ public class ResultTests
         var result = await sut.OnFailure(() => Task.FromResult(Result.Continue().Then(() => error = true)));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        error.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        error.ShouldBeFalse();
     }
 
     [Fact]
@@ -3044,8 +3047,8 @@ public class ResultTests
         var result = await sut.OnFailure(() => Task.FromResult(Result.Invalid().Then(() => error = true)));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        error.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        error.ShouldBeTrue();
     }
 
     [Fact]
@@ -3059,8 +3062,8 @@ public class ResultTests
         var result = await sut.OnFailure(_ => Task.FromResult(Result.Continue().Then(() => error = true)));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        error.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        error.ShouldBeFalse();
     }
 
     [Fact]
@@ -3074,8 +3077,8 @@ public class ResultTests
         var result = await sut.OnFailure(_ => Task.FromResult(Result.Invalid().Then(() => error = true)));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        error.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        error.ShouldBeTrue();
     }
 
     [Fact]
@@ -3089,8 +3092,8 @@ public class ResultTests
         var result = sut.OnSuccess(_ => success = true);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        success.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        success.ShouldBeTrue();
     }
 
     [Fact]
@@ -3104,8 +3107,8 @@ public class ResultTests
         var result = sut.OnSuccess(_ => success = true);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        success.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Error);
+        success.ShouldBeFalse();
     }
 
     [Fact]
@@ -3119,8 +3122,8 @@ public class ResultTests
         var result = sut.OnSuccess(() => success = true);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        success.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Ok);
+        success.ShouldBeTrue();
     }
 
     [Fact]
@@ -3134,8 +3137,8 @@ public class ResultTests
         var result = sut.OnSuccess(() => success = true);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        success.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Error);
+        success.ShouldBeFalse();
     }
 
     [Fact]
@@ -3149,8 +3152,8 @@ public class ResultTests
         var result = sut.OnSuccess(() => Result.Continue().Then(() => success = true));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
-        success.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Continue);
+        success.ShouldBeTrue();
     }
 
     [Fact]
@@ -3164,8 +3167,8 @@ public class ResultTests
         var result = sut.OnSuccess(() => Result.Continue().Then(() => success = true));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        success.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Error);
+        success.ShouldBeFalse();
     }
 
     [Fact]
@@ -3179,8 +3182,8 @@ public class ResultTests
         var result = sut.OnSuccess(_ => Result.Continue().Then(() => success = true));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
-        success.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Continue);
+        success.ShouldBeTrue();
     }
 
     [Fact]
@@ -3194,8 +3197,8 @@ public class ResultTests
         var result = sut.OnSuccess(_ => Result.Continue().Then(() => success = true));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        success.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Error);
+        success.ShouldBeFalse();
     }
 
     [Fact]
@@ -3209,8 +3212,8 @@ public class ResultTests
         var result = await sut.OnSuccess(() => Task.FromResult(Result.Continue().Then(() => success = true)));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
-        success.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Continue);
+        success.ShouldBeTrue();
     }
 
     [Fact]
@@ -3224,8 +3227,8 @@ public class ResultTests
         var result = await sut.OnSuccess(() => Task.FromResult(Result.Continue().Then(() => success = true)));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        success.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Error);
+        success.ShouldBeFalse();
     }
 
     [Fact]
@@ -3239,8 +3242,8 @@ public class ResultTests
         var result = await sut.OnSuccess(_ => Task.FromResult(Result.Continue().Then(() => success = true)));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
-        success.Should().BeTrue();
+        result.Status.ShouldBe(ResultStatus.Continue);
+        success.ShouldBeTrue();
     }
 
     [Fact]
@@ -3254,8 +3257,8 @@ public class ResultTests
         var result = await sut.OnSuccess(_ => Task.FromResult(Result.Continue().Then(() => success = true)));
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        success.Should().BeFalse();
+        result.Status.ShouldBe(ResultStatus.Error);
+        success.ShouldBeFalse();
     }
 
     [Fact]
@@ -3268,7 +3271,7 @@ public class ResultTests
         var value = sut.TryCastValueAs<string>();
 
         // Assert
-        value.Should().Be("Hello world!");
+        value.ShouldBe("Hello world!");
     }
 
     [Fact]
@@ -3281,7 +3284,7 @@ public class ResultTests
         var value = sut.TryCastValueAs<int>();
 
         // Assert
-        value.Should().Be(0);
+        value.ShouldBe(0);
     }
 
     [Fact]
@@ -3294,7 +3297,7 @@ public class ResultTests
         var value = sut.TryCastValueAs<int?>();
 
         // Assert
-        value.Should().BeNull();
+        value.ShouldBeNull();
     }
 
     [Fact]
@@ -3307,7 +3310,7 @@ public class ResultTests
         var value = sut.TryCastValueAs<int?>(13);
 
         // Assert
-        value.Should().Be(13);
+        value.ShouldBe(13);
     }
 
     [Fact]
@@ -3320,7 +3323,7 @@ public class ResultTests
         var value = sut.CastValueAs<string>();
 
         // Assert
-        value.Should().Be("Hello world!");
+        value.ShouldBe("Hello world!");
     }
 
     [Fact]
@@ -3330,8 +3333,8 @@ public class ResultTests
         Result sut = Result.Success("Hello world!");
 
         // Act
-        sut.Invoking(x => x.CastValueAs<int>())
-           .Should().Throw<InvalidCastException>();
+        Action a = () => sut.CastValueAs<int>();
+        a.ShouldThrow<InvalidCastException>();
     }
 
     [Fact]
@@ -3341,8 +3344,8 @@ public class ResultTests
         Result sut = Result.Success<string?>(default);
 
         // Act & Assert
-        sut.Invoking(x => x.CastValueAs<int>())
-           .Should().Throw<InvalidOperationException>();
+        Action a = () => sut.CastValueAs<int>();
+        a.ShouldThrow<InvalidOperationException>();
     }
 
     [Fact]
@@ -3352,8 +3355,8 @@ public class ResultTests
         Result sut = Result.Success<string?>(default);
 
         // Act & Assert
-        sut.Invoking(x => x.CastValueAs<int?>())
-           .Should().NotThrow<InvalidOperationException>();
+        Action a = () => sut.CastValueAs<int?>();
+        a.ShouldNotThrow();
     }
 
     [Fact]
@@ -3363,8 +3366,8 @@ public class ResultTests
         var sut = Result.Success<string>(default!);
 
         // Act & Assert
-        sut.Invoking(x => x.CastValueAs<string?>())
-           .Should().Throw<InvalidOperationException>();
+        Action a = () => sut.CastValueAs<string?>();
+        a.ShouldThrow<InvalidOperationException>();
 
         // Note that if you don't know if the value is null, you can simply use TryCast<string> because this will return a nullable string.
     }

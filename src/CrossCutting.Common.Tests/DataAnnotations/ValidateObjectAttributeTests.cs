@@ -13,10 +13,10 @@ public class ValidateObjectAttributeTests
         var result = sut.TryValidate(validationResults);
 
         // Assert
-        result.Should().BeFalse();
-        validationResults.Should().HaveCount(2);
-        validationResults.Select(x => x.ErrorMessage).Should().BeEquivalentTo("The Name field is required.", "SubProperty: The Name field is required.");
-        validationResults.SelectMany(x => x.MemberNames).Should().BeEquivalentTo("Name", "SubProperty");
+        result.ShouldBeFalse();
+        validationResults.Count.ShouldBe(2);
+        validationResults.Select(x => x.ErrorMessage).ToArray().ShouldBeEquivalentTo(new[] { "The Name field is required.", "SubProperty: The Name field is required." });
+        validationResults.SelectMany(x => x.MemberNames).ToArray().ShouldBeEquivalentTo(new[] { "Name", "SubProperty" });
     }
 
     [Fact]
@@ -31,10 +31,10 @@ public class ValidateObjectAttributeTests
         var result = sut.TryValidate(validationResults);
 
         // Assert
-        result.Should().BeFalse();
-        validationResults.Should().HaveCount(2);
-        validationResults.Select(x => x.ErrorMessage).Should().BeEquivalentTo("The Name field is required.", "CollectionSubProperty: The Name field is required.");
-        validationResults.SelectMany(x => x.MemberNames).Should().BeEquivalentTo("Name", "CollectionSubProperty");
+        result.ShouldBeFalse();
+        validationResults.Count.ShouldBe(2);
+        validationResults.Select(x => x.ErrorMessage).ToArray().ShouldBeEquivalentTo(new[] { "The Name field is required.", "CollectionSubProperty: The Name field is required." });
+        validationResults.SelectMany(x => x.MemberNames).ToArray().ShouldBeEquivalentTo(new[] { "Name", "CollectionSubProperty" });
     }
 
     [Fact]
@@ -48,10 +48,10 @@ public class ValidateObjectAttributeTests
         var result = sut.TryValidate(validationResults);
 
         // Assert
-        result.Should().BeFalse();
-        validationResults.Should().HaveCount(2);
-        validationResults.Select(x => x.ErrorMessage).Should().BeEquivalentTo("The Name field is required.", "The field SubProperty is invalid.");
-        validationResults.SelectMany(x => x.MemberNames).Should().BeEquivalentTo("Name", "SubProperty");
+        result.ShouldBeFalse();
+        validationResults.Count.ShouldBe(2);
+        validationResults.Select(x => x.ErrorMessage).ToArray().ShouldBeEquivalentTo(new[] { "The Name field is required.", "The field SubProperty is invalid." });
+        validationResults.SelectMany(x => x.MemberNames).ToArray().ShouldBeEquivalentTo(new[] { "Name", "SubProperty" });
     }
 
     [Fact]
@@ -66,10 +66,10 @@ public class ValidateObjectAttributeTests
         var result = sut.TryValidate(validationResults);
 
         // Assert
-        result.Should().BeFalse();
-        validationResults.Should().HaveCount(2);
-        validationResults.Select(x => x.ErrorMessage).Should().BeEquivalentTo("The Name field is required.", "The field CollectionSubProperty is invalid.");
-        validationResults.SelectMany(x => x.MemberNames).Should().BeEquivalentTo("Name", "CollectionSubProperty");
+        result.ShouldBeFalse();
+        validationResults.Count.ShouldBe(2);
+        validationResults.Select(x => x.ErrorMessage).ToArray().ShouldBeEquivalentTo(new[] { "The Name field is required.", "The field CollectionSubProperty is invalid." });
+        validationResults.SelectMany(x => x.MemberNames).ToArray().ShouldBeEquivalentTo(new[] { "Name", "CollectionSubProperty" });
     }
 
     [Fact]
@@ -87,8 +87,8 @@ public class ValidateObjectAttributeTests
         var result = sut.TryValidate(validationResults);
 
         // Assert
-        result.Should().BeTrue();
-        validationResults.Should().BeEmpty();
+        result.ShouldBeTrue();
+        validationResults.ShouldBeEmpty();
     }
 
     [Fact]
@@ -106,8 +106,8 @@ public class ValidateObjectAttributeTests
         var result = sut.TryValidate(validationResults);
 
         // Assert
-        result.Should().BeTrue();
-        validationResults.Should().BeEmpty();
+        result.ShouldBeTrue();
+        validationResults.ShouldBeEmpty();
     }
 
     [Fact]
@@ -121,10 +121,10 @@ public class ValidateObjectAttributeTests
         var result = sut.TryValidate(validationResults);
 
         // Assert
-        result.Should().BeFalse();
-        validationResults.Should().HaveCount(2);
-        validationResults.Select(x => x.ErrorMessage).Should().BeEquivalentTo("The Name field is required.", "Property SubProperty is wrong");
-        validationResults.SelectMany(x => x.MemberNames).Should().BeEquivalentTo("Name", "SubProperty");
+        result.ShouldBeFalse();
+        validationResults.Count.ShouldBe(2);
+        validationResults.Select(x => x.ErrorMessage).ToArray().ShouldBeEquivalentTo(new[] { "The Name field is required.", "Property SubProperty is wrong" });
+        validationResults.SelectMany(x => x.MemberNames).ToArray().ShouldBeEquivalentTo(new[] { "Name", "SubProperty" });
     }
 
     [Fact]
@@ -139,10 +139,10 @@ public class ValidateObjectAttributeTests
         var result = sut.TryValidate(validationResults);
 
         // Assert
-        result.Should().BeFalse();
-        validationResults.Should().HaveCount(2);
-        validationResults.Select(x => x.ErrorMessage).Should().BeEquivalentTo("The Name field is required.", "Property CollectionSubProperty is wrong");
-        validationResults.SelectMany(x => x.MemberNames).Should().BeEquivalentTo("Name", "CollectionSubProperty");
+        result.ShouldBeFalse();
+        validationResults.Count.ShouldBe(2);
+        validationResults.Select(x => x.ErrorMessage).ToArray().ShouldBeEquivalentTo(new[] { "The Name field is required.", "Property CollectionSubProperty is wrong" });
+        validationResults.SelectMany(x => x.MemberNames).ToArray().ShouldBeEquivalentTo(new[] { "Name", "CollectionSubProperty" });
     }
 }
 

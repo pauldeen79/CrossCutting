@@ -9,7 +9,7 @@ public class DoubleAggregatorProcessorTests
         var result = DoubleAggregatorProcessor.Aggregate("no Double", (double)2, CultureInfo.InvariantCulture, (x, y) => x + y);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
+        result.Status.ShouldBe(ResultStatus.Continue);
     }
 
     [Fact]
@@ -19,7 +19,7 @@ public class DoubleAggregatorProcessorTests
         var result = DoubleAggregatorProcessor.Aggregate((double)2, (double)3, CultureInfo.InvariantCulture, (x, y) => x + y);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().BeEquivalentTo(5);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeEquivalentTo((double)5);
     }
 }

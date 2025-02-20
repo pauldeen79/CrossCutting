@@ -12,8 +12,8 @@ public class DelegateResultArgumentBuilderTests
         var result = sut.BuildTyped();
 
         // Assert
-        result.Should().BeOfType<DelegateResultArgument<string>>();
-        result.Delegate().Should().Be(sut.Delegate());
+        result.ShouldBeOfType<DelegateResultArgument<string>>();
+        result.Delegate().ShouldBe(sut.Delegate());
     }
 
     [Fact]
@@ -26,8 +26,8 @@ public class DelegateResultArgumentBuilderTests
         var result = sut.Build();
 
         // Assert
-        result.Should().BeOfType<DelegateResultArgument<string>>();
-        ((DelegateResultArgument<string>)result).Delegate().Value.Should().Be(sut.Delegate().Value);
+        result.ShouldBeOfType<DelegateResultArgument<string>>();
+        ((DelegateResultArgument<string>)result).Delegate().Value.ShouldBe(sut.Delegate().Value);
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class DelegateResultArgumentBuilderTests
         var result = sut.Delegate();
 
         // Assert
-        result.Value.Should().Be("Some value");
+        result.Value.ShouldBe("Some value");
     }
 
     [Fact]
@@ -53,8 +53,8 @@ public class DelegateResultArgumentBuilderTests
         var result = sut.WithDelegate(() => Result.Success("Altered value"));
 
         // Assert
-        result.Should().BeSameAs(sut);
-        result.Delegate().Value.Should().Be("Altered value");
+        result.ShouldBeSameAs(sut);
+        result.Delegate().Value.ShouldBe("Altered value");
     }
 
     [Fact]
@@ -67,9 +67,9 @@ public class DelegateResultArgumentBuilderTests
         var result = sut.WithValidationDelegate(() => Result.Success(typeof(string)));
 
         // Assert
-        result.Should().BeSameAs(sut);
-        result.ValidationDelegate.Should().NotBeNull();
-        result.ValidationDelegate!().Value.Should().NotBeNull();
-        result.ValidationDelegate().Value.Should().Be<string>();
+        result.ShouldBeSameAs(sut);
+        result.ValidationDelegate.ShouldNotBeNull();
+        result.ValidationDelegate!().Value.ShouldNotBeNull();
+        result.ValidationDelegate().Value.ShouldBe(typeof(string));
     }
 }

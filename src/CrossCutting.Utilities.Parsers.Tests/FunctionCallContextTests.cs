@@ -45,32 +45,32 @@ public class FunctionCallContextTests : IDisposable
         public void Throws_On_Null_FunctionCall()
         {
             // Act & Assert
-            this.Invoking(_ => new FunctionCallContext(null!, Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CreateSettings(), null))
-                .Should().Throw<ArgumentNullException>();
+            Action a = () => _ = new FunctionCallContext(null!, Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CreateSettings(), null);
+            a.ShouldThrow<ArgumentNullException>();
         }
 
         [Fact]
         public void Throws_On_Null_FunctionEvaluator()
         {
             // Act & Assert
-            this.Invoking(_ => new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), null!, Substitute.For<IExpressionEvaluator>(), CreateSettings(), null))
-                .Should().Throw<ArgumentNullException>();
+            Action a = () => _ = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), null!, Substitute.For<IExpressionEvaluator>(), CreateSettings(), null);
+            a.ShouldThrow<ArgumentNullException>();
         }
 
         [Fact]
         public void Throws_On_Null_ExpressionEvaluator()
         {
             // Act & Assert
-            this.Invoking(_ => new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), null!, CreateSettings(), null))
-                .Should().Throw<ArgumentNullException>();
+            Action a = () => _ = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), null!, CreateSettings(), null);
+            a.ShouldThrow<ArgumentNullException>();
         }
 
         [Fact]
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            this.Invoking(_ => new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), null!, null))
-                .Should().Throw<ArgumentNullException>();
+            Action a = () => _ = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), null!, null);
+            a.ShouldThrow<ArgumentNullException>();
         }
     }
 
@@ -86,8 +86,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentValueResult(0, "SomeName");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("some value");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("some value");
         }
     }
 
@@ -103,8 +103,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentValueResult(0, "SomeName", (object?)"ignored default value");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("some value");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("some value");
         }
     }
 
@@ -120,8 +120,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentValueResult<string>(0, "SomeName");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("some value");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("some value");
         }
     }
 
@@ -137,8 +137,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentValueResult(0, "SomeName", "ignored default value");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("some value");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("some value");
         }
     }
 
@@ -154,8 +154,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentStringValueResult(0, "SomeName");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("some value");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("some value");
         }
     }
 
@@ -171,8 +171,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentStringValueResult(0, "SomeName", "ignored default value");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("some value");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("some value");
         }
     }
 
@@ -188,8 +188,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentInt32ValueResult(0, "SomeName");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(1);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(1);
         }
 
         [Fact]
@@ -202,8 +202,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentInt32ValueResult(0, "SomeName", 13);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(1);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(1);
         }
     }
 
@@ -219,8 +219,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentInt64ValueResult(0, "SomeName");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(1L);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(1L);
         }
 
         [Fact]
@@ -233,8 +233,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentInt64ValueResult(0, "SomeName", 13);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(1L);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(1L);
         }
     }
 
@@ -250,8 +250,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentDecimalValueResult(0, "SomeName");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(1L);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(1L);
         }
 
         [Fact]
@@ -264,8 +264,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentDecimalValueResult(0, "SomeName", 3.4M);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(1L);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(1L);
         }
     }
 
@@ -281,8 +281,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentBooleanValueResult(0, "SomeName");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(true);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(true);
         }
 
         [Fact]
@@ -295,8 +295,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentBooleanValueResult(0, "SomeName", false);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(true);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(true);
         }
     }
 
@@ -312,8 +312,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentDateTimeValueResult(0, "SomeName");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(DateTime.Today);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(DateTime.Today);
         }
 
         [Fact]
@@ -326,8 +326,8 @@ public class FunctionCallContextTests : IDisposable
             var result = sut.GetArgumentDateTimeValueResult(0, "SomeName", DateTime.Today.AddDays(-1));
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(DateTime.Today);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(DateTime.Today);
         }
     }
 

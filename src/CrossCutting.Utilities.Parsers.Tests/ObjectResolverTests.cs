@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+namespace CrossCutting.Utilities.Parsers.Tests;
 
 public class ObjectResolverTests
 {
@@ -16,8 +16,8 @@ public class ObjectResolverTests
             var result = sut.Resolve<string>("some context");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("result value");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("result value");
         }
 
         [Fact]
@@ -30,8 +30,8 @@ public class ObjectResolverTests
             var result = sut.Resolve<string>("some context");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotFound);
-            result.ErrorMessage.Should().Be("Could not resolve type System.String from System.String");
+            result.Status.ShouldBe(ResultStatus.NotFound);
+            result.ErrorMessage.ShouldBe("Could not resolve type System.String from System.String");
         }
 
         [Fact]
@@ -44,7 +44,7 @@ public class ObjectResolverTests
             var result = sut.Resolve<string>(null);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotFound);
+            result.Status.ShouldBe(ResultStatus.NotFound);
         }
     }
 }

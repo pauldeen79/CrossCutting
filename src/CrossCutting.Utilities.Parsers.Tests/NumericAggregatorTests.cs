@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+namespace CrossCutting.Utilities.Parsers.Tests;
 
 public class NumericAggregatorTests
 {
@@ -16,7 +16,7 @@ public class NumericAggregatorTests
             , (_, _) => new object());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class NumericAggregatorTests
             , (_, _) => new object());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Aggregation failed. Error message: Kaboom");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Aggregation failed. Error message: Kaboom");
     }
 }
