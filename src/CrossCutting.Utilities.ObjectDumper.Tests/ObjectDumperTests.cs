@@ -555,7 +555,7 @@ public class ObjectDumperTests
     }
 
     [Fact]
-    public void CanAssertMultiplePropertiesWithFluentAssertions()
+    public void CanAssertMultipleProperties()
     {
         var d = DateTime.Now.AddDays(-1);
         var a = new { Name = "Test", Weight = 2, Date = d }.Dump();
@@ -565,7 +565,7 @@ public class ObjectDumperTests
     }
 
     [Fact]
-    public void CanAssertMultiplePropertiesWithFluentAssertions_SkipOneProperty()
+    public void CanAssertMultipleProperties_SkipOneProperty()
     {
         var d = DateTime.Now.AddDays(-1);
         var dumpConfig = new IObjectDumperPart[] { new PropertyNameExclusionFilter("Skip") };
@@ -576,7 +576,7 @@ public class ObjectDumperTests
     }
 
     [Fact]
-    public void CanAssertMultiplePropertiesWithFluentAssertions_ExplicitlyNamePropertiesToCompare()
+    public void CanAssertMultipleProperties_ExplicitlyNamePropertiesToCompare()
     {
         var d = DateTime.Now.AddDays(-1);
         var dumpConfig = new IObjectDumperPart[] { new PropertyNameFilter("Name", "Weight", "Date") };
