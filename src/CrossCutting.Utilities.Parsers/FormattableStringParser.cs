@@ -39,7 +39,7 @@ public class FormattableStringParser : IFormattableStringParser
         var escapedEnd = settings.PlaceholderEnd + settings.PlaceholderEnd;
 
         var remainder = format.Replace(escapedStart, "\uE000") // Temporarily replace escaped start marker
-                             .Replace(escapedEnd, "\uE001");  // Temporarily replace escaped end marker
+                              .Replace(escapedEnd, "\uE001");  // Temporarily replace escaped end marker
 
         var results = new List<Result<GenericFormattableString>>();
         do
