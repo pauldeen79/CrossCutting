@@ -533,6 +533,23 @@ public class ResultDictionaryExtensionsTests
             // Assert
             result.ShouldBe(0);
         }
+
+        [Fact]
+        public void Gets_Default_When_Key_Is_Not_Found()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.TryGetValue<int>("Step4");
+
+            // Assert
+            result.ShouldBe(0);
+        }
     }
 
     public class ResultDictionaryExtensionsTestsDefaultValue : ResultDictionaryExtensionsTests
@@ -566,6 +583,23 @@ public class ResultDictionaryExtensionsTests
 
             // Act
             var result = sut.TryGetValue("Step1", 13);
+
+            // Assert
+            result.ShouldBe(13);
+        }
+
+        [Fact]
+        public void Gets_Default_When_Key_Is_Not_Found()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.TryGetValue("Step4", 13);
 
             // Assert
             result.ShouldBe(13);
