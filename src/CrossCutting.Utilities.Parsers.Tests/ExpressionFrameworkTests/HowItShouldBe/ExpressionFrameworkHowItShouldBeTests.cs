@@ -141,7 +141,7 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
             .Add("Culture", () => context.GetArgumentValueResult<CultureInfo>(1, "Culture", default))
             .Build()
             .OnFailure(OnFailure)
-            .OnSuccess(OnSuccess(context));
+            .OnSuccess(OnSuccess); // in case you need access to the FunctionCallContext: .OnSuccess(OnSuccess(context))
     }
 
     // When not implementing ITypedFunction<T>, this should be Result<object?> Evaluate instead
@@ -154,18 +154,19 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
             .Add("Culture", () => Result.Success(cultureInfo))
             .Build()
             // No OnFailure, because both results are always succesful
-            .OnSuccess(OnSuccess(null!)); // We can force null, as long as you don't use the FunctionCallContext
+            .OnSuccess(OnSuccess); // in case you need access to FunctionCallContext: .OnSuccess(OnSuccess(null!)), but this is tricky because the contect might be null
     }
 
     // *** Strongly-typed access to arguments
     private static string Expression(Dictionary<string, Result> resultDictionary) => resultDictionary.GetValue<string>("Expression");
-    private static CultureInfo? CultureInfo(Dictionary<string, Result> resultsDictionary, CultureInfo? defaultValue) => resultsDictionary.TryGetValue("Culture", defaultValue);
+    private static CultureInfo? CultureInfo(Dictionary<string, Result> resultsDictionary) => resultsDictionary.TryGetValue<CultureInfo>("Culture");
 
     // *** Scaffold code, by default throw a NotImplementedException.
-    private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(FunctionCallContext context)
+    // in case you need access to FuctionCallContext: private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(FunctionCallContext context)
+    private static Result<string> OnSuccess(Dictionary<string, Result> results)
     {
         // Note that if you provide a static Evaluate method without FunctionCallContext, then you can't use the function call context (format provider, expression evaluator etc.)
-        return results => Result.Success(Expression(results).ToUpper(CultureInfo(results, context?.Settings.FormatProvider.ToCultureInfo())));
+        return Result.Success(Expression(results).ToUpper(CultureInfo(results)));
     }
 
     /// *** Scaffold code, by default return error
