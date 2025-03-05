@@ -780,7 +780,7 @@ public sealed class FormattableStringParserTests : IDisposable
             : Result.Continue<object?>());
 
         _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "variable"
-            ? Result.Success<Type>(typeof(int))
+            ? Result.Success(typeof(int))
             : Result.Continue<Type>());
 
         _provider = new ServiceCollection()

@@ -841,7 +841,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         {
             // Arrange
             var input = "=$myvariable";
-            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<Type>(typeof(string)) : Result.Continue<Type>());
+            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success(typeof(string)) : Result.Continue<Type>());
 
             // Act
             var result = CreateSut().Validate(input, CreateSettings());

@@ -367,7 +367,7 @@ public record ExpressionArgument<T> : FunctionCallArgumentBase, IFunctionCallArg
             return Result.Invalid<Type>("Expression validation failed", validationResults.Select(x => new ValidationError(x.ErrorMessage ?? string.Empty, x.MemberNames)));
         }
 
-        return Result.Success<Type>(typeof(T));
+        return Result.Success(typeof(T));
     }
 
     public override FunctionCallArgumentBaseBuilder ToBuilder()

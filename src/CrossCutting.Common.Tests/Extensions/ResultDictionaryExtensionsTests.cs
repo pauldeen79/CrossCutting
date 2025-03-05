@@ -565,7 +565,7 @@ public class ResultDictionaryExtensionsTests
                 .Build();
 
             // Act
-            var result = sut.TryGetValue<string>("Step1", "some default value");
+            var result = sut.TryGetValue("Step1", "some default value");
 
             // Assert
             result.ShouldBe("My value");

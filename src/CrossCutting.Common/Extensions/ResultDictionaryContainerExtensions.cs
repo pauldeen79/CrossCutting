@@ -42,5 +42,5 @@ public static class ResultDictionaryContainerExtensions
         => instance.Results.TryGetValue<T>(resultKey);
 
     public static T? TryGetValue<T>(this IResultDictionaryContainer instance, string resultKey, T? defaultValue)
-        => instance.Results.TryGetValue<T>(resultKey, defaultValue);
+        => instance.Results.TryGetValue(resultKey, defaultValue);
 }

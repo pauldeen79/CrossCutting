@@ -123,6 +123,6 @@ public static class ResultDictionaryExtensions
 
     public static T? TryGetValue<T>(this Dictionary<string, Result> resultDictionary, string resultKey, T? defaultValue)
         => resultDictionary.TryGetValue(resultKey, out Result result)
-            ? result.TryCastValueAs<T>(defaultValue)
+            ? result.TryCastValueAs(defaultValue)
             : defaultValue;
 }

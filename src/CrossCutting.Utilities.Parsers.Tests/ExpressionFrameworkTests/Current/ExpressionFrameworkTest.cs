@@ -887,7 +887,7 @@ public static class ExpressionExtensions
 
     public static Result<T?> EvaluateTyped<T>(this Expression instance, object? context = null, string? errorMessage = null)
         => instance is ITypedExpression<T> typedExpression
-            ? typedExpression.EvaluateTyped(context).Transform<T?>(value => value)
+            ? typedExpression.EvaluateTyped(context).Transform(value => value)
             : instance.Evaluate(context).TryCastAllowNull<T>(errorMessage);
 
     public static Result<T> EvaluateTypedWithTypeCheck<T>(this ITypedExpression<T> instance, object? context = null, string? errorMessage = null)

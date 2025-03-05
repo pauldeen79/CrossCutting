@@ -638,7 +638,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
         public Result<string> EvaluateTyped(FunctionCallContext context)
         {
-            return Result.Success<string>("function result");
+            return Result.Success("function result");
         }
     }
 

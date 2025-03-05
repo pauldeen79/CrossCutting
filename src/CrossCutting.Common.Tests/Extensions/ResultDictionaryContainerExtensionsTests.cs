@@ -1,4 +1,4 @@
-namespace CrossCutting.Common.Tests.Extensions;
+﻿namespace CrossCutting.Common.Tests.Extensions;
 
 public class ResultDictionaryContainerExtensionsTests
 {
@@ -313,7 +313,7 @@ public class ResultDictionaryContainerExtensionsTests
                 .Build());
 
             // Act
-            var result = sut.TryGetValue<string>("Step1", "some default value");
+            var result = sut.TryGetValue("Step1", "some default value");
 
             // Assert
             result.ShouldBe("My value");
