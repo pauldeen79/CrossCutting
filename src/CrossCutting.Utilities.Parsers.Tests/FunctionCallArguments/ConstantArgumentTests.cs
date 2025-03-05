@@ -105,7 +105,7 @@ public class ConstantArgumentTests
 
         // Assert
         result.ShouldBeOfType<ConstantArgumentBuilder<string>>();
-        ((ConstantArgumentBuilder<string>)result).Value.ShouldBe(sut.Value);
+        result.Value.ShouldBe(sut.Value);
     }
 
     [Fact]
@@ -119,5 +119,31 @@ public class ConstantArgumentTests
 
         // Assert
         result.ShouldBe("Hello world!");
+    }
+    
+    [Fact]
+    public void IsDynamic_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new ConstantArgument<string>("Hello world!");
+
+        // Act
+        var result = sut.IsDynamic;
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Untyped_IsDynamic_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new ConstantArgument("Hello world!");
+
+        // Act
+        var result = sut.IsDynamic;
+
+        // Assert
+        result.ShouldBeFalse();
     }
 }
