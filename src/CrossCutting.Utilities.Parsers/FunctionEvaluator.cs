@@ -73,7 +73,7 @@ public class FunctionEvaluator : IFunctionEvaluator
         var functionCallContext = new FunctionCallContext(functionCall, this, _expressionEvaluator, settings, context);
 
         return ResolveFunction(functionCallContext)
-            .Transform(result => (result.Value?.Function as IValidatableFunction)?.Validate(functionCallContext) ?? Result.FromExistingResult(result, result.Value?.ReturnValueType ?? typeof(object)));
+            .Transform(result => (result.Value?.Function as IValidatableFunction)?.Validate(functionCallContext) ?? Result.FromExistingResult(result, result.Value?.ReturnValueType!));
     }
 
     private Result<FunctionAndTypeDescriptor> ResolveFunction(FunctionCallContext functionCallContext)

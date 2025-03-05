@@ -2,6 +2,8 @@
 
 public partial record ConstantArgument
 {
+    public override bool IsDynamic => false;
+
     public override Result<object?> Evaluate(FunctionCallContext context)
         => Result.Success(Value);
 

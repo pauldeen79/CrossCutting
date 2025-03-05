@@ -4,4 +4,5 @@ public partial interface IFunctionCallArgument
 {
     Result<object?> Evaluate(FunctionCallContext context);
     Result<Type> Validate(FunctionCallContext context);
+    bool IsDynamic { get; }
 }

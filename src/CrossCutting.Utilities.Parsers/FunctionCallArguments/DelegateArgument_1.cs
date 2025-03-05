@@ -2,6 +2,8 @@
 
 public partial record DelegateArgument<T>
 {
+    public override bool IsDynamic => true;
+
     public Result<T> EvaluateTyped(FunctionCallContext context)
         => Result.Success(Delegate());
 

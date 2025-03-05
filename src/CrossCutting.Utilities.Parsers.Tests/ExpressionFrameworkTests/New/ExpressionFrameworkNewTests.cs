@@ -269,6 +269,8 @@ public class ExpressionArgumentBuilder : FunctionCallArgumentBaseBuilder
 
 public record ExpressionArgument : FunctionCallArgumentBase
 {
+    public override bool IsDynamic => true;
+
     public ExpressionArgument(Expression? expression)
     {
         Expression = expression;
@@ -339,6 +341,8 @@ public class ExpressionArgumentBuilder<T> : FunctionCallArgumentBaseBuilder, IFu
 
 public record ExpressionArgument<T> : FunctionCallArgumentBase, IFunctionCallArgument<T>
 {
+    public override bool IsDynamic => true;
+
     public ExpressionArgument(ITypedExpression<T>? expression) : base()
     {
         Expression = expression;

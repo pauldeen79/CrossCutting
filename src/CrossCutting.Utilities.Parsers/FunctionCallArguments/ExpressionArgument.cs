@@ -2,6 +2,8 @@
 
 public partial record ExpressionArgument
 {
+    public override bool IsDynamic => false;
+
     public override Result<object?> Evaluate(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));

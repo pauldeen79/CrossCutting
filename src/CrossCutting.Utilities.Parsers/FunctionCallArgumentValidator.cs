@@ -17,7 +17,7 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         {
             return Result.Invalid<Type>($"Argument {descriptorArgument.Name} is not of type {descriptorArgument.Type.FullName}");
         }
-        else if (callArgumentResult.Value is null && descriptorArgument.IsRequired)
+        else if (!callArgument.IsDynamic && callArgumentResult.Value is null && descriptorArgument.IsRequired)
         {
             return Result.Invalid<Type>($"Argument {descriptorArgument.Name} is required");
         }
