@@ -727,6 +727,34 @@ public class ExpressionStringEvaluatorTests : IDisposable
         }
 
         [Fact]
+        public void Returns_Success_Result_From_TypeOfOfExpression_When_Found()
+        {
+            // Arrange
+            var input = $"=typeof({typeof(short).FullName})";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(short));
+        }
+
+        [Fact]
+        public void Returns_Invalid_Result_From_TypeOfExpression_Unknown_Type()
+        {
+            // Arrange
+            var input = "=typeof(unknowntype)";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown type: unknowntype");
+        }
+
+        [Fact]
         public void Returns_Invalid_Result_From_CastExpression_Expression_Evaluation_Failed()
         {
             // Arrange
@@ -1432,6 +1460,34 @@ public class ExpressionStringEvaluatorTests : IDisposable
         {
             // Arrange
             var input = "=cast 13 as unknowntype";
+
+            // Act
+            var result = CreateSut().Validate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown type: unknowntype");
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_TypeOfExpression_When_Found()
+        {
+            // Arrange
+            var input = $"=typeof({typeof(short).FullName})";
+
+            // Act
+            var result = CreateSut().Validate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.NoContent);
+            result.Value.ShouldBeNull();
+        }
+
+        [Fact]
+        public void Returns_Invalid_Result_From_TypeOfExpression_Unknown_Type()
+        {
+            // Arrange
+            var input = "=typeof(unknowntype)";
 
             // Act
             var result = CreateSut().Validate(input, CreateSettings());
