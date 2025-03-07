@@ -2,7 +2,7 @@
 
 public class CastExpressionString : IExpressionString
 {
-    private static readonly Regex _castRegEx = new(@"^=cast\s+(?<expression>\S+)\s+as\s+(?<type>\S+)$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
+    private static readonly Regex _castRegEx = new(@"^=cast\s+(?<expression>\S+)\s+as\s+(?<type>\S+)$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
 
     public Result<object?> Evaluate(ExpressionStringEvaluatorContext context)
     {
