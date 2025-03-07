@@ -11,7 +11,7 @@ public class ConcatenateExpressionString : IExpressionString
             var builder = new StringBuilder();
             foreach (var item in split)
             {
-                var result = context.Parser.Evaluate($"={item}", context.Settings, context.Context, context.FormattableStringParser);
+                var result = context.Evaluator.Evaluate($"={item}", context.Settings, context.Context, context.FormattableStringParser);
                 if (!result.IsSuccessful())
                 {
                     return result;
