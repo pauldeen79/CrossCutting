@@ -40,8 +40,7 @@ public static class ServiceCollectionExtensions
         .AddScoped<IExpressionString, OnlyEqualsExpressionString>()
         .AddScoped<IExpressionString, FormattableStringExpressionString>()
         .AddScoped<IExpressionString, MathematicExpressionString>()
-        .AddScoped<IExpressionString, CastExpressionString>()
-        .AddScoped<IExpressionString, TypeOfExpressionString>();
+        .AddScoped<IExpressionString, CastExpressionString>();
 
     private static IServiceCollection AddFunctionParser(this IServiceCollection services)
         => services
