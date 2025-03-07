@@ -1479,8 +1479,8 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.NoContent);
-            result.Value.ShouldBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(Type));
         }
 
         [Fact]

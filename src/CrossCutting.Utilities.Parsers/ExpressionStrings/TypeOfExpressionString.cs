@@ -42,7 +42,7 @@ public class TypeOfExpressionString : IExpressionString
                 return Result.Invalid<Type>($"Unknown type: {typename}");
             }
 
-            return Result.NoContent<Type>();
+            return Result.Success(typeof(Type));
         }
         else
         {
