@@ -2,18 +2,13 @@
 
 public class CastExpressionString : IExpressionString
 {
-    private static readonly Regex _castRegEx = new(@"^cast\s+(?<expression>\S+)\s+as\s+(?<type>\S+)$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
+    private static readonly Regex _castRegEx = new(@"^=cast\s+(?<expression>\S+)\s+as\s+(?<type>\S+)$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
 
     public Result<object?> Evaluate(ExpressionStringEvaluatorContext context)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Input.StartsWith("="))
-        {
-            return Result.Continue<object?>();
-        }
-
-        var match = _castRegEx.Match(context.Input.Substring(1).Trim());
+        var match = _castRegEx.Match(context.Input);
         if (match.Success)
         {
             var expressionInput = match.Groups["expression"].Value;
@@ -43,12 +38,7 @@ public class CastExpressionString : IExpressionString
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Input.StartsWith("="))
-        {
-            return Result.Continue<Type>();
-        }
-
-        var match = _castRegEx.Match(context.Input.Substring(1).Trim());
+        var match = _castRegEx.Match(context.Input);
         if (match.Success)
         {
             var typeInput = match.Groups["type"].Value;
