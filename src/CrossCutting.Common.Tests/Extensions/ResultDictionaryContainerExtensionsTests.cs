@@ -280,6 +280,25 @@ public class ResultDictionaryContainerExtensionsTests
         }
     }
 
+    public class GetValue_Untyped : ResultDictionaryContainerExtensionsTests
+    {
+        [Fact]
+        public void Gets_Value_When_ResultKey_Is_Valid()
+        {
+            // Arrange
+            var sut = CreateSut(new ResultDictionaryBuilder()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build());
+
+            // Act
+            var result = sut.GetValue("Step1");
+
+            // Assert
+            result.ShouldBe("My value");
+        }
+    }
     public class TryGetValueNoDefaultValue : ResultDictionaryContainerExtensionsTests
     {
         [Fact]

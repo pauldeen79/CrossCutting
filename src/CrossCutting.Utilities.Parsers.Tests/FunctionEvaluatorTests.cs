@@ -23,6 +23,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddSingleton<IFunction, ObjectArgumentFunction>()
             .AddSingleton<IFunction, ObjectResultFunction>()
             .AddSingleton<IFunction, StringArgumentFunction>()
+            .AddSingleton<IFunction, CastFunction>()
+            .AddSingleton<IFunction, GetTypeFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -613,6 +615,28 @@ public sealed class FunctionEvaluatorTests : IDisposable
         result.Value.ShouldBe("My value");
     }
 
+    [Fact]
+    public void Can_Cast_Result_To_Specified_Type_In_Function()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Cast")
+            .AddArguments
+            (
+                new ConstantArgumentBuilder().WithValue(13),
+                new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("GetType").AddArguments(new ConstantArgumentBuilder().WithValue(typeof(short).FullName)))
+            )
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(functionCall, CreateSettings());
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe((short)13);
+    }
+
     public void Dispose()
     {
         _scope.Dispose();
@@ -791,6 +815,48 @@ public sealed class FunctionEvaluatorTests : IDisposable
             return context.GetArgumentStringValueResult(0, "Argument1");
         }
     }
+
+    [FunctionName("Cast")]
+    [FunctionArgument("Expression", typeof(object), "Expression to cast")]
+    [FunctionArgument("Type", typeof(Type), "Type to cast the expression to")]
+    private sealed class CastFunction : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+            return new ResultDictionaryBuilder()
+                .Add("Expression", () => context.GetArgumentValueResult(0, "Expression"))
+                .Add("Type", () => context.GetArgumentValueResult<Type>(1, "Type"))
+                .Build()
+                .OnSuccess(results => Result.Success(Convert.ChangeType(results.GetValue("Expression"), results.GetValue<Type>("Type"))));
+        }
+    }
+
+    [FunctionName("GetType")]
+    [FunctionArgument("TypeName", typeof(string), "Typename of the type to get")]
+    private sealed class GetTypeFunction : ITypedFunction<Type>
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            return EvaluateTyped(context).Transform<object?>(x => x);
+        }
+
+        public Result<Type> EvaluateTyped(FunctionCallContext context)
+        {
+            return new ResultDictionaryBuilder()
+                .Add("TypeName", () => context.GetArgumentValueResult<string>(0, "TypeName"))
+                .Build()
+                .OnSuccess(results =>
+                {
+                    var type = Type.GetType(results.GetValue<string>("TypeName"));
+                    return type is null
+                        ? Result.Invalid<Type>($"Unknown typename: {results.GetValue<string>("TypeName")}")
+                        : Result.Success(type);
+                });
+        }
+    }
+
 #pragma warning disable S2094 // Classes should not be empty
     private abstract class Animal { }
 #pragma warning restore S2094 // Classes should not be empty

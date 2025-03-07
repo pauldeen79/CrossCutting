@@ -113,8 +113,15 @@ public static class ResultDictionaryExtensions
         return resultDictionary;
     }
 
+    public static object? GetValue(this Dictionary<string, Result> resultDictionary, string resultKey)
+        => resultDictionary.TryGetValue(resultKey, out Result result)
+            ? result.GetValue()
+            : throw new ArgumentOutOfRangeException(nameof(resultKey), $"Unknown argument: {resultKey}");
+
     public static T GetValue<T>(this Dictionary<string, Result> resultDictionary, string resultKey)
-        => resultDictionary[resultKey].CastValueAs<T>();
+        => resultDictionary.TryGetValue(resultKey, out Result result)
+            ? result.CastValueAs<T>()
+            : throw new ArgumentOutOfRangeException(nameof(resultKey), $"Unknown argument: {resultKey}");
 
     public static T? TryGetValue<T>(this Dictionary<string, Result> resultDictionary, string resultKey)
         => resultDictionary.TryGetValue(resultKey, out Result result)

@@ -496,6 +496,58 @@ public class ResultDictionaryExtensionsTests
             a.ShouldThrow<InvalidCastException>()
              .Message.ShouldBe("Unable to cast object of type 'System.String' to type 'System.Int32'.");
         }
+
+        [Fact]
+        public void Throws_When_Result_Key_Does_Not_Exist()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            Action a = () => sut.GetValue<int>("typo");
+            a.ShouldThrow<ArgumentOutOfRangeException>()
+             .Message.ShouldBe("Unknown argument: typo (Parameter 'resultKey')");
+        }
+    }
+
+    public class GetValue_Untyped : ResultDictionaryExtensionsTests
+    {
+        [Fact]
+        public void Gets_Value_When_Cast_Is_Possible()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.GetValue("Step1");
+
+            // Assert
+            result.ShouldBe("My value");
+        }
+
+        [Fact]
+        public void Throws_When_Result_Key_Does_Not_Exist()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            Action a = () => sut.GetValue("typo");
+            a.ShouldThrow<ArgumentOutOfRangeException>()
+             .Message.ShouldBe("Unknown argument: typo (Parameter 'resultKey')");
+        }
     }
 
     public class TryGetValueNoDefaultValue : ResultDictionaryExtensionsTests

@@ -35,7 +35,10 @@ public static class ResultDictionaryContainerExtensions
     public static Dictionary<string, Result> OnFailure(this IResultDictionaryContainer instance, Func<Result, Result> errorDelegate)
         => instance.Results.OnFailure(errorDelegate);
 
-    public static T GetValue<T>(this IResultDictionaryContainer instance, string resultKey)
+    public static object? GetValue(this IResultDictionaryContainer instance, string resultKey)
+        => instance.Results.GetValue(resultKey);
+
+    public static T? GetValue<T>(this IResultDictionaryContainer instance, string resultKey)
         => instance.Results.GetValue<T>(resultKey);
 
     public static T? TryGetValue<T>(this IResultDictionaryContainer instance, string resultKey)
