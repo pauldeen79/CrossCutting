@@ -2,5 +2,5 @@
 
 internal interface IExpressionArgument : IFunctionCallArgumentBase
 {
-    [Required] string Value { get; }
+    [Required] string Expression { get; }
 }

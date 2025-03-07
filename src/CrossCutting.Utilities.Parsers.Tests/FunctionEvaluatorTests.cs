@@ -24,7 +24,6 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddSingleton<IFunction, ObjectResultFunction>()
             .AddSingleton<IFunction, StringArgumentFunction>()
             .AddSingleton<IFunction, CastFunction>()
-            .AddSingleton<IFunction, GetTypeFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -624,7 +623,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddArguments
             (
                 new ConstantArgumentBuilder().WithValue(13),
-                new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("GetType").AddArguments(new ConstantArgumentBuilder().WithValue(typeof(short).FullName)))
+                new ExpressionArgumentBuilder().WithExpression($"typeof({typeof(short).FullName})")
             )
             .Build();
         var sut = CreateSut();
@@ -830,30 +829,6 @@ public sealed class FunctionEvaluatorTests : IDisposable
                 .Add("Type", () => context.GetArgumentValueResult<Type>(1, "Type"))
                 .Build()
                 .OnSuccess(results => Result.Success(Convert.ChangeType(results.GetValue("Expression"), results.GetValue<Type>("Type"))));
-        }
-    }
-
-    [FunctionName("GetType")]
-    [FunctionArgument("TypeName", typeof(string), "Typename of the type to get")]
-    private sealed class GetTypeFunction : ITypedFunction<Type>
-    {
-        public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            return EvaluateTyped(context).Transform<object?>(x => x);
-        }
-
-        public Result<Type> EvaluateTyped(FunctionCallContext context)
-        {
-            return new ResultDictionaryBuilder()
-                .Add("TypeName", () => context.GetArgumentValueResult<string>(0, "TypeName"))
-                .Build()
-                .OnSuccess(results =>
-                {
-                    var type = Type.GetType(results.GetValue<string>("TypeName"));
-                    return type is null
-                        ? Result.Invalid<Type>($"Unknown typename: {results.GetValue<string>("TypeName")}")
-                        : Result.Success(type);
-                });
         }
     }
 
