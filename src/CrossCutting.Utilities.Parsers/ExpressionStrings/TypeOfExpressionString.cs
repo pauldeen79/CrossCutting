@@ -2,13 +2,13 @@
 
 public class TypeOfExpressionString : IExpressionString
 {
-    private static readonly Regex _castRegEx = new(@"^=typeof\((?<typename>.+?)\)$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
+    private static readonly Regex _typeOfRegEx = new(@"^=typeof\((?<typename>.+?)\)$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
 
     public Result<object?> Evaluate(ExpressionStringEvaluatorContext context)
     {
         context = context.IsNotNull(nameof(context));
 
-        var match = _castRegEx.Match(context.Input);
+        var match = _typeOfRegEx.Match(context.Input);
         if (match.Success)
         {
             var typename = match.Groups["typename"].Value;
@@ -31,7 +31,7 @@ public class TypeOfExpressionString : IExpressionString
     {
         context = context.IsNotNull(nameof(context));
 
-        var match = _castRegEx.Match(context.Input);
+        var match = _typeOfRegEx.Match(context.Input);
         if (match.Success)
         {
             var typename = match.Groups["typename"].Value;
