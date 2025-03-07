@@ -21,7 +21,8 @@ public static class ServiceCollectionExtensions
         .AddScoped<IExpression, StringExpression>()
         .AddScoped<IExpression, VariableExpression>()
         .AddScoped<IExpression, NumericExpression>()
-        .AddScoped<IExpression, DateTimeExpression>();
+        .AddScoped<IExpression, DateTimeExpression>()
+        .AddScoped<IExpression, TypeOfExpression>();
 
     private static IServiceCollection AddExpressionStringEvaluator(this IServiceCollection services)
         => services
