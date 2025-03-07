@@ -513,6 +513,22 @@ public sealed class FormattableStringParserTests : IDisposable
     }
 
     [Fact]
+    public void Parse_Works_With_Expression()
+    {
+        // Arrange
+        const string Input = "Bla bla bla {true}";
+        var settings = new FormattableStringParserSettingsBuilder();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(Input, settings);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.ToString().ShouldBe("Bla bla bla True");
+    }
+
+    [Fact]
     public void Parse_Returns_Invalid_On_Unknown_Placeholder()
     {
         // Arrange
