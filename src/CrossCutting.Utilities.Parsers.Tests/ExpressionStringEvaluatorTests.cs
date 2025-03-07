@@ -1434,7 +1434,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
             var input = "=cast 13 as unknowntype";
 
             // Act
-            var result = CreateSut().Evaluate(input, CreateSettings());
+            var result = CreateSut().Validate(input, CreateSettings());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
