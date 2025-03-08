@@ -56,7 +56,7 @@ public class FunctionParser : IFunctionParser
             var argumentResults = new ResultDictionaryBuilder()
                 .Add("Name", () => FindFunctionName(remainder.Substring(0, openIndex.Value)))
                 .Add("Arguments", () => AddArguments(results, stringArguments, arguments, settings, context))
-                .Add("TypeArguments", results => AddTypeArguments(((Result<FunctionNameAndTypeArguments>)results["Name"]).Value!, typeArguments))
+                .Add("TypeArguments", results => AddTypeArguments(results.GetValue<FunctionNameAndTypeArguments>("Name"), typeArguments))
                 .Build();
 
             var error = argumentResults.GetError();
