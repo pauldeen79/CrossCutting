@@ -50,15 +50,12 @@ public class FunctionParser : IFunctionParser
             }
 
             var stringArguments = remainder.Substring(openIndex.Value + 1, closeIndex.Value - openIndex.Value - 1);
-            var stringArgumentsSplit = stringArguments
-                .SplitDelimited(',', '\"', trimItems: true, leaveTextQualifier: true)
-                .Select(RemoveStringQualifiers);
 
             var arguments = new List<IFunctionCallArgument>();
             var typeArguments = new List<IFunctionCallTypeArgument>();
             var argumentResults = new ResultDictionaryBuilder()
                 .Add("Name", () => FindFunctionName(remainder.Substring(0, openIndex.Value)))
-                .Add("Arguments", () => AddArguments(results, stringArgumentsSplit, arguments, settings, context))
+                .Add("Arguments", () => AddArguments(results, stringArguments, arguments, settings, context))
                 .Add("TypeArguments", results => AddTypeArguments(((Result<FunctionNameAndTypeArguments>)results["Name"]).Value!, typeArguments, settings, context))
                 .Build();
 
@@ -70,7 +67,7 @@ public class FunctionParser : IFunctionParser
 
             var found = $"{argumentResults.GetValue<FunctionNameAndTypeArguments>("Name").RawResult}({stringArguments})";
             remainder = remainder.Replace(found, FormattableString.Invariant($"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"));
-            results.Add(new FunctionCall(argumentResults.GetValue<FunctionNameAndTypeArguments>("Name").Name.Trim(), arguments, typeArguments));
+            results.Add(new FunctionCall(argumentResults.GetValue<FunctionNameAndTypeArguments>("Name").Name, arguments, typeArguments));
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
         return remainder.EndsWith(TemporaryDelimiter)
@@ -93,35 +90,13 @@ public class FunctionParser : IFunctionParser
         return value;
     }
 
-    private static bool IsInQuoteMap(int index, IEnumerable<(int StartIndex, int EndIndex)> quoteMap)
-        => quoteMap.Any(x => x.StartIndex < index && x.EndIndex > index);
 
-    private static IEnumerable<(int StartIndex, int EndIndex)> BuildQuoteMap(string value)
+    private Result<FunctionCall> AddArguments(List<FunctionCall> results, string stringArguments, List<IFunctionCallArgument> arguments, FunctionParserSettings settings, object? context)
     {
-        var inText = false;
-        var index = -1;
-        var lastQuote = -1;
+        var argumentsSplit = stringArguments
+            .SplitDelimited(',', '\"', trimItems: true, leaveTextQualifier: true)
+            .Select(RemoveStringQualifiers);
 
-        foreach (var character in value)
-        {
-            index++;
-            if (character == '\"')
-            {
-                inText = !inText;
-                if (inText)
-                {
-                    lastQuote = index;
-                }
-                else
-                {
-                    yield return new(lastQuote, index);
-                }
-            }
-        }
-    }
-
-    private Result<FunctionCall> AddArguments(List<FunctionCall> results, IEnumerable<string> argumentsSplit, List<IFunctionCallArgument> arguments, FunctionParserSettings settings, object? context)
-    {
         foreach (var argument in argumentsSplit)
         {
             if (argument.StartsWith(TemporaryDelimiter) && argument.EndsWith(TemporaryDelimiter))
@@ -164,4 +139,30 @@ public class FunctionParser : IFunctionParser
             .Select(x => x.Process(input))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.NotFound<FunctionNameAndTypeArguments>("No function name found");
-}
+
+    private static bool IsInQuoteMap(int index, IEnumerable<(int StartIndex, int EndIndex)> quoteMap)
+        => quoteMap.Any(x => x.StartIndex < index && x.EndIndex > index);
+
+    private static IEnumerable<(int StartIndex, int EndIndex)> BuildQuoteMap(string value)
+    {
+        var inText = false;
+        var index = -1;
+        var lastQuote = -1;
+
+        foreach (var character in value)
+        {
+            index++;
+            if (character == '\"')
+            {
+                inText = !inText;
+                if (inText)
+                {
+                    lastQuote = index;
+                }
+                else
+                {
+                    yield return new(lastQuote, index);
+                }
+            }
+        }
+    }}

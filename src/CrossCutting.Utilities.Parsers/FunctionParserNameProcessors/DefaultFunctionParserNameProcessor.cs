@@ -24,6 +24,6 @@ public class DefaultFunctionParserNameProcessor : IFunctionParserNameProcessor
     private static FunctionNameAndTypeArguments ParseName(string input)
     {
         //TODO: Implement this
-        return new FunctionNameAndTypeArguments(input, input, Array.Empty<string>());
+        return new FunctionNameAndTypeArguments(input, input.Trim(), Array.Empty<string>());
     }
 }
