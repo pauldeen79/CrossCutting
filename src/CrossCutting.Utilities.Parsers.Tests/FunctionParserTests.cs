@@ -409,7 +409,7 @@ public sealed class FunctionParserTests : IDisposable
 
     private sealed class ErrorNameProcessor : IFunctionParserNameProcessor
     {
-        public Result<string> Process(string input) => Result.Error<string>("Kaboom");
+        public Result<FunctionNameAndTypeArguments> Process(string input) => Result.Error<FunctionNameAndTypeArguments>("Kaboom");
     }
 
     private sealed class MyPlaceholderProcessor : IPlaceholder

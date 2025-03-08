@@ -2,11 +2,11 @@
 
 public class DefaultFunctionParserNameProcessor : IFunctionParserNameProcessor
 {
-    public Result<string> Process(string input)
+    public Result<FunctionNameAndTypeArguments> Process(string input)
     {
         if (string.IsNullOrEmpty(input))
         {
-            return Result.NotFound<string>("No function name found");
+            return Result.NotFound<FunctionNameAndTypeArguments>("No function name found");
         }
 
         var bracketIndex = input.LastIndexOf("(");
@@ -15,9 +15,15 @@ public class DefaultFunctionParserNameProcessor : IFunctionParserNameProcessor
 
         if (greatestIndex > -1)
         {
-            return Result.Success(input.Substring(greatestIndex + 1));
+            return Result.Success(ParseName(input.Substring(greatestIndex + 1)));
         }
 
-        return Result.Success(input);
+        return Result.Success(ParseName(input));
+    }
+
+    private static FunctionNameAndTypeArguments ParseName(string input)
+    {
+        //TODO: Implement this
+        return new FunctionNameAndTypeArguments(input, input, Array.Empty<string>());
     }
 }

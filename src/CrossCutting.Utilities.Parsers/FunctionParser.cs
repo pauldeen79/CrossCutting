@@ -74,9 +74,9 @@ public class FunctionParser : IFunctionParser
                 return addTypeArgumentsResult;
             }
 
-            var found = $"{nameResult.Value}({stringArguments})";
+            var found = $"{nameResult.Value!.RawResult}({stringArguments})";
             remainder = remainder.Replace(found, FormattableString.Invariant($"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"));
-            results.Add(new FunctionCall(nameResult.Value!.Trim(), arguments, typeArguments));
+            results.Add(new FunctionCall(nameResult.Value!.Name.Trim(), arguments, typeArguments));
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
         return remainder.EndsWith(TemporaryDelimiter)
@@ -159,15 +159,15 @@ public class FunctionParser : IFunctionParser
         return Result.Continue<FunctionCall>();
     }
 
-    private Result<FunctionCall> AddTypeArguments(string functionName, List<IFunctionCallTypeArgument> typeArguments, FunctionParserSettings settings, object? context)
+    private Result<FunctionCall> AddTypeArguments(FunctionNameAndTypeArguments functionName, List<IFunctionCallTypeArgument> typeArguments, FunctionParserSettings settings, object? context)
     {
         //TODO: Implement this
         return Result.Continue<FunctionCall>();
     }
 
-    private Result<string> FindFunctionName(string input)
+    private Result<FunctionNameAndTypeArguments> FindFunctionName(string input)
         => _nameProcessors
             .Select(x => x.Process(input))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.NotFound<string>("No function name found");
+                ?? Result.NotFound<FunctionNameAndTypeArguments>("No function name found");
 }
