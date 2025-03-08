@@ -18,5 +18,9 @@ namespace CrossCutting.Utilities.Parsers.Builders.Abstractions
     {
         new CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T> Build();
     }
+    public partial interface IFunctionCallTypeArgumentBuilder
+    {
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallTypeArgument Build();
+    }
 }
 #nullable disable

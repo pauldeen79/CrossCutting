@@ -276,7 +276,7 @@ public class ToUpperCaseFunctionCallBuilder : IBuilder<FunctionCall> // Inheriti
 // *** Generated code (optional)
 public record ToUpperCaseFunctionCall : FunctionCall, IBuildableEntity<ToUpperCaseFunctionCallBuilder> // Inheriting from IBuildableEntity<T> is optional.
 {
-    public ToUpperCaseFunctionCall(IFunctionCallArgument<string> expression, IFunctionCallArgument<CultureInfo?> cultureInfo) : base("ToUpperCase", new IFunctionCallArgument[] { expression, cultureInfo })
+    public ToUpperCaseFunctionCall(IFunctionCallArgument<string> expression, IFunctionCallArgument<CultureInfo?> cultureInfo) : base("ToUpperCase", new IFunctionCallArgument[] { expression, cultureInfo }, Enumerable.Empty<IFunctionCallTypeArgument>())
     {
     }
 

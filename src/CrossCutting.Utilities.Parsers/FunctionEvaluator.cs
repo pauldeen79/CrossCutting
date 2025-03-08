@@ -42,7 +42,18 @@ public class FunctionEvaluator : IFunctionEvaluator
 
         var functionCallContext = new FunctionCallContext(functionCall, this, _expressionEvaluator, settings, context);
 
-        return ResolveFunction(functionCallContext).Transform(result => result.Function.Evaluate(functionCallContext));
+        return ResolveFunction(functionCallContext).Transform(result => EvaluateFunction(result, functionCallContext));
+    }
+
+    private static Result<object?> EvaluateFunction(FunctionAndTypeDescriptor result, FunctionCallContext functionCallContext)
+    {
+        if (result.Function is IGenericFunction genericFunction)
+        {
+            //TODO: Use reflection magic to make method generic, and call it (using reflection)
+            return genericFunction.EvaluateGeneric<object?>(functionCallContext);
+        }
+
+        return result.Function.Evaluate(functionCallContext);
     }
 
     public Result<T> EvaluateTyped<T>(FunctionCall functionCall, FunctionEvaluatorSettings settings, object? context)

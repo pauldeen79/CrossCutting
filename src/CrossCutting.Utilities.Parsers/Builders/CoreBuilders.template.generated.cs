@@ -280,6 +280,8 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         private System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder> _arguments;
 
+        private System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder> _typeArguments;
+
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
@@ -313,24 +315,42 @@ namespace CrossCutting.Utilities.Parsers.Builders
             }
         }
 
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder> TypeArguments
+        {
+            get
+            {
+                return _typeArguments;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder>>.Default.Equals(_typeArguments!, value!);
+                _typeArguments = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(TypeArguments));
+            }
+        }
+
         public FunctionCallBuilder(CrossCutting.Utilities.Parsers.FunctionCall source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder>();
+            _typeArguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder>();
             _name = source.Name;
             if (source.Arguments is not null) foreach (var item in source.Arguments.Select(x => x.ToBuilder())) _arguments.Add(item);
+            if (source.TypeArguments is not null) foreach (var item in source.TypeArguments.Select(x => x.ToBuilder())) _typeArguments.Add(item);
         }
 
         public FunctionCallBuilder()
         {
             _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder>();
+            _typeArguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder>();
             _name = string.Empty;
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.Parsers.FunctionCall Build()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCall(Name, Arguments.Select(x => x.Build()!).ToList().AsReadOnly());
+            return new CrossCutting.Utilities.Parsers.FunctionCall(Name, Arguments.Select(x => x.Build()!).ToList().AsReadOnly(), TypeArguments.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         partial void SetDefaultValues();
@@ -345,6 +365,19 @@ namespace CrossCutting.Utilities.Parsers.Builders
         {
             if (arguments is null) throw new System.ArgumentNullException(nameof(arguments));
             foreach (var item in arguments) Arguments.Add(item);
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder AddTypeArguments(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder> typeArguments)
+        {
+            if (typeArguments is null) throw new System.ArgumentNullException(nameof(typeArguments));
+            return AddTypeArguments(typeArguments.ToArray());
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallBuilder AddTypeArguments(params CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder[] typeArguments)
+        {
+            if (typeArguments is null) throw new System.ArgumentNullException(nameof(typeArguments));
+            foreach (var item in typeArguments) TypeArguments.Add(item);
             return this;
         }
 

@@ -818,17 +818,24 @@ public sealed class FunctionEvaluatorTests : IDisposable
     [FunctionName("Cast")]
     [FunctionArgument("Expression", typeof(object), "Expression to cast")]
     [FunctionArgument("Type", typeof(Type), "Type to cast the expression to")]
-    private sealed class CastFunction : IFunction
+    private sealed class CastFunction : IGenericFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            throw new NotSupportedException("You have to call the EvaluateGeneric method");
+        }
+
+        public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
         {
             context = ArgumentGuard.IsNotNull(context, nameof(context));
 
             return new ResultDictionaryBuilder()
                 .Add("Expression", () => context.GetArgumentValueResult(0, "Expression"))
-                .Add("Type", () => context.GetArgumentValueResult<Type>(1, "Type"))
+                //TODO: Add extension methods like the following one
+                //.Add("T", () => context.GetTypeArgumentValueResult(0, "T"))
+                .Add("T", () => context.FunctionCall.TypeArguments.Count >= 1 ? context.FunctionCall.TypeArguments.ElementAt(0).Evaluate(context) : Result.Invalid("Type argument 0 with name T is missing") )
                 .Build()
-                .OnSuccess(results => Result.Success(Convert.ChangeType(results.GetValue("Expression"), results.GetValue<Type>("Type"))));
+                .OnSuccess(results => Result.Success(Convert.ChangeType(results.GetValue("Expression"), results.GetValue<Type>("T"))));
         }
     }
 

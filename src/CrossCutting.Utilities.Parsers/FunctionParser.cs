@@ -67,9 +67,16 @@ public class FunctionParser : IFunctionParser
                 return addArgumentsResult;
             }
 
+            var typeArguments = new List<IFunctionCallTypeArgument>();
+            var addTypeArgumentsResult = AddTypeArguments(nameResult.Value!, typeArguments, settings, context);
+            if (!addTypeArgumentsResult.IsSuccessful())
+            {
+                return addTypeArgumentsResult;
+            }
+
             var found = $"{nameResult.Value}({stringArguments})";
             remainder = remainder.Replace(found, FormattableString.Invariant($"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"));
-            results.Add(new FunctionCall(nameResult.Value!.Trim(), arguments));
+            results.Add(new FunctionCall(nameResult.Value!.Trim(), arguments, typeArguments));
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
         return remainder.EndsWith(TemporaryDelimiter)
@@ -149,6 +156,12 @@ public class FunctionParser : IFunctionParser
             }
         }
 
+        return Result.Continue<FunctionCall>();
+    }
+
+    private Result<FunctionCall> AddTypeArguments(string functionName, List<IFunctionCallTypeArgument> typeArguments, FunctionParserSettings settings, object? context)
+    {
+        //TODO: Implement this
         return Result.Continue<FunctionCall>();
     }
 
