@@ -23,7 +23,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddSingleton<IFunction, ObjectArgumentFunction>()
             .AddSingleton<IFunction, ObjectResultFunction>()
             .AddSingleton<IFunction, StringArgumentFunction>()
-            .AddSingleton<IFunction, CastFunction>()
+            .AddSingleton<IGenericFunction, CastFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -567,7 +567,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .WithFunctionType(typeof(string))
             .Build();
         functionDescriptorProvider.GetAll().Returns([functionDescriptor]);
-        var sut = new FunctionEvaluator(functionDescriptorProvider, functionCallArgumentValidator, expressionEvaluator, Enumerable.Empty<IFunction>());
+        var sut = new FunctionEvaluator(functionDescriptorProvider, functionCallArgumentValidator, expressionEvaluator, Enumerable.Empty<IFunction>(), Enumerable.Empty<IGenericFunction>());
         var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
 
         // Act
@@ -820,11 +820,6 @@ public sealed class FunctionEvaluatorTests : IDisposable
     [FunctionArgument("Type", typeof(Type), "Type to cast the expression to")]
     private sealed class CastFunction : IGenericFunction
     {
-        public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            throw new NotSupportedException("You have to call the EvaluateGeneric method");
-        }
-
         public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
         {
             context = ArgumentGuard.IsNotNull(context, nameof(context));

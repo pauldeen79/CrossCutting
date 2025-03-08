@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Contracts;
 
-public interface IGenericFunction : IFunction
+public interface IGenericFunction
 {
     Result<object?> EvaluateGeneric<T>(FunctionCallContext context);
 }
