@@ -75,22 +75,6 @@ public class FunctionParser : IFunctionParser
             : Result.NotFound<FunctionCall>("Input has additional characters after last close bracket");
     }
 
-    private static string RemoveStringQualifiers(string value)
-    {
-        if (value.StartsWith("\"") && value.EndsWith("\""))
-        {
-            return value.Substring(1, value.Length - 2);
-        }
-
-        if (value.StartsWith("@\"") && value.EndsWith("\""))
-        {
-            return "@" + value.Substring(2, value.Length - 3);
-        }
-
-        return value;
-    }
-
-
     private Result<FunctionCall> AddArguments(List<FunctionCall> results, string stringArguments, List<IFunctionCallArgument> arguments, FunctionParserSettings settings, object? context)
     {
         var argumentsSplit = stringArguments
@@ -108,6 +92,7 @@ public class FunctionParser : IFunctionParser
             var processValueResult = _argumentProcessors
                 .Select(x => x.Process(argument, results, settings, context))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue);
+
             if (processValueResult is not null)
             {
                 if (!processValueResult.IsSuccessful())
@@ -128,17 +113,42 @@ public class FunctionParser : IFunctionParser
         return Result.Continue<FunctionCall>();
     }
 
-    private Result<FunctionCall> AddTypeArguments(FunctionNameAndTypeArguments functionName, List<IFunctionCallTypeArgument> typeArguments, FunctionParserSettings settings, object? context)
-    {
-        //TODO: Implement this
-        return Result.Continue<FunctionCall>();
-    }
-
     private Result<FunctionNameAndTypeArguments> FindFunctionName(string input)
         => _nameProcessors
             .Select(x => x.Process(input))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.NotFound<FunctionNameAndTypeArguments>("No function name found");
+
+    private static string RemoveStringQualifiers(string value)
+    {
+        if (value.StartsWith("\"") && value.EndsWith("\""))
+        {
+            return value.Substring(1, value.Length - 2);
+        }
+
+        if (value.StartsWith("@\"") && value.EndsWith("\""))
+        {
+            return "@" + value.Substring(2, value.Length - 3);
+        }
+
+        return value;
+    }
+
+    private static Result<FunctionCall> AddTypeArguments(FunctionNameAndTypeArguments function, List<IFunctionCallTypeArgument> typeArguments, FunctionParserSettings settings, object? context)
+    {
+        foreach (var typeArgument in function.TypeArguments)
+        {
+            var type = Type.GetType(typeArgument, false);
+            if (type is null)
+            {
+                return Result.Invalid<FunctionCall>($"Unknown type: {typeArgument}");
+            }
+
+            typeArguments.Add(new ConstantTypeArgument(type));
+        }
+
+        return Result.Continue<FunctionCall>();
+    }
 
     private static bool IsInQuoteMap(int index, IEnumerable<(int StartIndex, int EndIndex)> quoteMap)
         => quoteMap.Any(x => x.StartIndex < index && x.EndIndex > index);
