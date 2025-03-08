@@ -2,9 +2,15 @@
 
 public class ResultDictionaryBuilder
 {
-    private readonly Dictionary<string, Func<Result>> _resultset = new();
+    private readonly Dictionary<string, Func<Dictionary<string, Result>, Result>> _resultset = new();
 
     public ResultDictionaryBuilder Add(string name, Func<Result> value)
+    {
+        _resultset.Add(name, _ => value());
+        return this;
+    }
+
+    public ResultDictionaryBuilder Add(string name, Func<Dictionary<string, Result>, Result> value)
     {
         _resultset.Add(name, value);
         return this;
@@ -36,7 +42,7 @@ public class ResultDictionaryBuilder
 
         foreach (var item in _resultset)
         {
-            var result = item.Value();
+            var result = item.Value(results);
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
@@ -50,9 +56,15 @@ public class ResultDictionaryBuilder
 
 public class ResultDictionaryBuilder<T>
 {
-    private readonly Dictionary<string, Func<Result<T>>> _resultset = new();
+    private readonly Dictionary<string, Func<Dictionary<string, Result<T>>, Result<T>>> _resultset = new();
 
     public ResultDictionaryBuilder<T> Add(string name, Func<Result<T>> value)
+    {
+        _resultset.Add(name, _ => value());
+        return this;
+    }
+
+    public ResultDictionaryBuilder<T> Add(string name, Func<Dictionary<string, Result<T>>, Result<T>> value)
     {
         _resultset.Add(name, value);
         return this;
@@ -60,7 +72,13 @@ public class ResultDictionaryBuilder<T>
 
     public ResultDictionaryBuilder<T> Add(string name, Func<Result> value)
     {
-        _resultset.Add(name, () => Result.FromExistingResult<T>(value()));
+        _resultset.Add(name, _ => Result.FromExistingResult<T>(value()));
+        return this;
+    }
+
+    public ResultDictionaryBuilder<T> Add(string name, Func<Dictionary<string, Result<T>>, Result> value)
+    {
+        _resultset.Add(name, results => Result.FromExistingResult<T>(value(results)));
         return this;
     }
 
@@ -94,7 +112,7 @@ public class ResultDictionaryBuilder<T>
 
         foreach (var item in _resultset)
         {
-            var result = item.Value();
+            var result = item.Value(results);
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {

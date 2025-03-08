@@ -49,34 +49,28 @@ public class FunctionParser : IFunctionParser
                 return Result.NotFound<FunctionCall>("Missing open bracket");
             }
 
-            var nameResult = FindFunctionName(remainder.Substring(0, openIndex.Value));
-            if (!nameResult.IsSuccessful())
-            {
-                return Result.FromExistingResult<FunctionCall>(nameResult);
-            }
-
             var stringArguments = remainder.Substring(openIndex.Value + 1, closeIndex.Value - openIndex.Value - 1);
             var stringArgumentsSplit = stringArguments
                 .SplitDelimited(',', '\"', trimItems: true, leaveTextQualifier: true)
                 .Select(RemoveStringQualifiers);
 
             var arguments = new List<IFunctionCallArgument>();
-            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, settings, context);
-            if (!addArgumentsResult.IsSuccessful())
-            {
-                return addArgumentsResult;
-            }
-
             var typeArguments = new List<IFunctionCallTypeArgument>();
-            var addTypeArgumentsResult = AddTypeArguments(nameResult.Value!, typeArguments, settings, context);
-            if (!addTypeArgumentsResult.IsSuccessful())
+            var argumentResults = new ResultDictionaryBuilder()
+                .Add("Name", () => FindFunctionName(remainder.Substring(0, openIndex.Value)))
+                .Add("Arguments", () => AddArguments(results, stringArgumentsSplit, arguments, settings, context))
+                .Add("TypeArguments", results => AddTypeArguments(((Result<FunctionNameAndTypeArguments>)results["Name"]).Value!, typeArguments, settings, context))
+                .Build();
+
+            var error = argumentResults.GetError();
+            if (error is not null)
             {
-                return addTypeArgumentsResult;
+                return Result.FromExistingResult<FunctionCall>(error);
             }
 
-            var found = $"{nameResult.Value!.RawResult}({stringArguments})";
+            var found = $"{argumentResults.GetValue<FunctionNameAndTypeArguments>("Name").RawResult}({stringArguments})";
             remainder = remainder.Replace(found, FormattableString.Invariant($"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"));
-            results.Add(new FunctionCall(nameResult.Value!.Name.Trim(), arguments, typeArguments));
+            results.Add(new FunctionCall(argumentResults.GetValue<FunctionNameAndTypeArguments>("Name").Name.Trim(), arguments, typeArguments));
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
         return remainder.EndsWith(TemporaryDelimiter)
