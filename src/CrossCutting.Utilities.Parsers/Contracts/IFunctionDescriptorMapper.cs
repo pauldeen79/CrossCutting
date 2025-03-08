@@ -2,5 +2,5 @@
 
 public interface IFunctionDescriptorMapper
 {
-    IEnumerable<FunctionDescriptor> Map(IFunction source, Type? customFunctionType);
+    IEnumerable<FunctionDescriptor> Map(object source, Type? customFunctionType);
 }

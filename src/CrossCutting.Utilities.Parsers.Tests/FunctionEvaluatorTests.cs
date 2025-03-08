@@ -620,11 +620,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
         // Arrange
         var functionCall = new FunctionCallBuilder()
             .WithName("Cast")
-            .AddArguments
-            (
-                new ConstantArgumentBuilder().WithValue(13),
-                new ExpressionArgumentBuilder().WithExpression($"typeof({typeof(short).FullName})")
-            )
+            .AddArguments(new ConstantArgumentBuilder().WithValue(13))
+            .AddTypeArguments(new ExpressionTypeArgumentBuilder().WithExpression($"typeof({typeof(short).FullName})"))
             .Build();
         var sut = CreateSut();
 
@@ -817,7 +814,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
     [FunctionName("Cast")]
     [FunctionArgument("Expression", typeof(object), "Expression to cast")]
-    [FunctionArgument("Type", typeof(Type), "Type to cast the expression to")]
+    //TODO: Add descriptor attribute for FunctionTypeArgument, so you can specify the description. (type is not useful because it's always a Type, and IsRequired is always true)
+    //[FunctionArgument("Type", typeof(Type), "Type to cast the expression to")]
     private sealed class CastFunction : IGenericFunction
     {
         public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)

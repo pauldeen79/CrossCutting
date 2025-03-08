@@ -2,7 +2,7 @@
 
 public class FunctionDescriptorMapper : IFunctionDescriptorMapper
 {
-    public IEnumerable<FunctionDescriptor> Map(IFunction source, Type? customFunctionType)
+    public IEnumerable<FunctionDescriptor> Map(object source, Type? customFunctionType)
     {
         source = ArgumentGuard.IsNotNull(source, nameof(source));
 

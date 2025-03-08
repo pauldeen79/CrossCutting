@@ -13,7 +13,8 @@ public class FunctionDescriptorProviderTests
                 new MyFunction1(),
                 new MyFunction2()
             };
-            var sut = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), functions);
+            var genericFunctions = Enumerable.Empty<IGenericFunction>();
+            var sut = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), functions, genericFunctions);
 
             // Act
             var result = sut.GetAll();
@@ -54,7 +55,8 @@ public class FunctionDescriptorProviderTests
             {
                 new MyTypedFunction()
             };
-            var sut = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), functions);
+            var genericFunctions = Enumerable.Empty<IGenericFunction>();
+            var sut = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), functions, genericFunctions);
 
             // Act
             var result = sut.GetAll();

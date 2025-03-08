@@ -54,8 +54,7 @@ public class FunctionEvaluator : IFunctionEvaluator
     {
         if (result.GenericFunction is not null)
         {
-            //TODO: Use reflection magic to make method generic, and call it (using reflection)
-            return result.GenericFunction!.EvaluateGeneric<object?>(functionCallContext);
+            return EvaluateGenericFunction(result, functionCallContext);
         }
 
         // We can safely assume that Function is not null, because the c'tor has verified this
@@ -75,8 +74,7 @@ public class FunctionEvaluator : IFunctionEvaluator
 
         if (functionResult.Value?.GenericFunction is not null)
         {
-            //TODO: Use reflection magic to make method generic, and call it (using reflection)
-            return functionResult.Value.GenericFunction.EvaluateGeneric<object?>(functionCallContext).TryCast<T>();
+            return EvaluateGenericFunction(functionResult.Value, functionCallContext).TryCast<T>();
         }
 
         if (functionResult.Value?.Function is ITypedFunction<T> typedFunction)
@@ -157,5 +155,27 @@ public class FunctionEvaluator : IFunctionEvaluator
         }
 
         return Result.Success(new FunctionAndTypeDescriptor(function, genericFunction, functionDescriptor.ReturnValueType));
+    }
+
+    private static Result<object?> EvaluateGenericFunction(FunctionAndTypeDescriptor result, FunctionCallContext functionCallContext)
+    {
+        var typeArgumentResults = functionCallContext.FunctionCall.TypeArguments.Select(x => x.Evaluate(functionCallContext)).ToArray();
+        var error = Array.Find(typeArgumentResults, x => !x.IsSuccessful());
+        if (error is not null)
+        {
+            return Result.FromExistingResult<object?>(error);
+        }
+
+        try
+        {
+            var method = result.GenericFunction!.GetType().GetMethod(nameof(IGenericFunction.EvaluateGeneric))!.MakeGenericMethod(typeArgumentResults.Where(x => x.Value is not null).Select(x => x.Value).ToArray());
+
+            return (Result<object?>)method.Invoke(result.GenericFunction, [functionCallContext]);
+        }
+        catch (ArgumentException argException)
+        {
+            //The type or method has 1 generic parameter(s), but 0 generic argument(s) were provided. A generic argument must be provided for each generic parameter.
+            return Result.Invalid<object?>(argException.Message);
+        }
     }
 }

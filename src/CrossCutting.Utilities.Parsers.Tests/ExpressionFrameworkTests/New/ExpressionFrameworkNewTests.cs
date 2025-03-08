@@ -53,7 +53,7 @@ public class ExpressionFrameworkNewTests
     public void Can_Get_FunctionDescriptor()
     {
         // Arrange
-        var functionDescriptorProvider = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), [new ToLowerCaseFunction()]);
+        var functionDescriptorProvider = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), [new ToLowerCaseFunction()], Enumerable.Empty<IGenericFunction>());
 
         // Act
         var functionDescriptors = functionDescriptorProvider.GetAll();
