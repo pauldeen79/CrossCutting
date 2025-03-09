@@ -6,7 +6,8 @@ public class ResultDictionaryBuilderTests
     protected static Result NonGenericArgumentDelegate(Dictionary<string, Result> results) => Result.Success();
     protected static Result<string> GenericDelegate() => Result.Success(string.Empty);
     protected static Result<string> GenericArgumentDelegate(Dictionary<string, Result> results) => Result.Success(string.Empty);
-    protected static Result NonGenericErrorDelegate() => Result.Error("Kaboom");
+    protected static Result<string> GenericArgumentDelegate2(Dictionary<string, Result<string>> results) => Result.Success(string.Empty);
+    protected static Result GenericArgumentDelegate3(Dictionary<string, Result<string>> results) => Result.Success(string.Empty);
     protected static Result<string> GenericErrorDelegate() => Result.Error<string>("Kaboom");
 
     protected static IEnumerable<Result> NonGenericRangeDelegate() => [Result.Success(), Result.Success()];
@@ -221,6 +222,36 @@ public class ResultDictionaryBuilderTests
 
                 // Act
                 sut.Add("Test", GenericDelegate);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Adds_Generic_Result_ArgumentDelegate_Successfully()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+
+                // Act
+                sut.Add("Test", GenericArgumentDelegate2);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Adds_Generic_Result_ArgumentDelegate_Untyped_Successfully()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+
+                // Act
+                sut.Add("Test", GenericArgumentDelegate3);
 
                 // Assert
                 var dictionary = sut.Build();

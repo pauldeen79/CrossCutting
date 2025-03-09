@@ -101,6 +101,7 @@ public class ResultDictionaryBuilder<T>
 
         return this;
     }
+
     public ResultDictionaryBuilder<T> AddRange(string nameFormatString, Func<IEnumerable<Result>> value)
     {
         return AddRange(nameFormatString, () => value().Select(x => Result.FromExistingResult<T>(x)));
