@@ -4,11 +4,7 @@ internal sealed class FunctionAndTypeDescriptor
 {
     public FunctionAndTypeDescriptor(IFunction? function, IGenericFunction? genericFunction, Type? returnValueType)
     {
-        if(function is null && genericFunction is null)
-        {
-            throw new ArgumentException("Either function or genericFunction needs to be specified");
-        }
-
+        // Null check not necessary because this class is internal
         ReturnValueType = returnValueType;
         Function = function;
         GenericFunction = genericFunction;
