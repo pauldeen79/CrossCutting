@@ -652,6 +652,29 @@ public sealed class FunctionEvaluatorTests : IDisposable
         result.Value.ShouldBe((short)13);
     }
 
+    [Fact]
+    public void Invalid_Number_Of_TypeArguments_Returns_Invalid_Result()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Cast")
+            .AddArguments(new ConstantArgumentBuilder().WithValue(13))
+            .AddTypeArguments
+            (
+                new ExpressionTypeArgumentBuilder().WithExpression($"typeof({typeof(short).FullName})"),
+                new ExpressionTypeArgumentBuilder().WithExpression($"typeof({typeof(short).FullName})")
+            )
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(functionCall, CreateSettings());
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("The type or method has 1 generic parameter(s), but 2 generic argument(s) were provided. A generic argument must be provided for each generic parameter.");
+    }
+
     public void Dispose()
     {
         _scope.Dispose();
