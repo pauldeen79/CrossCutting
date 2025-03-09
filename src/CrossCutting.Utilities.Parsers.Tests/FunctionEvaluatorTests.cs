@@ -842,9 +842,8 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
             return new ResultDictionaryBuilder()
                 .Add("Expression", () => context.GetArgumentValueResult(0, "Expression"))
-                .Add("T", () => context.GetTypeArgumentResult(0, "T"))
                 .Build()
-                .OnSuccess(results => Result.Success(Convert.ChangeType(results.GetValue("Expression"), results.GetValue<Type>("T"))));
+                .OnSuccess(results => Result.Success(Convert.ChangeType(results.GetValue("Expression"), typeof(T))));
         }
     }
 

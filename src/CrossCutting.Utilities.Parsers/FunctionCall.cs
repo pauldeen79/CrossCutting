@@ -98,11 +98,6 @@ public partial record FunctionCall
         return ProcessDateTimeArgumentResult(argumentName, context, GetArgumentValueResult(index, argumentName, context, (object)defaultValue));
     }
 
-    public Result<Type> GetTypeArgumentResult(int index, string argumentName, FunctionCallContext context)
-        => index + 1 > TypeArguments.Count
-            ? Result.Invalid<Type>($"Missing type argument: {argumentName}")
-            : TypeArguments.ElementAt(index).Evaluate(context);
-
     private static Result<int> ProcessInt32ArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
