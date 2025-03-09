@@ -814,8 +814,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
     [FunctionName("Cast")]
     [FunctionArgument("Expression", typeof(object), "Expression to cast")]
-    //TODO: Add descriptor attribute for FunctionTypeArgument, so you can specify the description. (type is not useful because it's always a Type, and IsRequired is always true)
-    //[FunctionArgument("Type", typeof(Type), "Type to cast the expression to")]
+    [FunctionTypeArgument("T", "Type to cast the expression to")]
     private sealed class CastFunction : IGenericFunction
     {
         public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)

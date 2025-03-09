@@ -67,6 +67,28 @@ public class FunctionDescriptorProviderTests
             result.First().ReturnValueType.ShouldBe(typeof(string)); /// because of implementation of ITypedFunction<string>;
         }
 
+        [Fact]
+        public void Returns_Generic_Function_Correctly()
+        {
+            // Arrange
+            var functions = Enumerable.Empty<IFunction>();
+            var genericFunctions = new IGenericFunction[]
+            {
+                new MyGenericFunction()
+            };
+            var sut = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), functions, genericFunctions);
+
+            // Act
+            var result = sut.GetAll();
+
+            // Assert
+            result.Count.ShouldBe(1);
+            result.First().Name.ShouldBe("MyGenericFunction");
+            result.First().TypeArguments.Count.ShouldBe(1);
+            result.First().TypeArguments.First().Name.ShouldBe("T");
+            result.First().TypeArguments.First().Description.ShouldBe("Description of T type argument");
+        }
+
         private sealed class MyFunction1 : IFunction
         {
             public Result<object?> Evaluate(FunctionCallContext context)
@@ -112,6 +134,14 @@ public class FunctionDescriptorProviderTests
             {
                 yield return new FunctionDescriptorBuilder().WithName("PassThrough").WithFunctionType(GetType()).Build();
             }
+        }
+
+        [FunctionName("MyGenericFunction")]
+        [FunctionTypeArgument("T", "Description of T type argument")]
+        private sealed class MyGenericFunction : IGenericFunction
+        {
+            public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
+                => throw new NotImplementedException();
         }
     }
 }

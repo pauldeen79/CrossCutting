@@ -542,6 +542,8 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         private System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder> _arguments;
 
+        private System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorTypeArgumentBuilder> _typeArguments;
+
         private System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorResultBuilder> _results;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
@@ -623,6 +625,22 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorTypeArgumentBuilder> TypeArguments
+        {
+            get
+            {
+                return _typeArguments;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorTypeArgumentBuilder>>.Default.Equals(_typeArguments!, value!);
+                _typeArguments = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(TypeArguments));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         public System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorResultBuilder> Results
         {
             get
@@ -641,18 +659,21 @@ namespace CrossCutting.Utilities.Parsers.Builders
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder>();
+            _typeArguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorTypeArgumentBuilder>();
             _results = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorResultBuilder>();
             _name = source.Name;
             _functionType = source.FunctionType;
             _returnValueType = source.ReturnValueType;
             _description = source.Description;
             if (source.Arguments is not null) foreach (var item in source.Arguments.Select(x => x.ToBuilder())) _arguments.Add(item);
+            if (source.TypeArguments is not null) foreach (var item in source.TypeArguments.Select(x => x.ToBuilder())) _typeArguments.Add(item);
             if (source.Results is not null) foreach (var item in source.Results.Select(x => x.ToBuilder())) _results.Add(item);
         }
 
         public FunctionDescriptorBuilder()
         {
             _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorArgumentBuilder>();
+            _typeArguments = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorTypeArgumentBuilder>();
             _results = new System.Collections.Generic.List<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorResultBuilder>();
             _name = string.Empty;
             _functionType = default(System.Type)!;
@@ -662,7 +683,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         public CrossCutting.Utilities.Parsers.FunctionDescriptor Build()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionDescriptor(Name, FunctionType, ReturnValueType, Description, Arguments.Select(x => x.Build()!).ToList().AsReadOnly(), Results.Select(x => x.Build()!).ToList().AsReadOnly());
+            return new CrossCutting.Utilities.Parsers.FunctionDescriptor(Name, FunctionType, ReturnValueType, Description, Arguments.Select(x => x.Build()!).ToList().AsReadOnly(), TypeArguments.Select(x => x.Build()!).ToList().AsReadOnly(), Results.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         partial void SetDefaultValues();
@@ -677,6 +698,19 @@ namespace CrossCutting.Utilities.Parsers.Builders
         {
             if (arguments is null) throw new System.ArgumentNullException(nameof(arguments));
             foreach (var item in arguments) Arguments.Add(item);
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorBuilder AddTypeArguments(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorTypeArgumentBuilder> typeArguments)
+        {
+            if (typeArguments is null) throw new System.ArgumentNullException(nameof(typeArguments));
+            return AddTypeArguments(typeArguments.ToArray());
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorBuilder AddTypeArguments(params CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorTypeArgumentBuilder[] typeArguments)
+        {
+            if (typeArguments is null) throw new System.ArgumentNullException(nameof(typeArguments));
+            foreach (var item in typeArguments) TypeArguments.Add(item);
             return this;
         }
 
@@ -850,6 +884,89 @@ namespace CrossCutting.Utilities.Parsers.Builders
         }
 
         public static implicit operator CrossCutting.Utilities.Parsers.FunctionDescriptorResult(FunctionDescriptorResultBuilder entity)
+        {
+            return entity.Build();
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+    public partial class FunctionDescriptorTypeArgumentBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private string _name;
+
+        private string _description;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_name!, value!);
+                _name = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Name));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Description
+        {
+            get
+            {
+                return _description;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_description!, value!);
+                _description = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Description));
+            }
+        }
+
+        public FunctionDescriptorTypeArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionDescriptorTypeArgument source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _name = source.Name;
+            _description = source.Description;
+        }
+
+        public FunctionDescriptorTypeArgumentBuilder()
+        {
+            _name = string.Empty;
+            _description = string.Empty;
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionDescriptorTypeArgument Build()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionDescriptorTypeArgument(Name, Description);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorTypeArgumentBuilder WithName(string name)
+        {
+            if (name is null) throw new System.ArgumentNullException(nameof(name));
+            Name = name;
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionDescriptorTypeArgumentBuilder WithDescription(string description)
+        {
+            if (description is null) throw new System.ArgumentNullException(nameof(description));
+            Description = description;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionDescriptorTypeArgument(FunctionDescriptorTypeArgumentBuilder entity)
         {
             return entity.Build();
         }
