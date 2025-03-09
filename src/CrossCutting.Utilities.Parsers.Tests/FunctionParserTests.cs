@@ -33,6 +33,25 @@ public sealed class FunctionParserTests : IDisposable
     }
 
     [Fact]
+    public void Can_Parse_Single_Typed_Function_With_Arguments()
+    {
+        // Arrange
+        var input = "MYTYPEDFUNCTION<System.String>(a,b,c)";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYTYPEDFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(3);
+        result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
+        result.Value.TypeArguments.Count.ShouldBe(1);
+        result.Value.TypeArguments.First().Evaluate(null!).GetValueOrThrow().ShouldBe(typeof(string));
+    }
+
+    [Fact]
     public void Can_Parse_Single_Function_With_Quoted_Arguments()
     {
         // Arrange
