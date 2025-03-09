@@ -814,7 +814,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
     [FunctionName("Cast")]
     [FunctionArgument("Expression", typeof(object), "Expression to cast")]
-    [FunctionTypeArgument("T", "Type to cast the expression to")]
+    [FunctionTypeArgument("T")]
     private sealed class CastFunction : IGenericFunction
     {
         public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
