@@ -10,6 +10,35 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.FunctionCallTypeArguments
 {
+    public partial record ConstantResultTypeArgument : CrossCutting.Utilities.Parsers.FunctionCallTypeArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallTypeArgument
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public CrossCutting.Common.Results.Result<System.Type> Value
+        {
+            get;
+        }
+
+        public ConstantResultTypeArgument(CrossCutting.Common.Results.Result<System.Type> value) : base()
+        {
+            this.Value = value;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallTypeArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallTypeArguments.ConstantResultTypeArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallTypeArguments.ConstantResultTypeArgumentBuilder(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallTypeArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
     public partial record ConstantTypeArgument : CrossCutting.Utilities.Parsers.FunctionCallTypeArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallTypeArgument
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
@@ -32,6 +61,41 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallTypeArguments
         public CrossCutting.Utilities.Parsers.Builders.FunctionCallTypeArguments.ConstantTypeArgumentBuilder ToTypedBuilder()
         {
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallTypeArguments.ConstantTypeArgumentBuilder(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallTypeArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+    public partial record DelegateResultTypeArgument : CrossCutting.Utilities.Parsers.FunctionCallTypeArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallTypeArgument
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Func<CrossCutting.Common.Results.Result<System.Type>> Delegate
+        {
+            get;
+        }
+
+        public System.Func<CrossCutting.Common.Results.Result<System.Type>>? ValidationDelegate
+        {
+            get;
+        }
+
+        public DelegateResultTypeArgument(System.Func<CrossCutting.Common.Results.Result<System.Type>> @delegate, System.Func<CrossCutting.Common.Results.Result<System.Type>>? validationDelegate) : base()
+        {
+            this.Delegate = @delegate;
+            this.ValidationDelegate = validationDelegate;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallTypeArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallTypeArguments.DelegateResultTypeArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallTypeArguments.DelegateResultTypeArgumentBuilder(this);
         }
 
         CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallTypeArgument.ToBuilder()

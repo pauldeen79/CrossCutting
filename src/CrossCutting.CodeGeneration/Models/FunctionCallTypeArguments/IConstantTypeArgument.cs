@@ -2,5 +2,5 @@
 
 internal interface IConstantTypeArgument : IFunctionCallTypeArgumentBase
 {
-    [Required]Type Value { get; }
+    [Required] Type Value { get; }
 }

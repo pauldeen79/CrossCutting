@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.Parsers.Tests.FunctionCallTypeArguments;
 
-public class DelegateTypeArgumentTests
+public class DelegateResultTypeArgumentTests
 {
     private static FunctionEvaluatorSettings CreateSettings()
         => new FunctionEvaluatorSettingsBuilder();
@@ -9,7 +9,7 @@ public class DelegateTypeArgumentTests
     public void Evaluate_Returns_Correct_Result()
     {
         // Arrange
-        var sut = new DelegateTypeArgument(() => typeof(string), null);
+        var sut = new DelegateResultTypeArgument(() => Result.Success(typeof(string)), null);
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CreateSettings(), null);
 
         // Act
@@ -21,10 +21,10 @@ public class DelegateTypeArgumentTests
     }
 
     [Fact]
-    public void Validate_Returns_Correct_Result_Without_Custom_Result()
+    public void Validate_Returns_Correct_Result()
     {
         // Arrange
-        var sut = new DelegateTypeArgument(() => typeof(string), null);
+        var sut = new DelegateResultTypeArgument(() => Result.Success(typeof(string)), null);
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CreateSettings(), null);
 
         // Act
@@ -36,45 +36,30 @@ public class DelegateTypeArgumentTests
     }
 
     [Fact]
-    public void Validate_Returns_Correct_Result_With_Custom_Result()
-    {
-        // Arrange
-        var sut = new DelegateTypeArgument(() => typeof(string), () => typeof(string));
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CreateSettings(), null);
-
-        // Act
-        var result = sut.Validate(context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(typeof(string));
-    }
-
-    [Fact]
     public void ToBuilder_Returns_Correct_Result()
     {
         // Arrange
-        var sut = new DelegateTypeArgument(() => typeof(string), null);
+        var sut = new DelegateResultTypeArgument(() => Result.Success(typeof(string)), null);
 
         // Act
         var result = sut.ToBuilder();
 
         // Assert
-        result.ShouldBeOfType<DelegateTypeArgumentBuilder>();
-        ((DelegateTypeArgumentBuilder)result).Delegate.ShouldBeSameAs(sut.Delegate);
+        result.ShouldBeOfType<DelegateResultTypeArgumentBuilder>();
+        ((DelegateResultTypeArgumentBuilder)result).Delegate.ShouldBeSameAs(sut.Delegate);
     }
 
     [Fact]
     public void ToTypedBuilder_Returns_Correct_Result()
     {
         // Arrange
-        var sut = new DelegateTypeArgument(() => typeof(string), null);
+        var sut = new DelegateResultTypeArgument(() => Result.Success(typeof(string)), null);
 
         // Act
         var result = sut.ToTypedBuilder();
 
         // Assert
-        result.ShouldBeOfType<DelegateTypeArgumentBuilder>();
+        result.ShouldBeOfType<DelegateResultTypeArgumentBuilder>();
         result.Delegate.ShouldBeSameAs(sut.Delegate);
     }
 
@@ -82,21 +67,21 @@ public class DelegateTypeArgumentTests
     public void Delegate_Returns_Correct_Result()
     {
         // Arrange
-        var dlg = () => typeof(string);
-        var sut = new DelegateTypeArgument(dlg, null);
+        var sut = new DelegateResultTypeArgument(() => Result.Success(typeof(string)), null);
 
         // Act
-        var result = sut.Delegate;
+        var result = sut.Delegate();
 
         // Assert
-        result.ShouldBeSameAs(dlg);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(typeof(string));
     }
     
     [Fact]
     public void IsDynamic_Returns_Correct_Result()
     {
         // Arrange
-        var sut = new DelegateTypeArgument(() => typeof(string), null);
+        var sut = new DelegateResultTypeArgument(() => Result.Success(typeof(string)), null);
 
         // Act
         var result = sut.IsDynamic;
