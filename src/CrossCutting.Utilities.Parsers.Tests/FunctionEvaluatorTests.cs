@@ -675,6 +675,25 @@ public sealed class FunctionEvaluatorTests : IDisposable
         result.ErrorMessage.ShouldBe("The type or method has 1 generic parameter(s), but 2 generic argument(s) were provided. A generic argument must be provided for each generic parameter.");
     }
 
+    [Fact]
+    public void Error_Result_From_TypeArguments_Are_Returned_Correctly()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Cast")
+            .AddArguments(new ConstantArgumentBuilder().WithValue(13))
+            .AddTypeArguments(new ConstantResultTypeArgumentBuilder().WithValue(Result.Error<Type>("Kaboom")))
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(functionCall, CreateSettings());
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom");
+    }
+
     public void Dispose()
     {
         _scope.Dispose();
