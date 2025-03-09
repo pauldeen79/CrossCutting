@@ -52,6 +52,20 @@ public sealed class FunctionParserTests : IDisposable
     }
 
     [Fact]
+    public void Can_Not_Parse_Single_Typed_Function_With_Arguments_On_Unknown_Type()
+    {
+        // Arrange
+        var input = "MYTYPEDFUNCTION<unknown>(a,b,c)";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Unknown type: unknown");
+    }
+
+    [Fact]
     public void Can_Parse_Single_Function_With_Quoted_Arguments()
     {
         // Arrange
