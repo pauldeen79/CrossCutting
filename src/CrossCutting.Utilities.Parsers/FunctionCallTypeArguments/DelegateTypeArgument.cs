@@ -8,5 +8,7 @@ public partial record DelegateTypeArgument
         => Result.Success(Delegate());
 
     public override Result<Type> Validate(FunctionCallContext context)
-        => Result.Success(ValidationDelegate?.Invoke()!);
+        => Result.Success(ValidationDelegate is null
+            ? typeof(Type)
+            : ValidationDelegate.Invoke()!);
 }

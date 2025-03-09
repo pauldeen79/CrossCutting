@@ -19,6 +19,7 @@ global using CrossCutting.Utilities.Parsers.Builders.FunctionCallTypeArguments;
 global using CrossCutting.Utilities.Parsers.Contracts;
 global using CrossCutting.Utilities.Parsers.Extensions;
 global using CrossCutting.Utilities.Parsers.FunctionCallArguments;
+global using CrossCutting.Utilities.Parsers.FunctionCallTypeArguments;
 global using CrossCutting.Utilities.Parsers.MathematicExpressions.Aggregators;
 global using Microsoft.Extensions.DependencyInjection;
 global using NSubstitute;
