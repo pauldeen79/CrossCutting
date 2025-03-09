@@ -21,7 +21,7 @@ public class DelegateResultTypeArgumentTests
     }
 
     [Fact]
-    public void Validate_Returns_Correct_Result()
+    public void Validate_Returns_Correct_Result_Without_Custom_Result()
     {
         // Arrange
         var sut = new DelegateResultTypeArgument(() => Result.Success(typeof(string)), null);
@@ -33,6 +33,21 @@ public class DelegateResultTypeArgumentTests
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldBe(typeof(Type));
+    }
+
+    [Fact]
+    public void Validate_Returns_Correct_Result_With_Custom_Result()
+    {
+        // Arrange
+        var sut = new DelegateResultTypeArgument(() => Result.Success(typeof(string)), () => Result.Success(typeof(string)));
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), Substitute.For<IFunctionEvaluator>(), Substitute.For<IExpressionEvaluator>(), CreateSettings(), null);
+
+        // Act
+        var result = sut.Validate(context);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(typeof(string));
     }
 
     [Fact]
