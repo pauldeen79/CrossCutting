@@ -842,9 +842,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
             return new ResultDictionaryBuilder()
                 .Add("Expression", () => context.GetArgumentValueResult(0, "Expression"))
-                //TODO: Add extension methods like the following one
-                //.Add("T", () => context.GetTypeArgumentValueResult(0, "T"))
-                .Add("T", () => context.FunctionCall.TypeArguments.Count >= 1 ? context.FunctionCall.TypeArguments.ElementAt(0).Evaluate(context) : Result.Invalid("Type argument 0 with name T is missing") )
+                .Add("T", () => context.GetTypeArgumentResult(0, "T"))
                 .Build()
                 .OnSuccess(results => Result.Success(Convert.ChangeType(results.GetValue("Expression"), results.GetValue<Type>("T"))));
         }

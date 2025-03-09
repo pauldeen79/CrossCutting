@@ -69,4 +69,7 @@ public class FunctionCallContext
 
     public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, DateTime defaultValue)
         => FunctionCall.GetArgumentDateTimeValueResult(index, argumentName, this, defaultValue);
+
+    public Result<Type> GetTypeArgumentResult(int index, string typeArgumentName)
+        => FunctionCall.GetTypeArgumentResult(index, typeArgumentName, this);
 }
