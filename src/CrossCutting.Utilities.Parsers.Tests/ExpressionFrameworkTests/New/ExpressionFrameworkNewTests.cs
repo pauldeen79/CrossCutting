@@ -53,7 +53,7 @@ public class ExpressionFrameworkNewTests
     public void Can_Get_FunctionDescriptor()
     {
         // Arrange
-        var functionDescriptorProvider = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), [new ToLowerCaseFunction()]);
+        var functionDescriptorProvider = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), [new ToLowerCaseFunction()], Enumerable.Empty<IGenericFunction>());
 
         // Act
         var functionDescriptors = functionDescriptorProvider.GetAll();
@@ -269,6 +269,8 @@ public class ExpressionArgumentBuilder : FunctionCallArgumentBaseBuilder
 
 public record ExpressionArgument : FunctionCallArgumentBase
 {
+    public override bool IsDynamic => true;
+
     public ExpressionArgument(Expression? expression)
     {
         Expression = expression;
@@ -339,6 +341,8 @@ public class ExpressionArgumentBuilder<T> : FunctionCallArgumentBaseBuilder, IFu
 
 public record ExpressionArgument<T> : FunctionCallArgumentBase, IFunctionCallArgument<T>
 {
+    public override bool IsDynamic => true;
+
     public ExpressionArgument(ITypedExpression<T>? expression) : base()
     {
         Expression = expression;
@@ -367,7 +371,7 @@ public record ExpressionArgument<T> : FunctionCallArgumentBase, IFunctionCallArg
             return Result.Invalid<Type>("Expression validation failed", validationResults.Select(x => new ValidationError(x.ErrorMessage ?? string.Empty, x.MemberNames)));
         }
 
-        return Result.Success<Type>(typeof(T));
+        return Result.Success(typeof(T));
     }
 
     public override FunctionCallArgumentBaseBuilder ToBuilder()

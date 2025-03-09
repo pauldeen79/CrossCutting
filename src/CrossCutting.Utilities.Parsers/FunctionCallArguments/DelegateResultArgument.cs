@@ -2,6 +2,8 @@
 
 public partial record DelegateResultArgument
 {
+    public override bool IsDynamic => true;
+
     public override Result<object?> Evaluate(FunctionCallContext context)
         => Delegate();
 

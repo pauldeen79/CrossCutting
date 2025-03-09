@@ -49,33 +49,75 @@ public class FunctionParser : IFunctionParser
                 return Result.NotFound<FunctionCall>("Missing open bracket");
             }
 
-            var nameResult = FindFunctionName(remainder.Substring(0, openIndex.Value));
-            if (!nameResult.IsSuccessful())
-            {
-                return Result.FromExistingResult<FunctionCall>(nameResult);
-            }
-
             var stringArguments = remainder.Substring(openIndex.Value + 1, closeIndex.Value - openIndex.Value - 1);
-            var stringArgumentsSplit = stringArguments
-                .SplitDelimited(',', '\"', trimItems: true, leaveTextQualifier: true)
-                .Select(RemoveStringQualifiers);
 
             var arguments = new List<IFunctionCallArgument>();
-            var addArgumentsResult = AddArguments(results, stringArgumentsSplit, arguments, settings, context);
-            if (!addArgumentsResult.IsSuccessful())
+            var typeArguments = new List<IFunctionCallTypeArgument>();
+            var argumentResults = new ResultDictionaryBuilder()
+                .Add("Name", () => FindFunctionName(remainder.Substring(0, openIndex.Value)))
+                .Add("Arguments", () => AddArguments(results, stringArguments, arguments, settings, context))
+                .Add("TypeArguments", results => AddTypeArguments(results.GetValue<FunctionNameAndTypeArguments>("Name"), typeArguments))
+                .Build();
+
+            var error = argumentResults.GetError();
+            if (error is not null)
             {
-                return addArgumentsResult;
+                return Result.FromExistingResult<FunctionCall>(error);
             }
 
-            var found = $"{nameResult.Value}({stringArguments})";
+            var found = $"{argumentResults.GetValue<FunctionNameAndTypeArguments>("Name").RawResult}({stringArguments})";
             remainder = remainder.Replace(found, FormattableString.Invariant($"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"));
-            results.Add(new FunctionCall(nameResult.Value!.Trim(), arguments));
+            results.Add(new FunctionCall(argumentResults.GetValue<FunctionNameAndTypeArguments>("Name").Name, arguments, typeArguments));
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
         return remainder.EndsWith(TemporaryDelimiter)
             ? Result.Success(results[results.Count - 1])
             : Result.NotFound<FunctionCall>("Input has additional characters after last close bracket");
     }
+
+    private Result<FunctionCall> AddArguments(List<FunctionCall> results, string stringArguments, List<IFunctionCallArgument> arguments, FunctionParserSettings settings, object? context)
+    {
+        var argumentsSplit = stringArguments
+            .SplitDelimited(',', '\"', trimItems: true, leaveTextQualifier: true)
+            .Select(RemoveStringQualifiers);
+
+        foreach (var argument in argumentsSplit)
+        {
+            if (argument.StartsWith(TemporaryDelimiter) && argument.EndsWith(TemporaryDelimiter))
+            {
+                arguments.Add(new FunctionArgument(results[int.Parse(argument.Substring(TemporaryDelimiter.Length, argument.Length - (TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]));
+                continue;
+            }
+
+            var processValueResult = _argumentProcessors
+                .Select(x => x.Process(argument, results, settings, context))
+                .FirstOrDefault(x => x.Status != ResultStatus.Continue);
+
+            if (processValueResult is not null)
+            {
+                if (!processValueResult.IsSuccessful())
+                {
+                    return Result.FromExistingResult<FunctionCall>(processValueResult);
+                }
+
+                arguments.Add(processValueResult.Value!);
+            }
+            else
+            {
+                arguments.Add(string.IsNullOrEmpty(argument)
+                    ? new EmptyArgument()
+                    : new ExpressionArgument(argument));
+            }
+        }
+
+        return Result.Continue<FunctionCall>();
+    }
+
+    private Result<FunctionNameAndTypeArguments> FindFunctionName(string input)
+        => _nameProcessors
+            .Select(x => x.Process(input))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.NotFound<FunctionNameAndTypeArguments>("No function name found");
 
     private static string RemoveStringQualifiers(string value)
     {
@@ -90,6 +132,22 @@ public class FunctionParser : IFunctionParser
         }
 
         return value;
+    }
+
+    private static Result<FunctionCall> AddTypeArguments(FunctionNameAndTypeArguments function, List<IFunctionCallTypeArgument> typeArguments)
+    {
+        foreach (var typeArgument in function.TypeArguments)
+        {
+            var type = Type.GetType(typeArgument, false);
+            if (type is null)
+            {
+                return Result.Invalid<FunctionCall>($"Unknown type: {typeArgument}");
+            }
+
+            typeArguments.Add(new ConstantTypeArgument(type));
+        }
+
+        return Result.Continue<FunctionCall>();
     }
 
     private static bool IsInQuoteMap(int index, IEnumerable<(int StartIndex, int EndIndex)> quoteMap)
@@ -117,44 +175,4 @@ public class FunctionParser : IFunctionParser
                 }
             }
         }
-    }
-
-    private Result<FunctionCall> AddArguments(List<FunctionCall> results, IEnumerable<string> argumentsSplit, List<IFunctionCallArgument> arguments, FunctionParserSettings settings, object? context)
-    {
-        foreach (var argument in argumentsSplit)
-        {
-            if (argument.StartsWith(TemporaryDelimiter) && argument.EndsWith(TemporaryDelimiter))
-            {
-                arguments.Add(new FunctionArgument(results[int.Parse(argument.Substring(TemporaryDelimiter.Length, argument.Length - (TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture)]));
-                continue;
-            }
-
-            var processValueResult = _argumentProcessors
-                .Select(x => x.Process(argument, results, settings, context))
-                .FirstOrDefault(x => x.Status != ResultStatus.Continue);
-            if (processValueResult is not null)
-            {
-                if (!processValueResult.IsSuccessful())
-                {
-                    return Result.FromExistingResult<FunctionCall>(processValueResult);
-                }
-
-                arguments.Add(processValueResult.Value!);
-            }
-            else
-            {
-                arguments.Add(string.IsNullOrEmpty(argument)
-                    ? new EmptyArgument()
-                    : new ExpressionArgument(argument));
-            }
-        }
-
-        return Result.Continue<FunctionCall>();
-    }
-
-    private Result<string> FindFunctionName(string input)
-        => _nameProcessors
-            .Select(x => x.Process(input))
-            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.NotFound<string>("No function name found");
-}
+    }}

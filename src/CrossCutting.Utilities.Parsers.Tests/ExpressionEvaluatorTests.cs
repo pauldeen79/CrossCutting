@@ -1,4 +1,4 @@
-namespace CrossCutting.Utilities.Parsers.Tests;
+﻿namespace CrossCutting.Utilities.Parsers.Tests;
 
 public class ExpressionEvaluatorTests : IDisposable
 {
@@ -250,6 +250,34 @@ public class ExpressionEvaluatorTests : IDisposable
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Unknown variable found: unknownvariable");
         }
+
+        [Fact]
+        public void Returns_Success_On_TypeOf_Expression_When_Type_Is_Known()
+        {
+            // Arrange
+            var input = "typeof(System.String)";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(string));
+        }
+
+        [Fact]
+        public void Returns_Invalid_On_TypeOf_Expression_When_Type_Is_Unknown()
+        {
+            // Arrange
+            var input = "typeof(unknowntype)";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown type: unknowntype");
+        }
     }
 
     public class Validate : ExpressionEvaluatorTests
@@ -473,6 +501,34 @@ public class ExpressionEvaluatorTests : IDisposable
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Unknown variable found: unknownvariable");
+        }
+
+        [Fact]
+        public void Returns_Success_On_TypeOf_Expression_When_Type_Is_Known()
+        {
+            // Arrange
+            var input = "typeof(System.String)";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(Type));
+        }
+
+        [Fact]
+        public void Returns_Invalid_On_TypeOf_Expression_When_Type_Is_Unknown()
+        {
+            // Arrange
+            var input = "typeof(unknowntype)";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown type: unknowntype");
         }
     }
 

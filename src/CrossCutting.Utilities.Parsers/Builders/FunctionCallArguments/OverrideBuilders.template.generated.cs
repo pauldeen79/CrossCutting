@@ -621,38 +621,38 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
     }
     public partial class ExpressionArgumentBuilder : FunctionCallArgumentBaseBuilder<ExpressionArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument>, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
     {
-        private string _value;
+        private string _expression;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string Value
+        public string Expression
         {
             get
             {
-                return _value;
+                return _expression;
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_value!, value!);
-                _value = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Value));
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_expression!, value!);
+                _expression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Expression));
             }
         }
 
         public ExpressionArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _value = source.Value;
+            _expression = source.Expression;
         }
 
         public ExpressionArgumentBuilder() : base()
         {
-            _value = string.Empty;
+            _expression = string.Empty;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(Value);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(Expression);
         }
 
         CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
@@ -662,10 +662,10 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ExpressionArgumentBuilder WithValue(string value)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ExpressionArgumentBuilder WithExpression(string expression)
         {
-            if (value is null) throw new System.ArgumentNullException(nameof(value));
-            Value = value;
+            if (expression is null) throw new System.ArgumentNullException(nameof(expression));
+            Expression = expression;
             return this;
         }
 

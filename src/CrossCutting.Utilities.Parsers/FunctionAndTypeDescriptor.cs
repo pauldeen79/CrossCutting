@@ -2,14 +2,15 @@
 
 internal sealed class FunctionAndTypeDescriptor
 {
-    public FunctionAndTypeDescriptor(IFunction function, Type? returnValueType)
+    public FunctionAndTypeDescriptor(IFunction? function, IGenericFunction? genericFunction, Type? returnValueType)
     {
-        ArgumentGuard.IsNotNull(function, nameof(function));
-
+        // Null check not necessary because this class is internal
         ReturnValueType = returnValueType;
         Function = function;
+        GenericFunction = genericFunction;
     }
 
     public Type? ReturnValueType { get; }
-    public IFunction Function { get; }
+    public IFunction? Function { get; }
+    public IGenericFunction? GenericFunction { get; }
 }

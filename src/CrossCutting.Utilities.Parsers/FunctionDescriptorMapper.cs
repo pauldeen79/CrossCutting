@@ -2,7 +2,7 @@
 
 public class FunctionDescriptorMapper : IFunctionDescriptorMapper
 {
-    public IEnumerable<FunctionDescriptor> Map(IFunction source, Type? customFunctionType)
+    public IEnumerable<FunctionDescriptor> Map(object source, Type? customFunctionType)
     {
         source = ArgumentGuard.IsNotNull(source, nameof(source));
 
@@ -23,6 +23,7 @@ public class FunctionDescriptorMapper : IFunctionDescriptorMapper
                 .WithFunctionType(customFunctionType ?? type)
                 .WithReturnValueType(type.GetCustomAttribute<FunctionResultTypeAttribute>()?.Type ?? GetTypedResultType(type))
                 .AddArguments(type.GetCustomAttributes<FunctionArgumentAttribute>().Select(CreateFunctionArgument))
+                .AddTypeArguments(type.GetCustomAttributes<FunctionTypeArgumentAttribute>().Select(CreateFunctionTypeArgument))
                 .AddResults(type.GetCustomAttributes<FunctionResultAttribute>().Select(CreateFunctionResult))
                 .Build();
         }
@@ -46,6 +47,11 @@ public class FunctionDescriptorMapper : IFunctionDescriptorMapper
             .WithDescription(attribute.Description)
             .WithType(attribute.Type)
             .WithIsRequired(attribute.IsRequired);
+
+    private static FunctionDescriptorTypeArgumentBuilder CreateFunctionTypeArgument(FunctionTypeArgumentAttribute attribute)
+        => new FunctionDescriptorTypeArgumentBuilder()
+            .WithName(attribute.Name)
+            .WithDescription(attribute.Description);
 
     private static FunctionDescriptorResultBuilder CreateFunctionResult(FunctionResultAttribute attribute)
         => new FunctionDescriptorResultBuilder()

@@ -2,5 +2,5 @@
 
 public interface IFunctionParserNameProcessor
 {
-    Result<string> Process(string input);
+    Result<FunctionNameAndTypeArguments> Process(string input);
 }

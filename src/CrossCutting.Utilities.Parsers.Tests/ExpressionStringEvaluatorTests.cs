@@ -685,6 +685,90 @@ public class ExpressionStringEvaluatorTests : IDisposable
         }
 
         [Fact]
+        public void Returns_Success_Result_From_CastExpression_When_Found()
+        {
+            // Arrange
+            var input = $"=cast 13 as {typeof(short).FullName}";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe((short)13);
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_CastExpression_When_Found_With_Function()
+        {
+            // Arrange
+            var input = $"=cast ToUpper(\"value\") as {typeof(string).FullName}";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("VALUE");
+        }
+
+        [Fact]
+        public void Returns_Invalid_Result_From_CastExpression_Unknown_Type()
+        {
+            // Arrange
+            var input = "=cast 13 as unknowntype";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown type: unknowntype");
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_TypeOfOfExpression_When_Found()
+        {
+            // Arrange
+            var input = $"=typeof({typeof(short).FullName})";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(short));
+        }
+
+        [Fact]
+        public void Returns_Invalid_Result_From_TypeOfExpression_Unknown_Type()
+        {
+            // Arrange
+            var input = "=typeof(unknowntype)";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown type: unknowntype");
+        }
+
+        [Fact]
+        public void Returns_Invalid_Result_From_CastExpression_Expression_Evaluation_Failed()
+        {
+            // Arrange
+            var input = $"=cast Error() as {typeof(string).FullName}";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+
+        [Fact]
         public void Returns_Invalid_When_FunctionParser_Returns_Invalid()
         {
             // Arrange
@@ -821,6 +905,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(string));
         }
 
         [Fact]
@@ -841,7 +926,7 @@ public class ExpressionStringEvaluatorTests : IDisposable
         {
             // Arrange
             var input = "=$myvariable";
-            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success<Type>(typeof(string)) : Result.Continue<Type>());
+            _variable.Validate(Arg.Any<string>(), Arg.Any<object?>()).Returns(x => x.ArgAt<string>(0) == "myvariable" ? Result.Success(typeof(string)) : Result.Continue<Type>());
 
             // Act
             var result = CreateSut().Validate(input, CreateSettings());
@@ -1340,6 +1425,76 @@ public class ExpressionStringEvaluatorTests : IDisposable
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Unknown function: MYFUNCTION");
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_CastExpression_When_Found()
+        {
+            // Arrange
+            var input = $"=cast 13 as {typeof(short).FullName}";
+
+            // Act
+            var result = CreateSut().Validate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.NoContent);
+            result.Value.ShouldBeNull();
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_CastExpression_When_Found_With_Function()
+        {
+            // Arrange
+            var input = $"=cast Expression() as {typeof(string).FullName}";
+
+            // Act
+            var result = CreateSut().Validate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.NoContent);
+            result.Value.ShouldBeNull();
+        }
+
+        [Fact]
+        public void Returns_Invalid_Result_From_CastExpression_Unknown_Type()
+        {
+            // Arrange
+            var input = "=cast 13 as unknowntype";
+
+            // Act
+            var result = CreateSut().Validate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown type: unknowntype");
+        }
+
+        [Fact]
+        public void Returns_Success_Result_From_TypeOfExpression_When_Found()
+        {
+            // Arrange
+            var input = $"=typeof({typeof(short).FullName})";
+
+            // Act
+            var result = CreateSut().Validate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(Type));
+        }
+
+        [Fact]
+        public void Returns_Invalid_Result_From_TypeOfExpression_Unknown_Type()
+        {
+            // Arrange
+            var input = "=typeof(unknowntype)";
+
+            // Act
+            var result = CreateSut().Validate(input, CreateSettings());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown type: unknowntype");
         }
 
         [Fact]

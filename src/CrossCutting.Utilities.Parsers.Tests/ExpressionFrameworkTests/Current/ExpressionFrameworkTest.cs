@@ -66,7 +66,7 @@ public sealed class ExpressionFrameworkTest
     public void Can_Get_FunctionDescriptor()
     {
         // Arrange
-        var functionDescriptorProvider = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), [new ToUpperCaseExpressionResolver()]);
+        var functionDescriptorProvider = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), [new ToUpperCaseExpressionResolver()], Enumerable.Empty<IGenericFunction>());
 
         // Act
         var functionDescriptors = functionDescriptorProvider.GetAll();
@@ -885,10 +885,10 @@ public static class ExpressionExtensions
             ? Result.Invalid<object?>(errorMessage.WhenNullOrEmpty("Expression cannot be empty"))
             : result);
 
-    public static Result<T?> EvaluateTyped<T>(this Expression instance, object? context = null, string? errorMessage = null)
+    public static Result<T> EvaluateTyped<T>(this Expression instance, object? context = null, string? errorMessage = null)
         => instance is ITypedExpression<T> typedExpression
-            ? typedExpression.EvaluateTyped(context).Transform<T?>(value => value)
-            : instance.Evaluate(context).TryCastAllowNull<T>(errorMessage);
+            ? typedExpression.EvaluateTyped(context).Transform(value => value)
+            : instance.Evaluate(context).TryCastAllowNull<T>(errorMessage)!;
 
     public static Result<T> EvaluateTypedWithTypeCheck<T>(this ITypedExpression<T> instance, object? context = null, string? errorMessage = null)
         => instance.EvaluateTyped(context).Transform(result => result.IsSuccessful() && result.Value is T t

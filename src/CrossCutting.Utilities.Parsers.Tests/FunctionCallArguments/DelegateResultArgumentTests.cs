@@ -105,7 +105,7 @@ public class DelegateResultArgumentTests
 
         // Assert
         result.ShouldBeOfType<DelegateResultArgumentBuilder<string>>();
-        ((DelegateResultArgumentBuilder<string>)result).Delegate().ShouldBe(sut.Delegate());
+        result.Delegate().ShouldBe(sut.Delegate());
     }
 
     [Fact]
@@ -119,5 +119,31 @@ public class DelegateResultArgumentTests
 
         // Assert
         result.Value.ShouldBe("Hello world!");
+    }
+
+    [Fact]
+    public void IsDynamic_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new DelegateResultArgument<string>(() => Result.Success("Hello world!"), null);
+
+        // Act
+        var result = sut.IsDynamic;
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Untyped_IsDynamic_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new DelegateResultArgument(() => Result.Success<object?>("Hello world!"), null);
+
+        // Act
+        var result = sut.IsDynamic;
+
+        // Assert
+        result.ShouldBeTrue();
     }
 }

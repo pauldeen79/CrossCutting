@@ -1,4 +1,4 @@
-namespace CrossCutting.Utilities.Parsers.Tests.FunctionCallArguments;
+﻿namespace CrossCutting.Utilities.Parsers.Tests.FunctionCallArguments;
 
 public class EmptyArgumentTests
 {
@@ -104,5 +104,31 @@ public class EmptyArgumentTests
 
         // Assert
         result.ShouldBeOfType<EmptyArgumentBuilder<string>>();
+    }
+
+    [Fact]
+    public void IsDynamic_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new EmptyArgument<string>();
+
+        // Act
+        var result = sut.IsDynamic;
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Untyped_IsDynamic_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new EmptyArgument();
+
+        // Act
+        var result = sut.IsDynamic;
+
+        // Assert
+        result.ShouldBeFalse();
     }
 }

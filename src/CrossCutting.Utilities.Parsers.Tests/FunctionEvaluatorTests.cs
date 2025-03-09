@@ -21,6 +21,9 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddSingleton<IFunction, AnimalFunction>()
             .AddSingleton<IFunction, MyInterfaceFunction>()
             .AddSingleton<IFunction, ObjectArgumentFunction>()
+            .AddSingleton<IFunction, ObjectResultFunction>()
+            .AddSingleton<IFunction, StringArgumentFunction>()
+            .AddSingleton<IGenericFunction, CastFunction>()
             .BuildServiceProvider(true);
         _scope = _provider.CreateScope();
     }
@@ -271,7 +274,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(typeof(object));
+        result.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -289,7 +292,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(typeof(object));
+        result.Value.ShouldBeNull();
     }
 
     [Fact]
@@ -564,7 +567,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .WithFunctionType(typeof(string))
             .Build();
         functionDescriptorProvider.GetAll().Returns([functionDescriptor]);
-        var sut = new FunctionEvaluator(functionDescriptorProvider, functionCallArgumentValidator, expressionEvaluator, Enumerable.Empty<IFunction>());
+        var sut = new FunctionEvaluator(functionDescriptorProvider, functionCallArgumentValidator, expressionEvaluator, Enumerable.Empty<IFunction>(), Enumerable.Empty<IGenericFunction>());
         var functionCall = new FunctionCallBuilder().WithName("MyFunction").Build();
 
         // Act
@@ -590,7 +593,105 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(typeof(object));
+        result.Value.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Can_Use_Different_Type_In_Typed_Function_When_It_Fits()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("StringArgumentFunction")
+            .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("ObjectResultFunction")))
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(functionCall, CreateSettings());
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("My value");
+    }
+
+    [Fact]
+    public void Can_Cast_Result_To_Specified_Type_In_Function()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Cast")
+            .AddArguments(new ConstantArgumentBuilder().WithValue(13))
+            .AddTypeArguments(new ExpressionTypeArgumentBuilder().WithExpression($"typeof({typeof(short).FullName})"))
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(functionCall, CreateSettings());
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe((short)13);
+    }
+
+    [Fact]
+    public void Can_Cast_Result_Typed_To_Specified_Type_In_Function()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Cast")
+            .AddArguments(new ConstantArgumentBuilder().WithValue(13))
+            .AddTypeArguments(new ExpressionTypeArgumentBuilder().WithExpression($"typeof({typeof(short).FullName})"))
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.EvaluateTyped<short>(functionCall, CreateSettings());
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe((short)13);
+    }
+
+    [Fact]
+    public void Invalid_Number_Of_TypeArguments_Returns_Invalid_Result()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Cast")
+            .AddArguments(new ConstantArgumentBuilder().WithValue(13))
+            .AddTypeArguments
+            (
+                new ExpressionTypeArgumentBuilder().WithExpression($"typeof({typeof(short).FullName})"),
+                new ExpressionTypeArgumentBuilder().WithExpression($"typeof({typeof(short).FullName})")
+            )
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(functionCall, CreateSettings());
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("The type or method has 1 generic parameter(s), but 2 generic argument(s) were provided. A generic argument must be provided for each generic parameter.");
+    }
+
+    [Fact]
+    public void Error_Result_From_TypeArguments_Are_Returned_Correctly()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Cast")
+            .AddArguments(new ConstantArgumentBuilder().WithValue(13))
+            .AddTypeArguments(new ConstantResultTypeArgumentBuilder().WithValue(Result.Error<Type>("Kaboom")))
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(functionCall, CreateSettings());
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom");
     }
 
     public void Dispose()
@@ -638,7 +739,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
 
         public Result<string> EvaluateTyped(FunctionCallContext context)
         {
-            return Result.Success<string>("function result");
+            return Result.Success("function result");
         }
     }
 
@@ -745,6 +846,46 @@ public sealed class FunctionEvaluatorTests : IDisposable
         public Result<object?> Evaluate(FunctionCallContext context)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    [FunctionName("ObjectResultFunction")]
+    private sealed class ObjectResultFunction : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            return Result.Success<object?>("My value");
+        }
+    }
+
+    [FunctionName("StringArgumentFunction")]
+    [FunctionArgument("Argument1", typeof(string))]
+    private sealed class StringArgumentFunction : ITypedFunction<string>
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            return EvaluateTyped(context).Transform<object?>(x => x);
+        }
+
+        public Result<string> EvaluateTyped(FunctionCallContext context)
+        {
+            return context.GetArgumentStringValueResult(0, "Argument1");
+        }
+    }
+
+    [FunctionName("Cast")]
+    [FunctionArgument("Expression", typeof(object), "Expression to cast")]
+    [FunctionTypeArgument("T")]
+    private sealed class CastFunction : IGenericFunction
+    {
+        public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
+        {
+            context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+            return new ResultDictionaryBuilder()
+                .Add("Expression", () => context.GetArgumentValueResult(0, "Expression"))
+                .Build()
+                .OnSuccess(results => Result.Success(Convert.ChangeType(results.GetValue("Expression"), typeof(T))));
         }
     }
 

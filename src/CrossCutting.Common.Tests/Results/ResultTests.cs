@@ -2761,37 +2761,6 @@ public class ResultTests
     }
 
     [Fact]
-    public void Either_Void_Func_Does_Nothing_On_Successful_Result_No_Success_Delegate()
-    {
-        // Arrange
-        var sut = Result.Success();
-        var error = false;
-
-        // Act
-        var result = sut.Either(x => x.Chain(() => error = true));
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        error.ShouldBeFalse();
-    }
-
-    [Fact]
-    public void Either_Void_Func_Runs_Failure_Action_On_Non_Successful_Result_No_Success_Delegate()
-    {
-        // Arrange
-        var sut = Result.Error("Kaboom");
-        var error = false;
-
-        // Act
-        var result = sut.Either(x => x.Chain(() => error = true));
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Error);
-        result.ErrorMessage.ShouldBe("Kaboom");
-        error.ShouldBeTrue();
-    }
-
-    [Fact]
     public void Either_Result_Returns_Success_Delegate_On_Successful_Result()
     {
         // Arrange
@@ -2999,7 +2968,7 @@ public class ResultTests
         var error = false;
 
         // Act
-        var result = sut.OnFailure(_ => Result.Continue().Then(() => error = true));
+        var result = ResultExtensions.OnFailure(sut, _ => Result.Continue().Then(() => error = true));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -3014,7 +2983,7 @@ public class ResultTests
         var error = false;
 
         // Act
-        var result = sut.OnFailure(_ => Result.Invalid().Then(() => error = true));
+        var result = ResultExtensions.OnFailure(sut, _ => Result.Invalid().Then(() => error = true));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);

@@ -39,5 +39,34 @@ namespace CrossCutting.Utilities.Parsers.Builders
             return entity.BuildTyped();
         }
     }
+    public abstract partial class FunctionCallTypeArgumentBaseBuilder<TBuilder, TEntity> : FunctionCallTypeArgumentBaseBuilder, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder
+        where TEntity : CrossCutting.Utilities.Parsers.FunctionCallTypeArgumentBase
+        where TBuilder : FunctionCallTypeArgumentBaseBuilder<TBuilder, TEntity>
+    {
+        protected FunctionCallTypeArgumentBaseBuilder(CrossCutting.Utilities.Parsers.FunctionCallTypeArgumentBase source) : base(source)
+        {
+        }
+
+        protected FunctionCallTypeArgumentBaseBuilder() : base()
+        {
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallTypeArgumentBase Build()
+        {
+            return BuildTyped();
+        }
+
+        public abstract TEntity BuildTyped();
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallTypeArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallTypeArgumentBase(FunctionCallTypeArgumentBaseBuilder<TBuilder, TEntity> entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
 }
 #nullable disable

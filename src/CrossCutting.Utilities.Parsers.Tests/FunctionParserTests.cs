@@ -29,7 +29,40 @@ public sealed class FunctionParserTests : IDisposable
         result.Value!.Name.ShouldBe("MYFUNCTION");
         result.Value.Arguments.Count.ShouldBe(3);
         result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
+    }
+
+    [Fact]
+    public void Can_Parse_Single_Typed_Function_With_Arguments()
+    {
+        // Arrange
+        var input = "MYTYPEDFUNCTION<System.String>(a,b,c)";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYTYPEDFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(3);
+        result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
+        result.Value.TypeArguments.Count.ShouldBe(1);
+        result.Value.TypeArguments.First().Evaluate(null!).GetValueOrThrow().ShouldBe(typeof(string));
+    }
+
+    [Fact]
+    public void Can_Not_Parse_Single_Typed_Function_With_Arguments_On_Unknown_Type()
+    {
+        // Arrange
+        var input = "MYTYPEDFUNCTION<unknown>(a,b,c)";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Unknown type: unknown");
     }
 
     [Fact]
@@ -46,7 +79,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Value!.Name.ShouldBe("MYFUNCTION");
         result.Value.Arguments.Count.ShouldBe(2);
         result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a,b", "c" });
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a,b", "c" });
     }
 
     [Fact]
@@ -63,7 +96,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Value!.Name.ShouldBe("MYFUNCTION");
         result.Value.Arguments.Count.ShouldBe(2);
         result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "  a,b  ", "c" });
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "  a,b  ", "c" });
     }
 
     [Fact]
@@ -80,7 +113,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Value!.Name.ShouldBe("MYFUNCTION");
         result.Value.Arguments.Count.ShouldBe(3);
         result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "Hello, replaced name!", "b", "c" });
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "Hello, replaced name!", "b", "c" });
     }
 
     [Fact]
@@ -97,7 +130,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Value!.Name.ShouldBe("MYFUNCTION");
         result.Value.Arguments.Count.ShouldBe(3);
         result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "  Hello, replaced name!  ", "b", "c" });
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "  Hello, replaced name!  ", "b", "c" });
     }
 
     [Fact]
@@ -128,7 +161,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value!.Name.ShouldBe("MYFUNCTION");
         result.Value.Arguments.Count.ShouldBe(3);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ShouldAllBe(x => x == string.Empty);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ShouldAllBe(x => x == string.Empty);
     }
 
     [Fact]
@@ -145,7 +178,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Value!.Name.ShouldBe("MYFUNCTION");
         result.Value.Arguments.Count.ShouldBe(3);
         result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "FN1(a)", "FN2(b)", "FN3(c)" });
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "FN1(a)", "FN2(b)", "FN3(c)" });
     }
 
     [Fact]
@@ -161,9 +194,9 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value!.Name.ShouldBe("MYFUNCTION");
         result.Value!.Arguments.Count.ShouldBe(3);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b" });
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b" });
         result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.Name).ToArray().ShouldBeEquivalentTo(new[] { "MYNESTEDFUNCTION" });
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "c", "d", "e" });
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "c", "d", "e" });
     }
 
     [Fact]
@@ -179,7 +212,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value!.Name.ShouldBe("MYFUNCTION");
         result.Value!.Arguments.Count.ShouldBe(3);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b" });
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b" });
         result.Value.Arguments.OfType<FunctionArgument>().Select(x => x.Function.Name).ToArray().ShouldBeEquivalentTo(new[] { "MYNESTEDFUNCTION" });
         result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Count().ShouldBe(3);
         result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).ShouldAllBe(x => x is FunctionArgument);
@@ -187,7 +220,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).Select(x => x.GetType().Name).ToArray().ShouldBeEquivalentTo(new[] { nameof(ExpressionArgument), nameof(ExpressionArgument), nameof(FunctionArgument) });
         result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Name.ShouldBe("SUB2");
         result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.Select(x => x.GetType().Name).ToArray().ShouldBeEquivalentTo(new[] { nameof(ExpressionArgument) });
-        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.OfType<ExpressionArgument>().First().Value.ShouldBe("e");
+        result.Value.Arguments.OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().SelectMany(x => x.Function.Arguments).OfType<FunctionArgument>().First().Function.Arguments.OfType<ExpressionArgument>().First().Expression.ShouldBe("e");
     }
 
     [Fact]
@@ -356,7 +389,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Value!.Name.ShouldBe("MYFUNCTION");
         result.Value.Arguments.Count.ShouldBe(3);
         result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
     }
 
     [Fact]
@@ -373,7 +406,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Value!.Name.ShouldBe("MYFUNCTION");
         result.Value.Arguments.Count.ShouldBe(3);
         result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a", "b", "c" });
     }
 
     [Fact]
@@ -390,7 +423,7 @@ public sealed class FunctionParserTests : IDisposable
         result.Value!.Name.ShouldBe("MYFUNCTION");
         result.Value.Arguments.Count.ShouldBe(3);
         result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
-        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Value.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a ", " b ", " c" });
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "a ", " b ", " c" });
     }
 
     public void Dispose()
@@ -409,7 +442,7 @@ public sealed class FunctionParserTests : IDisposable
 
     private sealed class ErrorNameProcessor : IFunctionParserNameProcessor
     {
-        public Result<string> Process(string input) => Result.Error<string>("Kaboom");
+        public Result<FunctionNameAndTypeArguments> Process(string input) => Result.Error<FunctionNameAndTypeArguments>("Kaboom");
     }
 
     private sealed class MyPlaceholderProcessor : IPlaceholder

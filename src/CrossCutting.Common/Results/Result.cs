@@ -420,16 +420,4 @@ public record Result
         => ThrowIfInvalid(string.IsNullOrEmpty(ErrorMessage)
             ? $"Result: {Status}"
             : $"Result: {Status}, ErrorMessage: {ErrorMessage}");
-
-    public Result Either(Func<Result, Result> errorDelegate)
-    {
-        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
-
-        if (!IsSuccessful())
-        {
-            return errorDelegate(this);
-        }
-
-        return this;
-    }
 }

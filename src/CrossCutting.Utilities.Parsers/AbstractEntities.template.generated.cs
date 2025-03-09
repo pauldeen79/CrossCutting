@@ -23,5 +23,18 @@ namespace CrossCutting.Utilities.Parsers
             return ToBuilder();
         }
     }
+    public abstract partial record FunctionCallTypeArgumentBase : CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallTypeArgument
+    {
+        protected FunctionCallTypeArgumentBase()
+        {
+        }
+
+        public abstract CrossCutting.Utilities.Parsers.Builders.FunctionCallTypeArgumentBaseBuilder ToBuilder();
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallTypeArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallTypeArgument.ToBuilder()
+        {
+            return ToBuilder();
+        }
+    }
 }
 #nullable disable

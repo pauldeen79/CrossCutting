@@ -335,14 +335,14 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
     public partial record ExpressionArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string Value
+        public string Expression
         {
             get;
         }
 
-        public ExpressionArgument(string value) : base()
+        public ExpressionArgument(string expression) : base()
         {
-            this.Value = value;
+            this.Expression = expression;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
