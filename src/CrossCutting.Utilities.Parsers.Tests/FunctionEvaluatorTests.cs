@@ -633,6 +633,25 @@ public sealed class FunctionEvaluatorTests : IDisposable
         result.Value.ShouldBe((short)13);
     }
 
+    [Fact]
+    public void Can_Cast_Result_Typed_To_Specified_Type_In_Function()
+    {
+        // Arrange
+        var functionCall = new FunctionCallBuilder()
+            .WithName("Cast")
+            .AddArguments(new ConstantArgumentBuilder().WithValue(13))
+            .AddTypeArguments(new ExpressionTypeArgumentBuilder().WithExpression($"typeof({typeof(short).FullName})"))
+            .Build();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.EvaluateTyped<short>(functionCall, CreateSettings());
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe((short)13);
+    }
+
     public void Dispose()
     {
         _scope.Dispose();
