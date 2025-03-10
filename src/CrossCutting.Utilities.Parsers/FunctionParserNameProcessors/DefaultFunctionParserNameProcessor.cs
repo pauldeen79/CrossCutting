@@ -22,5 +22,5 @@ public class DefaultFunctionParserNameProcessor : IFunctionParserNameProcessor
     }
 
     private static FunctionNameAndTypeArguments ParseName(string input)
-        => new FunctionNameAndTypeArguments(input, input.Trim().WithoutGenerics(), input.Trim().GetGenericArguments().Split([','], StringSplitOptions.RemoveEmptyEntries));
+        => new FunctionNameAndTypeArguments(input, input.Trim().RemoveGenerics(), input.Trim().GetGenericArguments().Split([','], StringSplitOptions.RemoveEmptyEntries));
 }

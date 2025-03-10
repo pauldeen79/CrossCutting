@@ -7,7 +7,7 @@ public static class StringExtensions
     /// </summary>
     /// <param name="instance"></param>
     /// <returns>TypeName</returns>
-    public static string WithoutGenerics(this string instance)
+    public static string RemoveGenerics(this string instance)
     {
         var index = instance.IndexOf('<');
         return index == -1

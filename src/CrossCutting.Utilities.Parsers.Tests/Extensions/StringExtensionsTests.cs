@@ -2,7 +2,7 @@
 
 public class StringExtensionsTests
 {
-    public class WithoutGenerics : StringExtensionsTests
+    public class RemoveGenerics : StringExtensionsTests
     {
         [Fact]
         public void Returns_Correct_Result_On_Value_Without_GenericArguments()
@@ -11,7 +11,7 @@ public class StringExtensionsTests
             const string input = "SomeValue";
 
             // Act
-            var result = input.WithoutGenerics();
+            var result = input.RemoveGenerics();
 
             // Assert
             result.ShouldBe(input);
@@ -24,7 +24,7 @@ public class StringExtensionsTests
             const string input = "MyType<MyGenericArgument>";
 
             // Act
-            var result = input.WithoutGenerics();
+            var result = input.RemoveGenerics();
 
             // Assert
             result.ShouldBe("MyType");
@@ -43,7 +43,7 @@ public class StringExtensionsTests
             var result = input.GetGenericArguments();
 
             // Assert
-            result.ShouldBeEmpty(); ;
+            result.ShouldBeEmpty();
         }
 
         [Fact]
