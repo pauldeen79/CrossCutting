@@ -28,7 +28,7 @@ public class ExpressionTypeArgumentTests
             var functionEvaluator = Substitute.For<IFunctionEvaluator>();
             var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
             expressionEvaluator
-                .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>(typeof(short)));
             var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy"), functionEvaluator, expressionEvaluator, new FunctionEvaluatorSettingsBuilder(), null);
 
@@ -48,7 +48,7 @@ public class ExpressionTypeArgumentTests
             var functionEvaluator = Substitute.For<IFunctionEvaluator>();
             var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
             expressionEvaluator
-                .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.NotSupported<object?>());
             var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy"), functionEvaluator, expressionEvaluator, new FunctionEvaluatorSettingsBuilder(), null);
 
@@ -68,7 +68,7 @@ public class ExpressionTypeArgumentTests
             var functionEvaluator = Substitute.For<IFunctionEvaluator>();
             var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
             expressionEvaluator
-                .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.NotSupported<object?>());
             var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy"), functionEvaluator, expressionEvaluator, new FunctionEvaluatorSettingsBuilder(), null);
 
@@ -91,7 +91,7 @@ public class ExpressionTypeArgumentTests
             var functionEvaluator = Substitute.For<IFunctionEvaluator>();
             var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
             expressionEvaluator
-                .Validate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Validate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Success(typeof(short)));
             var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy"), functionEvaluator, expressionEvaluator, new FunctionEvaluatorSettingsBuilder(), null);
 
@@ -111,7 +111,7 @@ public class ExpressionTypeArgumentTests
             var functionEvaluator = Substitute.For<IFunctionEvaluator>();
             var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
             expressionEvaluator
-                .Validate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Validate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Invalid<Type>("Unknown expression type found in fragment: Some expression"));
             var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy"), functionEvaluator, expressionEvaluator, new FunctionEvaluatorSettingsBuilder(), null);
 

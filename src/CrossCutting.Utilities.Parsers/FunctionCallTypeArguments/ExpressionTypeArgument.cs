@@ -8,7 +8,7 @@ public partial record ExpressionTypeArgument
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var result = context.ExpressionEvaluator.Evaluate(Expression, context.Settings.FormatProvider, context.Context).TryCast<Type>();
+        var result = context.ExpressionEvaluator.Evaluate(Expression, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(context.Settings.FormatProvider), context.Context).TryCast<Type>();
 
         return result.Status == ResultStatus.NotSupported
             ? GetExpressionType()
@@ -19,7 +19,7 @@ public partial record ExpressionTypeArgument
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var result = context.ExpressionEvaluator.Validate(Expression, context.Settings.FormatProvider, context.Context);
+        var result = context.ExpressionEvaluator.Validate(Expression, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(context.Settings.FormatProvider), context.Context);
 
         return result.Status == ResultStatus.Invalid && result.ErrorMessage?.StartsWith("Unknown expression type found in fragment:") == true
             ? Result.Continue<Type>()

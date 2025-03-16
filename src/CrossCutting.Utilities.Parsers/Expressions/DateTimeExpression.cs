@@ -2,17 +2,25 @@
 
 public class DateTimeExpression : IExpression
 {
-    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
-        => expression switch
+    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context.Expression switch
         {
-            not null when DateTime.TryParse(expression, formatProvider, DateTimeStyles.None, out var dt) => Result.Success<object?>(dt),
+            not null when DateTime.TryParse(context.Expression, context.Settings.FormatProvider, DateTimeStyles.None, out var dt) => Result.Success<object?>(dt),
             _ => Result.Continue<object?>()
         };
+    }
 
-    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
-        => expression switch
+    public Result<Type> Validate(ExpressionEvaluatorContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context.Expression switch
         {
-            not null when DateTime.TryParse(expression, formatProvider, DateTimeStyles.None, out _) => Result.Success(typeof(DateTime)),
+            not null when DateTime.TryParse(context.Expression, context.Settings.FormatProvider, DateTimeStyles.None, out _) => Result.Success(typeof(DateTime)),
             _ => Result.Continue<Type>()
         };
+    }
 }

@@ -20,13 +20,13 @@ public class ExpressionEvaluatorTests : IDisposable
     public class Evaluate : ExpressionEvaluatorTests
     {
         [Fact]
-        public void Parses_true_Correctly()
+        public void Evaluates_true_Correctly()
         {
             // Arrange
             var input = "true";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, new ExpressionEvaluatorSettingsBuilder());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -34,7 +34,7 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_false_Correctly()
+        public void Evaluates_false_Correctly()
         {
             // Arrange
             var input = "false";
@@ -48,7 +48,7 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_null_Correctly()
+        public void Evaluates_null_Correctly()
         {
             // Arrange
             var input = "null";
@@ -62,13 +62,13 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_context_Correctly()
+        public void Evaluates_context_Correctly()
         {
             // Arrange
             var input = "context";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, "context value");
+            var result = CreateSut().Evaluate(input, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), "context value");
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -76,7 +76,7 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_decimal_Correctly()
+        public void Evaluates_decimal_Correctly()
         {
             // Arrange
             var input = "1.5";
@@ -90,7 +90,7 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_forced_decimal_Correctly()
+        public void Evaluates_forced_decimal_Correctly()
         {
             // Arrange
             var input = "1M";
@@ -104,7 +104,7 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_int_Correctly()
+        public void Evaluates_int_Correctly()
         {
             // Arrange
             var input = "2";
@@ -118,7 +118,7 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_long_Correctly()
+        public void Evaluates_long_Correctly()
         {
             // Arrange
             var input = "3147483647";
@@ -132,7 +132,7 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_forced_long_Correctly()
+        public void Evaluates_forced_long_Correctly()
         {
             // Arrange
             var input = "13L";
@@ -146,7 +146,7 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_string_Correctly()
+        public void Evaluates_string_Correctly()
         {
             // Arrange
             var input = "\"Hello world!\"";
@@ -160,7 +160,7 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_DateTime_Correctly()
+        public void Evaluates_DateTime_Correctly()
         {
             // Arrange
             var input = "01/02/2019";
@@ -174,7 +174,7 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_Variable_Correctly()
+        public void Evaluates_Variable_Correctly()
         {
             // Arrange
             var input = "$classname";
@@ -189,7 +189,7 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_Variable_Correctly_Using_Context()
+        public void Evaluates_Variable_Correctly_Using_Context()
         {
             // Arrange
             var input = "$classname";
@@ -199,11 +199,95 @@ public class ExpressionEvaluatorTests : IDisposable
                 : Result.Continue<object?>());
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, context);
+            var result = CreateSut().Evaluate(input, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldBeEquivalentTo("HelloWorldClass");
+        }
+
+        [Fact]
+        public void Evaluates_Equals_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 == 1";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(true);
+        }
+
+        [Fact]
+        public void Evaluates_NotEquals_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 != 2";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(true);
+        }
+
+        [Fact]
+        public void Evaluates_SmallerThan_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 < 2";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(true);
+        }
+
+        [Fact]
+        public void Evaluates_SmallerThanOrEqual_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 <= 1";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(true);
+        }
+
+        [Fact]
+        public void Evaluates_GreaterThan_Operator_Correctly()
+        {
+            // Arrange
+            var input = "2 > 1";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(true);
+        }
+
+        [Fact]
+        public void Evaluates_GreaterThanOrEqual_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 >= 1";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(true);
         }
 
         [Fact]
@@ -289,7 +373,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var input = "true";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, new ExpressionEvaluatorSettingsBuilder());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -328,7 +412,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var input = "context";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, "context value");
+            var result = CreateSut().Validate(input, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), "context value");
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -361,17 +445,16 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_int_Correctly()
+        public void Validates_int_Correctly()
         {
             // Arrange
             var input = "2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeEquivalentTo(2);
         }
 
         [Fact]
@@ -401,17 +484,16 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_string_Correctly()
+        public void Validates_string_Correctly()
         {
             // Arrange
             var input = "\"Hello world!\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeEquivalentTo("Hello world!");
         }
 
         [Fact]
@@ -452,10 +534,94 @@ public class ExpressionEvaluatorTests : IDisposable
                 : Result.Continue<Type>());
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, context);
+            var result = CreateSut().Validate(input, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NoContent);
+        }
+
+        [Fact]
+        public void Evaluates_Equals_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 == 1";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
+        }
+
+        [Fact]
+        public void Evaluates_NotEquals_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 != 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
+        }
+
+        [Fact]
+        public void Evaluates_SmallerThan_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 < 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
+        }
+
+        [Fact]
+        public void Evaluates_SmallerThanOrEqual_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 <= 1";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
+        }
+
+        [Fact]
+        public void Evaluates_GreaterThan_Operator_Correctly()
+        {
+            // Arrange
+            var input = "2 > 1";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
+        }
+
+        [Fact]
+        public void Evaluates_GreaterThanOrEqual_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 >= 1";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
         }
 
         [Fact]

@@ -11,28 +11,32 @@ public class ExpressionEvaluator : IExpressionEvaluator
         _expressions = expressions;
     }
 
-    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<object?> Evaluate(string expression, ExpressionEvaluatorSettings settings, object? context)
     {
         if (string.IsNullOrEmpty(expression))
         {
             return Result.Invalid<object?>("Value is required");
         }
 
+        var expressionContext = new ExpressionEvaluatorContext(expression, settings, context, this);
+
         return _expressions
-            .Select(x => x.Evaluate(expression, formatProvider, context))
+            .Select(x => x.Evaluate(expressionContext))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.NotSupported<object?>($"Unknown expression type found in fragment: {expression}");
     }
 
-    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<Type> Validate(string expression, ExpressionEvaluatorSettings settings, object? context)
     {
         if (string.IsNullOrEmpty(expression))
         {
             return Result.Invalid<Type>("Value is required");
         }
 
+        var expressionContext = new ExpressionEvaluatorContext(expression, settings, context, this);
+
         return _expressions
-            .Select(x => x.Validate(expression, formatProvider, context))
+            .Select(x => x.Validate(expressionContext))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Invalid<Type>($"Unknown expression type found in fragment: {expression}");
     }

@@ -11,17 +11,25 @@ public class VariableExpression : IExpression
         _variableProcessor = variableProcessor;
     }
 
-    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
-        => expression?.StartsWith("$") switch
+    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context.Expression.StartsWith("$") switch
         {
-            true when expression.Length > 1 => _variableProcessor.Evaluate(expression.Substring(1), context),
+            true when context.Expression.Length > 1 => _variableProcessor.Evaluate(context.Expression.Substring(1), context.Context),
             _ => Result.Continue<object?>()
         };
+    }
 
-    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
-        => expression?.StartsWith("$") switch
+    public Result<Type> Validate(ExpressionEvaluatorContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context.Expression.StartsWith("$") switch
         {
-            true when expression.Length > 1 => _variableProcessor.Validate(expression.Substring(1), context),
+            true when context.Expression.Length > 1 => _variableProcessor.Validate(context.Expression.Substring(1), context.Context),
             _ => Result.Continue<Type>()
         };
+    }
 }

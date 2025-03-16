@@ -117,5 +117,5 @@ public class MathematicExpressionState
     private Result<object?> GetPartResult(string part, IExpressionEvaluator expressionParser)
         => part.StartsWith(MathematicExpressionEvaluator.TemporaryDelimiter) && part.EndsWith(MathematicExpressionEvaluator.TemporaryDelimiter)
             ? Results.ElementAt(int.Parse(part.Substring(MathematicExpressionEvaluator.TemporaryDelimiter.Length, part.Length - (MathematicExpressionEvaluator.TemporaryDelimiter.Length * 2)), CultureInfo.InvariantCulture))
-            : expressionParser.Evaluate(part, FormatProvider, Context);
+            : expressionParser.Evaluate(part, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(FormatProvider), Context);
 }

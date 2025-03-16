@@ -17,6 +17,7 @@ global using CrossCutting.Utilities.Parsers.Builders.Abstractions;
 global using CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
 global using CrossCutting.Utilities.Parsers.Builders.FunctionCallTypeArguments;
 global using CrossCutting.Utilities.Parsers.Contracts;
+global using CrossCutting.Utilities.Parsers.Expressions;
 global using CrossCutting.Utilities.Parsers.Extensions;
 global using CrossCutting.Utilities.Parsers.FunctionCallArguments;
 global using CrossCutting.Utilities.Parsers.FunctionCallTypeArguments;

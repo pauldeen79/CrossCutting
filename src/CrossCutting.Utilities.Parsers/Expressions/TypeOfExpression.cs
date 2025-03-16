@@ -4,9 +4,11 @@ public class TypeOfExpression : IExpression
 {
     private static readonly Regex _typeOfRegEx = new(@"^typeof\((?<typename>.+?)\)$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
 
-    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
     {
-        var match = _typeOfRegEx.Match(expression);
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        var match = _typeOfRegEx.Match(context.Expression);
         if (match.Success)
         {
             var typename = match.Groups["typename"].Value;
@@ -25,9 +27,11 @@ public class TypeOfExpression : IExpression
         }
     }
 
-    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<Type> Validate(ExpressionEvaluatorContext context)
     {
-        var match = _typeOfRegEx.Match(expression);
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        var match = _typeOfRegEx.Match(context.Expression);
         if (match.Success)
         {
             var typename = match.Groups["typename"].Value;

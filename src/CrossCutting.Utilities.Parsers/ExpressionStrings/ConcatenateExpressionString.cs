@@ -16,6 +16,7 @@ public class ConcatenateExpressionString : IExpressionString
                 {
                     return result;
                 }
+
                 builder.Append(result.Value.ToString(context.Settings.FormatProvider));
             }
 
