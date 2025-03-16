@@ -26,7 +26,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var input = "true";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Evaluate(input, new ExpressionEvaluatorSettingsBuilder());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -373,7 +373,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var input = "true";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, new ExpressionEvaluatorSettingsBuilder());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -540,6 +540,90 @@ public class ExpressionEvaluatorTests : IDisposable
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NoContent);
+        }
+
+        [Fact]
+        public void Parses_Equals_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 == 1";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
+        }
+
+        [Fact]
+        public void Parses_NotEquals_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 != 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
+        }
+
+        [Fact]
+        public void Parses_SmallerThan_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 < 2";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
+        }
+
+        [Fact]
+        public void Parses_SmallerThanOrEqual_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 <= 1";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
+        }
+
+        [Fact]
+        public void Parses_GreaterThan_Operator_Correctly()
+        {
+            // Arrange
+            var input = "2 > 1";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
+        }
+
+        [Fact]
+        public void Parses_GreaterThanOrEqual_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 >= 1";
+
+            // Act
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
         }
 
         [Fact]
