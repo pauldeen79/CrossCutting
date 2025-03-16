@@ -11,17 +11,22 @@ public class OperatorExpression : IExpression
 
         var matches = _operatorRegEx.Matches(context.Expression);
 
-        // Ensure there's exactly one operator
-        if (matches.Count != 1)
+        if (matches.Count == 0)
         {
             return Result.Continue<object?>();
         }
 
-        var parts = Regex.Split(context.Expression, matches[0].Value, RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
-        if (parts.Length != 2)
+        // Ensure there's exactly one operator
+        if (matches.Count > 1)
         {
-            // More than one operator
-            return Result.Continue<object?>();
+            return Result.Invalid<object?>("More than one operator found");
+        }
+
+        var parts = Regex.Split(context.Expression, matches[0].Value, RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
+
+        if (string.IsNullOrWhiteSpace(parts[0].Trim()))
+        {
+            return Result.Invalid<object?>("Missing left operand");
         }
 
         var leftOperandResult = context.Evaluator.Evaluate(parts[0].Trim(), new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(context.Settings.FormatProvider), context.Context);
@@ -36,6 +41,11 @@ public class OperatorExpression : IExpression
         if (!rightOperandResult.IsSuccessful())
         {
             return Result.Invalid<object?>("Right operand is invalid, see inner results for more details", [rightOperandResult]);
+        }
+
+        if (string.IsNullOrWhiteSpace(parts[1].Trim()))
+        {
+            return Result.Invalid<object?>("Missing right operand");
         }
 
         return operatorSymbol switch
@@ -56,17 +66,22 @@ public class OperatorExpression : IExpression
 
         var matches = _operatorRegEx.Matches(context.Expression);
 
-        // Ensure there's exactly one operator
-        if (matches.Count != 1)
+        if (matches.Count == 0)
         {
             return Result.Continue<Type>();
         }
 
-        var parts = Regex.Split(context.Expression, matches[0].Value, RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
-        if (parts.Length != 2)
+        // Ensure there's exactly one operator
+        if (matches.Count > 1)
         {
-            // More than one operator
-            return Result.Continue<Type>();
+            return Result.Invalid<Type>("More than one operator found");
+        }
+
+        var parts = Regex.Split(context.Expression, matches[0].Value, RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
+
+        if (string.IsNullOrWhiteSpace(parts[0].Trim()))
+        {
+            return Result.Invalid<Type>("Missing left operand");
         }
 
         var leftOperandResult = context.Evaluator.Validate(parts[0].Trim(), new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(context.Settings.FormatProvider), context.Context);
@@ -79,6 +94,11 @@ public class OperatorExpression : IExpression
         if (!rightOperandResult.IsSuccessful())
         {
             return Result.Invalid<Type>("Right operand is invalid, see inner results for more details", [rightOperandResult]);
+        }
+
+        if (string.IsNullOrWhiteSpace(parts[1].Trim()))
+        {
+            return Result.Invalid<Type>("Missing right operand");
         }
 
         return Result.Success(typeof(bool));
