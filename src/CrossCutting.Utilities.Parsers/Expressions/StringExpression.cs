@@ -6,7 +6,7 @@ public class StringExpression : IExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.Expression?.StartsWith("\"") switch
+        return context.Expression.StartsWith("\"") switch
         {
             true when context.Expression.EndsWith("\"") => Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2)),
             _ => Result.Continue<object?>()
@@ -17,7 +17,7 @@ public class StringExpression : IExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.Expression?.StartsWith("\"") switch
+        return context.Expression.StartsWith("\"") switch
         {
             true when context.Expression.EndsWith("\"") => Result.Success(typeof(string)),
             _ => Result.Continue<Type>()

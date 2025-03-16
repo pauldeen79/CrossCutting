@@ -6,7 +6,7 @@ public class DateTimeExpression : IExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.IsNotNull(nameof(context)).Expression switch
+        return context.Expression switch
         {
             not null when DateTime.TryParse(context.Expression, context.Settings.FormatProvider, DateTimeStyles.None, out var dt) => Result.Success<object?>(dt),
             _ => Result.Continue<object?>()
@@ -17,7 +17,7 @@ public class DateTimeExpression : IExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.IsNotNull(nameof(context)).Expression switch
+        return context.Expression switch
         {
             not null when DateTime.TryParse(context.Expression, context.Settings.FormatProvider, DateTimeStyles.None, out _) => Result.Success(typeof(DateTime)),
             _ => Result.Continue<Type>()

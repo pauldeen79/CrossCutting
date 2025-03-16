@@ -15,7 +15,7 @@ public class VariableExpression : IExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.Expression?.StartsWith("$") switch
+        return context.Expression.StartsWith("$") switch
         {
             true when context.Expression.Length > 1 => _variableProcessor.Evaluate(context.Expression.Substring(1), context.Context),
             _ => Result.Continue<object?>()
@@ -26,7 +26,7 @@ public class VariableExpression : IExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.Expression?.StartsWith("$") switch
+        return context.Expression.StartsWith("$") switch
         {
             true when context.Expression.Length > 1 => _variableProcessor.Validate(context.Expression.Substring(1), context.Context),
             _ => Result.Continue<Type>()

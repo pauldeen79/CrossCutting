@@ -6,7 +6,7 @@ public class ContextExpression : IExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.IsNotNull(nameof(context)).Expression switch
+        return context.Expression switch
         {
             "context" => Result.Success(context.Context),
             _ => Result.Continue<object?>()
@@ -17,7 +17,7 @@ public class ContextExpression : IExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.IsNotNull(nameof(context)).Expression switch
+        return context.Expression switch
         {
             "context" => Result.Success(context.Context?.GetType()!),
             _ => Result.Continue<Type>()
