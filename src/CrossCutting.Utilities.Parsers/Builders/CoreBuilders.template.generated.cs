@@ -10,6 +10,85 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders
 {
+    public partial class ExpressionEvaluatorSettingsBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private System.IFormatProvider _formatProvider;
+
+        private System.StringComparison _stringComparison;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public System.IFormatProvider FormatProvider
+        {
+            get
+            {
+                return _formatProvider;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.IFormatProvider>.Default.Equals(_formatProvider!, value!);
+                _formatProvider = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FormatProvider));
+            }
+        }
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
+        public ExpressionEvaluatorSettingsBuilder(CrossCutting.Utilities.Parsers.ExpressionEvaluatorSettings source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _formatProvider = source.FormatProvider;
+            _stringComparison = source.StringComparison;
+        }
+
+        public ExpressionEvaluatorSettingsBuilder()
+        {
+            _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.Parsers.ExpressionEvaluatorSettings Build()
+        {
+            return new CrossCutting.Utilities.Parsers.ExpressionEvaluatorSettings(FormatProvider, StringComparison);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.Parsers.Builders.ExpressionEvaluatorSettingsBuilder WithFormatProvider(System.IFormatProvider formatProvider)
+        {
+            if (formatProvider is null) throw new System.ArgumentNullException(nameof(formatProvider));
+            FormatProvider = formatProvider;
+            return this;
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.ExpressionEvaluatorSettingsBuilder WithStringComparison(System.StringComparison stringComparison)
+        {
+            StringComparison = stringComparison;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.ExpressionEvaluatorSettings(ExpressionEvaluatorSettingsBuilder entity)
+        {
+            return entity.Build();
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
     public partial class ExpressionStringEvaluatorSettingsBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         private System.IFormatProvider _formatProvider;

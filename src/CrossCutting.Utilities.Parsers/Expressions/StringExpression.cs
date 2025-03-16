@@ -2,14 +2,14 @@
 
 public class StringExpression : IExpression
 {
-    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
         => expression?.StartsWith("\"") switch
         {
             true when expression.EndsWith("\"") => Result.Success<object?>(expression.Substring(1, expression.Length - 2)),
             _ => Result.Continue<object?>()
         };
 
-    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<Type> Validate(ExpressionEvaluatorContext context)
         => expression?.StartsWith("\"") switch
         {
             true when expression.EndsWith("\"") => Result.Success(typeof(string)),

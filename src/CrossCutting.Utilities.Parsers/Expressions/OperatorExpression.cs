@@ -5,9 +5,11 @@ public class OperatorExpression : IExpression
     private const string Pattern = @"(==|!=|<=|>=|<|>)";
     private static readonly Regex _operatorRegEx = new(Pattern, RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
 
-    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
     {
-        var matches = _operatorRegEx.Matches(expression);
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        var matches = _operatorRegEx.Matches(context.Expression);
 
         // Ensure there's exactly one operator
         if (matches.Count != 1)
@@ -15,25 +17,34 @@ public class OperatorExpression : IExpression
             return Result.Continue<object?>();
         }
 
-        string[] parts = Regex.Split(expression, matches[0].Value);
+        string[] parts = Regex.Split(context.Expression, matches[0].Value);
         if (parts.Length != 2)
         {
             // More than one operator
             return Result.Continue<object?>();
         }
 
-        //TODO: Operands need to be converted to objects using a callback on the expression evaluator
-        string leftOperand = parts[0].Trim();
-        string operatorSymbol = matches[0].Value;
-        string rightOperand = parts[1].Trim();
+        var leftOperandResult = context.Evaluator.Evaluate(parts[0].Trim(), context.Settings.FormatProvider);
+        if (!leftOperandResult.IsSuccessful())
+        {
+            return Result.Invalid<object?>("Left operand is invalid, see inner results for more details", [leftOperandResult]);
+        }
+
+        var operatorSymbol = matches[0].Value;
+
+        var rightOperandResult = context.Evaluator.Evaluate(parts[1].Trim(), context.Settings.FormatProvider);
+        if (!rightOperandResult.IsSuccessful())
+        {
+            return Result.Invalid<object?>("Right operand is invalid, see inner results for more details", [rightOperandResult]);
+        }
+
         return operatorSymbol switch
         {
-            //TODO: What StringComparison do we use?
-            "==" => Equal.Evaluate(leftOperand, rightOperand, StringComparison.InvariantCulture).Transform<object?>(x => x),
-            _ => GreaterThan.Evaluate(leftOperand, rightOperand).Transform<object?>(x => x)
+            "==" => Equal.Evaluate(leftOperandResult.Value, rightOperandResult.Value, context.Settings.StringComparison).Transform<object?>(x => x),
+            _ => GreaterThan.Evaluate(leftOperandResult.Value, rightOperandResult.Value).Transform<object?>(x => x)
         };
     }
 
-    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
+    public Result<Type> Validate(ExpressionEvaluatorContext context)
         => Result.Continue<Type>(); //TODO: Implement this
 }

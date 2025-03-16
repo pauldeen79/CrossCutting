@@ -10,6 +10,30 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers
 {
+    public partial record ExpressionEvaluatorSettings
+    {
+        public System.IFormatProvider FormatProvider
+        {
+            get;
+        }
+
+        public System.StringComparison StringComparison
+        {
+            get;
+        }
+
+        public ExpressionEvaluatorSettings(System.IFormatProvider formatProvider, System.StringComparison stringComparison)
+        {
+            this.FormatProvider = formatProvider;
+            this.StringComparison = stringComparison;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.ExpressionEvaluatorSettingsBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.ExpressionEvaluatorSettingsBuilder(this);
+        }
+    }
     public partial record ExpressionStringEvaluatorSettings
     {
         public System.IFormatProvider FormatProvider

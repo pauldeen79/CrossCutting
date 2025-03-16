@@ -2,15 +2,15 @@
 
 public class NullExpression : IExpression
 {
-    public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
-        => expression switch
+    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+        => context.IsNotNull(nameof(context)).Expression switch
         {
             "null" => Result.Success<object?>(null),
             _ => Result.Continue<object?>()
         };
 
-    public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
-        => expression switch
+    public Result<Type> Validate(ExpressionEvaluatorContext context)
+        => context.IsNotNull(nameof(context)).Expression switch
         {
             "null" => Result.NoContent<Type>(),
             _ => Result.Continue<Type>()
