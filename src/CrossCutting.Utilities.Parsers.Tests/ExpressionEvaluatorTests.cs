@@ -207,6 +207,20 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
+        public void Parses_Equals_Operator_Correctly()
+        {
+            // Arrange
+            var input = "1 == 1";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(true);
+        }
+
+        [Fact]
         public void Returns_NotSupported_On_Empty_String()
         {
             // Arrange

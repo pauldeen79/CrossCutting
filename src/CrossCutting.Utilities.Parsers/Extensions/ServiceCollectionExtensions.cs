@@ -21,6 +21,7 @@ public static class ServiceCollectionExtensions
         .AddScoped<IExpression, StringExpression>()
         .AddScoped<IExpression, VariableExpression>()
         .AddScoped<IExpression, NumericExpression>()
+        .AddScoped<IExpression, OperatorExpression>()
         .AddScoped<IExpression, DateTimeExpression>()
         .AddScoped<IExpression, TypeOfExpression>();
 
