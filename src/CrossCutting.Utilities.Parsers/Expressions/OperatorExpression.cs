@@ -17,7 +17,7 @@ public class OperatorExpression : IExpression
             return Result.Continue<object?>();
         }
 
-        var parts = Regex.Split(context.Expression, matches[0].Value);
+        var parts = Regex.Split(context.Expression, matches[0].Value, RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
         if (parts.Length != 2)
         {
             // More than one operator
