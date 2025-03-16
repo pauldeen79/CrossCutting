@@ -12,7 +12,7 @@ public sealed class ExpressionFrameworkTest
         var sut = new ToUpperCaseExpressionResolver();
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new FunctionCallBuilder().WithName("ToUpperCase").AddArguments(new ConstantArgumentBuilder().WithValue("Hello world!")).Build();
         var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CreateSettings(), null);
 
@@ -31,7 +31,7 @@ public sealed class ExpressionFrameworkTest
         var sut = new ToUpperCaseExpressionResolver();
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new FunctionCallBuilder().WithName("ToUpperCase").AddArguments(new ConstantArgumentBuilder().WithValue("Hello world!")).Build();
         var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CreateSettings(), null);
 
@@ -49,7 +49,7 @@ public sealed class ExpressionFrameworkTest
         var sut = new ToUpperCaseExpressionResolver();
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new FunctionCallBuilder().WithName("ToUpperCase").AddArguments(new ConstantArgumentBuilder().WithValue("Hello world!")).Build();
         var context = new FunctionCallContext(functionCall, functionEvaluator, expressionEvaluator, CreateSettings(), null);
 

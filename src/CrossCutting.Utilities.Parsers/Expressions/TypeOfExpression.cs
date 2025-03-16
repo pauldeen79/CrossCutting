@@ -6,7 +6,9 @@ public class TypeOfExpression : IExpression
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
     {
-        var match = _typeOfRegEx.Match(expression);
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        var match = _typeOfRegEx.Match(context.Expression);
         if (match.Success)
         {
             var typename = match.Groups["typename"].Value;
@@ -27,7 +29,9 @@ public class TypeOfExpression : IExpression
 
     public Result<Type> Validate(ExpressionEvaluatorContext context)
     {
-        var match = _typeOfRegEx.Match(expression);
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        var match = _typeOfRegEx.Match(context.Expression);
         if (match.Success)
         {
             var typename = match.Groups["typename"].Value;

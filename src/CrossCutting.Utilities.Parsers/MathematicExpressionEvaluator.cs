@@ -43,7 +43,7 @@ public class MathematicExpressionEvaluator : IMathematicExpressionEvaluator
         return state.Results.Count > 0
             ? state.Results.ElementAt(state.Results.Count - 1)
             : _expressionEvaluator
-                .Evaluate(expression, formatProvider, context)
+                .Evaluate(expression, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(formatProvider), context)
                 .Transform(x => x.ErrorMessage?.StartsWith("Unknown expression type found in fragment: ") == true
                     ? Result.NotFound<object?>()
                     : x);
@@ -69,7 +69,7 @@ public class MathematicExpressionEvaluator : IMathematicExpressionEvaluator
         return state.Results.Count > 0
             ? Result.FromExistingResult(state.Results.ElementAt(state.Results.Count - 1), state.Results.ElementAt(state.Results.Count - 1).Value?.GetType()!)
             : _expressionEvaluator
-                .Validate(expression, formatProvider, context)
+                .Validate(expression, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(formatProvider), context)
                 .Transform(x => x.ErrorMessage?.StartsWith("Unknown expression type found in fragment: ") == true
                     ? Result.NotFound<Type>()
                     : x);

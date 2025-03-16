@@ -664,10 +664,10 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
     {
         private readonly Func<string, IFormatProvider, Result<object?>> _dlg = dlg;
 
-        public Result<object?> Evaluate(string expression, IFormatProvider formatProvider, object? context)
-            => _dlg.Invoke(expression, formatProvider);
+        public Result<object?> Evaluate(string expression, ExpressionEvaluatorSettings settings, object? context)
+            => _dlg.Invoke(expression, settings.FormatProvider);
 
-        public Result<Type> Validate(string expression, IFormatProvider formatProvider, object? context)
+        public Result<Type> Validate(string expression, ExpressionEvaluatorSettings settings, object? context)
             => Result.Success(typeof(object));
     }
 }

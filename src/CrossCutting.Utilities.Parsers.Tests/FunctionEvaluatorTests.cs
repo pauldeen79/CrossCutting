@@ -410,7 +410,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
         // Arrange
         var functionCall = new FunctionCallBuilder().WithName("Overload").AddArguments(new ConstantArgumentBuilder().WithValue("some value")).Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
                            .Returns(Result.Success<object?>("some value"));
         var sut = CreateSut();
 
@@ -472,7 +472,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddArguments(new ConstantResultArgumentBuilder().WithResult(Result.Error<object?>("Kaboom")))
             .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
                            .Returns(Result.Success<object?>(13));
         var sut = CreateSut();
 
@@ -496,7 +496,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddArguments(new DelegateResultArgumentBuilder().WithDelegate(() => Result.Error<object?>("Kaboom")).WithValidationDelegate(() => Result.Error<Type>("Kaboom")))
             .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
                            .Returns(Result.Success<object?>(13));
         var sut = CreateSut();
 
@@ -541,7 +541,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
             .AddArguments(new DelegateArgumentBuilder().WithDelegate(() => "some value").WithValidationDelegate(() => typeof(int)))
             .Build();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
                            .Returns(Result.Success<object?>("some value"));
         var sut = CreateSut();
 

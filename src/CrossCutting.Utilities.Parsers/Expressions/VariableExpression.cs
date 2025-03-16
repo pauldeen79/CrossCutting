@@ -12,16 +12,24 @@ public class VariableExpression : IExpression
     }
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-        => expression?.StartsWith("$") switch
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context.Expression?.StartsWith("$") switch
         {
-            true when expression.Length > 1 => _variableProcessor.Evaluate(expression.Substring(1), context),
+            true when context.Expression.Length > 1 => _variableProcessor.Evaluate(context.Expression.Substring(1), context.Context),
             _ => Result.Continue<object?>()
         };
+    }
 
     public Result<Type> Validate(ExpressionEvaluatorContext context)
-        => expression?.StartsWith("$") switch
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context.Expression?.StartsWith("$") switch
         {
-            true when expression.Length > 1 => _variableProcessor.Validate(expression.Substring(1), context),
+            true when context.Expression.Length > 1 => _variableProcessor.Validate(context.Expression.Substring(1), context.Context),
             _ => Result.Continue<Type>()
         };
+    }
 }

@@ -3,16 +3,24 @@
 public class DateTimeExpression : IExpression
 {
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-        => context.IsNotNull(nameof(context)).Expression switch
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context.IsNotNull(nameof(context)).Expression switch
         {
-            not null when DateTime.TryParse(context!.Expression, context.Settings.FormatProvider, DateTimeStyles.None, out var dt) => Result.Success<object?>(dt),
+            not null when DateTime.TryParse(context.Expression, context.Settings.FormatProvider, DateTimeStyles.None, out var dt) => Result.Success<object?>(dt),
             _ => Result.Continue<object?>()
         };
+    }
 
     public Result<Type> Validate(ExpressionEvaluatorContext context)
-        => context.IsNotNull(nameof(context)).Expression switch
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context.IsNotNull(nameof(context)).Expression switch
         {
-            not null when DateTime.TryParse(context.IsNotNull(nameof(context)).Expression, context!.Settings.FormatProvider, DateTimeStyles.None, out _) => Result.Success(typeof(DateTime)),
+            not null when DateTime.TryParse(context.Expression, context.Settings.FormatProvider, DateTimeStyles.None, out _) => Result.Success(typeof(DateTime)),
             _ => Result.Continue<Type>()
         };
+    }
 }

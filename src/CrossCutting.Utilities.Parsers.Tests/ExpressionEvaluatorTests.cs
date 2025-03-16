@@ -68,7 +68,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var input = "context";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, "context value");
+            var result = CreateSut().Evaluate(input, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), "context value");
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -199,7 +199,7 @@ public class ExpressionEvaluatorTests : IDisposable
                 : Result.Continue<object?>());
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture, context);
+            var result = CreateSut().Evaluate(input, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -342,7 +342,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var input = "context";
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, "context value");
+            var result = CreateSut().Validate(input, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), "context value");
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -466,7 +466,7 @@ public class ExpressionEvaluatorTests : IDisposable
                 : Result.Continue<Type>());
 
             // Act
-            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture, context);
+            var result = CreateSut().Validate(input, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NoContent);

@@ -33,7 +33,7 @@ public class FunctionCallContextTests : IDisposable
                 _ => Result.NotSupported<object?>("Only Parsed result function is supported")
             });
         _expressionEvaluatorMock
-            .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+            .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
             .Returns(Result.Success<object?>("some value"));
         _provider = new ServiceCollection().AddParsers().BuildServiceProvider(true);
         _scope = _provider.CreateScope();

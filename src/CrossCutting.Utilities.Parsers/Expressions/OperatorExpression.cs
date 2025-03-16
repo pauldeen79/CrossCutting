@@ -24,7 +24,7 @@ public class OperatorExpression : IExpression
             return Result.Continue<object?>();
         }
 
-        var leftOperandResult = context.Evaluator.Evaluate(parts[0].Trim(), context.Settings.FormatProvider);
+        var leftOperandResult = context.Evaluator.Evaluate(parts[0].Trim(), new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(context.Settings.FormatProvider), context.Context);
         if (!leftOperandResult.IsSuccessful())
         {
             return Result.Invalid<object?>("Left operand is invalid, see inner results for more details", [leftOperandResult]);
@@ -32,7 +32,7 @@ public class OperatorExpression : IExpression
 
         var operatorSymbol = matches[0].Value;
 
-        var rightOperandResult = context.Evaluator.Evaluate(parts[1].Trim(), context.Settings.FormatProvider);
+        var rightOperandResult = context.Evaluator.Evaluate(parts[1].Trim(), new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(context.Settings.FormatProvider), context.Context);
         if (!rightOperandResult.IsSuccessful())
         {
             return Result.Invalid<object?>("Right operand is invalid, see inner results for more details", [rightOperandResult]);

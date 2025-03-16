@@ -34,7 +34,7 @@ public class ExpressionFrameworkNewTests
         var sut = new ToLowerCaseFunction();
         var functionEvaluator = Substitute.For<IFunctionEvaluator>();
         var expressionEvaluator = Substitute.For<IExpressionEvaluator>();
-        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
+        expressionEvaluator.Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>()).Returns(x => Result.Success<object?>(x.ArgAt<string>(0)));
         var functionCall = new ToLowerCaseExpressionBuilder()
             .WithExpression(new TypedConstantExpressionBuilder<string>().WithValue("Hello world!"))
             .BuildFunctionCall();
