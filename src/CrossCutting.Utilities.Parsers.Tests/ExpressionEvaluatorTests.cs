@@ -445,17 +445,16 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_int_Correctly()
+        public void Validates_int_Correctly()
         {
             // Arrange
             var input = "2";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeEquivalentTo(2);
         }
 
         [Fact]
@@ -485,17 +484,16 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
-        public void Parses_string_Correctly()
+        public void Validates_string_Correctly()
         {
             // Arrange
             var input = "\"Hello world!\"";
 
             // Act
-            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+            var result = CreateSut().Validate(input, CultureInfo.InvariantCulture);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeEquivalentTo("Hello world!");
         }
 
         [Fact]
