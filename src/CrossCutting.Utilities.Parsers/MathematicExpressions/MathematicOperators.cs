@@ -4,6 +4,8 @@ public class MathematicOperators(IExpressionEvaluator expressionEvaluator) : IMa
 {
     internal static readonly AggregatorBase[] Aggregators =
     [
+        new BinaryAndAggregator(),
+        new BinaryOrAggregator(),
         new PowerAggregator(),
         new MultiplyAggregator(),
         new DivideAggregator(),
