@@ -30,7 +30,7 @@ public class MathematicExpressionEvaluator : IMathematicExpressionEvaluator
             return Result.Invalid<object?>("Expression is required");
         }
 
-        var state = new MathematicExpressionState(expression, formatProvider, context, Evaluate);
+        var state = new MathematicExpressionState(expression, formatProvider, context, _expressionEvaluator, Evaluate);
         var error = _expressions
             .Select(x => x.Evaluate(state))
             .FirstOrDefault(x => !x.IsSuccessful());
@@ -56,7 +56,7 @@ public class MathematicExpressionEvaluator : IMathematicExpressionEvaluator
             return Result.Invalid<Type>("Expression is required");
         }
 
-        var state = new MathematicExpressionState(expression, formatProvider, context, Evaluate);
+        var state = new MathematicExpressionState(expression, formatProvider, context, _expressionEvaluator, Evaluate);
         var error = _expressions
             .Select(x => x.Evaluate(state))
             .FirstOrDefault(x => !x.IsSuccessful());
