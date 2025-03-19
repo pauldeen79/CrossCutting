@@ -23,7 +23,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<IExpression, VariableExpression>()
             .AddScoped<IExpression, NumericExpression>()
             .AddScoped<IExpression, DateTimeExpression>()
-            .AddScoped<IExpression, TypeOfExpression>();
+            .AddScoped<IExpression, TypeOfExpression>()
+            .AddScoped<IExpression, MathematicExpression>();
 
     private static IServiceCollection AddExpressionStringEvaluator(this IServiceCollection services)
         => services
