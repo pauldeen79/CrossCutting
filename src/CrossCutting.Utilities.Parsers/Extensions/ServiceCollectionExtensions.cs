@@ -15,15 +15,15 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddExpressionEvaluator(this IServiceCollection services)
         => services
             .AddScoped<IExpressionEvaluator, ExpressionEvaluator>()
-            .AddScoped<IExpression, OperatorExpression>()
             .AddScoped<IExpression, BooleanExpression>()
             .AddScoped<IExpression, ContextExpression>()
             .AddScoped<IExpression, NullExpression>()
             .AddScoped<IExpression, StringExpression>()
             .AddScoped<IExpression, VariableExpression>()
+            .AddScoped<IExpression, TypeOfExpression>()
+            .AddScoped<IExpression, OperatorExpression>()
             .AddScoped<IExpression, NumericExpression>()
             .AddScoped<IExpression, DateTimeExpression>()
-            .AddScoped<IExpression, TypeOfExpression>()
             .AddScoped<IExpression, MathematicExpression>();
 
     private static IServiceCollection AddExpressionStringEvaluator(this IServiceCollection services)
