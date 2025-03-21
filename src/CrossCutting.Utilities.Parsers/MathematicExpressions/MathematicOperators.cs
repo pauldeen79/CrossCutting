@@ -1,9 +1,11 @@
 ﻿namespace CrossCutting.Utilities.Parsers.MathematicExpressions;
 
-public class MathematicOperators(IExpressionEvaluator expressionEvaluator) : IMathematicExpression
+public class MathematicOperators : IMathematicExpression
 {
     internal static readonly AggregatorBase[] Aggregators =
     [
+        new BinaryAndAggregator(),
+        new BinaryOrAggregator(),
         new PowerAggregator(),
         new MultiplyAggregator(),
         new DivideAggregator(),
@@ -11,8 +13,6 @@ public class MathematicOperators(IExpressionEvaluator expressionEvaluator) : IMa
         new AddAggregator(),
         new SubtractAggregator(),
     ];
-
-    private readonly IExpressionEvaluator _expressionEvaluator = expressionEvaluator;
 
     public Result<MathematicExpressionState> Evaluate(MathematicExpressionState state)
     {
@@ -33,12 +33,12 @@ public class MathematicOperators(IExpressionEvaluator expressionEvaluator) : IMa
                 state.SetPreviousIndexes([.. Aggregators
                     .Select(x => state.Remainder.LastIndexOf(x.Character, state.Position - 1))
                     .Where(x => x > -1)
-                    .OrderByDescending(x => x)], _expressionEvaluator);
+                    .OrderByDescending(x => x)], state.ExpressionEvaluator);
 
                 state.SetNextIndexes([.. Aggregators
                     .Select(x => state.Remainder.IndexOf(x.Character, state.Position + 1))
                     .Where(x => x > -1)
-                    .OrderBy(x => x)], _expressionEvaluator);
+                    .OrderBy(x => x)], state.ExpressionEvaluator);
 
                 if (!state.LeftPartResult.IsSuccessful())
                 {

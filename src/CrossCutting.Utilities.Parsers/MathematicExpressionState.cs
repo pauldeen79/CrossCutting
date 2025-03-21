@@ -8,6 +8,7 @@ public class MathematicExpressionState
     public object? Context { get; }
     public ICollection<Result<object?>> Results { get; } = [];
     public Func<string, IFormatProvider, object?, Result<object?>> ParseDelegate { get; }
+    public IExpressionEvaluator ExpressionEvaluator { get; }
 
     public int Position { get; private set; }
     public IReadOnlyCollection<AggregatorInfo> Indexes { get; private set; }
@@ -24,16 +25,19 @@ public class MathematicExpressionState
         string input,
         IFormatProvider formatProvider,
         object? context,
+        IExpressionEvaluator expressionEvaluator,
         Func<string, IFormatProvider, object?, Result<object?>> parseDelegate)
     {
         ArgumentGuard.IsNotNull(input, nameof(input));
         ArgumentGuard.IsNotNull(formatProvider, nameof(formatProvider));
         ArgumentGuard.IsNotNull(parseDelegate, nameof(parseDelegate));
+        ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
 
         Input = input;
         FormatProvider = formatProvider;
         Context = context;
         Remainder = input;
+        ExpressionEvaluator = expressionEvaluator;
         ParseDelegate = parseDelegate;
 
         Position = -1;

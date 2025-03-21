@@ -113,6 +113,51 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
     }
 
     [Fact]
+    public void Can_Use_Binary_And_Operator()
+    {
+        // Arrange
+        var input = "true & true";
+        var sut = CreateSut(ParseExpressionDelegateBoolean);
+
+        // Act
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(true);
+    }
+
+    [Fact]
+    public void Can_Use_Binary_Or_Operator()
+    {
+        // Arrange
+        var input = "true | false";
+        var sut = CreateSut(ParseExpressionDelegateBoolean);
+
+        // Act
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(true);
+    }
+
+    [Fact]
+    public void Can_Combine_Binary_Operators_With_Brackets_For_Complex_Conditions()
+    {
+        // Arrange
+        var input = "(true | false) & true";
+        var sut = CreateSut(ParseExpressionDelegateBoolean);
+
+        // Act
+        var result = sut.Evaluate(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(true);
+    }
+
+    [Fact]
     public void Can_Add_One_And_Two_And_Three()
     {
         // Arrange
@@ -653,6 +698,11 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
         => short.TryParse(arg, formatProvider, out var result)
             ? Result.Success<object?>(result)
             : Result.Invalid<object?>($"Could not parse {arg} to short");
+
+    private static Result<object?> ParseExpressionDelegateBoolean(string arg, IFormatProvider formatProvider)
+        => bool.TryParse(arg, out var result)
+            ? Result.Success<object?>(result)
+            : Result.Invalid<object?>($"Could not parse {arg} to boolean");
 
     public void Dispose()
     {

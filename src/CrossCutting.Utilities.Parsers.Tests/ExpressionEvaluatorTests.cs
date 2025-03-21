@@ -291,6 +291,34 @@ public class ExpressionEvaluatorTests : IDisposable
         }
 
         [Fact]
+        public void Evaluates_Mathematical_Expression_Correctly()
+        {
+            // Arrange
+            var input = "1 + 1";
+
+            // Act
+            var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(2);
+        }
+
+        [Fact]
+        public void Evaluates_Mathematical_Expression_With_Context_Correctly()
+        {
+            // Arrange
+            var input = "1 + context";
+
+            // Act
+            var result = CreateSut().Evaluate(input, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), 1);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(2);
+        }
+
+        [Fact]
         public void Returns_NotSupported_On_Empty_String()
         {
             // Arrange
