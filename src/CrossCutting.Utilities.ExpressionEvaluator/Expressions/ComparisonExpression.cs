@@ -6,6 +6,16 @@ public class ComparisonExpression : IExpression
     private static readonly string[] Operators = ["<=", ">=", "<", ">", "==", "!="];
     private static readonly string[] Delimiters = ["<=", ">=", "<", ">", "==", "!=", "AND", "OR"];
 
+    private static readonly IEnumerable<IOperator> _operators =
+    [
+        new SmallerThanOrEqualOperator(),
+        new GreaterThanOrEqualOperator(),
+        new SmallerThanOperator(),
+        new GreaterThanOperator(),
+        new EqualsOperator(),
+        new NotEqualsOperator()
+    ];
+
     public int Order => 10;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
@@ -121,11 +131,11 @@ public class ComparisonExpression : IExpression
             || x.EndGroup
         );
 
-    private static Result<object?> EvaluateSimpleConditions(object? context, IEnumerable<Condition> conditions)
+    private static Result<object?> EvaluateSimpleConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
     {
         foreach (var evaluatable in conditions)
         {
-            var itemResult = IsItemValid(context, evaluatable);
+            var itemResult = IsItemValid(evaluatable, context);
             if (!itemResult.IsSuccessful())
             {
                 return itemResult.Transform<object?>(x => x);
@@ -140,7 +150,7 @@ public class ComparisonExpression : IExpression
         return Result.Success<object?>(true);
     }
 
-    private static Result<object?> EvaluateComplexConditions(object? context, IEnumerable<Condition> conditions)
+    private static Result<object?> EvaluateComplexConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
     {
         var builder = new StringBuilder();
         foreach (var evaluatable in conditions)
@@ -152,7 +162,7 @@ public class ComparisonExpression : IExpression
 
             var prefix = evaluatable.StartGroup ? "(" : string.Empty;
             var suffix = evaluatable.EndGroup ? ")" : string.Empty;
-            var itemResult = IsItemValid(context, evaluatable);
+            var itemResult = IsItemValid(evaluatable, context);
             if (!itemResult.IsSuccessful())
             {
                 return itemResult.Transform<object?>(x => x);
@@ -165,10 +175,11 @@ public class ComparisonExpression : IExpression
         return Result.Success<object?>(EvaluateBooleanExpression(builder.ToString()));
     }
 
-    private static Result<bool> IsItemValid(object? context, Condition condition)
-    {
-        return Result.NotImplemented<bool>();
-    }
+    private static Result<bool> IsItemValid(Condition condition, ExpressionEvaluatorContext context)
+        => _operators
+            .Select(x => x.Evaluate(condition, context))
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.NotSupported<bool>($"Unsupported operator: {condition.Operator}");
 
     private static bool EvaluateBooleanExpression(string expression)
     {

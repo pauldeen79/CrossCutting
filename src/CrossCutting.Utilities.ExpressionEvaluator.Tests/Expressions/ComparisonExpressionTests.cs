@@ -7,6 +7,9 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
     protected ComparisonExpressionTests()
     {
         Evaluator = Substitute.For<IExpressionEvaluator>();
+        Evaluator
+            .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
+            .Returns(Result.Success<object?>("some result"));
     }
 
     protected ExpressionEvaluatorContext CreateContext(string expression)
@@ -73,7 +76,21 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
         }
 
         [Fact]
-        public void Returns_Success_On_Valid_Expression()
+        public void Returns_Success_On_Valid_Single_Part_Expression()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var expression = "MyField == \"some value\"";
+
+            // Act
+            var result = sut.Evaluate(CreateContext(expression));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Success_On_Valid_Multiple_Part_Expression()
         {
             // Arrange
             var sut = CreateSut();
