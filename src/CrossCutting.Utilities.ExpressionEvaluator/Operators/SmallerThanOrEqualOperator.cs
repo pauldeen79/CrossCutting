@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Operators;
 
-internal class SmallerThanOrEqualOperator : IOperator
+internal sealed class SmallerThanOrEqualOperator : IOperator
 {
     public Result<bool> Evaluate(Condition condition, ExpressionEvaluatorContext context)
     {
