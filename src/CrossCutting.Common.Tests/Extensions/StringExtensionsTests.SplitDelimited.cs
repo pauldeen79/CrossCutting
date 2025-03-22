@@ -192,6 +192,7 @@ public partial class StringExtensionsTests
             // Assert
             result.ShouldBeEquivalentTo(new[] { "A", "B,C", "D" });
         }
+
         [Fact]
         public void Can_Split_String_With_AND_and_OR_Delimiters()
         {
@@ -216,6 +217,19 @@ public partial class StringExtensionsTests
 
             // Assert
             result.ShouldBeEquivalentTo(new[] { "1", "2", "4", "8", "1" });
+        }
+
+        [Fact]
+        public void Can_Split_String_With_Mathematical_Delimiters_And_Add_Delimiters_As_Well()
+        {
+            // Arrange
+            var input = "1 + 2 / 4 * 8 - 1";
+
+            // Act
+            var result = input.SplitDelimited(["+", "-", "/", "*"], trimItems: true, addDelimiters: true).ToArray();
+
+            // Assert
+            result.ShouldBeEquivalentTo(new[] { "1", "+", "2", "/", "4", "*", "8", "-", "1" });
         }
 
         [Fact]

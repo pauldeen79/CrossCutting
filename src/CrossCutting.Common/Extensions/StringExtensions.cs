@@ -257,7 +257,7 @@ public static class StringExtensions
         return result.Select(x => trimItems ? x.Trim() : x).ToArray();
     }
 
-    public static IEnumerable<string> SplitDelimited(this string instance, string[] delimiters, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false)
+    public static IEnumerable<string> SplitDelimited(this string instance, string[] delimiters, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false, bool addDelimiters = false)
     {
         ArgumentGuard.IsNotNull(delimiters, nameof(delimiters));
 
@@ -292,12 +292,7 @@ public static class StringExtensions
                                           where instance.Substring(i).StartsWith(delimiter)
                                           select delimiter)
                 {
-                    // Add current segment to results
-                    if (currentSegment.Count > 0)
-                    {
-                        results.Add(GetResultItem(trimItems, currentSegment));
-                        currentSegment.Clear();
-                    }
+                    AddCurrentSegmentToResults(trimItems, addDelimiters, results, currentSegment, delimiter);
 
 #pragma warning disable S127 // "for" loop stop conditions should be invariant
                     i += delimiter.Length - 1;// Skip the delimiter
@@ -316,13 +311,36 @@ NextChar:;
 #pragma warning restore S1116 // Empty statements should be removed
         }
 
-        // Add last segment if not empty
-        if (currentSegment.Count > 0)
-        {
-            results.Add(GetResultItem(trimItems, currentSegment));
-        }
+        AddLastSegmentIfNotEmpty(trimItems, results, currentSegment);
 
         return results;
+    }
+
+    private static void AddLastSegmentIfNotEmpty(bool trimItems, List<string> results, List<char> currentSegment)
+    {
+        if (currentSegment.Count <= 0)
+        {
+            return;
+        }
+        
+        results.Add(GetResultItem(trimItems, currentSegment));
+    }
+
+    private static void AddCurrentSegmentToResults(bool trimItems, bool addDelimiters, List<string> results, List<char> currentSegment, string delimiter)
+    {
+        if (currentSegment.Count <= 0)
+        {
+            return;
+        }
+
+        results.Add(GetResultItem(trimItems, currentSegment));
+
+        if (addDelimiters)
+        {
+            results.Add(delimiter);
+        }
+
+        currentSegment.Clear();
     }
 
     private static string GetResultItem(bool trimItems, List<char> currentSegment)
