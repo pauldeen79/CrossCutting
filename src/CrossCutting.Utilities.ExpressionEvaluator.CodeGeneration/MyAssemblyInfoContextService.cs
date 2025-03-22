@@ -27,7 +27,5 @@ public class MyAssemblyInfoContextService : IAssemblyInfoContextService
         "CsharpExpressionDumper.Abstractions",
         "CsharpExpressionDumper.Core",
         "CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration",
-        "ExpressionFramework.Domain",
-        "ExpressionFramework.Domain.Specialized",
     ];
 }
