@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace CrossCutting.Common.Extensions;
+﻿namespace CrossCutting.Common.Extensions;
 
 public static class StringExtensions
 {

@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Results;
-
-namespace CrossCutting.Utilities.Parsers;
+﻿namespace CrossCutting.Utilities.Parsers;
 
 public class FunctionEvaluator : IFunctionEvaluator
 {
