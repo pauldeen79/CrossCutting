@@ -2,13 +2,13 @@
 
 public class ObjectResolver : IObjectResolver
 {
-    private readonly IEnumerable<IObjectResolverProcessor> _objectResolverProcssors;
+    private readonly IEnumerable<IObjectResolverProcessor> _objectResolverProcessors;
 
-    public ObjectResolver(IEnumerable<IObjectResolverProcessor> objectResolverProcssors)
+    public ObjectResolver(IEnumerable<IObjectResolverProcessor> objectResolverProcessors)
     {
-        ArgumentGuard.IsNotNull(objectResolverProcssors, nameof(objectResolverProcssors));
+        ArgumentGuard.IsNotNull(objectResolverProcessors, nameof(objectResolverProcessors));
 
-        _objectResolverProcssors = objectResolverProcssors;
+        _objectResolverProcessors = objectResolverProcessors;
     }
 
     public Result<T> Resolve<T>(object? sourceObject)
@@ -18,7 +18,7 @@ public class ObjectResolver : IObjectResolver
             return Result.NotFound<T>();
         }
 
-        return _objectResolverProcssors
+        return _objectResolverProcessors
             .Select(x => x.Resolve<T>(sourceObject))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.NotFound<T>($"Could not resolve type {typeof(T).FullName} from {sourceObject.GetType().FullName}");
