@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Common.Extensions;
+﻿using System.Linq;
+
+namespace CrossCutting.Common.Extensions;
 
 public static class StringExtensions
 {
@@ -255,6 +257,72 @@ public static class StringExtensions
         AddRemainder(instance, result, currentSection, lastDelimiter);
 
         return result.Select(x => trimItems ? x.Trim() : x).ToArray();
+    }
+
+    public static IEnumerable<string> SplitDelimited(this string instance, string[] delimiters, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false)
+    {
+        ArgumentGuard.IsNotNull(delimiters, nameof(delimiters));
+
+        if (string.IsNullOrEmpty(instance))
+        {
+            return Array.Empty<string>();
+        }
+
+        var results = new List<string>();
+        var currentSegment = new List<char>();
+        bool insideQualifier = false;
+        char qualifierChar = textQualifier ?? '\0';
+
+        for (int i = 0; i < instance.Length; i++)
+        {
+            char c = instance[i];
+
+            // Toggle insideQualifier when encountering a text qualifier
+            if (textQualifier.HasValue && c == qualifierChar)
+            {
+                insideQualifier = !insideQualifier;
+                if (!leaveTextQualifier)
+                {
+                    continue; // Skip the qualifier if removal is enabled
+                }
+            }
+
+            // If outside qualifier, check for multi-character delimiters
+            if (!insideQualifier)
+            {
+                foreach (var delimiter in from string delimiter in delimiters
+                                          where instance.Substring(i).StartsWith(delimiter)
+                                          select delimiter)
+                {
+                    // Add current segment to results
+                    if (currentSegment.Count > 0)
+                    {
+                        results.Add(trimItems ? new string(currentSegment.ToArray()).Trim() : new string(currentSegment.ToArray()));
+                        currentSegment.Clear();
+                    }
+
+                    i += delimiter.Length - 1;// Skip the delimiter
+#pragma warning disable S907 // "goto" statement should not be used
+                    goto NextChar;// Move to next character
+#pragma warning restore S907 // "goto" statement should not be used
+                }
+            }
+
+            // Add character to current segment
+            currentSegment.Add(c);
+
+#pragma warning disable S1116 // Empty statements should be removed
+NextChar:;
+#pragma warning restore S1116 // Empty statements should be removed
+        }
+
+        // Add last segment if not empty
+        if (currentSegment.Count > 0)
+        {
+            results.Add(trimItems ? new string(currentSegment.ToArray()).Trim() : new string(currentSegment.ToArray()));
+        }
+
+        return results;
     }
 
     private static bool IsStartOfNextDelimiter(int index, string instance, string delimiter, bool inText)
