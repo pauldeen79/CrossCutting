@@ -61,6 +61,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.Expr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.ExpressionEvaluator.Tests", "src\CrossCutting.Utilities.ExpressionEvaluator.Tests\CrossCutting.Utilities.ExpressionEvaluator.Tests.csproj", "{A63C82B2-EDDC-47D1-867D-01059615E83B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration", "src\CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration\CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.csproj", "{171187B3-E594-4F83-8B03-D20A9B5721C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -163,6 +165,10 @@ Global
 		{A63C82B2-EDDC-47D1-867D-01059615E83B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A63C82B2-EDDC-47D1-867D-01059615E83B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A63C82B2-EDDC-47D1-867D-01059615E83B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{171187B3-E594-4F83-8B03-D20A9B5721C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{171187B3-E594-4F83-8B03-D20A9B5721C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{171187B3-E594-4F83-8B03-D20A9B5721C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{171187B3-E594-4F83-8B03-D20A9B5721C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

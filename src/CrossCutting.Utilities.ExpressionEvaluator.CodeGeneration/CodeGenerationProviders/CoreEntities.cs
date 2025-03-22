@@ -1,0 +1,10 @@
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.CodeGenerationProviders.FunctionParseResultArguments;
+
+[ExcludeFromCodeCoverage]
+public class CoreEntities(IPipelineService pipelineService) : ExpressionEvaluatorCSharpClassBase(pipelineService)
+{
+    public override string Path => Constants.Namespaces.UtilitiesExpressionEvaluator;
+
+    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
+        => GetEntities(GetCoreModels(), CurrentNamespace);
+}
