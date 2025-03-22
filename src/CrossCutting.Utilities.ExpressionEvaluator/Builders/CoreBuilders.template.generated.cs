@@ -10,6 +10,184 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 {
+    public partial class ConditionBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> _combination;
+
+        private string _leftExpression;
+
+        private string _operator;
+
+        private string _rightExpression;
+
+        private bool _startGroup;
+
+        private bool _endGroup;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> Combination
+        {
+            get
+            {
+                return _combination;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination>>.Default.Equals(_combination, value);
+                _combination = value;
+                if (hasChanged) HandlePropertyChanged(nameof(Combination));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string LeftExpression
+        {
+            get
+            {
+                return _leftExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_leftExpression!, value!);
+                _leftExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(LeftExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Operator
+        {
+            get
+            {
+                return _operator;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_operator!, value!);
+                _operator = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Operator));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string RightExpression
+        {
+            get
+            {
+                return _rightExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_rightExpression!, value!);
+                _rightExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(RightExpression));
+            }
+        }
+
+        public bool StartGroup
+        {
+            get
+            {
+                return _startGroup;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_startGroup, value);
+                _startGroup = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StartGroup));
+            }
+        }
+
+        public bool EndGroup
+        {
+            get
+            {
+                return _endGroup;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_endGroup, value);
+                _endGroup = value;
+                if (hasChanged) HandlePropertyChanged(nameof(EndGroup));
+            }
+        }
+
+        public ConditionBuilder(CrossCutting.Utilities.ExpressionEvaluator.Condition source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _combination = source.Combination;
+            _leftExpression = source.LeftExpression;
+            _operator = source.Operator;
+            _rightExpression = source.RightExpression;
+            _startGroup = source.StartGroup;
+            _endGroup = source.EndGroup;
+        }
+
+        public ConditionBuilder()
+        {
+            _leftExpression = string.Empty;
+            _operator = string.Empty;
+            _rightExpression = string.Empty;
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Condition Build()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Condition(Combination, LeftExpression, Operator, RightExpression, StartGroup, EndGroup);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithCombination(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination)
+        {
+            Combination = combination;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithLeftExpression(string leftExpression)
+        {
+            if (leftExpression is null) throw new System.ArgumentNullException(nameof(leftExpression));
+            LeftExpression = leftExpression;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithOperator(string @operator)
+        {
+            if (@operator is null) throw new System.ArgumentNullException(nameof(@operator));
+            Operator = @operator;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithRightExpression(string rightExpression)
+        {
+            if (rightExpression is null) throw new System.ArgumentNullException(nameof(rightExpression));
+            RightExpression = rightExpression;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithStartGroup(bool startGroup = true)
+        {
+            StartGroup = startGroup;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithEndGroup(bool endGroup = true)
+        {
+            EndGroup = endGroup;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Condition(ConditionBuilder entity)
+        {
+            return entity.Build();
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
     public partial class ExpressionEvaluatorSettingsBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         private System.IFormatProvider _formatProvider;

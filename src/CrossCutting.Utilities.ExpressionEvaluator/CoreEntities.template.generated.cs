@@ -10,6 +10,57 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator
 {
+    public partial record Condition
+    {
+        public System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> Combination
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string LeftExpression
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Operator
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string RightExpression
+        {
+            get;
+        }
+
+        public bool StartGroup
+        {
+            get;
+        }
+
+        public bool EndGroup
+        {
+            get;
+        }
+
+        public Condition(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination, string leftExpression, string @operator, string rightExpression, bool startGroup, bool endGroup)
+        {
+            this.Combination = combination;
+            this.LeftExpression = leftExpression;
+            this.Operator = @operator;
+            this.RightExpression = rightExpression;
+            this.StartGroup = startGroup;
+            this.EndGroup = endGroup;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder(this);
+        }
+    }
     public partial record ExpressionEvaluatorSettings
     {
         public System.IFormatProvider FormatProvider

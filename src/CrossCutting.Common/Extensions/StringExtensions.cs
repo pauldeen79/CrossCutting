@@ -257,7 +257,7 @@ public static class StringExtensions
         return result.Select(x => trimItems ? x.Trim() : x).ToArray();
     }
 
-    public static IEnumerable<string> SplitDelimited(this string instance, string[] delimiters, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false, bool addDelimiters = false)
+    public static string[] SplitDelimited(this string instance, string[] delimiters, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false, bool addDelimiters = false, StringComparison stringComparison = StringComparison.CurrentCulture)
     {
         ArgumentGuard.IsNotNull(delimiters, nameof(delimiters));
 
@@ -289,7 +289,7 @@ public static class StringExtensions
             if (!insideQualifier)
             {
                 foreach (var delimiter in from string delimiter in delimiters
-                                          where instance.Substring(i).StartsWith(delimiter)
+                                          where instance.Substring(i).StartsWith(delimiter, stringComparison)
                                           select delimiter)
                 {
                     AddCurrentSegmentToResults(trimItems, addDelimiters, results, currentSegment, delimiter);
@@ -313,7 +313,7 @@ NextChar:;
 
         AddLastSegmentIfNotEmpty(trimItems, results, currentSegment);
 
-        return results;
+        return results.ToArray();
     }
 
     private static void AddLastSegmentIfNotEmpty(bool trimItems, List<string> results, List<char> currentSegment)

@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
 public class ExpressionEvaluatorContext
 {
