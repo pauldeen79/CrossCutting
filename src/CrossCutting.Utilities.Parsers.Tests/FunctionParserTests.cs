@@ -83,6 +83,23 @@ public sealed class FunctionParserTests : IDisposable
     }
 
     [Fact]
+    public void Can_Parse_Single_Function_With_Quoted_Arguments_Containing_Function_Names()
+    {
+        // Arrange
+        var input = "MYFUNCTION(\"MYSUBFUNCTION(a,b)\",c)";
+
+        // Act
+        var result = CreateSut().Parse(input, CultureInfo.InvariantCulture);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value!.Name.ShouldBe("MYFUNCTION");
+        result.Value.Arguments.Count.ShouldBe(2);
+        result.Value.Arguments.ShouldAllBe(x => x is ExpressionArgument);
+        result.Value.Arguments.OfType<ExpressionArgument>().Select(x => x.Expression.ToStringWithDefault()).ToArray().ShouldBeEquivalentTo(new[] { "MYSUBFUNCTION(a,b)", "c" });
+    }
+
+    [Fact]
     public void Can_Parse_Single_Function_With_Quoted_Arguments_That_Are_Surrounded_With_Spaces()
     {
         // Arrange
