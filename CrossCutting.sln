@@ -57,6 +57,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.ProcessingPipe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.ProcessingPipeline.Tests", "src\CrossCutting.ProcessingPipeline.Tests\CrossCutting.ProcessingPipeline.Tests.csproj", "{E4126E36-573F-4964-9D69-D50AC6B8DF84}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.ExpressionEvaluator", "src\CrossCutting.Utilities.ExpressionEvaluator\CrossCutting.Utilities.ExpressionEvaluator.csproj", "{89921288-C669-4234-BAD1-9D436DC902E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.ExpressionEvaluator.Tests", "src\CrossCutting.Utilities.ExpressionEvaluator.Tests\CrossCutting.Utilities.ExpressionEvaluator.Tests.csproj", "{A63C82B2-EDDC-47D1-867D-01059615E83B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +155,14 @@ Global
 		{E4126E36-573F-4964-9D69-D50AC6B8DF84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4126E36-573F-4964-9D69-D50AC6B8DF84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4126E36-573F-4964-9D69-D50AC6B8DF84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89921288-C669-4234-BAD1-9D436DC902E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89921288-C669-4234-BAD1-9D436DC902E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89921288-C669-4234-BAD1-9D436DC902E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89921288-C669-4234-BAD1-9D436DC902E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A63C82B2-EDDC-47D1-867D-01059615E83B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A63C82B2-EDDC-47D1-867D-01059615E83B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A63C82B2-EDDC-47D1-867D-01059615E83B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A63C82B2-EDDC-47D1-867D-01059615E83B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
