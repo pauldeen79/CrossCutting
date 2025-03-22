@@ -301,7 +301,9 @@ public static class StringExtensions
                         currentSegment.Clear();
                     }
 
+#pragma warning disable S127 // "for" loop stop conditions should be invariant
                     i += delimiter.Length - 1;// Skip the delimiter
+#pragma warning restore S127 // "for" loop stop conditions should be invariant
 #pragma warning disable S907 // "goto" statement should not be used
                     goto NextChar;// Move to next character
 #pragma warning restore S907 // "goto" statement should not be used
