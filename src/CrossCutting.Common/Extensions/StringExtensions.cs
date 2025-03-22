@@ -295,7 +295,7 @@ public static class StringExtensions
                     // Add current segment to results
                     if (currentSegment.Count > 0)
                     {
-                        results.Add(trimItems ? new string(currentSegment.ToArray()).Trim() : new string(currentSegment.ToArray()));
+                        results.Add(GetResultItem(trimItems, currentSegment));
                         currentSegment.Clear();
                     }
 
@@ -319,11 +319,16 @@ NextChar:;
         // Add last segment if not empty
         if (currentSegment.Count > 0)
         {
-            results.Add(trimItems ? new string(currentSegment.ToArray()).Trim() : new string(currentSegment.ToArray()));
+            results.Add(GetResultItem(trimItems, currentSegment));
         }
 
         return results;
     }
+
+    private static string GetResultItem(bool trimItems, List<char> currentSegment)
+        => trimItems
+            ? new string([.. currentSegment]).Trim()
+            : new string([.. currentSegment]);
 
     private static bool IsStartOfNextDelimiter(int index, string instance, string delimiter, bool inText)
     {
