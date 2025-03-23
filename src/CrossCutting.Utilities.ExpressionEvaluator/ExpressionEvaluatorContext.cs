@@ -24,13 +24,29 @@ public class ExpressionEvaluatorContext
     public bool IsInQuoteMap(int index)
         => QuoteMap.Any(x => x.StartIndex < index && x.EndIndex > index);
 
-    public bool FindAllOccurencedNotWithinQuotes(char[] charactersToFind)
+    public bool FindAllOccurencedNotWithinQuotes(IEnumerable<char> charactersToFind)
     {
         charactersToFind = ArgumentGuard.IsNotNull(charactersToFind, nameof(charactersToFind));
 
         foreach (var comparisonChar in charactersToFind)
         {
             var occurences = Expression.FindAllOccurences(comparisonChar).Where(x => !IsInQuoteMap(x)).ToArray();
+            if (occurences.Length > 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool FindAllOccurencedNotWithinQuotes(IEnumerable<string> stringsToFind, StringComparison stringComparison)
+    {
+        stringsToFind = ArgumentGuard.IsNotNull(stringsToFind, nameof(stringsToFind));
+
+        foreach (var comparisonString in stringsToFind)
+        {
+            var occurences = Expression.FindAllOccurences(comparisonString, stringComparison).Where(x => !IsInQuoteMap(x)).ToArray();
             if (occurences.Length > 0)
             {
                 return true;

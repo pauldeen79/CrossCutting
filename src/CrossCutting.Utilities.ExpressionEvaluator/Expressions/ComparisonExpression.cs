@@ -4,7 +4,6 @@ public class ComparisonExpression : IExpression<bool>
 {
     private const string LeftExpression = nameof(LeftExpression);
     private const string RightExpression = nameof(RightExpression);
-    private static readonly char[] ComparisonChars = ['<', '>', '=', '!'];
     private static readonly Dictionary<string, Func<OperatorContext, Result<bool>>> Operators = new Dictionary<string, Func<OperatorContext, Result<bool>>>
     {
         { "<=", @operator => SmallerOrEqualThan.Evaluate(@operator.Results.GetValue(LeftExpression), @operator.Results.GetValue(RightExpression)) },
@@ -15,7 +14,7 @@ public class ComparisonExpression : IExpression<bool>
         { "!=", @operator => NotEqual.Evaluate(@operator.Results.GetValue(LeftExpression), @operator.Results.GetValue(RightExpression), @operator.StringComparison) },
     };
 
-    private static readonly string[] Delimiters = ["<=", ">=", "<", ">", "==", "!=", " AND ", " OR "];
+    private static readonly string[] Delimiters = Operators.Keys.Concat([" AND ", " OR "]).ToArray();
 
     public int Order => 10;
 
@@ -71,7 +70,7 @@ public class ComparisonExpression : IExpression<bool>
         var conditions = new List<Condition>();
         var combination = string.Empty;
 
-        var foundAnyComparisonCharacter = context.FindAllOccurencedNotWithinQuotes(ComparisonChars);
+        var foundAnyComparisonCharacter = context.FindAllOccurencedNotWithinQuotes(Operators.Select(x => x.Key), StringComparison.Ordinal);
         if (!foundAnyComparisonCharacter)
         {
             return Result.Continue<List<Condition>>();
@@ -94,8 +93,7 @@ public class ComparisonExpression : IExpression<bool>
 
         for (var i = 0; i < parts.Length; i += 4)
         {
-            //verify that:
-            //-parts[i] is the left expression
+            //-parts[i + 0] is the left expression
             //-parts[i + 1] is the operator
             //-parts[i + 2] is the right expression
             //-parts[i + 3] is the combination for the next condition
