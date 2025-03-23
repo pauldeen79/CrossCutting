@@ -23,7 +23,10 @@ public class ComparisonExpression : IExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (!context.Expression.Any(ComparisonChars.Contains))
+        var charactersToFind = ComparisonChars;
+
+        var foundAnyComparisonCharacter =  context.FindAllOccurencedNotWithinQuotes(charactersToFind);
+        if (!foundAnyComparisonCharacter)
         {
             return Result.Continue<object?>();
         }

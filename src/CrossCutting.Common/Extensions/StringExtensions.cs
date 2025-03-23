@@ -462,4 +462,22 @@ NextChar:;
 
         return instance.Substring(0, instance.Length - find.Length) + replace;
     }
+
+    public static IEnumerable<int> FindAllOccurences(this string instance, char characterToFind)
+    {
+        int index = -1;
+
+        do
+        {
+            index = instance.IndexOf(characterToFind, index + 1);
+            
+            if (index == -1)
+            {
+                break;
+            }
+            
+            yield return index;
+
+        } while (true);
+    }
 }
