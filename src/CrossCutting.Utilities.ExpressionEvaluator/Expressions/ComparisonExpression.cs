@@ -23,28 +23,8 @@ public class ComparisonExpression : IExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var foundAnyComparisonCharacter =  context.FindAllOccurencedNotWithinQuotes(ComparisonChars);
-        if (!foundAnyComparisonCharacter)
-        {
-            return Result.Continue<object?>();
-        }
-
-        var parts = context.Expression.SplitDelimited(Delimiters, '"', true, true, true, StringComparison.OrdinalIgnoreCase);
-        if (parts.Length <= 2)
-        {
-            // Messed up expression! Should always be <left expression> <operator> <right expression>
-            return Result.Continue<object?>();
-        }
-
-        var itemCountIsCorrect = (parts.Length - 3) % 4 == 0;
-        if (!itemCountIsCorrect)
-        {
-            return Result.Invalid<object?>("Comparison expression has invalid number of parts");
-        }
-
-        // Now, we need to convert this array of parts to conditions
-        var conditionsResult = ParseConditions(parts);
-        if (!conditionsResult.IsSuccessful())
+        var conditionsResult = ParseConditions(context);
+        if (!conditionsResult.IsSuccessful() || conditionsResult.Status == ResultStatus.Continue)
         {
             return Result.FromExistingResult<object?>(conditionsResult);
         }
@@ -64,10 +44,31 @@ public class ComparisonExpression : IExpression
         return Result.NotImplemented<Type>();
     }
 
-    private static Result<List<Condition>> ParseConditions(string[] parts)
+    private static Result<List<Condition>> ParseConditions(ExpressionEvaluatorContext context)
     {
         var conditions = new List<Condition>();
         var combination = string.Empty;
+
+        var foundAnyComparisonCharacter = context.FindAllOccurencedNotWithinQuotes(ComparisonChars);
+        if (!foundAnyComparisonCharacter)
+        {
+            return Result.Continue<List<Condition>>();
+        }
+
+        // First get array of parts
+        var parts = context.Expression.SplitDelimited(Delimiters, '"', true, true, true, StringComparison.OrdinalIgnoreCase);
+        if (parts.Length <= 2)
+        {
+            // Messed up expression! Should always be <left expression> <operator> <right expression>
+            return Result.Continue<List<Condition>>();
+        }
+
+        // Now, we need to convert this array of parts to conditions
+        var itemCountIsCorrect = (parts.Length - 3) % 4 == 0;
+        if (!itemCountIsCorrect)
+        {
+            return Result.Invalid<List<Condition>>("Comparison expression has invalid number of parts");
+        }
 
         for (var i = 0; i < parts.Length; i += 4)
         {
