@@ -3,14 +3,14 @@
 public class ComparisonExpression : IExpression
 {
     private static readonly char[] ComparisonChars = ['<', '>', '=', '!'];
-    private static readonly Dictionary<string, Func<Dictionary<string, Result>, StringComparison, Result<bool>>> Operators = new Dictionary<string, Func<Dictionary<string, Result>, StringComparison, Result<bool>>>
+    private static readonly Dictionary<string, Func<OperatorContext, Result<bool>>> Operators = new Dictionary<string, Func<OperatorContext, Result<bool>>>
     {
-        { "<=", (results, _) => SmallerOrEqualThan.Evaluate(results.GetValue("LeftExpression"), results.GetValue("RightExpression")) },
-        { ">=", (results, _) => GreaterOrEqualThan.Evaluate(results.GetValue("LeftExpression"), results.GetValue("RightExpression")) },
-        { "<", (results, _) => SmallerThan.Evaluate(results.GetValue("LeftExpression"), results.GetValue("RightExpression")) },
-        { ">", (results, _) => GreaterThan.Evaluate(results.GetValue("LeftExpression"), results.GetValue("RightExpression")) },
-        { "==", (results, stringComparison) => Equal.Evaluate(results.GetValue("LeftExpression"), results.GetValue("RightExpression"), stringComparison) },
-        { "!=", (results, stringComparison) => NotEqual.Evaluate(results.GetValue("LeftExpression"), results.GetValue("RightExpression"), stringComparison) },
+        { "<=", @operator => SmallerOrEqualThan.Evaluate(@operator.Results.GetValue("LeftExpression"), @operator.Results.GetValue("RightExpression")) },
+        { ">=", @operator => GreaterOrEqualThan.Evaluate(@operator.Results.GetValue("LeftExpression"), @operator.Results.GetValue("RightExpression")) },
+        { "<", @operator => SmallerThan.Evaluate(@operator.Results.GetValue("LeftExpression"), @operator.Results.GetValue("RightExpression")) },
+        { ">", @operator => GreaterThan.Evaluate(@operator.Results.GetValue("LeftExpression"), @operator.Results.GetValue("RightExpression")) },
+        { "==", @operator => Equal.Evaluate(@operator.Results.GetValue("LeftExpression"), @operator.Results.GetValue("RightExpression"), @operator.StringComparison) },
+        { "!=", @operator => NotEqual.Evaluate(@operator.Results.GetValue("LeftExpression"), @operator.Results.GetValue("RightExpression"), @operator.StringComparison) },
     };
 
     private static readonly string[] Delimiters = ["<=", ">=", "<", ">", "==", "!=", "AND", "OR"];
@@ -92,7 +92,7 @@ public class ComparisonExpression : IExpression
                 endGroup = true;
             }
 
-            var queryOperatorSuccess = Operators.TryGetValue(@operator, out var queryOperator);
+            var queryOperatorSuccess = Operators.ContainsKey(@operator);
             if (!queryOperatorSuccess)
             {
                 // Messed up expression! Should always be <left expression> <operator> <right expression>
@@ -107,7 +107,7 @@ public class ComparisonExpression : IExpression
                     _ => default(Combination?)
                 })
                 .WithLeftExpression(leftExpression)
-                .WithOperator(queryOperator)
+                .WithOperator(@operator)
                 .WithRightExpression(rightExpression)
                 .WithStartGroup(startGroup)
                 .WithEndGroup(endGroup)
@@ -187,7 +187,7 @@ public class ComparisonExpression : IExpression
             return Result.FromExistingResult<bool>(error);
         }
 
-        return condition.Operator.Invoke(results, context.Settings.StringComparison);
+        return Operators[condition.Operator].Invoke(new OperatorContextBuilder().WithResults(results).WithStringComparison(context.Settings.StringComparison));
     }
 
     private static bool EvaluateBooleanExpression(string expression)

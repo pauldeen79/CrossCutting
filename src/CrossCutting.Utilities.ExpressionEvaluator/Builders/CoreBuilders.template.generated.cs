@@ -16,7 +16,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         private string _leftExpression;
 
-        private System.Func<System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result>,StringComparison,CrossCutting.Common.Results.Result<bool>> _operator;
+        private string _operator;
 
         private string _rightExpression;
 
@@ -56,7 +56,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Func<System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result>,StringComparison,CrossCutting.Common.Results.Result<bool>> Operator
+        public string Operator
         {
             get
             {
@@ -64,7 +64,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<System.Collections.Generic.Dictionary<System.String,CrossCutting.Common.Results.Result>,System.StringComparison,CrossCutting.Common.Results.Result<System.Boolean>>>.Default.Equals(_operator!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_operator!, value!);
                 _operator = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Operator));
             }
@@ -127,7 +127,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         public ConditionBuilder()
         {
             _leftExpression = string.Empty;
-            _operator = default(System.Func<System.Collections.Generic.Dictionary<System.String,CrossCutting.Common.Results.Result>,System.StringComparison,CrossCutting.Common.Results.Result<System.Boolean>>)!;
+            _operator = string.Empty;
             _rightExpression = string.Empty;
             SetDefaultValues();
         }
@@ -152,7 +152,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             return this;
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithOperator(System.Func<System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result>,StringComparison,CrossCutting.Common.Results.Result<bool>> @operator)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithOperator(string @operator)
         {
             if (@operator is null) throw new System.ArgumentNullException(nameof(@operator));
             Operator = @operator;
@@ -985,6 +985,86 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         }
 
         public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorTypeArgument(FunctionDescriptorTypeArgumentBuilder entity)
+        {
+            return entity.Build();
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+    public partial class OperatorContextBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result> _results;
+
+        private System.StringComparison _stringComparison;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result> Results
+        {
+            get
+            {
+                return _results;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.Dictionary<System.String,CrossCutting.Common.Results.Result>>.Default.Equals(_results!, value!);
+                _results = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Results));
+            }
+        }
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
+        public OperatorContextBuilder(CrossCutting.Utilities.ExpressionEvaluator.OperatorContext source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _results = source.Results;
+            _stringComparison = source.StringComparison;
+        }
+
+        public OperatorContextBuilder()
+        {
+            _results = default(System.Collections.Generic.Dictionary<System.String,CrossCutting.Common.Results.Result>)!;
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.OperatorContext Build()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.OperatorContext(Results, StringComparison);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.OperatorContextBuilder WithResults(System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result> results)
+        {
+            if (results is null) throw new System.ArgumentNullException(nameof(results));
+            Results = results;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.OperatorContextBuilder WithStringComparison(System.StringComparison stringComparison)
+        {
+            StringComparison = stringComparison;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.OperatorContext(OperatorContextBuilder entity)
         {
             return entity.Build();
         }

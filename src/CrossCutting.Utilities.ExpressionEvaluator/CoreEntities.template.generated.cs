@@ -24,7 +24,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Func<System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result>,StringComparison,CrossCutting.Common.Results.Result<bool>> Operator
+        public string Operator
         {
             get;
         }
@@ -45,7 +45,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public Condition(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination, string leftExpression, System.Func<System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result>,StringComparison,CrossCutting.Common.Results.Result<bool>> @operator, string rightExpression, bool startGroup, bool endGroup)
+        public Condition(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination, string leftExpression, string @operator, string rightExpression, bool startGroup, bool endGroup)
         {
             this.Combination = combination;
             this.LeftExpression = leftExpression;
@@ -290,6 +290,31 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
         public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorTypeArgumentBuilder ToBuilder()
         {
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorTypeArgumentBuilder(this);
+        }
+    }
+    public partial record OperatorContext
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result> Results
+        {
+            get;
+        }
+
+        public System.StringComparison StringComparison
+        {
+            get;
+        }
+
+        public OperatorContext(System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result> results, System.StringComparison stringComparison)
+        {
+            this.Results = results;
+            this.StringComparison = stringComparison;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.OperatorContextBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.OperatorContextBuilder(this);
         }
     }
 }
