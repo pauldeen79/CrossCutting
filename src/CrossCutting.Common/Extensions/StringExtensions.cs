@@ -465,15 +465,12 @@ NextChar:;
 
     public static IEnumerable<int> FindAllOccurences(this string instance, char characterToFind)
     {
+        ArgumentGuard.IsNotNullOrEmpty(characterToFind.ToString(), nameof(characterToFind));
+
         int index = -1;
 
         do
         {
-            if (index + 1 >= instance.Length)
-            {
-                break;
-            }
-
             index = instance.IndexOf(characterToFind, index + 1);
             
             if (index == -1)
@@ -488,15 +485,12 @@ NextChar:;
 
     public static IEnumerable<int> FindAllOccurences(this string instance, string stringToFind, StringComparison comparisonType)
     {
+        ArgumentGuard.IsNotNullOrEmpty(stringToFind, nameof(stringToFind));
+
         int index = -1;
 
         do
         {
-            if (index + 1 >= instance.Length)
-            {
-                break;
-            }
-
             index = instance.IndexOf(stringToFind, index + 1, comparisonType);
 
             if (index == -1)
