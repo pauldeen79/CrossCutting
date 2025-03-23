@@ -5,8 +5,8 @@ public abstract class TestBase
     protected IExpressionEvaluator Evaluator { get; }
     protected IExpression Expression { get; }
 
-    protected ExpressionEvaluatorContext CreateContext(string expression)
-        => new ExpressionEvaluatorContext(expression, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), null, Evaluator);
+    protected ExpressionEvaluatorContext CreateContext(string expression, object? context = null)
+        => new ExpressionEvaluatorContext(expression, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), context, Evaluator);
 
     protected TestBase()
     {
@@ -29,6 +29,11 @@ public abstract class TestBase
     {
         var expression = callInfo.ArgAt<string>(0);
         var settings = callInfo.ArgAt<ExpressionEvaluatorSettings>(1);
+
+        if (expression == "null")
+        {
+            return Result.Success(default(object?));
+        }
 
         if (expression == "context")
         {

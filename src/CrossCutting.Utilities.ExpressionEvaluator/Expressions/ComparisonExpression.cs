@@ -32,12 +32,7 @@ public class ComparisonExpression : IExpression<bool>
             return Result.FromExistingResult<bool>(conditionsResult);
         }
 
-        if (ConditionsAreSimple(conditionsResult.Value!))
-        {
-            return EvaluateSimpleConditions(context, conditionsResult.Value!);
-        }
-
-        return EvaluateComplexConditions(context, conditionsResult.Value!);
+        return Evaluate(context, conditionsResult.Transform(x => new Comparison(x)));
     }
 
     public Result<Type> Validate(ExpressionEvaluatorContext context)
@@ -51,6 +46,24 @@ public class ComparisonExpression : IExpression<bool>
         }
 
         return ValidateConditions(context, conditionsResult.Value!);
+    }
+
+    public static Result<bool> Evaluate(ExpressionEvaluatorContext context, Result<Comparison> comparisonResult)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+        comparisonResult = ArgumentGuard.IsNotNull(comparisonResult, nameof(comparisonResult));
+
+        if (!comparisonResult.IsSuccessful() || comparisonResult.Status == ResultStatus.Continue)
+        {
+            return Result.FromExistingResult<bool>(comparisonResult);
+        }
+
+        if (ConditionsAreSimple(comparisonResult.Value!.Conditions))
+        {
+            return EvaluateSimpleConditions(context, comparisonResult.Value!.Conditions);
+        }
+
+        return EvaluateComplexConditions(context, comparisonResult.Value!.Conditions);
     }
 
     private static Result<List<Condition>> ParseConditions(ExpressionEvaluatorContext context)

@@ -10,6 +10,26 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator
 {
+    public partial record Comparison
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Condition> Conditions
+        {
+            get;
+        }
+
+        public Comparison(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Condition> conditions)
+        {
+            this.Conditions = conditions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.Condition>(conditions);
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonBuilder(this);
+        }
+    }
     public partial record Condition
     {
         public System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> Combination

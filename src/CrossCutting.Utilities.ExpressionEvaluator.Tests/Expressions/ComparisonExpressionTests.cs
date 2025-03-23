@@ -420,4 +420,45 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
             result.ErrorMessage.ShouldBe("Kaboom");
         }
     }
+
+    public class Evaluate_Comparison : ComparisonExpressionTests
+    {
+        [Fact]
+        public void Returns_Correct_Result_On_Complex_Query_With_All_Types_Of_Combinations()
+        {
+            // Arrange
+            var conditions = new Comparison(
+            [
+                new ConditionBuilder().WithStartGroup().WithLeftExpression("1").WithOperator("==").WithRightExpression("1"),
+                new ConditionBuilder().WithCombination(Combination.And).WithLeftExpression("2").WithOperator("!=").WithRightExpression("1").WithEndGroup(),
+                new ConditionBuilder().WithCombination(Combination.Or).WithLeftExpression("\"some text\"").WithOperator(">").WithRightExpression("\"zzz\"")
+            ]);
+            var context = CreateContext("Dummy"); // only needed for recursive calls
+
+            // Act
+            var result = ComparisonExpression.Evaluate(context, Result.Success(conditions));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(true);
+        }
+
+        [Fact]
+        public void Can_Perform_Null_Check()
+        {
+            // Arrange
+            var conditions = new Comparison(
+            [
+                new ConditionBuilder().WithLeftExpression("context").WithOperator("==").WithRightExpression("null")
+            ]);
+            var context = CreateContext("Dummy", context: null); // only needed for recursive calls. explicitly setting context to null
+
+            // Act
+            var result = ComparisonExpression.Evaluate(context, Result.Success(conditions));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(true);
+        }
+    }
 }

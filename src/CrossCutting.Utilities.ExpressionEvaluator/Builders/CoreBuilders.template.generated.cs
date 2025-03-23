@@ -10,6 +10,71 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 {
+    public partial class ComparisonBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder> _conditions;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder> Conditions
+        {
+            get
+            {
+                return _conditions;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder>>.Default.Equals(_conditions!, value!);
+                _conditions = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Conditions));
+            }
+        }
+
+        public ComparisonBuilder(CrossCutting.Utilities.ExpressionEvaluator.Comparison source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _conditions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder>();
+            if (source.Conditions is not null) foreach (var item in source.Conditions.Select(x => x.ToBuilder())) _conditions.Add(item);
+        }
+
+        public ComparisonBuilder()
+        {
+            _conditions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder>();
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Comparison Build()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Comparison(Conditions.Select(x => x.Build()!).ToList().AsReadOnly());
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonBuilder AddConditions(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder> conditions)
+        {
+            if (conditions is null) throw new System.ArgumentNullException(nameof(conditions));
+            return AddConditions(conditions.ToArray());
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonBuilder AddConditions(params CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder[] conditions)
+        {
+            if (conditions is null) throw new System.ArgumentNullException(nameof(conditions));
+            foreach (var item in conditions) Conditions.Add(item);
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Comparison(ComparisonBuilder entity)
+        {
+            return entity.Build();
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
     public partial class ConditionBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         private System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> _combination;
