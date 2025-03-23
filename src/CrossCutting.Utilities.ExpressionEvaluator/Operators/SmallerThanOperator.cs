@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Operators;
 
-public class SmallerThanOperator : IOperator, IOperatorBuilder
+public class SmallerThanOperator : IOperator
 {
     public string OperatorExpression => "<";
 
@@ -12,7 +12,4 @@ public class SmallerThanOperator : IOperator, IOperatorBuilder
 
         return SmallerThan.Evaluate(context.LeftExpression, context.RightExpression);
     }
-
-    public IOperatorBuilder ToBuilder() => this;
-    public IOperator Build() => this;
 }

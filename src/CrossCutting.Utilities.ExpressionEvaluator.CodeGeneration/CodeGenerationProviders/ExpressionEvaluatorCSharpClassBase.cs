@@ -30,4 +30,7 @@ public abstract class ExpressionEvaluatorCSharpClassBase(IPipelineService pipeli
                     .WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue)
             );
     }
+
+    // Kind of hack, which is needed to skip builder pattern on IOperator interface :)
+    protected override string[] GetCodeGenerationBuilderAbstractionsTypeConversionNamespaces() => Array.Empty<string>();
 }

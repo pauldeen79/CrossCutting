@@ -130,7 +130,7 @@ public class ComparisonExpression : IExpression<bool>
                     _ => default(Combination?)
                 })
                 .WithLeftExpression(leftExpression)
-                .WithOperator(queryOperator.ToBuilder())
+                .WithOperator(queryOperator)
                 .WithRightExpression(rightExpression)
                 .WithStartGroup(startGroup)
                 .WithEndGroup(endGroup)

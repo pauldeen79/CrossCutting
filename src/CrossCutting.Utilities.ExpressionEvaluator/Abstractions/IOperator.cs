@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 
-public interface IOperator : IBuildableEntity<IOperatorBuilder>
+public interface IOperator
 {
     int Order { get; }
     string OperatorExpression { get; }

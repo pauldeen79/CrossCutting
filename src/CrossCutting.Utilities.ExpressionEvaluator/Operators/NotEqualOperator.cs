@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Operators;
 
-public class NotEqualOperator : IOperator, IOperatorBuilder
+public class NotEqualOperator : IOperator
 {
     public string OperatorExpression => "!=";
 
@@ -12,7 +12,4 @@ public class NotEqualOperator : IOperator, IOperatorBuilder
 
         return NotEqual.Evaluate(context.LeftExpression, context.RightExpression, context.StringComparison);
     }
-
-    public IOperatorBuilder ToBuilder() => this;
-    public IOperator Build() => this;
 }
