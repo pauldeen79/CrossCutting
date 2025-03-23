@@ -465,8 +465,6 @@ NextChar:;
 
     public static IEnumerable<int> FindAllOccurences(this string instance, char characterToFind)
     {
-        ArgumentGuard.IsNotNullOrEmpty(characterToFind.ToString(), nameof(characterToFind));
-
         int index = -1;
 
         do
