@@ -8,3 +8,8 @@ public interface IExpression
 
     Result<object?> Evaluate(ExpressionEvaluatorContext context);
 }
+
+public interface IExpression<T> : IExpression
+{
+    Result<T> EvaluateTyped(ExpressionEvaluatorContext context);
+}

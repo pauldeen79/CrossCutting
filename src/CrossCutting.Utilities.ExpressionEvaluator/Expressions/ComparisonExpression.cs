@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public class ComparisonExpression : IExpression
+public class ComparisonExpression : IExpression<bool>
 {
     private const string LeftExpression = nameof(LeftExpression);
     private const string RightExpression = nameof(RightExpression);
@@ -20,13 +20,16 @@ public class ComparisonExpression : IExpression
     public int Order => 10;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+        => EvaluateTyped(context).Transform<object?>(x => x);
+
+    public Result<bool> EvaluateTyped(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         var conditionsResult = ParseConditions(context);
         if (!conditionsResult.IsSuccessful() || conditionsResult.Status == ResultStatus.Continue)
         {
-            return Result.FromExistingResult<object?>(conditionsResult);
+            return Result.FromExistingResult<bool>(conditionsResult);
         }
 
         if (ConditionsAreSimple(conditionsResult.Value!))
@@ -139,26 +142,26 @@ public class ComparisonExpression : IExpression
             || x.StartGroup
             || x.EndGroup);
 
-    private static Result<object?> EvaluateSimpleConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
+    private static Result<bool> EvaluateSimpleConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
     {
         foreach (var condition in conditions)
         {
             var itemResult = EvaluateCondition(condition, context);
             if (!itemResult.IsSuccessful())
             {
-                return Result.FromExistingResult<object?>(itemResult);
+                return itemResult;
             }
 
             if (!itemResult.Value)
             {
-                return itemResult.Transform<object?>(x => x);
+                return itemResult;
             }
         }
 
-        return Result.Success<object?>(true);
+        return Result.Success(true);
     }
 
-    private static Result<object?> EvaluateComplexConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
+    private static Result<bool> EvaluateComplexConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
     {
         var builder = new StringBuilder();
         foreach (var evaluatable in conditions)
@@ -173,14 +176,14 @@ public class ComparisonExpression : IExpression
             var itemResult = EvaluateCondition(evaluatable, context);
             if (!itemResult.IsSuccessful())
             {
-                return Result.FromExistingResult<object?>(itemResult);
+                return itemResult;
             }
             builder.Append(prefix)
                    .Append(itemResult.Value ? "T" : "F")
                    .Append(suffix);
         }
 
-        return Result.Success<object?>(EvaluateBooleanExpression(builder.ToString()));
+        return Result.Success(EvaluateBooleanExpression(builder.ToString()));
     }
 
     private static Result<bool> EvaluateCondition(Condition condition, ExpressionEvaluatorContext context)
@@ -204,11 +207,6 @@ public class ComparisonExpression : IExpression
         foreach (var evaluatable in conditions)
         {
             var itemResult = ValidateCondition(evaluatable, context);
-            if (!itemResult.IsSuccessful())
-            {
-                return Result.FromExistingResult<Type>(itemResult);
-            }
-
             if (!itemResult.IsSuccessful())
             {
                 return itemResult;

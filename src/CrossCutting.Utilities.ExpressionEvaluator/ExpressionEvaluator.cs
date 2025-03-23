@@ -26,6 +26,23 @@ public class ExpressionEvaluator : IExpressionEvaluator
                 ?? Result.Invalid<object?>($"Unknown expression type found in fragment: {expression}");
     }
 
+    public Result<T> EvaluateTyped<T>(string expression, ExpressionEvaluatorSettings settings, object? context)
+    {
+        if (string.IsNullOrEmpty(expression))
+        {
+            return Result.Invalid<T>("Value is required");
+        }
+
+        var expressionContext = new ExpressionEvaluatorContext(expression, settings, context, this);
+
+        return _expressions
+            .Select(x => x is IExpression<T> typedExpression
+                ? typedExpression.EvaluateTyped(expressionContext)
+                : x.Evaluate(expressionContext).TryCast<T>())
+            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.Invalid<T>($"Unknown expression type found in fragment: {expression}");
+    }
+
     public Result<Type> Validate(string expression, ExpressionEvaluatorSettings settings, object? context)
     {
         if (string.IsNullOrEmpty(expression))
