@@ -1,6 +1,52 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 
-public abstract class TestBase<T> where T : new()
+public abstract class TestBase
+{
+    protected IExpressionEvaluator Evaluator { get; }
+
+    protected ExpressionEvaluatorContext CreateContext(string expression)
+        => new ExpressionEvaluatorContext(expression, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), null, Evaluator);
+
+    protected TestBase()
+    {
+        Evaluator = Substitute.For<IExpressionEvaluator>();
+        // This mock assumes that everything between quotes is 
+        Evaluator
+            .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
+            .Returns(Process);
+    }
+
+    // Test stub for expression evaluation, that supports strings, integers and booleans (last two by using TryParse) as well as the context keyword
+    private static Result<object?> Process(CallInfo callInfo)
+    {
+        var expression = callInfo.ArgAt<string>(0);
+        var settings = callInfo.ArgAt<ExpressionEvaluatorSettings>(1);
+
+        if (expression == "context")
+        {
+            return Result.Success(callInfo.ArgAt<object?>(2));
+        }
+
+        if (expression.StartsWith('"') && expression.StartsWith('"'))
+        {
+            return Result.Success<object?>(expression.Substring(1, expression.Length - 2));
+        }
+
+        if (int.TryParse(expression, settings.FormatProvider, out int number))
+        {
+            return Result.Success<object?>(number);
+        }
+
+        if (bool.TryParse(expression, out bool boolean))
+        {
+            return Result.Success<object?>(boolean);
+        }
+
+        return Result.NotSupported<object?>($"Unsupported expression: {expression}");
+    }
+}
+
+public abstract class TestBase<T> : TestBase where T : new()
 {
     protected static T CreateSut() => new T();
 }

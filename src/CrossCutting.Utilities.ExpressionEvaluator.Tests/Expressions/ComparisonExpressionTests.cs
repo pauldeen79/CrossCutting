@@ -2,19 +2,6 @@
 
 public class ComparisonExpressionTests : TestBase<ComparisonExpression>
 {
-    protected IExpressionEvaluator Evaluator { get; }
-
-    protected ComparisonExpressionTests()
-    {
-        Evaluator = Substitute.For<IExpressionEvaluator>();
-        Evaluator
-            .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
-            .Returns(Result.Success<object?>("some result"));
-    }
-
-    protected ExpressionEvaluatorContext CreateContext(string expression)
-        => new ExpressionEvaluatorContext(expression, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), null, Evaluator);
-
     public class Evaluate : ComparisonExpressionTests
     {
         [Fact]
@@ -50,7 +37,7 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
         {
             // Arrange
             var sut = CreateSut();
-            var expression = "MyField == \"some value\" AND MyField.Length >";
+            var expression = "context == \"some value\" AND context.Length >";
 
             // Act
             var result = sut.Evaluate(CreateContext(expression));
@@ -65,7 +52,7 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
         {
             // Arrange
             var sut = CreateSut();
-            var expression = "MyField AND \"some value\" AND B == C";
+            var expression = "context AND \"some value\" AND B == C";
 
             // Act
             var result = sut.Evaluate(CreateContext(expression));
@@ -80,7 +67,7 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
         {
             // Arrange
             var sut = CreateSut();
-            var expression = "MyField == \"some value\"";
+            var expression = "context == \"some value\"";
 
             // Act
             var result = sut.Evaluate(CreateContext(expression));
@@ -94,7 +81,7 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
         {
             // Arrange
             var sut = CreateSut();
-            var expression = "MyField == \"some value\" AND MyField.Length > 1";
+            var expression = "context == \"some value\" AND context.Length > 1";
 
             // Act
             var result = sut.Evaluate(CreateContext(expression));
@@ -108,7 +95,7 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
         {
             // Arrange
             var sut = CreateSut();
-            var expression = "(MyField == \"some value\" AND MyField.Length > 1) OR MyField == \"some other value\"";
+            var expression = "(context >= 1 AND context <= 5) OR context == \"some other value\"";
 
             // Act
             var result = sut.Evaluate(CreateContext(expression));
