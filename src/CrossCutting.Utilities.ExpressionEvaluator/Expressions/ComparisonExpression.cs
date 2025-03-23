@@ -29,7 +29,7 @@ public class ComparisonExpression : IExpression
             return Result.FromExistingResult<object?>(conditionsResult);
         }
 
-        if (CanEvaluateSimpleConditions(conditionsResult.Value!))
+        if (ConditionsAreSimple(conditionsResult.Value!))
         {
             return EvaluateSimpleConditions(context, conditionsResult.Value!);
         }
@@ -39,9 +39,15 @@ public class ComparisonExpression : IExpression
 
     public Result<Type> Validate(ExpressionEvaluatorContext context)
     {
-        ArgumentGuard.IsNotNull(context, nameof(context));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return Result.NotImplemented<Type>();
+        var conditionsResult = ParseConditions(context);
+        if (!conditionsResult.IsSuccessful() || conditionsResult.Status == ResultStatus.Continue)
+        {
+            return Result.FromExistingResult<Type>(conditionsResult);
+        }
+
+        return ValidateConditions(context, conditionsResult.Value!);
     }
 
     private static Result<List<Condition>> ParseConditions(ExpressionEvaluatorContext context)
@@ -127,7 +133,7 @@ public class ComparisonExpression : IExpression
         return Result.Success(conditions);
     }
 
-    private static bool CanEvaluateSimpleConditions(IEnumerable<Condition> conditions)
+    private static bool ConditionsAreSimple(IEnumerable<Condition> conditions)
         => !conditions.Any(x =>
             (x.Combination ?? Combination.And) == Combination.Or
             || x.StartGroup
@@ -135,9 +141,9 @@ public class ComparisonExpression : IExpression
 
     private static Result<object?> EvaluateSimpleConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
     {
-        foreach (var evaluatable in conditions)
+        foreach (var condition in conditions)
         {
-            var itemResult = IsItemValid(evaluatable, context);
+            var itemResult = EvaluateCondition(condition, context);
             if (!itemResult.IsSuccessful())
             {
                 return Result.FromExistingResult<object?>(itemResult);
@@ -164,7 +170,7 @@ public class ComparisonExpression : IExpression
 
             var prefix = evaluatable.StartGroup ? "(" : string.Empty;
             var suffix = evaluatable.EndGroup ? ")" : string.Empty;
-            var itemResult = IsItemValid(evaluatable, context);
+            var itemResult = EvaluateCondition(evaluatable, context);
             if (!itemResult.IsSuccessful())
             {
                 return Result.FromExistingResult<object?>(itemResult);
@@ -177,7 +183,7 @@ public class ComparisonExpression : IExpression
         return Result.Success<object?>(EvaluateBooleanExpression(builder.ToString()));
     }
 
-    private static Result<bool> IsItemValid(Condition condition, ExpressionEvaluatorContext context)
+    private static Result<bool> EvaluateCondition(Condition condition, ExpressionEvaluatorContext context)
     {
         var results = new ResultDictionaryBuilder()
             .Add(LeftExpression, () => context.Evaluator.Evaluate(condition.LeftExpression, context.Settings, context.Context))
@@ -191,6 +197,41 @@ public class ComparisonExpression : IExpression
         }
 
         return Operators[condition.Operator].Invoke(new OperatorContextBuilder().WithResults(results).WithStringComparison(context.Settings.StringComparison));
+    }
+
+    private static Result<Type> ValidateConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
+    {
+        foreach (var evaluatable in conditions)
+        {
+            var itemResult = ValidateCondition(evaluatable, context);
+            if (!itemResult.IsSuccessful())
+            {
+                return Result.FromExistingResult<Type>(itemResult);
+            }
+
+            if (!itemResult.IsSuccessful())
+            {
+                return itemResult;
+            }
+        }
+
+        return Result.Success(typeof(bool));
+    }
+
+    private static Result<Type> ValidateCondition(Condition condition, ExpressionEvaluatorContext context)
+    {
+        var results = new ResultDictionaryBuilder()
+            .Add(LeftExpression, () => context.Evaluator.Validate(condition.LeftExpression, context.Settings, context.Context))
+            .Add(RightExpression, () => context.Evaluator.Validate(condition.RightExpression, context.Settings, context.Context))
+            .Build();
+
+        var error = results.GetError();
+        if (error is not null)
+        {
+            return Result.FromExistingResult<Type>(error);
+        }
+
+        return Result.NoContent<Type>();
     }
 
     private static bool EvaluateBooleanExpression(string expression)

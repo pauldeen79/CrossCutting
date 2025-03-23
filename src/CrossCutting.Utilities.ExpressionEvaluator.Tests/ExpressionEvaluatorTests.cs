@@ -50,4 +50,52 @@ public class ExpressionEvaluatorTests : TestBase
             result.ErrorMessage.ShouldBe("Unknown expression type found in fragment: expression");
         }
     }
+
+    public class Validate : ExpressionEvaluatorTests
+    {
+        [Fact]
+        public void Returns_Invalid_When_Expression_Is_Null_Or_Empty()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Validate(string.Empty, new ExpressionEvaluatorSettingsBuilder());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Value is required");
+        }
+
+        [Fact]
+        public void Returns_First_Understood_Result_When_Not_Equal_To_Continue()
+        {
+            // Arrange
+            // Note that this setup simulates the implementation of ComparisonExpression
+            Expression.Validate(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(typeof(bool)));
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Validate("expression", new ExpressionEvaluatorSettingsBuilder());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(bool));
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Expression_Is_Not_Understood()
+        {
+            // Arrange
+            Expression.Validate(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Continue<Type>());
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Validate("expression", new ExpressionEvaluatorSettingsBuilder());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown expression type found in fragment: expression");
+        }
+    }
 }

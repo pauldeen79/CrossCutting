@@ -12,10 +12,12 @@ public abstract class TestBase
     {
         // Initialize evaluator
         Evaluator = Substitute.For<IExpressionEvaluator>();
-        // This mock assumes that everything between quotes is 
         Evaluator
             .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
-            .Returns(Process);
+            .Returns(Evaluate);
+        Evaluator
+            .Validate (Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
+            .Returns(x => Evaluate(x).Transform(_ => typeof(bool)));
 
         // Initialize expression
         Expression = Substitute.For<IExpression>();
@@ -23,7 +25,7 @@ public abstract class TestBase
     }
 
     // Test stub for expression evaluation, that supports strings, integers and booleans (last two by using TryParse) as well as the context keyword
-    private static Result<object?> Process(CallInfo callInfo)
+    private static Result<object?> Evaluate(CallInfo callInfo)
     {
         var expression = callInfo.ArgAt<string>(0);
         var settings = callInfo.ArgAt<ExpressionEvaluatorSettings>(1);
@@ -31,6 +33,11 @@ public abstract class TestBase
         if (expression == "context")
         {
             return Result.Success(callInfo.ArgAt<object?>(2));
+        }
+
+        if (expression == "context.Length")
+        {
+            return Result.Success<object?>((callInfo.ArgAt<object?>(2)?.ToString() ?? string.Empty).Length);
         }
 
         if (expression == "error")
