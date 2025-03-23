@@ -53,7 +53,7 @@ public class ComparisonExpression : IExpression<bool>
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         comparisonResult = ArgumentGuard.IsNotNull(comparisonResult, nameof(comparisonResult));
 
-        if (!comparisonResult.IsSuccessful() || comparisonResult.Status == ResultStatus.Continue)
+        if (!comparisonResult.IsSuccessful())
         {
             return Result.FromExistingResult<bool>(comparisonResult);
         }
