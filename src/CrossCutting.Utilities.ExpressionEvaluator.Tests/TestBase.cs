@@ -3,17 +3,23 @@
 public abstract class TestBase
 {
     protected IExpressionEvaluator Evaluator { get; }
+    protected IExpression Expression { get; }
 
     protected ExpressionEvaluatorContext CreateContext(string expression)
         => new ExpressionEvaluatorContext(expression, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), null, Evaluator);
 
     protected TestBase()
     {
+        // Initialize evaluator
         Evaluator = Substitute.For<IExpressionEvaluator>();
         // This mock assumes that everything between quotes is 
         Evaluator
             .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
             .Returns(Process);
+
+        // Initialize expression
+        Expression = Substitute.For<IExpression>();
+        // Note that you have to setup Evaluate and Validate method yourself
     }
 
     // Test stub for expression evaluation, that supports strings, integers and booleans (last two by using TryParse) as well as the context keyword

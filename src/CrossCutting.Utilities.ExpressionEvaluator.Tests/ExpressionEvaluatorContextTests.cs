@@ -15,7 +15,7 @@ public class ExpressionEvaluatorContextTests : TestBase
         }
 
         [Fact]
-        public void QuoteMap_Gets_Filled_When_Quotes_Are_Present()
+        public void Fills_QuoteMap_When_Quotes_Are_Present()
         {
             // Arrange
             var expression = "\"Some \" + \"quoted \" + \"expression\"";
@@ -28,7 +28,7 @@ public class ExpressionEvaluatorContextTests : TestBase
         }
 
         [Fact]
-        public void QuoteMap_Does_Not_Get_Filled_When_Quotes_Are_Not_Present()
+        public void Leaves_QuoteMap_Empty_When_Quotes_Are_Not_Present()
         {
             // Arrange
             var expression = "SomeUnquotedExpression()";

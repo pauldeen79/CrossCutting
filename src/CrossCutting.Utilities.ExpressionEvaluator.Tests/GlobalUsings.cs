@@ -5,6 +5,7 @@ global using CrossCutting.Common.Results;
 global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
 global using CrossCutting.Utilities.ExpressionEvaluator.Expressions;
+global using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 global using NSubstitute;
 global using NSubstitute.Core;
 global using Shouldly;
