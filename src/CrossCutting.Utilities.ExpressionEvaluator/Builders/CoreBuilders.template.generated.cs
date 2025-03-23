@@ -16,7 +16,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         private string _leftExpression;
 
-        private string _operator;
+        private System.Func<System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result>,StringComparison,CrossCutting.Common.Results.Result<bool>> _operator;
 
         private string _rightExpression;
 
@@ -56,7 +56,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string Operator
+        public System.Func<System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result>,StringComparison,CrossCutting.Common.Results.Result<bool>> Operator
         {
             get
             {
@@ -64,7 +64,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_operator!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<System.Collections.Generic.Dictionary<System.String,CrossCutting.Common.Results.Result>,System.StringComparison,CrossCutting.Common.Results.Result<System.Boolean>>>.Default.Equals(_operator!, value!);
                 _operator = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Operator));
             }
@@ -127,7 +127,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         public ConditionBuilder()
         {
             _leftExpression = string.Empty;
-            _operator = string.Empty;
+            _operator = default(System.Func<System.Collections.Generic.Dictionary<System.String,CrossCutting.Common.Results.Result>,System.StringComparison,CrossCutting.Common.Results.Result<System.Boolean>>)!;
             _rightExpression = string.Empty;
             SetDefaultValues();
         }
@@ -152,7 +152,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             return this;
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithOperator(string @operator)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithOperator(System.Func<System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result>,StringComparison,CrossCutting.Common.Results.Result<bool>> @operator)
         {
             if (@operator is null) throw new System.ArgumentNullException(nameof(@operator));
             Operator = @operator;

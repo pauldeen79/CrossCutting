@@ -3,18 +3,17 @@
 public class ComparisonExpression : IExpression
 {
     private static readonly char[] ComparisonChars = ['<', '>', '=', '!'];
-    private static readonly string[] Operators = ["<=", ">=", "<", ">", "==", "!="];
-    private static readonly string[] Delimiters = ["<=", ">=", "<", ">", "==", "!=", "AND", "OR"];
+    private static readonly Dictionary<string, Func<Dictionary<string, Result>, StringComparison, Result<bool>>> Operators = new Dictionary<string, Func<Dictionary<string, Result>, StringComparison, Result<bool>>>
+    {
+        { "<=", (results, _) => SmallerOrEqualThan.Evaluate(results.GetValue("LeftExpression"), results.GetValue("RightExpression")) },
+        { ">=", (results, _) => GreaterOrEqualThan.Evaluate(results.GetValue("LeftExpression"), results.GetValue("RightExpression")) },
+        { "<", (results, _) => SmallerThan.Evaluate(results.GetValue("LeftExpression"), results.GetValue("RightExpression")) },
+        { ">", (results, _) => GreaterThan.Evaluate(results.GetValue("LeftExpression"), results.GetValue("RightExpression")) },
+        { "==", (results, stringComparison) => Equal.Evaluate(results.GetValue("LeftExpression"), results.GetValue("RightExpression"), stringComparison) },
+        { "!=", (results, stringComparison) => NotEqual.Evaluate(results.GetValue("LeftExpression"), results.GetValue("RightExpression"), stringComparison) },
+    };
 
-    private static readonly IEnumerable<IOperator> _operators =
-    [
-        new SmallerThanOrEqualOperator(),
-        new GreaterThanOrEqualOperator(),
-        new SmallerThanOperator(),
-        new GreaterThanOperator(),
-        new EqualsOperator(),
-        new NotEqualsOperator()
-    ];
+    private static readonly string[] Delimiters = ["<=", ">=", "<", ">", "==", "!=", "AND", "OR"];
 
     public int Order => 10;
 
@@ -93,8 +92,8 @@ public class ComparisonExpression : IExpression
                 endGroup = true;
             }
 
-            var queryOperator = Operators.FirstOrDefault(x => x == @operator);
-            if (queryOperator is null)
+            var queryOperatorSuccess = Operators.TryGetValue(@operator, out var queryOperator);
+            if (!queryOperatorSuccess)
             {
                 // Messed up expression! Should always be <left expression> <operator> <right expression>
                 return Result.Invalid<List<Condition>>("Comparison expression is malformed");
@@ -176,10 +175,20 @@ public class ComparisonExpression : IExpression
     }
 
     private static Result<bool> IsItemValid(Condition condition, ExpressionEvaluatorContext context)
-        => _operators
-            .Select(x => x.Evaluate(condition, context))
-            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.NotSupported<bool>($"Unsupported operator: {condition.Operator}");
+    {
+        var results = new ResultDictionaryBuilder()
+            .Add("LeftExpression", () => context.Evaluator.Evaluate(condition.LeftExpression, context.Settings, context.Context))
+            .Add("RightExpression", () => context.Evaluator.Evaluate(condition.RightExpression, context.Settings, context.Context))
+            .Build();
+
+        var error = results.GetError();
+        if (error is not null)
+        {
+            return Result.FromExistingResult<bool>(error);
+        }
+
+        return condition.Operator.Invoke(results, context.Settings.StringComparison);
+    }
 
     private static bool EvaluateBooleanExpression(string expression)
     {

@@ -24,7 +24,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string Operator
+        public System.Func<System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result>,StringComparison,CrossCutting.Common.Results.Result<bool>> Operator
         {
             get;
         }
@@ -45,7 +45,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public Condition(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination, string leftExpression, string @operator, string rightExpression, bool startGroup, bool endGroup)
+        public Condition(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination, string leftExpression, System.Func<System.Collections.Generic.Dictionary<string,CrossCutting.Common.Results.Result>,StringComparison,CrossCutting.Common.Results.Result<bool>> @operator, string rightExpression, bool startGroup, bool endGroup)
         {
             this.Combination = combination;
             this.LeftExpression = leftExpression;
