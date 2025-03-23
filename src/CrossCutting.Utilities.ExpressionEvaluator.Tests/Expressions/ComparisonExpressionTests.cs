@@ -103,5 +103,104 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
         }
+
+        [Fact]
+        public void Returns_Correct_Value_On_SmallerThanOrEqual_Operator()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var expression = "1 <= 2";
+
+            // Act
+            var result = sut.Evaluate(CreateContext(expression));
+
+            // Assert
+            result.Value.ShouldBeEquivalentTo(true);
+        }
+
+        [Fact]
+        public void Returns_Correct_Value_On_SmallerThan_Operator()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var expression = "1 < 2";
+
+            // Act
+            var result = sut.Evaluate(CreateContext(expression));
+
+            // Assert
+            result.Value.ShouldBeEquivalentTo(true);
+        }
+
+        [Fact]
+        public void Returns_Correct_Value_On_GreaterThanOrEqual_Operator()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var expression = "2 >= 1";
+
+            // Act
+            var result = sut.Evaluate(CreateContext(expression));
+
+            // Assert
+            result.Value.ShouldBeEquivalentTo(true);
+        }
+
+        [Fact]
+        public void Returns_Correct_Value_On_GreaterThan_Operator()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var expression = "2 > 1";
+
+            // Act
+            var result = sut.Evaluate(CreateContext(expression));
+
+            // Assert
+            result.Value.ShouldBeEquivalentTo(true);
+        }
+
+        [Fact]
+        public void Returns_Correct_Value_On_Equal_Operator()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var expression = "1 == 1";
+
+            // Act
+            var result = sut.Evaluate(CreateContext(expression));
+
+            // Assert
+            result.Value.ShouldBeEquivalentTo(true);
+        }
+
+        [Fact]
+        public void Returns_Correct_Value_On_NotEqual_Operator()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var expression = "2 != 1";
+
+            // Act
+            var result = sut.Evaluate(CreateContext(expression));
+
+            // Assert
+            result.Value.ShouldBeEquivalentTo(true);
+        }
+
+        [Fact]
+        public void Returns_Non_Successful_Result_From_Inner_Expression()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var expression = "2 != error";
+
+            // Act
+            var result = sut.Evaluate(CreateContext(expression));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
     }
 }

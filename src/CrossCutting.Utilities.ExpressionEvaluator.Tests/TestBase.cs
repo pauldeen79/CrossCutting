@@ -27,6 +27,11 @@ public abstract class TestBase
             return Result.Success(callInfo.ArgAt<object?>(2));
         }
 
+        if (expression == "error")
+        {
+            return Result.Error<object?>("Kaboom");
+        }
+
         if (expression.StartsWith('"') && expression.StartsWith('"'))
         {
             return Result.Success<object?>(expression.Substring(1, expression.Length - 2));

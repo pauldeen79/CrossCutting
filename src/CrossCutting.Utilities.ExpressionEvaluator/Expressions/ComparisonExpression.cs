@@ -13,7 +13,7 @@ public class ComparisonExpression : IExpression
         { "!=", @operator => NotEqual.Evaluate(@operator.Results.GetValue("LeftExpression"), @operator.Results.GetValue("RightExpression"), @operator.StringComparison) },
     };
 
-    private static readonly string[] Delimiters = ["<=", ">=", "<", ">", "==", "!=", "AND", "OR"];
+    private static readonly string[] Delimiters = ["<=", ">=", "<", ">", "==", "!=", " AND ", " OR "];
 
     public int Order => 10;
 
@@ -43,7 +43,7 @@ public class ComparisonExpression : IExpression
         var conditionsResult = ParseConditions(parts);
         if (!conditionsResult.IsSuccessful())
         {
-            return conditionsResult.Transform<object?>(x => x);
+            return Result.FromExistingResult<object?>(conditionsResult);
         }
 
         if (CanEvaluateSimpleConditions(conditionsResult.Value!))
@@ -127,8 +127,7 @@ public class ComparisonExpression : IExpression
         => !conditions.Any(x =>
             (x.Combination ?? Combination.And) == Combination.Or
             || x.StartGroup
-            || x.EndGroup
-        );
+            || x.EndGroup);
 
     private static Result<object?> EvaluateSimpleConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
     {
@@ -137,7 +136,7 @@ public class ComparisonExpression : IExpression
             var itemResult = IsItemValid(evaluatable, context);
             if (!itemResult.IsSuccessful())
             {
-                return itemResult.Transform<object?>(x => x);
+                return Result.FromExistingResult<object?>(itemResult);
             }
 
             if (!itemResult.Value)
@@ -164,7 +163,7 @@ public class ComparisonExpression : IExpression
             var itemResult = IsItemValid(evaluatable, context);
             if (!itemResult.IsSuccessful())
             {
-                return itemResult.Transform<object?>(x => x);
+                return Result.FromExistingResult<object?>(itemResult);
             }
             builder.Append(prefix)
                    .Append(itemResult.Value ? "T" : "F")
