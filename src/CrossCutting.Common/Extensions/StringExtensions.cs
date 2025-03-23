@@ -469,6 +469,11 @@ NextChar:;
 
         do
         {
+            if (index + 1 >= instance.Length)
+            {
+                break;
+            }
+
             index = instance.IndexOf(characterToFind, index + 1);
             
             if (index == -1)
@@ -487,6 +492,11 @@ NextChar:;
 
         do
         {
+            if (index + 1 >= instance.Length)
+            {
+                break;
+            }
+
             index = instance.IndexOf(stringToFind, index + 1, comparisonType);
 
             if (index == -1)

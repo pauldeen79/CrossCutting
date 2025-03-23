@@ -5,5 +5,11 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddExpressionEvaluator(this IServiceCollection services)
         => services
             .AddSingleton<IExpressionEvaluator, ExpressionEvaluator>()
-            .AddSingleton<IExpression, ComparisonExpression>();
+            .AddSingleton<IExpression, ComparisonExpression>()
+            .AddSingleton<IOperator, EqualOperator>()
+            .AddSingleton<IOperator, GreaterOrEqualThanOperator>()
+            .AddSingleton<IOperator, GreaterThanOperator>()
+            .AddSingleton<IOperator, NotEqualOperator>()
+            .AddSingleton<IOperator, SmallerOrEqualThanOperator>()
+            .AddSingleton<IOperator, SmallerThanOperator>();
 }

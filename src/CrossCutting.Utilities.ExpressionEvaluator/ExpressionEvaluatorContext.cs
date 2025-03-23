@@ -28,9 +28,9 @@ public class ExpressionEvaluatorContext
     {
         charactersToFind = ArgumentGuard.IsNotNull(charactersToFind, nameof(charactersToFind));
 
-        foreach (var comparisonChar in charactersToFind)
+        foreach (var characterToFind in charactersToFind)
         {
-            var occurences = Expression.FindAllOccurences(comparisonChar).Where(x => !IsInQuoteMap(x)).ToArray();
+            var occurences = Expression.FindAllOccurences(characterToFind).Where(x => !IsInQuoteMap(x)).ToArray();
             if (occurences.Length > 0)
             {
                 return true;
@@ -44,9 +44,9 @@ public class ExpressionEvaluatorContext
     {
         stringsToFind = ArgumentGuard.IsNotNull(stringsToFind, nameof(stringsToFind));
 
-        foreach (var comparisonString in stringsToFind)
+        foreach (var stringToFind in stringsToFind)
         {
-            var occurences = Expression.FindAllOccurences(comparisonString, stringComparison).Where(x => !IsInQuoteMap(x)).ToArray();
+            var occurences = Expression.FindAllOccurences(stringToFind, stringComparison).Where(x => !IsInQuoteMap(x)).ToArray();
             if (occurences.Length > 0)
             {
                 return true;

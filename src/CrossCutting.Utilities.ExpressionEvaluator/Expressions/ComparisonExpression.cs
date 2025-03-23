@@ -2,24 +2,41 @@
 
 public class ComparisonExpression : IExpression<bool>
 {
-    private const string LeftExpression = nameof(LeftExpression);
-    private const string RightExpression = nameof(RightExpression);
-    private static readonly Dictionary<string, Func<OperatorContext, Result<bool>>> Operators = new Dictionary<string, Func<OperatorContext, Result<bool>>>
-    {
-        { "<=", @operator => SmallerOrEqualThan.Evaluate(@operator.Results.GetValue(LeftExpression), @operator.Results.GetValue(RightExpression)) },
-        { ">=", @operator => GreaterOrEqualThan.Evaluate(@operator.Results.GetValue(LeftExpression), @operator.Results.GetValue(RightExpression)) },
-        { "<", @operator => SmallerThan.Evaluate(@operator.Results.GetValue(LeftExpression), @operator.Results.GetValue(RightExpression)) },
-        { ">", @operator => GreaterThan.Evaluate(@operator.Results.GetValue(LeftExpression), @operator.Results.GetValue(RightExpression)) },
-        { "==", @operator => Equal.Evaluate(@operator.Results.GetValue(LeftExpression), @operator.Results.GetValue(RightExpression), @operator.StringComparison) },
-        { "!=", @operator => NotEqual.Evaluate(@operator.Results.GetValue(LeftExpression), @operator.Results.GetValue(RightExpression), @operator.StringComparison) },
-    };
+    private readonly string[] _delimiters;
+    private readonly string[] _operatorExpressions;
+    private readonly IOperator[] _operators;
 
-    private static readonly string[] Delimiters = Operators.Keys.Concat([" AND ", " OR "]).ToArray();
+    public ComparisonExpression(IEnumerable<IOperator> operators)
+    {
+        operators = ArgumentGuard.IsNotNull(operators, nameof(operators));
+
+        _operators = operators.OrderBy(x => x.Order).ToArray();
+        _delimiters = _operators.Select(x => x.OperatorExpression).Concat([" AND ", " OR "]).ToArray();
+        _operatorExpressions = _operators.Select(x => x.OperatorExpression).ToArray();
+    }
 
     public int Order => 10;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
         => EvaluateTyped(context).Transform<object?>(x => x);
+
+    public Result<bool> Evaluate(ExpressionEvaluatorContext context, Result<Comparison> comparisonResult)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+        comparisonResult = ArgumentGuard.IsNotNull(comparisonResult, nameof(comparisonResult));
+
+        if (!comparisonResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<bool>(comparisonResult);
+        }
+
+        if (ConditionsAreSimple(comparisonResult.Value!.Conditions))
+        {
+            return EvaluateSimpleConditions(context, comparisonResult.Value!.Conditions);
+        }
+
+        return EvaluateComplexConditions(context, comparisonResult.Value!.Conditions);
+    }
 
     public Result<bool> EvaluateTyped(ExpressionEvaluatorContext context)
     {
@@ -47,37 +64,19 @@ public class ComparisonExpression : IExpression<bool>
         return ValidateConditions(context, conditionsResult.Value!);
     }
 
-    public static Result<bool> Evaluate(ExpressionEvaluatorContext context, Result<Comparison> comparisonResult)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-        comparisonResult = ArgumentGuard.IsNotNull(comparisonResult, nameof(comparisonResult));
-
-        if (!comparisonResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<bool>(comparisonResult);
-        }
-
-        if (ConditionsAreSimple(comparisonResult.Value!.Conditions))
-        {
-            return EvaluateSimpleConditions(context, comparisonResult.Value!.Conditions);
-        }
-
-        return EvaluateComplexConditions(context, comparisonResult.Value!.Conditions);
-    }
-
-    private static Result<List<Condition>> ParseConditions(ExpressionEvaluatorContext context)
+    private Result<List<Condition>> ParseConditions(ExpressionEvaluatorContext context)
     {
         var conditions = new List<Condition>();
         var combination = string.Empty;
 
-        var foundAnyComparisonCharacter = context.FindAllOccurencedNotWithinQuotes(Operators.Select(x => x.Key), StringComparison.Ordinal);
+        var foundAnyComparisonCharacter = context.FindAllOccurencedNotWithinQuotes(_operatorExpressions, StringComparison.Ordinal);
         if (!foundAnyComparisonCharacter)
         {
             return Result.Continue<List<Condition>>();
         }
 
         // First get array of parts
-        var parts = context.Expression.SplitDelimited(Delimiters, '"', true, true, true, StringComparison.OrdinalIgnoreCase);
+        var parts = context.Expression.SplitDelimited(_delimiters, '"', true, true, true, StringComparison.OrdinalIgnoreCase);
         if (parts.Length <= 2)
         {
             // Messed up expression! Should always be <left expression> <operator> <right expression>
@@ -116,8 +115,8 @@ public class ComparisonExpression : IExpression<bool>
                 endGroup = true;
             }
 
-            var queryOperatorSuccess = Operators.ContainsKey(@operator);
-            if (!queryOperatorSuccess)
+            var queryOperator = GetOperator(@operator);
+            if (queryOperator is null)
             {
                 // Messed up expression! Should always be <left expression> <operator> <right expression>
                 return Result.Invalid<List<Condition>>("Comparison expression is malformed");
@@ -147,13 +146,16 @@ public class ComparisonExpression : IExpression<bool>
         return Result.Success(conditions);
     }
 
+    private IOperator GetOperator(string @operator)
+        => _operators.FirstOrDefault(x => x.OperatorExpression.Equals(@operator.Trim(), StringComparison.OrdinalIgnoreCase));
+
     private static bool ConditionsAreSimple(IEnumerable<Condition> conditions)
         => !conditions.Any(x =>
             (x.Combination ?? Combination.And) == Combination.Or
             || x.StartGroup
             || x.EndGroup);
 
-    private static Result<bool> EvaluateSimpleConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
+    private Result<bool> EvaluateSimpleConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
     {
         foreach (var condition in conditions)
         {
@@ -172,7 +174,7 @@ public class ComparisonExpression : IExpression<bool>
         return Result.Success(true);
     }
 
-    private static Result<bool> EvaluateComplexConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
+    private Result<bool> EvaluateComplexConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
     {
         var builder = new StringBuilder();
         foreach (var evaluatable in conditions)
@@ -197,11 +199,11 @@ public class ComparisonExpression : IExpression<bool>
         return Result.Success(EvaluateBooleanExpression(builder.ToString()));
     }
 
-    private static Result<bool> EvaluateCondition(Condition condition, ExpressionEvaluatorContext context)
+    private Result<bool> EvaluateCondition(Condition condition, ExpressionEvaluatorContext context)
     {
         var results = new ResultDictionaryBuilder()
-            .Add(LeftExpression, () => context.Evaluator.Evaluate(condition.LeftExpression, context.Settings, context.Context))
-            .Add(RightExpression, () => context.Evaluator.Evaluate(condition.RightExpression, context.Settings, context.Context))
+            .Add(Constants.LeftExpression, () => context.Evaluator.Evaluate(condition.LeftExpression, context.Settings, context.Context))
+            .Add(Constants.RightExpression, () => context.Evaluator.Evaluate(condition.RightExpression, context.Settings, context.Context))
             .Build();
 
         var error = results.GetError();
@@ -210,7 +212,13 @@ public class ComparisonExpression : IExpression<bool>
             return Result.FromExistingResult<bool>(error);
         }
 
-        return Operators[condition.Operator].Invoke(new OperatorContextBuilder().WithResults(results).WithStringComparison(context.Settings.StringComparison));
+        var queryOperator = GetOperator(condition.Operator);
+        if (queryOperator is null)
+        {
+            return Result.Invalid<bool>($"Unknown query operator: {condition.Operator}");
+        }
+
+        return queryOperator.Evaluate(new OperatorContextBuilder().WithResults(results).WithStringComparison(context.Settings.StringComparison));
     }
 
     private static Result<Type> ValidateConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
@@ -230,8 +238,8 @@ public class ComparisonExpression : IExpression<bool>
     private static Result<Type> ValidateCondition(Condition condition, ExpressionEvaluatorContext context)
     {
         var results = new ResultDictionaryBuilder()
-            .Add(LeftExpression, () => context.Evaluator.Validate(condition.LeftExpression, context.Settings, context.Context))
-            .Add(RightExpression, () => context.Evaluator.Validate(condition.RightExpression, context.Settings, context.Context))
+            .Add(Constants.LeftExpression, () => context.Evaluator.Validate(condition.LeftExpression, context.Settings, context.Context))
+            .Add(Constants.RightExpression, () => context.Evaluator.Validate(condition.RightExpression, context.Settings, context.Context))
             .Build();
 
         var error = results.GetError();

@@ -1,7 +1,9 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Expressions;
 
-public class ComparisonExpressionTests : TestBase<ComparisonExpression>
+public class ComparisonExpressionTests : TestBase
 {
+    protected static ComparisonExpression CreateSut() => new ComparisonExpression([new EqualOperator(), new GreaterOrEqualThanOperator(), new GreaterThanOperator(), new NotEqualOperator(), new SmallerOrEqualThanOperator(), new SmallerThanOperator()]);
+
     public class Evaluate : ComparisonExpressionTests
     {
         [Fact]
@@ -428,9 +430,10 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
         {
             // Arrange
             var context = CreateContext("Dummy"); // only needed for recursive calls
+            var sut = CreateSut();
 
             // Act
-            var result = ComparisonExpression.Evaluate(context, Result.Error<Comparison>("Kaboom"));
+            var result = sut.Evaluate(context, Result.Error<Comparison>("Kaboom"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -448,9 +451,10 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
                 new ConditionBuilder().WithCombination(Combination.Or).WithLeftExpression("\"some text\"").WithOperator(">").WithRightExpression("\"zzz\"")
             ]));
             var context = CreateContext("Dummy"); // only needed for recursive calls
+            var sut = CreateSut();
 
             // Act
-            var result = ComparisonExpression.Evaluate(context, conditionsResult);
+            var result = sut.Evaluate(context, conditionsResult);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -466,9 +470,10 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
                 new ConditionBuilder().WithLeftExpression("context").WithOperator("==").WithRightExpression("null")
             ]));
             var context = CreateContext("Dummy", context: null); // only needed for recursive calls. explicitly setting context to null
+            var sut = CreateSut();
 
             // Act
-            var result = ComparisonExpression.Evaluate(context, conditionsResult);
+            var result = sut.Evaluate(context, conditionsResult);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
