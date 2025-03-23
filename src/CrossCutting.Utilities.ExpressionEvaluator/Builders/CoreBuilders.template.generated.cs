@@ -81,7 +81,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         private string _leftExpression;
 
-        private string _operator;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IOperatorBuilder _operator;
 
         private string _rightExpression;
 
@@ -121,7 +121,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string Operator
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IOperatorBuilder Operator
         {
             get
             {
@@ -129,7 +129,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_operator!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IOperatorBuilder>.Default.Equals(_operator!, value!);
                 _operator = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Operator));
             }
@@ -183,7 +183,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _combination = source.Combination;
             _leftExpression = source.LeftExpression;
-            _operator = source.Operator;
+            _operator = source.Operator?.ToBuilder()!;
             _rightExpression = source.RightExpression;
             _startGroup = source.StartGroup;
             _endGroup = source.EndGroup;
@@ -192,14 +192,14 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         public ConditionBuilder()
         {
             _leftExpression = string.Empty;
-            _operator = string.Empty;
+            _operator = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IOperatorBuilder)!;
             _rightExpression = string.Empty;
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.ExpressionEvaluator.Condition Build()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Condition(Combination, LeftExpression, Operator, RightExpression, StartGroup, EndGroup);
+            return new CrossCutting.Utilities.ExpressionEvaluator.Condition(Combination, LeftExpression, Operator?.Build()!, RightExpression, StartGroup, EndGroup);
         }
 
         partial void SetDefaultValues();
@@ -217,7 +217,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             return this;
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithOperator(string @operator)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithOperator(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IOperatorBuilder @operator)
         {
             if (@operator is null) throw new System.ArgumentNullException(nameof(@operator));
             Operator = @operator;

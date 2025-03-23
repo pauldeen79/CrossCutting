@@ -430,10 +430,9 @@ public class ComparisonExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("Dummy"); // only needed for recursive calls
-            var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context, Result.Error<Comparison>("Kaboom"));
+            var result = ComparisonExpression.Evaluate(context, Result.Error<Comparison>("Kaboom"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -446,15 +445,14 @@ public class ComparisonExpressionTests : TestBase
             // Arrange
             var conditionsResult = Result.Success(new Comparison(
             [
-                new ConditionBuilder().WithStartGroup().WithLeftExpression("1").WithOperator("==").WithRightExpression("1"),
-                new ConditionBuilder().WithCombination(Combination.And).WithLeftExpression("2").WithOperator("!=").WithRightExpression("1").WithEndGroup(),
-                new ConditionBuilder().WithCombination(Combination.Or).WithLeftExpression("\"some text\"").WithOperator(">").WithRightExpression("\"zzz\"")
+                new ConditionBuilder().WithStartGroup().WithLeftExpression("1").WithOperator(new EqualOperator()).WithRightExpression("1"),
+                new ConditionBuilder().WithCombination(Combination.And).WithLeftExpression("2").WithOperator(new NotEqualOperator()).WithRightExpression("1").WithEndGroup(),
+                new ConditionBuilder().WithCombination(Combination.Or).WithLeftExpression("\"some text\"").WithOperator(new GreaterThanOperator()).WithRightExpression("\"zzz\"")
             ]));
             var context = CreateContext("Dummy"); // only needed for recursive calls
-            var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context, conditionsResult);
+            var result = ComparisonExpression.Evaluate(context, conditionsResult);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -467,13 +465,12 @@ public class ComparisonExpressionTests : TestBase
             // Arrange
             var conditionsResult = Result.Success(new Comparison(
             [
-                new ConditionBuilder().WithLeftExpression("context").WithOperator("==").WithRightExpression("null")
+                new ConditionBuilder().WithLeftExpression("context").WithOperator(new EqualOperator()).WithRightExpression("null")
             ]));
             var context = CreateContext("Dummy", context: null); // only needed for recursive calls. explicitly setting context to null
-            var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context, conditionsResult);
+            var result = ComparisonExpression.Evaluate(context, conditionsResult);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

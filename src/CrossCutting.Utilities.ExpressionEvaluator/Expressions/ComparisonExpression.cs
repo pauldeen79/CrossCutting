@@ -20,7 +20,7 @@ public class ComparisonExpression : IExpression<bool>
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
         => EvaluateTyped(context).Transform<object?>(x => x);
 
-    public Result<bool> Evaluate(ExpressionEvaluatorContext context, Result<Comparison> comparisonResult)
+    public static Result<bool> Evaluate(ExpressionEvaluatorContext context, Result<Comparison> comparisonResult)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         comparisonResult = ArgumentGuard.IsNotNull(comparisonResult, nameof(comparisonResult));
@@ -130,7 +130,7 @@ public class ComparisonExpression : IExpression<bool>
                     _ => default(Combination?)
                 })
                 .WithLeftExpression(leftExpression)
-                .WithOperator(@operator)
+                .WithOperator(queryOperator.ToBuilder())
                 .WithRightExpression(rightExpression)
                 .WithStartGroup(startGroup)
                 .WithEndGroup(endGroup)
@@ -155,7 +155,7 @@ public class ComparisonExpression : IExpression<bool>
             || x.StartGroup
             || x.EndGroup);
 
-    private Result<bool> EvaluateSimpleConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
+    private static Result<bool> EvaluateSimpleConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
     {
         foreach (var condition in conditions)
         {
@@ -174,7 +174,7 @@ public class ComparisonExpression : IExpression<bool>
         return Result.Success(true);
     }
 
-    private Result<bool> EvaluateComplexConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
+    private static Result<bool> EvaluateComplexConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
     {
         var builder = new StringBuilder();
         foreach (var evaluatable in conditions)
@@ -199,7 +199,7 @@ public class ComparisonExpression : IExpression<bool>
         return Result.Success(EvaluateBooleanExpression(builder.ToString()));
     }
 
-    private Result<bool> EvaluateCondition(Condition condition, ExpressionEvaluatorContext context)
+    private static Result<bool> EvaluateCondition(Condition condition, ExpressionEvaluatorContext context)
     {
         var results = new ResultDictionaryBuilder()
             .Add(Constants.LeftExpression, () => context.Evaluator.Evaluate(condition.LeftExpression, context.Settings, context.Context))
@@ -212,13 +212,7 @@ public class ComparisonExpression : IExpression<bool>
             return Result.FromExistingResult<bool>(error);
         }
 
-        var queryOperator = GetOperator(condition.Operator);
-        if (queryOperator is null)
-        {
-            return Result.Invalid<bool>($"Unknown query operator: {condition.Operator}");
-        }
-
-        return queryOperator.Evaluate(new OperatorContextBuilder().WithResults(results).WithStringComparison(context.Settings.StringComparison));
+        return condition.Operator.Evaluate(new OperatorContextBuilder().WithResults(results).WithStringComparison(context.Settings.StringComparison));
     }
 
     private static Result<Type> ValidateConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)

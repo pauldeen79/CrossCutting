@@ -44,7 +44,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string Operator
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IOperator Operator
         {
             get;
         }
@@ -65,7 +65,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public Condition(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination, string leftExpression, string @operator, string rightExpression, bool startGroup, bool endGroup)
+        public Condition(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination, string leftExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IOperator @operator, string rightExpression, bool startGroup, bool endGroup)
         {
             this.Combination = combination;
             this.LeftExpression = leftExpression;
