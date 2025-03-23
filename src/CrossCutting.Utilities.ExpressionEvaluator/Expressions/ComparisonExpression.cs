@@ -127,7 +127,7 @@ public class ComparisonExpression : IExpression<bool>
                 .Build();
 
             combination = parts.Length > i + 3
-                ? parts[i + 3]
+                ? parts[i + 3].Trim()
                 : string.Empty;
 
             conditions.Add(condition);
@@ -168,7 +168,7 @@ public class ComparisonExpression : IExpression<bool>
         {
             if (builder.Length > 0)
             {
-                builder.Append(evaluatable.Combination == Combination.And ? "&" : "|");
+                builder.Append(evaluatable.Combination == Combination.Or ? "|" : "&");
             }
 
             var prefix = evaluatable.StartGroup ? "(" : string.Empty;

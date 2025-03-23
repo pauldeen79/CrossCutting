@@ -189,11 +189,26 @@ public class ComparisonExpressionTests : TestBase<ComparisonExpression>
         }
 
         [Fact]
-        public void Returns_Non_Successful_Result_From_Inner_Expression()
+        public void Returns_Non_Successful_Result_From_Inner_Expression_Simple_Expression()
         {
             // Arrange
             var sut = CreateSut();
             var expression = "2 != error";
+
+            // Act
+            var result = sut.Evaluate(CreateContext(expression));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+
+        [Fact]
+        public void Returns_Non_Successful_Result_From_Inner_Expression_Complex_Expression()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var expression = "(2 != error)";
 
             // Act
             var result = sut.Evaluate(CreateContext(expression));
