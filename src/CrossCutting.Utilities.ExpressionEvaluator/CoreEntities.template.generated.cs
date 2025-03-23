@@ -73,69 +73,23 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public ExpressionEvaluatorSettings(System.IFormatProvider formatProvider, System.StringComparison stringComparison)
-        {
-            this.FormatProvider = formatProvider;
-            this.StringComparison = stringComparison;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder ToBuilder()
-        {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder(this);
-        }
-    }
-    public partial record FormattableStringParserSettings
-    {
-        public System.IFormatProvider FormatProvider
-        {
-            get;
-        }
-
-        [System.ComponentModel.DefaultValueAttribute(true)]
-        public bool ValidateArgumentTypes
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string PlaceholderStart
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string PlaceholderEnd
-        {
-            get;
-        }
-
-        [System.ComponentModel.DefaultValueAttribute(true)]
-        public bool EscapeBraces
-        {
-            get;
-        }
-
         [System.ComponentModel.DefaultValueAttribute(10)]
         public int MaximumRecursion
         {
             get;
         }
 
-        public FormattableStringParserSettings(System.IFormatProvider formatProvider, bool validateArgumentTypes, string placeholderStart, string placeholderEnd, bool escapeBraces, int maximumRecursion)
+        public ExpressionEvaluatorSettings(System.IFormatProvider formatProvider, System.StringComparison stringComparison, int maximumRecursion)
         {
             this.FormatProvider = formatProvider;
-            this.ValidateArgumentTypes = validateArgumentTypes;
-            this.PlaceholderStart = placeholderStart;
-            this.PlaceholderEnd = placeholderEnd;
-            this.EscapeBraces = escapeBraces;
+            this.StringComparison = stringComparison;
             this.MaximumRecursion = maximumRecursion;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FormattableStringParserSettingsBuilder ToBuilder()
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.FormattableStringParserSettingsBuilder(this);
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder(this);
         }
     }
     public partial record FunctionCall
@@ -148,22 +102,22 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IFunctionCallArgument> Arguments
+        public System.Collections.Generic.IReadOnlyCollection<string> Arguments
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IFunctionCallTypeArgument> TypeArguments
+        public System.Collections.Generic.IReadOnlyCollection<string> TypeArguments
         {
             get;
         }
 
-        public FunctionCall(string name, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IFunctionCallArgument> arguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IFunctionCallTypeArgument> typeArguments)
+        public FunctionCall(string name, System.Collections.Generic.IEnumerable<string> arguments, System.Collections.Generic.IEnumerable<string> typeArguments)
         {
             this.Name = name;
-            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IFunctionCallArgument>(arguments);
-            this.TypeArguments = typeArguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IFunctionCallTypeArgument>(typeArguments);
+            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(arguments);
+            this.TypeArguments = typeArguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(typeArguments);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -336,31 +290,6 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
         public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorTypeArgumentBuilder ToBuilder()
         {
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorTypeArgumentBuilder(this);
-        }
-    }
-    public partial record FunctionEvaluatorSettings
-    {
-        public System.IFormatProvider FormatProvider
-        {
-            get;
-        }
-
-        [System.ComponentModel.DefaultValueAttribute(true)]
-        public bool ValidateArgumentTypes
-        {
-            get;
-        }
-
-        public FunctionEvaluatorSettings(System.IFormatProvider formatProvider, bool validateArgumentTypes)
-        {
-            this.FormatProvider = formatProvider;
-            this.ValidateArgumentTypes = validateArgumentTypes;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionEvaluatorSettingsBuilder ToBuilder()
-        {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionEvaluatorSettingsBuilder(this);
         }
     }
 }

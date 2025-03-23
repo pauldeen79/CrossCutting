@@ -194,6 +194,8 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         private System.StringComparison _stringComparison;
 
+        private int _maximumRecursion;
+
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
         public System.IFormatProvider FormatProvider
@@ -224,22 +226,39 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
         }
 
+        [System.ComponentModel.DefaultValueAttribute(10)]
+        public int MaximumRecursion
+        {
+            get
+            {
+                return _maximumRecursion;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Int32>.Default.Equals(_maximumRecursion, value);
+                _maximumRecursion = value;
+                if (hasChanged) HandlePropertyChanged(nameof(MaximumRecursion));
+            }
+        }
+
         public ExpressionEvaluatorSettingsBuilder(CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _formatProvider = source.FormatProvider;
             _stringComparison = source.StringComparison;
+            _maximumRecursion = source.MaximumRecursion;
         }
 
         public ExpressionEvaluatorSettingsBuilder()
         {
             _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
+            _maximumRecursion = 10;
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings Build()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings(FormatProvider, StringComparison);
+            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings(FormatProvider, StringComparison, MaximumRecursion);
         }
 
         partial void SetDefaultValues();
@@ -257,190 +276,13 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings(ExpressionEvaluatorSettingsBuilder entity)
-        {
-            return entity.Build();
-        }
-
-        protected void HandlePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    }
-    public partial class FormattableStringParserSettingsBuilder : System.ComponentModel.INotifyPropertyChanged
-    {
-        private System.IFormatProvider _formatProvider;
-
-        private bool _validateArgumentTypes;
-
-        private string _placeholderStart;
-
-        private string _placeholderEnd;
-
-        private bool _escapeBraces;
-
-        private int _maximumRecursion;
-
-        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
-
-        public System.IFormatProvider FormatProvider
-        {
-            get
-            {
-                return _formatProvider;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.IFormatProvider>.Default.Equals(_formatProvider!, value!);
-                _formatProvider = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(FormatProvider));
-            }
-        }
-
-        [System.ComponentModel.DefaultValueAttribute(true)]
-        public bool ValidateArgumentTypes
-        {
-            get
-            {
-                return _validateArgumentTypes;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_validateArgumentTypes, value);
-                _validateArgumentTypes = value;
-                if (hasChanged) HandlePropertyChanged(nameof(ValidateArgumentTypes));
-            }
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string PlaceholderStart
-        {
-            get
-            {
-                return _placeholderStart;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_placeholderStart!, value!);
-                _placeholderStart = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(PlaceholderStart));
-            }
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string PlaceholderEnd
-        {
-            get
-            {
-                return _placeholderEnd;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_placeholderEnd!, value!);
-                _placeholderEnd = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(PlaceholderEnd));
-            }
-        }
-
-        [System.ComponentModel.DefaultValueAttribute(true)]
-        public bool EscapeBraces
-        {
-            get
-            {
-                return _escapeBraces;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_escapeBraces, value);
-                _escapeBraces = value;
-                if (hasChanged) HandlePropertyChanged(nameof(EscapeBraces));
-            }
-        }
-
-        [System.ComponentModel.DefaultValueAttribute(10)]
-        public int MaximumRecursion
-        {
-            get
-            {
-                return _maximumRecursion;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Int32>.Default.Equals(_maximumRecursion, value);
-                _maximumRecursion = value;
-                if (hasChanged) HandlePropertyChanged(nameof(MaximumRecursion));
-            }
-        }
-
-        public FormattableStringParserSettingsBuilder(CrossCutting.Utilities.ExpressionEvaluator.FormattableStringParserSettings source)
-        {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _formatProvider = source.FormatProvider;
-            _validateArgumentTypes = source.ValidateArgumentTypes;
-            _placeholderStart = source.PlaceholderStart;
-            _placeholderEnd = source.PlaceholderEnd;
-            _escapeBraces = source.EscapeBraces;
-            _maximumRecursion = source.MaximumRecursion;
-        }
-
-        public FormattableStringParserSettingsBuilder()
-        {
-            _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
-            _validateArgumentTypes = true;
-            _placeholderStart = string.Empty;
-            _placeholderEnd = string.Empty;
-            _escapeBraces = true;
-            _maximumRecursion = 10;
-            SetDefaultValues();
-        }
-
-        public CrossCutting.Utilities.ExpressionEvaluator.FormattableStringParserSettings Build()
-        {
-            return new CrossCutting.Utilities.ExpressionEvaluator.FormattableStringParserSettings(FormatProvider, ValidateArgumentTypes, PlaceholderStart, PlaceholderEnd, EscapeBraces, MaximumRecursion);
-        }
-
-        partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FormattableStringParserSettingsBuilder WithFormatProvider(System.IFormatProvider formatProvider)
-        {
-            if (formatProvider is null) throw new System.ArgumentNullException(nameof(formatProvider));
-            FormatProvider = formatProvider;
-            return this;
-        }
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FormattableStringParserSettingsBuilder WithValidateArgumentTypes(bool validateArgumentTypes = true)
-        {
-            ValidateArgumentTypes = validateArgumentTypes;
-            return this;
-        }
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FormattableStringParserSettingsBuilder WithPlaceholderStart(string placeholderStart)
-        {
-            if (placeholderStart is null) throw new System.ArgumentNullException(nameof(placeholderStart));
-            PlaceholderStart = placeholderStart;
-            return this;
-        }
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FormattableStringParserSettingsBuilder WithPlaceholderEnd(string placeholderEnd)
-        {
-            if (placeholderEnd is null) throw new System.ArgumentNullException(nameof(placeholderEnd));
-            PlaceholderEnd = placeholderEnd;
-            return this;
-        }
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FormattableStringParserSettingsBuilder WithEscapeBraces(bool escapeBraces = true)
-        {
-            EscapeBraces = escapeBraces;
-            return this;
-        }
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FormattableStringParserSettingsBuilder WithMaximumRecursion(int maximumRecursion)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder WithMaximumRecursion(int maximumRecursion)
         {
             MaximumRecursion = maximumRecursion;
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.FormattableStringParserSettings(FormattableStringParserSettingsBuilder entity)
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings(ExpressionEvaluatorSettingsBuilder entity)
         {
             return entity.Build();
         }
@@ -454,9 +296,9 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
     {
         private string _name;
 
-        private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallArgumentBuilder> _arguments;
+        private System.Collections.Generic.List<string> _arguments;
 
-        private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallTypeArgumentBuilder> _typeArguments;
+        private System.Collections.Generic.List<string> _typeArguments;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -477,7 +319,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallArgumentBuilder> Arguments
+        public System.Collections.Generic.List<string> Arguments
         {
             get
             {
@@ -485,14 +327,14 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallArgumentBuilder>>.Default.Equals(_arguments!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.List<System.String>>.Default.Equals(_arguments!, value!);
                 _arguments = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Arguments));
             }
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallTypeArgumentBuilder> TypeArguments
+        public System.Collections.Generic.List<string> TypeArguments
         {
             get
             {
@@ -500,7 +342,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallTypeArgumentBuilder>>.Default.Equals(_typeArguments!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.List<System.String>>.Default.Equals(_typeArguments!, value!);
                 _typeArguments = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(TypeArguments));
             }
@@ -509,48 +351,48 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         public FunctionCallBuilder(CrossCutting.Utilities.ExpressionEvaluator.FunctionCall source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallArgumentBuilder>();
-            _typeArguments = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallTypeArgumentBuilder>();
+            _arguments = new System.Collections.Generic.List<string>();
+            _typeArguments = new System.Collections.Generic.List<string>();
             _name = source.Name;
-            if (source.Arguments is not null) foreach (var item in source.Arguments.Select(x => x.ToBuilder())) _arguments.Add(item);
-            if (source.TypeArguments is not null) foreach (var item in source.TypeArguments.Select(x => x.ToBuilder())) _typeArguments.Add(item);
+            if (source.Arguments is not null) foreach (var item in source.Arguments) _arguments.Add(item);
+            if (source.TypeArguments is not null) foreach (var item in source.TypeArguments) _typeArguments.Add(item);
         }
 
         public FunctionCallBuilder()
         {
-            _arguments = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallArgumentBuilder>();
-            _typeArguments = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallTypeArgumentBuilder>();
+            _arguments = new System.Collections.Generic.List<string>();
+            _typeArguments = new System.Collections.Generic.List<string>();
             _name = string.Empty;
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.ExpressionEvaluator.FunctionCall Build()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.FunctionCall(Name, Arguments.Select(x => x.Build()!).ToList().AsReadOnly(), TypeArguments.Select(x => x.Build()!).ToList().AsReadOnly());
+            return new CrossCutting.Utilities.ExpressionEvaluator.FunctionCall(Name, Arguments, TypeArguments);
         }
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder AddArguments(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallArgumentBuilder> arguments)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder AddArguments(System.Collections.Generic.IEnumerable<string> arguments)
         {
             if (arguments is null) throw new System.ArgumentNullException(nameof(arguments));
             return AddArguments(arguments.ToArray());
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder AddArguments(params CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallArgumentBuilder[] arguments)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder AddArguments(params string[] arguments)
         {
             if (arguments is null) throw new System.ArgumentNullException(nameof(arguments));
             foreach (var item in arguments) Arguments.Add(item);
             return this;
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder AddTypeArguments(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallTypeArgumentBuilder> typeArguments)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder AddTypeArguments(System.Collections.Generic.IEnumerable<string> typeArguments)
         {
             if (typeArguments is null) throw new System.ArgumentNullException(nameof(typeArguments));
             return AddTypeArguments(typeArguments.ToArray());
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder AddTypeArguments(params CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IFunctionCallTypeArgumentBuilder[] typeArguments)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder AddTypeArguments(params string[] typeArguments)
         {
             if (typeArguments is null) throw new System.ArgumentNullException(nameof(typeArguments));
             foreach (var item in typeArguments) TypeArguments.Add(item);
@@ -1143,87 +985,6 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         }
 
         public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorTypeArgument(FunctionDescriptorTypeArgumentBuilder entity)
-        {
-            return entity.Build();
-        }
-
-        protected void HandlePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    }
-    public partial class FunctionEvaluatorSettingsBuilder : System.ComponentModel.INotifyPropertyChanged
-    {
-        private System.IFormatProvider _formatProvider;
-
-        private bool _validateArgumentTypes;
-
-        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
-
-        public System.IFormatProvider FormatProvider
-        {
-            get
-            {
-                return _formatProvider;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.IFormatProvider>.Default.Equals(_formatProvider!, value!);
-                _formatProvider = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(FormatProvider));
-            }
-        }
-
-        [System.ComponentModel.DefaultValueAttribute(true)]
-        public bool ValidateArgumentTypes
-        {
-            get
-            {
-                return _validateArgumentTypes;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_validateArgumentTypes, value);
-                _validateArgumentTypes = value;
-                if (hasChanged) HandlePropertyChanged(nameof(ValidateArgumentTypes));
-            }
-        }
-
-        public FunctionEvaluatorSettingsBuilder(CrossCutting.Utilities.ExpressionEvaluator.FunctionEvaluatorSettings source)
-        {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _formatProvider = source.FormatProvider;
-            _validateArgumentTypes = source.ValidateArgumentTypes;
-        }
-
-        public FunctionEvaluatorSettingsBuilder()
-        {
-            _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
-            _validateArgumentTypes = true;
-            SetDefaultValues();
-        }
-
-        public CrossCutting.Utilities.ExpressionEvaluator.FunctionEvaluatorSettings Build()
-        {
-            return new CrossCutting.Utilities.ExpressionEvaluator.FunctionEvaluatorSettings(FormatProvider, ValidateArgumentTypes);
-        }
-
-        partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionEvaluatorSettingsBuilder WithFormatProvider(System.IFormatProvider formatProvider)
-        {
-            if (formatProvider is null) throw new System.ArgumentNullException(nameof(formatProvider));
-            FormatProvider = formatProvider;
-            return this;
-        }
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionEvaluatorSettingsBuilder WithValidateArgumentTypes(bool validateArgumentTypes = true)
-        {
-            ValidateArgumentTypes = validateArgumentTypes;
-            return this;
-        }
-
-        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.FunctionEvaluatorSettings(FunctionEvaluatorSettingsBuilder entity)
         {
             return entity.Build();
         }
