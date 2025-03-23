@@ -40,7 +40,7 @@ public record Result<T> : Result
             return FromExistingResult<TTarget>(this);
         }
 
-        return Success(transformDelegate(Value!));
+        return new(transformDelegate(Value!), Status, ErrorMessage, ValidationErrors, InnerResults, null);
     }
 
     public Result<TTarget> Transform<TTarget>(Func<T, Result<TTarget>> transformDelegate)
