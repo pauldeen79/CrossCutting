@@ -73,7 +73,7 @@ public class BinaryOperatorExpression : IExpression<bool>
         }
 
         // Now, we need to convert this array of parts to conditions
-        var itemCountIsCorrect = (parts.Length - 3) % 4 == 0;
+        var itemCountIsCorrect = (parts.Length - 1) % 2 == 0;
         if (!itemCountIsCorrect)
         {
             return Result.Invalid<List<BinaryCondition>>("Comparison expression has invalid number of parts");
@@ -178,7 +178,7 @@ public class BinaryOperatorExpression : IExpression<bool>
         }
         else if (expressionResult.Value is string s)
         {
-            // desin decision: if it's a string, then do a null or empty check
+            // design decision: if it's a string, then do a null or empty check
             return Result.Success(!string.IsNullOrEmpty(s));
         }
         else
