@@ -46,6 +46,21 @@ public class ExpressionEvaluatorContext
     public Result<object?> Evaluate(string expression)
         => Evaluator.Evaluate(CreateChildContext(expression));
 
+    public Result<T> Validate<T>()
+    {
+        if (string.IsNullOrEmpty(Expression))
+        {
+            return Result.Invalid<T>("Value is required");
+        }
+
+        if (CurrentRecursionLevel > Settings.MaximumRecursion)
+        {
+            return Result.Invalid<T>("Maximum recursion level has been reached");
+        }
+
+        return Result.NoContent<T>();
+    }
+
     private ExpressionEvaluatorContext CreateChildContext(string expression)
         => new ExpressionEvaluatorContext(expression, Settings, Context, Evaluator, CurrentRecursionLevel + 1, this);
 
