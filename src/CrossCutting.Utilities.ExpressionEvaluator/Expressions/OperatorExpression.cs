@@ -33,7 +33,24 @@ public static class OperatorExpression
         return result;
     }
 
-    public static bool ProcessRecursive(ref string expression)
+    public static void AppendCondition(StringBuilder builder, Combination? combination, bool startGroup, bool endGroup, bool itemResultValue)
+    {
+        builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
+
+        if (builder.Length > 0)
+        {
+            builder.Append(combination == Combination.Or ? "|" : "&");
+        }
+
+        var prefix = startGroup ? "(" : string.Empty;
+        var suffix = endGroup ? ")" : string.Empty;
+
+        builder.Append(prefix)
+               .Append(itemResultValue ? "T" : "F")
+               .Append(suffix);
+    }
+
+    private static bool ProcessRecursive(ref string expression)
     {
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
 
@@ -58,24 +75,7 @@ public static class OperatorExpression
         return result;
     }
 
-    public static void AppendCondition(StringBuilder builder, Combination? combination, bool startGroup, bool endGroup, bool itemResultValue)
-    {
-        builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
-
-        if (builder.Length > 0)
-        {
-            builder.Append(combination == Combination.Or ? "|" : "&");
-        }
-
-        var prefix = startGroup ? "(" : string.Empty;
-        var suffix = endGroup ? ")" : string.Empty;
-
-        builder.Append(prefix)
-               .Append(itemResultValue ? "T" : "F")
-               .Append(suffix);
-    }
-
-    public static string GetPrefix(string expression, int openIndex)
+    private static string GetPrefix(string expression, int openIndex)
     {
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
 
@@ -84,12 +84,12 @@ public static class OperatorExpression
             : expression.Substring(0, openIndex - 2);
     }
 
-    public static string GetCurrent(bool result)
+    private static string GetCurrent(bool result)
         => result
             ? "T"
             : "F";
 
-    public static string GetSuffix(string expression, int closeIndex)
+    private static string GetSuffix(string expression, int closeIndex)
     {
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
 
