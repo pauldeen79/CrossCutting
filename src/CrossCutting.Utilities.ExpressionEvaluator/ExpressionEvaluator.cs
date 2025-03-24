@@ -20,10 +20,13 @@ public class ExpressionEvaluator : IExpressionEvaluator
             return Result.Invalid<object?>("Value is required");
         }
 
-        var expressionContext = new ExpressionEvaluatorContext(context.Expression, context.Settings, context.Context, this, 0);
+        if (context.CurrentRecursionLevel > context.Settings.MaximumRecursion)
+        {
+            return Result.Invalid<object?>("Maximum recursion level has been reached");
+        }
 
         return _expressions
-            .Select(x => x.Evaluate(expressionContext))
+            .Select(x => x.Evaluate(context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Invalid<object?>($"Unknown expression type found in fragment: {context.Expression}");
     }
@@ -37,12 +40,15 @@ public class ExpressionEvaluator : IExpressionEvaluator
             return Result.Invalid<T>("Value is required");
         }
 
-        var expressionContext = new ExpressionEvaluatorContext(context.Expression, context.Settings, context.Context, this, 0);
+        if (context.CurrentRecursionLevel > context.Settings.MaximumRecursion)
+        {
+            return Result.Invalid<T>("Maximum recursion level has been reached");
+        }
 
         return _expressions
             .Select(x => x is IExpression<T> typedExpression
-                ? typedExpression.EvaluateTyped(expressionContext)
-                : x.Evaluate(expressionContext).TryCast<T>())
+                ? typedExpression.EvaluateTyped(context)
+                : x.Evaluate(context).TryCast<T>())
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Invalid<T>($"Unknown expression type found in fragment: {context.Expression}");
     }
@@ -56,10 +62,13 @@ public class ExpressionEvaluator : IExpressionEvaluator
             return Result.Invalid<Type>("Value is required");
         }
 
-        var expressionContext = new ExpressionEvaluatorContext(context.Expression, context.Settings, context, this, 0);
+        if (context.CurrentRecursionLevel > context.Settings.MaximumRecursion)
+        {
+            return Result.Invalid<Type>("Maximum recursion level has been reached");
+        }
 
         return _expressions
-            .Select(x => x.Validate(expressionContext))
+            .Select(x => x.Validate(context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Invalid<Type>($"Unknown expression type found in fragment: {context.Expression}");
     }

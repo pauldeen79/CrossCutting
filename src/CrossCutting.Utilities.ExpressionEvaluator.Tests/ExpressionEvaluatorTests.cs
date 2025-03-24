@@ -28,7 +28,7 @@ public class ExpressionEvaluatorTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate("expression", new ExpressionEvaluatorSettingsBuilder());
+            var result = sut.Evaluate("expression", new ExpressionEvaluatorSettingsBuilder(), null);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -48,6 +48,21 @@ public class ExpressionEvaluatorTests : TestBase
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Unknown expression type found in fragment: expression");
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Maximum_Recursion_Has_Been_Reached()
+        {
+            // Arrange
+            Expression.Evaluate(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<object?>("result value"));
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), null, sut, int.MaxValue));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Maximum recursion level has been reached");
         }
     }
 
@@ -75,7 +90,7 @@ public class ExpressionEvaluatorTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.EvaluateTyped<string>("expression", new ExpressionEvaluatorSettingsBuilder());
+            var result = sut.EvaluateTyped<string>("expression", new ExpressionEvaluatorSettingsBuilder(), null);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -113,6 +128,21 @@ public class ExpressionEvaluatorTests : TestBase
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Unknown expression type found in fragment: expression");
         }
+
+        [Fact]
+        public void Returns_Invalid_When_Maximum_Recursion_Has_Been_Reached()
+        {
+            // Arrange
+            Expression.Evaluate(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<object?>("result value"));
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.EvaluateTyped<string>(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), null, sut, int.MaxValue));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Maximum recursion level has been reached");
+        }
     }
 
     public class Validate : ExpressionEvaluatorTests
@@ -140,7 +170,7 @@ public class ExpressionEvaluatorTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.Validate("expression", new ExpressionEvaluatorSettingsBuilder());
+            var result = sut.Validate("expression", new ExpressionEvaluatorSettingsBuilder(), null);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -160,6 +190,21 @@ public class ExpressionEvaluatorTests : TestBase
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Unknown expression type found in fragment: expression");
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Maximum_Recursion_Has_Been_Reached()
+        {
+            // Arrange
+            Expression.Evaluate(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<object?>("result value"));
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Validate(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), null, sut, int.MaxValue));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Maximum recursion level has been reached");
         }
     }
 }
