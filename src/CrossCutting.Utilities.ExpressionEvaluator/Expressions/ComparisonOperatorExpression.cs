@@ -20,7 +20,7 @@ public class ComparisonOperatorExpression : IExpression<bool>
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
         => EvaluateTyped(context).Transform<object?>(x => x);
 
-    public static Result<bool> Evaluate(ExpressionEvaluatorContext context, Result<Comparison> comparisonResult)
+    public static Result<bool> Evaluate(ExpressionEvaluatorContext context, Result<ComparisonConditionGroup> comparisonResult)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         comparisonResult = ArgumentGuard.IsNotNull(comparisonResult, nameof(comparisonResult));
@@ -48,7 +48,7 @@ public class ComparisonOperatorExpression : IExpression<bool>
             return Result.FromExistingResult<bool>(conditionsResult);
         }
 
-        return Evaluate(context, conditionsResult.Transform(x => new Comparison(x)));
+        return Evaluate(context, conditionsResult.Transform(x => new ComparisonConditionGroup(x)));
     }
 
     public Result<Type> Validate(ExpressionEvaluatorContext context)

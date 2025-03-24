@@ -432,7 +432,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var context = CreateContext("Dummy"); // only needed for recursive calls
 
             // Act
-            var result = ComparisonOperatorExpression.Evaluate(context, Result.Error<Comparison>("Kaboom"));
+            var result = ComparisonOperatorExpression.Evaluate(context, Result.Error<ComparisonConditionGroup>("Kaboom"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -443,7 +443,7 @@ public class ComparisonOperatorExpressionTests : TestBase
         public void Returns_Correct_Result_On_Complex_Query_With_All_Types_Of_Combinations()
         {
             // Arrange
-            var conditionsResult = Result.Success(new Comparison(
+            var conditionsResult = Result.Success(new ComparisonConditionGroup(
             [
                 new ComparisonConditionBuilder().WithStartGroup().WithLeftExpression("1").WithOperator(new EqualOperator()).WithRightExpression("1"),
                 new ComparisonConditionBuilder().WithCombination(Combination.And).WithLeftExpression("2").WithOperator(new NotEqualOperator()).WithRightExpression("1").WithEndGroup(),
@@ -463,7 +463,7 @@ public class ComparisonOperatorExpressionTests : TestBase
         public void Can_Perform_Null_Check()
         {
             // Arrange
-            var conditionsResult = Result.Success(new Comparison(
+            var conditionsResult = Result.Success(new ComparisonConditionGroup(
             [
                 new ComparisonConditionBuilder().WithLeftExpression("context").WithOperator(new EqualOperator()).WithRightExpression("null")
             ]));

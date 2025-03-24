@@ -10,26 +10,6 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator
 {
-    public partial record Binary
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition> Conditions
-        {
-            get;
-        }
-
-        public Binary(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition> conditions)
-        {
-            this.Conditions = conditions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition>(conditions);
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryBuilder ToBuilder()
-        {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryBuilder(this);
-        }
-    }
     public partial record BinaryCondition
     {
         public System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> Combination
@@ -67,24 +47,24 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder(this);
         }
     }
-    public partial record Comparison
+    public partial record BinaryConditionGroup
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition> Conditions
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition> Conditions
         {
             get;
         }
 
-        public Comparison(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition> conditions)
+        public BinaryConditionGroup(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition> conditions)
         {
-            this.Conditions = conditions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition>(conditions);
+            this.Conditions = conditions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition>(conditions);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonBuilder ToBuilder()
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionGroupBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonBuilder(this);
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionGroupBuilder(this);
         }
     }
     public partial record ComparisonCondition
@@ -136,6 +116,26 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
         public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder ToBuilder()
         {
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder(this);
+        }
+    }
+    public partial record ComparisonConditionGroup
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition> Conditions
+        {
+            get;
+        }
+
+        public ComparisonConditionGroup(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition> conditions)
+        {
+            this.Conditions = conditions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition>(conditions);
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionGroupBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionGroupBuilder(this);
         }
     }
     public partial record ExpressionEvaluatorSettings

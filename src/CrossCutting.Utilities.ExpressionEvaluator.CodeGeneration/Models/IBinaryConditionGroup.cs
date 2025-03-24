@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.Models;
 
-internal interface IBinary
+internal interface IBinaryConditionGroup
 {
     [Required][ValidateObject] IReadOnlyCollection<IBinaryCondition> Conditions { get; }
 }

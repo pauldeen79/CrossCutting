@@ -9,7 +9,7 @@ public class BinaryOperatorExpression : IExpression<bool>
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
         => EvaluateTyped(context).Transform<object?>(x => x);
 
-    public static Result<bool> Evaluate(ExpressionEvaluatorContext context, Result<Binary> comparisonResult)
+    public static Result<bool> Evaluate(ExpressionEvaluatorContext context, Result<BinaryConditionGroup> comparisonResult)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         comparisonResult = ArgumentGuard.IsNotNull(comparisonResult, nameof(comparisonResult));
@@ -37,7 +37,7 @@ public class BinaryOperatorExpression : IExpression<bool>
             return Result.FromExistingResult<bool>(conditionsResult);
         }
 
-        return Evaluate(context, conditionsResult.Transform(x => new Binary(x)));
+        return Evaluate(context, conditionsResult.Transform(x => new BinaryConditionGroup(x)));
     }
 
     public Result<Type> Validate(ExpressionEvaluatorContext context)
