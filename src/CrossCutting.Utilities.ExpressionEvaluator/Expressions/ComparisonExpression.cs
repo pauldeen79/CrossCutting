@@ -11,7 +11,7 @@ public class ComparisonExpression : IExpression<bool>
         operators = ArgumentGuard.IsNotNull(operators, nameof(operators));
 
         _operators = operators.OrderBy(x => x.Order).ToArray();
-        _delimiters = _operators.Select(x => x.OperatorExpression).Concat([" AND ", " OR "]).ToArray();
+        _delimiters = _operators.Select(x => x.OperatorExpression).Concat(["&&", "||"]).ToArray();
         _operatorExpressions = _operators.Select(x => x.OperatorExpression).ToArray();
     }
 
@@ -125,8 +125,8 @@ public class ComparisonExpression : IExpression<bool>
             var condition = new ConditionBuilder()
                 .WithCombination(combination.ToUpperInvariant() switch
                 {
-                    "AND" => Combination.And,
-                    "OR" => Combination.Or,
+                    "&&" => Combination.And,
+                    "||" => Combination.Or,
                     _ => default(Combination?)
                 })
                 .WithLeftExpression(leftExpression)
@@ -137,7 +137,7 @@ public class ComparisonExpression : IExpression<bool>
                 .Build();
 
             combination = parts.Length > i + 3
-                ? parts[i + 3].Trim()
+                ? parts[i + 3]
                 : string.Empty;
 
             conditions.Add(condition);

@@ -54,7 +54,7 @@ public class ComparisonExpressionTests : TestBase
         {
             // Arrange
             var sut = CreateSut();
-            var expression = "context AND \"some value\" AND B == C";
+            var expression = "context && \"some value\" && B == C";
 
             // Act
             var result = sut.Evaluate(CreateContext(expression));
@@ -83,7 +83,7 @@ public class ComparisonExpressionTests : TestBase
         {
             // Arrange
             var sut = CreateSut();
-            var expression = "context == \"some value\" AND context.Length > 1";
+            var expression = "context == \"some value\" && context.Length > 1";
 
             // Act
             var result = sut.Evaluate(CreateContext(expression));
@@ -97,7 +97,7 @@ public class ComparisonExpressionTests : TestBase
         {
             // Arrange
             var sut = CreateSut();
-            var expression = "(context >= 1 AND context <= 5) OR context == \"some other value\"";
+            var expression = "(context >= 1 && context <= 5) || context == \"some other value\"";
 
             // Act
             var result = sut.Evaluate(CreateContext(expression));
@@ -271,7 +271,7 @@ public class ComparisonExpressionTests : TestBase
         {
             // Arrange
             var sut = CreateSut();
-            var expression = "context AND \"some value\" AND B == C";
+            var expression = "context && \"some value\" && B == C";
 
             // Act
             var result = sut.Validate(CreateContext(expression));
@@ -300,7 +300,7 @@ public class ComparisonExpressionTests : TestBase
         {
             // Arrange
             var sut = CreateSut();
-            var expression = "context == \"some value\" AND context.Length > 1";
+            var expression = "context == \"some value\" && context.Length > 1";
 
             // Act
             var result = sut.Validate(CreateContext(expression));
@@ -314,7 +314,7 @@ public class ComparisonExpressionTests : TestBase
         {
             // Arrange
             var sut = CreateSut();
-            var expression = "(context >= 1 AND context <= 5) OR context == \"some other value\"";
+            var expression = "(context >= 1 && context <= 5) || context == \"some other value\"";
 
             // Act
             var result = sut.Validate(CreateContext(expression));
