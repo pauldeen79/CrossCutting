@@ -4,6 +4,8 @@ public static class OperatorExpression
 {
     public static bool EvaluateBooleanExpression(string expression)
     {
+        expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
+
         var result = ProcessRecursive(ref expression);
 
         var @operator = "&";
@@ -33,6 +35,8 @@ public static class OperatorExpression
 
     public static bool ProcessRecursive(ref string expression)
     {
+        expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
+
         var result = true;
         var openIndex = -1;
         int closeIndex;
@@ -55,9 +59,13 @@ public static class OperatorExpression
     }
 
     public static string GetPrefix(string expression, int openIndex)
-        => openIndex == 0
+    {
+        expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
+
+        return openIndex == 0
             ? string.Empty
             : expression.Substring(0, openIndex - 2);
+    }
 
     public static string GetCurrent(bool result)
         => result
@@ -65,7 +73,11 @@ public static class OperatorExpression
             : "F";
 
     public static string GetSuffix(string expression, int closeIndex)
-        => closeIndex == expression.Length
+    {
+        expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
+
+        return closeIndex == expression.Length
             ? string.Empty
             : expression.Substring(closeIndex + 1);
+    }
 }
