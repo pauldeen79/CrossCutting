@@ -5,7 +5,7 @@ public abstract class TestBase
     protected IExpressionEvaluator Evaluator { get; }
     protected IExpression Expression { get; }
 
-    protected ExpressionEvaluatorContext CreateContext(string expression, object? context = null)
+    protected ExpressionEvaluatorContext CreateContext(string? expression, object? context = null)
         => new ExpressionEvaluatorContext(expression, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), context, Evaluator);
 
     protected TestBase()
@@ -13,10 +13,10 @@ public abstract class TestBase
         // Initialize evaluator
         Evaluator = Substitute.For<IExpressionEvaluator>();
         Evaluator
-            .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
+            .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
             .Returns(Evaluate);
         Evaluator
-            .Validate (Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
+            .Validate (Arg.Any<ExpressionEvaluatorContext>())
             .Returns(x => Evaluate(x).Transform(_ => typeof(bool)));
 
         // Initialize expression
@@ -27,45 +27,44 @@ public abstract class TestBase
     // Test stub for expression evaluation, that supports strings, integers and booleans (last two by using TryParse) as well as the context keyword
     private static Result<object?> Evaluate(CallInfo callInfo)
     {
-        var expression = callInfo.ArgAt<string>(0);
-        var settings = callInfo.ArgAt<ExpressionEvaluatorSettings>(1);
+        var context = callInfo.ArgAt<ExpressionEvaluatorContext>(0);
 
-        if (expression == "null")
+        if (context.Expression == "null")
         {
             return Result.Success(default(object?));
         }
 
-        if (expression == "context")
+        if (context.Expression == "context")
         {
-            return Result.Success(callInfo.ArgAt<object?>(2));
+            return Result.Success(context.Context);
         }
 
-        if (expression == "context.Length")
+        if (context.Expression == "context.Length")
         {
-            return Result.Success<object?>((callInfo.ArgAt<object?>(2)?.ToString() ?? string.Empty).Length);
+            return Result.Success<object?>((context.Context?.ToString() ?? string.Empty).Length);
         }
 
-        if (expression == "error")
+        if (context.Expression == "error")
         {
             return Result.Error<object?>("Kaboom");
         }
 
-        if (expression.StartsWith('"') && expression.StartsWith('"'))
+        if (context.Expression.StartsWith('"') && context.Expression.StartsWith('"'))
         {
-            return Result.Success<object?>(expression.Substring(1, expression.Length - 2));
+            return Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2));
         }
 
-        if (int.TryParse(expression, settings.FormatProvider, out int number))
+        if (int.TryParse(context.Expression, context.Settings.FormatProvider, out int number))
         {
             return Result.Success<object?>(number);
         }
 
-        if (bool.TryParse(expression, out bool boolean))
+        if (bool.TryParse(context.Expression, out bool boolean))
         {
             return Result.Success<object?>(boolean);
         }
 
-        return Result.NotSupported<object?>($"Unsupported expression: {expression}");
+        return Result.NotSupported<object?>($"Unsupported expression: {context.Expression}");
     }
 }
 

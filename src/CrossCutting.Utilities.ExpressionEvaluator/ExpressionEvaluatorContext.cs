@@ -5,20 +5,23 @@ public class ExpressionEvaluatorContext
     public string Expression { get; }
     public ExpressionEvaluatorSettings Settings { get; }
     public object? Context { get; }
-    public IExpressionEvaluator Evaluator { get; }
     public IEnumerable<(int StartIndex, int EndIndex)> QuoteMap { get; }
+    public int CurrentRecursionLevel { get; }
+    public ExpressionEvaluatorContext? ParentContext { get; }
+    private IExpressionEvaluator Evaluator { get; }
 
-    public ExpressionEvaluatorContext(string expression, ExpressionEvaluatorSettings settings, object? context, IExpressionEvaluator evaluator)
+    public ExpressionEvaluatorContext(string? expression, ExpressionEvaluatorSettings settings, object? context, IExpressionEvaluator evaluator, int currentRecursionLevel = 1, ExpressionEvaluatorContext? parentContext = null)
     {
-        expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
         ArgumentGuard.IsNotNull(settings, nameof(settings));
         ArgumentGuard.IsNotNull(evaluator, nameof(evaluator));
 
-        Expression = expression.Trim();
+        Expression = expression?.Trim() ?? string.Empty;
         Settings = settings;
         Context = context;
         Evaluator = evaluator;
         QuoteMap = BuildQuoteMap(Expression);
+        CurrentRecursionLevel = currentRecursionLevel;
+        ParentContext = parentContext;
     }
 
     public bool IsInQuoteMap(int index)
@@ -39,6 +42,12 @@ public class ExpressionEvaluatorContext
 
         return false;
     }
+
+    public Result<object?> Evaluate(string expression)
+        => Evaluator.Evaluate(CreateChildContext(expression));
+
+    private ExpressionEvaluatorContext CreateChildContext(string expression)
+        => new ExpressionEvaluatorContext(expression, Settings, Context, Evaluator, CurrentRecursionLevel + 1, this);
 
     private static IEnumerable<(int StartIndex, int EndIndex)> BuildQuoteMap(string value)
     {

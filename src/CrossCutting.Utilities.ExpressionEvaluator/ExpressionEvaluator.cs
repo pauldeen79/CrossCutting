@@ -11,50 +11,56 @@ public class ExpressionEvaluator : IExpressionEvaluator
         _expressions = expressions.OrderBy(x => x.Order).ToArray();
     }
 
-    public Result<object?> Evaluate(string expression, ExpressionEvaluatorSettings settings, object? context)
+    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
     {
-        if (string.IsNullOrEmpty(expression))
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        if (string.IsNullOrEmpty(context.Expression))
         {
             return Result.Invalid<object?>("Value is required");
         }
 
-        var expressionContext = new ExpressionEvaluatorContext(expression, settings, context, this);
+        var expressionContext = new ExpressionEvaluatorContext(context.Expression, context.Settings, context.Context, this, 0);
 
         return _expressions
             .Select(x => x.Evaluate(expressionContext))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid<object?>($"Unknown expression type found in fragment: {expression}");
+                ?? Result.Invalid<object?>($"Unknown expression type found in fragment: {context.Expression}");
     }
 
-    public Result<T> EvaluateTyped<T>(string expression, ExpressionEvaluatorSettings settings, object? context)
+    public Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context)
     {
-        if (string.IsNullOrEmpty(expression))
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        if (string.IsNullOrEmpty(context.Expression))
         {
             return Result.Invalid<T>("Value is required");
         }
 
-        var expressionContext = new ExpressionEvaluatorContext(expression, settings, context, this);
+        var expressionContext = new ExpressionEvaluatorContext(context.Expression, context.Settings, context.Context, this, 0);
 
         return _expressions
             .Select(x => x is IExpression<T> typedExpression
                 ? typedExpression.EvaluateTyped(expressionContext)
                 : x.Evaluate(expressionContext).TryCast<T>())
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid<T>($"Unknown expression type found in fragment: {expression}");
+                ?? Result.Invalid<T>($"Unknown expression type found in fragment: {context.Expression}");
     }
 
-    public Result<Type> Validate(string expression, ExpressionEvaluatorSettings settings, object? context)
+    public Result<Type> Validate(ExpressionEvaluatorContext context)
     {
-        if (string.IsNullOrEmpty(expression))
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        if (string.IsNullOrEmpty(context.Expression))
         {
             return Result.Invalid<Type>("Value is required");
         }
 
-        var expressionContext = new ExpressionEvaluatorContext(expression, settings, context, this);
+        var expressionContext = new ExpressionEvaluatorContext(context.Expression, context.Settings, context, this, 0);
 
         return _expressions
             .Select(x => x.Validate(expressionContext))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid<Type>($"Unknown expression type found in fragment: {expression}");
+                ?? Result.Invalid<Type>($"Unknown expression type found in fragment: {context.Expression}");
     }
 }

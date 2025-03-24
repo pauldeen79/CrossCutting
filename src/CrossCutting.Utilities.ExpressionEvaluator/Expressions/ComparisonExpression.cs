@@ -202,8 +202,8 @@ public class ComparisonExpression : IExpression<bool>
     private static Result<bool> EvaluateCondition(Condition condition, ExpressionEvaluatorContext context)
     {
         var results = new ResultDictionaryBuilder()
-            .Add(Constants.LeftExpression, () => context.Evaluator.Evaluate(condition.LeftExpression, context.Settings, context.Context))
-            .Add(Constants.RightExpression, () => context.Evaluator.Evaluate(condition.RightExpression, context.Settings, context.Context))
+            .Add(Constants.LeftExpression, () => context.Evaluate(condition.LeftExpression))
+            .Add(Constants.RightExpression, () => context.Evaluate(condition.RightExpression))
             .Build();
 
         var error = results.GetError();
@@ -232,8 +232,8 @@ public class ComparisonExpression : IExpression<bool>
     private static Result<Type> ValidateCondition(Condition condition, ExpressionEvaluatorContext context)
     {
         var results = new ResultDictionaryBuilder()
-            .Add(Constants.LeftExpression, () => context.Evaluator.Validate(condition.LeftExpression, context.Settings, context.Context))
-            .Add(Constants.RightExpression, () => context.Evaluator.Validate(condition.RightExpression, context.Settings, context.Context))
+            .Add(Constants.LeftExpression, () => context.Evaluate(condition.LeftExpression))
+            .Add(Constants.RightExpression, () => context.Evaluate(condition.RightExpression))
             .Build();
 
         var error = results.GetError();

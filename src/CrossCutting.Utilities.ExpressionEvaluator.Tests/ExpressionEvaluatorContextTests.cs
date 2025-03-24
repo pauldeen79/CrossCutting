@@ -5,13 +5,16 @@ public class ExpressionEvaluatorContextTests : TestBase
     public class Constructor : ExpressionEvaluatorContextTests
     {
         [Fact]
-        public void Throws_On_Null_Expression()
+        public void Replaces_Null_Expression_With_StringEmpty()
         {
             // Arrange
-            Action a = () => CreateContext(expression: null!);
+            var expression = default(string);
+
+            // Act
+            var sut =  CreateContext(expression!);
 
             // Assert
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("expression");
+            sut.Expression.ShouldBeEmpty();
         }
 
         [Fact]
