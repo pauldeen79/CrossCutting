@@ -26,13 +26,40 @@ public class ServiceCollectionExtensionsTests
         var expression = scope.ServiceProvider.GetServices<IExpression>().FirstOrDefault(x => x.GetType() == expressionType);
 
         // Assert
-        expression.ShouldNotBeNull($"Function {expressionType.FullName} could not be resolved, did you forget to register this?");
+        expression.ShouldNotBeNull($"Expression {expressionType.FullName} could not be resolved, did you forget to register this?");
     }
 
     public static TheoryData<Type> GetAllExpressions()
     {
         var data = new TheoryData<Type>();
         foreach (var t in typeof(IExpression).Assembly.GetExportedTypes().Where(x => !x.IsInterface && !x.IsAbstract && x.GetAllInterfaces().Contains(typeof(IExpression))))
+        {
+            data.Add(t);
+        }
+
+        return data;
+    }
+
+    [Theory]
+    [MemberData(nameof(GetAllOperators))]
+    public void Can_Resolve_Operator(Type operatorType)
+    {
+        // Arrange
+        var serviceCollection = new ServiceCollection().AddExpressionEvaluator();
+        using var provider = serviceCollection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+        using var scope = provider.CreateScope();
+
+        // Act
+        var expression = scope.ServiceProvider.GetServices<IOperator>().FirstOrDefault(x => x.GetType() == operatorType);
+
+        // Assert
+        expression.ShouldNotBeNull($"Operator {operatorType.FullName} could not be resolved, did you forget to register this?");
+    }
+
+    public static TheoryData<Type> GetAllOperators()
+    {
+        var data = new TheoryData<Type>();
+        foreach (var t in typeof(IOperator).Assembly.GetExportedTypes().Where(x => !x.IsInterface && !x.IsAbstract && x.GetAllInterfaces().Contains(typeof(IOperator))))
         {
             data.Add(t);
         }

@@ -2,5 +2,5 @@
 
 internal interface IComparison
 {
-    [Required][ValidateObject] IReadOnlyCollection<ICondition> Conditions { get; }
+    [Required][ValidateObject] IReadOnlyCollection<IComparisonCondition> Conditions { get; }
 }

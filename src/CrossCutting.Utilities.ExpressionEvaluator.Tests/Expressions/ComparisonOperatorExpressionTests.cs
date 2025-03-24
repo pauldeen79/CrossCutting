@@ -1,10 +1,10 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Expressions;
 
-public class ComparisonExpressionTests : TestBase
+public class ComparisonOperatorExpressionTests : TestBase
 {
-    protected static ComparisonExpression CreateSut() => new ComparisonExpression([new EqualOperator(), new GreaterOrEqualThanOperator(), new GreaterThanOperator(), new NotEqualOperator(), new SmallerOrEqualThanOperator(), new SmallerThanOperator()]);
+    protected static ComparisonOperatorExpression CreateSut() => new ComparisonOperatorExpression([new EqualOperator(), new GreaterOrEqualThanOperator(), new GreaterThanOperator(), new NotEqualOperator(), new SmallerOrEqualThanOperator(), new SmallerThanOperator()]);
 
-    public class Evaluate : ComparisonExpressionTests
+    public class Evaluate : ComparisonOperatorExpressionTests
     {
         [Fact]
         public void Returns_Continue_When_Expression_Does_Not_Contain_Any_Comparison_Characters()
@@ -221,7 +221,7 @@ public class ComparisonExpressionTests : TestBase
         }
     }
 
-    public class Validate : ComparisonExpressionTests
+    public class Validate : ComparisonOperatorExpressionTests
     {
         [Fact]
         public void Returns_Continue_When_Expression_Does_Not_Contain_Any_Comparison_Characters()
@@ -423,7 +423,7 @@ public class ComparisonExpressionTests : TestBase
         }
     }
 
-    public class Evaluate_Comparison : ComparisonExpressionTests
+    public class Evaluate_Comparison : ComparisonOperatorExpressionTests
     {
         [Fact]
         public void Returns_Non_Successful_Result_From_Comparison_Result()
@@ -432,7 +432,7 @@ public class ComparisonExpressionTests : TestBase
             var context = CreateContext("Dummy"); // only needed for recursive calls
 
             // Act
-            var result = ComparisonExpression.Evaluate(context, Result.Error<Comparison>("Kaboom"));
+            var result = ComparisonOperatorExpression.Evaluate(context, Result.Error<Comparison>("Kaboom"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -445,14 +445,14 @@ public class ComparisonExpressionTests : TestBase
             // Arrange
             var conditionsResult = Result.Success(new Comparison(
             [
-                new ConditionBuilder().WithStartGroup().WithLeftExpression("1").WithOperator(new EqualOperator()).WithRightExpression("1"),
-                new ConditionBuilder().WithCombination(Combination.And).WithLeftExpression("2").WithOperator(new NotEqualOperator()).WithRightExpression("1").WithEndGroup(),
-                new ConditionBuilder().WithCombination(Combination.Or).WithLeftExpression("\"some text\"").WithOperator(new GreaterThanOperator()).WithRightExpression("\"zzz\"")
+                new ComparisonConditionBuilder().WithStartGroup().WithLeftExpression("1").WithOperator(new EqualOperator()).WithRightExpression("1"),
+                new ComparisonConditionBuilder().WithCombination(Combination.And).WithLeftExpression("2").WithOperator(new NotEqualOperator()).WithRightExpression("1").WithEndGroup(),
+                new ComparisonConditionBuilder().WithCombination(Combination.Or).WithLeftExpression("\"some text\"").WithOperator(new GreaterThanOperator()).WithRightExpression("\"zzz\"")
             ]));
             var context = CreateContext("Dummy"); // only needed for recursive calls
 
             // Act
-            var result = ComparisonExpression.Evaluate(context, conditionsResult);
+            var result = ComparisonOperatorExpression.Evaluate(context, conditionsResult);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -465,12 +465,12 @@ public class ComparisonExpressionTests : TestBase
             // Arrange
             var conditionsResult = Result.Success(new Comparison(
             [
-                new ConditionBuilder().WithLeftExpression("context").WithOperator(new EqualOperator()).WithRightExpression("null")
+                new ComparisonConditionBuilder().WithLeftExpression("context").WithOperator(new EqualOperator()).WithRightExpression("null")
             ]));
             var context = CreateContext("Dummy", context: null); // only needed for recursive calls. explicitly setting context to null
 
             // Act
-            var result = ComparisonExpression.Evaluate(context, conditionsResult);
+            var result = ComparisonOperatorExpression.Evaluate(context, conditionsResult);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

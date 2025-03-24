@@ -10,15 +10,15 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 {
-    public partial class ComparisonBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class BinaryBuilder : System.ComponentModel.INotifyPropertyChanged
     {
-        private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder> _conditions;
+        private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder> _conditions;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder> Conditions
+        public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder> Conditions
         {
             get
             {
@@ -26,7 +26,198 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder>>.Default.Equals(_conditions!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder>>.Default.Equals(_conditions!, value!);
+                _conditions = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Conditions));
+            }
+        }
+
+        public BinaryBuilder(CrossCutting.Utilities.ExpressionEvaluator.Binary source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _conditions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder>();
+            if (source.Conditions is not null) foreach (var item in source.Conditions.Select(x => x.ToBuilder())) _conditions.Add(item);
+        }
+
+        public BinaryBuilder()
+        {
+            _conditions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder>();
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Binary Build()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Binary(Conditions.Select(x => x.Build()!).ToList().AsReadOnly());
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryBuilder AddConditions(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder> conditions)
+        {
+            if (conditions is null) throw new System.ArgumentNullException(nameof(conditions));
+            return AddConditions(conditions.ToArray());
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryBuilder AddConditions(params CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder[] conditions)
+        {
+            if (conditions is null) throw new System.ArgumentNullException(nameof(conditions));
+            foreach (var item in conditions) Conditions.Add(item);
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Binary(BinaryBuilder entity)
+        {
+            return entity.Build();
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+    public partial class BinaryConditionBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> _combination;
+
+        private string _expression;
+
+        private bool _startGroup;
+
+        private bool _endGroup;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> Combination
+        {
+            get
+            {
+                return _combination;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination>>.Default.Equals(_combination, value);
+                _combination = value;
+                if (hasChanged) HandlePropertyChanged(nameof(Combination));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Expression
+        {
+            get
+            {
+                return _expression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_expression!, value!);
+                _expression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Expression));
+            }
+        }
+
+        public bool StartGroup
+        {
+            get
+            {
+                return _startGroup;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_startGroup, value);
+                _startGroup = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StartGroup));
+            }
+        }
+
+        public bool EndGroup
+        {
+            get
+            {
+                return _endGroup;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_endGroup, value);
+                _endGroup = value;
+                if (hasChanged) HandlePropertyChanged(nameof(EndGroup));
+            }
+        }
+
+        public BinaryConditionBuilder(CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _combination = source.Combination;
+            _expression = source.Expression;
+            _startGroup = source.StartGroup;
+            _endGroup = source.EndGroup;
+        }
+
+        public BinaryConditionBuilder()
+        {
+            _expression = string.Empty;
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition Build()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition(Combination, Expression, StartGroup, EndGroup);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder WithCombination(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination)
+        {
+            Combination = combination;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder WithExpression(string expression)
+        {
+            if (expression is null) throw new System.ArgumentNullException(nameof(expression));
+            Expression = expression;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder WithStartGroup(bool startGroup = true)
+        {
+            StartGroup = startGroup;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder WithEndGroup(bool endGroup = true)
+        {
+            EndGroup = endGroup;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition(BinaryConditionBuilder entity)
+        {
+            return entity.Build();
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+    public partial class ComparisonBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder> _conditions;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder> Conditions
+        {
+            get
+            {
+                return _conditions;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder>>.Default.Equals(_conditions!, value!);
                 _conditions = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Conditions));
             }
@@ -35,13 +226,13 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         public ComparisonBuilder(CrossCutting.Utilities.ExpressionEvaluator.Comparison source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _conditions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder>();
+            _conditions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder>();
             if (source.Conditions is not null) foreach (var item in source.Conditions.Select(x => x.ToBuilder())) _conditions.Add(item);
         }
 
         public ComparisonBuilder()
         {
-            _conditions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder>();
+            _conditions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder>();
             SetDefaultValues();
         }
 
@@ -52,13 +243,13 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonBuilder AddConditions(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder> conditions)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonBuilder AddConditions(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder> conditions)
         {
             if (conditions is null) throw new System.ArgumentNullException(nameof(conditions));
             return AddConditions(conditions.ToArray());
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonBuilder AddConditions(params CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder[] conditions)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonBuilder AddConditions(params CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder[] conditions)
         {
             if (conditions is null) throw new System.ArgumentNullException(nameof(conditions));
             foreach (var item in conditions) Conditions.Add(item);
@@ -75,7 +266,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class ConditionBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class ComparisonConditionBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         private System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> _combination;
 
@@ -178,7 +369,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
         }
 
-        public ConditionBuilder(CrossCutting.Utilities.ExpressionEvaluator.Condition source)
+        public ComparisonConditionBuilder(CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _combination = source.Combination;
@@ -189,7 +380,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _endGroup = source.EndGroup;
         }
 
-        public ConditionBuilder()
+        public ComparisonConditionBuilder()
         {
             _leftExpression = string.Empty;
             _operator = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IOperator)!;
@@ -197,53 +388,53 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             SetDefaultValues();
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Condition Build()
+        public CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition Build()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Condition(Combination, LeftExpression, Operator, RightExpression, StartGroup, EndGroup);
+            return new CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition(Combination, LeftExpression, Operator, RightExpression, StartGroup, EndGroup);
         }
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithCombination(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder WithCombination(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination)
         {
             Combination = combination;
             return this;
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithLeftExpression(string leftExpression)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder WithLeftExpression(string leftExpression)
         {
             if (leftExpression is null) throw new System.ArgumentNullException(nameof(leftExpression));
             LeftExpression = leftExpression;
             return this;
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithOperator(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IOperator @operator)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder WithOperator(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IOperator @operator)
         {
             if (@operator is null) throw new System.ArgumentNullException(nameof(@operator));
             Operator = @operator;
             return this;
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithRightExpression(string rightExpression)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder WithRightExpression(string rightExpression)
         {
             if (rightExpression is null) throw new System.ArgumentNullException(nameof(rightExpression));
             RightExpression = rightExpression;
             return this;
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithStartGroup(bool startGroup = true)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder WithStartGroup(bool startGroup = true)
         {
             StartGroup = startGroup;
             return this;
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder WithEndGroup(bool endGroup = true)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder WithEndGroup(bool endGroup = true)
         {
             EndGroup = endGroup;
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Condition(ConditionBuilder entity)
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition(ComparisonConditionBuilder entity)
         {
             return entity.Build();
         }

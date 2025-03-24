@@ -1,12 +1,12 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public class ComparisonExpression : IExpression<bool>
+public class ComparisonOperatorExpression : IExpression<bool>
 {
     private readonly string[] _delimiters;
     private readonly string[] _operatorExpressions;
     private readonly IOperator[] _operators;
 
-    public ComparisonExpression(IEnumerable<IOperator> operators)
+    public ComparisonOperatorExpression(IEnumerable<IOperator> operators)
     {
         operators = ArgumentGuard.IsNotNull(operators, nameof(operators));
 
@@ -64,15 +64,15 @@ public class ComparisonExpression : IExpression<bool>
         return ValidateConditions(context, conditionsResult.Value!);
     }
 
-    private Result<List<Condition>> ParseConditions(ExpressionEvaluatorContext context)
+    private Result<List<ComparisonCondition>> ParseConditions(ExpressionEvaluatorContext context)
     {
-        var conditions = new List<Condition>();
+        var conditions = new List<ComparisonCondition>();
         var combination = string.Empty;
 
         var foundAnyComparisonCharacter = context.FindAllOccurencedNotWithinQuotes(_operatorExpressions, StringComparison.Ordinal);
         if (!foundAnyComparisonCharacter)
         {
-            return Result.Continue<List<Condition>>();
+            return Result.Continue<List<ComparisonCondition>>();
         }
 
         // First get array of parts
@@ -80,14 +80,14 @@ public class ComparisonExpression : IExpression<bool>
         if (parts.Length <= 2)
         {
             // Messed up expression! Should always be <left expression> <operator> <right expression>
-            return Result.Continue<List<Condition>>();
+            return Result.Continue<List<ComparisonCondition>>();
         }
 
         // Now, we need to convert this array of parts to conditions
         var itemCountIsCorrect = (parts.Length - 3) % 4 == 0;
         if (!itemCountIsCorrect)
         {
-            return Result.Invalid<List<Condition>>("Comparison expression has invalid number of parts");
+            return Result.Invalid<List<ComparisonCondition>>("Comparison expression has invalid number of parts");
         }
 
         for (var i = 0; i < parts.Length; i += 4)
@@ -119,10 +119,10 @@ public class ComparisonExpression : IExpression<bool>
             if (queryOperator is null)
             {
                 // Messed up expression! Should always be <left expression> <operator> <right expression>
-                return Result.Invalid<List<Condition>>("Comparison expression is malformed");
+                return Result.Invalid<List<ComparisonCondition>>("Comparison expression is malformed");
             }
 
-            var condition = new ConditionBuilder()
+            var condition = new ComparisonConditionBuilder()
                 .WithCombination(combination.ToUpperInvariant() switch
                 {
                     "&&" => Combination.And,
@@ -149,13 +149,13 @@ public class ComparisonExpression : IExpression<bool>
     private IOperator GetOperator(string @operator)
         => _operators.FirstOrDefault(x => x.OperatorExpression.Equals(@operator.Trim(), StringComparison.OrdinalIgnoreCase));
 
-    private static bool ConditionsAreSimple(IEnumerable<Condition> conditions)
+    private static bool ConditionsAreSimple(IEnumerable<ComparisonCondition> conditions)
         => !conditions.Any(x =>
             (x.Combination ?? Combination.And) == Combination.Or
             || x.StartGroup
             || x.EndGroup);
 
-    private static Result<bool> EvaluateSimpleConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
+    private static Result<bool> EvaluateSimpleConditions(ExpressionEvaluatorContext context, IEnumerable<ComparisonCondition> conditions)
     {
         foreach (var condition in conditions)
         {
@@ -174,7 +174,7 @@ public class ComparisonExpression : IExpression<bool>
         return Result.Success(true);
     }
 
-    private static Result<bool> EvaluateComplexConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
+    private static Result<bool> EvaluateComplexConditions(ExpressionEvaluatorContext context, IEnumerable<ComparisonCondition> conditions)
     {
         var builder = new StringBuilder();
         foreach (var evaluatable in conditions)
@@ -199,7 +199,7 @@ public class ComparisonExpression : IExpression<bool>
         return Result.Success(EvaluateBooleanExpression(builder.ToString()));
     }
 
-    private static Result<bool> EvaluateCondition(Condition condition, ExpressionEvaluatorContext context)
+    private static Result<bool> EvaluateCondition(ComparisonCondition condition, ExpressionEvaluatorContext context)
     {
         var results = new ResultDictionaryBuilder()
             .Add(Constants.LeftExpression, () => context.Evaluate(condition.LeftExpression))
@@ -215,7 +215,7 @@ public class ComparisonExpression : IExpression<bool>
         return condition.Operator.Evaluate(new OperatorContextBuilder().WithResults(results).WithStringComparison(context.Settings.StringComparison));
     }
 
-    private static Result<Type> ValidateConditions(ExpressionEvaluatorContext context, IEnumerable<Condition> conditions)
+    private static Result<Type> ValidateConditions(ExpressionEvaluatorContext context, IEnumerable<ComparisonCondition> conditions)
     {
         foreach (var evaluatable in conditions)
         {
@@ -229,11 +229,11 @@ public class ComparisonExpression : IExpression<bool>
         return Result.Success(typeof(bool));
     }
 
-    private static Result<Type> ValidateCondition(Condition condition, ExpressionEvaluatorContext context)
+    private static Result<Type> ValidateCondition(ComparisonCondition condition, ExpressionEvaluatorContext context)
     {
         var results = new ResultDictionaryBuilder()
-            .Add(Constants.LeftExpression, () => context.Evaluate(condition.LeftExpression))
-            .Add(Constants.RightExpression, () => context.Evaluate(condition.RightExpression))
+            .Add(Constants.LeftExpression, () => context.Validate(condition.LeftExpression))
+            .Add(Constants.RightExpression, () => context.Validate(condition.RightExpression))
             .Build();
 
         var error = results.GetError();
@@ -242,7 +242,7 @@ public class ComparisonExpression : IExpression<bool>
             return Result.FromExistingResult<Type>(error);
         }
 
-        return Result.NoContent<Type>();
+        return Result.Success(typeof(bool));
     }
 
     private static bool EvaluateBooleanExpression(string expression)

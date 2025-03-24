@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.Models;
 
-internal interface ICondition
+internal interface IComparisonCondition
 {
     Combination? Combination { get; }
     [Required] string LeftExpression { get; }

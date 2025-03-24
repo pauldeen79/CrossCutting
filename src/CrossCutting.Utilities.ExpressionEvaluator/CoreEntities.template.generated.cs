@@ -10,18 +10,75 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator
 {
-    public partial record Comparison
+    public partial record Binary
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Condition> Conditions
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition> Conditions
         {
             get;
         }
 
-        public Comparison(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Condition> conditions)
+        public Binary(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition> conditions)
         {
-            this.Conditions = conditions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.Condition>(conditions);
+            this.Conditions = conditions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.BinaryCondition>(conditions);
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryBuilder(this);
+        }
+    }
+    public partial record BinaryCondition
+    {
+        public System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> Combination
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string Expression
+        {
+            get;
+        }
+
+        public bool StartGroup
+        {
+            get;
+        }
+
+        public bool EndGroup
+        {
+            get;
+        }
+
+        public BinaryCondition(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination, string expression, bool startGroup, bool endGroup)
+        {
+            this.Combination = combination;
+            this.Expression = expression;
+            this.StartGroup = startGroup;
+            this.EndGroup = endGroup;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.BinaryConditionBuilder(this);
+        }
+    }
+    public partial record Comparison
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition> Conditions
+        {
+            get;
+        }
+
+        public Comparison(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition> conditions)
+        {
+            this.Conditions = conditions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.ComparisonCondition>(conditions);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -30,7 +87,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonBuilder(this);
         }
     }
-    public partial record Condition
+    public partial record ComparisonCondition
     {
         public System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> Combination
         {
@@ -65,7 +122,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public Condition(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination, string leftExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IOperator @operator, string rightExpression, bool startGroup, bool endGroup)
+        public ComparisonCondition(System.Nullable<CrossCutting.Utilities.ExpressionEvaluator.Domains.Combination> combination, string leftExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IOperator @operator, string rightExpression, bool startGroup, bool endGroup)
         {
             this.Combination = combination;
             this.LeftExpression = leftExpression;
@@ -76,9 +133,9 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder ToBuilder()
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ConditionBuilder(this);
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ComparisonConditionBuilder(this);
         }
     }
     public partial record ExpressionEvaluatorSettings
