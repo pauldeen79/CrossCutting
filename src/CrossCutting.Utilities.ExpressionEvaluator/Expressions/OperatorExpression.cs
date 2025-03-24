@@ -58,6 +58,23 @@ public static class OperatorExpression
         return result;
     }
 
+    public static void AppendCondition(StringBuilder builder, Combination? combination, bool startGroup, bool endGroup, bool itemResultValue)
+    {
+        builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
+
+        if (builder.Length > 0)
+        {
+            builder.Append(combination == Combination.Or ? "|" : "&");
+        }
+
+        var prefix = startGroup ? "(" : string.Empty;
+        var suffix = endGroup ? ")" : string.Empty;
+
+        builder.Append(prefix)
+               .Append(itemResultValue ? "T" : "F")
+               .Append(suffix);
+    }
+
     public static string GetPrefix(string expression, int openIndex)
     {
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));

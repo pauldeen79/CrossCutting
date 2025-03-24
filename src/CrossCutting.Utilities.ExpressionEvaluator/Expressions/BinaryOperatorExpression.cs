@@ -150,23 +150,15 @@ public class BinaryOperatorExpression : IExpression<bool>
     private static Result<bool> EvaluateComplexConditions(ExpressionEvaluatorContext context, IEnumerable<BinaryCondition> conditions)
     {
         var builder = new StringBuilder();
-        foreach (var evaluatable in conditions)
+        foreach (var condition in conditions)
         {
-            if (builder.Length > 0)
-            {
-                builder.Append(evaluatable.Combination == Combination.Or ? "|" : "&");
-            }
-
-            var prefix = evaluatable.StartGroup ? "(" : string.Empty;
-            var suffix = evaluatable.EndGroup ? ")" : string.Empty;
-            var itemResult = EvaluateCondition(evaluatable, context);
+            var itemResult = EvaluateCondition(condition, context);
             if (!itemResult.IsSuccessful())
             {
                 return itemResult;
             }
-            builder.Append(prefix)
-                   .Append(itemResult.Value ? "T" : "F")
-                   .Append(suffix);
+
+            OperatorExpression.AppendCondition(builder, condition.Combination, condition.StartGroup, condition.EndGroup, itemResult.Value);
         }
 
         return Result.Success(OperatorExpression.EvaluateBooleanExpression(builder.ToString()));
@@ -198,9 +190,9 @@ public class BinaryOperatorExpression : IExpression<bool>
 
     private static Result<Type> ValidateConditions(ExpressionEvaluatorContext context, IEnumerable<BinaryCondition> conditions)
     {
-        foreach (var evaluatable in conditions)
+        foreach (var condition in conditions)
         {
-            var itemResult = ValidateCondition(evaluatable, context);
+            var itemResult = ValidateCondition(condition, context);
             if (!itemResult.IsSuccessful())
             {
                 return itemResult;
