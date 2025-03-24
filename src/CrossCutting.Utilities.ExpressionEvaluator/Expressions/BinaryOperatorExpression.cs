@@ -169,7 +169,7 @@ public class BinaryOperatorExpression : IExpression<bool>
                    .Append(suffix);
         }
 
-        return Result.Success(EvaluateBooleanExpression(builder.ToString()));
+        return Result.Success(OperatorExpression.EvaluateBooleanExpression(builder.ToString()));
     }
 
     private static Result<bool> EvaluateCondition(BinaryCondition condition, ExpressionEvaluatorContext context)
@@ -220,72 +220,4 @@ public class BinaryOperatorExpression : IExpression<bool>
 
         return Result.Success(typeof(bool));
     }
-
-    private static bool EvaluateBooleanExpression(string expression)
-    {
-        var result = ProcessRecursive(ref expression);
-
-        var @operator = "&";
-        foreach (var character in expression)
-        {
-            bool currentResult;
-            switch (character)
-            {
-                case '&':
-                    @operator = "&";
-                    break;
-                case '|':
-                    @operator = "|";
-                    break;
-                case 'T':
-                case 'F':
-                    currentResult = character == 'T';
-                    result = @operator == "&"
-                        ? result && currentResult
-                        : result || currentResult;
-                    break;
-            }
-        }
-
-        return result;
-    }
-
-    private static bool ProcessRecursive(ref string expression)
-    {
-        var result = true;
-        var openIndex = -1;
-        int closeIndex;
-        do
-        {
-            closeIndex = expression.IndexOf(")");
-            if (closeIndex > -1)
-            {
-                openIndex = expression.LastIndexOf("(", closeIndex);
-                if (openIndex > -1)
-                {
-                    result = EvaluateBooleanExpression(expression.Substring(openIndex + 1, closeIndex - openIndex - 1));
-                    expression = string.Concat(GetPrefix(expression, openIndex),
-                                               GetCurrent(result),
-                                               GetSuffix(expression, closeIndex));
-                }
-            }
-        } while (closeIndex > -1 && openIndex > -1);
-        return result;
-    }
-
-    private static string GetPrefix(string expression, int openIndex)
-        => openIndex == 0
-            ? string.Empty
-            : expression.Substring(0, openIndex - 2);
-
-    private static string GetCurrent(bool result)
-        => result
-            ? "T"
-            : "F";
-
-    private static string GetSuffix(string expression, int closeIndex)
-        => closeIndex == expression.Length
-            ? string.Empty
-            : expression.Substring(closeIndex + 1);
-
 }
