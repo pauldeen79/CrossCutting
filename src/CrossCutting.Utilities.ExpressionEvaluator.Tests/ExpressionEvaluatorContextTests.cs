@@ -18,6 +18,37 @@ public class ExpressionEvaluatorContextTests : TestBase
         }
 
         [Fact]
+        public void Trims_The_Expression()
+        {
+            // Arrange
+            var expression = "    SomeExpression()    ";
+
+            // Act
+            var sut = CreateContext(expression);
+
+            // Assert
+            sut.Expression.ShouldBe("SomeExpression()");
+        }
+
+        [Fact]
+        public void Sets_ParentContext_Correctly()
+        {
+            // Arrange
+            var expression = "child expression";
+
+            // Act
+            var sut = CreateContext(expression, currentRecursionLevel: 2, parentContext: new ExpressionEvaluatorContext("parent expression", new ExpressionEvaluatorSettingsBuilder(), null, Evaluator, currentRecursionLevel: 1));
+
+            // Assert
+            sut.CurrentRecursionLevel.ShouldBe(2);
+            sut.Expression.ShouldBe("child expression");
+
+            sut.ParentContext.ShouldNotBeNull();
+            sut.ParentContext.Expression.ShouldBe("parent expression");
+            sut.ParentContext.CurrentRecursionLevel.ShouldBe(1);
+        }
+
+        [Fact]
         public void Fills_QuoteMap_When_Quotes_Are_Present()
         {
             // Arrange
@@ -41,19 +72,6 @@ public class ExpressionEvaluatorContextTests : TestBase
 
             // Assert
             sut.QuoteMap.Count().ShouldBe(0);
-        }
-
-        [Fact]
-        public void Trims_The_Expression()
-        {
-            // Arrange
-            var expression = "    SomeExpression()    ";
-
-            // Act
-            var sut = CreateContext(expression);
-
-            // Assert
-            sut.Expression.ShouldBe("SomeExpression()");
         }
     }
 }
