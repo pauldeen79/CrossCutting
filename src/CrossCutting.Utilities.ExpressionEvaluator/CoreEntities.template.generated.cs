@@ -169,6 +169,97 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder(this);
         }
     }
+    public partial record ExpressionParsePartResult
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string PartName
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public CrossCutting.Common.Results.Result Result
+        {
+            get;
+        }
+
+        public string? SourceExpression
+        {
+            get;
+        }
+
+        public System.Type? ExpressionType
+        {
+            get;
+        }
+
+        public System.Type? ResultType
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult> PartResults
+        {
+            get;
+        }
+
+        public ExpressionParsePartResult(string partName, CrossCutting.Common.Results.Result result, string? sourceExpression, System.Type? expressionType, System.Type? resultType, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult> partResults)
+        {
+            this.PartName = partName;
+            this.Result = result;
+            this.SourceExpression = sourceExpression;
+            this.ExpressionType = expressionType;
+            this.ResultType = resultType;
+            this.PartResults = partResults is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult>(partResults);
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder(this);
+        }
+    }
+    public partial record ExpressionParseResult
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string SourceExpression
+        {
+            get;
+        }
+
+        public System.Type ExpressionType
+        {
+            get;
+        }
+
+        public System.Type? ResultType
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult> PartResults
+        {
+            get;
+        }
+
+        public ExpressionParseResult(string sourceExpression, System.Type expressionType, System.Type? resultType, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult> partResults)
+        {
+            this.SourceExpression = sourceExpression;
+            this.ExpressionType = expressionType;
+            this.ResultType = resultType;
+            this.PartResults = partResults is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult>(partResults);
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParseResultBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParseResultBuilder(this);
+        }
+    }
     public partial record FunctionCall
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]

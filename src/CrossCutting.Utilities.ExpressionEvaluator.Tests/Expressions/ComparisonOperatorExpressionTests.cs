@@ -221,7 +221,7 @@ public class ComparisonOperatorExpressionTests : TestBase
         }
     }
 
-    public class Validate : ComparisonOperatorExpressionTests
+    public class Parse : ComparisonOperatorExpressionTests
     {
         [Fact]
         public void Returns_Continue_When_Expression_Does_Not_Contain_Any_Comparison_Characters()
@@ -231,7 +231,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "Some expression not containing comparison characters like equals";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -245,7 +245,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "A ==";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -259,7 +259,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "context == \"some value\" AND context.Length >";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -274,7 +274,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "context && \"some value\" && B == C";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -289,7 +289,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "context == \"some value\"";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -303,7 +303,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "context == \"some value\" && context.Length > 1";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -317,7 +317,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "(context >= 1 && context <= 5) || context == \"some other value\"";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -331,7 +331,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "1 <= 2";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Value.ShouldBe(typeof(bool));
@@ -345,7 +345,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "1 < 2";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Value.ShouldBe(typeof(bool));
@@ -359,7 +359,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "2 >= 1";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Value.ShouldBe(typeof(bool));
@@ -373,7 +373,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "2 > 1";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Value.ShouldBe(typeof(bool));
@@ -387,7 +387,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "1 == 1";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Value.ShouldBe(typeof(bool));
@@ -401,7 +401,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "2 != 1";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Value.ShouldBe(typeof(bool));
@@ -415,7 +415,7 @@ public class ComparisonOperatorExpressionTests : TestBase
             var expression = "2 != error";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

@@ -40,17 +40,17 @@ public class BinaryOperatorExpression : IExpression<bool>
         return Evaluate(context, conditionsResult.Transform(x => new BinaryConditionGroup(x)));
     }
 
-    public Result<Type> Validate(ExpressionEvaluatorContext context)
+    public Result<ExpressionParseResult> Parse(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         var conditionsResult = ParseConditions(context);
         if (!conditionsResult.IsSuccessful() || conditionsResult.Status == ResultStatus.Continue)
         {
-            return Result.FromExistingResult<Type>(conditionsResult);
+            return Result.FromExistingResult<ExpressionParseResult>(conditionsResult);
         }
 
-        return ValidateConditions(context, conditionsResult.Value!);
+        return ParseConditions(context, conditionsResult.Value!);
     }
 
     private static Result<List<BinaryCondition>> ParseConditions(ExpressionEvaluatorContext context)
@@ -122,6 +122,25 @@ public class BinaryOperatorExpression : IExpression<bool>
         return Result.Success(conditions);
     }
 
+    private static Result<ExpressionParseResult> ParseConditions(ExpressionEvaluatorContext context, IEnumerable<BinaryCondition> conditions)
+    {
+        var result = new ExpressionParseResultBuilder()
+            .WithExpressionType(typeof(BinaryOperatorExpression))
+            .WithResultType(typeof(bool))
+            .WithSourceExpression(context.Expression);
+
+        var counter = 0;
+        foreach (var condition in conditions)
+        {
+            Expression.AddPartResult(result, context.Parse(condition.Expression), "condition", counter);
+            counter++;
+        }
+
+        return result.PartResults.Any(x => !x.Result.IsSuccessful())
+            ? Result.Invalid<ExpressionParseResult>("Parsing of the expression failed, see inner results for details", result.PartResults.Select(x => x.Result))
+            : Result.Success(result.Build());
+    }
+
     private static bool ConditionsAreSimple(IEnumerable<BinaryCondition> conditions)
         => !conditions.Any(x =>
             (x.Combination ?? Combination.And) == Combination.Or
@@ -186,30 +205,5 @@ public class BinaryOperatorExpression : IExpression<bool>
             // design decision: if it's not a boolean, then do a null check
             return Result.Success(expressionResult.Value is not null);
         }
-    }
-
-    private static Result<Type> ValidateConditions(ExpressionEvaluatorContext context, IEnumerable<BinaryCondition> conditions)
-    {
-        foreach (var condition in conditions)
-        {
-            var itemResult = ValidateCondition(condition, context);
-            if (!itemResult.IsSuccessful())
-            {
-                return itemResult;
-            }
-        }
-
-        return Result.Success(typeof(bool));
-    }
-
-    private static Result<Type> ValidateCondition(BinaryCondition condition, ExpressionEvaluatorContext context)
-    {
-        var expressionResult = context.Validate(condition.Expression);
-        if (!expressionResult.IsSuccessful())
-        {
-            return expressionResult;
-        }
-
-        return Result.Success(typeof(bool));
     }
 }

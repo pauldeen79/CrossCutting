@@ -145,7 +145,7 @@ public class ExpressionEvaluatorTests : TestBase
         }
     }
 
-    public class Validate : ExpressionEvaluatorTests
+    public class Parse : ExpressionEvaluatorTests
     {
         [Fact]
         public void Returns_Invalid_When_Expression_Is_Null_Or_Empty()
@@ -154,7 +154,7 @@ public class ExpressionEvaluatorTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.Validate(string.Empty, new ExpressionEvaluatorSettingsBuilder());
+            var result = sut.Parse(string.Empty, new ExpressionEvaluatorSettingsBuilder());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -166,11 +166,11 @@ public class ExpressionEvaluatorTests : TestBase
         {
             // Arrange
             // Note that this setup simulates the implementation of ComparisonExpression
-            Expression.Validate(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(typeof(bool)));
+            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(typeof(bool)));
             var sut = CreateSut();
 
             // Act
-            var result = sut.Validate("expression", new ExpressionEvaluatorSettingsBuilder(), null);
+            var result = sut.Parse("expression", new ExpressionEvaluatorSettingsBuilder(), null);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -181,11 +181,11 @@ public class ExpressionEvaluatorTests : TestBase
         public void Returns_Invalid_When_Expression_Is_Not_Understood()
         {
             // Arrange
-            Expression.Validate(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Continue<Type>());
+            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Continue<Type>());
             var sut = CreateSut();
 
             // Act
-            var result = sut.Validate("expression", new ExpressionEvaluatorSettingsBuilder());
+            var result = sut.Parse("expression", new ExpressionEvaluatorSettingsBuilder());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -200,7 +200,7 @@ public class ExpressionEvaluatorTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.Validate(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), null, sut, int.MaxValue));
+            var result = sut.Parse(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), null, sut, int.MaxValue));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

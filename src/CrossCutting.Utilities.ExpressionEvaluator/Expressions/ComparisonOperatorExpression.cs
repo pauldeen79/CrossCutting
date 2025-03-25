@@ -51,17 +51,17 @@ public class ComparisonOperatorExpression : IExpression<bool>
         return Evaluate(context, conditionsResult.Transform(x => new ComparisonConditionGroup(x)));
     }
 
-    public Result<Type> Validate(ExpressionEvaluatorContext context)
+    public Result<ExpressionParseResult> Parse(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         var conditionsResult = ParseConditions(context);
         if (!conditionsResult.IsSuccessful() || conditionsResult.Status == ResultStatus.Continue)
         {
-            return Result.FromExistingResult<Type>(conditionsResult);
+            return Result.FromExistingResult<ExpressionParseResult>(conditionsResult);
         }
 
-        return ValidateConditions(context, conditionsResult.Value!);
+        return ParseConditions(context, conditionsResult.Value!);
     }
 
     private Result<List<ComparisonCondition>> ParseConditions(ExpressionEvaluatorContext context)
@@ -146,6 +146,26 @@ public class ComparisonOperatorExpression : IExpression<bool>
         return Result.Success(conditions);
     }
 
+    private static Result<ExpressionParseResult> ParseConditions(ExpressionEvaluatorContext context, IEnumerable<ComparisonCondition> conditions)
+    {
+        var result = new ExpressionParseResultBuilder()
+            .WithExpressionType(typeof(ComparisonOperatorExpression))
+            .WithResultType(typeof(bool))
+            .WithSourceExpression(context.Expression);
+
+        var counter = 0;
+        foreach (var condition in conditions)
+        {
+            Expression.AddPartResult(result, context.Parse(condition.LeftExpression), "condition", counter, "left");
+            Expression.AddPartResult(result, context.Parse(condition.RightExpression), "condition", counter, "right");
+            counter++;
+        }
+
+        return result.PartResults.Any(x => !x.Result.IsSuccessful())
+            ? Result.Invalid<ExpressionParseResult>("Parsing of the expression failed, see inner results for details", result.PartResults.Select(x => x.Result))
+            : Result.Success(result.Build());
+    }
+
     private IOperator GetOperator(string @operator)
         => _operators.FirstOrDefault(x => x.OperatorExpression.Equals(@operator.Trim(), StringComparison.OrdinalIgnoreCase));
 
@@ -205,35 +225,5 @@ public class ComparisonOperatorExpression : IExpression<bool>
         }
 
         return condition.Operator.Evaluate(new OperatorContextBuilder().WithResults(results).WithStringComparison(context.Settings.StringComparison));
-    }
-
-    private static Result<Type> ValidateConditions(ExpressionEvaluatorContext context, IEnumerable<ComparisonCondition> conditions)
-    {
-        foreach (var condition in conditions)
-        {
-            var itemResult = ValidateCondition(condition, context);
-            if (!itemResult.IsSuccessful())
-            {
-                return itemResult;
-            }
-        }
-
-        return Result.Success(typeof(bool));
-    }
-
-    private static Result<Type> ValidateCondition(ComparisonCondition condition, ExpressionEvaluatorContext context)
-    {
-        var results = new ResultDictionaryBuilder()
-            .Add(Constants.LeftExpression, () => context.Validate(condition.LeftExpression))
-            .Add(Constants.RightExpression, () => context.Validate(condition.RightExpression))
-            .Build();
-
-        var error = results.GetError();
-        if (error is not null)
-        {
-            return Result.FromExistingResult<Type>(error);
-        }
-
-        return Result.Success(typeof(bool));
     }
 }

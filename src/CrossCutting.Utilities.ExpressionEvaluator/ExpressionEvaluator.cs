@@ -35,14 +35,14 @@ public class ExpressionEvaluator : IExpressionEvaluator
                     ?? Result.Invalid<T>($"Unknown expression type found in fragment: {context.Expression}"));
     }
 
-    public Result<Type> Validate(ExpressionEvaluatorContext context)
+    public Result<ExpressionParseResult> Parse(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.Validate<Type>()
+        return context.Validate<ExpressionParseResult>()
             .OnSuccess(() => _expressions
-                .Select(x => x.Validate(context))
+                .Select(x => x.Parse(context))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                    ?? Result.Invalid<Type>($"Unknown expression type found in fragment: {context.Expression}"));
+                    ?? Result.Invalid<ExpressionParseResult>($"Unknown expression type found in fragment: {context.Expression}"));
     }
 }

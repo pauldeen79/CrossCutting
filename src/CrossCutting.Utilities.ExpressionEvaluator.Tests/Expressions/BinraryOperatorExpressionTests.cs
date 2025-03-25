@@ -120,7 +120,7 @@ public class BinaryOperatorExpressionTests : TestBase<BinaryOperatorExpression>
         }
     }
 
-    public class Validate : BinaryOperatorExpressionTests
+    public class Parse : BinaryOperatorExpressionTests
     {
         [Fact]
         public void Returns_Continue_When_Expression_Does_Not_Contain_Any_Comparison_Characters()
@@ -130,7 +130,7 @@ public class BinaryOperatorExpressionTests : TestBase<BinaryOperatorExpression>
             var expression = "Some expression not containing binary characters like 'and'";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -144,7 +144,7 @@ public class BinaryOperatorExpressionTests : TestBase<BinaryOperatorExpression>
             var expression = "\"A\" &&";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -159,7 +159,7 @@ public class BinaryOperatorExpressionTests : TestBase<BinaryOperatorExpression>
             var expression = "&&";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -173,7 +173,7 @@ public class BinaryOperatorExpressionTests : TestBase<BinaryOperatorExpression>
             var expression = "true && false";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -187,7 +187,7 @@ public class BinaryOperatorExpressionTests : TestBase<BinaryOperatorExpression>
             var expression = "true && true && \"string value\"";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -201,7 +201,7 @@ public class BinaryOperatorExpressionTests : TestBase<BinaryOperatorExpression>
             var expression = "(true && true) || false";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -215,7 +215,7 @@ public class BinaryOperatorExpressionTests : TestBase<BinaryOperatorExpression>
             var expression = "2 && error";
 
             // Act
-            var result = sut.Validate(CreateContext(expression));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

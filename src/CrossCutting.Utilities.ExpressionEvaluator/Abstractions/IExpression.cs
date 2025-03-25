@@ -4,7 +4,7 @@ public interface IExpression
 {
     int Order { get; }
 
-    Result<Type> Validate(ExpressionEvaluatorContext context);
+    Result<ExpressionParseResult> Parse(ExpressionEvaluatorContext context);
 
     Result<object?> Evaluate(ExpressionEvaluatorContext context);
 }

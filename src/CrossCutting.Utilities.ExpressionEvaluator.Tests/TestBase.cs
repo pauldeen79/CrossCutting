@@ -16,7 +16,7 @@ public abstract class TestBase
             .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
             .Returns(Evaluate);
         Evaluator
-            .Validate (Arg.Any<ExpressionEvaluatorContext>())
+            .Parse (Arg.Any<ExpressionEvaluatorContext>())
             .Returns(x => Evaluate(x).Transform(_ => typeof(bool)));
 
         // Initialize expression

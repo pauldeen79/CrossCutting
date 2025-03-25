@@ -548,6 +548,331 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
+    public partial class ExpressionParsePartResultBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private string _partName;
+
+        private CrossCutting.Common.Results.Result _result;
+
+        private string? _sourceExpression;
+
+        private System.Type? _expressionType;
+
+        private System.Type? _resultType;
+
+        private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder> _partResults;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string PartName
+        {
+            get
+            {
+                return _partName;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_partName!, value!);
+                _partName = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(PartName));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public CrossCutting.Common.Results.Result Result
+        {
+            get
+            {
+                return _result;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Common.Results.Result>.Default.Equals(_result!, value!);
+                _result = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Result));
+            }
+        }
+
+        public string? SourceExpression
+        {
+            get
+            {
+                return _sourceExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_sourceExpression!, value!);
+                _sourceExpression = value;
+                if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
+            }
+        }
+
+        public System.Type? ExpressionType
+        {
+            get
+            {
+                return _expressionType;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Type>.Default.Equals(_expressionType!, value!);
+                _expressionType = value;
+                if (hasChanged) HandlePropertyChanged(nameof(ExpressionType));
+            }
+        }
+
+        public System.Type? ResultType
+        {
+            get
+            {
+                return _resultType;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Type>.Default.Equals(_resultType!, value!);
+                _resultType = value;
+                if (hasChanged) HandlePropertyChanged(nameof(ResultType));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder> PartResults
+        {
+            get
+            {
+                return _partResults;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder>>.Default.Equals(_partResults!, value!);
+                _partResults = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(PartResults));
+            }
+        }
+
+        public ExpressionParsePartResultBuilder(CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _partResults = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder>();
+            _partName = source.PartName;
+            _result = source.Result;
+            _sourceExpression = source.SourceExpression;
+            _expressionType = source.ExpressionType;
+            _resultType = source.ResultType;
+            if (source.PartResults is not null) foreach (var item in source.PartResults.Select(x => x.ToBuilder())) _partResults.Add(item);
+        }
+
+        public ExpressionParsePartResultBuilder()
+        {
+            _partResults = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder>();
+            _partName = string.Empty;
+            _result = default(CrossCutting.Common.Results.Result)!;
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult Build()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult(PartName, Result, SourceExpression, ExpressionType, ResultType, PartResults.Select(x => x.Build()!).ToList().AsReadOnly());
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder AddPartResults(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder> partResults)
+        {
+            if (partResults is null) throw new System.ArgumentNullException(nameof(partResults));
+            return AddPartResults(partResults.ToArray());
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder AddPartResults(params CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder[] partResults)
+        {
+            if (partResults is null) throw new System.ArgumentNullException(nameof(partResults));
+            foreach (var item in partResults) PartResults.Add(item);
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder WithPartName(string partName)
+        {
+            if (partName is null) throw new System.ArgumentNullException(nameof(partName));
+            PartName = partName;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder WithResult(CrossCutting.Common.Results.Result result)
+        {
+            if (result is null) throw new System.ArgumentNullException(nameof(result));
+            Result = result;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder WithSourceExpression(string? sourceExpression)
+        {
+            SourceExpression = sourceExpression;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder WithExpressionType(System.Type? expressionType)
+        {
+            ExpressionType = expressionType;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder WithResultType(System.Type? resultType)
+        {
+            ResultType = resultType;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult(ExpressionParsePartResultBuilder entity)
+        {
+            return entity.Build();
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+    public partial class ExpressionParseResultBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private string _sourceExpression;
+
+        private System.Type _expressionType;
+
+        private System.Type? _resultType;
+
+        private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder> _partResults;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string SourceExpression
+        {
+            get
+            {
+                return _sourceExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_sourceExpression!, value!);
+                _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
+            }
+        }
+
+        public System.Type ExpressionType
+        {
+            get
+            {
+                return _expressionType;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Type>.Default.Equals(_expressionType!, value!);
+                _expressionType = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(ExpressionType));
+            }
+        }
+
+        public System.Type? ResultType
+        {
+            get
+            {
+                return _resultType;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Type>.Default.Equals(_resultType!, value!);
+                _resultType = value;
+                if (hasChanged) HandlePropertyChanged(nameof(ResultType));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder> PartResults
+        {
+            get
+            {
+                return _partResults;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder>>.Default.Equals(_partResults!, value!);
+                _partResults = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(PartResults));
+            }
+        }
+
+        public ExpressionParseResultBuilder(CrossCutting.Utilities.ExpressionEvaluator.ExpressionParseResult source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _partResults = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder>();
+            _sourceExpression = source.SourceExpression;
+            _expressionType = source.ExpressionType;
+            _resultType = source.ResultType;
+            if (source.PartResults is not null) foreach (var item in source.PartResults.Select(x => x.ToBuilder())) _partResults.Add(item);
+        }
+
+        public ExpressionParseResultBuilder()
+        {
+            _partResults = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder>();
+            _sourceExpression = string.Empty;
+            _expressionType = default(System.Type)!;
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.ExpressionParseResult Build()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionParseResult(SourceExpression, ExpressionType, ResultType, PartResults.Select(x => x.Build()!).ToList().AsReadOnly());
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParseResultBuilder AddPartResults(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder> partResults)
+        {
+            if (partResults is null) throw new System.ArgumentNullException(nameof(partResults));
+            return AddPartResults(partResults.ToArray());
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParseResultBuilder AddPartResults(params CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder[] partResults)
+        {
+            if (partResults is null) throw new System.ArgumentNullException(nameof(partResults));
+            foreach (var item in partResults) PartResults.Add(item);
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParseResultBuilder WithSourceExpression(string sourceExpression)
+        {
+            if (sourceExpression is null) throw new System.ArgumentNullException(nameof(sourceExpression));
+            SourceExpression = sourceExpression;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParseResultBuilder WithExpressionType(System.Type expressionType)
+        {
+            if (expressionType is null) throw new System.ArgumentNullException(nameof(expressionType));
+            ExpressionType = expressionType;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParseResultBuilder WithResultType(System.Type? resultType)
+        {
+            ResultType = resultType;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.ExpressionParseResult(ExpressionParseResultBuilder entity)
+        {
+            return entity.Build();
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
     public partial class FunctionCallBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         private string _name;
