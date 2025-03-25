@@ -218,8 +218,12 @@ public class BinaryOperatorExpressionTests : TestBase<BinaryOperatorExpression>
             var result = sut.Parse(CreateContext(expression));
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Parsing of the expression failed, see inner results for details");
+            result.InnerResults.Count.ShouldBe(2);
+            result.InnerResults.First().Status.ShouldBe(ResultStatus.Ok);
+            result.InnerResults.Last().Status.ShouldBe(ResultStatus.Error);
+            result.InnerResults.Last().ErrorMessage.ShouldBe("Kaboom");
         }
     }
 

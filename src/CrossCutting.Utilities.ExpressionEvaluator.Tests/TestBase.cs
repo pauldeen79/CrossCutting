@@ -16,8 +16,8 @@ public abstract class TestBase
             .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
             .Returns(Evaluate);
         Evaluator
-            .Parse (Arg.Any<ExpressionEvaluatorContext>())
-            .Returns(x => Evaluate(x).Transform(_ => typeof(bool)));
+            .Parse(Arg.Any<ExpressionEvaluatorContext>())
+            .Returns(x => Evaluate(x).Transform(_ => new ExpressionParseResultBuilder().WithSourceExpression(x.ArgAt<ExpressionEvaluatorContext>(0).Expression).WithResultType(typeof(bool)).Build()));
 
         // Initialize expression
         Expression = Substitute.For<IExpression>();

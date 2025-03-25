@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
+﻿using NSubstitute;
+
+namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 
 public class ExpressionEvaluatorTests : TestBase
 {
@@ -166,7 +168,7 @@ public class ExpressionEvaluatorTests : TestBase
         {
             // Arrange
             // Note that this setup simulates the implementation of ComparisonExpression
-            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(typeof(bool)));
+            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(new ExpressionParseResultBuilder().WithSourceExpression("Dummy").WithResultType(typeof(bool)).Build()));
             var sut = CreateSut();
 
             // Act
@@ -174,14 +176,15 @@ public class ExpressionEvaluatorTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(typeof(bool));
+            result.Value.ShouldNotBeNull();
+            result.Value.ResultType.ShouldBe(typeof(bool));
         }
 
         [Fact]
         public void Returns_Invalid_When_Expression_Is_Not_Understood()
         {
             // Arrange
-            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Continue<Type>());
+            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Continue<ExpressionParseResult>());
             var sut = CreateSut();
 
             // Act
