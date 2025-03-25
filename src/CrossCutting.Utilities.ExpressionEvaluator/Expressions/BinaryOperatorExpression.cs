@@ -124,7 +124,7 @@ public class BinaryOperatorExpression : IExpression<bool>
 
     private static Result<ExpressionParseResult> ParseConditions(ExpressionEvaluatorContext context, IEnumerable<BinaryCondition> conditions)
     {
-        var result = new ExpressionParseResultBuilder()
+        var results = new ExpressionParseResultBuilder()
             .WithExpressionType(typeof(BinaryOperatorExpression))
             .WithResultType(typeof(bool))
             .WithSourceExpression(context.Expression);
@@ -132,13 +132,11 @@ public class BinaryOperatorExpression : IExpression<bool>
         var counter = 0;
         foreach (var condition in conditions)
         {
-            Expression.AddPartResult(result, context.Parse(condition.Expression), "condition", counter);
+            results.AddPartResult(context.Parse(condition.Expression), "condition", counter);
             counter++;
         }
 
-        return result.PartResults.Any(x => !x.Result.IsSuccessful())
-            ? Result.Invalid<ExpressionParseResult>("Parsing of the expression failed, see inner results for details", result.PartResults.Select(x => x.Result))
-            : Result.Success(result.Build());
+        return results.CreateParseResult();
     }
 
     private static bool ConditionsAreSimple(IEnumerable<BinaryCondition> conditions)

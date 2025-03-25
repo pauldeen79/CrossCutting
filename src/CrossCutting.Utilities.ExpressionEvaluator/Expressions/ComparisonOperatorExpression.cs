@@ -148,7 +148,7 @@ public class ComparisonOperatorExpression : IExpression<bool>
 
     private static Result<ExpressionParseResult> ParseConditions(ExpressionEvaluatorContext context, IEnumerable<ComparisonCondition> conditions)
     {
-        var result = new ExpressionParseResultBuilder()
+        var results = new ExpressionParseResultBuilder()
             .WithExpressionType(typeof(ComparisonOperatorExpression))
             .WithResultType(typeof(bool))
             .WithSourceExpression(context.Expression);
@@ -156,14 +156,12 @@ public class ComparisonOperatorExpression : IExpression<bool>
         var counter = 0;
         foreach (var condition in conditions)
         {
-            Expression.AddPartResult(result, context.Parse(condition.LeftExpression), "condition", counter, "left");
-            Expression.AddPartResult(result, context.Parse(condition.RightExpression), "condition", counter, "right");
+            results.AddPartResult(context.Parse(condition.LeftExpression), "condition", counter, "left");
+            results.AddPartResult(context.Parse(condition.RightExpression), "condition", counter, "right");
             counter++;
         }
 
-        return result.PartResults.Any(x => !x.Result.IsSuccessful())
-            ? Result.Invalid<ExpressionParseResult>("Parsing of the expression failed, see inner results for details", result.PartResults.Select(x => x.Result))
-            : Result.Success(result.Build());
+        return results.CreateParseResult();
     }
 
     private IOperator GetOperator(string @operator)

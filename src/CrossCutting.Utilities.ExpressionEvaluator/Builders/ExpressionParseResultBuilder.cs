@@ -1,10 +1,9 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Builders;
 
-public static class Expression
+public partial class ExpressionParseResultBuilder
 {
-    public static void AddPartResult(ExpressionParseResultBuilder result, Result<ExpressionParseResult> itemResult, string prefix, int? counter = null, string? suffix = null)
+    public void AddPartResult(Result<ExpressionParseResult> itemResult, string prefix, int? counter = null, string? suffix = null)
     {
-        result = ArgumentGuard.IsNotNull(result, nameof(result));
         itemResult = ArgumentGuard.IsNotNull(itemResult, nameof(itemResult));
         prefix = ArgumentGuard.IsNotNullOrEmpty(prefix, nameof(prefix));
 
@@ -17,7 +16,7 @@ public static class Expression
             ? $".{counter}"
             : string.Empty;
 
-        result.AddPartResults(new ExpressionParsePartResultBuilder()
+        AddPartResults(new ExpressionParsePartResultBuilder()
             .WithPartName($"{prefix}{counterString}{suffix}")
             .WithResult(itemResult)
             .WithExpressionType(itemResult.Value?.ExpressionType)
@@ -26,4 +25,9 @@ public static class Expression
             .WithSourceExpression(itemResult.Value?.SourceExpression)
             );
     }
+
+    public Result<ExpressionParseResult> CreateParseResult()
+        => PartResults.Any(x => !x.Result.IsSuccessful())
+            ? Result.Invalid<ExpressionParseResult>("Parsing of the expression failed, see inner results for details", PartResults.Select(x => x.Result))
+            : Result.Success(Build());
 }
