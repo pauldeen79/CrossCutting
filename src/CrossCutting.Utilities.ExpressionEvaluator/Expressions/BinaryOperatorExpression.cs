@@ -4,7 +4,7 @@ public class BinaryOperatorExpression : IExpression<bool>
 {
     private static readonly string[] _operatorExpressions = ["&&", "||"];
 
-    public int Order => 20; // important: after ComparisonExpression. if the expression is recognized as a ComparisonExpression, it may contain binary operators as combinations
+    public int Order => 30; // important: after ComparisonExpression. if the expression is recognized as a ComparisonExpression, it may contain binary operators as combinations
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
         => EvaluateTyped(context).Transform<object?>(x => x);

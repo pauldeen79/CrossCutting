@@ -2,8 +2,9 @@
 global using System.Globalization;
 global using System.Linq;
 global using Castle.DynamicProxy.Internal;
-global using CrossCutting.Common.Results;
+global using CrossCutting.Common.Abstractions;
 global using CrossCutting.Common.Extensions;
+global using CrossCutting.Common.Results;
 global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;

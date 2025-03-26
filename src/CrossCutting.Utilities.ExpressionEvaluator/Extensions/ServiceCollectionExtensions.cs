@@ -4,7 +4,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddExpressionEvaluator(this IServiceCollection services)
         => services
+            .AddSingleton<IDateTimeProvider, DateTimeProvider>()
             .AddSingleton<IExpressionEvaluator, ExpressionEvaluator>()
+            .AddSingleton<IExpression, PrimitiveExpression>()
             .AddSingleton<IExpression, ComparisonOperatorExpression>()
             .AddSingleton<IOperator, EqualOperator>()
             .AddSingleton<IOperator, GreaterOrEqualThanOperator>()

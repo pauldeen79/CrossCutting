@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Results;
-
-namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
 public class ComparisonOperatorExpression : IExpression<bool>
 {
@@ -17,7 +15,7 @@ public class ComparisonOperatorExpression : IExpression<bool>
         _operatorExpressions = _operators.Select(x => x.OperatorExpression).ToArray();
     }
 
-    public int Order => 10;
+    public int Order => 20;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
         => EvaluateTyped(context).Transform<object?>(x => x);
