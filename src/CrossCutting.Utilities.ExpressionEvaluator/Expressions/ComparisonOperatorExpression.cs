@@ -20,22 +20,17 @@ public class ComparisonOperatorExpression : IExpression<bool>
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
         => EvaluateTyped(context).Transform<object?>(x => x);
 
-    public static Result<bool> Evaluate(ExpressionEvaluatorContext context, Result<ComparisonConditionGroup> comparisonResult)
+    public static Result<bool> Evaluate(ExpressionEvaluatorContext context, ComparisonConditionGroup conditionGroup)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
-        comparisonResult = ArgumentGuard.IsNotNull(comparisonResult, nameof(comparisonResult));
+        conditionGroup = ArgumentGuard.IsNotNull(conditionGroup, nameof(conditionGroup));
 
-        if (!comparisonResult.IsSuccessful())
+        if (ConditionsAreSimple(conditionGroup.Conditions))
         {
-            return Result.FromExistingResult<bool>(comparisonResult);
+            return EvaluateSimpleConditions(context, conditionGroup.Conditions);
         }
 
-        if (ConditionsAreSimple(comparisonResult.Value!.Conditions))
-        {
-            return EvaluateSimpleConditions(context, comparisonResult.Value!.Conditions);
-        }
-
-        return EvaluateComplexConditions(context, comparisonResult.Value!.Conditions);
+        return EvaluateComplexConditions(context, conditionGroup.Conditions);
     }
 
     public Result<bool> EvaluateTyped(ExpressionEvaluatorContext context)
@@ -48,7 +43,7 @@ public class ComparisonOperatorExpression : IExpression<bool>
             return Result.FromExistingResult<bool>(conditionsResult);
         }
 
-        return Evaluate(context, conditionsResult.Transform(x => new ComparisonConditionGroup(x)));
+        return Evaluate(context, new ComparisonConditionGroup(conditionsResult.Value!));
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)

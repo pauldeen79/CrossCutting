@@ -430,33 +430,19 @@ public class ComparisonOperatorExpressionTests : TestBase
     public class Evaluate_Comparison : ComparisonOperatorExpressionTests
     {
         [Fact]
-        public void Returns_Non_Successful_Result_From_Comparison_Result()
-        {
-            // Arrange
-            var context = CreateContext("Dummy"); // only needed for recursive calls
-
-            // Act
-            var result = ComparisonOperatorExpression.Evaluate(context, Result.Error<ComparisonConditionGroup>("Kaboom"));
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("Kaboom");
-        }
-
-        [Fact]
         public void Returns_Correct_Result_On_Complex_Query_With_All_Types_Of_Combinations()
         {
             // Arrange
-            var conditionsResult = Result.Success(new ComparisonConditionGroup(
+            var conditions = new ComparisonConditionGroup(
             [
                 new ComparisonConditionBuilder().WithStartGroup().WithLeftExpression("1").WithOperator(new EqualOperator()).WithRightExpression("1"),
                 new ComparisonConditionBuilder().WithCombination(Combination.And).WithLeftExpression("2").WithOperator(new NotEqualOperator()).WithRightExpression("1").WithEndGroup(),
                 new ComparisonConditionBuilder().WithCombination(Combination.Or).WithLeftExpression("\"some text\"").WithOperator(new GreaterThanOperator()).WithRightExpression("\"zzz\"")
-            ]));
+            ]);
             var context = CreateContext("Dummy"); // only needed for recursive calls
 
             // Act
-            var result = ComparisonOperatorExpression.Evaluate(context, conditionsResult);
+            var result = ComparisonOperatorExpression.Evaluate(context, conditions);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -467,14 +453,14 @@ public class ComparisonOperatorExpressionTests : TestBase
         public void Can_Perform_Null_Check()
         {
             // Arrange
-            var conditionsResult = Result.Success(new ComparisonConditionGroup(
+            var conditions = new ComparisonConditionGroup(
             [
                 new ComparisonConditionBuilder().WithLeftExpression("context").WithOperator(new EqualOperator()).WithRightExpression("null")
-            ]));
+            ]);
             var context = CreateContext("Dummy", context: null); // only needed for recursive calls. explicitly setting context to null
 
             // Act
-            var result = ComparisonOperatorExpression.Evaluate(context, conditionsResult);
+            var result = ComparisonOperatorExpression.Evaluate(context, conditions);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

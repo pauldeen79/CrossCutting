@@ -230,33 +230,19 @@ public class BinaryOperatorExpressionTests : TestBase<BinaryOperatorExpression>
     public class Evaluate_Comparison : BinaryOperatorExpressionTests
     {
         [Fact]
-        public void Returns_Non_Successful_Result_From_Comparison_Result()
-        {
-            // Arrange
-            var context = CreateContext("Dummy"); // only needed for recursive calls
-
-            // Act
-            var result = BinaryOperatorExpression.Evaluate(context, Result.Error<BinaryConditionGroup>("Kaboom"));
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("Kaboom");
-        }
-
-        [Fact]
         public void Returns_Correct_Result_On_Complex_Query_With_All_Types_Of_Combinations()
         {
             // Arrange
-            var conditionsResult = Result.Success(new BinaryConditionGroup(
+            var conditions = new BinaryConditionGroup(
             [
                 new BinaryConditionBuilder().WithStartGroup().WithExpression("true"),
                 new BinaryConditionBuilder().WithCombination(Combination.And).WithExpression("true").WithEndGroup(),
                 new BinaryConditionBuilder().WithCombination(Combination.Or).WithExpression("false")
-            ]));
+            ]);
             var context = CreateContext("Dummy"); // only needed for recursive calls
 
             // Act
-            var result = BinaryOperatorExpression.Evaluate(context, conditionsResult);
+            var result = BinaryOperatorExpression.Evaluate(context, conditions);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
