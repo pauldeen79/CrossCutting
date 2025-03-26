@@ -2,32 +2,29 @@
 
 public partial class ExpressionParseResultBuilder
 {
-    public void AddPartResult(Result<ExpressionParseResult> itemResult, string prefix, int? counter = null, string? suffix = null)
+    public void AddPartResult(ExpressionParseResult itemResult, string partName)
     {
         itemResult = ArgumentGuard.IsNotNull(itemResult, nameof(itemResult));
-        prefix = ArgumentGuard.IsNotNullOrEmpty(prefix, nameof(prefix));
-
-        if (!string.IsNullOrEmpty(suffix))
-        {
-            suffix = "." + suffix;
-        }
-
-        var counterString = counter.HasValue
-            ? $".{counter}"
-            : string.Empty;
+        partName = ArgumentGuard.IsNotNullOrEmpty(partName, nameof(partName));
 
         AddPartResults(new ExpressionParsePartResultBuilder()
-            .WithPartName($"{prefix}{counterString}{suffix}")
-            .WithResult(itemResult)
-            .WithExpressionType(itemResult.Value?.ExpressionType)
-            .WithResultType(itemResult.Value?.ResultType)
-            .AddPartResults(itemResult.Value?.PartResults.Select(x => x.ToBuilder()) ?? Enumerable.Empty<ExpressionParsePartResultBuilder>())
-            .WithSourceExpression(itemResult.Value?.SourceExpression)
+            .WithPartName(partName)
+            .WithStatus(itemResult.Status)
+            .AddValidationErrors(itemResult.ValidationErrors)
+            .WithErrorMessage(itemResult.ErrorMessage)
+            .WithExpressionType(itemResult.ExpressionType)
+            .WithResultType(itemResult.ResultType)
+            .AddPartResults(itemResult.PartResults.Select(x => x.ToBuilder()))
+            .WithSourceExpression(itemResult.SourceExpression)
             );
     }
 
-    public Result<ExpressionParseResult> CreateParseResult()
-        => PartResults.Any(x => !x.Result.IsSuccessful())
-            ? Result.Invalid<ExpressionParseResult>("Parsing of the expression failed, see inner results for details", PartResults.Select(x => x.Result))
-            : Result.Success(Build());
+    public ExpressionParseResultBuilder DetectStatusFromPartResults()
+    {
+        var error = PartResults.FirstOrDefault(x => !x.Status.IsSuccessful());
+        
+        return error is not null
+            ? WithStatus(error.Status).WithErrorMessage("Parsing of the expression failed, see inner results for details")
+            : WithStatus(ResultStatus.Ok);
+    }
 }

@@ -46,7 +46,7 @@ public class ExpressionEvaluatorContext
     public Result<object?> Evaluate(string expression)
         => Evaluator.Evaluate(CreateChildContext(expression));
 
-    public Result<ExpressionParseResult> Parse(string expression)
+    public ExpressionParseResult Parse(string expression)
         => Evaluator.Parse(CreateChildContext(expression));
 
     public Result<T> Validate<T>()

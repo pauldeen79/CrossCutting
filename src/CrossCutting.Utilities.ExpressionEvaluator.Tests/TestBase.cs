@@ -17,7 +17,17 @@ public abstract class TestBase
             .Returns(Evaluate);
         Evaluator
             .Parse(Arg.Any<ExpressionEvaluatorContext>())
-            .Returns(x => Evaluate(x).Transform(_ => new ExpressionParseResultBuilder().WithSourceExpression(x.ArgAt<ExpressionEvaluatorContext>(0).Expression).WithResultType(typeof(bool)).Build()));
+            .Returns(x =>
+            {
+                var res = Evaluate(x);
+                return new ExpressionParseResultBuilder()
+                    .WithSourceExpression(x.ArgAt<ExpressionEvaluatorContext>(0).Expression)
+                    .WithStatus(res.Status)
+                    .WithErrorMessage(res.ErrorMessage)
+                    .AddValidationErrors(res.ValidationErrors)
+                    .WithResultType(res.Value?.GetType())
+                    .Build();
+            });
 
         // Initialize expression
         Expression = Substitute.For<IExpression>();

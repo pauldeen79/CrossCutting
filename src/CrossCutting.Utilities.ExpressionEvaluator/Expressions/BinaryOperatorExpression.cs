@@ -40,17 +40,20 @@ public class BinaryOperatorExpression : IExpression<bool>
         return Evaluate(context, conditionsResult.Transform(x => new BinaryConditionGroup(x)));
     }
 
-    public Result<ExpressionParseResult> Parse(ExpressionEvaluatorContext context)
+    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         var conditionsResult = ParseConditions(context);
         if (!conditionsResult.IsSuccessful() || conditionsResult.Status == ResultStatus.Continue)
         {
-            return Result.FromExistingResult<ExpressionParseResult>(conditionsResult);
+            return new ExpressionParseResultBuilder()
+                .WithStatus(conditionsResult.Status)
+                .WithErrorMessage(conditionsResult.ErrorMessage)
+                .AddValidationErrors(conditionsResult.ValidationErrors);
         }
 
-        return ParseConditions(context, conditionsResult.Value!);
+        return ParseConditionExpressions(context, conditionsResult.Value!);
     }
 
     private static Result<List<BinaryCondition>> ParseConditions(ExpressionEvaluatorContext context)
@@ -122,9 +125,9 @@ public class BinaryOperatorExpression : IExpression<bool>
         return Result.Success(conditions);
     }
 
-    private static Result<ExpressionParseResult> ParseConditions(ExpressionEvaluatorContext context, IEnumerable<BinaryCondition> conditions)
+    private static ExpressionParseResult ParseConditionExpressions(ExpressionEvaluatorContext context, IEnumerable<BinaryCondition> conditions)
     {
-        var results = new ExpressionParseResultBuilder()
+        var result = new ExpressionParseResultBuilder()
             .WithExpressionType(typeof(BinaryOperatorExpression))
             .WithResultType(typeof(bool))
             .WithSourceExpression(context.Expression);
@@ -132,11 +135,11 @@ public class BinaryOperatorExpression : IExpression<bool>
         var counter = 0;
         foreach (var condition in conditions)
         {
-            results.AddPartResult(context.Parse(condition.Expression), "condition", counter);
+            result.AddPartResult(context.Parse(condition.Expression), $"Conditions[{counter}].Expression");
             counter++;
         }
 
-        return results.CreateParseResult();
+        return result.DetectStatusFromPartResults();
     }
 
     private static bool ConditionsAreSimple(IEnumerable<BinaryCondition> conditions)

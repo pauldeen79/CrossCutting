@@ -3,8 +3,9 @@
 internal interface IExpressionParsePartResult
 {
     [Required] string PartName { get; }
-    //TODO: Add interesting properties from Result (ValidationErrors, ErrorMessage, ResultStatus?), and remove Result property
-    [Required] Result Result { get; }
+    ResultStatus Status { get; }
+    [Required] IReadOnlyCollection<ValidationError> ValidationErrors { get; }
+    string? ErrorMessage { get; }
     string? SourceExpression { get; }
     Type? ExpressionType { get; }
     Type? ResultType { get; }

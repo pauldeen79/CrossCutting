@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
+﻿using CrossCutting.Common.Results;
+
+namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
 public class ComparisonOperatorExpression : IExpression<bool>
 {
@@ -51,17 +53,20 @@ public class ComparisonOperatorExpression : IExpression<bool>
         return Evaluate(context, conditionsResult.Transform(x => new ComparisonConditionGroup(x)));
     }
 
-    public Result<ExpressionParseResult> Parse(ExpressionEvaluatorContext context)
+    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         var conditionsResult = ParseConditions(context);
         if (!conditionsResult.IsSuccessful() || conditionsResult.Status == ResultStatus.Continue)
         {
-            return Result.FromExistingResult<ExpressionParseResult>(conditionsResult);
+            return new ExpressionParseResultBuilder()
+                .WithStatus(conditionsResult.Status)
+                .WithErrorMessage(conditionsResult.ErrorMessage)
+                .AddValidationErrors(conditionsResult.ValidationErrors);
         }
 
-        return ParseConditions(context, conditionsResult.Value!);
+        return ParseConditionExpressions(context, conditionsResult.Value!);
     }
 
     private Result<List<ComparisonCondition>> ParseConditions(ExpressionEvaluatorContext context)
@@ -146,9 +151,9 @@ public class ComparisonOperatorExpression : IExpression<bool>
         return Result.Success(conditions);
     }
 
-    private static Result<ExpressionParseResult> ParseConditions(ExpressionEvaluatorContext context, IEnumerable<ComparisonCondition> conditions)
+    private static ExpressionParseResult ParseConditionExpressions(ExpressionEvaluatorContext context, IEnumerable<ComparisonCondition> conditions)
     {
-        var results = new ExpressionParseResultBuilder()
+        var result = new ExpressionParseResultBuilder()
             .WithExpressionType(typeof(ComparisonOperatorExpression))
             .WithResultType(typeof(bool))
             .WithSourceExpression(context.Expression);
@@ -156,12 +161,12 @@ public class ComparisonOperatorExpression : IExpression<bool>
         var counter = 0;
         foreach (var condition in conditions)
         {
-            results.AddPartResult(context.Parse(condition.LeftExpression), "condition", counter, "left");
-            results.AddPartResult(context.Parse(condition.RightExpression), "condition", counter, "right");
+            result.AddPartResult(context.Parse(condition.LeftExpression), $"Conditions[{counter}].LeftExpression");
+            result.AddPartResult(context.Parse(condition.RightExpression), $"Conditions[{counter}].RightExpression");
             counter++;
         }
 
-        return results.CreateParseResult();
+        return result.DetectStatusFromPartResults();
     }
 
     private IOperator GetOperator(string @operator)

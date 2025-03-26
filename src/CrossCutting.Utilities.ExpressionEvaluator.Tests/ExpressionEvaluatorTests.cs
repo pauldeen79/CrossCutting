@@ -168,7 +168,7 @@ public class ExpressionEvaluatorTests : TestBase
         {
             // Arrange
             // Note that this setup simulates the implementation of ComparisonExpression
-            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(new ExpressionParseResultBuilder().WithSourceExpression("Dummy").WithResultType(typeof(bool)).Build()));
+            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithSourceExpression("Dummy").WithStatus(ResultStatus.Ok).WithResultType(typeof(bool)));
             var sut = CreateSut();
 
             // Act
@@ -176,15 +176,14 @@ public class ExpressionEvaluatorTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldNotBeNull();
-            result.Value.ResultType.ShouldBe(typeof(bool));
+            result.ResultType.ShouldBe(typeof(bool));
         }
 
         [Fact]
         public void Returns_Invalid_When_Expression_Is_Not_Understood()
         {
             // Arrange
-            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Continue<ExpressionParseResult>());
+            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithSourceExpression("Dummy").WithStatus(ResultStatus.Continue));
             var sut = CreateSut();
 
             // Act

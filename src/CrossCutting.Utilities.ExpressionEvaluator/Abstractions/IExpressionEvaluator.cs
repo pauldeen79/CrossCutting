@@ -2,7 +2,7 @@
 
 public interface IExpressionEvaluator
 {
-    Result<ExpressionParseResult> Parse(ExpressionEvaluatorContext context);
+    ExpressionParseResult Parse(ExpressionEvaluatorContext context);
 
     Result<object?> Evaluate(ExpressionEvaluatorContext context);
 
