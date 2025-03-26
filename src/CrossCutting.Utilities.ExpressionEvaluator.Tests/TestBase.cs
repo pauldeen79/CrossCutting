@@ -17,17 +17,15 @@ public abstract class TestBase
             .Returns(Evaluate);
         Evaluator
             .Parse(Arg.Any<ExpressionEvaluatorContext>())
-            .Returns(x =>
-            {
-                var result = Evaluate(x);
-                return new ExpressionParseResultBuilder()
+            .Returns(x => Evaluate(x).Transform(result =>
+                new ExpressionParseResultBuilder()
                     .WithSourceExpression(x.ArgAt<ExpressionEvaluatorContext>(0).Expression)
                     .WithExpressionType(typeof(TestBase))
                     .WithResultType(result.Value?.GetType())
                     .WithStatus(result.Status)
                     .WithErrorMessage(result.ErrorMessage)
-                    .AddValidationErrors(result.ValidationErrors);
-            });
+                    .AddValidationErrors(result.ValidationErrors)
+            ));
 
         // Initialize expression
         Expression = Substitute.For<IExpression>();
