@@ -19,14 +19,14 @@ public abstract class TestBase
             .Parse(Arg.Any<ExpressionEvaluatorContext>())
             .Returns(x =>
             {
-                var res = Evaluate(x);
+                var result = Evaluate(x);
                 return new ExpressionParseResultBuilder()
                     .WithSourceExpression(x.ArgAt<ExpressionEvaluatorContext>(0).Expression)
-                    .WithStatus(res.Status)
-                    .WithErrorMessage(res.ErrorMessage)
-                    .AddValidationErrors(res.ValidationErrors)
-                    .WithResultType(res.Value?.GetType())
-                    .Build();
+                    .WithExpressionType(typeof(TestBase))
+                    .WithResultType(result.Value?.GetType())
+                    .WithStatus(result.Status)
+                    .WithErrorMessage(result.ErrorMessage)
+                    .AddValidationErrors(result.ValidationErrors);
             });
 
         // Initialize expression

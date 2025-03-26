@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.CodeGenerationProviders.FunctionParseResultArguments;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 public class CoreEntities(IPipelineService pipelineService) : ExpressionEvaluatorCSharpClassBase(pipelineService)

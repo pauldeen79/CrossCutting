@@ -169,41 +169,10 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder(this);
         }
     }
-    public partial record ExpressionParsePartResult
+    public partial record ExpressionParsePartResult : CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IParseResult
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string PartName
-        {
-            get;
-        }
-
-        public CrossCutting.Common.Results.ResultStatus Status
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Common.Results.ValidationError> ValidationErrors
-        {
-            get;
-        }
-
-        public string? ErrorMessage
-        {
-            get;
-        }
-
-        public string? SourceExpression
-        {
-            get;
-        }
-
-        public System.Type? ExpressionType
-        {
-            get;
-        }
-
-        public System.Type? ResultType
         {
             get;
         }
@@ -215,32 +184,6 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public ExpressionParsePartResult(string partName, CrossCutting.Common.Results.ResultStatus status, System.Collections.Generic.IEnumerable<CrossCutting.Common.Results.ValidationError> validationErrors, string? errorMessage, string? sourceExpression, System.Type? expressionType, System.Type? resultType, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult> partResults)
-        {
-            this.PartName = partName;
-            this.Status = status;
-            this.ValidationErrors = validationErrors is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Common.Results.ValidationError>(validationErrors);
-            this.ErrorMessage = errorMessage;
-            this.SourceExpression = sourceExpression;
-            this.ExpressionType = expressionType;
-            this.ResultType = resultType;
-            this.PartResults = partResults is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult>(partResults);
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder ToBuilder()
-        {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder(this);
-        }
-    }
-    public partial record ExpressionParseResult
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string SourceExpression
-        {
-            get;
-        }
-
         public CrossCutting.Common.Results.ResultStatus Status
         {
             get;
@@ -253,6 +196,12 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
         }
 
         public string? ErrorMessage
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string SourceExpression
         {
             get;
         }
@@ -267,6 +216,26 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
+        public ExpressionParsePartResult(string partName, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult> partResults, CrossCutting.Common.Results.ResultStatus status, System.Collections.Generic.IEnumerable<CrossCutting.Common.Results.ValidationError> validationErrors, string? errorMessage, string sourceExpression, System.Type expressionType, System.Type? resultType)
+        {
+            this.PartName = partName;
+            this.PartResults = partResults is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult>(partResults);
+            this.Status = status;
+            this.ValidationErrors = validationErrors is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Common.Results.ValidationError>(validationErrors);
+            this.ErrorMessage = errorMessage;
+            this.SourceExpression = sourceExpression;
+            this.ExpressionType = expressionType;
+            this.ResultType = resultType;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder ToBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder(this);
+        }
+    }
+    public partial record ExpressionParseResult : CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IParseResult
+    {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult> PartResults
@@ -274,15 +243,47 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public ExpressionParseResult(string sourceExpression, CrossCutting.Common.Results.ResultStatus status, System.Collections.Generic.IEnumerable<CrossCutting.Common.Results.ValidationError> validationErrors, string? errorMessage, System.Type expressionType, System.Type? resultType, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult> partResults)
+        public CrossCutting.Common.Results.ResultStatus Status
         {
-            this.SourceExpression = sourceExpression;
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Common.Results.ValidationError> ValidationErrors
+        {
+            get;
+        }
+
+        public string? ErrorMessage
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string SourceExpression
+        {
+            get;
+        }
+
+        public System.Type ExpressionType
+        {
+            get;
+        }
+
+        public System.Type? ResultType
+        {
+            get;
+        }
+
+        public ExpressionParseResult(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult> partResults, CrossCutting.Common.Results.ResultStatus status, System.Collections.Generic.IEnumerable<CrossCutting.Common.Results.ValidationError> validationErrors, string? errorMessage, string sourceExpression, System.Type expressionType, System.Type? resultType)
+        {
+            this.PartResults = partResults is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult>(partResults);
             this.Status = status;
             this.ValidationErrors = validationErrors is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Common.Results.ValidationError>(validationErrors);
             this.ErrorMessage = errorMessage;
+            this.SourceExpression = sourceExpression;
             this.ExpressionType = expressionType;
             this.ResultType = resultType;
-            this.PartResults = partResults is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult>(partResults);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 

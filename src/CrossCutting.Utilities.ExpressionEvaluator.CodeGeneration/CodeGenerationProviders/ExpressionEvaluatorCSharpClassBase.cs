@@ -31,6 +31,6 @@ public abstract class ExpressionEvaluatorCSharpClassBase(IPipelineService pipeli
             );
     }
 
-    // Kind of hack, which is needed to skip builder pattern on IOperator interface :)
-    protected override string[] GetCodeGenerationBuilderAbstractionsTypeConversionNamespaces() => Array.Empty<string>();
+    // Skip builder pattern on abstractions (Most importantly, IOperator, because we generate them manually. But also on IParseResult, which is only used for removing code duplication on parse results)
+    protected override bool UseBuilderAbstractionsTypeConversion => false;
 }

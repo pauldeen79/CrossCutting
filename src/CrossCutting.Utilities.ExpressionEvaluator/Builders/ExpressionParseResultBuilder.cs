@@ -24,7 +24,7 @@ public partial class ExpressionParseResultBuilder
         var error = PartResults.FirstOrDefault(x => !x.Status.IsSuccessful());
         
         return error is not null
-            ? WithStatus(error.Status).WithErrorMessage("Parsing of the expression failed, see inner results for details")
-            : WithStatus(ResultStatus.Ok);
+            ? this.WithStatus(error.Status).WithErrorMessage("Parsing of the expression failed, see inner results for details")
+            : this.WithStatus(ResultStatus.Ok);
     }
 }
