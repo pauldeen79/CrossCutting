@@ -197,11 +197,6 @@ public class FunctionExpression : IExpression
             index++;
         }
 
-        return GetParseResult(nameBuilder, genericsBuilder, arguments, nameComplete, genericsStarted, genericsComplete, argumentsComplete);
-    }
-
-    private static Result<FunctionCall> GetParseResult(StringBuilder nameBuilder, StringBuilder genericsBuilder, List<string> arguments, bool nameComplete, bool genericsStarted, bool genericsComplete, bool argumentsComplete)
-    {
         if (!nameComplete)
         {
             return Result.Invalid<FunctionCall>("Missing open bracket");
