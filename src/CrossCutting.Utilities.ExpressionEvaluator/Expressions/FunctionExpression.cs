@@ -2,7 +2,14 @@
 
 public class FunctionExpression : IExpression
 {
-    //TODO: Add IFunction instances as read-only private member, inject using constructor injection.
+    private readonly IEnumerable<IFunction> _functions;
+
+    public FunctionExpression(IEnumerable<IFunction> functions)
+    {
+        ArgumentGuard.IsNotNull(functions, nameof(functions));
+
+        _functions = functions;
+    }
 
     private static readonly Regex _functionRegEx = new(@"\b\w*\s*(?:<[\w\s,.<>]*>)?\s*\(\s*[^)]*\s*\)", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
 

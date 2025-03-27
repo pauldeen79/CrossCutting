@@ -1,7 +1,17 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Expressions;
 
-public class FunctionExpressionTests : TestBase<FunctionExpression>
+public class FunctionExpressionTests : TestBase
 {
+    protected IFunction Function { get; }
+
+    protected FunctionExpression CreateSut(IFunction? function = null)
+        => new FunctionExpression([function ?? Function]);
+
+    public FunctionExpressionTests()
+    {
+        Function = Substitute.For<IFunction>();
+    }
+
     public class Evaluate : FunctionExpressionTests
     {
         //no regex match (parse result not found) -> continue
@@ -105,7 +115,37 @@ public class FunctionExpressionTests : TestBase<FunctionExpression>
             result.Value.Arguments.ShouldBe(["argument1", "MySubFunction(argument2)", "argument3"]);
         }
 
-        //"Function name may not contain whitespace"
+        [Fact]
+        public void Returns_Invalid_On_FunctionName_With_WhiteSpace()
+        {
+            // Arrange
+            var context = CreateContext("My Function()");
+
+            // Act
+            var result = FunctionExpression.ParseFunctionCall(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Function name may not contain whitespace");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_FunctionCall_With_Spaces_Tabs_And_NewLines()
+        {
+            // Arrange
+            var context = CreateContext("       MyFunction(\r\n\r\n\r\n   \t\t)\t\t\t");
+
+            // Act
+            var result = FunctionExpression.ParseFunctionCall(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Name.ShouldBe("MyFunction");
+            result.Value.TypeArguments.ShouldBeEmpty();
+            result.Value.Arguments.ShouldBeEmpty();
+        }
+
         //"Missing open bracket" (before generics)
         //"Missing open bracket" (after generics)
         //"Too many close brackets found"
