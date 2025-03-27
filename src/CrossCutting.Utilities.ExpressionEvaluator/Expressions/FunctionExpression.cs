@@ -138,7 +138,7 @@ public class FunctionExpression : IExpression
                     return Result.Invalid<FunctionCall>("Missing open bracket");
                 }
             }
-            else if (argumentsStarted && !argumentsComplete)
+            else if (!argumentsComplete)
             {
                 if (c == ')' && !inQuotes)
                 {
@@ -188,21 +188,20 @@ public class FunctionExpression : IExpression
                     argumentBuilder.Append(c);
                 }
             }
-            else
+            else if (index + 1 < context.Expression.Length)
             {
-                // Function name, generics and arguments are all complete
-                // If we still find something, then the format is not valid
-                if (index + 1 < context.Expression.Length)
-                {
-                    // remaining characters at the end, like MyFunction(a) ILLEGAL
-                    return Result.Invalid<FunctionCall>("Input has additional characters after last close bracket");
-                }
-                break;
+                // remaining characters at the end, like MyFunction(a) ILLEGAL
+                return Result.Invalid<FunctionCall>("Input has additional characters after last close bracket");
             }
 
             index++;
         }
 
+        return GetParseResult(nameBuilder, genericsBuilder, arguments, nameComplete, genericsStarted, genericsComplete, argumentsComplete);
+    }
+
+    private static Result<FunctionCall> GetParseResult(StringBuilder nameBuilder, StringBuilder genericsBuilder, List<string> arguments, bool nameComplete, bool genericsStarted, bool genericsComplete, bool argumentsComplete)
+    {
         if (!nameComplete)
         {
             return Result.Invalid<FunctionCall>("Missing open bracket");
