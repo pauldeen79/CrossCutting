@@ -926,7 +926,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         private System.Collections.Generic.List<string> _arguments;
 
-        private System.Collections.Generic.List<string> _typeArguments;
+        private System.Collections.Generic.List<System.Type> _typeArguments;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -962,7 +962,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Collections.Generic.List<string> TypeArguments
+        public System.Collections.Generic.List<System.Type> TypeArguments
         {
             get
             {
@@ -970,7 +970,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.List<System.String>>.Default.Equals(_typeArguments!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.List<System.Type>>.Default.Equals(_typeArguments!, value!);
                 _typeArguments = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(TypeArguments));
             }
@@ -980,7 +980,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _arguments = new System.Collections.Generic.List<string>();
-            _typeArguments = new System.Collections.Generic.List<string>();
+            _typeArguments = new System.Collections.Generic.List<System.Type>();
             _name = source.Name;
             if (source.Arguments is not null) foreach (var item in source.Arguments) _arguments.Add(item);
             if (source.TypeArguments is not null) foreach (var item in source.TypeArguments) _typeArguments.Add(item);
@@ -989,7 +989,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         public FunctionCallBuilder()
         {
             _arguments = new System.Collections.Generic.List<string>();
-            _typeArguments = new System.Collections.Generic.List<string>();
+            _typeArguments = new System.Collections.Generic.List<System.Type>();
             _name = string.Empty;
             SetDefaultValues();
         }
@@ -1014,13 +1014,13 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             return this;
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder AddTypeArguments(System.Collections.Generic.IEnumerable<string> typeArguments)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder AddTypeArguments(System.Collections.Generic.IEnumerable<System.Type> typeArguments)
         {
             if (typeArguments is null) throw new System.ArgumentNullException(nameof(typeArguments));
             return AddTypeArguments(typeArguments.ToArray());
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder AddTypeArguments(params string[] typeArguments)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder AddTypeArguments(params System.Type[] typeArguments)
         {
             if (typeArguments is null) throw new System.ArgumentNullException(nameof(typeArguments));
             foreach (var item in typeArguments) TypeArguments.Add(item);

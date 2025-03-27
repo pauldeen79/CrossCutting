@@ -308,16 +308,16 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<string> TypeArguments
+        public System.Collections.Generic.IReadOnlyCollection<System.Type> TypeArguments
         {
             get;
         }
 
-        public FunctionCall(string name, System.Collections.Generic.IEnumerable<string> arguments, System.Collections.Generic.IEnumerable<string> typeArguments)
+        public FunctionCall(string name, System.Collections.Generic.IEnumerable<string> arguments, System.Collections.Generic.IEnumerable<System.Type> typeArguments)
         {
             this.Name = name;
             this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(arguments);
-            this.TypeArguments = typeArguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(typeArguments);
+            this.TypeArguments = typeArguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.Type>(typeArguments);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 

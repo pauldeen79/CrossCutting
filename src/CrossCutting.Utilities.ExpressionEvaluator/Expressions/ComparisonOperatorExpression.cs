@@ -15,7 +15,7 @@ public class ComparisonOperatorExpression : IExpression<bool>
         _operatorExpressions = _operators.Select(x => x.OperatorExpression).ToArray();
     }
 
-    public int Order => 20;
+    public int Order => 30;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
         => EvaluateTyped(context).Transform<object?>(x => x);

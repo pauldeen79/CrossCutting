@@ -6,7 +6,7 @@ public abstract class TestBase
     protected IExpression Expression { get; }
 
     protected ExpressionEvaluatorContext CreateContext(string? expression, object? context = null, int currentRecursionLevel = 1, ExpressionEvaluatorContext? parentContext = null)
-        => new ExpressionEvaluatorContext(expression, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.InvariantCulture), context, Evaluator, currentRecursionLevel, parentContext);
+        => new ExpressionEvaluatorContext(expression, new ExpressionEvaluatorSettingsBuilder(), context, Evaluator, currentRecursionLevel, parentContext);
 
     protected TestBase()
     {

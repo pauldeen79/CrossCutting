@@ -67,10 +67,6 @@ public class FunctionParser : IFunctionParser
 
             var found = $"{argumentResults.GetValue<FunctionNameAndTypeArguments>("Name").RawResult}({stringArguments})";
             remainder = remainder.Replace(found, FormattableString.Invariant($"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"));
-            //TODO: Only replace the current call, because the result might be dynamic
-            //remainder = remainder.Substring(0, openIndex.Value)
-            //    + FormattableString.Invariant($"{MathematicExpressionEvaluator.TemporaryDelimiter}{results.Count}{MathematicExpressionEvaluator.TemporaryDelimiter}")
-            //    + remainder.Substring(closeIndex.Value + 1);
 
             results.Add(new FunctionCall(argumentResults.GetValue<FunctionNameAndTypeArguments>("Name").Name, arguments, typeArguments));
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);

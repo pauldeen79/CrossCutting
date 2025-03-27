@@ -14,5 +14,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IOperator, NotEqualOperator>()
             .AddSingleton<IOperator, SmallerOrEqualThanOperator>()
             .AddSingleton<IOperator, SmallerThanOperator>()
-            .AddSingleton<IExpression, BinaryOperatorExpression>();
+            .AddSingleton<IExpression, BinaryOperatorExpression>()
+            .AddSingleton<IExpression, FunctionExpression>();
 }
