@@ -160,14 +160,8 @@ public class FunctionExpressionTests : TestBase
             result.Value.ShouldNotBeNull();
             result.Value.Name.ShouldBe("MyFunction");
             result.Value.TypeArguments.ShouldBeEmpty();
-            result.Value.Arguments.ShouldBe(["argument1", "argument2, argument3", "argument4"]);
+            result.Value.Arguments.ShouldBe(["argument1", "\"argument2, argument3\"", "argument4"]);
         }
-
-        //"Missing open bracket" (before generics)
-        //"Missing open bracket" (after generics)
-        //"Missing open bracket" (name not complete)
-        //"Missing close bracket"
-        //"Generic type name is not properly ended"
 
         [Fact]
         public void Returns_Invalid_When_Too_Many_Close_Brackets_Were_Found()

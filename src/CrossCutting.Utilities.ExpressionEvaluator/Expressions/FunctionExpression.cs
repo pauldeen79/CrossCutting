@@ -110,23 +110,6 @@ public class FunctionExpression : IExpression
                     return Result.Invalid<FunctionCall>("Function name may not contain whitespace");
                 }
             }
-            /*else if (!genericsStarted && !argumentsStarted)
-            {
-                // Type arguments / Arguments section
-                if (c == '<')
-                {
-                    genericsStarted = true;
-                }
-                else if (c == '(')
-                {
-                    argumentsStarted = true;
-                    bracketCount = 1;
-                }
-                else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
-                {
-                    return Result.Invalid<FunctionCall>("Missing open bracket");
-                }
-            }*/
             else if (genericsStarted && !genericsComplete)
             {
                 // Type arguments section
@@ -147,10 +130,6 @@ public class FunctionExpression : IExpression
                     argumentsStarted = true;
                     bracketCount = 1;
                 }
-                /*else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
-                {
-                    return Result.Invalid<FunctionCall>("Missing open bracket");
-                }*/
             }
             else if (!argumentsComplete)
             {
@@ -180,7 +159,7 @@ public class FunctionExpression : IExpression
                 else if (c == '"')
                 {
                     inQuotes = !inQuotes;
-                    //argumentBuilder.Append(c);
+                    argumentBuilder.Append(c);
                 }
                 else if (c == ',' && !inQuotes)
                 {
@@ -189,10 +168,6 @@ public class FunctionExpression : IExpression
                         arguments.Add(argumentBuilder.ToString().Trim());
                         argumentBuilder.Clear();
                     }
-                    /*else
-                    {
-                        argumentBuilder.Append(c);
-                    }*/
                 }
                 else if ((c != ' ' && c != '\r' && c != '\n' && c != '\t') || inQuotes)
                 {
@@ -207,19 +182,6 @@ public class FunctionExpression : IExpression
 
             index++;
         }
-
-        /*if (!nameComplete)
-        {
-            return Result.NotFound<FunctionCall>();
-        }
-        else if (genericsStarted && !genericsComplete)
-        {
-            return Result.Invalid<FunctionCall>("Generic type name is not properly ended");
-        }
-        else if (!argumentsComplete)
-        {
-            return Result.Invalid<FunctionCall>("Missing close bracket");
-        }*/
 
         var generics = genericsBuilder.ToString().SplitDelimited(',', trimItems: true);
         var genericTypeArgumentsResult = GetTypeArguments(generics);
