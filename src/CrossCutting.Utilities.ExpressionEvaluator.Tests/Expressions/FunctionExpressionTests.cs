@@ -3,33 +3,174 @@
 public class FunctionExpressionTests : TestBase
 {
     protected IFunction Function { get; }
+    public IFunctionDescriptorProvider FunctionDescriptorProvider { get; }
+    public IFunctionCallArgumentValidator FunctionCallArgumentValidator { get; }
 
     protected FunctionExpression CreateSut(IFunction? function = null)
-        => new FunctionExpression([function ?? Function]);
+        => new FunctionExpression(FunctionDescriptorProvider, FunctionCallArgumentValidator, [function ?? Function], Enumerable.Empty<IGenericFunction>());
+
+    protected FunctionExpression CreateSut(IGenericFunction genericFunction)
+        => new FunctionExpression(FunctionDescriptorProvider, FunctionCallArgumentValidator, Enumerable.Empty<IFunction>(), [genericFunction]);
 
     public FunctionExpressionTests()
     {
         Function = Substitute.For<IFunction>();
+        FunctionDescriptorProvider = Substitute.For<IFunctionDescriptorProvider>();
+        FunctionCallArgumentValidator = Substitute.For<IFunctionCallArgumentValidator>();
     }
 
     public class Evaluate : FunctionExpressionTests
     {
-        //no regex match (parse result not found) -> continue
-        //not succesfully parsed -> parse result
-        //no function match -> not found
-        //function match -> result of function Evaluate
+        [Fact]
+        public void Returns_Continue_When_Expression_Is_Not_A_FunctionCall()
+        {
+            // Arrange
+            var context = CreateContext("no function");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
+        {
+            // Arrange
+            var context = CreateContext("MyFunction()");
+            Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
+            FunctionDescriptorProvider.GetAll().Returns([new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(string)).Build()]);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("function result value");
+        }
+
+        [Fact]
+        public void Returns_NotFound_On_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
+        {
+            // Arrange
+            var context = CreateContext("MyFunction()");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.NotFound);
+            result.ErrorMessage.ShouldBe("Unknown function: MyFunction");
+        }
+
+        [Fact]
+        public void Returns_Non_Successful_Result_From_Parsing_When_Parsing_Is_Not_Successful()
+        {
+            // Arrange
+            var context = CreateContext("MyFunction())");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Input has additional characters after last close bracket");
+        }
     }
 
     public class Parse : FunctionExpressionTests
     {
-        //no regex match (parse result not found) -> continue
-        //not succesfully parsed -> parse result
-        //parse successful, no function match -> not found
-        //parse successful, function match -> ok, result type with result of function Evaluate
+        [Fact]
+        public void Returns_Continue_When_Expression_Is_Not_A_FunctionCall()
+        {
+            // Arrange
+            var context = CreateContext("no function");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+            result.ExpressionType.ShouldBe(typeof(FunctionExpression));
+            result.SourceExpression.ShouldBe("no function");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
+        {
+            // Arrange
+            var context = CreateContext("MyFunction()");
+            FunctionDescriptorProvider.GetAll().Returns([new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(string)).Build()]);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.ExpressionType.ShouldBe(typeof(FunctionExpression));
+            result.ResultType.ShouldBe(typeof(string));
+            result.SourceExpression.ShouldBe("MyFunction()");
+        }
+
+        [Fact]
+        public void Returns_NotFound_On_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
+        {
+            // Arrange
+            var context = CreateContext("MyFunction()");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.NotFound);
+            result.ExpressionType.ShouldBe(typeof(FunctionExpression));
+            result.ResultType.ShouldBeNull();
+            result.SourceExpression.ShouldBe("MyFunction()");
+            result.ErrorMessage.ShouldBe("Unknown function: MyFunction");
+        }
+
+        [Fact]
+        public void Returns_Non_Successful_Result_From_Parsing_When_Parsing_Is_Not_Successful()
+        {
+            // Arrange
+            var context = CreateContext("MyFunction())");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ExpressionType.ShouldBe(typeof(FunctionExpression));
+            result.ResultType.ShouldBeNull();
+            result.ErrorMessage.ShouldBe("Input has additional characters after last close bracket");
+        }
     }
 
     public class ParseFunctionCall : FunctionExpressionTests
     {
+        [Fact]
+        public void Returns_NotFound_When_Expression_Is_Not_A_FunctionCall()
+        {
+            // Arrange
+            var context = CreateContext("no function");
+
+            // Act
+            var result = FunctionExpression.ParseFunctionCall(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.NotFound);
+            result.Value.ShouldBeNull();
+        }
+
         [Fact]
         public void Returns_Correct_Result_On_FunctionCall_Without_Arguments()
         {

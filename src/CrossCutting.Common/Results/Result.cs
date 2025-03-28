@@ -82,11 +82,11 @@ public record Result<T> : Result
 
 public record Result
 {
-    protected Result(ResultStatus status,
-                     string? errorMessage,
-                     IEnumerable<ValidationError> validationErrors,
-                     IEnumerable<Result> innerResults,
-                     Exception? exception)
+    internal Result(ResultStatus status,
+                    string? errorMessage,
+                    IEnumerable<ValidationError> validationErrors,
+                    IEnumerable<Result> innerResults,
+                    Exception? exception)
     {
         ArgumentGuard.IsNotNull(validationErrors, nameof(validationErrors));
         ArgumentGuard.IsNotNull(innerResults, nameof(innerResults));

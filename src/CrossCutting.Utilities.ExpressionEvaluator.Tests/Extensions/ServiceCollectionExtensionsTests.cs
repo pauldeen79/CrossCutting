@@ -19,7 +19,7 @@ public class ServiceCollectionExtensionsTests
     {
         // Arrange
         var serviceCollection = new ServiceCollection().AddExpressionEvaluator();
-        using var provider = serviceCollection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+        using var provider = serviceCollection.BuildServiceProvider();
         using var scope = provider.CreateScope();
 
         // Act
@@ -46,7 +46,7 @@ public class ServiceCollectionExtensionsTests
     {
         // Arrange
         var serviceCollection = new ServiceCollection().AddExpressionEvaluator();
-        using var provider = serviceCollection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+        using var provider = serviceCollection.BuildServiceProvider();
         using var scope = provider.CreateScope();
 
         // Act

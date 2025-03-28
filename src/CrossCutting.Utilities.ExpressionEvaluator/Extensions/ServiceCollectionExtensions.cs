@@ -15,5 +15,8 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IOperator, SmallerOrEqualThanOperator>()
             .AddSingleton<IOperator, SmallerThanOperator>()
             .AddSingleton<IExpression, BinaryOperatorExpression>()
-            .AddSingleton<IExpression, FunctionExpression>();
+            .AddSingleton<IExpression, FunctionExpression>()
+            .AddSingleton<IFunctionCallArgumentValidator, FunctionCallArgumentValidator>()
+            .AddSingleton<IFunctionDescriptorMapper, FunctionDescriptorMapper>()
+            .AddSingleton<IFunctionDescriptorProvider, FunctionDescriptorProvider>();
 }

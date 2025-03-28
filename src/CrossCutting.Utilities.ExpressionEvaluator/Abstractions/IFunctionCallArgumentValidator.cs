@@ -2,5 +2,5 @@
 
 public interface IFunctionCallArgumentValidator
 {
-    Result<Type> Validate(FunctionDescriptorArgument descriptorArgument, string callArgument, FunctionCallContext functionCallContext);
+    ExpressionParseResult Validate(FunctionDescriptorArgument descriptorArgument, string callArgument, FunctionCallContext context);
 }
