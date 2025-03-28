@@ -148,8 +148,21 @@ public class FunctionExpressionTests : TestBase
 
         //"Missing open bracket" (before generics)
         //"Missing open bracket" (after generics)
-        //"Too many close brackets found"
-        //"Input has additional characters after last close bracket"
+
+        [Fact]
+        public void Returns_Invalid_When_Too_Many_Close_Brackets_Were_Found()
+        {
+            // Arrange
+            var context = CreateContext("MyFunction())");
+
+            // Act
+            var result = FunctionExpression.ParseFunctionCall(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Input has additional characters after last close bracket");
+        }
+
         //"Missing open bracket" (name not complete)
         //"Generic type name is not properly ended"
         //"Missing close bracket"

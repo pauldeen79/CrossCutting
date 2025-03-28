@@ -90,6 +90,7 @@ public class FunctionExpression : IExpression
         {
             if (!nameComplete)
             {
+                // Name section
                 if (c == '<' || c == '(')
                 {
                     nameComplete = true;
@@ -108,6 +109,7 @@ public class FunctionExpression : IExpression
             }
             else if (!genericsStarted && !argumentsStarted)
             {
+                // Type arguments / Arguments section
                 if (c == '<')
                 {
                     genericsStarted = true;
@@ -117,13 +119,14 @@ public class FunctionExpression : IExpression
                     argumentsStarted = true;
                     bracketCount = 1;
                 }
-                else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
+                /*else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
                 {
                     return Result.Invalid<FunctionCall>("Missing open bracket");
-                }
+                }*/
             }
             else if (genericsStarted && !genericsComplete)
             {
+                // Type arguments section
                 if (c == '>')
                 {
                     genericsComplete = true;
@@ -135,26 +138,24 @@ public class FunctionExpression : IExpression
             }
             else if (genericsComplete && !argumentsStarted)
             {
+                // Type arguments finished, looking for start of arguments section
                 if (c == '(')
                 {
                     argumentsStarted = true;
                     bracketCount = 1;
                 }
-                else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
+                /*else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
                 {
                     return Result.Invalid<FunctionCall>("Missing open bracket");
-                }
+                }*/
             }
             else if (!argumentsComplete)
             {
+                // Arguments section
                 if (c == ')' && !inQuotes)
                 {
                     bracketCount--;
-                    if (bracketCount < 0)
-                    {
-                        return Result.Invalid<FunctionCall>("Too many close brackets found");
-                    }
-                    else if (bracketCount == 0)
+                    if (bracketCount == 0)
                     {
                         var arg = argumentBuilder.ToString().Trim();
                         if (!string.IsNullOrEmpty(arg))
@@ -195,7 +196,7 @@ public class FunctionExpression : IExpression
                     argumentBuilder.Append(c);
                 }
             }
-            else if (index + 1 < context.Expression.Length)
+            else if (index < context.Expression.Length)
             {
                 // remaining characters at the end, like MyFunction(a) ILLEGAL
                 return Result.Invalid<FunctionCall>("Input has additional characters after last close bracket");
@@ -206,16 +207,16 @@ public class FunctionExpression : IExpression
 
         if (!nameComplete)
         {
-            return Result.Invalid<FunctionCall>("Missing open bracket");
+            return Result.NotFound<FunctionCall>();
         }
         else if (genericsStarted && !genericsComplete)
         {
             return Result.Invalid<FunctionCall>("Generic type name is not properly ended");
         }
-        else if (!argumentsComplete)
+        /*else if (!argumentsComplete)
         {
             return Result.Invalid<FunctionCall>("Missing close bracket");
-        }
+        }*/
 
         var generics = genericsBuilder.ToString().SplitDelimited(',', trimItems: true);
         var genericTypeArgumentsResult = GetTypeArguments(generics);
