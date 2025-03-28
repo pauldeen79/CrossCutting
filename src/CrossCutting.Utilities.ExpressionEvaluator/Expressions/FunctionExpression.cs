@@ -73,6 +73,7 @@ public class FunctionExpression : IExpression
             return Result.NotFound<FunctionCall>();
         }
 
+        //TODO: Create private state class with these variables.
         var nameBuilder = new StringBuilder();
         var genericsBuilder = new StringBuilder();
         var argumentBuilder = new StringBuilder();
@@ -86,6 +87,8 @@ public class FunctionExpression : IExpression
         var index = 0;
         var bracketCount = 0;
 
+        //TODO: Refactor to context.Expression.Select((character, index) => _states.Select(x => x(character, index)).TakeWhileWithNonFirstMatching(x => x.Status != ResultStatus.Continue).Last()
+        //move each if/else if to a state
         foreach (var c in context.Expression)
         {
             if (!nameComplete)
@@ -107,7 +110,7 @@ public class FunctionExpression : IExpression
                     return Result.Invalid<FunctionCall>("Function name may not contain whitespace");
                 }
             }
-            else if (!genericsStarted && !argumentsStarted)
+            /*else if (!genericsStarted && !argumentsStarted)
             {
                 // Type arguments / Arguments section
                 if (c == '<')
@@ -119,11 +122,11 @@ public class FunctionExpression : IExpression
                     argumentsStarted = true;
                     bracketCount = 1;
                 }
-                /*else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
+                else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
                 {
                     return Result.Invalid<FunctionCall>("Missing open bracket");
-                }*/
-            }
+                }
+            }*/
             else if (genericsStarted && !genericsComplete)
             {
                 // Type arguments section
@@ -177,7 +180,7 @@ public class FunctionExpression : IExpression
                 else if (c == '"')
                 {
                     inQuotes = !inQuotes;
-                    argumentBuilder.Append(c);
+                    //argumentBuilder.Append(c);
                 }
                 else if (c == ',' && !inQuotes)
                 {
@@ -186,12 +189,12 @@ public class FunctionExpression : IExpression
                         arguments.Add(argumentBuilder.ToString().Trim());
                         argumentBuilder.Clear();
                     }
-                    else
+                    /*else
                     {
                         argumentBuilder.Append(c);
-                    }
+                    }*/
                 }
-                else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
+                else if ((c != ' ' && c != '\r' && c != '\n' && c != '\t') || inQuotes)
                 {
                     argumentBuilder.Append(c);
                 }
@@ -205,7 +208,7 @@ public class FunctionExpression : IExpression
             index++;
         }
 
-        if (!nameComplete)
+        /*if (!nameComplete)
         {
             return Result.NotFound<FunctionCall>();
         }
@@ -213,7 +216,7 @@ public class FunctionExpression : IExpression
         {
             return Result.Invalid<FunctionCall>("Generic type name is not properly ended");
         }
-        /*else if (!argumentsComplete)
+        else if (!argumentsComplete)
         {
             return Result.Invalid<FunctionCall>("Missing close bracket");
         }*/

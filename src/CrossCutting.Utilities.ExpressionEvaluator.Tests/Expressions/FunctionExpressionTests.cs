@@ -146,8 +146,28 @@ public class FunctionExpressionTests : TestBase
             result.Value.Arguments.ShouldBeEmpty();
         }
 
+        [Fact]
+        public void Returns_Correct_Result_With_Quotes()
+        {
+            // Arrange
+            var context = CreateContext("MyFunction(argument1, \"argument2, argument3\", argument4)");
+
+            // Act
+            var result = FunctionExpression.ParseFunctionCall(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Name.ShouldBe("MyFunction");
+            result.Value.TypeArguments.ShouldBeEmpty();
+            result.Value.Arguments.ShouldBe(["argument1", "argument2, argument3", "argument4"]);
+        }
+
         //"Missing open bracket" (before generics)
         //"Missing open bracket" (after generics)
+        //"Missing open bracket" (name not complete)
+        //"Missing close bracket"
+        //"Generic type name is not properly ended"
 
         [Fact]
         public void Returns_Invalid_When_Too_Many_Close_Brackets_Were_Found()
@@ -163,9 +183,18 @@ public class FunctionExpressionTests : TestBase
             result.ErrorMessage.ShouldBe("Input has additional characters after last close bracket");
         }
 
-        //"Missing open bracket" (name not complete)
-        //"Generic type name is not properly ended"
-        //"Missing close bracket"
-        //invalid type argument (Unknown type: xxx)
+        [Fact]
+        public void Returns_Invalid_When_Generic_Type_Is_Unknown()
+        {
+            // Arrange
+            var context = CreateContext("MyFunction<unknowntype>()");
+
+            // Act
+            var result = FunctionExpression.ParseFunctionCall(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown type: unknowntype");
+        }
     }
 }
