@@ -21,6 +21,19 @@ public static class ResultDictionaryExtensions
         };
     }
 
+    public static Result<T> OnSuccess<T>(this Dictionary<string, Result<T>> resultDictionary, Func<Dictionary<string, Result<T>>, Result<T>> successDelegate)
+    {
+        successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        var error = resultDictionary.GetError();
+
+        return error switch
+        {
+            not null => error,
+            _ => successDelegate(resultDictionary)
+        };
+    }
+
     public static Result OnSuccess(this Dictionary<string, Result> resultDictionary, Func<Dictionary<string, Result>, Result> successDelegate)
     {
         successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
