@@ -27,7 +27,7 @@ public sealed class FunctionCallTests : TestBase
             .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
             .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression.EndsWith("()")
                 ? function.Evaluate(new FunctionCallContext(new FunctionCallBuilder().WithName(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.ReplaceSuffix("()", string.Empty, StringComparison.Ordinal)), x.ArgAt<ExpressionEvaluatorContext>(0)))
-                : Evaluate(x));
+                : EvaluateExpression(x));
         Evaluator
             .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
             .Returns(x => Expression.Evaluate(x.ArgAt<ExpressionEvaluatorContext>(0)));

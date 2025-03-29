@@ -1,6 +1,4 @@
-﻿using NSubstitute;
-
-namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 
 public class ExpressionEvaluatorTests : TestBase
 {

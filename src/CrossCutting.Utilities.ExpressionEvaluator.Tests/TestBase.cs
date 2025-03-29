@@ -14,10 +14,10 @@ public abstract class TestBase
         Evaluator = Substitute.For<IExpressionEvaluator>();
         Evaluator
             .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
-            .Returns(Evaluate);
+            .Returns(EvaluateExpression);
         Evaluator
             .Parse(Arg.Any<ExpressionEvaluatorContext>())
-            .Returns(x => Evaluate(x).Transform(result =>
+            .Returns(x => EvaluateExpression(x).Transform(result =>
                 new ExpressionParseResultBuilder()
                     .WithSourceExpression(x.ArgAt<ExpressionEvaluatorContext>(0).Expression)
                     .WithExpressionType(typeof(TestBase))
@@ -33,7 +33,7 @@ public abstract class TestBase
     }
 
     // Test stub for expression evaluation, that supports strings, integers, long integers, decimals, booleans and DeteTimes (by using TryParse), as well as the context and null keywords
-    protected static Result<object?> Evaluate(CallInfo callInfo)
+    protected static Result<object?> EvaluateExpression(CallInfo callInfo)
     {
         var context = callInfo.ArgAt<ExpressionEvaluatorContext>(0);
 
