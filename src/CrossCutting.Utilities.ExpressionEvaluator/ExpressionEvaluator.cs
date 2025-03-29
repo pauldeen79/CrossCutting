@@ -30,7 +30,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             .OnSuccess(() => _expressions
                 .Select(x => x is IExpression<T> typedExpression
                     ? typedExpression.EvaluateTyped(context)
-                    : x.Evaluate(context).TryCast<T>())
+                    : x.Evaluate(context).TryCastAllowNull<T>())
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                     ?? Result.Invalid<T>($"Unknown expression type found in fragment: {context.Expression}"));
     }

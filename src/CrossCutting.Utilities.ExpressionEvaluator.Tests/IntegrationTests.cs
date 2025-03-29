@@ -32,9 +32,27 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.Value.ShouldBe(true);
     }
 
+    [Fact]
+    public void Can_Evaluate_Function_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "MyFunction(context)";
+
+        // Act
+        var result = sut.EvaluateTyped<string>(CreateContext(expression, context: "hello world"));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("HELLO WORLD");
+    }
+
     public IntegrationTests()
     {
-        Provider = new ServiceCollection().AddExpressionEvaluator().BuildServiceProvider();
+        Provider = new ServiceCollection()
+            .AddExpressionEvaluator()
+            .AddSingleton<IFunction, MyFunction>()
+            .BuildServiceProvider();
         Scope = Provider.CreateScope();
     }
 
@@ -47,5 +65,19 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         Scope.Dispose();
         Provider.Dispose();
+    }
+
+    [FunctionName("MyFunction")]
+    [FunctionArgument("Input", typeof(string))]
+    private sealed class MyFunction : IFunction<string>
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+            => EvaluateTyped(context).Transform<object?>(x => x);
+
+        public Result<string> EvaluateTyped(FunctionCallContext context)
+            => new ResultDictionaryBuilder<string>()
+                .Add("Input", () => context.Context.Evaluate(context.FunctionCall.Arguments.First()))
+                .Build()
+                .OnSuccess(results => Result.Success(results["Input"].Value.ToStringWithDefault().ToUpperInvariant()));
     }
 }
