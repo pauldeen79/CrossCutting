@@ -8,6 +8,6 @@ public static class ResultStatusExtensions
     public static Result ToResult(this ResultStatus instance, string? errorMessage = null, IEnumerable<ValidationError>? validationErrors = null, IEnumerable<Result>? innerResults = null, Exception? exception = null)
         => new Result(instance, errorMessage, validationErrors ?? Enumerable.Empty<ValidationError>(), innerResults ?? Enumerable.Empty<Result>(), exception);
 
-    public static Result<T> ToResult<T>(this ResultStatus instance, T? value = default, string? errorMessage = null, IEnumerable<ValidationError>? validationErrors = null, IEnumerable<Result>? innerResults = null, Exception? exception = null)
+    public static Result<T> ToTypedResult<T>(this ResultStatus instance, T? value = default, string? errorMessage = null, IEnumerable<ValidationError>? validationErrors = null, IEnumerable<Result>? innerResults = null, Exception? exception = null)
         => new Result<T>(value, instance, errorMessage, validationErrors ?? Enumerable.Empty<ValidationError>(), innerResults ?? Enumerable.Empty<Result>(), exception);
 }
