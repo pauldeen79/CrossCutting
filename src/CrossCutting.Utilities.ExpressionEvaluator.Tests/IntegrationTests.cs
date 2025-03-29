@@ -47,11 +47,27 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.Value.ShouldBe("HELLO WORLD");
     }
 
+    [Fact]
+    public void Can_Evaluate_Generic_Function_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "MyGenericFunction<System.String>()";
+
+        // Act
+        var result = sut.Evaluate(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(typeof(string));
+    }
+
     public IntegrationTests()
     {
         Provider = new ServiceCollection()
             .AddExpressionEvaluator()
             .AddSingleton<IFunction, MyFunction>()
+            .AddSingleton<IGenericFunction, MyGenericFunction>()
             .BuildServiceProvider();
     }
 
@@ -73,5 +89,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
                 .Add("Input", () => context.GetArgumentValueResult<string>(0, "Input"))
                 .Build()
                 .OnSuccess(results => Result.Success(results.GetValue<string>("Input").ToUpperInvariant()));
+    }
+
+    [FunctionName("MyGenericFunction")]
+    [FunctionTypeArgument("T", "Type argument to use")]
+    private sealed class MyGenericFunction : IGenericFunction
+    {
+        public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
+            => Result.Success<object?>(typeof(T));
     }
 }
