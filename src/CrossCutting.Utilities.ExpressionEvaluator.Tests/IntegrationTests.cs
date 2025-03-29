@@ -62,6 +62,36 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.Value.ShouldBe(typeof(string));
     }
 
+    [Fact]
+    public void Can_Evaluate_Primitive_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "null";
+
+        // Act
+        var result = sut.EvaluateTyped<string>(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(null);
+    }
+
+    [Fact]
+    public void Can_Evaluate_String_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "\"my string value\"";
+
+        // Act
+        var result = sut.EvaluateTyped<string>(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("my string value");
+    }
+
     public IntegrationTests()
     {
         Provider = new ServiceCollection()
