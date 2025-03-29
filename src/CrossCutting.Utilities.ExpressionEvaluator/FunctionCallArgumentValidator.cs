@@ -13,7 +13,7 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         {
             return callArgumentResult;
         }
-        else if (/*context.Context.Settings.ValidateArgumentTypes &&*/ !IsTypeValid(descriptorArgument, callArgumentResult))
+        else if (!IsTypeValid(descriptorArgument, callArgumentResult))
         {
             return new ExpressionParseResultBuilder()
                 .WithSourceExpression(context.Context.Expression)
