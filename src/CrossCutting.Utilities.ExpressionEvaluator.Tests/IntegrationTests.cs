@@ -76,7 +76,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
         public Result<string> EvaluateTyped(FunctionCallContext context)
             => new ResultDictionaryBuilder()
-                .Add("Input", () => context.Context.Evaluate(context.FunctionCall.Arguments.First()))
+                .Add("Input", () => context.GetArgumentValueResult<string>(0, "Input"))
                 .Build()
                 .OnSuccess(results => Result.Success(results.GetValue<string>("Input").ToUpperInvariant()));
     }

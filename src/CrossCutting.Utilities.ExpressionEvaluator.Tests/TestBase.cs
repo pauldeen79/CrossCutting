@@ -32,8 +32,8 @@ public abstract class TestBase
         // Note that you have to setup Evaluate and Validate method yourself
     }
 
-    // Test stub for expression evaluation, that supports strings, integers and booleans (last two by using TryParse) as well as the context keyword
-    private static Result<object?> Evaluate(CallInfo callInfo)
+    // Test stub for expression evaluation, that supports strings, integers, long integers, decimals, booleans and DeteTimes (by using TryParse), as well as the context and null keywords
+    protected static Result<object?> Evaluate(CallInfo callInfo)
     {
         var context = callInfo.ArgAt<ExpressionEvaluatorContext>(0);
 
@@ -67,9 +67,29 @@ public abstract class TestBase
             return Result.Success<object?>(number);
         }
 
+        if (context.Expression.EndsWith('L') && long.TryParse(context.Expression[..^1], context.Settings.FormatProvider, out long longNumber))
+        {
+            return Result.Success<object?>(longNumber);
+        }
+
+        if (context.Expression.EndsWith('M') && decimal.TryParse(context.Expression[..^1], context.Settings.FormatProvider, out decimal decimalNumber))
+        {
+            return Result.Success<object?>(decimalNumber);
+        }
+
         if (bool.TryParse(context.Expression, out bool boolean))
         {
             return Result.Success<object?>(boolean);
+        }
+
+        if (context.Expression.StartsWith('"') && context.Expression.EndsWith('"'))
+        {
+            return Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2));
+        }
+
+        if (DateTime.TryParse(context.Expression, context.Settings.FormatProvider, out DateTime dateTime))
+        {
+            return Result.Success<object?>(dateTime);
         }
 
         return Result.NotSupported<object?>($"Unsupported expression: {context.Expression}");
