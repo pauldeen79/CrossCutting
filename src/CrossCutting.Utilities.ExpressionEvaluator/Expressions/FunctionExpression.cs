@@ -6,6 +6,11 @@ public class FunctionExpression : IExpression
     private readonly IEnumerable<IFunction> _functions;
     private readonly IEnumerable<IGenericFunction> _genericFunctions;
 
+    private static readonly Func<FunctionParseState, Result>[] _processors =
+        [
+            ProcessNameSection
+        ];
+
     public FunctionExpression(IFunctionDescriptorProvider functionDescriptorProvider, IFunctionCallArgumentValidator functionCallArgumentValidator, IEnumerable<IFunction> functions, IEnumerable<IGenericFunction> genericFunctions)
     {
         ArgumentGuard.IsNotNull(functionDescriptorProvider, nameof(functionDescriptorProvider));
@@ -100,31 +105,27 @@ public class FunctionExpression : IExpression
         }
 
         var state = new FunctionParseState();
-
-        //TODO: Refactor to context.Expression.Select((character, index) => _states.Select(x => x(character, index)).TakeWhileWithNonFirstMatching(x => x.Status != ResultStatus.Continue).Last()
-        //move each if/else if to a state
         foreach (var c in context.Expression)
         {
-            if (!state.NameComplete)
+            state.CurrentCharacter = c;
+            var result = _processors
+                .Select(x => x.Invoke(state))
+                .TakeWhileWithFirstNonMatching(x => x.Status == ResultStatus.Continue)
+                .Last();
+
+            if (!result.IsSuccessful())
             {
-                // Name section
-                if (c == '<' || c == '(')
-                {
-                    state.NameComplete = true;
-                    state.ArgumentsStarted = c == '(';
-                    state.GenericsStarted = c == '<';
-                    state.BracketCount = c == '(' ? 1 : 0;
-                }
-                else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
-                {
-                    state.NameBuilder.Append(c);
-                }
-                else
-                {
-                    return Result.Invalid<FunctionCall>("Function name may not contain whitespace");
-                }
+                return Result.FromExistingResult<FunctionCall>(result);
             }
-            else if (state.GenericsStarted && !state.GenericsComplete)
+
+            // TODO: Remove this
+            if (result.Status != ResultStatus.Continue)
+            {
+                continue;
+            }
+
+            // TODO: Move to process methods like ProcessNameSection
+            if (state.GenericsStarted && !state.GenericsComplete)
             {
                 // Type arguments section
                 if (c == '>')
@@ -312,6 +313,32 @@ public class FunctionExpression : IExpression
         return Result.Success(typeArguments);
     }
 
+    private static Result ProcessNameSection(FunctionParseState state)
+    {
+        if (state.NameComplete)
+        {
+            return Result.Continue();
+        }
+
+        if (state.CurrentCharacter == '<' || state.CurrentCharacter == '(')
+        {
+            state.NameComplete = true;
+            state.ArgumentsStarted = state.CurrentCharacter == '(';
+            state.GenericsStarted = state.CurrentCharacter == '<';
+            state.BracketCount = state.CurrentCharacter == '(' ? 1 : 0;
+        }
+        else if (state.CurrentCharacter != ' ' && state.CurrentCharacter != '\r' && state.CurrentCharacter != '\n' && state.CurrentCharacter != '\t')
+        {
+            state.NameBuilder.Append(state.CurrentCharacter);
+        }
+        else
+        {
+            return Result.Invalid<FunctionCall>("Function name may not contain whitespace");
+        }
+
+        return Result.NoContent();
+    }
+
     private sealed class FunctionParseState
     {
         public StringBuilder NameBuilder { get; } = new StringBuilder();
@@ -325,6 +352,7 @@ public class FunctionExpression : IExpression
         public bool ArgumentsComplete { get; set; }
         public bool InQuotes { get; set; }
         public int Index { get; set; }
+        public char CurrentCharacter { get; set; }
         public int BracketCount { get; set; }
     }
 }
