@@ -21,6 +21,19 @@ public static class ResultDictionaryExtensions
         };
     }
 
+    public static Result<T> OnSuccess<T>(this Dictionary<string, Result<T>> resultDictionary, Func<Dictionary<string, Result<T>>, Result<T>> successDelegate)
+    {
+        successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        var error = resultDictionary.GetError();
+
+        return error switch
+        {
+            not null => error,
+            _ => successDelegate(resultDictionary)
+        };
+    }
+
     public static Result OnSuccess(this Dictionary<string, Result> resultDictionary, Func<Dictionary<string, Result>, Result> successDelegate)
     {
         successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
@@ -123,13 +136,28 @@ public static class ResultDictionaryExtensions
             ? result.CastValueAs<T>()
             : throw new ArgumentOutOfRangeException(nameof(resultKey), $"Unknown argument: {resultKey}");
 
+    public static T GetValue<T>(this Dictionary<string, Result<T>> resultDictionary, string resultKey)
+        => resultDictionary.TryGetValue(resultKey, out Result<T> result)
+            ? result.Value!
+            : throw new ArgumentOutOfRangeException(nameof(resultKey), $"Unknown argument: {resultKey}");
+
     public static T? TryGetValue<T>(this Dictionary<string, Result> resultDictionary, string resultKey)
         => resultDictionary.TryGetValue(resultKey, out Result result)
             ? result.TryCastValueAs<T>()
             : default;
 
+    public static T? TryGetValue<T>(this Dictionary<string, Result<T>> resultDictionary, string resultKey)
+        => resultDictionary.TryGetValue(resultKey, out Result<T> result)
+            ? result.Value
+            : default;
+
     public static T? TryGetValue<T>(this Dictionary<string, Result> resultDictionary, string resultKey, T? defaultValue)
         => resultDictionary.TryGetValue(resultKey, out Result result)
             ? result.TryCastValueAs(defaultValue)
+            : defaultValue;
+
+    public static T? TryGetValue<T>(this Dictionary<string, Result<T>> resultDictionary, string resultKey, T? defaultValue)
+        => resultDictionary.TryGetValue(resultKey, out Result<T> result)
+            ? result.Value
             : defaultValue;
 }

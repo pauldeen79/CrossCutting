@@ -1,6 +1,6 @@
-﻿namespace CrossCutting.Utilities.Parsers.Tests;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 
-public class ResultAttributeTests
+public class FunctionResultAttributeTests
 {
     [Fact]
     public void Should_Construct_1()

@@ -112,6 +112,25 @@ public class ResultDictionaryExtensionsTests
         }
 
         [Fact]
+        public void Returns_First_Non_Successful_Result_When_Present_Typed()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder<string>()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericErrorDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.OnSuccess(results => Result.Continue<string>());
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+
+        [Fact]
         public void Returns_Result_From_Delegate_When_All_Results_Are_Successful()
         {
             // Arrange
@@ -123,6 +142,24 @@ public class ResultDictionaryExtensionsTests
 
             // Act
             var result = sut.OnSuccess(results => Result.Continue());
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Result_From_Delegate_When_All_Results_Are_Successful_Typed()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder<string>()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.OnSuccess(results => Result.Continue<string>());
 
             // Assert
             result.ShouldNotBeNull();
@@ -466,6 +503,23 @@ public class ResultDictionaryExtensionsTests
         }
 
         [Fact]
+        public void Gets_Value_When_Cast_Is_Possible_Typed()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder<string>()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.GetValue<string>("Step1");
+
+            // Assert
+            result.ShouldBe("My value");
+        }
+
+        [Fact]
         public void Throws_When_Cast_Is_Not_Possible_And_Value_Is_Null()
         {
             // Arrange
@@ -570,6 +624,23 @@ public class ResultDictionaryExtensionsTests
         }
 
         [Fact]
+        public void Gets_Value_When_Cast_Is_Possible_Typed()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder<string>()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.TryGetValue<string>("Step1");
+
+            // Assert
+            result.ShouldBe("My value");
+        }
+
+        [Fact]
         public void Gets_Default_When_Cast_Is_Possible()
         {
             // Arrange
@@ -611,6 +682,23 @@ public class ResultDictionaryExtensionsTests
         {
             // Arrange
             var sut = new ResultDictionaryBuilder()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.TryGetValue("Step1", "some default value");
+
+            // Assert
+            result.ShouldBe("My value");
+        }
+
+        [Fact]
+        public void Gets_Value_When_Cast_Is_Possible_Typed()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder<string>()
                 .Add("Step1", GenericDelegate)
                 .Add("Step2", GenericDelegate)
                 .Add("Step3", NonGenericDelegate)

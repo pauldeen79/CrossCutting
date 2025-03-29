@@ -40,7 +40,7 @@ public record Result<T> : Result
             return FromExistingResult<TTarget>(this);
         }
 
-        return Success(transformDelegate(Value!));
+        return new(transformDelegate(Value!), Status, ErrorMessage, ValidationErrors, InnerResults, null);
     }
 
     public Result<TTarget> Transform<TTarget>(Func<T, Result<TTarget>> transformDelegate)
@@ -82,11 +82,11 @@ public record Result<T> : Result
 
 public record Result
 {
-    protected Result(ResultStatus status,
-                     string? errorMessage,
-                     IEnumerable<ValidationError> validationErrors,
-                     IEnumerable<Result> innerResults,
-                     Exception? exception)
+    internal Result(ResultStatus status,
+                    string? errorMessage,
+                    IEnumerable<ValidationError> validationErrors,
+                    IEnumerable<Result> innerResults,
+                    Exception? exception)
     {
         ArgumentGuard.IsNotNull(validationErrors, nameof(validationErrors));
         ArgumentGuard.IsNotNull(innerResults, nameof(innerResults));
@@ -100,11 +100,11 @@ public record Result
 
     public virtual object? GetValue() => null;
 
-    public Result<TCast?> TryCastAllowNull<TCast>(string? errorMessage)
-        => TryCast<TCast?>(true, errorMessage);
+    public Result<TCast> TryCastAllowNull<TCast>(string? errorMessage)
+        => TryCast<TCast>(true, errorMessage);
 
-    public Result<TCast?> TryCastAllowNull<TCast>()
-        => TryCast<TCast?>(true, null);
+    public Result<TCast> TryCastAllowNull<TCast>()
+        => TryCast<TCast>(true, null);
 
     public Result<TCast> TryCast<TCast>(string? errorMessage)
         => TryCast<TCast>(false, errorMessage)!;
@@ -112,25 +112,25 @@ public record Result
     public Result<TCast> TryCast<TCast>()
         => TryCast<TCast>(false, null)!;
 
-    private Result<TCast?> TryCast<TCast>(bool allowNull, string? errorMessage)
+    private Result<TCast> TryCast<TCast>(bool allowNull, string? errorMessage)
     {
         if (!IsSuccessful())
         {
-            return FromExistingResult<TCast?>(this);
+            return FromExistingResult<TCast>(this);
         }
 
         var value = GetValue();
         if (allowNull && value is null)
         {
-            return new Result<TCast?>(default, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
+            return new Result<TCast>(default, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
         }
 
         if (value is not TCast castValue)
         {
-            return Invalid<TCast?>(errorMessage ?? $"Could not cast {value?.GetType().FullName} to {typeof(TCast).FullName}");
+            return Invalid<TCast>(errorMessage ?? $"Could not cast {value?.GetType().FullName} to {typeof(TCast).FullName}");
         }
 
-        return new Result<TCast?>(castValue, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
+        return new Result<TCast>(castValue, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
     }
 
     public T? TryCastValueAs<T>()
@@ -166,7 +166,7 @@ public record Result
         return (T)value!;
     }
 
-    public bool IsSuccessful() => Status is ResultStatus.Ok or ResultStatus.NoContent or ResultStatus.Continue;
+    public bool IsSuccessful() => Status.IsSuccessful();
     public string? ErrorMessage { get; }
     public Exception? Exception { get; }
     public ResultStatus Status { get; }

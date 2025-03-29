@@ -3338,6 +3338,6 @@ public class ResultTests
         Action a = () => sut.CastValueAs<string?>();
         a.ShouldThrow<InvalidOperationException>();
 
-        // Note that if you don't know if the value is null, you can simply use TryCast<string> because this will return a nullable string.
+        // Note that if you don't know if the value is null, you can simply use TryCastAllowNull<string>
     }
 }

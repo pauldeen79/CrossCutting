@@ -30,7 +30,10 @@ public class Recursion : IMathematicExpression
                 return Result.FromExistingResult<MathematicExpressionState>(subResult);
             }
 
-            state.Remainder = state.Remainder.Replace($"({found})", FormattableString.Invariant($"{MathematicExpressionEvaluator.TemporaryDelimiter}{state.Results.Count}{MathematicExpressionEvaluator.TemporaryDelimiter}"));
+            state.Remainder = state.Remainder.Substring(0, openIndex)
+                + FormattableString.Invariant($"{MathematicExpressionEvaluator.TemporaryDelimiter}{state.Results.Count}{MathematicExpressionEvaluator.TemporaryDelimiter}")
+                + state.Remainder.Substring(closeIndex + 1);
+
             state.Results.Add(subResult);
 
         } while (state.Remainder.IndexOf(")") > -1);
