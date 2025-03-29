@@ -20,10 +20,9 @@ public class ServiceCollectionExtensionsTests
         // Arrange
         var serviceCollection = new ServiceCollection().AddExpressionEvaluator();
         using var provider = serviceCollection.BuildServiceProvider();
-        using var scope = provider.CreateScope();
 
         // Act
-        var expression = scope.ServiceProvider.GetServices<IExpression>().FirstOrDefault(x => x.GetType() == expressionType);
+        var expression = provider.GetServices<IExpression>().FirstOrDefault(x => x.GetType() == expressionType);
 
         // Assert
         expression.ShouldNotBeNull($"Expression {expressionType.FullName} could not be resolved, did you forget to register this?");
@@ -47,10 +46,9 @@ public class ServiceCollectionExtensionsTests
         // Arrange
         var serviceCollection = new ServiceCollection().AddExpressionEvaluator();
         using var provider = serviceCollection.BuildServiceProvider();
-        using var scope = provider.CreateScope();
 
         // Act
-        var expression = scope.ServiceProvider.GetServices<IOperator>().FirstOrDefault(x => x.GetType() == operatorType);
+        var expression = provider.GetServices<IOperator>().FirstOrDefault(x => x.GetType() == operatorType);
 
         // Assert
         expression.ShouldNotBeNull($"Operator {operatorType.FullName} could not be resolved, did you forget to register this?");

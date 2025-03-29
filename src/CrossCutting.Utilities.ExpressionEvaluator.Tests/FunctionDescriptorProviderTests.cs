@@ -37,8 +37,7 @@ public class FunctionDescriptorProviderTests
                 .AddSingleton<IFunction, MyFunction2>()
                 .AddSingleton<IFunction, PassThroughFunction>()
                 .BuildServiceProvider(true);
-            using var scope = provider.CreateScope();
-            var sut = scope.ServiceProvider.GetRequiredService<IFunctionDescriptorProvider>();
+            var sut = provider.GetRequiredService<IFunctionDescriptorProvider>();
 
             // Act
             var result = sut.GetAll();

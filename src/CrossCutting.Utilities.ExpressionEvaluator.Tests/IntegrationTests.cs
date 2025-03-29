@@ -53,19 +53,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddExpressionEvaluator()
             .AddSingleton<IFunction, MyFunction>()
             .BuildServiceProvider();
-        Scope = Provider.CreateScope();
     }
 
     private ServiceProvider Provider { get; set; }
-    private IServiceScope Scope { get; set; }
 
-    private IExpressionEvaluator CreateSut() => Scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>();
+    private IExpressionEvaluator CreateSut() => Provider.GetRequiredService<IExpressionEvaluator>();
 
-    public void Dispose()
-    {
-        Scope.Dispose();
-        Provider.Dispose();
-    }
+    public void Dispose() => Provider.Dispose();
 
     [FunctionName("MyFunction")]
     [FunctionArgument("Input", typeof(string))]
