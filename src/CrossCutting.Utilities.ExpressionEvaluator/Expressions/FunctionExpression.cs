@@ -2,7 +2,6 @@
 
 public class FunctionExpression : IExpression
 {
-    private readonly IFunctionDescriptorProvider _functionDescriptorProvider;
     private readonly IFunctionCallArgumentValidator _functionCallArgumentValidator;
     private readonly IEnumerable<IFunction> _functions;
     private readonly IEnumerable<IGenericFunction> _genericFunctions;
@@ -14,26 +13,17 @@ public class FunctionExpression : IExpression
         ArgumentGuard.IsNotNull(functions, nameof(functions));
         ArgumentGuard.IsNotNull(genericFunctions, nameof(genericFunctions));
 
-        _functionDescriptorProvider = functionDescriptorProvider;
         _functionCallArgumentValidator = functionCallArgumentValidator;
         _functions = functions;
         _genericFunctions = genericFunctions;
+        _descriptors = new Lazy<IReadOnlyCollection<FunctionDescriptor>>(() => functionDescriptorProvider.GetAll());
     }
 
     private static readonly Regex _functionRegEx = new(@"\b\w*\s*(?:<[\w\s,.<>]*>)?\s*\(\s*[^)]*\s*\)", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
 
-    private IReadOnlyCollection<FunctionDescriptor>? _descriptors;
-    private IReadOnlyCollection<FunctionDescriptor> Descriptors
-    {
-        get
-        {
-            if (_descriptors is null)
-            {
-                _descriptors = _functionDescriptorProvider.GetAll();
-            }
-            return _descriptors;
-        }
-    }
+    private readonly Lazy<IReadOnlyCollection<FunctionDescriptor>> _descriptors;
+
+    public IReadOnlyCollection<FunctionDescriptor> Descriptors => _descriptors.Value;
 
     public int Order => 20;
 
@@ -109,117 +99,105 @@ public class FunctionExpression : IExpression
             return Result.NotFound<FunctionCall>();
         }
 
-        //TODO: Create private state class with these variables.
-        var nameBuilder = new StringBuilder();
-        var genericsBuilder = new StringBuilder();
-        var argumentBuilder = new StringBuilder();
-        var arguments = new List<string>();
-        var nameComplete = false;
-        var genericsStarted = false;
-        var genericsComplete = false;
-        var argumentsStarted = false;
-        var argumentsComplete = false;
-        var inQuotes = false;
-        var index = 0;
-        var bracketCount = 0;
+        var state = new FunctionParseState();
 
         //TODO: Refactor to context.Expression.Select((character, index) => _states.Select(x => x(character, index)).TakeWhileWithNonFirstMatching(x => x.Status != ResultStatus.Continue).Last()
         //move each if/else if to a state
         foreach (var c in context.Expression)
         {
-            if (!nameComplete)
+            if (!state.NameComplete)
             {
                 // Name section
                 if (c == '<' || c == '(')
                 {
-                    nameComplete = true;
-                    argumentsStarted = c == '(';
-                    genericsStarted = c == '<';
-                    bracketCount = c == '(' ? 1 : 0;
+                    state.NameComplete = true;
+                    state.ArgumentsStarted = c == '(';
+                    state.GenericsStarted = c == '<';
+                    state.BracketCount = c == '(' ? 1 : 0;
                 }
                 else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
                 {
-                    nameBuilder.Append(c);
+                    state.NameBuilder.Append(c);
                 }
                 else
                 {
                     return Result.Invalid<FunctionCall>("Function name may not contain whitespace");
                 }
             }
-            else if (genericsStarted && !genericsComplete)
+            else if (state.GenericsStarted && !state.GenericsComplete)
             {
                 // Type arguments section
                 if (c == '>')
                 {
-                    genericsComplete = true;
+                    state.GenericsComplete = true;
                 }
                 else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
                 {
-                    genericsBuilder.Append(c);
+                    state.GenericsBuilder.Append(c);
                 }
             }
-            else if (genericsComplete && !argumentsStarted)
+            else if (state.GenericsComplete && !state.ArgumentsStarted)
             {
                 // Type arguments finished, looking for start of arguments section
                 if (c == '(')
                 {
-                    argumentsStarted = true;
-                    bracketCount = 1;
+                    state.ArgumentsStarted = true;
+                    state.BracketCount = 1;
                 }
             }
-            else if (!argumentsComplete)
+            else if (!state.ArgumentsComplete)
             {
                 // Arguments section
-                if (c == ')' && !inQuotes)
+                if (c == ')' && !state.InQuotes)
                 {
-                    bracketCount--;
-                    if (bracketCount == 0)
+                    state.BracketCount--;
+                    if (state.BracketCount == 0)
                     {
-                        var arg = argumentBuilder.ToString().Trim();
+                        var arg = state.ArgumentBuilder.ToString().Trim();
                         if (!string.IsNullOrEmpty(arg))
                         {
-                            arguments.Add(arg);
+                            state.Arguments.Add(arg);
                         }
-                        argumentsComplete = true;
+                        state.ArgumentsComplete = true;
                     }
                     else
                     {
-                        argumentBuilder.Append(c);
+                        state.ArgumentBuilder.Append(c);
                     }
                 }
-                else if (c == '(' && !inQuotes)
+                else if (c == '(' && !state.InQuotes)
                 {
-                    bracketCount++;
-                    argumentBuilder.Append(c);
+                    state.BracketCount++;
+                    state.ArgumentBuilder.Append(c);
                 }
                 else if (c == '"')
                 {
-                    inQuotes = !inQuotes;
-                    argumentBuilder.Append(c);
+                    state.InQuotes = !state.InQuotes;
+                    state.ArgumentBuilder.Append(c);
                 }
-                else if (c == ',' && !inQuotes)
+                else if (c == ',' && !state.InQuotes)
                 {
-                    if (bracketCount == 1)
+                    if (state.BracketCount == 1)
                     {
-                        arguments.Add(argumentBuilder.ToString().Trim());
-                        argumentBuilder.Clear();
+                        state.Arguments.Add(state.ArgumentBuilder.ToString().Trim());
+                        state.ArgumentBuilder.Clear();
                     }
                 }
-                else if ((c != ' ' && c != '\r' && c != '\n' && c != '\t') || inQuotes)
+                else if ((c != ' ' && c != '\r' && c != '\n' && c != '\t') || state.InQuotes)
                 {
-                    argumentBuilder.Append(c);
+                    state.ArgumentBuilder.Append(c);
                 }
             }
-            else if (index < context.Expression.Length)
+            else if (state.Index < context.Expression.Length)
             {
                 // remaining characters at the end, like MyFunction(a) ILLEGAL
                 return Result.Invalid<FunctionCall>("Input has additional characters after last close bracket");
             }
 
-            index++;
+            state.Index++;
         }
 
-        var generics = genericsBuilder.ToString().SplitDelimited(',', trimItems: true);
+        var generics = state.GenericsBuilder.ToString().SplitDelimited(',', trimItems: true);
         var genericTypeArgumentsResult = GetTypeArguments(generics);
         if (!genericTypeArgumentsResult.IsSuccessful())
         {
@@ -227,8 +205,8 @@ public class FunctionExpression : IExpression
         }
 
         return Result.Success<FunctionCall>(new FunctionCallBuilder()
-            .WithName(nameBuilder.ToString().Trim())
-            .AddArguments(arguments)
+            .WithName(state.NameBuilder.ToString().Trim())
+            .AddArguments(state.Arguments)
             .AddTypeArguments(genericTypeArgumentsResult.Value!));
     }
 
@@ -294,20 +272,20 @@ public class FunctionExpression : IExpression
     {
         if (result.GenericFunction is not null)
         {
-            return EvaluateGenericFunction(result, functionCallContext);
+            return EvaluateGenericFunction(result.GenericFunction, functionCallContext);
         }
 
         // We can safely assume that Function is not null, because the c'tor has verified this
         return result.Function!.Evaluate(functionCallContext);
     }
 
-    private static Result<object?> EvaluateGenericFunction(FunctionAndTypeDescriptor result, FunctionCallContext functionCallContext)
+    private static Result<object?> EvaluateGenericFunction(IGenericFunction genericFunction, FunctionCallContext functionCallContext)
     {
         try
         {
-            var method = result.GenericFunction!.GetType().GetMethod(nameof(IGenericFunction.EvaluateGeneric))!.MakeGenericMethod(functionCallContext.FunctionCall.TypeArguments.ToArray());
+            var method = genericFunction.GetType().GetMethod(nameof(IGenericFunction.EvaluateGeneric))!.MakeGenericMethod(functionCallContext.FunctionCall.TypeArguments.ToArray());
 
-            return (Result<object?>)method.Invoke(result.GenericFunction, [functionCallContext]);
+            return (Result<object?>)method.Invoke(genericFunction, [functionCallContext]);
         }
         catch (ArgumentException argException)
         {
@@ -332,5 +310,21 @@ public class FunctionExpression : IExpression
         }
 
         return Result.Success(typeArguments);
+    }
+
+    private sealed class FunctionParseState
+    {
+        public StringBuilder NameBuilder { get; } = new StringBuilder();
+        public StringBuilder GenericsBuilder { get; } = new StringBuilder();
+        public StringBuilder ArgumentBuilder { get; } = new StringBuilder();
+        public List<string> Arguments { get; } = new List<string>();
+        public bool NameComplete { get; set; }
+        public bool GenericsStarted { get; set; }
+        public bool GenericsComplete { get; set; }
+        public bool ArgumentsStarted { get; set; }
+        public bool ArgumentsComplete { get; set; }
+        public bool InQuotes { get; set; }
+        public int Index { get; set; }
+        public int BracketCount { get; set; }
     }
 }
