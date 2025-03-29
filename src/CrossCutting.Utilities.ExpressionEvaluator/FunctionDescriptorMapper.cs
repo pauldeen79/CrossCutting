@@ -32,7 +32,7 @@ public class FunctionDescriptorMapper : IFunctionDescriptorMapper
     private static Type? GetTypedResultType(Type type)
     {
         // Only when you implement one ITypedFunction<T>!
-        var typedFunctions = type.GetInterfaces().Where(x => x.FullName.StartsWith("CrossCutting.Utilities.Parsers.Contracts.ITypedFunction")).ToArray();
+        var typedFunctions = type.GetInterfaces().Where(x => x.FullName.StartsWith(typeof(IFunction).FullName) && x.GenericTypeArguments.Length == 1).ToArray();
         if (typedFunctions.Length == 1)
         {
             return typedFunctions[0].GenericTypeArguments[0];
