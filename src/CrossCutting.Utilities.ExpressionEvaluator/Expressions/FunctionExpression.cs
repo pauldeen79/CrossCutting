@@ -228,9 +228,9 @@ public class FunctionExpression : IExpression
 
         return functionsWithRightArgumentCount.Length switch
         {
-            0 => Result.Invalid<FunctionAndTypeDescriptor>($"No overload of the {functionCallContext.FunctionCall.Name} function takes {functionCallContext.FunctionCall.Arguments.Count} arguments"),
+            0 => Result.NotFound<FunctionAndTypeDescriptor>($"No overload of the {functionCallContext.FunctionCall.Name} function takes {functionCallContext.FunctionCall.Arguments.Count} arguments"),
             1 => GetFunctionByDescriptor(functionCallContext, functionsWithRightArgumentCount[0]),
-            _ => Result.Invalid<FunctionAndTypeDescriptor>($"Function {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely")
+            _ => Result.NotFound<FunctionAndTypeDescriptor>($"Function {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely")
         };
     }
 
