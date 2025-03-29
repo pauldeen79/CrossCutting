@@ -86,6 +86,10 @@ public class FunctionDescriptorProviderTests
             result.First().TypeArguments.Count.ShouldBe(1);
             result.First().TypeArguments.First().Name.ShouldBe("T");
             result.First().TypeArguments.First().Description.ShouldBe("Description of T type argument");
+            result.First().ReturnValueType.ShouldBe(typeof(string));
+            result.First().Results.Count.ShouldBe(1);
+            result.First().Results.First().Status.ShouldBe(ResultStatus.Ok);
+            result.First().Results.First().Description.ShouldBe("Success");
         }
 
         private sealed class MyFunction1 : IFunction
@@ -137,6 +141,8 @@ public class FunctionDescriptorProviderTests
 
         [FunctionName("MyGenericFunction")]
         [FunctionTypeArgument("T", "Description of T type argument")]
+        [FunctionResult(ResultStatus.Ok, "Success")]
+        [FunctionResultType(typeof(string))]
         private sealed class MyGenericFunction : IGenericFunction
         {
             public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
