@@ -23,5 +23,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IExpression, FunctionExpression>()
             .AddSingleton<IFunctionCallArgumentValidator, FunctionCallArgumentValidator>()
             .AddSingleton<IFunctionDescriptorMapper, FunctionDescriptorMapper>()
-            .AddSingleton<IFunctionDescriptorProvider, FunctionDescriptorProvider>();
+            .AddSingleton<IFunctionDescriptorProvider, FunctionDescriptorProvider>()
+            .AddSingleton<IFunctionParser, FunctionParser>()
+            .AddSingleton<IFunctionResolver, FunctionResolver>();
 }

@@ -7,10 +7,10 @@ public class FunctionExpressionTests : TestBase
     public IFunctionCallArgumentValidator FunctionCallArgumentValidator { get; }
 
     protected FunctionExpression CreateSut(IFunction? function = null)
-        => new FunctionExpression(FunctionDescriptorProvider, FunctionCallArgumentValidator, [function ?? Function], Enumerable.Empty<IGenericFunction>());
+        => new FunctionExpression(new FunctionParser(), new FunctionResolver(FunctionDescriptorProvider, FunctionCallArgumentValidator, [function ?? Function], Enumerable.Empty<IGenericFunction>()));
 
     protected FunctionExpression CreateSut(IGenericFunction genericFunction)
-        => new FunctionExpression(FunctionDescriptorProvider, FunctionCallArgumentValidator, Enumerable.Empty<IFunction>(), [genericFunction]);
+        => new FunctionExpression(new FunctionParser(), new FunctionResolver(FunctionDescriptorProvider, FunctionCallArgumentValidator, Enumerable.Empty<IFunction>(), [genericFunction]));
 
     public FunctionExpressionTests()
     {
@@ -294,9 +294,10 @@ public class FunctionExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("no function");
+            var sut = new FunctionParser();
 
             // Act
-            var result = FunctionExpression.ParseFunctionCall(context);
+            var result = sut.Parse(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotFound);
@@ -308,9 +309,10 @@ public class FunctionExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction()");
+            var sut = new FunctionParser();
 
             // Act
-            var result = FunctionExpression.ParseFunctionCall(context);
+            var result = sut.Parse(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -325,9 +327,10 @@ public class FunctionExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction(argument1, argument2, argument3)");
+            var sut = new FunctionParser();
 
             // Act
-            var result = FunctionExpression.ParseFunctionCall(context);
+            var result = sut.Parse(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -342,9 +345,10 @@ public class FunctionExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction<System.String>()");
+            var sut = new FunctionParser();
 
             // Act
-            var result = FunctionExpression.ParseFunctionCall(context);
+            var result = sut.Parse(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -359,9 +363,10 @@ public class FunctionExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction<System.String>(argument1, argument2, argument3)");
+            var sut = new FunctionParser();
 
             // Act
-            var result = FunctionExpression.ParseFunctionCall(context);
+            var result = sut.Parse(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -376,9 +381,10 @@ public class FunctionExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction(argument1, MySubFunction(argument2), argument3)");
+            var sut = new FunctionParser();
 
             // Act
-            var result = FunctionExpression.ParseFunctionCall(context);
+            var result = sut.Parse(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -393,9 +399,10 @@ public class FunctionExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("My Function()");
+            var sut = new FunctionParser();
 
             // Act
-            var result = FunctionExpression.ParseFunctionCall(context);
+            var result = sut.Parse(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -407,9 +414,10 @@ public class FunctionExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("       MyFunction(\r\n\r\n\r\n   \t\t)\t\t\t");
+            var sut = new FunctionParser();
 
             // Act
-            var result = FunctionExpression.ParseFunctionCall(context);
+            var result = sut.Parse(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -424,9 +432,10 @@ public class FunctionExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction(argument1, \"argument2, argument3\", argument4)");
+            var sut = new FunctionParser();
 
             // Act
-            var result = FunctionExpression.ParseFunctionCall(context);
+            var result = sut.Parse(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -441,9 +450,10 @@ public class FunctionExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction())");
+            var sut = new FunctionParser();
 
             // Act
-            var result = FunctionExpression.ParseFunctionCall(context);
+            var result = sut.Parse(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -455,9 +465,10 @@ public class FunctionExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction<unknowntype>()");
+            var sut = new FunctionParser();
 
             // Act
-            var result = FunctionExpression.ParseFunctionCall(context);
+            var result = sut.Parse(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

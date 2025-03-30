@@ -73,6 +73,6 @@ public class ComparisonOperatorExpression : IExpression<bool>
             counter++;
         }
 
-        return result.DetectStatusFromPartResults();
+        return result.SetStatusFromPartResults();
     }
 }

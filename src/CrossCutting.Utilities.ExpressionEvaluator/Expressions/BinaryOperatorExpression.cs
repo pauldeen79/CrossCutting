@@ -71,6 +71,6 @@ public class BinaryOperatorExpression : IExpression<bool>
             counter++;
         }
 
-        return result.DetectStatusFromPartResults();
+        return result.SetStatusFromPartResults();
     }
 }

@@ -19,7 +19,7 @@ public partial class ExpressionParseResultBuilder
             );
     }
 
-    public ExpressionParseResultBuilder DetectStatusFromPartResults()
+    public ExpressionParseResultBuilder SetStatusFromPartResults()
     {
         var error = PartResults.FirstOrDefault(x => !x.Status.IsSuccessful());
         
