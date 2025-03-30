@@ -35,7 +35,7 @@ public class NumericExpression : IExpression
             return Result.Success<object?>(l2);
         }
 
-        if (isFloatingPoint.Value && context.Expression.Contains('.') && decimal.TryParse(context.Expression, NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out var d1))
+        if (isFloatingPoint.Value && decimal.TryParse(context.Expression, NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out var d1))
         {
             return Result.Success<object?>(d1);
         }
@@ -86,7 +86,9 @@ public class NumericExpression : IExpression
         }
 
         return new ExpressionParseResultBuilder()
-            .WithStatus(type is null ? ResultStatus.Continue : ResultStatus.Ok)
+            .WithStatus(type is null
+                ? ResultStatus.Continue
+                : ResultStatus.Ok)
             .WithExpressionType(typeof(NumericExpression))
             .WithSourceExpression(context.Expression)
             .WithResultType(type);
