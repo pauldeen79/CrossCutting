@@ -1,9 +1,8 @@
-﻿
-namespace CrossCutting.Utilities.ExpressionEvaluator;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-internal class FunctionParseState
+internal sealed class FunctionParserState
 {
-    public FunctionParseState(string expression)
+    public FunctionParserState(string expression)
     {
         Expression = expression;
     }

@@ -4,7 +4,7 @@ public class FunctionParser : IFunctionParser
 {
     private static readonly Regex _functionRegEx = new(@"\b\w*\s*(?:<[\w\s,.<>]*>)?\s*\(\s*[^)]*\s*\)", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
 
-    private static readonly Func<FunctionParseState, Result>[] _processors =
+    private static readonly Func<FunctionParserState, Result>[] _processors =
         [
             ProcessNameSection,
             ProcessGenericsSection,
@@ -24,7 +24,7 @@ public class FunctionParser : IFunctionParser
             return Result.NotFound<FunctionCall>();
         }
 
-        var state = new FunctionParseState(context.Expression);
+        var state = new FunctionParserState(context.Expression);
 
         foreach (var c in context.Expression)
         {
@@ -74,7 +74,7 @@ public class FunctionParser : IFunctionParser
         return Result.Success(typeArguments);
     }
 
-    private static Result ProcessNameSection(FunctionParseState state)
+    private static Result ProcessNameSection(FunctionParserState state)
     {
         if (state.NameComplete)
         {
@@ -97,7 +97,7 @@ public class FunctionParser : IFunctionParser
         return Result.Success();
     }
 
-    private static Result ProcessGenericsSection(FunctionParseState state)
+    private static Result ProcessGenericsSection(FunctionParserState state)
     {
         if (!state.GenericsStarted || state.GenericsComplete)
         {
@@ -116,7 +116,7 @@ public class FunctionParser : IFunctionParser
         return Result.Success();
     }
 
-    private static Result ProcessPostGenericsSection(FunctionParseState state)
+    private static Result ProcessPostGenericsSection(FunctionParserState state)
     {
         if (!state.GenericsComplete || state.ArgumentsStarted)
         {
@@ -133,7 +133,7 @@ public class FunctionParser : IFunctionParser
         return Result.Success();
     }
 
-    private static Result ProcessArgumentsSection(FunctionParseState state)
+    private static Result ProcessArgumentsSection(FunctionParserState state)
     {
         if (state.ArgumentsComplete)
         {
@@ -169,7 +169,7 @@ public class FunctionParser : IFunctionParser
         return Result.Success();
     }
 
-    private static Result ProcessPostArgumentsSection(FunctionParseState state)
+    private static Result ProcessPostArgumentsSection(FunctionParserState state)
     {
         if (state.Index < state.Expression.Length)
         {
