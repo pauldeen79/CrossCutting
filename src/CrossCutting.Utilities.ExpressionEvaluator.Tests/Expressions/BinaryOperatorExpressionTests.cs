@@ -2,7 +2,7 @@
 
 public class BinaryOperatorExpressionTests : TestBase
 {
-    protected BinaryOperatorExpression CreateSut() => new BinaryOperatorExpression(new BinaryConditionGroupParser(), new BinaryConditionGroupEvaluator());
+    protected static BinaryOperatorExpression CreateSut() => new BinaryOperatorExpression(new BinaryConditionGroupParser(), new BinaryConditionGroupEvaluator());
 
     public class Evaluate : BinaryOperatorExpressionTests
     {

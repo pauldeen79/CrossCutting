@@ -31,12 +31,12 @@ public class MathematicOperators : IMathematicExpression
                 state.SetPreviousIndexes([.. Aggregators
                     .Select(x => state.Remainder.LastIndexOf(x.Character, state.Position - 1))
                     .Where(x => x > -1)
-                    .OrderByDescending(x => x)], state.ExpressionEvaluator);
+                    .OrderByDescending(x => x)]);
 
                 state.SetNextIndexes([.. Aggregators
                     .Select(x => state.Remainder.IndexOf(x.Character, state.Position + 1))
                     .Where(x => x > -1)
-                    .OrderBy(x => x)], state.ExpressionEvaluator);
+                    .OrderBy(x => x)]);
 
                 if (!state.LeftPartResult.IsSuccessful())
                 {

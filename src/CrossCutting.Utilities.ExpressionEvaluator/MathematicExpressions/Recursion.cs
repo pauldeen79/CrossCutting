@@ -17,7 +17,7 @@ public class Recursion : IMathematicExpression
             var openIndex = state.Context.Expression.LastIndexOf("(", closeIndex);
             var found = state.Remainder.Substring(openIndex + 1, closeIndex - openIndex - 1);
 
-            if (!MathematicExpressionEvaluator.IsMathematicExpression(found))
+            if (!MathematicExpression.IsMathematicExpression(found))
             {
                 // for now, we exit recursion if it's not a mathematical expression.
                 // it's probably a function call like MYFUNCTION(bla)
@@ -31,7 +31,7 @@ public class Recursion : IMathematicExpression
             }
 
             state.Remainder = state.Remainder.Substring(0, openIndex)
-                + FormattableString.Invariant($"{MathematicExpressionEvaluator.TemporaryDelimiter}{state.Results.Count}{MathematicExpressionEvaluator.TemporaryDelimiter}")
+                + FormattableString.Invariant($"{MathematicExpression.TemporaryDelimiter}{state.Results.Count}{MathematicExpression.TemporaryDelimiter}")
                 + state.Remainder.Substring(closeIndex + 1);
 
             state.Results.Add(subResult);

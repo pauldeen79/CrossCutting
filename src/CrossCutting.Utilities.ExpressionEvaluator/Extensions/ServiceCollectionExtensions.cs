@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Extensions;
+﻿using CrossCutting.Utilities.ExpressionEvaluator.MathematicExpressions.Validators;
+
+namespace CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -25,5 +27,16 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IFunctionDescriptorMapper, FunctionDescriptorMapper>()
             .AddSingleton<IFunctionDescriptorProvider, FunctionDescriptorProvider>()
             .AddSingleton<IFunctionParser, FunctionParser>()
-            .AddSingleton<IFunctionResolver, FunctionResolver>();
+            .AddSingleton<IFunctionResolver, FunctionResolver>()
+            .AddSingleton<IExpression, MathematicExpression>()
+            .AddSingleton<IMathematicExpression, Validate>()
+            .AddSingleton<IMathematicExpression, Recursion>()
+            .AddSingleton<IMathematicExpression, MathematicOperators>()
+            .AddSingleton<IMathematicExpressionValidator, NullOrEmptyValidator>()
+            .AddSingleton<IMathematicExpressionValidator, TemporaryDelimiterValidator>()
+            .AddSingleton<IMathematicExpressionValidator, StartWithOperatorValidator>()
+            .AddSingleton<IMathematicExpressionValidator, EndWithOperatorValidator>()
+            .AddSingleton<IMathematicExpressionValidator, EmptyValuePartValidator>()
+            .AddSingleton<IMathematicExpressionValidator, BraceValidator>()
+            .AddSingleton<IExpression, NumericExpression>();
 }
