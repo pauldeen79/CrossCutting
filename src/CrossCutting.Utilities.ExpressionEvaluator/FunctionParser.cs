@@ -6,7 +6,11 @@ public class FunctionParser : IFunctionParser
 
     private static readonly Func<FunctionParseState, Result>[] _processors =
         [
-            ProcessNameSection
+            ProcessNameSection,
+            ProcessGenericsSection,
+            ProcessPostGenericsSection,
+            ProcessArgumentsSection,
+            ProcessPostArgumentsSection
         ];
 
     public Result<FunctionCall> Parse(ExpressionEvaluatorContext context)
@@ -20,10 +24,12 @@ public class FunctionParser : IFunctionParser
             return Result.NotFound<FunctionCall>();
         }
 
-        var state = new FunctionParseState();
+        var state = new FunctionParseState(context.Expression);
+
         foreach (var c in context.Expression)
         {
             state.CurrentCharacter = c;
+
             var result = _processors
                 .Select(x => x.Invoke(state))
                 .TakeWhileWithFirstNonMatching(x => x.Status == ResultStatus.Continue)
@@ -32,83 +38,6 @@ public class FunctionParser : IFunctionParser
             if (!result.IsSuccessful())
             {
                 return Result.FromExistingResult<FunctionCall>(result);
-            }
-
-            // TODO: Remove this
-            if (result.Status != ResultStatus.Continue)
-            {
-                continue;
-            }
-
-            // TODO: Move to process methods like ProcessNameSection
-            if (state.GenericsStarted && !state.GenericsComplete)
-            {
-                // Type arguments section
-                if (c == '>')
-                {
-                    state.GenericsComplete = true;
-                }
-                else if (c != ' ' && c != '\r' && c != '\n' && c != '\t')
-                {
-                    state.GenericsBuilder.Append(c);
-                }
-            }
-            else if (state.GenericsComplete && !state.ArgumentsStarted)
-            {
-                // Type arguments finished, looking for start of arguments section
-                if (c == '(')
-                {
-                    state.ArgumentsStarted = true;
-                    state.BracketCount = 1;
-                }
-            }
-            else if (!state.ArgumentsComplete)
-            {
-                // Arguments section
-                if (c == ')' && !state.InQuotes)
-                {
-                    state.BracketCount--;
-                    if (state.BracketCount == 0)
-                    {
-                        var arg = state.ArgumentBuilder.ToString().Trim();
-                        if (!string.IsNullOrEmpty(arg))
-                        {
-                            state.Arguments.Add(arg);
-                        }
-                        state.ArgumentsComplete = true;
-                    }
-                    else
-                    {
-                        state.ArgumentBuilder.Append(c);
-                    }
-                }
-                else if (c == '(' && !state.InQuotes)
-                {
-                    state.BracketCount++;
-                    state.ArgumentBuilder.Append(c);
-                }
-                else if (c == '"')
-                {
-                    state.InQuotes = !state.InQuotes;
-                    state.ArgumentBuilder.Append(c);
-                }
-                else if (c == ',' && !state.InQuotes)
-                {
-                    if (state.BracketCount == 1)
-                    {
-                        state.Arguments.Add(state.ArgumentBuilder.ToString().Trim());
-                        state.ArgumentBuilder.Clear();
-                    }
-                }
-                else if ((c != ' ' && c != '\r' && c != '\n' && c != '\t') || state.InQuotes)
-                {
-                    state.ArgumentBuilder.Append(c);
-                }
-            }
-            else if (state.Index < context.Expression.Length)
-            {
-                // remaining characters at the end, like MyFunction(a) ILLEGAL
-                return Result.Invalid<FunctionCall>("Input has additional characters after last close bracket");
             }
 
             state.Index++;
@@ -159,7 +88,7 @@ public class FunctionParser : IFunctionParser
             state.GenericsStarted = state.CurrentCharacter == '<';
             state.BracketCount = state.CurrentCharacter == '(' ? 1 : 0;
         }
-        else if (state.CurrentCharacter != ' ' && state.CurrentCharacter != '\r' && state.CurrentCharacter != '\n' && state.CurrentCharacter != '\t')
+        else if (!state.IsWhiteSpace())
         {
             state.NameBuilder.Append(state.CurrentCharacter);
         }
@@ -168,6 +97,103 @@ public class FunctionParser : IFunctionParser
             return Result.Invalid<FunctionCall>("Function name may not contain whitespace");
         }
 
-        return Result.NoContent();
+        return Result.Success();
+    }
+
+    private static Result ProcessGenericsSection(FunctionParseState state)
+    {
+        if (!state.GenericsStarted || state.GenericsComplete)
+        {
+            return Result.Continue();
+        }
+
+        if (state.CurrentCharacter == '>')
+        {
+            state.GenericsComplete = true;
+        }
+        else if (!state.IsWhiteSpace())
+        {
+            state.GenericsBuilder.Append(state.CurrentCharacter);
+        }
+
+        return Result.Success();
+    }
+
+    private static Result ProcessPostGenericsSection(FunctionParseState state)
+    {
+        if (!state.GenericsComplete || state.ArgumentsStarted)
+        {
+            return Result.Continue();
+        }
+
+        // Type arguments finished, looking for start of arguments section
+        if (state.CurrentCharacter == '(')
+        {
+            state.ArgumentsStarted = true;
+            state.BracketCount = 1;
+        }
+
+        return Result.Success();
+    }
+
+    private static Result ProcessArgumentsSection(FunctionParseState state)
+    {
+        if (state.ArgumentsComplete)
+        {
+            return Result.Continue();
+        }
+
+        if (state.CurrentCharacter == ')' && !state.InQuotes)
+        {
+            state.BracketCount--;
+            if (state.BracketCount == 0)
+            {
+                var arg = state.ArgumentBuilder.ToString().Trim();
+                if (!string.IsNullOrEmpty(arg))
+                {
+                    state.Arguments.Add(arg);
+                }
+                state.ArgumentsComplete = true;
+            }
+            else
+            {
+                state.ArgumentBuilder.Append(state.CurrentCharacter);
+            }
+        }
+        else if (state.CurrentCharacter == '(' && !state.InQuotes)
+        {
+            state.BracketCount++;
+            state.ArgumentBuilder.Append(state.CurrentCharacter);
+        }
+        else if (state.CurrentCharacter == '"')
+        {
+            state.InQuotes = !state.InQuotes;
+            state.ArgumentBuilder.Append(state.CurrentCharacter);
+        }
+        else if (state.CurrentCharacter == ',' && !state.InQuotes)
+        {
+            if (state.BracketCount == 1)
+            {
+                state.Arguments.Add(state.ArgumentBuilder.ToString().Trim());
+                state.ArgumentBuilder.Clear();
+            }
+        }
+        else if (!state.IsWhiteSpace() || state.InQuotes)
+        {
+            state.ArgumentBuilder.Append(state.CurrentCharacter);
+        }
+
+        return Result.Success();
+    }
+
+    private static Result ProcessPostArgumentsSection(FunctionParseState state)
+    {
+        if (state.Index < state.Expression.Length)
+        {
+            // remaining characters at the end, like MyFunction(a) ILLEGAL
+            return Result.Invalid<FunctionCall>("Input has additional characters after last close bracket");
+        }
+
+        return Result.Success();
     }
 }
