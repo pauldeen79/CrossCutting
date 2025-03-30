@@ -64,21 +64,19 @@ public class MathematicExpression : IExpression
                 .WithSourceExpression(context.Expression);
         }
 
-        if (state.Results.Count > 0)
-        {
-            var result = state.Results.ElementAt(state.Results.Count - 1);
-            return new ExpressionParseResultBuilder()
-                .WithStatus(ResultStatus.Ok)
-                .WithExpressionType(typeof(MathematicExpression))
-                .WithSourceExpression(context.Expression)
-                .WithResultType(result.Value?.GetType());
-        }
-        else
+        if (state.Results.Count <= 0)
         {
             return new ExpressionParseResultBuilder()
                 .WithStatus(ResultStatus.Continue)
                 .WithExpressionType(typeof(MathematicExpression))
                 .WithSourceExpression(context.Expression);
         }
+
+        var result = state.Results.ElementAt(state.Results.Count - 1);
+        return new ExpressionParseResultBuilder()
+            .WithStatus(ResultStatus.Ok)
+            .WithExpressionType(typeof(MathematicExpression))
+            .WithSourceExpression(context.Expression)
+            .WithResultType(result.Value?.GetType());
     }
 }
