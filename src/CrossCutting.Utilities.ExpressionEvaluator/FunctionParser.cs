@@ -83,10 +83,7 @@ public class FunctionParser : IFunctionParser
 
         if (state.CurrentCharacter == '<' || state.CurrentCharacter == '(')
         {
-            state.NameComplete = true;
-            state.ArgumentsStarted = state.CurrentCharacter == '(';
-            state.GenericsStarted = state.CurrentCharacter == '<';
-            state.BracketCount = state.CurrentCharacter == '(' ? 1 : 0;
+            state.CompleteName();
         }
         else if (!state.IsWhiteSpace())
         {
@@ -145,25 +142,11 @@ public class FunctionParser : IFunctionParser
 
         if (state.CurrentCharacter == ')' && !state.InQuotes)
         {
-            state.BracketCount--;
-            if (state.BracketCount == 0)
-            {
-                var arg = state.ArgumentBuilder.ToString().Trim();
-                if (!string.IsNullOrEmpty(arg))
-                {
-                    state.Arguments.Add(arg);
-                }
-                state.ArgumentsComplete = true;
-            }
-            else
-            {
-                state.ArgumentBuilder.Append(state.CurrentCharacter);
-            }
+            state.CloseBracket();
         }
         else if (state.CurrentCharacter == '(' && !state.InQuotes)
         {
-            state.BracketCount++;
-            state.ArgumentBuilder.Append(state.CurrentCharacter);
+            state.OpenBracket();
         }
         else if (state.CurrentCharacter == '"')
         {

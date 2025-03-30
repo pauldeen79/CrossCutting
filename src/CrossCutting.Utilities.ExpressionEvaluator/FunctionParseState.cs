@@ -1,4 +1,5 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
+﻿
+namespace CrossCutting.Utilities.ExpressionEvaluator;
 
 internal class FunctionParseState
 {
@@ -23,4 +24,36 @@ internal class FunctionParseState
     public int BracketCount { get; set; }
 
     public bool IsWhiteSpace() => CurrentCharacter == ' ' || CurrentCharacter == '\r' || CurrentCharacter == '\n' || CurrentCharacter == '\t';
+
+    public void CompleteName()
+    {
+        NameComplete = true;
+        ArgumentsStarted = CurrentCharacter == '(';
+        GenericsStarted = CurrentCharacter == '<';
+        BracketCount = CurrentCharacter == '(' ? 1 : 0;
+    }
+    public void OpenBracket()
+    {
+        BracketCount++;
+        ArgumentBuilder.Append(CurrentCharacter);
+    }
+
+    public void CloseBracket()
+    {
+        BracketCount--;
+        if (BracketCount == 0)
+        {
+            var arg = ArgumentBuilder.ToString().Trim();
+            if (!string.IsNullOrEmpty(arg))
+            {
+                Arguments.Add(arg);
+            }
+            
+            ArgumentsComplete = true;
+        }
+        else
+        {
+            ArgumentBuilder.Append(CurrentCharacter);
+        }
+    }
 }
