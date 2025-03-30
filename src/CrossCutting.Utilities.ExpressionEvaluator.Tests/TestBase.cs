@@ -2,6 +2,8 @@
 
 public abstract class TestBase
 {
+    protected static readonly IEnumerable<IOperator> Operators = [new EqualOperator(), new GreaterOrEqualThanOperator(), new GreaterThanOperator(), new NotEqualOperator(), new SmallerOrEqualThanOperator(), new SmallerThanOperator()];
+
     protected IExpressionEvaluator Evaluator { get; }
     protected IExpression Expression { get; }
 

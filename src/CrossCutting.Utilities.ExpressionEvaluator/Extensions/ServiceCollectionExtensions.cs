@@ -9,6 +9,8 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IExpression, PrimitiveExpression>()
             .AddSingleton<IExpression, StringExpression>()
             .AddSingleton<IExpression, ComparisonOperatorExpression>()
+            .AddSingleton<IComparisonConditionGroupParser, ComparisonConditionGroupParser>()
+            .AddSingleton<IComparisonConditionGroupEvaluator, ComparisonConditionGroupEvaluator>()
             .AddSingleton<IOperator, EqualOperator>()
             .AddSingleton<IOperator, GreaterOrEqualThanOperator>()
             .AddSingleton<IOperator, GreaterThanOperator>()

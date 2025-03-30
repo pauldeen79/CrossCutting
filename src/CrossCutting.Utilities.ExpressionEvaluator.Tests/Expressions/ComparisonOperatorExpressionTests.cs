@@ -2,7 +2,8 @@
 
 public class ComparisonOperatorExpressionTests : TestBase
 {
-    protected static ComparisonOperatorExpression CreateSut() => new ComparisonOperatorExpression([new EqualOperator(), new GreaterOrEqualThanOperator(), new GreaterThanOperator(), new NotEqualOperator(), new SmallerOrEqualThanOperator(), new SmallerThanOperator()]);
+    protected static ComparisonOperatorExpression CreateSut()
+        => new ComparisonOperatorExpression(new ComparisonConditionGroupParser(Operators), new ComparisonConditionGroupEvaluator(), Operators);
 
     public class Evaluate : ComparisonOperatorExpressionTests
     {
@@ -440,9 +441,10 @@ public class ComparisonOperatorExpressionTests : TestBase
                 new ComparisonConditionBuilder().WithCombination(Combination.Or).WithLeftExpression("\"some text\"").WithOperator(new GreaterThanOperator()).WithRightExpression("\"zzz\"")
             ]);
             var context = CreateContext("Dummy"); // only needed for recursive calls
+            var sut = new ComparisonConditionGroupEvaluator();
 
             // Act
-            var result = ComparisonOperatorExpression.Evaluate(context, conditions);
+            var result = sut.Evaluate(context, conditions);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -458,9 +460,10 @@ public class ComparisonOperatorExpressionTests : TestBase
                 new ComparisonConditionBuilder().WithLeftExpression("context").WithOperator(new EqualOperator()).WithRightExpression("null")
             ]);
             var context = CreateContext("Dummy", context: null); // only needed for recursive calls. explicitly setting context to null
+            var sut = new ComparisonConditionGroupEvaluator();
 
             // Act
-            var result = ComparisonOperatorExpression.Evaluate(context, conditions);
+            var result = sut.Evaluate(context, conditions);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
