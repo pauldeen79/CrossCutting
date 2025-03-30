@@ -2,44 +2,55 @@
 
 public class BinaryOperatorExpression : IExpression<bool>
 {
-    private static readonly string[] _operatorExpressions = ["&&", "||"];
+    private readonly IBinaryConditionGroupParser _binaryConditionGroupParser;
+    private readonly IBinaryConditionGroupEvaluator _binaryConditionGroupEvaluator;
+
+    public BinaryOperatorExpression(IBinaryConditionGroupParser binaryConditionGroupParser, IBinaryConditionGroupEvaluator binaryConditionGroupEvaluator)
+    {
+        ArgumentGuard.IsNotNull(binaryConditionGroupParser, nameof(binaryConditionGroupParser));
+        ArgumentGuard.IsNotNull(binaryConditionGroupEvaluator, nameof(binaryConditionGroupEvaluator));
+
+        _binaryConditionGroupParser = binaryConditionGroupParser;
+        _binaryConditionGroupEvaluator = binaryConditionGroupEvaluator;
+    }
+
+    internal static readonly string[] OperatorExpressions = ["&&", "||"];
 
     public int Order => 40; // important: after ComparisonExpression. if the expression is recognized as a ComparisonExpression, it may contain binary operators as combinations
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
         => EvaluateTyped(context).Transform<object?>(x => x);
 
-    public static Result<bool> Evaluate(ExpressionEvaluatorContext context, BinaryConditionGroup conditionGroup)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-        conditionGroup = ArgumentGuard.IsNotNull(conditionGroup, nameof(conditionGroup));
-
-        if (ConditionsAreSimple(conditionGroup.Conditions))
-        {
-            return EvaluateSimpleConditions(context, conditionGroup.Conditions);
-        }
-
-        return EvaluateComplexConditions(context, conditionGroup.Conditions);
-    }
-
     public Result<bool> EvaluateTyped(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var conditionsResult = ParseConditions(context);
+        var foundAnyComparisonCharacter = context.FindAllOccurencedNotWithinQuotes(OperatorExpressions, StringComparison.Ordinal);
+        if (!foundAnyComparisonCharacter)
+        {
+            return Result.Continue<bool>();
+        }
+
+        var conditionsResult = _binaryConditionGroupParser.Parse(context.Expression);
         if (!conditionsResult.IsSuccessful() || conditionsResult.Status == ResultStatus.Continue)
         {
             return Result.FromExistingResult<bool>(conditionsResult);
         }
 
-        return Evaluate(context, new BinaryConditionGroup(conditionsResult.Value!));
+        return _binaryConditionGroupEvaluator.Evaluate(context, conditionsResult.GetValueOrThrow());
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var conditionsResult = ParseConditions(context);
+        var foundAnyComparisonCharacter = context.FindAllOccurencedNotWithinQuotes(OperatorExpressions, StringComparison.Ordinal);
+        if (!foundAnyComparisonCharacter)
+        {
+            return new ExpressionParseResultBuilder().WithExpressionType(typeof(BinaryOperatorExpression)).WithStatus(ResultStatus.Continue);
+        }
+
+        var conditionsResult = _binaryConditionGroupParser.Parse(context.Expression);
         if (!conditionsResult.IsSuccessful() || conditionsResult.Status == ResultStatus.Continue)
         {
             return new ExpressionParseResultBuilder()
@@ -48,158 +59,18 @@ public class BinaryOperatorExpression : IExpression<bool>
                 .AddValidationErrors(conditionsResult.ValidationErrors);
         }
 
-        return ParseConditionExpressions(context, conditionsResult.Value!);
-    }
-
-    private static Result<List<BinaryCondition>> ParseConditions(ExpressionEvaluatorContext context)
-    {
-        var conditions = new List<BinaryCondition>();
-        var combination = string.Empty;
-
-        var foundAnyComparisonCharacter = context.FindAllOccurencedNotWithinQuotes(_operatorExpressions, StringComparison.Ordinal);
-        if (!foundAnyComparisonCharacter)
-        {
-            return Result.Continue<List<BinaryCondition>>();
-        }
-
-        // First get array of parts
-        var parts = context.Expression.SplitDelimited(_operatorExpressions, '"', true, true, true, StringComparison.OrdinalIgnoreCase);
-        if (parts.Length <= 1)
-        {
-            // Messed up expression! Should always be <left expression> <operator>
-            return Result.Continue<List<BinaryCondition>>();
-        }
-
-        // Now, we need to convert this array of parts to conditions
-        var itemCountIsCorrect = (parts.Length - 1) % 2 == 0;
-        if (!itemCountIsCorrect)
-        {
-            return Result.Invalid<List<BinaryCondition>>("Comparison expression has invalid number of parts");
-        }
-
-        for (var i = 0; i < parts.Length; i += 2)
-        {
-            //-parts[i + 0] is the left expression
-            //-parts[i + 1] is the combination for the next condition
-            var expression = parts[i];
-            var startGroup = false;
-            var endGroup = false;
-
-            //remove brackets and set bracket property values for this query item.
-            if (expression.StartsWith("("))
-            {
-                expression = expression.Substring(1);
-                startGroup = true;
-            }
-
-            if (expression.EndsWith(")"))
-            {
-                expression = expression.Substring(0, expression.Length - 1);
-                endGroup = true;
-            }
-
-            var condition = new BinaryConditionBuilder()
-                .WithCombination(combination.ToUpperInvariant() switch
-                {
-                    "&&" => Combination.And,
-                    "||" => Combination.Or,
-                    _ => default(Combination?)
-                })
-                .WithExpression(expression)
-                .WithStartGroup(startGroup)
-                .WithEndGroup(endGroup)
-                .Build();
-
-            combination = parts.Length > i + 1
-                ? parts[i + 1]
-                : string.Empty;
-
-            conditions.Add(condition);
-        }
-
-        return Result.Success(conditions);
-    }
-
-    private static ExpressionParseResult ParseConditionExpressions(ExpressionEvaluatorContext context, IEnumerable<BinaryCondition> conditions)
-    {
         var result = new ExpressionParseResultBuilder()
             .WithExpressionType(typeof(BinaryOperatorExpression))
             .WithResultType(typeof(bool))
             .WithSourceExpression(context.Expression);
 
         var counter = 0;
-        foreach (var condition in conditions)
+        foreach (var condition in conditionsResult.GetValueOrThrow().Conditions)
         {
             result.AddPartResult(context.Parse(condition.Expression), $"Conditions[{counter}].Expression");
             counter++;
         }
 
         return result.DetectStatusFromPartResults();
-    }
-
-    private static bool ConditionsAreSimple(IEnumerable<BinaryCondition> conditions)
-        => !conditions.Any(x =>
-            (x.Combination ?? Combination.And) == Combination.Or
-            || x.StartGroup
-            || x.EndGroup);
-
-    private static Result<bool> EvaluateSimpleConditions(ExpressionEvaluatorContext context, IEnumerable<BinaryCondition> conditions)
-    {
-        foreach (var condition in conditions)
-        {
-            var itemResult = EvaluateCondition(condition, context);
-            if (!itemResult.IsSuccessful())
-            {
-                return itemResult;
-            }
-
-            if (!itemResult.Value)
-            {
-                return itemResult;
-            }
-        }
-
-        return Result.Success(true);
-    }
-
-    private static Result<bool> EvaluateComplexConditions(ExpressionEvaluatorContext context, IEnumerable<BinaryCondition> conditions)
-    {
-        var builder = new StringBuilder();
-        foreach (var condition in conditions)
-        {
-            var itemResult = EvaluateCondition(condition, context);
-            if (!itemResult.IsSuccessful())
-            {
-                return itemResult;
-            }
-
-            OperatorExpression.AppendCondition(builder, condition.Combination, condition.StartGroup, condition.EndGroup, itemResult.Value);
-        }
-
-        return Result.Success(OperatorExpression.EvaluateBooleanExpression(builder.ToString()));
-    }
-
-    private static Result<bool> EvaluateCondition(BinaryCondition condition, ExpressionEvaluatorContext context)
-    {
-        var expressionResult = context.Evaluate(condition.Expression);
-        if (!expressionResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<bool>(expressionResult);
-        }
-
-        if (expressionResult.Value is bool b)
-        {
-            return Result.Success(b);
-        }
-        else if (expressionResult.Value is string s)
-        {
-            // design decision: if it's a string, then do a null or empty check
-            return Result.Success(!string.IsNullOrEmpty(s));
-        }
-        else
-        {
-            // design decision: if it's not a boolean, then do a null check
-            return Result.Success(expressionResult.Value is not null);
-        }
     }
 }

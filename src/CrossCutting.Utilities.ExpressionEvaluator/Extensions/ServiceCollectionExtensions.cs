@@ -18,6 +18,8 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IOperator, SmallerOrEqualThanOperator>()
             .AddSingleton<IOperator, SmallerThanOperator>()
             .AddSingleton<IExpression, BinaryOperatorExpression>()
+            .AddSingleton<IBinaryConditionGroupParser, BinaryConditionGroupParser>()
+            .AddSingleton<IBinaryConditionGroupEvaluator, BinaryConditionGroupEvaluator>()
             .AddSingleton<IExpression, FunctionExpression>()
             .AddSingleton<IFunctionCallArgumentValidator, FunctionCallArgumentValidator>()
             .AddSingleton<IFunctionDescriptorMapper, FunctionDescriptorMapper>()

@@ -1,7 +1,9 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Expressions;
 
-public class BinaryOperatorExpressionTests : TestBase<BinaryOperatorExpression>
+public class BinaryOperatorExpressionTests : TestBase
 {
+    protected BinaryOperatorExpression CreateSut() => new BinaryOperatorExpression(new BinaryConditionGroupParser(), new BinaryConditionGroupEvaluator());
+
     public class Evaluate : BinaryOperatorExpressionTests
     {
         [Fact]
@@ -240,9 +242,10 @@ public class BinaryOperatorExpressionTests : TestBase<BinaryOperatorExpression>
                 new BinaryConditionBuilder().WithCombination(Combination.Or).WithExpression("false")
             ]);
             var context = CreateContext("Dummy"); // only needed for recursive calls
+            var sut = new BinaryConditionGroupEvaluator();
 
             // Act
-            var result = BinaryOperatorExpression.Evaluate(context, conditions);
+            var result = sut.Evaluate(context, conditions);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

@@ -46,7 +46,7 @@ public class FunctionExpression : IExpression
             return Result.FromExistingResult<object?>(functionCallResult);
         }
 
-        var functionCallContext = new FunctionCallContext(functionCallResult.Value!, context);
+        var functionCallContext = new FunctionCallContext(functionCallResult.GetValueOrThrow(), context);
 
         return ResolveFunction(functionCallContext).Transform(result => EvaluateFunction(result, functionCallContext));
     }
@@ -73,7 +73,7 @@ public class FunctionExpression : IExpression
                 .WithSourceExpression(context.Expression);
         }
 
-        var functionCallContext = new FunctionCallContext(functionCallResult.Value!, context);
+        var functionCallContext = new FunctionCallContext(functionCallResult.GetValueOrThrow(), context);
         var resolveResult = ResolveFunction(functionCallContext);
 
         if (!resolveResult.IsSuccessful())
@@ -90,7 +90,7 @@ public class FunctionExpression : IExpression
             .WithStatus(ResultStatus.Ok)
             .WithExpressionType(typeof(FunctionExpression))
             .WithSourceExpression(context.Expression)
-            .WithResultType(resolveResult.Value!.ReturnValueType);
+            .WithResultType(resolveResult.GetValueOrThrow().ReturnValueType);
     }
 
     public static Result<FunctionCall> ParseFunctionCall(ExpressionEvaluatorContext context)
@@ -208,7 +208,7 @@ public class FunctionExpression : IExpression
         return Result.Success<FunctionCall>(new FunctionCallBuilder()
             .WithName(state.NameBuilder.ToString().Trim())
             .AddArguments(state.Arguments)
-            .AddTypeArguments(genericTypeArgumentsResult.Value!));
+            .AddTypeArguments(genericTypeArgumentsResult.GetValueOrThrow()));
     }
 
     private Result<FunctionAndTypeDescriptor> ResolveFunction(FunctionCallContext functionCallContext)

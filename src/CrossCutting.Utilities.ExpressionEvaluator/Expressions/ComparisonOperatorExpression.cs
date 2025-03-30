@@ -48,7 +48,7 @@ public class ComparisonOperatorExpression : IExpression<bool>
         var foundAnyComparisonCharacter = context.FindAllOccurencedNotWithinQuotes(_operatorExpressions, StringComparison.Ordinal);
         if (!foundAnyComparisonCharacter)
         {
-            return new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue);
+            return new ExpressionParseResultBuilder().WithExpressionType(typeof(ComparisonOperatorExpression)).WithStatus(ResultStatus.Continue);
         }
 
         var conditionsResult = _comparisonConditionGroupParser.Parse(context.Expression);
@@ -66,7 +66,7 @@ public class ComparisonOperatorExpression : IExpression<bool>
             .WithSourceExpression(context.Expression);
 
         var counter = 0;
-        foreach (var condition in conditionsResult.Value!.Conditions)
+        foreach (var condition in conditionsResult.GetValueOrThrow().Conditions)
         {
             result.AddPartResult(context.Parse(condition.LeftExpression), $"Conditions[{counter}].LeftExpression");
             result.AddPartResult(context.Parse(condition.RightExpression), $"Conditions[{counter}].RightExpression");
