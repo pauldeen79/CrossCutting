@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.MathematicExpressions.Validators;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Mathematics.Validators;
 
 internal sealed class TemporaryDelimiterValidator : IMathematicExpressionValidator
 {

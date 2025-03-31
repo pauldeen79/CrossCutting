@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.MathematicExpressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Mathematics;
 
 public abstract class AggregatorBase(char character, int order) : IAggregator
 {

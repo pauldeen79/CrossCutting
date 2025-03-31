@@ -1,4 +1,4 @@
-﻿using CrossCutting.Utilities.ExpressionEvaluator.MathematicExpressions.Validators;
+﻿using CrossCutting.Utilities.ExpressionEvaluator.Mathematics.Validators;
 
 namespace CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 

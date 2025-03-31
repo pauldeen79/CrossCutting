@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.MathematicExpressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Mathematics;
 
 public partial class Validate(IEnumerable<IMathematicExpressionValidator> validators) : IMathematicExpression
 {

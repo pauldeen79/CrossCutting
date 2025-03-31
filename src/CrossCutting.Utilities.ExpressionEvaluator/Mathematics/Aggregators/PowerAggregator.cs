@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.MathematicExpressions.Aggregators;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Mathematics.Aggregators;
 
 public class PowerAggregator() : AggregatorBase('^', 1)
 {
