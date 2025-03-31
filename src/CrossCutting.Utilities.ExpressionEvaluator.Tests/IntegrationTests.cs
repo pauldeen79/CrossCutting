@@ -92,6 +92,22 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.Value.ShouldBe("my string value");
     }
 
+
+    [Fact]
+    public void Can_Evaluate_Formattable_String_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "@\"my value with {context} items\"";
+
+        // Act
+        var result = sut.Evaluate(CreateContext(expression, context: "replaced"));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ToStringWithDefault().ShouldBe("my value with replaced items");
+    }
+
     public IntegrationTests()
     {
         Provider = new ServiceCollection()

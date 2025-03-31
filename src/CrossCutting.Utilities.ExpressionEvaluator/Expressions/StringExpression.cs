@@ -1,18 +1,22 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public class StringExpression : IExpression
+public class StringExpression : IExpression<string>
 {
     public int Order => 11;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+        => EvaluateTyped(context).Transform<object?>(x => x);
+
+    public Result<string> EvaluateTyped(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.Expression.StartsWith("\"") switch
+        if (context.Expression.Length < 2 || !context.Expression.StartsWith("\"") || !context.Expression.EndsWith("\""))
         {
-            true when context.Expression.EndsWith("\"") => Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2)),
-            _ => Result.Continue<object?>()
-        };
+            return Result.Continue<string>();
+        }
+
+        return Result.Success(context.Expression.Substring(1, context.Expression.Length - 2));
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
@@ -21,12 +25,14 @@ public class StringExpression : IExpression
 
         var result = new ExpressionParseResultBuilder()
             .WithSourceExpression(context.Expression)
-            .WithExpressionType(typeof(StringExpression));
+            .WithExpressionType(typeof(StringExpression))
+            .WithResultType(typeof(string));
 
-        return context.Expression.StartsWith("\"") switch
+        if (context.Expression.Length < 2 || !context.Expression.StartsWith("\"") || !context.Expression.EndsWith("\""))
         {
-            true when context.Expression.EndsWith("\"") => result.WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
-            _ => result.WithStatus(ResultStatus.Continue)
-        };
+            return result.WithStatus(ResultStatus.Continue);
+        }
+
+        return result.WithStatus(ResultStatus.Ok);
     }
 }

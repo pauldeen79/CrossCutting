@@ -156,11 +156,18 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public ExpressionEvaluatorSettings(System.IFormatProvider formatProvider, System.StringComparison stringComparison, int maximumRecursion)
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool EscapeBraces
+        {
+            get;
+        }
+
+        public ExpressionEvaluatorSettings(System.IFormatProvider formatProvider, System.StringComparison stringComparison, int maximumRecursion, bool escapeBraces)
         {
             this.FormatProvider = formatProvider;
             this.StringComparison = stringComparison;
             this.MaximumRecursion = maximumRecursion;
+            this.EscapeBraces = escapeBraces;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 

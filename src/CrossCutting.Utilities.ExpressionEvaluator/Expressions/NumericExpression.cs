@@ -8,7 +8,7 @@ public class NumericExpression : IExpression
     private static readonly Regex _wholeDecimalRegEx = new("^[0-9]*M$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
     private static readonly Regex _floatingPointDecimalRegEx = new(@"^[0-9]*(?:\.[0-9]*)?$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
 
-    public int Order => 12;
+    public int Order => 13;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
     {

@@ -48,7 +48,7 @@ public class MathematicExpression : IExpression
     {
         ArgumentGuard.IsNotNull(context, nameof(context));
 
-        //TODO: Add something like 'validate only'?
+        //TODO: Add something like 'validate only'? a.k.a. context.Validate/Parse
         var state = new MathematicExpressionState(context, Evaluate);
         var error = _expressions
             .Select(x => x.Evaluate(state))

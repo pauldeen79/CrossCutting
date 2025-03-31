@@ -452,6 +452,8 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         private int _maximumRecursion;
 
+        private bool _escapeBraces;
+
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
         public System.IFormatProvider FormatProvider
@@ -497,24 +499,41 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool EscapeBraces
+        {
+            get
+            {
+                return _escapeBraces;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_escapeBraces, value);
+                _escapeBraces = value;
+                if (hasChanged) HandlePropertyChanged(nameof(EscapeBraces));
+            }
+        }
+
         public ExpressionEvaluatorSettingsBuilder(CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _formatProvider = source.FormatProvider;
             _stringComparison = source.StringComparison;
             _maximumRecursion = source.MaximumRecursion;
+            _escapeBraces = source.EscapeBraces;
         }
 
         public ExpressionEvaluatorSettingsBuilder()
         {
             _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
             _maximumRecursion = 10;
+            _escapeBraces = true;
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings Build()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings(FormatProvider, StringComparison, MaximumRecursion);
+            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings(FormatProvider, StringComparison, MaximumRecursion, EscapeBraces);
         }
 
         partial void SetDefaultValues();
@@ -535,6 +554,12 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder WithMaximumRecursion(int maximumRecursion)
         {
             MaximumRecursion = maximumRecursion;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder WithEscapeBraces(bool escapeBraces = true)
+        {
+            EscapeBraces = escapeBraces;
             return this;
         }
 
