@@ -11,4 +11,7 @@ public partial class Validate(IEnumerable<IMathematicExpressionValidator> valida
             (current, validator) => validator.Validate(current.Value!),
             result => result.IsSuccessful()
         );
+
+    public Result<MathematicExpressionState> Parse(MathematicExpressionState state)
+        => Evaluate(state);
 }

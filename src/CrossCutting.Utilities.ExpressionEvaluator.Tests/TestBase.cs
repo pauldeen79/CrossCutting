@@ -19,7 +19,7 @@ public abstract class TestBase
             .Returns(EvaluateExpression);
         Evaluator
             .Parse(Arg.Any<ExpressionEvaluatorContext>())
-            .Returns(x => EvaluateExpression(x).Transform(result =>
+            .Returns(x => /*EvaluateExpression(x).Transform(result =>
                 new ExpressionParseResultBuilder()
                     .WithSourceExpression(x.ArgAt<ExpressionEvaluatorContext>(0).Expression)
                     .WithExpressionType(typeof(TestBase))
@@ -27,7 +27,9 @@ public abstract class TestBase
                     .WithStatus(result.Status)
                     .WithErrorMessage(result.ErrorMessage)
                     .AddValidationErrors(result.ValidationErrors)
-            ));
+            )*/ x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "error"
+            ? new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithStatus(ResultStatus.Error).WithErrorMessage("Kaboom")
+            : new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithStatus(ResultStatus.Ok));
 
         // Initialize expression
         Expression = Substitute.For<IExpression>();

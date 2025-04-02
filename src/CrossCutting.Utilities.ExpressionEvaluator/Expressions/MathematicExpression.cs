@@ -48,10 +48,9 @@ public class MathematicExpression : IExpression
     {
         ArgumentGuard.IsNotNull(context, nameof(context));
 
-        //TODO: Add something like 'validate only'? a.k.a. context.Validate/Parse
         var state = new MathematicExpressionState(context, Evaluate);
         var error = _expressions
-            .Select(x => x.Evaluate(state))
+            .Select(x => x.Parse(state))
             .FirstOrDefault(x => !x.IsSuccessful());
 
         if (error is not null)
@@ -64,19 +63,20 @@ public class MathematicExpression : IExpression
                 .WithSourceExpression(context.Expression);
         }
 
-        if (state.Results.Count <= 0)
+        if (state.ParseResults.Count == 0)
         {
             return new ExpressionParseResultBuilder()
-                .WithStatus(ResultStatus.Continue)
+                .WithStatus(ResultStatus.Ok)
                 .WithExpressionType(typeof(MathematicExpression))
                 .WithSourceExpression(context.Expression);
         }
 
-        var result = state.Results.ElementAt(state.Results.Count - 1);
+        var result = state.ParseResults.ElementAt(state.ParseResults.Count - 1);
+
         return new ExpressionParseResultBuilder()
             .WithStatus(ResultStatus.Ok)
             .WithExpressionType(typeof(MathematicExpression))
             .WithSourceExpression(context.Expression)
-            .WithResultType(result.Value?.GetType());
+            .WithResultType(result.ResultType);
     }
 }

@@ -16,6 +16,18 @@ public class MathematicOperators : IMathematicExpression
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
+        return Process(state, false);
+    }
+
+    public Result<MathematicExpressionState> Parse(MathematicExpressionState state)
+    {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
+        return Process(state, true);
+    }
+
+    private static Result<MathematicExpressionState> Process(MathematicExpressionState state, bool validateOnly)
+    {
         foreach (var aggregators in Aggregators.GroupBy(x => x.Order))
         {
             do
@@ -31,16 +43,21 @@ public class MathematicOperators : IMathematicExpression
                 state.SetPreviousIndexes([.. Aggregators
                     .Select(x => state.Remainder.LastIndexOf(x.Character, state.Position - 1))
                     .Where(x => x > -1)
-                    .OrderByDescending(x => x)]);
+                    .OrderByDescending(x => x)], validateOnly);
 
                 state.SetNextIndexes([.. Aggregators
                     .Select(x => state.Remainder.IndexOf(x.Character, state.Position + 1))
                     .Where(x => x > -1)
-                    .OrderBy(x => x)]);
+                    .OrderBy(x => x)], validateOnly);
 
                 if (!state.LeftPartResult.IsSuccessful())
                 {
                     return Result.FromExistingResult<MathematicExpressionState>(state.LeftPartResult);
+                }
+
+                if (!state.LeftPartValidationResult.Status.IsSuccessful())
+                {
+                    return Result.FromExistingResult<MathematicExpressionState>(state.LeftPartValidationResult.ToResult());
                 }
 
                 if (!state.RightPartResult.IsSuccessful())
@@ -48,7 +65,12 @@ public class MathematicOperators : IMathematicExpression
                     return Result.FromExistingResult<MathematicExpressionState>(state.RightPartResult);
                 }
 
-                var aggregateResult = state.PerformAggregation();
+                if (!state.RightPartValidationResult.Status.IsSuccessful())
+                {
+                    return Result.FromExistingResult<MathematicExpressionState>(state.RightPartValidationResult.ToResult());
+                }
+
+                var aggregateResult = state.PerformAggregation(validateOnly);
                 if (!aggregateResult.IsSuccessful())
                 {
                     return Result.FromExistingResult<MathematicExpressionState>(aggregateResult);

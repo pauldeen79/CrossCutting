@@ -366,6 +366,351 @@ public sealed class MathematicExpressionEvaluatorTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Add_One_And_One_Validation()
+    {
+        // Arrange
+        var input = "1 + 1";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Subtract_One_And_One_Validation()
+    {
+        // Arrange
+        var input = "1 - 1";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Multiply_Two_And_Three_Validation()
+    {
+        // Arrange
+        var input = "2 * 3";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Divide_Six_By_Two_Validation()
+    {
+        // Arrange
+        var input = "6 / 2";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Use_Power_Validation()
+    {
+        // Arrange
+        var input = "2 ^ 4";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Use_Modulus_Validation()
+    {
+        // Arrange
+        var input = "5 % 2";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Add_One_And_Two_And_Three_Validation()
+    {
+        // Arrange
+        var input = "1 + 2 + 3";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Use_Nested_Formula_Validation()
+    {
+        // Arrange
+        var input = "(1 + 2) * 3";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input, evaluator: _provider!.GetRequiredService<IExpressionEvaluator>()));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Use_Correct_Operator_Priority_Validation()
+    {
+        // Arrange
+        var input = "1 + 2 * 3";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Use_Numeric_Literal_Validation()
+    {
+        // Arrange
+        var input = "1";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Missing_OpenBracket_Returns_NotFound_Validation()
+    {
+        // Arrange
+        var input = "1 + 2)";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Too many closing braces found");
+    }
+
+    [Fact]
+    public void Missing_CloseBracket_Returns_NotFound_Validation()
+    {
+        // Arrange
+        var input = "(1 + 2";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Missing 1 close brace");
+    }
+
+    [Fact]
+    public void Missing_CloseBrackets_Returns_NotFound_Validation()
+    {
+        // Arrange
+        var input = "((1 + 2";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Missing 2 close braces");
+    }
+
+    [Fact]
+    public void Expression_Starting_With_Operator_Returns_NotFound_Validation()
+    {
+        // Arrange
+        var input = "+ 2";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Input cannot start with an operator");
+    }
+
+    [Fact]
+    public void Expression_Ending_With_Operator_Returns_NotFound_Validation()
+    {
+        // Arrange
+        var input = "1 +";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Input cannot end with an operator");
+    }
+
+    [Fact]
+    public void Expression_Containing_Two_Operators_Next_To_Each_Other_Returns_NotFound_Validation()
+    {
+        // Arrange
+        var input = "1 ++ 2";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Input cannot contain operators without values between them");
+    }
+
+    [Fact]
+    public void Expression_Containing_Two_Operators_Next_To_Each_Other_Separated_By_Space_Returns_NotFound_Validation()
+    {
+        // Arrange
+        var input = "1 + + 2";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.ErrorMessage.ShouldBe("Input cannot contain operators without values between them");
+    }
+
+    [Fact]
+    public void Empty_String_Returns_Invalid_Validation()
+    {
+        // Arrange
+        var input = string.Empty;
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Input cannot be null or empty");
+    }
+
+    [Fact]
+    public void String_Containing_TemporaryDelimiter_Returns_Invalid_Validation()
+    {
+        // Arrange
+        var input = "This string contains the magic \uE002 internal temporary delimiter. Don't ask why, we just don't support it. You're doomed if you try this.";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Input cannot contain \uE002, as this is used internally for formatting");
+    }
+
+    [Fact]
+    public void Handles_Order_Correctly_Validation()
+    {
+        // Arrange
+        var input = "7-16/8*2+8";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Does_Not_Return_Error_From_Left_Expression_Validation()
+    {
+        // Arrange
+        var input = "bicycle + 1";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok); // the right expression is not evaluated because of 'validate only' (Parse)
+    }
+
+    [Fact]
+    public void Does_Not_Return_Error_From_Right_Expression_Validation()
+    {
+        // Arrange
+        var input = "1 + bicycle";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok); // the right expression is not evaluated because of 'validate only' (Parse)
+    }
+
+    [Fact]
+    public void Does_Not_Return_Error_From_Nested_Expression_Validation()
+    {
+        // Arrange
+        var input = "(1 + bicycle)";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok); // the right expression is not evaluated because of 'validate only' (Parse)
+    }
+
+    [Fact]
+    public void Does_Not_Return_Error_From_Aggregation_Operation_Validation()
+    {
+        // Arrange
+        var input = "1 / 0";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext(input));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok); // the right expression is not evaluated because of 'validate only' (Parse)
+    }
+
+    [Fact]
     public void Returns_Invalid_On_Empty_Input()
     {
         // Arrange
