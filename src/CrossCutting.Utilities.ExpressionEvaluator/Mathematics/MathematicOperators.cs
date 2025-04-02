@@ -50,24 +50,10 @@ public class MathematicOperators : IMathematicExpression
                     .Where(x => x > -1)
                     .OrderBy(x => x)], validateOnly);
 
-                if (!state.LeftPartResult.IsSuccessful())
+                var validationState = ValidateState(state);
+                if (!validationState.IsSuccessful())
                 {
-                    return Result.FromExistingResult<MathematicExpressionState>(state.LeftPartResult);
-                }
-
-                if (!state.LeftPartValidationResult.Status.IsSuccessful())
-                {
-                    return Result.FromExistingResult<MathematicExpressionState>(state.LeftPartValidationResult.ToResult());
-                }
-
-                if (!state.RightPartResult.IsSuccessful())
-                {
-                    return Result.FromExistingResult<MathematicExpressionState>(state.RightPartResult);
-                }
-
-                if (!state.RightPartValidationResult.Status.IsSuccessful())
-                {
-                    return Result.FromExistingResult<MathematicExpressionState>(state.RightPartValidationResult.ToResult());
+                    return validationState;
                 }
 
                 var aggregateResult = state.PerformAggregation(validateOnly);
@@ -79,5 +65,30 @@ public class MathematicOperators : IMathematicExpression
         }
 
         return Result.Success(state);
+    }
+
+    private static Result<MathematicExpressionState> ValidateState(MathematicExpressionState state)
+    {
+        if (!state.LeftPartResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<MathematicExpressionState>(state.LeftPartResult);
+        }
+
+        if (!state.LeftPartValidationResult.Status.IsSuccessful())
+        {
+            return Result.FromExistingResult<MathematicExpressionState>(state.LeftPartValidationResult.ToResult());
+        }
+
+        if (!state.RightPartResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<MathematicExpressionState>(state.RightPartResult);
+        }
+
+        if (!state.RightPartValidationResult.Status.IsSuccessful())
+        {
+            return Result.FromExistingResult<MathematicExpressionState>(state.RightPartValidationResult.ToResult());
+        }
+
+        return Result.Continue<MathematicExpressionState>();
     }
 }
