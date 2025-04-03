@@ -56,7 +56,13 @@ public class MathematicOperators : IMathematicExpression
                     return validationState;
                 }
 
-                var aggregateResult = state.PerformAggregation(validateOnly);
+                var validationResult = Result.NoContent<Type>();
+                if (validateOnly)
+                {
+                    validationResult = NumericAggregator.Validate(state.LeftPartValidationResult.ResultType, state.RightPartValidationResult.ResultType);
+                }
+
+                var aggregateResult = state.PerformAggregation(validateOnly, validationResult);
                 if (!aggregateResult.IsSuccessful())
                 {
                     return Result.FromExistingResult<MathematicExpressionState>(aggregateResult);

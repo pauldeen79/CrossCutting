@@ -79,10 +79,10 @@ public class MathematicExpressionState
         }
     }
 
-    internal Result<object?> PerformAggregation(bool validateOnly)
+    internal Result<object?> PerformAggregation(bool validateOnly, Result<Type> validationResult)
     {
         var aggregateResult = validateOnly
-            ? Result.NoContent<object?>()
+            ? validationResult.Transform<object?>(x => x)
             : Indexes.First().Aggregator.Aggregate(LeftPartResult.Value!, RightPartResult.Value!, Context.Settings.FormatProvider);
 
         if (aggregateResult.IsSuccessful())
@@ -112,11 +112,6 @@ public class MathematicExpressionState
             }
             else
             {
-                // Note that this doesn't make a lot of sense.
-                // We are adding some bogus ExpressionParseResults into a list.
-                // Further in the process, we read the ResultType, which is always null (because we don't fill it here).
-                // On the other hand, I guess we don't know, because the aggregation is performed.
-                // For now, we assume the result type is equal to the left value type. (if you add two integers together, then it's an integer, right?)
                 ParseResults.Add(new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithResultType(LeftPartValidationResult.ResultType));
             }
         }

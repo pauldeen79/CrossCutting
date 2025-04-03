@@ -26,6 +26,56 @@ public static class NumericAggregator
             () => Result.Invalid<object?>("First expression is not of a supported type")
         }).Select(FailSafe).First(x => x.Status != ResultStatus.Continue);
 
+    public static Result<Type> Validate(Type? type1, Type? type2)
+    {
+        if (type1 is null)
+        {
+            return Result.NoContent<Type>();
+        }
+
+        if (type1 != type2)
+        {
+            return Result.NoContent<Type>();
+        }
+
+        if (type1 == typeof(byte))
+        {
+            return Result.Success(typeof(byte));
+        }
+
+        if (type1 == typeof(short))
+        {
+            return Result.Success(typeof(short));
+        }
+
+        if (type1 == typeof(int))
+        {
+            return Result.Success(typeof(int));
+        }
+
+        if (type1 == typeof(long))
+        {
+            return Result.Success(typeof(long));
+        }
+
+        if (type1 == typeof(float))
+        {
+            return Result.Success(typeof(float));
+        }
+
+        if (type1 == typeof(double))
+        {
+            return Result.Success(typeof(double));
+        }
+
+        if (type1 == typeof(decimal))
+        {
+            return Result.Success(typeof(decimal));
+        }
+
+        return Result.Invalid<Type>($"Unsupported type: {type1.FullName}");
+    }
+
     private static Result<object?> FailSafe(Func<Result<object?>> x)
     {
 #pragma warning disable CA1031 // Do not catch general exception types
