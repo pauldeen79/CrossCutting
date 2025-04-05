@@ -61,6 +61,16 @@ public abstract class TestBase
             return Result.Error<object?>("Kaboom");
         }
 
+        if (context.Expression == "recursiveplaceholder")
+        {
+            return Result.Success<object?>("{recurse}");
+        }
+
+        if (context.Expression == "recurse")
+        {
+            return Result.Success<object?>("recursive value");
+        }
+
         if (context.Expression.StartsWith('"') && context.Expression.StartsWith('"'))
         {
             return Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2));
