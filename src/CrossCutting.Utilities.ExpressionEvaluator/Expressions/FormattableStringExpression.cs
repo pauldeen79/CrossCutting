@@ -49,6 +49,7 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
                 .WithErrorMessage("FormattableString is not closed correctly");
         }
 
+        //TODO: Write new method that handles recursion, but does not evaluate expressions. instead, only Parse needs to be performed.
         var processResult = ProcessRecursive(context.Expression.Substring(2, context.Expression.Length - 3), context);
 
         return result
@@ -69,23 +70,17 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
         var results = new List<Result<GenericFormattableString>>();
         do
         {
-            var closeIndex = remainder.LastIndexOf(PlaceholderEnd);
-            if (closeIndex == -1)
+            var placeholderSignsResult = GetPlaceholderSignsResult(remainder);
+            if (!placeholderSignsResult.IsSuccessful())
             {
-                if (remainder.LastIndexOf(PlaceholderStart) > -1)
-                {
-                    return Result.Invalid<GenericFormattableString>($"PlaceholderEnd sign '{PlaceholderEnd}' is missing");
-                }
+                return Result.FromExistingResult<GenericFormattableString>(placeholderSignsResult);
+            }
+            if (placeholderSignsResult.Value.openIndex == -1)
+            {
                 break;
             }
 
-            var openIndex = remainder.LastIndexOf(PlaceholderStart, closeIndex);
-            if (openIndex == -1)
-            {
-                return Result.Invalid<GenericFormattableString>($"PlaceholderStart sign '{PlaceholderStart}' is missing");
-            }
-
-            var placeholder = remainder.Substring(openIndex + PlaceholderStart.Length, closeIndex - openIndex - PlaceholderStart.Length);
+            var placeholder = remainder.Substring(placeholderSignsResult.Value.openIndex + PlaceholderStart.Length, placeholderSignsResult.Value.closeIndex - placeholderSignsResult.Value.openIndex - PlaceholderStart.Length);
             if (string.IsNullOrWhiteSpace(placeholder))
             {
                 return Result.Invalid<GenericFormattableString>("Missing expression");
@@ -94,13 +89,19 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
             var found = $"{PlaceholderStart}{placeholder}{PlaceholderEnd}";
             remainder = remainder.Replace(found, $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}");
 
+            // Replace placeholder with placeholder expression result
             var placeholderResult = Result.FromExistingResult(context.Evaluate(placeholder), value => new GenericFormattableString(value));
             if (!placeholderResult.IsSuccessful())
             {
                 return placeholderResult;
             }
 
-            placeholderResult = HandleRecursion(context, placeholderResult);
+            // Handle recursion
+            string? s = placeholderResult.Value!;
+            if (s?.StartsWith(PlaceholderStart) == true && s.EndsWith(PlaceholderEnd))
+            {
+                placeholderResult = ProcessRecursive(s, context);
+            }
 
             results.Add(placeholderResult);
         } while (true);
@@ -125,15 +126,26 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
         return Result.Success(new GenericFormattableString(remainder, [.. results.Select(x => x.Value?.ToString(context.Settings.FormatProvider))!]));
     }
 
-    private static Result<GenericFormattableString> HandleRecursion(ExpressionEvaluatorContext context, Result<GenericFormattableString> placeholderResult)
+    private static Result<(int openIndex, int closeIndex)> GetPlaceholderSignsResult(string remainder)
     {
-        string? s = placeholderResult.Value!;
-        if (s?.StartsWith(PlaceholderStart) == true && s.EndsWith(PlaceholderEnd))
+        var closeIndex = remainder.LastIndexOf(PlaceholderEnd);
+        if (closeIndex == -1)
         {
-            placeholderResult = ProcessRecursive(s, context);
+            if (remainder.LastIndexOf(PlaceholderStart) > -1)
+            {
+                return Result.Invalid<(int openIndex, int closeIndex)>($"PlaceholderEnd sign '{PlaceholderEnd}' is missing");
+            }
+
+            return Result.Success<(int openIndex, int closeIndex)>((-1, -1));
         }
 
-        return placeholderResult;
+        var openIndex = remainder.LastIndexOf(PlaceholderStart, closeIndex);
+        if (openIndex == -1)
+        {
+            return Result.Invalid<(int openIndex, int closeIndex)>($"PlaceholderStart sign '{PlaceholderStart}' is missing");
+        }
+
+        return Result.Success((openIndex, closeIndex));
     }
 
     private static string ReplaceTemporaryDelimiters(string remainder, List<Result<GenericFormattableString>> results)
