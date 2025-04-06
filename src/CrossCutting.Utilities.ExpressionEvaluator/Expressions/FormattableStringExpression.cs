@@ -64,6 +64,17 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
         return Result.Success(new GenericFormattableString(remainder, [.. results.Value.Select(x => x.Value?.ToString(context.Settings.FormatProvider))!]));
     }
 
+    private static ExpressionParseResult ParseRecursive(ExpressionParseResultBuilder result, string format, ExpressionEvaluatorContext context)
+    {
+        var results = ProcessRecursive(format, context, true, out _);
+        var hasFailure = !results.IsSuccessful() || results.Value?.Any(x => !x.Status.IsSuccessful()) == true;
+
+        return result
+            .AddPartResults(results.Value?.Select((x, index) => new ExpressionParsePartResultBuilder().WithErrorMessage(x.ErrorMessage).WithStatus(x.Status).AddValidationErrors(x.ValidationErrors).WithPartName(index.ToString(context.Settings.FormatProvider))) ?? [new ExpressionParsePartResultBuilder().WithPartName("Validation").WithStatus(results.Status).WithErrorMessage(results.ErrorMessage).AddValidationErrors(results.ValidationErrors)])
+            .WithStatus(hasFailure ? ResultStatus.Invalid : ResultStatus.Ok)
+            .WithErrorMessage(hasFailure ? "Validation failed, see part results for more details" : null);
+    }
+
     private static Result<List<Result<GenericFormattableString>>> ProcessRecursive(string format, ExpressionEvaluatorContext context, bool validateOnly, out string remainder)
     {
         // Handle escaped markers (e.g., {{ -> {)
@@ -71,7 +82,7 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
         var escapedEnd = PlaceholderEnd + PlaceholderEnd;
 
         remainder = format.Replace(escapedStart, "\uE000")  // Temporarily replace escaped start marker
-                          .Replace(escapedEnd,   "\uE001");
+                          .Replace(escapedEnd, "\uE001");
 
         var results = new List<Result<GenericFormattableString>>();
         do
@@ -106,17 +117,7 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
                 + $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"
                 + remainder.Substring(placeholderSignsResult.Value.closeIndex + 1);
 
-            // Replace placeholder with placeholder expression result
-            Result <GenericFormattableString> placeholderResult;
-            if (!validateOnly)
-            {
-                placeholderResult = Result.FromExistingResult(context.Evaluate(placeholder), value => new GenericFormattableString(value));
-            }
-            else
-            {
-                var parseResult = context.Parse(placeholder);
-                placeholderResult = Result.FromExistingResult<GenericFormattableString>(parseResult.ToResult());
-            }
+            var placeholderResult = ProcessPlaceholder(context, validateOnly, placeholder);
 
             if (!placeholderResult.IsSuccessful())
             {
@@ -132,22 +133,12 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
                 continue;
             }
 
-            // Handle recursion
-            string? s = placeholderResult.Value!;
-            if (s?.StartsWith(PlaceholderStart) == true && s.EndsWith(PlaceholderEnd))
-            {
-                placeholderResult = EvaluateRecursive(s, context);
-            }
+            placeholderResult = HandleRecursion(context, placeholderResult);
 
             results.Add(placeholderResult);
         } while (true);
 
-        if (context.Settings.EscapeBraces)
-        {
-            // Fix FormatException when using ToString on FormattableString
-            remainder = remainder.Replace("{", "{{")
-                                 .Replace("}", "}}");
-        }
+        remainder = EscapeBraces(context, remainder);
 
         // Restore escaped markers
         // First, fix invalid format string {bla} to {{bla}} when escaped, else the ToString operation on FormattableString fails
@@ -162,16 +153,44 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
         return Result.Success(results);
     }
 
-    private static ExpressionParseResult ParseRecursive(ExpressionParseResultBuilder result, string format, ExpressionEvaluatorContext context)
+    private static string EscapeBraces(ExpressionEvaluatorContext context, string remainder)
     {
-        var results = ProcessRecursive(format, context, true, out _);
+        if (context.Settings.EscapeBraces)
+        {
+            // Fix FormatException when using ToString on FormattableString
+            remainder = remainder.Replace("{", "{{")
+                                 .Replace("}", "}}");
+        }
 
-        var hasFailure = !results.IsSuccessful() || results.Value?.Any(x => !x.Status.IsSuccessful()) == true;
+        return remainder;
+    }
 
-        return result
-            .AddPartResults(results.Value?.Select((x, index) => new ExpressionParsePartResultBuilder().WithErrorMessage(x.ErrorMessage).WithStatus(x.Status).AddValidationErrors(x.ValidationErrors).WithPartName(index.ToString(context.Settings.FormatProvider))) ?? [new ExpressionParsePartResultBuilder().WithPartName("Validation").WithStatus(results.Status).WithErrorMessage(results.ErrorMessage).AddValidationErrors(results.ValidationErrors)])
-            .WithStatus(hasFailure ? ResultStatus.Invalid : ResultStatus.Ok)
-            .WithErrorMessage(hasFailure ? "Validation failed, see part results for more details" : null);
+    private static Result<GenericFormattableString> HandleRecursion(ExpressionEvaluatorContext context, Result<GenericFormattableString> placeholderResult)
+    {
+        string? s = placeholderResult.Value!;
+        if (s?.StartsWith(PlaceholderStart) == true && s.EndsWith(PlaceholderEnd))
+        {
+            placeholderResult = EvaluateRecursive(s, context);
+        }
+
+        return placeholderResult;
+    }
+
+    private static Result<GenericFormattableString> ProcessPlaceholder(ExpressionEvaluatorContext context, bool validateOnly, string placeholder)
+    {
+        // Replace placeholder with placeholder expression result
+        Result<GenericFormattableString> placeholderResult;
+        if (!validateOnly)
+        {
+            placeholderResult = Result.FromExistingResult(context.Evaluate(placeholder), value => new GenericFormattableString(value));
+        }
+        else
+        {
+            var parseResult = context.Parse(placeholder);
+            placeholderResult = Result.FromExistingResult<GenericFormattableString>(parseResult.ToResult());
+        }
+
+        return placeholderResult;
     }
 
     private static Result<(int openIndex, int closeIndex)> GetPlaceholderSignsResult(string remainder)
