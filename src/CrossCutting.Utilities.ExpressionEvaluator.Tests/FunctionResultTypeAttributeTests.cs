@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Functions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 
 public class FunctionResultTypeAttributeTests
 {
