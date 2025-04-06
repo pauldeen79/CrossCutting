@@ -66,6 +66,12 @@ public class FunctionExpression : IExpression
                 .WithStatus(resolveResult.Status)
                 .WithErrorMessage(resolveResult.ErrorMessage)
                 .AddValidationErrors(resolveResult.ValidationErrors)
+                .AddPartResults(resolveResult.InnerResults.Select(x => new ExpressionParsePartResultBuilder()
+                    .WithErrorMessage(x.ErrorMessage)
+                    .WithPartName("Unknown") //TODO: See if we can add an optional name to a child context, which we can fill with the argument name in the FunctionParser... Or, maybe replace Unknown afterwards?
+                    .WithSourceExpression(context.Expression)
+                    .WithExpressionType(typeof(FunctionExpression))
+                    .AddValidationErrors(x.ValidationErrors)))
                 .WithExpressionType(typeof(FunctionExpression))
                 .WithSourceExpression(context.Expression);
         }

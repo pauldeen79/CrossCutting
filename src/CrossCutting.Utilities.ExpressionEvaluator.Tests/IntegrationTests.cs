@@ -107,6 +107,53 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.Value.ToStringWithDefault().ShouldBe("my value with replaced items");
     }
 
+    [Fact]
+    public void Can_Validate_Function_With_Wrong_ArgumentType()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "MyFunction(123)";
+
+        // Act
+        var result = sut.Parse(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("Validation of function MyFunction failed, see inner results for more details");
+        result.PartResults.Count.ShouldBe(1);
+        result.PartResults.First().ErrorMessage.ShouldBe("Argument Input is not of type System.String");
+    }
+
+    [Fact]
+    public void Can_Validate_Function_With_Unknown_ArgumentType()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "MyFunction(context)";
+
+        // Act
+        var result = sut.Parse(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Validate_Function_With_Parse_Error()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "MyFunction(error)";
+
+        // Act
+        var result = sut.Parse(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.PartResults.Count.ShouldBe(1);
+        result.PartResults.First().ErrorMessage.ShouldBe("Kaboom");
+    }
+
     public IntegrationTests()
     {
         Provider = new ServiceCollection()

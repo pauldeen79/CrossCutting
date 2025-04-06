@@ -19,7 +19,7 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
                 .WithSourceExpression(context.Context.Expression)
                 .WithStatus(ResultStatus.Invalid)
                 .WithErrorMessage($"Argument {descriptorArgument.Name} is not of type {descriptorArgument.Type.FullName}")
-                .WithExpressionType(typeof(FunctionExpression));
+                .WithExpressionType(callArgumentResult.ExpressionType);
         }
 
         return callArgumentResult;
