@@ -186,7 +186,7 @@ public class FormattableStringExpressionTests : TestBase<FormattableStringExpres
         }
 
         [Fact]
-        public void Returns_First_Error_On_Non_Successful_Expressions()
+        public void Returns_All_Errors_On_Non_Successful_Expressions()
         {
             // Arrange
             var sut = CreateSut();
@@ -195,8 +195,9 @@ public class FormattableStringExpressionTests : TestBase<FormattableStringExpres
             var result = sut.Parse(CreateContext("$\"some {error} {1} {error} value\""));
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Validation failed, see part results for more details");
+            result.PartResults.Count.ShouldBe(3);
         }
 
         [Fact]
