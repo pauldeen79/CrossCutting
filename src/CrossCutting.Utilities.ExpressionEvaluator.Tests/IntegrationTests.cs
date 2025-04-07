@@ -108,6 +108,21 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_Mathematic_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "1 + 1";
+
+        // Act
+        var result = sut.Evaluate(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(2);
+    }
+
+    [Fact]
     public void Can_Validate_Function_With_Wrong_ArgumentType()
     {
         // Arrange
