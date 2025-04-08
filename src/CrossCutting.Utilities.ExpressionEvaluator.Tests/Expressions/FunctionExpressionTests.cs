@@ -181,7 +181,7 @@ public class FunctionExpressionTests : TestBase
                     .WithName("MyFunction")
                     .WithFunctionType(Function.GetType())
                     .WithReturnValueType(typeof(string))
-                    .AddArguments(new FunctionDescriptorArgumentBuilder().WithName("Test").WithType(typeof(string)))
+                    .AddArguments(new FunctionDescriptorArgumentBuilder().WithName("MyArgument").WithType(typeof(string)))
                     .Build()]);
             FunctionCallArgumentValidator
                 .Validate(Arg.Any<FunctionDescriptorArgument>(), Arg.Any<string>(), Arg.Any<FunctionCallContext>())
@@ -193,10 +193,11 @@ public class FunctionExpressionTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Validation of function MyFunction failed, see inner results for more details");
-            result.InnerResults.Count.ShouldBe(1);
-            result.InnerResults.First().Status.ShouldBe(ResultStatus.Invalid);
-            result.InnerResults.First().ErrorMessage.ShouldBe("I want a string, you give me an int!");
+            result.ErrorMessage.ShouldBe("Validation of function MyFunction failed, see validation errors for more details");
+            result.ValidationErrors.Count.ShouldBe(1);
+            result.ValidationErrors.First().ErrorMessage.ShouldBe("I want a string, you give me an int!");
+            result.ValidationErrors.First().MemberNames.Count.ShouldBe(1);
+            result.ValidationErrors.First().MemberNames.First().ShouldBe("MyArgument");
         }
 
         [Fact]

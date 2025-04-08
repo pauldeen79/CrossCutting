@@ -69,19 +69,19 @@ public class FunctionResolver : IFunctionResolver
 
         var arguments = functionDescriptor.Arguments.Zip(functionCallContext.FunctionCall.Arguments, (descriptor, call) => new { DescriptorArgument = descriptor, CallArgument = call });
 
-        var errors = new List<Result>();
+        var errors = new List<ValidationError>();
         foreach (var argument in arguments)
         {
             var validationResult = _functionCallArgumentValidator.Validate(argument.DescriptorArgument, argument.CallArgument, functionCallContext);
-            if (!validationResult.Status.IsSuccessful())
+            if (!validationResult.Status.IsSuccessful() && validationResult.ErrorMessage is not null)
             {
-                errors.Add(validationResult.ToResult());
+                errors.Add(new ValidationError(validationResult.ErrorMessage, [argument.DescriptorArgument.Name]));
             }
         }
 
         if (errors.Count > 0)
         {
-            return Result.Invalid<FunctionAndTypeDescriptor>($"Validation of function {functionCallContext.FunctionCall.Name} failed, see inner results for more details", errors);
+            return Result.Invalid<FunctionAndTypeDescriptor>($"Validation of function {functionCallContext.FunctionCall.Name} failed, see validation errors for more details", errors);
         }
 
         return Result.Success(new FunctionAndTypeDescriptor(function, genericFunction, functionDescriptor.ReturnValueType));

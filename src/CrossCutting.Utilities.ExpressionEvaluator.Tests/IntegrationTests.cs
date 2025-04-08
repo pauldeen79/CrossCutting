@@ -134,7 +134,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("Validation of function MyFunction failed, see inner results for more details");
+        result.ErrorMessage.ShouldBe("Validation of function MyFunction failed, see validation errors for more details");
         result.PartResults.Count.ShouldBe(1);
         result.PartResults.First().ErrorMessage.ShouldBe("Argument Input is not of type System.String");
     }
