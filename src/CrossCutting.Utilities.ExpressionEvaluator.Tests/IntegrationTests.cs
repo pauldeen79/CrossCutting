@@ -203,7 +203,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     private sealed class MyFunction : IFunction<string>
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-            => EvaluateTyped(context).Transform<object?>(x => x);
+            => EvaluateTyped(context).TryCastAllowNull<object?>();
 
         public Result<string> EvaluateTyped(FunctionCallContext context)
             => new ResultDictionaryBuilder()

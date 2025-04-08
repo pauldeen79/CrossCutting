@@ -20,7 +20,7 @@ public class ComparisonOperatorExpression : IExpression<bool>
     public int Order => 30;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-        => EvaluateTyped(context).Transform<object?>(x => x);
+        => EvaluateTyped(context).TryCastAllowNull<object?>();
 
     public Result<bool> EvaluateTyped(ExpressionEvaluatorContext context)
     {

@@ -864,7 +864,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     {
         public Result<object?> Evaluate(FunctionCallContext context)
         {
-            return EvaluateTyped(context).Transform<object?>(x => x);
+            return EvaluateTyped(context).TryCastAllowNull<object?>();
         }
 
         public Result<string> EvaluateTyped(FunctionCallContext context)

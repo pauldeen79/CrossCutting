@@ -19,7 +19,7 @@ public class BinaryOperatorExpression : IExpression<bool>
     public int Order => 40; // important: after ComparisonExpression. if the expression is recognized as a ComparisonExpression, it may contain binary operators as combinations
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-        => EvaluateTyped(context).Transform<object?>(x => x);
+        => EvaluateTyped(context).TryCastAllowNull<object?>();
 
     public Result<bool> EvaluateTyped(ExpressionEvaluatorContext context)
     {

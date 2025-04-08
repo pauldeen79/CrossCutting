@@ -7,7 +7,7 @@ public class TypeOfExpression : IExpression<Type>
     public int Order => 13;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-        => EvaluateTyped(context).Transform<object?>(x => x);
+        => EvaluateTyped(context).TryCastAllowNull<object?>();
 
     public Result<Type> EvaluateTyped(ExpressionEvaluatorContext context)
     {

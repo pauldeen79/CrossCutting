@@ -9,7 +9,7 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
     public int Order => 12;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-        => EvaluateTyped(context).Transform<object?>(x => x);
+        => EvaluateTyped(context).TryCastAllowNull<object?>();
 
     public Result<GenericFormattableString> EvaluateTyped(ExpressionEvaluatorContext context)
     {

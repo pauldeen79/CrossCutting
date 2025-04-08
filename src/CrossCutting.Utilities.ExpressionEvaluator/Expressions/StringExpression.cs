@@ -5,7 +5,7 @@ public class StringExpression : IExpression<string>
     public int Order => 11;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-        => EvaluateTyped(context).Transform<object?>(x => x);
+        => EvaluateTyped(context).TryCastAllowNull<object?>();
 
     public Result<string> EvaluateTyped(ExpressionEvaluatorContext context)
     {
