@@ -162,12 +162,19 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public ExpressionEvaluatorSettings(System.IFormatProvider formatProvider, System.StringComparison stringComparison, int maximumRecursion, bool escapeBraces)
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool ValidateArgumentTypes
+        {
+            get;
+        }
+
+        public ExpressionEvaluatorSettings(System.IFormatProvider formatProvider, System.StringComparison stringComparison, int maximumRecursion, bool escapeBraces, bool validateArgumentTypes)
         {
             this.FormatProvider = formatProvider;
             this.StringComparison = stringComparison;
             this.MaximumRecursion = maximumRecursion;
             this.EscapeBraces = escapeBraces;
+            this.ValidateArgumentTypes = validateArgumentTypes;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 

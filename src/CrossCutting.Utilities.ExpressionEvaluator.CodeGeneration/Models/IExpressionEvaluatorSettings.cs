@@ -6,4 +6,5 @@ internal interface IExpressionEvaluatorSettings
     StringComparison StringComparison { get; }
     [DefaultValue(10)] int MaximumRecursion { get; }
     [DefaultValue(true)] bool EscapeBraces { get; }
+    [DefaultValue(true)] bool ValidateArgumentTypes { get; }
 }

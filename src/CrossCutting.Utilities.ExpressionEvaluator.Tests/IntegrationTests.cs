@@ -140,6 +140,20 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Skip_Validation_On_ArgumentTypes_Using_Setting()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "MyFunction(123)";
+
+        // Act
+        var result = sut.Parse(CreateContext(expression, validateArgumentTypes: false));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
     public void Can_Validate_Function_With_Unknown_ArgumentType()
     {
         // Arrange
