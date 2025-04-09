@@ -295,12 +295,12 @@ internal class Tokenizer
     private static readonly char[] TokenSigns = ['+', '-', '*', '/', '(', ')', '=', '!', '<', '>', '&', '|'];
 }
 
-internal abstract class Expr
+internal interface IExpr
 {
-    public abstract Result<object?> Evaluate(ExpressionEvaluatorContext context, Func<string, Result<object?>> @delegate);
+    Result<object?> Evaluate(ExpressionEvaluatorContext context, Func<string, Result<object?>> @delegate);
 }
 
-internal class OtherExpr : Expr
+internal sealed class OtherExpr : IExpr
 {
     private string Value { get; }
 
@@ -309,23 +309,23 @@ internal class OtherExpr : Expr
         Value = value;
     }
 
-    public override Result<object?> Evaluate(ExpressionEvaluatorContext context, Func<string, Result<object?>> @delegate) => @delegate(Value);
+    public Result<object?> Evaluate(ExpressionEvaluatorContext context, Func<string, Result<object?>> @delegate) => @delegate(Value);
 }
 
-internal class BinaryExpr : Expr
+internal sealed class BinaryExpr : IExpr
 {
-    public Result<Expr> Left { get; }
+    public Result<IExpr> Left { get; }
     public TokenType Operator { get; }
-    public Result<Expr> Right { get; }
+    public Result<IExpr> Right { get; }
 
-    public BinaryExpr(Result<Expr> left, TokenType op, Result<Expr> right)
+    public BinaryExpr(Result<IExpr> left, TokenType op, Result<IExpr> right)
     {
         Left = left;
         Operator = op;
         Right = right;
     }
 
-    public override Result<object?> Evaluate(ExpressionEvaluatorContext context, Func<string, Result<object?>> @delegate)
+    public Result<object?> Evaluate(ExpressionEvaluatorContext context, Func<string, Result<object?>> @delegate)
     {
         var results = new ResultDictionaryBuilder<object?>()
             .Add(Constants.LeftExpression, () => Left.Value?.Evaluate(context, @delegate) ?? Result.FromExistingResult<object?>(Left))
@@ -381,7 +381,7 @@ internal class BinaryExpr : Expr
     }
 }
 
-internal class Parser
+internal sealed class Parser
 {
     private readonly List<Token> _tokens;
     private int _position;
@@ -391,12 +391,12 @@ internal class Parser
         _tokens = tokens;
     }
 
-    public Result<Expr> Parse()
+    public Result<IExpr> Parse()
     {
         return ParseLogicalOr();
     }
 
-    private Result<Expr> ParseLogicalOr()
+    private Result<IExpr> ParseLogicalOr()
     {
         var expr = ParseLogicalAnd();
 
@@ -404,13 +404,13 @@ internal class Parser
         {
             var op = Previous();
             var right = ParseLogicalAnd();
-            expr = Result.Success<Expr>(new BinaryExpr(expr, op.Type, right));
+            expr = Result.Success<IExpr>(new BinaryExpr(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<Expr> ParseLogicalAnd()
+    private Result<IExpr> ParseLogicalAnd()
     {
         var expr = ParseEquality();
 
@@ -418,13 +418,13 @@ internal class Parser
         {
             var op = Previous();
             var right = ParseEquality();
-            expr = Result.Success<Expr>(new BinaryExpr(expr, op.Type, right));
+            expr = Result.Success<IExpr>(new BinaryExpr(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<Expr> ParseEquality()
+    private Result<IExpr> ParseEquality()
     {
         var expr = ParseComparison();
 
@@ -432,13 +432,13 @@ internal class Parser
         {
             var op = Previous();
             var right = ParseAdditive();
-            expr = Result.Success<Expr>(new BinaryExpr(expr, op.Type, right));
+            expr = Result.Success<IExpr>(new BinaryExpr(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<Expr> ParseComparison()
+    private Result<IExpr> ParseComparison()
     {
         var expr = ParseAdditive();
 
@@ -446,13 +446,13 @@ internal class Parser
         {
             var op = Previous();
             var right = ParseAdditive();
-            expr = Result.Success<Expr>(new BinaryExpr(expr, op.Type, right));
+            expr = Result.Success<IExpr>(new BinaryExpr(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<Expr> ParseAdditive()
+    private Result<IExpr> ParseAdditive()
     {
         var expr = ParseMultiplicative();
 
@@ -460,13 +460,13 @@ internal class Parser
         {
             var op = Previous();
             var right = ParseMultiplicative();
-            expr = Result.Success<Expr>(new BinaryExpr(expr, op.Type, right));
+            expr = Result.Success<IExpr>(new BinaryExpr(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<Expr> ParseMultiplicative()
+    private Result<IExpr> ParseMultiplicative()
     {
         var expr = ParsePrimary();
 
@@ -474,17 +474,17 @@ internal class Parser
         {
             var op = Previous();
             var right = ParsePrimary();
-            expr = Result.Success<Expr>(new BinaryExpr(expr, op.Type, right));
+            expr = Result.Success<IExpr>(new BinaryExpr(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<Expr> ParsePrimary()
+    private Result<IExpr> ParsePrimary()
     {
         if (Match(TokenType.Other))
         {
-            return Result.Success<Expr>(new OtherExpr(Previous().Value));
+            return Result.Success<IExpr>(new OtherExpr(Previous().Value));
         }
 
         if (Match(TokenType.LeftParen))
@@ -494,22 +494,20 @@ internal class Parser
             return expr;
         }
 
-        return Result.Invalid<Expr>("Unexpected token");
+        return Result.Invalid<IExpr>("Unexpected token");
     }
 
     private bool Match(params TokenType[] types)
     {
-        foreach (var type in types)
+        if (types.Any(Check))
         {
-            if (Check(type))
-            {
-                Advance();
-                return true;
-            }
+            Advance();
+            return true;
         }
 
         return false;
     }
+
 
     private bool Check(TokenType type)
     {
@@ -546,7 +544,7 @@ internal class Parser
     }
 }
 
-internal class Token
+internal sealed class Token
 {
     public TokenType Type { get; }
     public string Value { get; }
