@@ -64,7 +64,7 @@ public class ExpressionEvaluatorContext
         return Result.NoContent<T>();
     }
 
-    private ExpressionEvaluatorContext CreateChildContext(string expression)
+    internal ExpressionEvaluatorContext CreateChildContext(string expression)
         => new ExpressionEvaluatorContext(expression, Settings, Context, Evaluator, CurrentRecursionLevel + 1, this);
 
     private static IEnumerable<(int StartIndex, int EndIndex)> BuildQuoteMap(string value)

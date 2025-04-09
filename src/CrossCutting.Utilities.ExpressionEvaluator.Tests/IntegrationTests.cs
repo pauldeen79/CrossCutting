@@ -2,7 +2,7 @@
 
 public sealed class IntegrationTests : TestBase, IDisposable
 {
-    [Fact(Skip = "To be implemented")]
+    [Fact]
     public void Can_Evaluate_Binary_Operator_Expression()
     {
         // Arrange
@@ -17,7 +17,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.Value.ShouldBe(true);
     }
 
-    [Fact(Skip = "To be implemented")]
+    [Fact]
     public void Can_Evaluate_Comparison_Operator_Expression()
     {
         // Arrange
@@ -107,7 +107,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.Value.ToStringWithDefault().ShouldBe("my value with replaced items");
     }
 
-    [Fact(Skip = "To be implemented")]
+    [Fact]
     public void Can_Evaluate_Mathematic_Expression()
     {
         // Arrange
@@ -139,7 +139,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.PartResults.First().ErrorMessage.ShouldBe("Argument Input is not of type System.String");
     }
 
-    [Theory(Skip = "To be implemented")]
+    [Theory]
     [InlineData("(1 + 1 + 1) == 3 && \"true\" == \"true\"")]
     [InlineData("(1 == 1) && 2 == 2")]
     public void Can_Evaluate_Complex_Expression(string expression)
