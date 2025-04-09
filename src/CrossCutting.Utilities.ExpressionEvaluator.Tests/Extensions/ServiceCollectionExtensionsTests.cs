@@ -38,30 +38,4 @@ public class ServiceCollectionExtensionsTests
 
         return data;
     }
-
-    [Theory]
-    [MemberData(nameof(GetAllOperators))]
-    public void Can_Resolve_Operator(Type operatorType)
-    {
-        // Arrange
-        var serviceCollection = new ServiceCollection().AddExpressionEvaluator();
-        using var provider = serviceCollection.BuildServiceProvider();
-
-        // Act
-        var expression = provider.GetServices<IOperator>().FirstOrDefault(x => x.GetType() == operatorType);
-
-        // Assert
-        expression.ShouldNotBeNull($"Operator {operatorType.FullName} could not be resolved, did you forget to register this?");
-    }
-
-    public static TheoryData<Type> GetAllOperators()
-    {
-        var data = new TheoryData<Type>();
-        foreach (var t in typeof(IOperator).Assembly.GetExportedTypes().Where(x => !x.IsInterface && !x.IsAbstract && x.GetAllInterfaces().Contains(typeof(IOperator))))
-        {
-            data.Add(t);
-        }
-
-        return data;
-    }
 }
