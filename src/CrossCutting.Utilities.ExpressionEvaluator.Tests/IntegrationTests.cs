@@ -33,6 +33,21 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_Mathematic_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "1 + 1 + 1";
+
+        // Act
+        var result = sut.Evaluate(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(3);
+    }
+
+    [Fact]
     public void Can_Evaluate_Function_Expression()
     {
         // Arrange
@@ -78,6 +93,36 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_Numeric_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "13";
+
+        // Act
+        var result = sut.Evaluate(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(13);
+    }
+
+    [Fact]
+    public void Can_Evaluate_Negative_Numeric_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "-13";
+
+        // Act
+        var result = sut.Evaluate(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(-13);
+    }
+
+    [Fact]
     public void Can_Evaluate_String_Expression()
     {
         // Arrange
@@ -105,21 +150,6 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ToStringWithDefault().ShouldBe("my value with replaced items");
-    }
-
-    [Fact]
-    public void Can_Evaluate_Mathematic_Expression()
-    {
-        // Arrange
-        var sut = CreateSut();
-        var expression = "1 + 1 + 1";
-
-        // Act
-        var result = sut.Evaluate(CreateContext(expression));
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(3);
     }
 
     [Fact]
