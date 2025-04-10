@@ -17,5 +17,6 @@ internal enum ExpressionTokenType
     GreaterEqual,
     AndAnd,
     OrOr,
+    Bang,
     EOF
 }

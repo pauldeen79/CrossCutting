@@ -152,6 +152,36 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.Value.ToStringWithDefault().ShouldBe("my value with replaced items");
     }
 
+    [Theory]
+    [InlineData("(1 + 1 + 1) == 3 && \"true\" == \"true\"")]
+    [InlineData("(1 == 1) && 2 == 2")]
+    public void Can_Evaluate_Operator_Expression(string expression)
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(true);
+    }
+
+    [Fact]
+    public void Can_Evaluate_Operator_Expression_With_Bang_Operator()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("!true"));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(false);
+    }
+
     [Fact]
     public void Can_Validate_Function_With_Wrong_ArgumentType()
     {
@@ -167,22 +197,6 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.ErrorMessage.ShouldBe("Validation of function MyFunction failed, see validation errors for more details");
         result.PartResults.Count.ShouldBe(1);
         result.PartResults.First().ErrorMessage.ShouldBe("Argument Input is not of type System.String");
-    }
-
-    [Theory]
-    [InlineData("(1 + 1 + 1) == 3 && \"true\" == \"true\"")]
-    [InlineData("(1 == 1) && 2 == 2")]
-    public void Can_Evaluate_Complex_Expression(string expression)
-    {
-        // Arrange
-        var sut = CreateSut();
-
-        // Act
-        var result = sut.Evaluate(CreateContext(expression));
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(true);
     }
 
     [Fact]

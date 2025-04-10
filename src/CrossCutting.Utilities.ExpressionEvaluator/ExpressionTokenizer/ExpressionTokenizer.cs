@@ -95,7 +95,8 @@ internal sealed class ExpressionTokenizer
                     }
                     else
                     {
-                        return Result.Invalid<List<ExpressionToken>>("Unexpected '!'");
+                        tokens.Add(new ExpressionToken(ExpressionTokenType.Bang));
+                        _position++;
                     }
 
                     break;

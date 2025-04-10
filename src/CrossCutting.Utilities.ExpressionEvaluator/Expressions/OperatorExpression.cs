@@ -2,7 +2,7 @@
 
 public class OperatorExpression : IExpression
 {
-    private static readonly string[] TokenSigns = ["+", "-", "*", "/", "(", ")", "==", "!=", "<", ">", "&&", "||"];
+    private static readonly string[] TokenSigns = ["+", "-", "*", "/", "(", ")", "==", "!", "<", ">", "&&", "||"];
 
     public int Order => 30;
 

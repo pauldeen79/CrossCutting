@@ -87,16 +87,28 @@ internal sealed class ExpressionParser
 
     private Result<IOperatorExpression> ParseMultiplicative()
     {
-        var expr = ParsePrimary();
+        var expr = ParseUnary();
 
         while (Match(ExpressionTokenType.Multiply, ExpressionTokenType.Divide))
         {
             var op = Previous();
-            var right = ParsePrimary();
+            var right = ParseUnary();
             expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
         }
 
         return expr;
+    }
+
+    private Result<IOperatorExpression> ParseUnary()
+    {
+        if (Match(ExpressionTokenType.Bang))
+        {
+            var operatorToken = Previous();
+            var right = ParseUnary(); // right-associative
+            return Result.Success<IOperatorExpression>(new UnaryExpression(operatorToken.Type, right));
+        }
+
+        return ParsePrimary();
     }
 
     private Result<IOperatorExpression> ParsePrimary()
