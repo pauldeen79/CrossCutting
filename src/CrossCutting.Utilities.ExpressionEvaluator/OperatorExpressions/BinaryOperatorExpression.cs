@@ -1,12 +1,12 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionParser;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.OperatorExpressions;
 
-internal sealed class BinaryExpr : IExpr
+internal sealed class BinaryOperatorExpression : IOperatorExpression
 {
-    public Result<IExpr> Left { get; }
+    public Result<IOperatorExpression> Left { get; }
     public ExpressionTokenType Operator { get; }
-    public Result<IExpr> Right { get; }
+    public Result<IOperatorExpression> Right { get; }
 
-    public BinaryExpr(Result<IExpr> left, ExpressionTokenType op, Result<IExpr> right)
+    public BinaryOperatorExpression(Result<IOperatorExpression> left, ExpressionTokenType op, Result<IOperatorExpression> right)
     {
         Left = left;
         Operator = op;

@@ -10,12 +10,12 @@ internal sealed class ExpressionParser
         _tokens = tokens;
     }
 
-    public Result<IExpr> Parse()
+    public Result<IOperatorExpression> Parse()
     {
         return ParseLogicalOr();
     }
 
-    private Result<IExpr> ParseLogicalOr()
+    private Result<IOperatorExpression> ParseLogicalOr()
     {
         var expr = ParseLogicalAnd();
 
@@ -23,13 +23,13 @@ internal sealed class ExpressionParser
         {
             var op = Previous();
             var right = ParseLogicalAnd();
-            expr = Result.Success<IExpr>(new BinaryExpr(expr, op.Type, right));
+            expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<IExpr> ParseLogicalAnd()
+    private Result<IOperatorExpression> ParseLogicalAnd()
     {
         var expr = ParseEquality();
 
@@ -37,13 +37,13 @@ internal sealed class ExpressionParser
         {
             var op = Previous();
             var right = ParseEquality();
-            expr = Result.Success<IExpr>(new BinaryExpr(expr, op.Type, right));
+            expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<IExpr> ParseEquality()
+    private Result<IOperatorExpression> ParseEquality()
     {
         var expr = ParseComparison();
 
@@ -51,13 +51,13 @@ internal sealed class ExpressionParser
         {
             var op = Previous();
             var right = ParseAdditive();
-            expr = Result.Success<IExpr>(new BinaryExpr(expr, op.Type, right));
+            expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<IExpr> ParseComparison()
+    private Result<IOperatorExpression> ParseComparison()
     {
         var expr = ParseAdditive();
 
@@ -65,13 +65,13 @@ internal sealed class ExpressionParser
         {
             var op = Previous();
             var right = ParseAdditive();
-            expr = Result.Success<IExpr>(new BinaryExpr(expr, op.Type, right));
+            expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<IExpr> ParseAdditive()
+    private Result<IOperatorExpression> ParseAdditive()
     {
         var expr = ParseMultiplicative();
 
@@ -79,13 +79,13 @@ internal sealed class ExpressionParser
         {
             var op = Previous();
             var right = ParseMultiplicative();
-            expr = Result.Success<IExpr>(new BinaryExpr(expr, op.Type, right));
+            expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<IExpr> ParseMultiplicative()
+    private Result<IOperatorExpression> ParseMultiplicative()
     {
         var expr = ParsePrimary();
 
@@ -93,17 +93,17 @@ internal sealed class ExpressionParser
         {
             var op = Previous();
             var right = ParsePrimary();
-            expr = Result.Success<IExpr>(new BinaryExpr(expr, op.Type, right));
+            expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<IExpr> ParsePrimary()
+    private Result<IOperatorExpression> ParsePrimary()
     {
         if (Match(ExpressionTokenType.Other))
         {
-            return Result.Success<IExpr>(new OtherExpr(Previous().Value));
+            return Result.Success<IOperatorExpression>(new NonBinaryOperatorExpression(Previous().Value));
         }
 
         if (Match(ExpressionTokenType.LeftParen))
@@ -113,7 +113,7 @@ internal sealed class ExpressionParser
             return expr;
         }
 
-        return Result.Invalid<IExpr>("Unexpected token");
+        return Result.Invalid<IOperatorExpression>("Unexpected token");
     }
 
     private bool Match(params ExpressionTokenType[] types)

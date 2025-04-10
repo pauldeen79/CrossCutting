@@ -1,10 +1,10 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionParser;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.OperatorExpressions;
 
-internal sealed class OtherExpr : IExpr
+internal sealed class NonBinaryOperatorExpression : IOperatorExpression
 {
     private string Value { get; }
 
-    public OtherExpr(string value)
+    public NonBinaryOperatorExpression(string value)
     {
         Value = value;
     }
