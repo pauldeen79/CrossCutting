@@ -16,5 +16,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IFunctionDescriptorProvider, FunctionDescriptorProvider>()
             .AddSingleton<IFunctionParser, FunctionParser>()
             .AddSingleton<IFunctionResolver, FunctionResolver>()
-            .AddSingleton<IExpression, NumericExpression>();
+            .AddSingleton<IExpression, NumericExpression>()
+            .AddSingleton<IExpression, OperatorExpression>();
 }
