@@ -183,6 +183,20 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_Operator_Expression_With_Double_Bang_Operator()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("!!true"));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(true);
+    }
+
+    [Fact]
     public void Can_Validate_Function_With_Wrong_ArgumentType()
     {
         // Arrange
