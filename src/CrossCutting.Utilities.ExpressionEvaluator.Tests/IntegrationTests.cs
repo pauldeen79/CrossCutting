@@ -37,14 +37,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "1 + 1 + 1";
+        var expression = "-1 + 1 + 1";
 
         // Act
         var result = sut.Evaluate(CreateContext(expression));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(3);
+        result.Value.ShouldBe(1);
     }
 
     [Fact]

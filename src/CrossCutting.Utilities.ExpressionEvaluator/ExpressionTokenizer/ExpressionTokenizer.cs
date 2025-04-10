@@ -40,12 +40,26 @@ internal sealed class ExpressionTokenizer
             switch (current)
             {
                 case '+':
-                    tokens.Add(new ExpressionToken(ExpressionTokenType.Plus));
-                    _position++;
+                    if (char.IsNumber(Peek()))
+                    {
+                        tokens.Add(ReadOtherFromPlusOrMinus());
+                    }
+                    else
+                    {
+                        tokens.Add(new ExpressionToken(ExpressionTokenType.Plus));
+                        _position++;
+                    }
                     break;
                 case '-':
-                    tokens.Add(new ExpressionToken(ExpressionTokenType.Minus));
-                    _position++;
+                    if (char.IsNumber(Peek()))
+                    {
+                        tokens.Add(ReadOtherFromPlusOrMinus());
+                    }
+                    else
+                    {
+                        tokens.Add(new ExpressionToken(ExpressionTokenType.Minus));
+                        _position++;
+                    }
                     break;
                 case '*':
                     tokens.Add(new ExpressionToken(ExpressionTokenType.Multiply));
@@ -153,6 +167,18 @@ internal sealed class ExpressionTokenizer
         return new ExpressionToken(ExpressionTokenType.Other, value);
     }
 
+    private ExpressionToken ReadOtherFromPlusOrMinus()
+    {
+        var start = _position;
+        while (_position < _input.Length && (_position == start || !IsTokenSign(_input[_position], false)))
+        {
+            _position++;
+        }
+
+        var value = _input.Substring(start, _position - start);
+        return new ExpressionToken(ExpressionTokenType.Other, value);
+    }
+
     private static bool IsTokenSign(char current, bool inQuotes)
     {
         if (inQuotes)
@@ -172,6 +198,16 @@ internal sealed class ExpressionTokenizer
 
         _position += 2;
         return true;
+    }
+
+    private char Peek()
+    {
+        if (_position + 1 >= _input.Length)
+        {
+            return ' ';
+        }
+
+        return _input[_position + 1];
     }
 
     private static readonly char[] TokenSigns = ['+', '-', '*', '/', '(', ')', '=', '!', '<', '>', '&', '|'];
