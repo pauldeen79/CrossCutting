@@ -20,6 +20,36 @@ public class NumericExpressionTests : TestBase<NumericExpression>
         }
 
         [Fact]
+        public void Returns_Correct_Result_For_Negative_Int32()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = CreateContext("-13");
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(-13);
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_For_Forced_Positive_Int32()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = CreateContext("+13");
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(13);
+        }
+
+        [Fact]
         public void Returns_Correct_Result_For_Int64()
         {
             // Arrange
