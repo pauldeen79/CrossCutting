@@ -49,10 +49,9 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions
             return instance;
         }
 
-        public static T WithExpressionType<T>(this T instance, System.Type expressionType)
+        public static T WithExpressionType<T>(this T instance, System.Type? expressionType)
             where T : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IParseResultBuilder
         {
-            if (expressionType is null) throw new System.ArgumentNullException(nameof(expressionType));
             instance.ExpressionType = expressionType;
             return instance;
         }

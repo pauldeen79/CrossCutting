@@ -7,6 +7,6 @@ internal interface IParseResult
     string? ErrorMessage { get; }
 
     [Required(AllowEmptyStrings = true)] string SourceExpression { get; }
-    Type ExpressionType { get; }
+    Type? ExpressionType { get; }
     Type? ResultType { get; }
 }

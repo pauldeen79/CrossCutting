@@ -232,7 +232,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         private string _sourceExpression;
 
-        private System.Type _expressionType;
+        private System.Type? _expressionType;
 
         private System.Type? _resultType;
 
@@ -327,7 +327,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
         }
 
-        public System.Type ExpressionType
+        public System.Type? ExpressionType
         {
             get
             {
@@ -336,7 +336,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             set
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Type>.Default.Equals(_expressionType!, value!);
-                _expressionType = value ?? throw new System.ArgumentNullException(nameof(value));
+                _expressionType = value;
                 if (hasChanged) HandlePropertyChanged(nameof(ExpressionType));
             }
         }
@@ -376,7 +376,6 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _validationErrors = new System.Collections.Generic.List<CrossCutting.Common.Results.ValidationError>();
             _partName = string.Empty;
             _sourceExpression = string.Empty;
-            _expressionType = default(System.Type)!;
             SetDefaultValues();
         }
 
@@ -429,7 +428,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         private string _sourceExpression;
 
-        private System.Type _expressionType;
+        private System.Type? _expressionType;
 
         private System.Type? _resultType;
 
@@ -509,7 +508,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
         }
 
-        public System.Type ExpressionType
+        public System.Type? ExpressionType
         {
             get
             {
@@ -518,7 +517,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             set
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Type>.Default.Equals(_expressionType!, value!);
-                _expressionType = value ?? throw new System.ArgumentNullException(nameof(value));
+                _expressionType = value;
                 if (hasChanged) HandlePropertyChanged(nameof(ExpressionType));
             }
         }
@@ -556,7 +555,6 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _partResults = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder>();
             _validationErrors = new System.Collections.Generic.List<CrossCutting.Common.Results.ValidationError>();
             _sourceExpression = string.Empty;
-            _expressionType = default(System.Type)!;
             SetDefaultValues();
         }
 
