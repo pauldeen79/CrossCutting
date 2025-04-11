@@ -221,7 +221,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "MyFunction(123)";
 
         // Act
-        var result = sut.Parse(CreateContext(expression, validateArgumentTypes: false));
+        var result = sut.Parse(CreateContext(expression, settings: new ExpressionEvaluatorSettingsBuilder().WithValidateArgumentTypes(false)));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

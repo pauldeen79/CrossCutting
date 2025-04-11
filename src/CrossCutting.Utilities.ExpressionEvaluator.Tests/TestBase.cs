@@ -5,8 +5,14 @@ public abstract class TestBase
     protected IExpressionEvaluator Evaluator { get; }
     protected IExpression Expression { get; }
 
-    protected ExpressionEvaluatorContext CreateContext(string? expression, object? context = null, int currentRecursionLevel = 1, ExpressionEvaluatorContext? parentContext = null, IExpressionEvaluator? evaluator = null, bool validateArgumentTypes = true)
-        => new ExpressionEvaluatorContext(expression, new ExpressionEvaluatorSettingsBuilder().WithValidateArgumentTypes(validateArgumentTypes), context, evaluator ?? Evaluator, currentRecursionLevel, parentContext);
+    protected ExpressionEvaluatorContext CreateContext(
+        string? expression,
+        object? context = null,
+        int currentRecursionLevel = 1,
+        ExpressionEvaluatorContext? parentContext = null,
+        IExpressionEvaluator? evaluator = null,
+        ExpressionEvaluatorSettingsBuilder? settings = null)
+            => new ExpressionEvaluatorContext(expression, settings ?? new ExpressionEvaluatorSettingsBuilder(), context, evaluator ?? Evaluator, currentRecursionLevel, parentContext);
 
     protected TestBase()
     {

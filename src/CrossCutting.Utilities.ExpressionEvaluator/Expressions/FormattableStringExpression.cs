@@ -111,13 +111,13 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
                 results.Add(Result.Invalid<GenericFormattableString>("Missing expression"));
                 remainder = remainder.Substring(0, placeholderSignsResult.Value.openIndex)
                     + $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"
-                    + remainder.Substring(placeholderSignsResult.Value.closeIndex + 1);
+                    + remainder.Substring(placeholderSignsResult.Value.closeIndex + context.Settings.PlaceholderEnd.Length);
                 continue;
             }
 
             remainder = remainder.Substring(0, placeholderSignsResult.Value.openIndex)
                 + $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"
-                + remainder.Substring(placeholderSignsResult.Value.closeIndex + 1);
+                + remainder.Substring(placeholderSignsResult.Value.closeIndex + context.Settings.PlaceholderEnd.Length);
 
             var placeholderResult = ProcessPlaceholder(context, validateOnly, placeholder);
 
@@ -131,7 +131,7 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
                 results.Add(Result.FromExistingResult<GenericFormattableString>(placeholderResult));
                 remainder = remainder.Substring(0, placeholderSignsResult.Value.openIndex)
                     + $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"
-                    + remainder.Substring(placeholderSignsResult.Value.closeIndex + 1);
+                    + remainder.Substring(placeholderSignsResult.Value.closeIndex + context.Settings.PlaceholderEnd.Length);
                 continue;
             }
 
