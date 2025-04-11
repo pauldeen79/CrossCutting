@@ -2,7 +2,7 @@
 
 public class OperatorExpression : IExpression
 {
-    private static readonly string[] TokenSigns = ["+", "-", "*", "/", "(", ")", "==", "!", "<", ">", "&&", "||"];
+    private static readonly string[] OperatorSigns = ["+", "-", "*", "/", "(", ")", "==", "!", "<", ">", "&&", "||"];
 
     public int Order => 30;
 
@@ -10,7 +10,7 @@ public class OperatorExpression : IExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (!context.FindAllOccurencedNotWithinQuotes(TokenSigns, context.Settings.StringComparison))
+        if (!context.FindAllOccurencedNotWithinQuotes(OperatorSigns, context.Settings.StringComparison))
         {
             return Result.Continue<object?>();
         }
@@ -21,14 +21,15 @@ public class OperatorExpression : IExpression
         {
             return Result.FromExistingResult<object?>(tokensResult);
         }
+
         var parser = new ExpressionParser.ExpressionParser(tokensResult.Value!);
-        var exprResult = parser.Parse();
-        if (!exprResult.IsSuccessful())
+        var parseResult = parser.Parse();
+        if (!parseResult.IsSuccessful())
         {
-            return Result.FromExistingResult<object?>(exprResult);
+            return Result.FromExistingResult<object?>(parseResult);
         }
 
-        return exprResult.Value!.Evaluate(context, value => context.Evaluate(value));
+        return parseResult.Value!.Evaluate(context, value => context.Evaluate(value));
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
@@ -39,6 +40,27 @@ public class OperatorExpression : IExpression
             .WithExpressionType(typeof(OperatorExpression))
             .WithSourceExpression(context.Expression);
 
-        return result;
+        var tokenizer = new ExpressionTokenizer.ExpressionTokenizer(context.Expression);
+        var tokensResult = tokenizer.Tokenize();
+        if (!tokensResult.IsSuccessful())
+        {
+            return result
+                .WithErrorMessage(tokensResult.ErrorMessage)
+                .WithStatus(tokensResult.Status)
+                .AddValidationErrors(tokensResult.ValidationErrors);
+        }
+
+        var parser = new ExpressionParser.ExpressionParser(tokensResult.Value!);
+        var parseResult = parser.Parse();
+        if (!parseResult.IsSuccessful())
+        {
+            return result
+                .WithErrorMessage(parseResult.ErrorMessage)
+                .WithStatus(parseResult.Status)
+                .AddValidationErrors(parseResult.ValidationErrors);
+        }
+
+        //TODO: Add ExpressionType to IOperatorExpression
+        return result/*.WithExpressionType(parseResult.Value.ExpressionType)*/;
     }
 }
