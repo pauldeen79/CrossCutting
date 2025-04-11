@@ -18,6 +18,7 @@ global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 global using CrossCutting.Utilities.ExpressionEvaluator.ExpressionTokenizer;
-global using CrossCutting.Utilities.ExpressionEvaluator.OperatorExpressions;
+global using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
+global using CrossCutting.Utilities.ExpressionEvaluator.Operators;
 global using CrossCutting.Utilities.Operators;
 global using Microsoft.Extensions.DependencyInjection;

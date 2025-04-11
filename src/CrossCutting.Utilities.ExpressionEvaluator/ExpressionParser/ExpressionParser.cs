@@ -10,12 +10,12 @@ internal sealed class ExpressionParser
         _tokens = tokens;
     }
 
-    public Result<IOperatorExpression> Parse()
+    public Result<IOperator> Parse()
     {
         return ParseLogicalOr();
     }
 
-    private Result<IOperatorExpression> ParseLogicalOr()
+    private Result<IOperator> ParseLogicalOr()
     {
         var expr = ParseLogicalAnd();
 
@@ -23,13 +23,13 @@ internal sealed class ExpressionParser
         {
             var op = Previous();
             var right = ParseLogicalAnd();
-            expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
+            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<IOperatorExpression> ParseLogicalAnd()
+    private Result<IOperator> ParseLogicalAnd()
     {
         var expr = ParseEquality();
 
@@ -37,13 +37,13 @@ internal sealed class ExpressionParser
         {
             var op = Previous();
             var right = ParseEquality();
-            expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
+            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<IOperatorExpression> ParseEquality()
+    private Result<IOperator> ParseEquality()
     {
         var expr = ParseComparison();
 
@@ -51,13 +51,13 @@ internal sealed class ExpressionParser
         {
             var op = Previous();
             var right = ParseAdditive();
-            expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
+            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<IOperatorExpression> ParseComparison()
+    private Result<IOperator> ParseComparison()
     {
         var expr = ParseAdditive();
 
@@ -65,13 +65,13 @@ internal sealed class ExpressionParser
         {
             var op = Previous();
             var right = ParseAdditive();
-            expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
+            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<IOperatorExpression> ParseAdditive()
+    private Result<IOperator> ParseAdditive()
     {
         var expr = ParseMultiplicative();
 
@@ -79,13 +79,13 @@ internal sealed class ExpressionParser
         {
             var op = Previous();
             var right = ParseMultiplicative();
-            expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
+            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<IOperatorExpression> ParseMultiplicative()
+    private Result<IOperator> ParseMultiplicative()
     {
         var expr = ParseUnary();
 
@@ -93,29 +93,29 @@ internal sealed class ExpressionParser
         {
             var op = Previous();
             var right = ParseUnary();
-            expr = Result.Success<IOperatorExpression>(new BinaryOperatorExpression(expr, op.Type, right));
+            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right));
         }
 
         return expr;
     }
 
-    private Result<IOperatorExpression> ParseUnary()
+    private Result<IOperator> ParseUnary()
     {
         if (Match(ExpressionTokenType.Bang))
         {
             var operatorToken = Previous();
             var right = ParseUnary(); // right-associative
-            return Result.Success<IOperatorExpression>(new UnaryExpression(operatorToken.Type, right));
+            return Result.Success<IOperator>(new UnaryOPerator(operatorToken.Type, right));
         }
 
         return ParsePrimary();
     }
 
-    private Result<IOperatorExpression> ParsePrimary()
+    private Result<IOperator> ParsePrimary()
     {
         if (Match(ExpressionTokenType.Other))
         {
-            return Result.Success<IOperatorExpression>(new NonBinaryOperatorExpression(Previous().Value));
+            return Result.Success<IOperator>(new ExpressionOperator(Previous().Value));
         }
 
         if (Match(ExpressionTokenType.LeftParen))
@@ -125,7 +125,7 @@ internal sealed class ExpressionParser
             return expr;
         }
 
-        return Result.Invalid<IOperatorExpression>("Unexpected token");
+        return Result.Invalid<IOperator>("Unexpected token");
     }
 
     private bool Match(params ExpressionTokenType[] types)

@@ -29,7 +29,7 @@ public class OperatorExpression : IExpression
             return Result.FromExistingResult<object?>(parseResult);
         }
 
-        return parseResult.Value!.Evaluate(context, value => context.Evaluate(value));
+        return parseResult.GetValueOrThrow().Evaluate(context);
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
@@ -60,7 +60,6 @@ public class OperatorExpression : IExpression
                 .AddValidationErrors(parseResult.ValidationErrors);
         }
 
-        //TODO: Add ExpressionType to IOperatorExpression
-        return result/*.WithExpressionType(parseResult.Value.ExpressionType)*/;
+        return parseResult.GetValueOrThrow().Parse(context);
     }
 }

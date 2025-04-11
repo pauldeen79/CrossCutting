@@ -2,12 +2,12 @@
 
 public partial class ExpressionParseResultBuilder
 {
-    public void AddPartResult(ExpressionParseResult itemResult, string partName)
+    public ExpressionParseResultBuilder AddPartResult(ExpressionParseResult itemResult, string partName)
     {
         itemResult = ArgumentGuard.IsNotNull(itemResult, nameof(itemResult));
         partName = ArgumentGuard.IsNotNullOrEmpty(partName, nameof(partName));
 
-        AddPartResults(new ExpressionParsePartResultBuilder()
+        return AddPartResults(new ExpressionParsePartResultBuilder()
             .WithPartName(partName)
             .WithStatus(itemResult.Status)
             .AddValidationErrors(itemResult.ValidationErrors)

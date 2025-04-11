@@ -1,23 +1,23 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.OperatorExpressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Operators;
 
-internal sealed class BinaryOperatorExpression : IOperatorExpression
+internal sealed class BinaryOperator : IOperator
 {
-    public Result<IOperatorExpression> Left { get; }
+    public Result<IOperator> Left { get; }
     public ExpressionTokenType Operator { get; }
-    public Result<IOperatorExpression> Right { get; }
+    public Result<IOperator> Right { get; }
 
-    public BinaryOperatorExpression(Result<IOperatorExpression> left, ExpressionTokenType op, Result<IOperatorExpression> right)
+    public BinaryOperator(Result<IOperator> left, ExpressionTokenType op, Result<IOperator> right)
     {
         Left = left;
         Operator = op;
         Right = right;
     }
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context, Func<string, Result<object?>> @delegate)
+    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
     {
         var results = new ResultDictionaryBuilder<object?>()
-            .Add(Constants.LeftExpression, () => Left.Value?.Evaluate(context, @delegate) ?? Result.FromExistingResult<object?>(Left))
-            .Add(Constants.RightExpression, () => Right.Value?.Evaluate(context, @delegate) ?? Result.FromExistingResult<object?>(Right))
+            .Add(Constants.LeftExpression, () => Left.Value?.Evaluate(context) ?? Result.FromExistingResult<object?>(Left))
+            .Add(Constants.RightExpression, () => Right.Value?.Evaluate(context) ?? Result.FromExistingResult<object?>(Right))
             .Build();
 
         var error = results.GetError();
@@ -40,31 +40,49 @@ internal sealed class BinaryOperatorExpression : IOperatorExpression
             ExpressionTokenType.GreaterEqual => GreaterOrEqualThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
             ExpressionTokenType.AndAnd => EvaluateAnd(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
             ExpressionTokenType.OrOr => EvaluateOr(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
-            _ => Result.Invalid<object?>("Unsupported operator")
+            _ => Result.Invalid<object?>($"Unsupported operator: {Operator}")
+        };
+    }
+
+    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
+    {
+        var leftResult = Left.Value?.Parse(context);
+        var rightResult = Right.Value?.Parse(context);
+
+        var result = new ExpressionParseResultBuilder()
+            .WithExpressionType(typeof(OperatorExpression))
+            .WithSourceExpression(context.Expression)
+            .WithResultType(typeof(bool))
+            .AddPartResult(leftResult ?? new ExpressionParseResultBuilder().WithErrorMessage(Left.ErrorMessage).WithStatus(Left.Status).AddValidationErrors(Left.ValidationErrors), Constants.LeftExpression)
+            .AddPartResult(rightResult ?? new ExpressionParseResultBuilder().WithErrorMessage(Right.ErrorMessage).WithStatus(Right.Status).AddValidationErrors(Right.ValidationErrors), Constants.RightExpression)
+            .SetStatusFromPartResults();
+
+        if (!result.Status.IsSuccessful())
+        {
+            return result;
+        }
+
+        return Operator switch
+        {
+            ExpressionTokenType.Plus or
+            ExpressionTokenType.Minus or
+            ExpressionTokenType.Multiply or
+            ExpressionTokenType.Divide or
+            ExpressionTokenType.EqualEqual or
+            ExpressionTokenType.NotEqual or
+            ExpressionTokenType.Less or
+            ExpressionTokenType.LessEqual or
+            ExpressionTokenType.Greater or
+            ExpressionTokenType.GreaterEqual or
+            ExpressionTokenType.AndAnd or
+            ExpressionTokenType.OrOr => result,
+            _ => result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Unsupported operator: {Operator}")
         };
     }
 
     private static Result<object?> EvaluateAnd(object? left, object? right)
-        => Result.Success<object?>(GetBooleanValue(left) && GetBooleanValue(right));
+        => Result.Success<object?>(left.ToBoolean() && right.ToBoolean());
 
     private static Result<object?> EvaluateOr(object? left, object? right)
-        => Result.Success<object?>(GetBooleanValue(left) || GetBooleanValue(right));
-
-    private static bool GetBooleanValue(object? value)
-    {
-        if (value is bool b)
-        {
-            return b;
-        }
-        else if (value is string s)
-        {
-            // design decision: if it's a string, then do a null or empty check
-            return !string.IsNullOrEmpty(s);
-        }
-        else
-        {
-            // design decision: if it's not a boolean, then do a null check
-            return value is not null;
-        }
-    }
+        => Result.Success<object?>(left.ToBoolean() || right.ToBoolean());
 }
