@@ -3,7 +3,17 @@
 public class OperatorExpression : IExpression
 {
     private static readonly string[] OperatorSigns = ["+", "-", "*", "/", "(", ")", "==", "!", "<", ">", "&&", "||"];
+    private readonly IOperatorExpressionTokenizer _tokenizer;
+    private readonly IOperatorExpressionParser _parser;
 
+    public OperatorExpression(IOperatorExpressionTokenizer tokenizer, IOperatorExpressionParser parser)
+    {
+        ArgumentGuard.IsNotNull(tokenizer, nameof(tokenizer));
+        ArgumentGuard.IsNotNull(parser, nameof(parser));
+        
+        _tokenizer = tokenizer;
+        _parser = parser;
+    }
     public int Order => 30;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
@@ -15,15 +25,13 @@ public class OperatorExpression : IExpression
             return Result.Continue<object?>();
         }
 
-        var tokenizer = new ExpressionTokenizer.ExpressionTokenizer(context.Expression);
-        var tokensResult = tokenizer.Tokenize();
+        var tokensResult = _tokenizer.Tokenize(context.Expression);
         if (!tokensResult.IsSuccessful())
         {
             return Result.FromExistingResult<object?>(tokensResult);
         }
 
-        var parser = new ExpressionParser.ExpressionParser(tokensResult.Value!);
-        var parseResult = parser.Parse();
+        var parseResult = _parser.Parse(tokensResult.GetValueOrThrow());
         if (!parseResult.IsSuccessful())
         {
             return Result.FromExistingResult<object?>(parseResult);
@@ -40,8 +48,7 @@ public class OperatorExpression : IExpression
             .WithExpressionType(typeof(OperatorExpression))
             .WithSourceExpression(context.Expression);
 
-        var tokenizer = new ExpressionTokenizer.ExpressionTokenizer(context.Expression);
-        var tokensResult = tokenizer.Tokenize();
+        var tokensResult = _tokenizer.Tokenize(context.Expression);
         if (!tokensResult.IsSuccessful())
         {
             return result
@@ -50,8 +57,7 @@ public class OperatorExpression : IExpression
                 .AddValidationErrors(tokensResult.ValidationErrors);
         }
 
-        var parser = new ExpressionParser.ExpressionParser(tokensResult.Value!);
-        var parseResult = parser.Parse();
+        var parseResult = _parser.Parse(tokensResult.GetValueOrThrow());
         if (!parseResult.IsSuccessful())
         {
             return result

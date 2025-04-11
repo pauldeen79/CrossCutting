@@ -1,11 +1,11 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Operators;
 
-internal sealed class UnaryOPerator : IOperator
+internal sealed class UnaryOperator : IOperator
 {
-    public ExpressionTokenType Operator { get; }
+    public OperatorExpressionTokenType Operator { get; }
     public Result<IOperator> Operand { get; }
 
-    public UnaryOPerator(ExpressionTokenType operatorType, Result<IOperator> operand)
+    public UnaryOperator(OperatorExpressionTokenType operatorType, Result<IOperator> operand)
     {
         Operator = operatorType;
         Operand = operand;

@@ -1,14 +1,14 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionTokenizer;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-internal enum ExpressionTokenType
+public enum OperatorExpressionTokenType
 {
-    Other,
+    Expression,
     Plus,
     Minus,
     Multiply,
     Divide,
-    LeftParen,
-    RightParen,
+    LeftParenthesis,
+    RightParenthesis,
     EqualEqual,
     NotEqual,
     Less,

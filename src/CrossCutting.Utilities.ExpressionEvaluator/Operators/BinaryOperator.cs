@@ -3,10 +3,10 @@
 internal sealed class BinaryOperator : IOperator
 {
     public Result<IOperator> Left { get; }
-    public ExpressionTokenType Operator { get; }
+    public OperatorExpressionTokenType Operator { get; }
     public Result<IOperator> Right { get; }
 
-    public BinaryOperator(Result<IOperator> left, ExpressionTokenType op, Result<IOperator> right)
+    public BinaryOperator(Result<IOperator> left, OperatorExpressionTokenType op, Result<IOperator> right)
     {
         Left = left;
         Operator = op;
@@ -28,18 +28,18 @@ internal sealed class BinaryOperator : IOperator
 
         return Operator switch
         {
-            ExpressionTokenType.Plus => Add.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
-            ExpressionTokenType.Minus => Subtract.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
-            ExpressionTokenType.Multiply => Multiply.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
-            ExpressionTokenType.Divide => Divide.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
-            ExpressionTokenType.EqualEqual => Equal.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.StringComparison).TryCastAllowNull<object?>(),
-            ExpressionTokenType.NotEqual => NotEqual.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.StringComparison).TryCastAllowNull<object?>(),
-            ExpressionTokenType.Less => SmallerThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
-            ExpressionTokenType.LessEqual => SmallerOrEqualThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
-            ExpressionTokenType.Greater => GreaterThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
-            ExpressionTokenType.GreaterEqual => GreaterOrEqualThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
-            ExpressionTokenType.AndAnd => EvaluateAnd(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
-            ExpressionTokenType.OrOr => EvaluateOr(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
+            OperatorExpressionTokenType.Plus => Add.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
+            OperatorExpressionTokenType.Minus => Subtract.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
+            OperatorExpressionTokenType.Multiply => Multiply.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
+            OperatorExpressionTokenType.Divide => Divide.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
+            OperatorExpressionTokenType.EqualEqual => Equal.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.StringComparison).TryCastAllowNull<object?>(),
+            OperatorExpressionTokenType.NotEqual => NotEqual.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.StringComparison).TryCastAllowNull<object?>(),
+            OperatorExpressionTokenType.Less => SmallerThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
+            OperatorExpressionTokenType.LessEqual => SmallerOrEqualThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
+            OperatorExpressionTokenType.Greater => GreaterThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
+            OperatorExpressionTokenType.GreaterEqual => GreaterOrEqualThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
+            OperatorExpressionTokenType.AndAnd => EvaluateAnd(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
+            OperatorExpressionTokenType.OrOr => EvaluateOr(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
             _ => Result.Invalid<object?>($"Unsupported operator: {Operator}")
         };
     }
@@ -64,18 +64,18 @@ internal sealed class BinaryOperator : IOperator
 
         return Operator switch
         {
-            ExpressionTokenType.Plus or
-            ExpressionTokenType.Minus or
-            ExpressionTokenType.Multiply or
-            ExpressionTokenType.Divide or
-            ExpressionTokenType.EqualEqual or
-            ExpressionTokenType.NotEqual or
-            ExpressionTokenType.Less or
-            ExpressionTokenType.LessEqual or
-            ExpressionTokenType.Greater or
-            ExpressionTokenType.GreaterEqual or
-            ExpressionTokenType.AndAnd or
-            ExpressionTokenType.OrOr => result,
+            OperatorExpressionTokenType.Plus or
+            OperatorExpressionTokenType.Minus or
+            OperatorExpressionTokenType.Multiply or
+            OperatorExpressionTokenType.Divide or
+            OperatorExpressionTokenType.EqualEqual or
+            OperatorExpressionTokenType.NotEqual or
+            OperatorExpressionTokenType.Less or
+            OperatorExpressionTokenType.LessEqual or
+            OperatorExpressionTokenType.Greater or
+            OperatorExpressionTokenType.GreaterEqual or
+            OperatorExpressionTokenType.AndAnd or
+            OperatorExpressionTokenType.OrOr => result,
             _ => result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Unsupported operator: {Operator}")
         };
     }
