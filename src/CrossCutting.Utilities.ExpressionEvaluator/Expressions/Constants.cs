@@ -1,10 +1,9 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-[ExcludeFromCodeCoverage]
-internal static class Constants
+public static class Constants
 {
-    internal const string LeftExpression = nameof(LeftExpression);
-    internal const string RightExpression = nameof(RightExpression);
-    internal const string Expression = nameof(Expression);
-    internal const string Operand = nameof(Operand);
+    public const string LeftExpression = nameof(LeftExpression);
+    public const string RightExpression = nameof(RightExpression);
+    public const string Expression = nameof(Expression);
+    public const string Operand = nameof(Operand);
 }

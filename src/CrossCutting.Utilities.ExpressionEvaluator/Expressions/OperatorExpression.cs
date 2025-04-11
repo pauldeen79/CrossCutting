@@ -2,9 +2,12 @@
 
 public class OperatorExpression : IExpression
 {
-    private static readonly string[] OperatorSigns = ["+", "-", "*", "/", "(", ")", "==", "!", "<", ">", "&&", "||"];
     private readonly IOperatorExpressionTokenizer _tokenizer;
     private readonly IOperatorExpressionParser _parser;
+
+    private static readonly string[] OperatorSigns = ["+", "-", "*", "/", "(", ")", "==", "!", "<", ">", "&&", "||"];
+
+    public const string Tokenize = nameof(Tokenize);
 
     public OperatorExpression(IOperatorExpressionTokenizer tokenizer, IOperatorExpressionParser parser)
     {
@@ -26,9 +29,9 @@ public class OperatorExpression : IExpression
         }
 
         return new ResultDictionaryBuilder()
-            .Add("Tokenize", () => _tokenizer.Tokenize(context.Expression))
-            .Add("Parse", results => _parser.Parse(results.GetValue<List<OperatorExpressionToken>>("Tokenize")))
-            .Add("Evaluate", results => results.GetValue<IOperator>("Parse").Evaluate(context))
+            .Add(nameof(Tokenize), () => _tokenizer.Tokenize(context.Expression))
+            .Add(nameof(Parse), results => _parser.Parse(results.GetValue<List<OperatorExpressionToken>>(nameof(Tokenize))))
+            .Add(nameof(Evaluate), results => results.GetValue<IOperator>(nameof(Parse)).Evaluate(context))
             .Build()
             .Aggregate<object?>();
     }
@@ -47,8 +50,8 @@ public class OperatorExpression : IExpression
         }
 
         var results = new ResultDictionaryBuilder()
-            .Add("Tokenize", () => _tokenizer.Tokenize(context.Expression))
-            .Add("Parse", results => _parser.Parse(results.GetValue<List<OperatorExpressionToken>>("Tokenize")))
+            .Add(nameof(Tokenize), () => _tokenizer.Tokenize(context.Expression))
+            .Add(nameof(Parse), results => _parser.Parse(results.GetValue<List<OperatorExpressionToken>>(nameof(Tokenize))))
             .Build();
 
         var error = results.GetError();
@@ -57,6 +60,6 @@ public class OperatorExpression : IExpression
             return result.FillFromResult(error);
         }
 
-        return results.GetValue<IOperator>("Parse").Parse(context);
+        return results.GetValue<IOperator>(nameof(Parse)).Parse(context);
     }
 }
