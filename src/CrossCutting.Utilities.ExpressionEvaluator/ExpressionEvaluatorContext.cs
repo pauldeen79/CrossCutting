@@ -8,9 +8,16 @@ public class ExpressionEvaluatorContext
     public IEnumerable<(int StartIndex, int EndIndex)> QuoteMap { get; }
     public int CurrentRecursionLevel { get; }
     public ExpressionEvaluatorContext? ParentContext { get; }
+
     private IExpressionEvaluator Evaluator { get; }
 
-    public ExpressionEvaluatorContext(string? expression, ExpressionEvaluatorSettings settings, object? context, IExpressionEvaluator evaluator, int currentRecursionLevel = 1, ExpressionEvaluatorContext? parentContext = null)
+    public ExpressionEvaluatorContext(
+        string? expression,
+        ExpressionEvaluatorSettings settings,
+        object? context,
+        IExpressionEvaluator evaluator,
+        int currentRecursionLevel = 1,
+        ExpressionEvaluatorContext? parentContext = null)
     {
         ArgumentGuard.IsNotNull(settings, nameof(settings));
         ArgumentGuard.IsNotNull(evaluator, nameof(evaluator));
@@ -27,7 +34,7 @@ public class ExpressionEvaluatorContext
     public bool IsInQuoteMap(int index)
         => QuoteMap.Any(x => x.StartIndex < index && x.EndIndex > index);
 
-    public bool FindAllOccurencedNotWithinQuotes(IEnumerable<string> stringsToFind, StringComparison stringComparison)
+    public bool HasAnyOccurenceNotWithinQuotes(IEnumerable<string> stringsToFind, StringComparison stringComparison)
     {
         stringsToFind = ArgumentGuard.IsNotNull(stringsToFind, nameof(stringsToFind));
 

@@ -20,24 +20,24 @@ public class OperatorExpression : IExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (!context.FindAllOccurencedNotWithinQuotes(OperatorSigns, context.Settings.StringComparison))
+        if (!context.HasAnyOccurenceNotWithinQuotes(OperatorSigns, context.Settings.StringComparison))
         {
             return Result.Continue<object?>();
         }
 
-        var tokensResult = _tokenizer.Tokenize(context.Expression);
-        if (!tokensResult.IsSuccessful())
+        var results = new ResultDictionaryBuilder()
+            .Add("Tokenize", () => _tokenizer.Tokenize(context.Expression))
+            .Add("Parse", results => _parser.Parse(results.GetValue<List<OperatorExpressionToken>>("Tokenize")))
+            .Add("Evaluate", results => results.GetValue<IOperator>("Parse").Evaluate(context))
+            .Build();
+
+        var error = results.GetError();
+        if (error is not null)
         {
-            return Result.FromExistingResult<object?>(tokensResult);
+            return Result.FromExistingResult<object?>(error);
         }
 
-        var parseResult = _parser.Parse(tokensResult.GetValueOrThrow());
-        if (!parseResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(parseResult);
-        }
-
-        return parseResult.GetValueOrThrow().Evaluate(context);
+        return Result.FromExistingResult<object?>(results["Evaluate"]);
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
@@ -48,7 +48,7 @@ public class OperatorExpression : IExpression
             .WithExpressionType(typeof(OperatorExpression))
             .WithSourceExpression(context.Expression);
 
-        if (!context.FindAllOccurencedNotWithinQuotes(OperatorSigns, context.Settings.StringComparison))
+        if (!context.HasAnyOccurenceNotWithinQuotes(OperatorSigns, context.Settings.StringComparison))
         {
             return result.WithStatus(ResultStatus.Continue);
         }
