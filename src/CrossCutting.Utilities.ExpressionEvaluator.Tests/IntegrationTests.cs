@@ -197,7 +197,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Validate_Function_With_Wrong_ArgumentType()
+    public void Can_Parse_Function_With_Wrong_ArgumentType()
     {
         // Arrange
         var sut = CreateSut();
@@ -228,7 +228,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Validate_Function_With_Unknown_ArgumentType()
+    public void Can_Parse_Function_With_Unknown_ArgumentType()
     {
         // Arrange
         var sut = CreateSut();
@@ -242,7 +242,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Validate_Function_With_Parse_Error()
+    public void Can_Parse_Function_With_Parse_Error()
     {
         // Arrange
         var sut = CreateSut();
