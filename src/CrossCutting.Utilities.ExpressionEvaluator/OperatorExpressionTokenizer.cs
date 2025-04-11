@@ -129,7 +129,7 @@ internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (Match(state, '='))
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.EqualEqual));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Equal));
             return Result.Success();
         }
         else
@@ -157,7 +157,7 @@ internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (Match(state, '='))
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.LessEqual));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.LessOrEqual));
         }
         else
         {
@@ -172,7 +172,7 @@ internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (Match(state, '='))
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.GreaterEqual));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.GreaterOrEqual));
         }
         else
         {
@@ -187,7 +187,7 @@ internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (Match(state, '&'))
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.AndAnd));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.And));
             return Result.Success();
         }
         else
@@ -200,7 +200,7 @@ internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (Match(state, '|'))
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.OrOr));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Or));
             return Result.Success();
         }
         else

@@ -1,18 +1,27 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Operators;
 
-internal sealed class ExpressionOperator : IOperator
+public sealed class ExpressionOperator : IOperator
 {
     private string Expression { get; }
 
     public ExpressionOperator(string expression)
     {
+        ArgumentGuard.IsNotNull(expression, nameof(expression));
+
         Expression = expression;
     }
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context) => context.Evaluate(Expression);
+    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context.Evaluate(Expression);
+    }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
     {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+        
         var valueResult = context.Parse(Expression);
 
         var result = new ExpressionParseResultBuilder()

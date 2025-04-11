@@ -1,18 +1,22 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Operators;
 
-internal sealed class UnaryOperator : IOperator
+public sealed class UnaryOperator : IOperator
 {
     public OperatorExpressionTokenType Operator { get; }
     public Result<IOperator> Operand { get; }
 
     public UnaryOperator(OperatorExpressionTokenType operatorType, Result<IOperator> operand)
     {
+        ArgumentGuard.IsNotNull(operand, nameof(operand));
+
         Operator = operatorType;
         Operand = operand;
     }
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
     {
+        ArgumentGuard.IsNotNull(context, nameof(context));
+
         var results = new ResultDictionaryBuilder<object?>()
             .Add(Constants.Expression, () => Operand.Value?.Evaluate(context) ?? Result.FromExistingResult<object?>(Operand))
             .Build();
@@ -28,6 +32,8 @@ internal sealed class UnaryOperator : IOperator
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
     {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
         var operandResult = Operand.Value?.Parse(context);
 
         var result = new ExpressionParseResultBuilder()

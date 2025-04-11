@@ -9,7 +9,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
     {
         var expr = ParseLogicalAnd(state);
 
-        while (Match(state, OperatorExpressionTokenType.OrOr))
+        while (Match(state, OperatorExpressionTokenType.Or))
         {
             var op = Previous(state);
             var right = ParseLogicalAnd(state);
@@ -23,7 +23,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
     {
         var expr = ParseEquality(state);
 
-        while (Match(state, OperatorExpressionTokenType.AndAnd))
+        while (Match(state, OperatorExpressionTokenType.And))
         {
             var op = Previous(state);
             var right = ParseEquality(state);
@@ -37,7 +37,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
     {
         var expr = ParseComparison(state);
 
-        while (Match(state, OperatorExpressionTokenType.EqualEqual, OperatorExpressionTokenType.NotEqual))
+        while (Match(state, OperatorExpressionTokenType.Equal, OperatorExpressionTokenType.NotEqual))
         {
             var op = Previous(state);
             var right = ParseAdditive(state);
@@ -51,7 +51,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
     {
         var expr = ParseAdditive(state);
 
-        while (Match(state, OperatorExpressionTokenType.Less, OperatorExpressionTokenType.LessEqual, OperatorExpressionTokenType.Greater, OperatorExpressionTokenType.GreaterEqual))
+        while (Match(state, OperatorExpressionTokenType.Less, OperatorExpressionTokenType.LessOrEqual, OperatorExpressionTokenType.Greater, OperatorExpressionTokenType.GreaterOrEqual))
         {
             var op = Previous(state);
             var right = ParseAdditive(state);
