@@ -3,9 +3,9 @@
 internal sealed class OperatorExpressionParser : IOperatorExpressionParser
 {
     public Result<IOperator> Parse(ICollection<OperatorExpressionToken> tokens)
-        => ParseLogicalOr(new ExpressionParserState(tokens));
+        => ParseLogicalOr(new OperatorExpressionParserState(tokens));
 
-    private static Result<IOperator> ParseLogicalOr(ExpressionParserState state)
+    private static Result<IOperator> ParseLogicalOr(OperatorExpressionParserState state)
     {
         var expr = ParseLogicalAnd(state);
 
@@ -19,7 +19,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
         return expr;
     }
 
-    private static Result<IOperator> ParseLogicalAnd(ExpressionParserState state)
+    private static Result<IOperator> ParseLogicalAnd(OperatorExpressionParserState state)
     {
         var expr = ParseEquality(state);
 
@@ -33,7 +33,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
         return expr;
     }
 
-    private static Result<IOperator> ParseEquality(ExpressionParserState state)
+    private static Result<IOperator> ParseEquality(OperatorExpressionParserState state)
     {
         var expr = ParseComparison(state);
 
@@ -47,7 +47,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
         return expr;
     }
 
-    private static Result<IOperator> ParseComparison(ExpressionParserState state)
+    private static Result<IOperator> ParseComparison(OperatorExpressionParserState state)
     {
         var expr = ParseAdditive(state);
 
@@ -61,7 +61,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
         return expr;
     }
 
-    private static Result<IOperator> ParseAdditive(ExpressionParserState state)
+    private static Result<IOperator> ParseAdditive(OperatorExpressionParserState state)
     {
         var expr = ParseMultiplicative(state);
 
@@ -75,7 +75,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
         return expr;
     }
 
-    private static Result<IOperator> ParseMultiplicative(ExpressionParserState state)
+    private static Result<IOperator> ParseMultiplicative(OperatorExpressionParserState state)
     {
         var expr = ParseUnary(state);
 
@@ -89,7 +89,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
         return expr;
     }
 
-    private static Result<IOperator> ParseUnary(ExpressionParserState state)
+    private static Result<IOperator> ParseUnary(OperatorExpressionParserState state)
     {
         if (Match(state, OperatorExpressionTokenType.Bang))
         {
@@ -101,7 +101,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
         return ParsePrimary(state);
     }
 
-    private static Result<IOperator> ParsePrimary(ExpressionParserState state)
+    private static Result<IOperator> ParsePrimary(OperatorExpressionParserState state)
     {
         if (Match(state, OperatorExpressionTokenType.Expression))
         {
@@ -110,7 +110,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
 
         if (Match(state, OperatorExpressionTokenType.LeftParenthesis))
         {
-            var childState = new ExpressionParserState(state.Tokens.Skip(state.Position).ToList());
+            var childState = new OperatorExpressionParserState(state.Tokens.Skip(state.Position).ToList());
             var operatorResult = ParseLogicalOr(childState);
             if (!operatorResult.IsSuccessful())
             {
@@ -130,7 +130,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
         return Result.Invalid<IOperator>("Unexpected token");
     }
 
-    private static bool Match(ExpressionParserState state, params OperatorExpressionTokenType[] types)
+    private static bool Match(OperatorExpressionParserState state, params OperatorExpressionTokenType[] types)
     {
         if (types.Any(x => Check(state, x)))
         {
@@ -141,7 +141,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
         return false;
     }
 
-    private static bool Check(ExpressionParserState state, OperatorExpressionTokenType type)
+    private static bool Check(OperatorExpressionParserState state, OperatorExpressionTokenType type)
     {
         if (IsAtEnd(state))
         {
@@ -151,7 +151,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
         return Peek(state).Type == type;
     }
 
-    private static Result<OperatorExpressionToken> Advance(ExpressionParserState state)
+    private static Result<OperatorExpressionToken> Advance(OperatorExpressionParserState state)
     {
         if (!IsAtEnd(state))
         {
@@ -161,11 +161,11 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
         return Result.Success(Previous(state));
     }
 
-    private static bool IsAtEnd(ExpressionParserState state) => Peek(state).Type == OperatorExpressionTokenType.EOF;
-    private static OperatorExpressionToken Peek(ExpressionParserState state) => state.Tokens.ElementAt(state.Position);
-    private static OperatorExpressionToken Previous(ExpressionParserState state) => state.Tokens.ElementAt(state.Position - 1);
+    private static bool IsAtEnd(OperatorExpressionParserState state) => Peek(state).Type == OperatorExpressionTokenType.EOF;
+    private static OperatorExpressionToken Peek(OperatorExpressionParserState state) => state.Tokens.ElementAt(state.Position);
+    private static OperatorExpressionToken Previous(OperatorExpressionParserState state) => state.Tokens.ElementAt(state.Position - 1);
 
-    private static Result<OperatorExpressionToken> Consume(ExpressionParserState state, OperatorExpressionTokenType type, string message)
+    private static Result<OperatorExpressionToken> Consume(OperatorExpressionParserState state, OperatorExpressionTokenType type, string message)
     {
         if (!Check(state, type))
         {

@@ -258,6 +258,8 @@ internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (state.Position + 1 >= state.Input.Length)
         {
+            // note we are currently returning a space.
+            // this does not really matter, because the calling method will check for numeric values ;-)
             return ' ';
         }
 

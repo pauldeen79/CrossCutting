@@ -60,6 +60,5 @@ public class TypeOfExpression : IExpression<Type>
             .WithExpressionType(typeof(TypeOfExpression))
             .WithSourceExpression(context.Expression)
             .WithResultType(typeof(Type));
-
     }
 }
