@@ -25,19 +25,12 @@ public class OperatorExpression : IExpression
             return Result.Continue<object?>();
         }
 
-        var results = new ResultDictionaryBuilder()
+        return new ResultDictionaryBuilder()
             .Add("Tokenize", () => _tokenizer.Tokenize(context.Expression))
             .Add("Parse", results => _parser.Parse(results.GetValue<List<OperatorExpressionToken>>("Tokenize")))
             .Add("Evaluate", results => results.GetValue<IOperator>("Parse").Evaluate(context))
-            .Build();
-
-        var error = results.GetError();
-        if (error is not null)
-        {
-            return Result.FromExistingResult<object?>(error);
-        }
-
-        return Result.FromExistingResult<object?>(results["Evaluate"]);
+            .Build()
+            .Aggregate<object?>();
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
@@ -52,19 +45,18 @@ public class OperatorExpression : IExpression
         {
             return result.WithStatus(ResultStatus.Continue);
         }
-        
-        var tokensResult = _tokenizer.Tokenize(context.Expression);
-        if (!tokensResult.IsSuccessful())
+
+        var results = new ResultDictionaryBuilder()
+            .Add("Tokenize", () => _tokenizer.Tokenize(context.Expression))
+            .Add("Parse", results => _parser.Parse(results.GetValue<List<OperatorExpressionToken>>("Tokenize")))
+            .Build();
+
+        var error = results.GetError();
+        if (error is not null)
         {
-            return result.FillFromResult(tokensResult);
+            return result.FillFromResult(error);
         }
 
-        var parseResult = _parser.Parse(tokensResult.GetValueOrThrow());
-        if (!parseResult.IsSuccessful())
-        {
-            return result.FillFromResult(parseResult);
-        }
-
-        return parseResult.GetValueOrThrow().Parse(context);
+        return results.GetValue<IOperator>("Parse").Parse(context);
     }
 }
