@@ -745,4 +745,127 @@ public class ResultDictionaryExtensionsTests
             result.ShouldBe(13);
         }
     }
+
+    public class Aggregate_NonGeneric : ResultDictionaryExtensionsTests
+    {
+        [Fact]
+        public void Returns_Last_Successful_Result_When_All_Is_Well()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder()
+                .Add("Step1", NonGenericDelegate)
+                .Add("Step2", NonGenericDelegate)
+                .Add("Step3", GenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.Aggregate();
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.GetValue().ShouldBe("My value");
+        }
+
+        [Fact]
+        public void Returns_First_Non_Successful_Result_When_Error_Is_Found()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder()
+                .Add("Step1", NonGenericDelegate)
+                .Add("Step2", GenericErrorDelegate)
+                .Add("Step3", GenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.Aggregate();
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+    }
+
+    public class Aggregate_NonGeneric_Cast : ResultDictionaryExtensionsTests
+    {
+        [Fact]
+        public void Returns_Last_Successful_Result_When_All_Is_Well()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder()
+                .Add("Step1", NonGenericDelegate)
+                .Add("Step2", NonGenericDelegate)
+                .Add("Step3", GenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.Aggregate<string>();
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("My value");
+        }
+
+        [Fact]
+        public void Returns_First_Non_Successful_Result_When_Error_Is_Found()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder()
+                .Add("Step1", NonGenericDelegate)
+                .Add("Step2", GenericErrorDelegate)
+                .Add("Step3", GenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.Aggregate<string>();
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+    }
+
+    public class Aggregate_Generic : ResultDictionaryExtensionsTests
+    {
+        [Fact]
+        public void Returns_Last_Successful_Result_When_All_Is_Well()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder<string>()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", GenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.Aggregate();
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("My value");
+        }
+
+        [Fact]
+        public void Returns_First_Non_Successful_Result_When_Error_Is_Found()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder<string>()
+                .Add("Step1", NonGenericDelegate)
+                .Add("Step2", GenericErrorDelegate)
+                .Add("Step3", GenericDelegate)
+                .Build();
+
+            // Act
+            var result = sut.Aggregate();
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+    }
 }

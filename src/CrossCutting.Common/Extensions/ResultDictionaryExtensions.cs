@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Common.Extensions;
+﻿using CrossCutting.Common.Results;
+
+namespace CrossCutting.Common.Extensions;
 
 public static class ResultDictionaryExtensions
 {
@@ -160,4 +162,37 @@ public static class ResultDictionaryExtensions
         => resultDictionary.TryGetValue(resultKey, out Result<T> result)
             ? result.Value
             : defaultValue;
+
+    public static Result Aggregate(this Dictionary<string, Result> resultDictionary)
+    {
+        var error = resultDictionary.GetError();
+        if (error is not null)
+        {
+            return error;
+        }
+
+        return resultDictionary.Last().Value;
+    }
+
+    public static Result<T> Aggregate<T>(this Dictionary<string, Result<T>> resultDictionary)
+    {
+        var error = resultDictionary.GetError();
+        if (error is not null)
+        {
+            return error;
+        }
+
+        return resultDictionary.Last().Value;
+    }
+
+    public static Result<T> Aggregate<T>(this Dictionary<string, Result> resultDictionary)
+    {
+        var error = resultDictionary.GetError();
+        if (error is not null)
+        {
+            return Result.FromExistingResult<T>(error);
+        }
+
+        return Result.FromExistingResult<T>(resultDictionary.Last().Value);
+    }
 }
