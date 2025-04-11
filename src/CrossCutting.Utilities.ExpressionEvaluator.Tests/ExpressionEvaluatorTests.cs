@@ -102,7 +102,7 @@ public class ExpressionEvaluatorTests : TestBase
         {
             // Arrange
             var typedExpression = Substitute.For<IExpression<string>>();
-            typedExpression.EvaluateTyped(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<string>("result value"));
+            typedExpression.EvaluateTyped(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success("result value"));
             var sut = new ExpressionEvaluator([typedExpression]);
 
             // Act

@@ -3,8 +3,8 @@
 public class FunctionExpressionTests : TestBase
 {
     protected IFunction Function { get; }
-    public IFunctionDescriptorProvider FunctionDescriptorProvider { get; }
-    public IFunctionCallArgumentValidator FunctionCallArgumentValidator { get; }
+    protected IFunctionDescriptorProvider FunctionDescriptorProvider { get; }
+    protected IFunctionCallArgumentValidator FunctionCallArgumentValidator { get; }
 
     protected FunctionExpression CreateSut(IFunction? function = null)
         => new FunctionExpression(new FunctionParser(), new FunctionResolver(FunctionDescriptorProvider, FunctionCallArgumentValidator, [function ?? Function], Enumerable.Empty<IGenericFunction>()));

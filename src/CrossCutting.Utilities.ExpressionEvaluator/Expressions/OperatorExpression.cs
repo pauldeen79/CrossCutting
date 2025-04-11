@@ -48,6 +48,11 @@ public class OperatorExpression : IExpression
             .WithExpressionType(typeof(OperatorExpression))
             .WithSourceExpression(context.Expression);
 
+        if (!context.FindAllOccurencedNotWithinQuotes(OperatorSigns, context.Settings.StringComparison))
+        {
+            return result.WithStatus(ResultStatus.Continue);
+        }
+        
         var tokensResult = _tokenizer.Tokenize(context.Expression);
         if (!tokensResult.IsSuccessful())
         {
