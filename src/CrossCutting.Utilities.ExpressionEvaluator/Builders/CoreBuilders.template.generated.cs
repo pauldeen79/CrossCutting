@@ -22,6 +22,10 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         private bool _validateArgumentTypes;
 
+        private string _placeholderStart;
+
+        private string _placeholderEnd;
+
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
         public System.IFormatProvider FormatProvider
@@ -97,6 +101,38 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
         }
 
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [System.ComponentModel.DefaultValueAttribute(@"{")]
+        public string PlaceholderStart
+        {
+            get
+            {
+                return _placeholderStart;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_placeholderStart!, value!);
+                _placeholderStart = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(PlaceholderStart));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [System.ComponentModel.DefaultValueAttribute(@"}")]
+        public string PlaceholderEnd
+        {
+            get
+            {
+                return _placeholderEnd;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_placeholderEnd!, value!);
+                _placeholderEnd = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(PlaceholderEnd));
+            }
+        }
+
         public ExpressionEvaluatorSettingsBuilder(CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
@@ -105,6 +141,8 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _maximumRecursion = source.MaximumRecursion;
             _escapeBraces = source.EscapeBraces;
             _validateArgumentTypes = source.ValidateArgumentTypes;
+            _placeholderStart = source.PlaceholderStart;
+            _placeholderEnd = source.PlaceholderEnd;
         }
 
         public ExpressionEvaluatorSettingsBuilder()
@@ -113,12 +151,14 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _maximumRecursion = 10;
             _escapeBraces = true;
             _validateArgumentTypes = true;
+            _placeholderStart = @"{"!;
+            _placeholderEnd = @"}"!;
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings Build()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings(FormatProvider, StringComparison, MaximumRecursion, EscapeBraces, ValidateArgumentTypes);
+            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings(FormatProvider, StringComparison, MaximumRecursion, EscapeBraces, ValidateArgumentTypes, PlaceholderStart, PlaceholderEnd);
         }
 
         partial void SetDefaultValues();
@@ -151,6 +191,20 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder WithValidateArgumentTypes(bool validateArgumentTypes = true)
         {
             ValidateArgumentTypes = validateArgumentTypes;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder WithPlaceholderStart(string placeholderStart)
+        {
+            if (placeholderStart is null) throw new System.ArgumentNullException(nameof(placeholderStart));
+            PlaceholderStart = placeholderStart;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder WithPlaceholderEnd(string placeholderEnd)
+        {
+            if (placeholderEnd is null) throw new System.ArgumentNullException(nameof(placeholderEnd));
+            PlaceholderEnd = placeholderEnd;
             return this;
         }
 

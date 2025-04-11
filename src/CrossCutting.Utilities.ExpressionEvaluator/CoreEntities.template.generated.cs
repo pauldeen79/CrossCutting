@@ -40,13 +40,29 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public ExpressionEvaluatorSettings(System.IFormatProvider formatProvider, System.StringComparison stringComparison, int maximumRecursion, bool escapeBraces, bool validateArgumentTypes)
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [System.ComponentModel.DefaultValueAttribute(@"{")]
+        public string PlaceholderStart
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [System.ComponentModel.DefaultValueAttribute(@"}")]
+        public string PlaceholderEnd
+        {
+            get;
+        }
+
+        public ExpressionEvaluatorSettings(System.IFormatProvider formatProvider, System.StringComparison stringComparison, int maximumRecursion, bool escapeBraces, bool validateArgumentTypes, string placeholderStart, string placeholderEnd)
         {
             this.FormatProvider = formatProvider;
             this.StringComparison = stringComparison;
             this.MaximumRecursion = maximumRecursion;
             this.EscapeBraces = escapeBraces;
             this.ValidateArgumentTypes = validateArgumentTypes;
+            this.PlaceholderStart = placeholderStart;
+            this.PlaceholderEnd = placeholderEnd;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 

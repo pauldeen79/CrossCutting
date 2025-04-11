@@ -3,8 +3,6 @@
 public class FormattableStringExpression : IExpression<GenericFormattableString>
 {
     private const string TemporaryDelimiter = "\uE002";
-    private const string PlaceholderStart = "{";
-    private const string PlaceholderEnd = "}";
 
     public int Order => 12;
 
@@ -78,8 +76,8 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
     private static Result<List<Result<GenericFormattableString>>> ProcessRecursive(string format, ExpressionEvaluatorContext context, bool validateOnly, out string remainder)
     {
         // Handle escaped markers (e.g., {{ -> {)
-        var escapedStart = PlaceholderStart + PlaceholderStart;
-        var escapedEnd = PlaceholderEnd + PlaceholderEnd;
+        var escapedStart = context.Settings.PlaceholderStart + context.Settings.PlaceholderStart;
+        var escapedEnd = context.Settings.PlaceholderEnd + context.Settings.PlaceholderEnd;
 
         remainder = format.Replace(escapedStart, "\uE000")  // Temporarily replace escaped start marker
                           .Replace(escapedEnd, "\uE001");
@@ -87,7 +85,7 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
         var results = new List<Result<GenericFormattableString>>();
         do
         {
-            var placeholderSignsResult = GetPlaceholderSignsResult(remainder);
+            var placeholderSignsResult = GetPlaceholderSignsResult(context, remainder);
             if (!placeholderSignsResult.IsSuccessful())
             {
                 return Result.FromExistingResult<List<Result<GenericFormattableString>>>(placeholderSignsResult);
@@ -98,7 +96,7 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
                 break;
             }
 
-            var placeholder = remainder.Substring(placeholderSignsResult.Value.openIndex + PlaceholderStart.Length, placeholderSignsResult.Value.closeIndex - placeholderSignsResult.Value.openIndex - PlaceholderStart.Length);
+            var placeholder = remainder.Substring(placeholderSignsResult.Value.openIndex + context.Settings.PlaceholderStart.Length, placeholderSignsResult.Value.closeIndex - placeholderSignsResult.Value.openIndex - context.Settings.PlaceholderStart.Length);
             if (string.IsNullOrWhiteSpace(placeholder))
             {
                 if (!validateOnly)
@@ -142,8 +140,8 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
 
         // Restore escaped markers
         // First, fix invalid format string {bla} to {{bla}} when escaped, else the ToString operation on FormattableString fails
-        var start = PlaceholderStart + PlaceholderStart;
-        var end = PlaceholderEnd + PlaceholderEnd;
+        var start = context.Settings.PlaceholderStart + context.Settings.PlaceholderStart;
+        var end = context.Settings.PlaceholderEnd + context.Settings.PlaceholderEnd;
 
         remainder = remainder.Replace("\uE000", start)
                              .Replace("\uE001", end);
@@ -168,7 +166,7 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
     private static Result<GenericFormattableString> HandleRecursion(ExpressionEvaluatorContext context, Result<GenericFormattableString> placeholderResult)
     {
         string? s = placeholderResult.Value!;
-        if (s?.StartsWith(PlaceholderStart) == true && s.EndsWith(PlaceholderEnd))
+        if (s?.StartsWith(context.Settings.PlaceholderStart) == true && s.EndsWith(context.Settings.PlaceholderEnd))
         {
             placeholderResult = EvaluateRecursive(s, context);
         }
@@ -193,23 +191,23 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
         return placeholderResult;
     }
 
-    private static Result<(int openIndex, int closeIndex)> GetPlaceholderSignsResult(string remainder)
+    private static Result<(int openIndex, int closeIndex)> GetPlaceholderSignsResult(ExpressionEvaluatorContext context, string remainder)
     {
-        var closeIndex = remainder.LastIndexOf(PlaceholderEnd);
+        var closeIndex = remainder.LastIndexOf(context.Settings.PlaceholderEnd);
         if (closeIndex == -1)
         {
-            if (remainder.LastIndexOf(PlaceholderStart) > -1)
+            if (remainder.LastIndexOf(context.Settings.PlaceholderStart) > -1)
             {
-                return Result.Invalid<(int openIndex, int closeIndex)>($"PlaceholderEnd sign '{PlaceholderEnd}' is missing");
+                return Result.Invalid<(int openIndex, int closeIndex)>($"PlaceholderEnd sign '{context.Settings.PlaceholderEnd}' is missing");
             }
 
             return Result.Success<(int openIndex, int closeIndex)>((-1, -1));
         }
 
-        var openIndex = remainder.LastIndexOf(PlaceholderStart, closeIndex);
+        var openIndex = remainder.LastIndexOf(context.Settings.PlaceholderStart, closeIndex);
         if (openIndex == -1)
         {
-            return Result.Invalid<(int openIndex, int closeIndex)>($"PlaceholderStart sign '{PlaceholderStart}' is missing");
+            return Result.Invalid<(int openIndex, int closeIndex)>($"PlaceholderStart sign '{context.Settings.PlaceholderStart}' is missing");
         }
 
         return Result.Success((openIndex, closeIndex));
