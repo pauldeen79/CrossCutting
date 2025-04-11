@@ -50,9 +50,7 @@ public class FunctionExpression : IExpression
         else if (!functionCallResult.IsSuccessful())
         {
             return new ExpressionParseResultBuilder()
-                .WithStatus(functionCallResult.Status)
-                .WithErrorMessage(functionCallResult.ErrorMessage)
-                .AddValidationErrors(functionCallResult.ValidationErrors)
+                .FillFromResult(functionCallResult)
                 .WithExpressionType(typeof(FunctionExpression))
                 .WithSourceExpression(context.Expression);
         }
@@ -63,12 +61,10 @@ public class FunctionExpression : IExpression
         if (!resolveResult.IsSuccessful())
         {
             return new ExpressionParseResultBuilder()
-                .WithStatus(resolveResult.Status)
-                .WithErrorMessage(resolveResult.ErrorMessage)
-                .AddValidationErrors(resolveResult.ValidationErrors)
-                .AddPartResults(resolveResult.ValidationErrors.Select(x => new ExpressionParsePartResultBuilder()
-                    .WithErrorMessage(x.ErrorMessage)
-                    .WithPartName(x.MemberNames.First())
+                .FillFromResult(resolveResult)
+                .AddPartResults(resolveResult.ValidationErrors.Select(validationError => new ExpressionParsePartResultBuilder()
+                    .WithErrorMessage(validationError.ErrorMessage)
+                    .WithPartName(validationError.MemberNames.First())
                     .WithSourceExpression(context.Expression)
                     .WithExpressionType(typeof(FunctionExpression))))
                 .WithExpressionType(typeof(FunctionExpression))

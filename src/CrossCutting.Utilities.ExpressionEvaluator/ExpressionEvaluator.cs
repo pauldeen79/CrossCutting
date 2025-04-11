@@ -42,9 +42,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         var validationResult = context.Validate<ExpressionParseResult>();
         if (!validationResult.IsSuccessful())
         {
-            return new ExpressionParseResultBuilder()
-                .WithStatus(validationResult.Status)
-                .WithErrorMessage(validationResult.ErrorMessage);
+            return new ExpressionParseResultBuilder().FillFromResult(validationResult);
         }
 
         var expression = _expressions

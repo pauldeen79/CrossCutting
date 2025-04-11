@@ -53,8 +53,8 @@ internal sealed class BinaryOperator : IOperator
             .WithExpressionType(typeof(OperatorExpression))
             .WithSourceExpression(context.Expression)
             .WithResultType(typeof(bool))
-            .AddPartResult(leftResult ?? new ExpressionParseResultBuilder().WithErrorMessage(Left.ErrorMessage).WithStatus(Left.Status).AddValidationErrors(Left.ValidationErrors), Constants.LeftExpression)
-            .AddPartResult(rightResult ?? new ExpressionParseResultBuilder().WithErrorMessage(Right.ErrorMessage).WithStatus(Right.Status).AddValidationErrors(Right.ValidationErrors), Constants.RightExpression)
+            .AddPartResult(leftResult ?? new ExpressionParseResultBuilder().FillFromResult(Left), Constants.LeftExpression)
+            .AddPartResult(rightResult ?? new ExpressionParseResultBuilder().FillFromResult(Right), Constants.RightExpression)
             .SetStatusFromPartResults();
 
         if (!result.Status.IsSuccessful())

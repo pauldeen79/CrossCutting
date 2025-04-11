@@ -68,9 +68,13 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
         var hasFailure = !results.IsSuccessful() || results.Value?.Any(x => !x.Status.IsSuccessful()) == true;
 
         return result
-            .AddPartResults(results.Value?.Select((x, index) => new ExpressionParsePartResultBuilder().WithErrorMessage(x.ErrorMessage).WithStatus(x.Status).AddValidationErrors(x.ValidationErrors).WithPartName(index.ToString(context.Settings.FormatProvider))) ?? [new ExpressionParsePartResultBuilder().WithPartName("Validation").WithStatus(results.Status).WithErrorMessage(results.ErrorMessage).AddValidationErrors(results.ValidationErrors)])
-            .WithStatus(hasFailure ? ResultStatus.Invalid : ResultStatus.Ok)
-            .WithErrorMessage(hasFailure ? "Validation failed, see part results for more details" : null);
+            .AddPartResults(results.Value?.Select((x, index) => new ExpressionParsePartResultBuilder().FillFromResult(x).WithPartName(index.ToString(context.Settings.FormatProvider))) ?? [new ExpressionParsePartResultBuilder().WithPartName("Validation").FillFromResult(results)])
+            .WithStatus(hasFailure
+                ? ResultStatus.Invalid
+                : ResultStatus.Ok)
+            .WithErrorMessage(hasFailure
+                ? "Validation failed, see part results for more details"
+                : null);
     }
 
     private static Result<List<Result<GenericFormattableString>>> ProcessRecursive(string format, ExpressionEvaluatorContext context, bool validateOnly, out string remainder)
@@ -174,22 +178,11 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
         return placeholderResult;
     }
 
+    // Replace placeholder with placeholder expression result
     private static Result<GenericFormattableString> ProcessPlaceholder(ExpressionEvaluatorContext context, bool validateOnly, string placeholder)
-    {
-        // Replace placeholder with placeholder expression result
-        Result<GenericFormattableString> placeholderResult;
-        if (!validateOnly)
-        {
-            placeholderResult = Result.FromExistingResult(context.Evaluate(placeholder), value => new GenericFormattableString(value));
-        }
-        else
-        {
-            var parseResult = context.Parse(placeholder);
-            placeholderResult = Result.FromExistingResult<GenericFormattableString>(parseResult.ToResult());
-        }
-
-        return placeholderResult;
-    }
+        => !validateOnly
+            ? Result.FromExistingResult(context.Evaluate(placeholder), value => new GenericFormattableString(value))
+            : Result.FromExistingResult<GenericFormattableString>(context.Parse(placeholder).ToResult());
 
     private static Result<(int openIndex, int closeIndex)> GetPlaceholderSignsResult(ExpressionEvaluatorContext context, string remainder)
     {

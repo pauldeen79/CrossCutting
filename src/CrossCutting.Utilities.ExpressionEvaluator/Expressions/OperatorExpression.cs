@@ -51,19 +51,13 @@ public class OperatorExpression : IExpression
         var tokensResult = _tokenizer.Tokenize(context.Expression);
         if (!tokensResult.IsSuccessful())
         {
-            return result
-                .WithErrorMessage(tokensResult.ErrorMessage)
-                .WithStatus(tokensResult.Status)
-                .AddValidationErrors(tokensResult.ValidationErrors);
+            return result.FillFromResult(tokensResult);
         }
 
         var parseResult = _parser.Parse(tokensResult.GetValueOrThrow());
         if (!parseResult.IsSuccessful())
         {
-            return result
-                .WithErrorMessage(parseResult.ErrorMessage)
-                .WithStatus(parseResult.Status)
-                .AddValidationErrors(parseResult.ValidationErrors);
+            return result.FillFromResult(parseResult);
         }
 
         return parseResult.GetValueOrThrow().Parse(context);

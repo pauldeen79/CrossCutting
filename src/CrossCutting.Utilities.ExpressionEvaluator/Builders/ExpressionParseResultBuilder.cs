@@ -9,9 +9,7 @@ public partial class ExpressionParseResultBuilder
 
         return AddPartResults(new ExpressionParsePartResultBuilder()
             .WithPartName(partName)
-            .WithStatus(itemResult.Status)
-            .AddValidationErrors(itemResult.ValidationErrors)
-            .WithErrorMessage(itemResult.ErrorMessage)
+            .FillFromResult(itemResult.ToResult())
             .WithExpressionType(itemResult.ExpressionType)
             .WithResultType(itemResult.ResultType)
             .AddPartResults(itemResult.PartResults.Select(x => x.ToBuilder()))
@@ -26,5 +24,15 @@ public partial class ExpressionParseResultBuilder
         return error is not null
             ? this.WithStatus(error.Status).WithErrorMessage("Parsing of the expression failed, see inner results for details")
             : this.WithStatus(ResultStatus.Ok);
+    }
+
+    public ExpressionParseResultBuilder FillFromResult(Result result)
+    {
+        result = ArgumentGuard.IsNotNull(result, nameof(result));
+
+        return this
+            .WithErrorMessage(result.ErrorMessage)
+            .WithStatus(result.Status)
+            .AddValidationErrors(result.ValidationErrors);
     }
 }

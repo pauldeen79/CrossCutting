@@ -34,7 +34,7 @@ internal sealed class UnaryOperator : IOperator
             .WithExpressionType(typeof(OperatorExpression))
             .WithSourceExpression(context.Expression)
             .WithResultType(typeof(bool))
-            .AddPartResult(operandResult ?? new ExpressionParseResultBuilder().WithErrorMessage(Operand.ErrorMessage).WithStatus(Operand.Status).AddValidationErrors(Operand.ValidationErrors), Constants.Operand)
+            .AddPartResult(operandResult ?? new ExpressionParseResultBuilder().FillFromResult(Operand), Constants.Operand)
             .SetStatusFromPartResults();
 
         return result;
