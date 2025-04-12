@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Extensions;
-
-namespace CrossCutting.Utilities.Aggregators.Tests;
+﻿namespace CrossCutting.Utilities.Aggregators.Tests;
 
 public class NumericAggregatorTests
 {
