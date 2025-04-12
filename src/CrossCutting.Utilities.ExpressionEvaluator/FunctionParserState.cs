@@ -21,6 +21,7 @@ internal sealed class FunctionParserState
     public int Index { get; set; }
     public char CurrentCharacter { get; set; }
     public int BracketCount { get; set; }
+    public int GenericsCount { get; set; }
 
     public bool IsWhiteSpace() => CurrentCharacter == ' ' || CurrentCharacter == '\r' || CurrentCharacter == '\n' || CurrentCharacter == '\t';
 
@@ -30,6 +31,7 @@ internal sealed class FunctionParserState
         ArgumentsStarted = CurrentCharacter == '(';
         GenericsStarted = CurrentCharacter == '<';
         BracketCount = CurrentCharacter == '(' ? 1 : 0;
+        GenericsCount = CurrentCharacter == '<' ? 1 : 0;
     }
     public void OpenBracket()
     {
