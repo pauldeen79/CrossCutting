@@ -25,7 +25,7 @@ public sealed class UnaryOperator : IOperator
             return error;
         }
 
-        return Result.Success<object?>(!results.GetValue(Constants.Expression).ToBoolean());
+        return Result.Success<object?>(!results.GetValue(Constants.Expression).IsTruthy());
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)

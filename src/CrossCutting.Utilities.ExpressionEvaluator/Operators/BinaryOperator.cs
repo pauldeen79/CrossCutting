@@ -59,7 +59,9 @@ public sealed class BinaryOperator : IOperator
         var result = new ExpressionParseResultBuilder()
             .WithExpressionType(typeof(OperatorExpression))
             .WithSourceExpression(context.Expression)
-            .WithResultType(typeof(bool))
+            .WithResultType(Operator.In(OperatorExpressionTokenType.And, OperatorExpressionTokenType.Or, OperatorExpressionTokenType.Equal, OperatorExpressionTokenType.NotEqual, OperatorExpressionTokenType.Less, OperatorExpressionTokenType.LessOrEqual, OperatorExpressionTokenType.Greater, OperatorExpressionTokenType.GreaterOrEqual)
+                ? typeof(bool)
+                : leftResult?.ResultType)
             .AddPartResult(leftResult ?? new ExpressionParseResultBuilder().FillFromResult(Left), Constants.LeftExpression)
             .AddPartResult(rightResult ?? new ExpressionParseResultBuilder().FillFromResult(Right), Constants.RightExpression)
             .SetStatusFromPartResults();
@@ -88,8 +90,8 @@ public sealed class BinaryOperator : IOperator
     }
 
     private static Result<object?> EvaluateAnd(object? left, object? right)
-        => Result.Success<object?>(left.ToBoolean() && right.ToBoolean());
+        => Result.Success<object?>(left.IsTruthy() && right.IsTruthy());
 
     private static Result<object?> EvaluateOr(object? left, object? right)
-        => Result.Success<object?>(left.ToBoolean() || right.ToBoolean());
+        => Result.Success<object?>(left.IsTruthy() || right.IsTruthy());
 }

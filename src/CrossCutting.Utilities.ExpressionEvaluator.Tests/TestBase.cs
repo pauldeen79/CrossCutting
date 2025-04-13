@@ -27,7 +27,7 @@ public abstract class TestBase
                 x.ArgAt<ExpressionEvaluatorContext>(0).Expression switch
                 {
                     "error" => new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithStatus(ResultStatus.Error).WithErrorMessage("Kaboom"),
-                    "123" => new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(int)),
+                    "-1" or "1" or "2" or "123" => new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(int)),
                     "string" => new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
                     _ => new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithStatus(ResultStatus.Ok)
                 });

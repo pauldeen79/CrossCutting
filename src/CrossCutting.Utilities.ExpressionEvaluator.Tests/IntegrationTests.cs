@@ -212,6 +212,48 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Parsee_Binary_Operator_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "true && true && \"string value\"";
+
+        // Act
+        var result = sut.Parse(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Parse_Comparison_Operator_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "2 > 1";
+
+        // Act
+        var result = sut.Parse(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void Can_Parse_Mathematic_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "-1 + 1 + 1";
+
+        // Act
+        var result = sut.Parse(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
     public void Can_Parse_Function_With_Wrong_ArgumentType()
     {
         // Arrange

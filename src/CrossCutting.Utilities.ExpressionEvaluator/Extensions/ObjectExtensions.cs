@@ -2,7 +2,7 @@
 
 public static class ObjectExtensions
 {
-    public static bool ToBoolean(this object? value)
+    public static bool IsTruthy(this object? value)
     {
         if (value is bool b)
         {
