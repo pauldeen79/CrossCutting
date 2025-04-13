@@ -79,7 +79,7 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
     {
         var expr = ParseUnary(state);
 
-        while (Match(state, OperatorExpressionTokenType.Multiply, OperatorExpressionTokenType.Divide))
+        while (Match(state, OperatorExpressionTokenType.Multiply, OperatorExpressionTokenType.Divide, OperatorExpressionTokenType.Modulo))
         {
             var op = Previous(state);
             var right = ParseUnary(state);

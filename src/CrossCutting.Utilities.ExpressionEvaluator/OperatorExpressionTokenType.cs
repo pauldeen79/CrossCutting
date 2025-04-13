@@ -18,5 +18,7 @@ public enum OperatorExpressionTokenType
     And,
     Or,
     Bang,
+    Exponentiation,
+    Modulo,
     EOF
 }

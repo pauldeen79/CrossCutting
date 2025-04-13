@@ -396,6 +396,54 @@ public class BinaryOperatorTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldBe(1.IsTruthy() || 2.IsTruthy());
         }
+
+        [Fact]
+        public void Returns_Success_On_Modulus_Operator()
+        {
+            // Arrange
+            var counter = 0;
+            Operator
+                .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
+                .Returns(_ =>
+                {
+                    counter++;
+
+                    return Result.Success<object?>(counter);
+                });
+
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Modulo, Result.Success(Operator));
+
+            // Act
+            var result = sut.Evaluate(CreateContext("1 % 2"));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(1 % 2);
+        }
+
+        [Fact]
+        public void Returns_Success_On_Exponential_Operator()
+        {
+            // Arrange
+            var counter = 0;
+            Operator
+                .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
+                .Returns(_ =>
+                {
+                    counter++;
+
+                    return Result.Success<object?>(counter);
+                });
+
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Exponentiation, Result.Success(Operator));
+
+            // Act
+            var result = sut.Evaluate(CreateContext("1 ^ 2"));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(1);
+        }
     }
 
     public class Parse : BinaryOperatorTests

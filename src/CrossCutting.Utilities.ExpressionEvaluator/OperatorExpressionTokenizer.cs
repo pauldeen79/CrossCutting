@@ -17,6 +17,8 @@ internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         { '>', ProcessGreaterThan },
         { '&', ProcessAmpersand },
         { '|', ProcessPipe },
+        { '^', ProcessCaret },
+        { '%', ProcessPercent },
     };
 
     public Result<List<OperatorExpressionToken>> Tokenize(string input)
@@ -207,6 +209,22 @@ internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         {
             return Result.Invalid("Single '|' is not supported.");
         }
+    }
+
+    private static Result ProcessCaret(OperatorExpressionTokenizerState state)
+    {
+        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Exponentiation));
+        state.Position++;
+
+        return Result.Success();
+    }
+
+    private static Result ProcessPercent(OperatorExpressionTokenizerState state)
+    {
+        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Modulo));
+        state.Position++;
+
+        return Result.Success();
     }
 
     private static OperatorExpressionToken ReadOther(OperatorExpressionTokenizerState state, bool inQuotes)

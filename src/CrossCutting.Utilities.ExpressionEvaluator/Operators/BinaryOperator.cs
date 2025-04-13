@@ -45,6 +45,8 @@ public sealed class BinaryOperator : IOperator
             OperatorExpressionTokenType.GreaterOrEqual => GreaterOrEqualThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
             OperatorExpressionTokenType.And => EvaluateAnd(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
             OperatorExpressionTokenType.Or => EvaluateOr(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
+            OperatorExpressionTokenType.Modulo => Modulus.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
+            OperatorExpressionTokenType.Exponentiation => Power.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
             _ => Result.Invalid<object?>($"Unsupported operator: {Operator}")
         };
     }
@@ -84,7 +86,9 @@ public sealed class BinaryOperator : IOperator
             OperatorExpressionTokenType.Greater or
             OperatorExpressionTokenType.GreaterOrEqual or
             OperatorExpressionTokenType.And or
-            OperatorExpressionTokenType.Or => result,
+            OperatorExpressionTokenType.Or or
+            OperatorExpressionTokenType.Modulo or
+            OperatorExpressionTokenType.Exponentiation => result,
             _ => result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Unsupported operator: {Operator}")
         };
     }
