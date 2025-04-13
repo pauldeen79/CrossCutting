@@ -94,7 +94,7 @@ public sealed class MathematicExpressionEvaluatorTests : IDisposable
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBeEquivalentTo((int)Math.Pow(2, 4));
+        result.Value.ShouldBe(Math.Pow(2, 4));
     }
 
     [Fact]
