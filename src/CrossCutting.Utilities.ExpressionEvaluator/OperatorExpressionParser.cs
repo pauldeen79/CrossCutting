@@ -93,9 +93,8 @@ internal sealed class OperatorExpressionParser : IOperatorExpressionParser
     {
         if (Match(state, OperatorExpressionTokenType.Bang))
         {
-            var operatorToken = Previous(state);
             var right = ParseUnary(state); // right-associative
-            return Result.Success<IOperator>(new UnaryOperator(operatorToken.Type, right));
+            return Result.Success<IOperator>(new UnaryOperator(right));
         }
 
         return ParsePrimary(state);

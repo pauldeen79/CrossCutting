@@ -2,14 +2,12 @@
 
 public sealed class UnaryOperator : IOperator
 {
-    public OperatorExpressionTokenType Operator { get; }
     public Result<IOperator> Operand { get; }
 
-    public UnaryOperator(OperatorExpressionTokenType operatorType, Result<IOperator> operand)
+    public UnaryOperator(Result<IOperator> operand)
     {
         ArgumentGuard.IsNotNull(operand, nameof(operand));
 
-        Operator = operatorType;
         Operand = operand;
     }
 

@@ -123,6 +123,21 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_Negate_Boolean_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "!false";
+
+        // Act
+        var result = sut.Evaluate(CreateContext(expression));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(true);
+    }
+
+    [Fact]
     public void Can_Evaluate_String_Expression()
     {
         // Arrange
