@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-internal sealed class OperatorExpressionParser : IOperatorExpressionParser
+public sealed class OperatorExpressionParser : IOperatorExpressionParser
 {
     public Result<IOperator> Parse(ICollection<OperatorExpressionToken> tokens)
         => ParseLogicalOr(new OperatorExpressionParserState(tokens));

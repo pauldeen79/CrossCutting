@@ -1,9 +1,9 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
+public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
 {
-    private static readonly char[] TokenSigns = ['+', '-', '*', '/', '(', ')', '=', '!', '<', '>', '&', '|'];
-    private static readonly Dictionary<char, Func<OperatorExpressionTokenizerState, Result>> Processors = new Dictionary<char, Func<OperatorExpressionTokenizerState, Result>>
+    private static readonly char[] TokenSigns = ['+', '-', '*', '/', '(', ')', '=', '!', '<', '>', '&', '|', '%', '^'];
+    private static readonly Dictionary<char, Func<OperatorExpressionTokenizerState, Result>> Operators = new Dictionary<char, Func<OperatorExpressionTokenizerState, Result>>
     {
         { '+', ProcessPlus },
         { '-', ProcessMinus },
@@ -47,7 +47,7 @@ internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
                 continue;
             }
 
-            if (Processors.TryGetValue(current, out var action))
+            if (Operators.TryGetValue(current, out var action))
             {
                 var result = action.Invoke(state);
                 if (!result.IsSuccessful())
@@ -235,7 +235,7 @@ internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
             state.Position++;
         }
 
-        var value = state.Input.Substring(start, state.Position - start);
+        var value = state.Input.Substring(start, state.Position - start).Trim(' ', '\t', '\r', '\n');
         return new OperatorExpressionToken(OperatorExpressionTokenType.Expression, value);
     }
 
@@ -247,7 +247,7 @@ internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
             state.Position++;
         }
 
-        var value = state.Input.Substring(start, state.Position - start);
+        var value = state.Input.Substring(start, state.Position - start).Trim(' ', '\t', '\r', '\n');
         return new OperatorExpressionToken(OperatorExpressionTokenType.Expression, value);
     }
 
@@ -281,6 +281,7 @@ internal sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
             return ' ';
         }
 
+        //return state.Input.Substring(state.Position + 1).FirstOrDefault(x => x != ' ' && x != '\t' && x != '\r' && x != '\n');
         return state.Input[state.Position + 1];
     }
 }
