@@ -156,5 +156,104 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.Minus);
             result.Value[3].Type.ShouldBe(OperatorExpressionTokenType.EOF);
         }
+
+        [Fact]
+        public void Returns_Correct_Result_For_Invalid_Character_After_Equal_Sign()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Tokenize($"1 = 2");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unexpected '='");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_For_Invalid_Character_After_Ampersand_Sign()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Tokenize($"1 & 2");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Single '&' is not supported.");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_For_Invalid_Character_After_Pipe_Sign()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Tokenize($"1 | 2");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Single '|' is not supported.");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_For_Plus_Operator_At_End_Of_Expression()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Tokenize($"1 +");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBe(3);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Value.ShouldBe("1");
+            result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.Plus);
+            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.EOF);
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_For_And_Operator_At_End_Of_Expression()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Tokenize($"1 &&");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBe(3);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Value.ShouldBe("1");
+            result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.And);
+            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.EOF);
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_For_SmallerThan_Operator_At_End_Of_Expression()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Tokenize($"1 <");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBe(3);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Value.ShouldBe("1");
+            result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.Less);
+            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.EOF);
+        }
     }
 }

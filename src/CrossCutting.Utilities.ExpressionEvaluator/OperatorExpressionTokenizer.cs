@@ -281,7 +281,6 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
             return ' ';
         }
 
-        //return state.Input.Substring(state.Position + 1).FirstOrDefault(x => x != ' ' && x != '\t' && x != '\r' && x != '\n');
         return state.Input[state.Position + 1];
     }
 }
