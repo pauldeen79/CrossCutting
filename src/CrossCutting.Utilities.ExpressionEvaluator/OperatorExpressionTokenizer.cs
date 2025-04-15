@@ -73,7 +73,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         }
         else
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Plus));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Plus, "+"));
             state.Position++;
         }
 
@@ -88,7 +88,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         }
         else
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Minus));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Minus, "-"));
             state.Position++;
         }
 
@@ -97,7 +97,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
 
     private static Result ProcessMultiply(OperatorExpressionTokenizerState state)
     {
-        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Multiply));
+        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Multiply, "*"));
         state.Position++;
 
         return Result.Success();
@@ -105,7 +105,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
 
     private static Result ProcessDivide(OperatorExpressionTokenizerState state)
     {
-        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Divide));
+        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Divide, "/"));
         state.Position++;
 
         return Result.Success();
@@ -113,7 +113,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
 
     private static Result ProcessLeftParenthesis(OperatorExpressionTokenizerState state)
     {
-        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.LeftParenthesis));
+        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.LeftParenthesis, "("));
         state.Position++;
 
         return Result.Success();
@@ -121,7 +121,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
 
     private static Result ProcessRightParenthesis(OperatorExpressionTokenizerState state)
     {
-        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.RightParenthesis));
+        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.RightParenthesis, ")"));
         state.Position++;
 
         return Result.Success();
@@ -131,7 +131,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (Match(state, '='))
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Equal));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Equal, "=="));
             return Result.Success();
         }
         else
@@ -144,11 +144,11 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (Match(state, '='))
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.NotEqual));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.NotEqual, "!="));
         }
         else
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Bang));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Bang, "!"));
             state.Position++;
         }
 
@@ -159,11 +159,11 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (Match(state, '='))
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.LessOrEqual));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.LessOrEqual, "<="));
         }
         else
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Less));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Less, "<"));
             state.Position++;
         }
 
@@ -174,11 +174,11 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (Match(state, '='))
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.GreaterOrEqual));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.GreaterOrEqual, ">="));
         }
         else
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Greater));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Greater, ">"));
             state.Position++;
         }
 
@@ -189,7 +189,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (Match(state, '&'))
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.And));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.And, "&&"));
             return Result.Success();
         }
         else
@@ -202,7 +202,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (Match(state, '|'))
         {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Or));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Or, "||"));
             return Result.Success();
         }
         else
@@ -213,7 +213,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
 
     private static Result ProcessCaret(OperatorExpressionTokenizerState state)
     {
-        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Exponentiation));
+        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Exponentiation, "^"));
         state.Position++;
 
         return Result.Success();
@@ -221,7 +221,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
 
     private static Result ProcessPercent(OperatorExpressionTokenizerState state)
     {
-        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Modulo));
+        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Modulo, "%"));
         state.Position++;
 
         return Result.Success();

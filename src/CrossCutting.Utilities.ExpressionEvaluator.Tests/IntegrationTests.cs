@@ -244,7 +244,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "-1 + 1 + 1";
+        var expression = "(-1 + 1) + 1";
 
         // Act
         var result = sut.Parse(CreateContext(expression));

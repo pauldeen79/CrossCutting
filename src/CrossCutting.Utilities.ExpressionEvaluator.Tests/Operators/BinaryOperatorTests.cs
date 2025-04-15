@@ -15,10 +15,11 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Error_From_Left_Expression()
         {
             // Arrange
-            var sut = new BinaryOperator(Result.Error<IOperator>("Kaboom"), OperatorExpressionTokenType.Plus, Result.Success(Operator));
+            var expression = "1 + 2";
+            var sut = new BinaryOperator(Result.Error<IOperator>("Kaboom"), OperatorExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate(CreateContext("1 + 2"));
+            var result = sut.Evaluate(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -29,10 +30,11 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Error_From_Right_Expression()
         {
             // Arrange
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Error<IOperator>("Kaboom"));
+            var expression = "1 + 2";
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Error<IOperator>("Kaboom"), expression);
 
             // Act
-            var result = sut.Evaluate(CreateContext("1 + 2"));
+            var result = sut.Evaluate(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -43,14 +45,15 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Error_From_Left_Expression_Parsing()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(Result.Error<object?>("Kaboom"));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate(CreateContext("1 + 2"));
+            var result = sut.Evaluate(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -61,6 +64,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Error_From_Right_Expression_Parsing()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -75,10 +79,10 @@ public class BinaryOperatorTests : TestBase
                      return Result.Success<object?>(counter);
                  });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate(CreateContext("1 + 2"));
+            var result = sut.Evaluate(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -89,6 +93,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Invalid_On_Unsupported_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -99,10 +104,10 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.LeftParenthesis, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.LeftParenthesis, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate(CreateContext("1 + 2"));
+            var result = sut.Evaluate(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -113,6 +118,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Plus_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -123,10 +129,10 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate(CreateContext("1 + 2"));
+            var result = sut.Evaluate(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -137,6 +143,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Minus_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -147,7 +154,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Minus, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Minus, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 - 2"));
@@ -161,6 +168,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Multiply_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -171,7 +179,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Multiply, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Multiply, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 * 2"));
@@ -185,6 +193,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Divide_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -195,7 +204,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Divide, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Divide, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 / 2"));
@@ -209,6 +218,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Equal_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -219,7 +229,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Equal, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Equal, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 == 2"));
@@ -233,6 +243,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_NotEqual_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -243,7 +254,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.NotEqual, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.NotEqual, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 != 2"));
@@ -257,6 +268,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Less_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -267,7 +279,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Less, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Less, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 < 2"));
@@ -281,6 +293,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_LessOrEqual_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -291,7 +304,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.LessOrEqual, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.LessOrEqual, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 <= 2"));
@@ -305,6 +318,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Greater_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -315,7 +329,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Greater, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Greater, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 > 2"));
@@ -329,6 +343,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_GreaterOrEqual_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -339,7 +354,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.GreaterOrEqual, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.GreaterOrEqual, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 >= 2"));
@@ -353,6 +368,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_And_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -363,7 +379,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.And, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.And, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 && 2"));
@@ -377,6 +393,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Or_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -387,7 +404,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Or, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Or, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 || 2"));
@@ -401,6 +418,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Modulus_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -411,7 +429,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Modulo, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Modulo, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 % 2"));
@@ -425,6 +443,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Exponential_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -435,7 +454,7 @@ public class BinaryOperatorTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Exponentiation, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Exponentiation, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Evaluate(CreateContext("1 ^ 2"));
@@ -452,10 +471,11 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Error_From_Left_Expression()
         {
             // Arrange
-            var sut = new BinaryOperator(Result.Error<IOperator>("Kaboom"), OperatorExpressionTokenType.Plus, Result.Success(Operator));
+            var expression = "1 + 2";
+            var sut = new BinaryOperator(Result.Error<IOperator>("Kaboom"), OperatorExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse(CreateContext("1 + 2"));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -468,10 +488,11 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Error_From_Right_Expression()
         {
             // Arrange
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Error<IOperator>("Kaboom"));
+            var expression = "1 + 2";
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Error<IOperator>("Kaboom"), expression);
 
             // Act
-            var result = sut.Parse(CreateContext("1 + 2"));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -484,14 +505,15 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Error_From_Left_Expression_Parsing()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithErrorMessage("Kaboom").WithStatus(ResultStatus.Error));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse(CreateContext("1 + 2"));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -504,6 +526,7 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Error_From_Right_Expression_Parsing()
         {
             // Arrange
+            var expression = "1 + 2";
             var counter = 0;
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
@@ -518,10 +541,10 @@ public class BinaryOperatorTests : TestBase
                     return new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok);
                 });
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse(CreateContext("1 + 2"));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -534,14 +557,15 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Invalid_On_Unsupported_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.LeftParenthesis, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.LeftParenthesis, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse(CreateContext("1 + 2"));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -552,14 +576,15 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Plus_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse(CreateContext("1 + 2"));
+            var result = sut.Parse(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -571,11 +596,12 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Minus_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Minus, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Minus, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Parse(CreateContext("1 - 2"));
@@ -590,11 +616,12 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Multiply_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Multiply, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Multiply, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Parse(CreateContext("1 * 2"));
@@ -609,11 +636,12 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Divide_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Divide, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Divide, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Parse(CreateContext("1 / 2"));
@@ -628,11 +656,12 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Equal_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Equal, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Equal, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Parse(CreateContext("1 == 2"));
@@ -647,11 +676,12 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_NotEqual_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.NotEqual, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.NotEqual, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Parse(CreateContext("1 != 2"));
@@ -666,11 +696,12 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Less_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Less, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Less, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Parse(CreateContext("1 < 2"));
@@ -685,11 +716,12 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_LessOrEqual_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.LessOrEqual, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.LessOrEqual, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Parse(CreateContext("1 <= 2"));
@@ -704,11 +736,12 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Greater_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Greater, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Greater, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Parse(CreateContext("1 > 2"));
@@ -723,11 +756,12 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_GreaterOrEqual_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.GreaterOrEqual, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.GreaterOrEqual, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Parse(CreateContext("1 >= 2"));
@@ -742,11 +776,12 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_And_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.And, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.And, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Parse(CreateContext("1 && 2"));
@@ -761,11 +796,12 @@ public class BinaryOperatorTests : TestBase
         public void Returns_Success_On_Or_Operator()
         {
             // Arrange
+            var expression = "1 + 2";
             Operator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Or, Result.Success(Operator));
+            var sut = new BinaryOperator(Result.Success(Operator), OperatorExpressionTokenType.Or, Result.Success(Operator), expression);
 
             // Act
             var result = sut.Parse(CreateContext("1 || 2"));

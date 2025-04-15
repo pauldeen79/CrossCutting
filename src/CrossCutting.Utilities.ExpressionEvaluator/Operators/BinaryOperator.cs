@@ -5,15 +5,18 @@ public sealed class BinaryOperator : IOperator
     public Result<IOperator> Left { get; }
     public OperatorExpressionTokenType Operator { get; }
     public Result<IOperator> Right { get; }
+    public string SourceExpression { get; }
 
-    public BinaryOperator(Result<IOperator> left, OperatorExpressionTokenType @operator, Result<IOperator> right)
+    public BinaryOperator(Result<IOperator> left, OperatorExpressionTokenType @operator, Result<IOperator> right, string sourceExpression)
     {
         ArgumentGuard.IsNotNull(left, nameof(left));
         ArgumentGuard.IsNotNull(right, nameof(right));
+        ArgumentGuard.IsNotNull(sourceExpression, nameof(sourceExpression));
 
         Left = left;
         Operator = @operator;
         Right = right;
+        SourceExpression = sourceExpression;
     }
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
@@ -60,7 +63,7 @@ public sealed class BinaryOperator : IOperator
 
         var result = new ExpressionParseResultBuilder()
             .WithExpressionType(typeof(OperatorExpression))
-            .WithSourceExpression(context.Expression)
+            .WithSourceExpression(SourceExpression)
             .WithResultType(Operator.In(OperatorExpressionTokenType.And, OperatorExpressionTokenType.Or, OperatorExpressionTokenType.Equal, OperatorExpressionTokenType.NotEqual, OperatorExpressionTokenType.Less, OperatorExpressionTokenType.LessOrEqual, OperatorExpressionTokenType.Greater, OperatorExpressionTokenType.GreaterOrEqual)
                 ? typeof(bool)
                 : leftResult?.ResultType)

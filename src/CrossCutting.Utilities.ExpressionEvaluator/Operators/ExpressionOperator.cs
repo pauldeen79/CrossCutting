@@ -26,7 +26,7 @@ public sealed class ExpressionOperator : IOperator
 
         var result = new ExpressionParseResultBuilder()
             .WithExpressionType(typeof(OperatorExpression))
-            .WithSourceExpression(context.Expression)
+            .WithSourceExpression(Expression)
             .WithResultType(valueResult.ResultType)
             .AddPartResult(valueResult, Constants.Expression)
             .SetStatusFromPartResults();

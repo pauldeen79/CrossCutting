@@ -13,7 +13,7 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
         {
             var op = Previous(state);
             var right = ParseLogicalAnd(state);
-            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right));
+            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right, op.Value));
         }
 
         return expr;
@@ -27,7 +27,7 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
         {
             var op = Previous(state);
             var right = ParseEquality(state);
-            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right));
+            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right, op.Value));
         }
 
         return expr;
@@ -41,7 +41,7 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
         {
             var op = Previous(state);
             var right = ParseAdditive(state);
-            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right));
+            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right, op.Value));
         }
 
         return expr;
@@ -55,7 +55,7 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
         {
             var op = Previous(state);
             var right = ParseAdditive(state);
-            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right));
+            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right, op.Value));
         }
 
         return expr;
@@ -69,7 +69,7 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
         {
             var op = Previous(state);
             var right = ParseMultiplicative(state);
-            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right));
+            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right, op.Value));
         }
 
         return expr;
@@ -83,7 +83,7 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
         {
             var op = Previous(state);
             var right = ParseUnary(state);
-            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right));
+            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right, op.Value));
         }
 
         return expr;

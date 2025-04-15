@@ -406,5 +406,24 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(!true);
         }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Invalid_Token()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.LeftParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unexpected token");
+        }
     }
 }
