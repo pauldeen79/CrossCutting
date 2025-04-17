@@ -9,7 +9,8 @@ public class ExpressionEvaluatorContext
     public int CurrentRecursionLevel { get; }
     public ExpressionEvaluatorContext? ParentContext { get; }
 
-    private IExpressionEvaluator Evaluator { get; }
+    internal IExpressionEvaluator Evaluator { get; }
+    private bool UseCallback { get; set; }
 
     public ExpressionEvaluatorContext(
         string? expression,
@@ -31,30 +32,18 @@ public class ExpressionEvaluatorContext
         ParentContext = parentContext;
     }
 
-    public bool IsInQuoteMap(int index)
-        => QuoteMap.Any(x => x.StartIndex < index && x.EndIndex > index);
-
-    public bool HasAnyOccurenceNotWithinQuotes(IEnumerable<string> stringsToFind, StringComparison stringComparison)
-    {
-        stringsToFind = ArgumentGuard.IsNotNull(stringsToFind, nameof(stringsToFind));
-
-        foreach (var stringToFind in stringsToFind)
-        {
-            var occurences = Expression.FindAllOccurences(stringToFind, stringComparison).Where(x => !IsInQuoteMap(x)).ToArray();
-            if (occurences.Length > 0)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public Result<object?> Evaluate(string expression)
-        => Evaluator.Evaluate(CreateChildContext(expression));
+        => UseCallback
+            ? Evaluator.EvaluateCallback(CreateChildContext(expression))
+            : Evaluator.Evaluate(CreateChildContext(expression));
+
+    public Result<T> EvaluateTyped<T>(string expression)
+        => Evaluator.EvaluateTyped<T>(CreateChildContext(expression));
 
     public ExpressionParseResult Parse(string expression)
-        => Evaluator.Parse(CreateChildContext(expression));
+        => UseCallback
+            ? Evaluator.ParseCallback(CreateChildContext(expression))
+            : Evaluator.Parse(CreateChildContext(expression));
 
     public Result<T> Validate<T>()
     {
@@ -96,5 +85,11 @@ public class ExpressionEvaluatorContext
                 }
             }
         }
+    }
+
+    internal ExpressionEvaluatorContext FromRoot()
+    {
+        UseCallback = true;
+        return this;
     }
 }

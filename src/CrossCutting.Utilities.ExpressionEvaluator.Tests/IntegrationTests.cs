@@ -10,7 +10,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "true && true && \"string value\"";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression));
+        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -25,7 +25,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "2 > 1";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression));
+        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -40,7 +40,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "-1 + 1 + 1";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression));
+        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -70,7 +70,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "MyGenericFunction<System.String>()";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression));
+        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -85,7 +85,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "null";
 
         // Act
-        var result = sut.EvaluateTyped<string>(CreateContext(expression));
+        var result = sut.EvaluateTyped<string>(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -100,7 +100,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "13";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression));
+        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -115,7 +115,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "-13";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression));
+        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -130,7 +130,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "!false";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression));
+        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -145,7 +145,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "\"my string value\"";
 
         // Act
-        var result = sut.EvaluateTyped<string>(CreateContext(expression));
+        var result = sut.EvaluateTyped<string>(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -160,7 +160,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "$\"my value with {context} items\"";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, context: "replaced"));
+        var result = sut.Evaluate(CreateContext(expression, context: "replaced", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -176,7 +176,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression));
+        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -190,7 +190,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("!true"));
+        var result = sut.Evaluate(CreateContext("!true", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -204,7 +204,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("!!true"));
+        var result = sut.Evaluate(CreateContext("!!true", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -219,7 +219,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "true && true && \"string value\"";
 
         // Act
-        var result = sut.Parse(CreateContext(expression));
+        var result = sut.Parse(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -233,7 +233,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "2 > 1";
 
         // Act
-        var result = sut.Parse(CreateContext(expression));
+        var result = sut.Parse(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -247,7 +247,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "(-1 + 1) + 1";
 
         // Act
-        var result = sut.Parse(CreateContext(expression));
+        var result = sut.Parse(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -261,13 +261,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "MyFunction(123)";
 
         // Act
-        var result = sut.Parse(CreateContext(expression));
+        var result = sut.Parse(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ErrorMessage.ShouldBe("Validation of function MyFunction failed, see validation errors for more details");
-        result.PartResults.Count.ShouldBe(1);
-        result.PartResults.First().ErrorMessage.ShouldBe("Argument Input is not of type System.String");
+        result.ValidationErrors.Count.ShouldBe(1);
+        result.ValidationErrors.First().ErrorMessage.ShouldBe("Argument Input is not of type System.String");
     }
 
     [Fact]
@@ -278,7 +278,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "MyFunction(123)";
 
         // Act
-        var result = sut.Parse(CreateContext(expression, settings: new ExpressionEvaluatorSettingsBuilder().WithValidateArgumentTypes(false)));
+        var result = sut.Parse(CreateContext(expression, settings: new ExpressionEvaluatorSettingsBuilder().WithValidateArgumentTypes(false), evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -292,7 +292,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "MyFunction(context)";
 
         // Act
-        var result = sut.Parse(CreateContext(expression));
+        var result = sut.Parse(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -306,12 +306,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "MyFunction(error)";
 
         // Act
-        var result = sut.Parse(CreateContext(expression));
+        var result = sut.Parse(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
-        result.PartResults.Count.ShouldBe(1);
-        result.PartResults.First().ErrorMessage.ShouldBe("Kaboom");
+        result.ErrorMessage.ShouldBe("Validation of function MyFunction failed, see validation errors for more details");
+        result.ValidationErrors.Count.ShouldBe(1);
+        result.ValidationErrors.First().ErrorMessage.ShouldBe("Unknown expression type found in fragment: error");
     }
 
     public IntegrationTests()

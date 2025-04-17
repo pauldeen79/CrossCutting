@@ -2,5 +2,5 @@
 
 public interface IOperatorExpressionTokenizer
 {
-    Result<List<OperatorExpressionToken>> Tokenize(string input);
+    Result<List<OperatorExpressionToken>> Tokenize(ExpressionEvaluatorContext context);
 }

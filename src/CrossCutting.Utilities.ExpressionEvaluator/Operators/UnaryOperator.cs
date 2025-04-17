@@ -35,7 +35,7 @@ public sealed class UnaryOperator : IOperator
         var operandResult = Operand.Value?.Parse(context);
 
         var result = new ExpressionParseResultBuilder()
-            .WithExpressionType(typeof(OperatorExpression))
+            .WithExpressionType(typeof(UnaryOperator))
             .WithSourceExpression(context.Expression)
             .WithResultType(typeof(bool))
             .AddPartResult(operandResult ?? new ExpressionParseResultBuilder().FillFromResult(Operand), Constants.Operand)

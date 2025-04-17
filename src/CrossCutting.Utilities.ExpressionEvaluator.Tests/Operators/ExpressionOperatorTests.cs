@@ -40,7 +40,7 @@ public class ExpressionOperatorTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.ExpressionType.ShouldBe(typeof(OperatorExpression));
+            result.ExpressionType.ShouldBe(typeof(ExpressionOperator));
             result.ResultType.ShouldBe(typeof(string));
         }
     }

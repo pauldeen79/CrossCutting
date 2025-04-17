@@ -1,7 +1,14 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 
-public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionTokenizer>
+public class OperatorExpressionTokenizerTests : TestBase
 {
+    protected OperatorExpressionTokenizer CreateSut() => new OperatorExpressionTokenizer([Expression]);
+
+    public OperatorExpressionTokenizerTests()
+    {
+        Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
+    }
+
     public class Tokenize : OperatorExpressionTokenizerTests
     {
         [Fact]
@@ -11,7 +18,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize("\"hello\" == \"world\"");
+            var result = sut.Tokenize(CreateContext("\"hello\" == \"world\""));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -29,7 +36,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize("\"hello\" == \"world");
+            var result = sut.Tokenize(CreateContext("\"hello\" == \"world"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -61,7 +68,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize($"1 {sign} 2");
+            var result = sut.Tokenize(CreateContext($"1 {sign} 2"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -82,7 +89,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize($"-1 + 2");
+            var result = sut.Tokenize(CreateContext("-1 + 2"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -103,7 +110,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize($"1 + +2");
+            var result = sut.Tokenize(CreateContext("1 + +2"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -124,7 +131,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize($"1 + +");
+            var result = sut.Tokenize(CreateContext("1 + +"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -144,7 +151,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize($"1 - -");
+            var result = sut.Tokenize(CreateContext("1 - -"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -164,7 +171,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize($"1 = 2");
+            var result = sut.Tokenize(CreateContext("1 = 2"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -178,7 +185,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize($"1 & 2");
+            var result = sut.Tokenize(CreateContext("1 & 2"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -192,7 +199,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize($"1 | 2");
+            var result = sut.Tokenize(CreateContext("1 | 2"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -206,7 +213,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize($"1 +");
+            var result = sut.Tokenize(CreateContext("1 +"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -225,7 +232,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize($"1 &&");
+            var result = sut.Tokenize(CreateContext("1 &&"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -244,7 +251,7 @@ public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionToken
             var sut = CreateSut();
 
             // Act
-            var result = sut.Tokenize($"1 <");
+            var result = sut.Tokenize(CreateContext("1 <"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

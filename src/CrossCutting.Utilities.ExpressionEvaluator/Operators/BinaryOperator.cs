@@ -62,7 +62,7 @@ public sealed class BinaryOperator : IOperator
         var rightResult = Right.Value?.Parse(context);
 
         var result = new ExpressionParseResultBuilder()
-            .WithExpressionType(typeof(OperatorExpression))
+            .WithExpressionType(typeof(BinaryOperator))
             .WithSourceExpression(SourceExpression)
             .WithResultType(Operator.In(OperatorExpressionTokenType.And, OperatorExpressionTokenType.Or, OperatorExpressionTokenType.Equal, OperatorExpressionTokenType.NotEqual, OperatorExpressionTokenType.Less, OperatorExpressionTokenType.LessOrEqual, OperatorExpressionTokenType.Greater, OperatorExpressionTokenType.GreaterOrEqual)
                 ? typeof(bool)

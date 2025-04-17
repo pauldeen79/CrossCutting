@@ -2,7 +2,8 @@
 
 public class ExpressionEvaluatorTests : TestBase
 {
-    protected ExpressionEvaluator CreateSut() => new ExpressionEvaluator([Expression]);
+    protected ExpressionEvaluator CreateSut() => new ExpressionEvaluator(new 
+        OperatorExpressionTokenizer([Expression]), new OperatorExpressionParser(), [Expression]);
 
     public class Evaluate : ExpressionEvaluatorTests
     {
@@ -24,6 +25,7 @@ public class ExpressionEvaluatorTests : TestBase
         public void Returns_First_Understood_Result_When_Not_Equal_To_Continue()
         {
             // Arrange
+            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
             Expression.Evaluate(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<object?>("result value"));
             var sut = CreateSut();
 
@@ -39,6 +41,7 @@ public class ExpressionEvaluatorTests : TestBase
         public void Returns_Invalid_When_Expression_Is_Not_Understood()
         {
             // Arrange
+            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
             Expression.Evaluate(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Continue<object?>());
             var sut = CreateSut();
 
@@ -103,7 +106,7 @@ public class ExpressionEvaluatorTests : TestBase
             // Arrange
             var typedExpression = Substitute.For<IExpression<string>>();
             typedExpression.EvaluateTyped(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success("result value"));
-            var sut = new ExpressionEvaluator([typedExpression]);
+            var sut = new ExpressionEvaluator(new OperatorExpressionTokenizer([typedExpression]), new OperatorExpressionParser(), [typedExpression]);
 
             // Act
             var result = sut.EvaluateTyped<string>("expression", new ExpressionEvaluatorSettingsBuilder());
@@ -119,7 +122,7 @@ public class ExpressionEvaluatorTests : TestBase
             // Arrange
             var typedExpression = Substitute.For<IExpression<string>>();
             typedExpression.EvaluateTyped(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Continue<string>());
-            var sut = new ExpressionEvaluator([typedExpression]);
+            var sut = new ExpressionEvaluator(new OperatorExpressionTokenizer([typedExpression]), new OperatorExpressionParser(), [typedExpression]);
 
             // Act
             var result = sut.EvaluateTyped<string>("expression", new ExpressionEvaluatorSettingsBuilder());
@@ -189,7 +192,9 @@ public class ExpressionEvaluatorTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Unknown expression type found in fragment: expression");
+            result.ErrorMessage.ShouldBe("Parsing of the expression failed, see inner results for details");
+            result.PartResults.Count.ShouldBe(1);
+            result.PartResults.First().ErrorMessage.ShouldBe("Unknown expression type found in fragment: expression");
         }
 
         [Fact]
