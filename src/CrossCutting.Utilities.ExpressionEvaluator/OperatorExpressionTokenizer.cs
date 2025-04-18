@@ -267,7 +267,6 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     {
         if (Peek(state) == '"')
         {
-            //state.Position++;
             state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Dollar, "$"));
             state.InQuotes = !state.InQuotes;
 
