@@ -55,7 +55,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "MyFunction(context)";
 
         // Act
-        var result = sut.EvaluateTyped<string>(CreateContext(expression, context: "hello world"));
+        var result = sut.EvaluateTyped<string>(CreateContext(expression, context: "hello world", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

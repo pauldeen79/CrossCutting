@@ -8,4 +8,5 @@ public interface IExpressionEvaluator
 
     ExpressionParseResult ParseCallback(ExpressionEvaluatorContext context);
     Result<object?> EvaluateCallback(ExpressionEvaluatorContext context);
+    Result<T> EvaluateTypedCallback<T>(ExpressionEvaluatorContext context);
 }

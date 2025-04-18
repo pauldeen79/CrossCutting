@@ -20,5 +20,6 @@ public enum OperatorExpressionTokenType
     Bang,
     Exponentiation,
     Modulo,
+    Text,
     EOF
 }

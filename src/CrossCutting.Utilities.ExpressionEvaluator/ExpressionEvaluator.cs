@@ -32,18 +32,20 @@ public class ExpressionEvaluator : IExpressionEvaluator
             .Aggregate<object?>();
     }
 
-    //TODO: Add Callback equivalent, and diffentiate in Context
     public Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.Validate<T>()
-            .OnSuccess(() => _expressions
-                .Select(x => x is IExpression<T> typedExpression
-                    ? typedExpression.EvaluateTyped(context)
-                    : x.Evaluate(context).TryCastAllowNull<T>())
-                .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                    ?? Result.Invalid<T>($"Unknown expression type found in fragment: {context.Expression}"));
+        context = context.FromRoot();
+
+        return new ResultDictionaryBuilder()
+            .Add("Validate", () => context.Validate<object?>())
+            .Add(nameof(IOperatorExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context))
+            .Add(nameof(IOperatorExpressionParser.Parse), results => _parser.Parse(results.GetValue<List<OperatorExpressionToken>>(nameof(IOperatorExpressionTokenizer.Tokenize))))
+            .Add(nameof(Evaluate), results => results.GetValue<IOperator>(nameof(Parse)).Evaluate(context))
+            .Build()
+            .Aggregate<object?>()
+            .TryCastAllowNull<T>();
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
@@ -78,6 +80,19 @@ public class ExpressionEvaluator : IExpressionEvaluator
                 .Select(x => x.Evaluate(context))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                     ?? Result.Invalid<object?>($"Unknown expression type found in fragment: {context.Expression}"));
+    }
+
+    public Result<T> EvaluateTypedCallback<T>(ExpressionEvaluatorContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context.Validate<T>()
+            .OnSuccess(() => _expressions
+                .Select(x => x is IExpression<T> typedExpression
+                    ? typedExpression.EvaluateTyped(context)
+                    : x.Evaluate(context).TryCastAllowNull<T>())
+                .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                    ?? Result.Invalid<T>($"Unknown expression type found in fragment: {context.Expression}"));
     }
 
     public ExpressionParseResult ParseCallback(ExpressionEvaluatorContext context)
