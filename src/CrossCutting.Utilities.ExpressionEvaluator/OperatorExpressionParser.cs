@@ -102,7 +102,7 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
 
     private static Result<IOperator> ParsePrimary(OperatorExpressionParserState state)
     {
-        if (Match(state, OperatorExpressionTokenType.Expression))
+        if (Match(state, OperatorExpressionTokenType.Other))
         {
             return Result.Success<IOperator>(new ExpressionOperator(Previous(state).Value));
         }

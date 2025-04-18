@@ -2,7 +2,7 @@
 
 public enum OperatorExpressionTokenType
 {
-    Expression,
+    Other,
     Plus,
     Minus,
     Multiply,

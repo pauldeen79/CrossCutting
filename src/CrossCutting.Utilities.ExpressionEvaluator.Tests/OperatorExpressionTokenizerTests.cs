@@ -24,7 +24,7 @@ public class OperatorExpressionTokenizerTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
             result.Value.Count.ShouldBe(2);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[0].Value.ShouldBe("\"hello\" == \"world\"");
             result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.EOF);
         }
@@ -42,7 +42,7 @@ public class OperatorExpressionTokenizerTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
             result.Value.Count.ShouldBe(2);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[0].Value.ShouldBe("\"hello\" == \"world");
             result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.EOF);
         }
@@ -74,10 +74,10 @@ public class OperatorExpressionTokenizerTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
             result.Value.Count.ShouldBe(4);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[0].Value.ShouldBe("1");
             result.Value[1].Type.ShouldBe(expectedType);
-            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[2].Value.ShouldBe("2");
             result.Value[3].Type.ShouldBe(OperatorExpressionTokenType.EOF);
         }
@@ -95,10 +95,10 @@ public class OperatorExpressionTokenizerTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
             result.Value.Count.ShouldBe(4);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[0].Value.ShouldBe("-1");
             result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.Plus);
-            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[2].Value.ShouldBe("2");
             result.Value[3].Type.ShouldBe(OperatorExpressionTokenType.EOF);
         }
@@ -116,10 +116,10 @@ public class OperatorExpressionTokenizerTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
             result.Value.Count.ShouldBe(4);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[0].Value.ShouldBe("1");
             result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.Plus);
-            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[2].Value.ShouldBe("+2");
             result.Value[3].Type.ShouldBe(OperatorExpressionTokenType.EOF);
         }
@@ -137,7 +137,7 @@ public class OperatorExpressionTokenizerTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
             result.Value.Count.ShouldBe(4);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[0].Value.ShouldBe("1");
             result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.Plus);
             result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.Plus);
@@ -157,7 +157,7 @@ public class OperatorExpressionTokenizerTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
             result.Value.Count.ShouldBe(4);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[0].Value.ShouldBe("1");
             result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.Minus);
             result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.Minus);
@@ -219,7 +219,7 @@ public class OperatorExpressionTokenizerTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
             result.Value.Count.ShouldBe(3);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[0].Value.ShouldBe("1");
             result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.Plus);
             result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.EOF);
@@ -238,7 +238,7 @@ public class OperatorExpressionTokenizerTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
             result.Value.Count.ShouldBe(3);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[0].Value.ShouldBe("1");
             result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.And);
             result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.EOF);
@@ -257,7 +257,7 @@ public class OperatorExpressionTokenizerTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
             result.Value.Count.ShouldBe(3);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Expression);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Other);
             result.Value[0].Value.ShouldBe("1");
             result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.Less);
             result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.EOF);

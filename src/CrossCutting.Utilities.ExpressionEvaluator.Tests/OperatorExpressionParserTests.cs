@@ -10,9 +10,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "false"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "false"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.Or),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "true"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "true"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -39,9 +39,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "false"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "false"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.And),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "true"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "true"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -68,9 +68,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "false"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "false"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.Equal),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "true"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "true"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -97,9 +97,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "false"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "false"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.NotEqual),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "true"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "true"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -126,9 +126,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.Less),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "2"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "2"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -155,9 +155,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.LessOrEqual),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "2"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "2"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -184,9 +184,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.Greater),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "2"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "2"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -213,9 +213,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.GreaterOrEqual),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "2"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "2"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -242,9 +242,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.Plus),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "2"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "2"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -271,9 +271,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.Minus),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "2"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "2"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -300,9 +300,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.Multiply),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "2"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "2"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -329,9 +329,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.Divide),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "2"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "2"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -358,9 +358,9 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             // Arrange
             var tokens = new List<OperatorExpressionToken>
             {
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.Modulo),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "2"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "2"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();
@@ -388,7 +388,7 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             var tokens = new List<OperatorExpressionToken>
             {
                 new OperatorExpressionToken(OperatorExpressionTokenType.Bang),
-                new OperatorExpressionToken(OperatorExpressionTokenType.Expression, "true"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "true"),
                 new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
             };
             var sut = CreateSut();

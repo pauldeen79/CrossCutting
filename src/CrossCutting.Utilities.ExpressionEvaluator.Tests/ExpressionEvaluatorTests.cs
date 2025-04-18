@@ -192,9 +192,7 @@ public class ExpressionEvaluatorTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Parsing of the expression failed, see inner results for details");
-            result.PartResults.Count.ShouldBe(1);
-            result.PartResults.First().ErrorMessage.ShouldBe("Unknown expression type found in fragment: expression");
+            result.ErrorMessage.ShouldBe("Unknown expression type found in fragment: expression");
         }
 
         [Fact]

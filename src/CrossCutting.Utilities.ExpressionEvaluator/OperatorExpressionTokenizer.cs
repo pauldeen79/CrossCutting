@@ -46,7 +46,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
                 return Result.FromExistingResult<List<OperatorExpressionToken>>(expression.ParseResult.ToResult());
             }
 
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Expression, context.Expression));
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Other, context.Expression));
             state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.EOF));
             return Result.Success(state.Tokens);
         }
@@ -262,7 +262,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         }
 
         var value = state.Input.Substring(start, state.Position - start).Trim(' ', '\t', '\r', '\n');
-        return new OperatorExpressionToken(OperatorExpressionTokenType.Expression, value);
+        return new OperatorExpressionToken(OperatorExpressionTokenType.Other, value);
     }
 
     private static OperatorExpressionToken ReadOtherFromPlusOrMinus(OperatorExpressionTokenizerState state)
@@ -274,7 +274,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         }
 
         var value = state.Input.Substring(start, state.Position - start).Trim(' ', '\t', '\r', '\n');
-        return new OperatorExpressionToken(OperatorExpressionTokenType.Expression, value);
+        return new OperatorExpressionToken(OperatorExpressionTokenType.Other, value);
     }
 
     private static bool IsTokenSign(char current, bool inQuotes)

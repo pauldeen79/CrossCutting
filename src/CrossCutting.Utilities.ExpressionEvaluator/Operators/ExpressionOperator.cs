@@ -22,15 +22,6 @@ public sealed class ExpressionOperator : IOperator
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         
-        var valueResult = context.Parse(Expression);
-
-        var result = new ExpressionParseResultBuilder()
-            .WithExpressionType(typeof(ExpressionOperator))
-            .WithSourceExpression(Expression)
-            .WithResultType(valueResult.ResultType)
-            .AddPartResult(valueResult, Constants.Expression)
-            .SetStatusFromPartResults();
-
-        return result;
+        return context.Parse(Expression);
     }
 }
