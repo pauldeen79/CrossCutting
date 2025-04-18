@@ -3,7 +3,7 @@
 public sealed class OperatorExpressionParser : IOperatorExpressionParser
 {
     public Result<IOperator> Parse(ICollection<OperatorExpressionToken> tokens)
-        => ParseLogicalOr(new OperatorExpressionParserState(tokens));
+        => ParseLogicalOr(new OperatorExpressionParserState(tokens.Where(x => x.Type != OperatorExpressionTokenType.Dollar).ToArray()));
 
     private static Result<IOperator> ParseLogicalOr(OperatorExpressionParserState state)
     {
@@ -106,6 +106,12 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
         {
             var value = Previous(state).Value;
             return Result.Success<IOperator>(new StringOperator(value.Substring(1, value.Length - 2)));
+        }
+
+        if (Match(state, OperatorExpressionTokenType.InterpolatedText))
+        {
+            var value = Previous(state).Value;
+            return Result.Success<IOperator>(new InterpolatedStringOperator(value.Substring(2, value.Length - 3)));
         }
 
         if (Match(state, OperatorExpressionTokenType.Other))

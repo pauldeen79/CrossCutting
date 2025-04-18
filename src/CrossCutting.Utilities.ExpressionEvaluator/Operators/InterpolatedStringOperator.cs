@@ -1,30 +1,20 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Operators;
 
-public class FormattableStringExpression : IExpression<GenericFormattableString>
+public class InterpolatedStringOperator : IOperator
 {
     private const string TemporaryDelimiter = "\uE002";
 
-    public int Order => 12;
+    public string Value { get; }
+
+    public InterpolatedStringOperator(string value)
+    {
+        ArgumentGuard.IsNotNull(value, nameof(value));
+
+        Value = value;
+    }
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-        => EvaluateTyped(context).TryCastAllowNull<object?>();
-
-    public Result<GenericFormattableString> EvaluateTyped(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        if (context.Expression.Length < 3 || !context.Expression.StartsWith("$\""))
-        {
-            return Result.Continue<GenericFormattableString>();
-        }
-
-        if (!context.Expression.EndsWith("\""))
-        {
-            return Result.Invalid<GenericFormattableString>("FormattableString is not closed correctly");
-        }
-
-        return EvaluateRecursive(context.Expression.Substring(2, context.Expression.Length - 3), context);
-    }
+        => EvaluateRecursive(Value, context).TryCastAllowNull<object?>();
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
     {
@@ -32,22 +22,10 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
 
         var result = new ExpressionParseResultBuilder()
             .WithSourceExpression(context.Expression)
-            .WithExpressionType(typeof(FormattableStringExpression))
+            .WithExpressionType(typeof(InterpolatedStringOperator))
             .WithResultType(typeof(IFormattable));
 
-        if (context.Expression.Length < 3 || !context.Expression.StartsWith("$\""))
-        {
-            return result.WithStatus(ResultStatus.Continue);
-        }
-
-        if (!context.Expression.EndsWith("\""))
-        {
-            return result
-                .WithStatus(ResultStatus.Invalid)
-                .WithErrorMessage("FormattableString is not closed correctly");
-        }
-
-        return ParseRecursive(result, context.Expression.Substring(2, context.Expression.Length - 3), context);
+        return ParseRecursive(result, Value, context);
     }
 
     private static Result<GenericFormattableString> EvaluateRecursive(string format, ExpressionEvaluatorContext context)
@@ -58,7 +36,7 @@ public class FormattableStringExpression : IExpression<GenericFormattableString>
         {
             return Result.FromExistingResult<GenericFormattableString>(results);
         }
-        
+
         return Result.Success(new GenericFormattableString(remainder, [.. results.Value.Select(x => x.Value?.ToString(context.Settings.FormatProvider))!]));
     }
 

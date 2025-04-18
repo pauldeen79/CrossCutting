@@ -21,5 +21,7 @@ public enum OperatorExpressionTokenType
     Exponentiation,
     Modulo,
     Text,
+    InterpolatedText,
+    Dollar,
     EOF
 }

@@ -20,6 +20,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         { '^', ProcessCaret },
         { '%', ProcessPercent },
         { '"', ProcessDoubleQuote },
+        { '$', ProcessDollar },
     };
 
     private readonly IExpression[] _expressions;
@@ -262,6 +263,22 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         return Result.Success();
     }
 
+    private static Result ProcessDollar(OperatorExpressionTokenizerState state)
+    {
+        if (Peek(state) == '"')
+        {
+            //state.Position++;
+            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Dollar, "$"));
+            state.InQuotes = !state.InQuotes;
+
+            return Result.Success();
+        }
+        else
+        {
+            return Result.Invalid("Missing quotes for formattable string expression");
+        }
+    }
+
     private static OperatorExpressionToken ReadOther(OperatorExpressionTokenizerState state, bool inQuotes)
     {
         var start = state.Position;
@@ -283,7 +300,9 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         }
 
         var value = state.Input.Substring(start, state.Position - start).Trim(' ', '\t', '\r', '\n');
-        return new OperatorExpressionToken(OperatorExpressionTokenType.Text, value);
+        return new OperatorExpressionToken(state.Tokens.LastOrDefault()?.Type == OperatorExpressionTokenType.Dollar
+            ? OperatorExpressionTokenType.InterpolatedText
+            : OperatorExpressionTokenType.Text, value);
     }
 
     private static OperatorExpressionToken ReadOtherFromPlusOrMinus(OperatorExpressionTokenizerState state)
