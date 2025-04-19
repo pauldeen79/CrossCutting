@@ -102,13 +102,13 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
 
     private static Result<IOperator> ParsePrimary(OperatorExpressionParserState state)
     {
-        if (Match(state, OperatorExpressionTokenType.Text))
+        if (Match(state, OperatorExpressionTokenType.Literal))
         {
             var value = Previous(state).Value;
-            return Result.Success<IOperator>(new StringOperator(value.Substring(1, value.Length - 2)));
+            return Result.Success<IOperator>(new LiteralOperator(value.Substring(1, value.Length - 2)));
         }
 
-        if (Match(state, OperatorExpressionTokenType.InterpolatedText))
+        if (Match(state, OperatorExpressionTokenType.InterpolatedString))
         {
             var value = Previous(state).Value;
             return Result.Success<IOperator>(new InterpolatedStringOperator(value.Substring(2, value.Length - 3)));

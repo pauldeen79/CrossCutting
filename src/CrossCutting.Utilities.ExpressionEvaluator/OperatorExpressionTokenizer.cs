@@ -300,8 +300,8 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
 
         var value = state.Input.Substring(start, state.Position - start).Trim(' ', '\t', '\r', '\n');
         return new OperatorExpressionToken(state.Tokens.LastOrDefault()?.Type == OperatorExpressionTokenType.Dollar
-            ? OperatorExpressionTokenType.InterpolatedText
-            : OperatorExpressionTokenType.Text, value);
+            ? OperatorExpressionTokenType.InterpolatedString
+            : OperatorExpressionTokenType.Literal, value);
     }
 
     private static OperatorExpressionToken ReadOtherFromPlusOrMinus(OperatorExpressionTokenizerState state)

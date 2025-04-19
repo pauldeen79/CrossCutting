@@ -20,8 +20,8 @@ public enum OperatorExpressionTokenType
     Bang,
     Exponentiation,
     Modulo,
-    Text,
-    InterpolatedText,
+    Literal,
+    InterpolatedString,
     Dollar,
     EOF
 }

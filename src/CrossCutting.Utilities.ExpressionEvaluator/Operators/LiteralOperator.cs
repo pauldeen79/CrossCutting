@@ -1,10 +1,10 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Operators;
 
-public class StringOperator : IOperator
+public class LiteralOperator : IOperator
 {
     public string Value { get; }
 
-    public StringOperator(string value)
+    public LiteralOperator(string value)
     {
         ArgumentGuard.IsNotNull(value, nameof(value));
 
@@ -17,7 +17,7 @@ public class StringOperator : IOperator
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
         => new ExpressionParseResultBuilder()
             .WithSourceExpression($"\"{Value}\"")
-            .WithExpressionType(typeof(StringOperator))
+            .WithExpressionType(typeof(LiteralOperator))
             .WithResultType(typeof(string))
             .WithStatus(ResultStatus.Ok);
 }

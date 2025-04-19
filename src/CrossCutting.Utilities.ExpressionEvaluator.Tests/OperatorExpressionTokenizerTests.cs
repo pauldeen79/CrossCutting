@@ -24,7 +24,7 @@ public class OperatorExpressionTokenizerTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
             result.Value.Count.ShouldBe(2);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Text);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Literal);
             result.Value[0].Value.ShouldBe("\"hello\" == \"world\"");
             result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.EOF);
         }
@@ -42,7 +42,7 @@ public class OperatorExpressionTokenizerTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
             result.Value.Count.ShouldBe(2);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Text);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Literal);
             result.Value[0].Value.ShouldBe("\"hello\" == \"world");
             result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.EOF);
         }
