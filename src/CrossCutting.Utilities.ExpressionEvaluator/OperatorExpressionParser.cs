@@ -3,7 +3,7 @@
 public sealed class OperatorExpressionParser : IOperatorExpressionParser
 {
     public Result<IOperator> Parse(ICollection<OperatorExpressionToken> tokens)
-        => ParseLogicalOr(new OperatorExpressionParserState(tokens.Where(x => x.Type != OperatorExpressionTokenType.Dollar).ToArray()));
+        => ParseLogicalOr(new OperatorExpressionParserState(tokens));
 
     private static Result<IOperator> ParseLogicalOr(OperatorExpressionParserState state)
     {
@@ -102,16 +102,35 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
 
     private static Result<IOperator> ParsePrimary(OperatorExpressionParserState state)
     {
-        if (Match(state, OperatorExpressionTokenType.Literal))
+        if (Match(state, OperatorExpressionTokenType.Dollar))
         {
-            var value = Previous(state).Value;
-            return Result.Success<IOperator>(new LiteralOperator(value.Substring(1, value.Length - 2)));
+            if (Match(state, OperatorExpressionTokenType.DoubleQuote))
+            {
+                var result = Consume(state, OperatorExpressionTokenType.Identifier, "Missing identifier");
+                if (!result.IsSuccessful())
+                {
+                    return Result.FromExistingResult<IOperator>(result);
+                }
+
+                var value = result.GetValueOrThrow().Value;
+                return Result.Success<IOperator>(new InterpolatedStringOperator(value));
+            }
+            else
+            {
+                return Result.Invalid<IOperator>("Unexpected token");
+            }
         }
 
-        if (Match(state, OperatorExpressionTokenType.InterpolatedString))
+        if (Match(state, OperatorExpressionTokenType.DoubleQuote))
         {
-            var value = Previous(state).Value;
-            return Result.Success<IOperator>(new InterpolatedStringOperator(value.Substring(2, value.Length - 3)));
+            var result = Consume(state, OperatorExpressionTokenType.Identifier, "Missing identifier");
+            if (!result.IsSuccessful())
+            {
+                return Result.FromExistingResult<IOperator>(result);
+            }
+
+            var value = result.GetValueOrThrow().Value;
+            return Result.Success<IOperator>(new IdentifierOperator(value));
         }
 
         if (Match(state, OperatorExpressionTokenType.Other))

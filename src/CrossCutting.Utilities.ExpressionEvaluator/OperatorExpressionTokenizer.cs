@@ -59,7 +59,10 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
 
             if (current == '"')
             {
+                state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.DoubleQuote, "\""));
                 state.InQuotes = !state.InQuotes;
+                state.Position++;
+                continue;
             }
 
             if (char.IsWhiteSpace(current) && !state.InQuotes)
@@ -71,7 +74,6 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
             if (state.InQuotes)
             {
                 state.Tokens.Add(ReadString(state, true));
-                state.InQuotes = false;
                 continue;
             }
 
@@ -257,6 +259,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
 
     private static Result ProcessDoubleQuote(OperatorExpressionTokenizerState state)
     {
+        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.DoubleQuote, "\""));
         state.Position++;
         state.InQuotes = !state.InQuotes;
 
@@ -268,7 +271,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         if (Peek(state) == '"')
         {
             state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Dollar, "$"));
-            state.InQuotes = !state.InQuotes;
+            state.Position++;
 
             return Result.Success();
         }
@@ -293,15 +296,13 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
     private static OperatorExpressionToken ReadString(OperatorExpressionTokenizerState state, bool inQuotes)
     {
         var start = state.Position;
-        while (state.Position < state.Input.Length && !IsTokenSign(state.Input[state.Position], inQuotes))
+        while (state.Position < state.Input.Length && !IsTokenSign(state.Input[state.Position], inQuotes) && state.Input[state.Position] != '"')
         {
             state.Position++;
         }
 
         var value = state.Input.Substring(start, state.Position - start).Trim(' ', '\t', '\r', '\n');
-        return new OperatorExpressionToken(state.Tokens.LastOrDefault()?.Type == OperatorExpressionTokenType.Dollar
-            ? OperatorExpressionTokenType.InterpolatedString
-            : OperatorExpressionTokenType.Literal, value);
+        return new OperatorExpressionToken(OperatorExpressionTokenType.Identifier, value);
     }
 
     private static OperatorExpressionToken ReadOtherFromPlusOrMinus(OperatorExpressionTokenizerState state)
