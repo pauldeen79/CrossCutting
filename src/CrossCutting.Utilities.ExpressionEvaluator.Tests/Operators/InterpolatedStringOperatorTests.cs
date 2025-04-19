@@ -84,6 +84,22 @@ public class InterpolatedStringOperatorTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ToStringWithDefault().ShouldBe("recursive value");
         }
+
+        [Fact]
+        public void Can_Use_Different_Placeholder_Signs()
+        {
+            // Arrange
+            var sut = new InterpolatedStringOperator("<#= context #>");
+            // just for fun, let's use classic ASP expression syntax ;-)
+            var context = CreateContext("dummy", context: "Hello world!", settings: new ExpressionEvaluatorSettingsBuilder().WithPlaceholderStart("<#=").WithPlaceholderEnd("#>"));
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ToStringWithDefault().ShouldBe("Hello world!");
+        }
     }
 
     public class Parse : InterpolatedStringOperatorTests
