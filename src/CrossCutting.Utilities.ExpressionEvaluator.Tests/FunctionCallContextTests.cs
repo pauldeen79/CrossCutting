@@ -309,11 +309,6 @@ public class FunctionCallContextTests : TestBase
         }
     }
 
-    //protected FunctionCallContext CreateFunctionCallContextWithoutArguments()
-    //    => new FunctionCallContext(new FunctionCallBuilder()
-    //        .WithName("Test")
-    //        .Build(), CreateContext("Dummy"));
-
     protected FunctionCallContext CreateFunctionCallContextWithConstantArgument()
         => new FunctionCallContext(new FunctionCallBuilder()
             .WithName("Test")
