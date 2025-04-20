@@ -54,8 +54,37 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
         while (Match(state, OperatorExpressionTokenType.Less, OperatorExpressionTokenType.LessOrEqual, OperatorExpressionTokenType.Greater, OperatorExpressionTokenType.GreaterOrEqual))
         {
             var op = Previous(state);
-            var right = ParseAdditive(state);
-            expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right, op.Value));
+            //format: function<type>(
+            //a.k.a. other, less, other, greater, left parenthesis
+            if (BeforePrevious(state).Type == OperatorExpressionTokenType.Other
+                && op.Type == OperatorExpressionTokenType.Less
+                && Peek(state).Type == OperatorExpressionTokenType.Other
+                && PeekNext(state, 1).Type == OperatorExpressionTokenType.Greater
+                && PeekNext(state, 2).Type == OperatorExpressionTokenType.LeftParenthesis)
+            {
+                // It's a generic function
+                var afterParenthesis = PeekNext(state, 3);
+                if (afterParenthesis.Type == OperatorExpressionTokenType.EOF)
+                {
+                    expr = Result.Invalid<IOperator>("Missing right parenthesis");
+                }
+                else if (afterParenthesis.Type == OperatorExpressionTokenType.Other && state.Position + 5 == state.Tokens.Count)
+                {
+                    expr = Result.Invalid<IOperator>("Missing right parenthesis");
+                }
+                else
+                {
+                    var numberOfItemsToTake = afterParenthesis.Type == OperatorExpressionTokenType.Other
+                        ? 7
+                        : 6;
+                    expr = Result.Success<IOperator>(new ExpressionOperator(string.Concat(state.Tokens.Skip(state.Position - 2).Take(numberOfItemsToTake).Select(x => x.Value))));
+                }
+            }
+            else
+            {
+                var right = ParseAdditive(state);
+                expr = Result.Success<IOperator>(new BinaryOperator(expr, op.Type, right, op.Value));
+            }
         }
 
         return expr;
@@ -181,6 +210,14 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
     private static bool IsAtEnd(OperatorExpressionParserState state) => Peek(state).Type == OperatorExpressionTokenType.EOF;
     private static OperatorExpressionToken Peek(OperatorExpressionParserState state) => state.Tokens.ElementAt(state.Position);
     private static OperatorExpressionToken Previous(OperatorExpressionParserState state) => state.Tokens.ElementAt(state.Position - 1);
+
+    private static OperatorExpressionToken BeforePrevious(OperatorExpressionParserState state) => state.Position > 1
+        ? state.Tokens.ElementAt(state.Position - 2)
+        : new OperatorExpressionToken(OperatorExpressionTokenType.EOF);
+
+    private static OperatorExpressionToken PeekNext(OperatorExpressionParserState state, int increase) => state.Position + increase < state.Tokens.Count
+        ? state.Tokens.ElementAt(state.Position + increase)
+        : new OperatorExpressionToken(OperatorExpressionTokenType.EOF);
 
     private static Result<OperatorExpressionToken> Consume(OperatorExpressionParserState state, OperatorExpressionTokenType type, string message)
     {
