@@ -34,18 +34,19 @@ public sealed class ExpressionTokenizer : IExpressionTokenizer
             if (current == '"')
             {
                 state.InQuotes = !state.InQuotes;
+
+                if (state.InQuotes)
+                {
+                    state.Tokens.Add(ReadOther(state));
+                    state.InQuotes = false;
+                    continue;
+                }
+                //TODO: Review if we can get here
             }
 
             if (char.IsWhiteSpace(current) && !state.InQuotes)
             {
                 state.Position++;
-                continue;
-            }
-
-            if (state.InQuotes)
-            {
-                state.Tokens.Add(ReadOther(state));
-                state.InQuotes = false;
                 continue;
             }
 
@@ -249,7 +250,7 @@ public sealed class ExpressionTokenizer : IExpressionTokenizer
     private static ExpressionToken ReadOtherFromPlusOrMinus(ExpressionTokenizerState state)
     {
         var start = state.Position;
-        while (state.Position < state.Input.Length && (state.Position == start || !IsTokenSign(state.Input[state.Position], false)))
+        while (state.Position < state.Input.Length && (state.Position == start || !IsTokenSign(state.Input[state.Position], state.InQuotes)))
         {
             state.Position++;
         }
