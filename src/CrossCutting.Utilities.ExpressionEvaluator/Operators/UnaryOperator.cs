@@ -28,6 +28,9 @@ public sealed class UnaryOperator : IOperator
         return Result.Success<object?>(!results.GetValue(Constants.Expression).IsTruthy());
     }
 
+    public Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context)
+        => Evaluate(context).TryCastAllowNull<T>();
+
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));

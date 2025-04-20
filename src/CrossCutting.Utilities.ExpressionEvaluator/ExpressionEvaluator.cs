@@ -42,7 +42,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             .Add("Validate", () => context.Validate<object?>())
             .Add(nameof(IOperatorExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context))
             .Add(nameof(IOperatorExpressionParser.Parse), results => _parser.Parse(results.GetValue<List<OperatorExpressionToken>>(nameof(IOperatorExpressionTokenizer.Tokenize))))
-            .Add(nameof(Evaluate), results => results.GetValue<IOperator>(nameof(Parse)).Evaluate(context))
+            .Add(nameof(Evaluate), results => results.GetValue<IOperator>(nameof(Parse)).EvaluateTyped<T>(context))
             .Build()
             .Aggregate<object?>()
             .TryCastAllowNull<T>();
