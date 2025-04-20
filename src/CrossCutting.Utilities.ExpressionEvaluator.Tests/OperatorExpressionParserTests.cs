@@ -425,5 +425,364 @@ public class OperatorExpressionParserTests : TestBase<OperatorExpressionParser>
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Unexpected token");
         }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Function_With_Missing_Close_Parenthesis()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "MyFunction"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.LeftParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Missing right parenthesis");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Generic_Function_With_Missing_Close_Parenthesis()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "MyFunction"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Less),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "System.String"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Greater),
+                new OperatorExpressionToken(OperatorExpressionTokenType.LeftParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Missing right parenthesis");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Generic_Function_With_Arguments_But_Missing_Close_Parenthesis()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "MyFunction"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Less),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "System.String"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Greater),
+                new OperatorExpressionToken(OperatorExpressionTokenType.LeftParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "arguments"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Missing right parenthesis");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Function_Without_Arguments()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "MyFunction"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.LeftParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.RightParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Function_With_Arguments()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "MyFunction"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.LeftParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "arguments"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.RightParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Generic_Function_Without_Arguments()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "MyFunction"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Less),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "System.String"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Greater),
+                new OperatorExpressionToken(OperatorExpressionTokenType.LeftParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.RightParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Generic_Function_With_Arguments()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "MyFunction"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Less),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "System.String"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Greater),
+                new OperatorExpressionToken(OperatorExpressionTokenType.LeftParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "arguments"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.RightParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Generic_Function_Missing_FunctionName_Without_Arguments()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Less),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "System.String"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Greater),
+                new OperatorExpressionToken(OperatorExpressionTokenType.LeftParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.RightParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unexpected token");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Less_Sign_At_Start()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Less),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "2"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unexpected token");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Bang_With_Missing_Expression()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Bang),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unexpected token");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Less_With_Error()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Less),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unexpected token");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Equal_With_Error()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Equal),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unexpected token");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_And_With_Error()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.And),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unexpected token");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Or_With_Error()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Or),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unexpected token");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Plus_With_Error()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Plus),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unexpected token");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Multiply_With_Error()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Multiply),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unexpected token");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Missing_Close_Parenthesis()
+        {
+            // Arrange
+            var tokens = new List<OperatorExpressionToken>
+            {
+                new OperatorExpressionToken(OperatorExpressionTokenType.LeftParenthesis),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Plus),
+                new OperatorExpressionToken(OperatorExpressionTokenType.Other, "1"),
+                new OperatorExpressionToken(OperatorExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Expect ')' after expression.");
+        }
     }
 }
