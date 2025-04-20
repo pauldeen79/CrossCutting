@@ -104,6 +104,24 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
     {
         if (Match(state, OperatorExpressionTokenType.Other))
         {
+            var peek = Peek(state);
+            if (peek.Type == OperatorExpressionTokenType.LeftParenthesis)
+            {
+                // it's a function!
+                var builder = new StringBuilder();
+                builder.Append(Previous(state).Value);
+                builder.Append(peek.Value);
+
+                while (peek.Type != OperatorExpressionTokenType.RightParenthesis && peek.Type != OperatorExpressionTokenType.EOF)
+                {
+                    Advance(state);
+                    peek = Peek(state);
+                    builder.Append(peek.Value);
+                }
+
+                return Result.Success<IOperator>(new ExpressionOperator(builder.ToString()));
+            }
+
             return Result.Success<IOperator>(new ExpressionOperator(Previous(state).Value));
         }
 

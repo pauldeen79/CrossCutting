@@ -1,9 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 
-public class OperatorExpressionTokenizerTests : TestBase
+public class OperatorExpressionTokenizerTests : TestBase<OperatorExpressionTokenizer>
 {
-    protected OperatorExpressionTokenizer CreateSut() => new OperatorExpressionTokenizer([Expression]);
-
     public OperatorExpressionTokenizerTests()
     {
         Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));

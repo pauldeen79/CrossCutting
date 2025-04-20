@@ -21,35 +21,11 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         { '%', ProcessPercent },
     };
 
-    private readonly IExpression[] _expressions;
-
-    public OperatorExpressionTokenizer(IEnumerable<IExpression> expressions)
-    {
-        ArgumentGuard.IsNotNull(expressions, nameof(expressions));
-
-        _expressions = expressions.OrderBy(x => x.Order).ToArray();
-    }
-
     public Result<List<OperatorExpressionToken>> Tokenize(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         var state = new OperatorExpressionTokenizerState(context.Expression);
-        var expression = _expressions
-            .Select(x => new { Expression = x, ParseResult = x.Parse(context) })
-            .FirstOrDefault(x => x.ParseResult.Status != ResultStatus.Continue);
-
-        if (expression is not null)
-        {
-            if (!expression.ParseResult.Status.IsSuccessful())
-            {
-                return Result.FromExistingResult<List<OperatorExpressionToken>>(expression.ParseResult.ToResult());
-            }
-
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Other, context.Expression));
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.EOF));
-            return Result.Success(state.Tokens);
-        }
 
         while (state.Position < state.Input.Length)
         {

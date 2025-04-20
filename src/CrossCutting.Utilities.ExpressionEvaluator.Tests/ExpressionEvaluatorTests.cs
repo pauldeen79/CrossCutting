@@ -3,7 +3,7 @@
 public class ExpressionEvaluatorTests : TestBase
 {
     protected ExpressionEvaluator CreateSut() => new ExpressionEvaluator(new 
-        OperatorExpressionTokenizer([Expression]), new OperatorExpressionParser(), [Expression]);
+        OperatorExpressionTokenizer(), new OperatorExpressionParser(), [Expression]);
 
     public class Evaluate : ExpressionEvaluatorTests
     {
