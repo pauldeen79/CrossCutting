@@ -3,7 +3,7 @@
 public abstract class TestBase
 {
     protected IExpressionEvaluator Evaluator { get; }
-    protected IExpression Expression { get; }
+    protected IExpressionComponent Expression { get; }
 
     protected ExpressionEvaluatorContext CreateContext(
         string? expression,
@@ -26,14 +26,14 @@ public abstract class TestBase
             .Returns(x =>
                 x.ArgAt<ExpressionEvaluatorContext>(0).Expression switch
                 {
-                    "error" => new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithStatus(ResultStatus.Error).WithErrorMessage("Kaboom"),
-                    "-1" or "1" or "2" or "123" => new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(int)),
-                    "string" => new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
-                    _ => new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithStatus(ResultStatus.Ok)
+                    "error" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Error).WithErrorMessage("Kaboom"),
+                    "-1" or "1" or "2" or "123" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(int)),
+                    "string" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
+                    _ => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok)
                 });
 
         // Initialize expression
-        Expression = Substitute.For<IExpression>();
+        Expression = Substitute.For<IExpressionComponent>();
         // Note that you have to setup Evaluate and Validate method yourself
     }
 

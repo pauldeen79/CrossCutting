@@ -110,6 +110,24 @@ public static class ObjectExtensions
     public static bool IsFalse<T>(this T instance, Func<T, bool> predicate)
         => !predicate?.Invoke(instance) ?? false;
 
+    public static bool IsTruthy(this object? value)
+    {
+        if (value is bool b)
+        {
+            return b;
+        }
+        else if (value is string s)
+        {
+            // design decision: if it's a string, then do a null or empty check
+            return !string.IsNullOrEmpty(s);
+        }
+        else
+        {
+            // design decision: if it's not a boolean, then do a null check
+            return value is not null;
+        }
+    }
+
     /// <summary>
     /// Determines whether the specified value is contained within the specified sequence.
     /// </summary>

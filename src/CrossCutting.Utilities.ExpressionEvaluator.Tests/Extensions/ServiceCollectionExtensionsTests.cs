@@ -22,7 +22,7 @@ public class ServiceCollectionExtensionsTests
         using var provider = serviceCollection.BuildServiceProvider();
 
         // Act
-        var expression = provider.GetServices<IExpression>().FirstOrDefault(x => x.GetType() == expressionType);
+        var expression = provider.GetServices<IExpressionComponent>().FirstOrDefault(x => x.GetType() == expressionType);
 
         // Assert
         expression.ShouldNotBeNull($"Expression {expressionType.FullName} could not be resolved, did you forget to register this?");
@@ -31,7 +31,7 @@ public class ServiceCollectionExtensionsTests
     public static TheoryData<Type> GetAllExpressions()
     {
         var data = new TheoryData<Type>();
-        foreach (var t in typeof(IExpression).Assembly.GetExportedTypes().Where(x => !x.IsInterface && !x.IsAbstract && x.GetAllInterfaces().Contains(typeof(IExpression))))
+        foreach (var t in typeof(IExpressionComponent).Assembly.GetExportedTypes().Where(x => !x.IsInterface && !x.IsAbstract && x.GetAllInterfaces().Contains(typeof(IExpressionComponent))))
         {
             data.Add(t);
         }

@@ -2,17 +2,17 @@
 
 public class OperatorExpressionTests : TestBase
 {
-    protected IOperatorExpressionTokenizer Tokenizer { get; }
-    protected IOperatorExpressionParser Parser { get; }
-    protected IOperator Operator { get; }
+    protected IExpressionTokenizer Tokenizer { get; }
+    protected IExpressionParser Parser { get; }
+    protected IExpression Operator { get; }
 
-    protected ExpressionEvaluator CreateSut() => new ExpressionEvaluator(Tokenizer, Parser, Enumerable.Empty<IExpression>());
+    protected ExpressionEvaluator CreateSut() => new ExpressionEvaluator(Tokenizer, Parser, Enumerable.Empty<IExpressionComponent>());
 
     public OperatorExpressionTests()
     {
-        Tokenizer = Substitute.For<IOperatorExpressionTokenizer>();
-        Parser = Substitute.For<IOperatorExpressionParser>();
-        Operator = Substitute.For<IOperator>();
+        Tokenizer = Substitute.For<IExpressionTokenizer>();
+        Parser = Substitute.For<IExpressionParser>();
+        Operator = Substitute.For<IExpression>();
 
         Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
     }
@@ -24,8 +24,8 @@ public class OperatorExpressionTests : TestBase
         public void Returns_Continue_When_Operator_Signs_Are_Not_Present()
         {
             // Arrange
-            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<List<OperatorExpressionToken>>([new OperatorExpressionToken(OperatorExpressionTokenType.EOF)]));
-            Parser.Parse(Arg.Any<ICollection<OperatorExpressionToken>>()).Returns(Result.Success(Operator));
+            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<List<ExpressionToken>>([new ExpressionToken(ExpressionTokenType.EOF)]));
+            Parser.Parse(Arg.Any<ICollection<ExpressionToken>>()).Returns(Result.Success(Operator));
             Operator.Evaluate(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Continue<object?>());
             var sut = CreateSut();
 
@@ -40,7 +40,7 @@ public class OperatorExpressionTests : TestBase
         public void Returns_NonSuccessful_Result_From_Tokenizer()
         {
             // Arrange
-            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Error<List<OperatorExpressionToken>>("Kaboom!"));
+            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Error<List<ExpressionToken>>("Kaboom!"));
             var sut = CreateSut();
 
             // Act
@@ -55,8 +55,8 @@ public class OperatorExpressionTests : TestBase
         public void Returns_NonSuccessful_Result_From_Parser()
         {
             // Arrange
-            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(new List<OperatorExpressionToken>()));
-            Parser.Parse(Arg.Any<ICollection<OperatorExpressionToken>>()).Returns(Result.Error<IOperator>("Kaboom!"));
+            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(new List<ExpressionToken>()));
+            Parser.Parse(Arg.Any<ICollection<ExpressionToken>>()).Returns(Result.Error<IExpression>("Kaboom!"));
             var sut = CreateSut();
 
             // Act
@@ -71,9 +71,9 @@ public class OperatorExpressionTests : TestBase
         public void Returns_Result_From_Operator_When_Tokenizer_And_Parser_Both_Succeed()
         {
             // Arrange
-            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(new List<OperatorExpressionToken>()));
+            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(new List<ExpressionToken>()));
             Operator.Evaluate(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<object?>(1 + 2));
-            Parser.Parse(Arg.Any<ICollection<OperatorExpressionToken>>()).Returns(Result.Success(Operator));
+            Parser.Parse(Arg.Any<ICollection<ExpressionToken>>()).Returns(Result.Success(Operator));
             var sut = CreateSut();
 
             // Act
@@ -92,8 +92,8 @@ public class OperatorExpressionTests : TestBase
         public void Returns_Continue_When_Operator_Signs_Are_Not_Present()
         {
             // Arrange
-            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<List<OperatorExpressionToken>>([new OperatorExpressionToken(OperatorExpressionTokenType.EOF)]));
-            Parser.Parse(Arg.Any<ICollection<OperatorExpressionToken>>()).Returns(Result.Success(Operator));
+            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<List<ExpressionToken>>([new ExpressionToken(ExpressionTokenType.EOF)]));
+            Parser.Parse(Arg.Any<ICollection<ExpressionToken>>()).Returns(Result.Success(Operator));
             Operator.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
             var sut = CreateSut();
 
@@ -108,7 +108,7 @@ public class OperatorExpressionTests : TestBase
         public void Returns_NonSuccessful_Result_From_Tokenizer()
         {
             // Arrange
-            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Error<List<OperatorExpressionToken>>("Kaboom!"));
+            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Error<List<ExpressionToken>>("Kaboom!"));
             var sut = CreateSut();
 
             // Act
@@ -123,8 +123,8 @@ public class OperatorExpressionTests : TestBase
         public void Returns_NonSuccessful_Result_From_Parser()
         {
             // Arrange
-            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(new List<OperatorExpressionToken>()));
-            Parser.Parse(Arg.Any<ICollection<OperatorExpressionToken>>()).Returns(Result.Error<IOperator>("Kaboom!"));
+            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(new List<ExpressionToken>()));
+            Parser.Parse(Arg.Any<ICollection<ExpressionToken>>()).Returns(Result.Error<IExpression>("Kaboom!"));
             var sut = CreateSut();
 
             // Act
@@ -139,9 +139,9 @@ public class OperatorExpressionTests : TestBase
         public void Returns_Result_From_Operator_When_Tokenizer_And_Parser_Both_Succeed()
         {
             // Arrange
-            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(new List<OperatorExpressionToken>()));
-            Operator.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithExpressionType(GetType()).WithSourceExpression("1 + 2").WithResultType(typeof(int)));
-            Parser.Parse(Arg.Any<ICollection<OperatorExpressionToken>>()).Returns(Result.Success(Operator));
+            Tokenizer.Tokenize(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success(new List<ExpressionToken>()));
+            Operator.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithSourceExpression("1 + 2").WithResultType(typeof(int)));
+            Parser.Parse(Arg.Any<ICollection<ExpressionToken>>()).Returns(Result.Success(Operator));
             var sut = CreateSut();
 
             // Act

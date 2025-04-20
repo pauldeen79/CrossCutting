@@ -216,6 +216,97 @@ public class ObjectExtensionsTests
     }
 
     [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Bool_True()
+    {
+        // Arrange
+        var input = true;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Bool_False()
+    {
+        // Arrange
+        var input = false;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_String_Null()
+    {
+        // Arrange
+        string? input = null;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_String_Empty()
+    {
+        // Arrange
+        var input = string.Empty;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_String_Not_Empty()
+    {
+        // Arrange
+        var input = "non null string";
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_ReferenceType_Null()
+    {
+        // Arrange
+        var input = default(object?);
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_ReferenceType_Not_Null()
+    {
+        // Arrange
+        var input = this;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
     public void In_Returns_True_When_Array_Of_Arguments_Contains_Correct_Value()
     {
         // Arrange

@@ -10,7 +10,7 @@ public partial class ExpressionParseResultBuilder
         return AddPartResults(new ExpressionParsePartResultBuilder()
             .WithPartName(partName)
             .FillFromResult(itemResult.ToResult())
-            .WithExpressionType(itemResult.ExpressionType)
+            .WithExpressionComponentType(itemResult.ExpressionComponentType)
             .WithResultType(itemResult.ResultType)
             .AddPartResults(itemResult.PartResults.Select(x => x.ToBuilder()))
             .WithSourceExpression(itemResult.SourceExpression)

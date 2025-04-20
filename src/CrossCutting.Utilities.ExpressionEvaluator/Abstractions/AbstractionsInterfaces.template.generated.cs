@@ -34,7 +34,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions
             get;
         }
 
-        System.Type? ExpressionType
+        System.Type? ExpressionComponentType
         {
             get;
         }

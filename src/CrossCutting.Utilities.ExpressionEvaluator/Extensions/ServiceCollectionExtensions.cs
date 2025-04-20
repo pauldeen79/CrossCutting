@@ -6,17 +6,17 @@ public static class ServiceCollectionExtensions
         => services
             .AddSingleton<IDateTimeProvider, DateTimeProvider>()
             .AddSingleton<IExpressionEvaluator, ExpressionEvaluator>()
-            .AddSingleton<IExpression, PrimitiveExpression>()
-            .AddSingleton<IExpression, StringExpression>()
-            .AddSingleton<IExpression, FormattableStringExpression>()
-            .AddSingleton<IExpression, TypeOfExpression>()
-            .AddSingleton<IExpression, FunctionExpression>()
+            .AddSingleton<IExpressionComponent, PrimitiveExpressionComponent>()
+            .AddSingleton<IExpressionComponent, StringExpressionComponent>()
+            .AddSingleton<IExpressionComponent, FormattableStringExpressionComponent>()
+            .AddSingleton<IExpressionComponent, TypeOfExpressionComponent>()
+            .AddSingleton<IExpressionComponent, FunctionExpressionComponent>()
             .AddSingleton<IFunctionCallArgumentValidator, FunctionCallArgumentValidator>()
             .AddSingleton<IFunctionDescriptorMapper, FunctionDescriptorMapper>()
             .AddSingleton<IFunctionDescriptorProvider, FunctionDescriptorProvider>()
             .AddSingleton<IFunctionParser, FunctionParser>()
             .AddSingleton<IFunctionResolver, FunctionResolver>()
-            .AddSingleton<IExpression, NumericExpression>()
-            .AddSingleton<IOperatorExpressionTokenizer, OperatorExpressionTokenizer>()
-            .AddSingleton<IOperatorExpressionParser, OperatorExpressionParser>();
+            .AddSingleton<IExpressionComponent, NumericExpressionComponent>()
+            .AddSingleton<IExpressionTokenizer, ExpressionTokenizer>()
+            .AddSingleton<IExpressionParser, ExpressionParser>();
 }

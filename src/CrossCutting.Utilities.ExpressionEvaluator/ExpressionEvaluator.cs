@@ -2,11 +2,11 @@
 
 public class ExpressionEvaluator : IExpressionEvaluator
 {
-    private readonly IOperatorExpressionTokenizer _tokenizer;
-    private readonly IOperatorExpressionParser _parser;
-    private readonly IExpression[] _expressions;
+    private readonly IExpressionTokenizer _tokenizer;
+    private readonly IExpressionParser _parser;
+    private readonly IExpressionComponent[] _expressions;
 
-    public ExpressionEvaluator(IOperatorExpressionTokenizer tokenizer, IOperatorExpressionParser parser, IEnumerable<IExpression> expressions)
+    public ExpressionEvaluator(IExpressionTokenizer tokenizer, IExpressionParser parser, IEnumerable<IExpressionComponent> expressions)
     {
         ArgumentGuard.IsNotNull(tokenizer, nameof(tokenizer));
         ArgumentGuard.IsNotNull(parser, nameof(parser));
@@ -25,9 +25,9 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         return new ResultDictionaryBuilder()
             .Add("Validate", () => context.Validate<object?>())
-            .Add(nameof(IOperatorExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context))
-            .Add(nameof(IOperatorExpressionParser.Parse), results => _parser.Parse(results.GetValue<List<OperatorExpressionToken>>(nameof(IOperatorExpressionTokenizer.Tokenize))))
-            .Add(nameof(Evaluate), results => results.GetValue<IOperator>(nameof(Parse)).Evaluate(context))
+            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context))
+            .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
+            .Add(nameof(Evaluate), results => results.GetValue<IExpression>(nameof(Parse)).Evaluate(context))
             .Build()
             .Aggregate<object?>();
     }
@@ -40,9 +40,9 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         return new ResultDictionaryBuilder()
             .Add("Validate", () => context.Validate<object?>())
-            .Add(nameof(IOperatorExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context))
-            .Add(nameof(IOperatorExpressionParser.Parse), results => _parser.Parse(results.GetValue<List<OperatorExpressionToken>>(nameof(IOperatorExpressionTokenizer.Tokenize))))
-            .Add(nameof(Evaluate), results => results.GetValue<IOperator>(nameof(Parse)).EvaluateTyped<T>(context))
+            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context))
+            .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
+            .Add(nameof(Evaluate), results => results.GetValue<IExpression>(nameof(Parse)).EvaluateTyped<T>(context))
             .Build()
             .Aggregate<object?>()
             .TryCastAllowNull<T>();
@@ -58,8 +58,8 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         var results = new ResultDictionaryBuilder()
             .Add("Validate", () => context.Validate<object?>())
-            .Add(nameof(IOperatorExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context))
-            .Add(nameof(Parse), results => _parser.Parse(results.GetValue<List<OperatorExpressionToken>>(nameof(IOperatorExpressionTokenizer.Tokenize))))
+            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context))
+            .Add(nameof(Parse), results => _parser.Parse(results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
             .Build();
 
         var error = results.GetError();
@@ -68,7 +68,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             return result.FillFromResult(error);
         }
 
-        return results.GetValue<IOperator>(nameof(Parse)).Parse(context);
+        return results.GetValue<IExpression>(nameof(Parse)).Parse(context);
     }
 
     public Result<object?> EvaluateCallback(ExpressionEvaluatorContext context)
@@ -88,7 +88,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         return context.Validate<T>()
             .OnSuccess(() => _expressions
-                .Select(x => x is IExpression<T> typedExpression
+                .Select(x => x is IExpressionComponent<T> typedExpression
                     ? typedExpression.EvaluateTyped(context)
                     : x.Evaluate(context).TryCastAllowNull<T>())
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue)

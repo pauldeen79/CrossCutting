@@ -1,15 +1,8 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
 public interface IExpression
 {
-    int Order { get; }
-
-    ExpressionParseResult Parse(ExpressionEvaluatorContext context);
-
     Result<object?> Evaluate(ExpressionEvaluatorContext context);
-}
-
-public interface IExpression<T> : IExpression
-{
-    Result<T> EvaluateTyped(ExpressionEvaluatorContext context);
+    Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context);
+    ExpressionParseResult Parse(ExpressionEvaluatorContext context);
 }
