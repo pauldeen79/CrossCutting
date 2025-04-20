@@ -20,8 +20,5 @@ public enum OperatorExpressionTokenType
     Bang,
     Exponentiation,
     Modulo,
-    Identifier,
-    Dollar,
-    DoubleQuote,
     EOF
 }

@@ -23,17 +23,13 @@ public class OperatorExpressionTokenizerTests : TestBase
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
-            result.Value.Count.ShouldBe(8);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.DoubleQuote);
-            result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.Identifier);
-            result.Value[1].Value.ShouldBe("hello");
-            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.DoubleQuote);
-            result.Value[3].Type.ShouldBe(OperatorExpressionTokenType.Equal);
-            result.Value[4].Type.ShouldBe(OperatorExpressionTokenType.DoubleQuote);
-            result.Value[5].Type.ShouldBe(OperatorExpressionTokenType.Identifier);
-            result.Value[5].Value.ShouldBe("world");
-            result.Value[6].Type.ShouldBe(OperatorExpressionTokenType.DoubleQuote);
-            result.Value[7].Type.ShouldBe(OperatorExpressionTokenType.EOF);
+            result.Value.Count.ShouldBe(4);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Other);
+            result.Value[0].Value.ShouldBe("\"hello\"");
+            result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.Equal);
+            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.Other);
+            result.Value[2].Value.ShouldBe("\"world\"");
+            result.Value[3].Type.ShouldBe(OperatorExpressionTokenType.EOF);
         }
 
         [Fact]
@@ -48,16 +44,13 @@ public class OperatorExpressionTokenizerTests : TestBase
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
-            result.Value.Count.ShouldBe(7);
-            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.DoubleQuote);
-            result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.Identifier);
-            result.Value[1].Value.ShouldBe("hello");
-            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.DoubleQuote);
-            result.Value[3].Type.ShouldBe(OperatorExpressionTokenType.Equal);
-            result.Value[4].Type.ShouldBe(OperatorExpressionTokenType.DoubleQuote);
-            result.Value[5].Type.ShouldBe(OperatorExpressionTokenType.Identifier);
-            result.Value[5].Value.ShouldBe("world");
-            result.Value[6].Type.ShouldBe(OperatorExpressionTokenType.EOF);
+            result.Value.Count.ShouldBe(4);
+            result.Value[0].Type.ShouldBe(OperatorExpressionTokenType.Other);
+            result.Value[0].Value.ShouldBe("\"hello\"");
+            result.Value[1].Type.ShouldBe(OperatorExpressionTokenType.Equal);
+            result.Value[2].Type.ShouldBe(OperatorExpressionTokenType.Other);
+            result.Value[2].Value.ShouldBe("\"world");
+            result.Value[3].Type.ShouldBe(OperatorExpressionTokenType.EOF);
         }
 
         [Theory]

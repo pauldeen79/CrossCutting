@@ -19,8 +19,6 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         { '|', ProcessPipe },
         { '^', ProcessCaret },
         { '%', ProcessPercent },
-        { '"', ProcessDoubleQuote },
-        { '$', ProcessDollar },
     };
 
     private readonly IExpression[] _expressions;
@@ -59,10 +57,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
 
             if (current == '"')
             {
-                state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.DoubleQuote, "\""));
                 state.InQuotes = !state.InQuotes;
-                state.Position++;
-                continue;
             }
 
             if (char.IsWhiteSpace(current) && !state.InQuotes)
@@ -73,7 +68,8 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
 
             if (state.InQuotes)
             {
-                state.Tokens.Add(ReadString(state, true));
+                state.Tokens.Add(ReadOther(state));
+                state.InQuotes = false;
                 continue;
             }
 
@@ -87,7 +83,7 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
             }
             else
             {
-                state.Tokens.Add(ReadOther(state, false));
+                state.Tokens.Add(ReadOther(state));
             }
         }
 
@@ -257,52 +253,21 @@ public sealed class OperatorExpressionTokenizer : IOperatorExpressionTokenizer
         return Result.Success();
     }
 
-    private static Result ProcessDoubleQuote(OperatorExpressionTokenizerState state)
-    {
-        state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.DoubleQuote, "\""));
-        state.Position++;
-        state.InQuotes = !state.InQuotes;
-
-        return Result.Success();
-    }
-
-    private static Result ProcessDollar(OperatorExpressionTokenizerState state)
-    {
-        if (Peek(state) == '"')
-        {
-            state.Tokens.Add(new OperatorExpressionToken(OperatorExpressionTokenType.Dollar, "$"));
-            state.Position++;
-
-            return Result.Success();
-        }
-        else
-        {
-            return Result.Invalid("Missing quotes for formattable string expression");
-        }
-    }
-
-    private static OperatorExpressionToken ReadOther(OperatorExpressionTokenizerState state, bool inQuotes)
+    private static OperatorExpressionToken ReadOther(OperatorExpressionTokenizerState state)
     {
         var start = state.Position;
-        while (state.Position < state.Input.Length && !IsTokenSign(state.Input[state.Position], inQuotes))
+        while (state.Position < state.Input.Length && !IsTokenSign(state.Input[state.Position], state.InQuotes))
         {
+            if (state.Input[state.Position] == '"' && state.Position != start)
+            {
+                state.InQuotes = !state.InQuotes;
+            }
+
             state.Position++;
         }
 
         var value = state.Input.Substring(start, state.Position - start).Trim(' ', '\t', '\r', '\n');
         return new OperatorExpressionToken(OperatorExpressionTokenType.Other, value);
-    }
-
-    private static OperatorExpressionToken ReadString(OperatorExpressionTokenizerState state, bool inQuotes)
-    {
-        var start = state.Position;
-        while (state.Position < state.Input.Length && !IsTokenSign(state.Input[state.Position], inQuotes) && state.Input[state.Position] != '"')
-        {
-            state.Position++;
-        }
-
-        var value = state.Input.Substring(start, state.Position - start).Trim(' ', '\t', '\r', '\n');
-        return new OperatorExpressionToken(OperatorExpressionTokenType.Identifier, value);
     }
 
     private static OperatorExpressionToken ReadOtherFromPlusOrMinus(OperatorExpressionTokenizerState state)

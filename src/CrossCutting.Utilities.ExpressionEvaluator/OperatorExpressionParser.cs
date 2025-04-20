@@ -102,37 +102,6 @@ public sealed class OperatorExpressionParser : IOperatorExpressionParser
 
     private static Result<IOperator> ParsePrimary(OperatorExpressionParserState state)
     {
-        if (Match(state, OperatorExpressionTokenType.Dollar))
-        {
-            if (Match(state, OperatorExpressionTokenType.DoubleQuote))
-            {
-                var result = Consume(state, OperatorExpressionTokenType.Identifier, "Missing identifier");
-                if (!result.IsSuccessful())
-                {
-                    return Result.FromExistingResult<IOperator>(result);
-                }
-
-                var value = result.GetValueOrThrow().Value;
-                return Result.Success<IOperator>(new InterpolatedStringOperator(value));
-            }
-            else
-            {
-                return Result.Invalid<IOperator>("Unexpected token");
-            }
-        }
-
-        if (Match(state, OperatorExpressionTokenType.DoubleQuote))
-        {
-            var result = Consume(state, OperatorExpressionTokenType.Identifier, "Missing identifier");
-            if (!result.IsSuccessful())
-            {
-                return Result.FromExistingResult<IOperator>(result);
-            }
-
-            var value = result.GetValueOrThrow().Value;
-            return Result.Success<IOperator>(new IdentifierOperator(value));
-        }
-
         if (Match(state, OperatorExpressionTokenType.Other))
         {
             return Result.Success<IOperator>(new ExpressionOperator(Previous(state).Value));
