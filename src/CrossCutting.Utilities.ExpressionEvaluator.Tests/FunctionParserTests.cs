@@ -56,6 +56,21 @@ public class FunctionParserTests : TestBase<FunctionParser>
         }
 
         [Fact]
+        public void Returns_Correct_Result_On_FunctionCall_With_Arguments_And_Post_Suffix()
+        {
+            // Arrange
+            var context = CreateContext("MyFunction(argument1, argument2, argument3) this is not correct");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Input has additional characters after last close bracket");
+        }
+
+        [Fact]
         public void Returns_Correct_Result_On_FunctionCall_With_Generics_Without_Arguments()
         {
             // Arrange
@@ -71,6 +86,21 @@ public class FunctionParserTests : TestBase<FunctionParser>
             result.Value.Name.ShouldBe("MyFunction");
             result.Value.TypeArguments.ShouldBe([typeof(string)]);
             result.Value.Arguments.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_FunctionCall_With_Nested_Generics_Without_Arguments()
+        {
+            // Arrange
+            var context = CreateContext("MyFunction<System.Collections.Generic.IEnumerable<System.String>>()");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unknown type: System.Collections.Generic.IEnumerable<System.String>");
         }
 
         [Fact]

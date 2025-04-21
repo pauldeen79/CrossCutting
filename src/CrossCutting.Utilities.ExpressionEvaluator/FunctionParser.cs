@@ -104,9 +104,14 @@ public class FunctionParser : IFunctionParser
             return Result.Continue();
         }
 
+        if (state.CurrentCharacter == '<')
+        {
+            state.GenericsCount++;
+        }
+
         if (state.CurrentCharacter == '>')
         {
-            state.GenericsCount -= 1;
+            state.GenericsCount--;
             if (state.GenericsCount == 0)
             {
                 state.GenericsComplete = true;
@@ -179,12 +184,7 @@ public class FunctionParser : IFunctionParser
 
     private static Result ProcessPostArgumentsSection(FunctionParserState state)
     {
-        if (state.Index < state.Expression.Length)
-        {
-            // remaining characters at the end, like MyFunction(a) ILLEGAL
-            return Result.Invalid<FunctionCall>("Input has additional characters after last close bracket");
-        }
-
-        return Result.Success();
+        // remaining characters at the end, like MyFunction(a) ILLEGAL
+        return Result.Invalid<FunctionCall>("Input has additional characters after last close bracket");
     }
 }
