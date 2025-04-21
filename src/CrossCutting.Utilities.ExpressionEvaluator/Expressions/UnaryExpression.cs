@@ -15,17 +15,8 @@ public sealed class UnaryExpression : IExpression
     {
         ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var results = new ResultDictionaryBuilder<object?>()
-            .Add(Constants.Expression, () => Operand.Value?.Evaluate(context) ?? Result.FromExistingResult<object?>(Operand))
-            .Build();
-
-        var error = results.GetError();
-        if (error is not null)
-        {
-            return error;
-        }
-
-        return Result.Success<object?>(!results.GetValue(Constants.Expression).IsTruthy());
+        return (Operand.Value?.Evaluate(context) ?? Result.FromExistingResult<object?>(Operand))
+            .OnSuccess(result => Result.Success<object?>(!result.Value.IsTruthy()));
     }
 
     public Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context)
