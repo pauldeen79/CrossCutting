@@ -44,8 +44,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
             .Add(nameof(Evaluate), results => results.GetValue<IExpression>(nameof(Parse)).EvaluateTyped<T>(context))
             .Build()
-            .Aggregate<object?>()
-            .TryCastAllowNull<T>();
+            .Aggregate<T>();
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)

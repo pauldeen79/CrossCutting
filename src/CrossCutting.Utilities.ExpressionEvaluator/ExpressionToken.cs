@@ -10,6 +10,4 @@ public sealed class ExpressionToken
         Type = type;
         Value = value;
     }
-
-    public override string ToString() => $"{Type} ({Value})";
 }
