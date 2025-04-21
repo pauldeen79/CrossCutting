@@ -8,8 +8,11 @@ public class ToCamelCaseFunction : IFunction<string>
         => EvaluateTyped(context).TryCastAllowNull<object?>();
 
     public Result<string> EvaluateTyped(FunctionCallContext context)
-        => new ResultDictionaryBuilder()
-            .Add("StringExpression", () => context.GetArgumentValueResult<string>(0, "StringExpression"))
-            .Build()
-            .OnSuccess(results => Result.Success(results.GetValue<string>("StringExpression").ToCamelCase(context.Context.Settings.FormatProvider.ToCultureInfo())));
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context
+            .GetArgumentValueResult<string>(0, "StringExpression")
+            .Transform(result => Result.Success(result.GetValueOrThrow().ToCamelCase(context.Context.Settings.FormatProvider.ToCultureInfo())));
+    }
 }

@@ -8,8 +8,11 @@ public class ToStringFunction : IFunction<string>
         => EvaluateTyped(context).TryCastAllowNull<object?>();
 
     public Result<string> EvaluateTyped(FunctionCallContext context)
-        => new ResultDictionaryBuilder()
-            .Add("Expression", () => context.GetArgumentValueResult(0, "Expression"))
-            .Build()
-            .OnSuccess(results => Result.Success(results.GetValue("Expression").ToStringWithDefault()));
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context
+            .GetArgumentValueResult(0, "Expression")
+            .Transform(result => Result.Success(result.Value.ToStringWithDefault()));
+    }
 }

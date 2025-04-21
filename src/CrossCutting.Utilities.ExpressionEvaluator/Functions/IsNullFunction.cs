@@ -8,8 +8,11 @@ public class IsNullFunction : IFunction<bool>
         => EvaluateTyped(context).TryCastAllowNull<object?>();
 
     public Result<bool> EvaluateTyped(FunctionCallContext context)
-        => new ResultDictionaryBuilder()
-            .Add("Expression", () => context.GetArgumentValueResult(0, "Expression"))
-            .Build()
-            .OnSuccess(results => Result.Success(results.GetValue("Expression") is null));
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context
+            .GetArgumentValueResult(0, "Expression")
+            .Transform(result => Result.Success(result.Value is null));
+    }
 }
