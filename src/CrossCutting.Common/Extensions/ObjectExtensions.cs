@@ -112,19 +112,43 @@ public static class ObjectExtensions
 
     public static bool IsTruthy(this object? value)
     {
-        if (value is bool b)
+        if (value is null)
         {
-            return b;
+            return false;
         }
-        else if (value is string s)
+
+        switch (value)
         {
-            // design decision: if it's a string, then do a null or empty check
-            return !string.IsNullOrEmpty(s);
-        }
-        else
-        {
-            // design decision: if it's not a boolean, then do a null check
-            return value is not null;
+            case bool b:
+                return b;
+            case string s:
+                return !string.IsNullOrEmpty(s);
+            case int i:
+                return i != 0;
+            case long l:
+                return l != 0;
+            case float f:
+                return Math.Abs(f) > float.Epsilon;
+            case double d:
+                return Math.Abs(d) > double.Epsilon;
+            case decimal m:
+                return m != 0m;
+            case sbyte sb:
+                return sb != 0;
+            case byte b:
+                return b != 0;
+            case short s:
+                return s != 0;
+            case ushort us:
+                return us != 0;
+            case uint ui:
+                return ui != 0;
+            case ulong ul:
+                return ul != 0;
+            case char c:
+                return c != '\0';
+            default:
+                return true; // Any other non-null object is considered truthy
         }
     }
 
