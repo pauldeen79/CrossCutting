@@ -6,12 +6,16 @@ public  class AsyncResultDictionaryBuilder
 
     public AsyncResultDictionaryBuilder Add<T>(string name, Func<Task<Result<T>>> value)
     {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
         _resultset.Add(name, () => value().ContinueWith(x => (Result)x.Result, TaskScheduler.Current));
         return this;
     }
 
     public AsyncResultDictionaryBuilder Add(string name, Func<Task<Result>> value)
     {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
         _resultset.Add(name, value);
         return this;
     }
@@ -63,6 +67,8 @@ public class AsyncResultDictionaryBuilder<T>
 
     public AsyncResultDictionaryBuilder<T> Add(string name, Func<Task<Result<T>>> value)
     {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
         _resultset.Add(name, value);
         return this;
     }

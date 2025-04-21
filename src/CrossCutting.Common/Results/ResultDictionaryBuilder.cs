@@ -6,12 +6,16 @@ public class ResultDictionaryBuilder
 
     public ResultDictionaryBuilder Add(string name, Func<Result> value)
     {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
         _resultset.Add(name, _ => value());
         return this;
     }
 
     public ResultDictionaryBuilder Add(string name, Func<Dictionary<string, Result>, Result> value)
     {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
         _resultset.Add(name, value);
         return this;
     }
