@@ -33,18 +33,12 @@ public sealed class ExpressionTokenizer : IExpressionTokenizer
 
             if (current == '"')
             {
-                state.InQuotes = !state.InQuotes;
-
-                if (state.InQuotes)
-                {
-                    state.Tokens.Add(ReadOther(state));
-                    state.InQuotes = false;
-                    continue;
-                }
-                //TODO: Review if we can get here
+                state.InQuotes = true;
+                state.Tokens.Add(ReadOther(state));
+                continue;
             }
 
-            if (char.IsWhiteSpace(current) && !state.InQuotes)
+            if (char.IsWhiteSpace(current))
             {
                 state.Position++;
                 continue;
