@@ -189,6 +189,12 @@ public sealed class ExpressionParser : IExpressionParser
             builder.Append(peek.Value);
         }
 
+        // Also consume the last right parenthesis
+        if (!IsAtEnd(state))
+        {
+            Advance(state);
+        }
+
         return Result.Success<IExpression>(new OtherExpression(builder.ToString()));
     }
 

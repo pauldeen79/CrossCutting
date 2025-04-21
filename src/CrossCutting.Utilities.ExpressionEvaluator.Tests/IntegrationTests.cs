@@ -170,6 +170,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
     [Theory]
     [InlineData("(1 + 1 + 1) == 3 && \"true\" == \"true\"")]
     [InlineData("(1 == 1) && 2 == 2")]
+    [InlineData("MyFunction(\"a\") != MyFunction(\"b\")")]
+    [InlineData("MyFunction(\"+\") != MyFunction(\"-\")")]
     public void Can_Evaluate_Operator_Expression(string expression)
     {
         // Arrange
@@ -212,7 +214,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parsee_Binary_Operator_Expression()
+    public void Can_Parse_Binary_Operator_Expression()
     {
         // Arrange
         var sut = CreateSut();
