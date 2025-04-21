@@ -43,7 +43,7 @@ public class FunctionDescriptorProviderTests
             var result = sut.GetAll();
 
             // Assert
-            result.Count.ShouldBe(3);
+            result.Count.ShouldBeGreaterThanOrEqualTo(3);
         }
 
         [Fact]

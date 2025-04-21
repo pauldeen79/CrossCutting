@@ -18,5 +18,11 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IFunctionResolver, FunctionResolver>()
             .AddSingleton<IExpressionComponent, NumericExpressionComponent>()
             .AddSingleton<IExpressionTokenizer, ExpressionTokenizer>()
-            .AddSingleton<IExpressionParser, ExpressionParser>();
+            .AddSingleton<IExpressionParser, ExpressionParser>()
+            .AddSingleton<IFunction, IsNullFunction>()
+            .AddSingleton<IFunction, ToCamelCaseFunction>()
+            .AddSingleton<IFunction, ToLowerCaseFunction>()
+            .AddSingleton<IFunction, ToPascalCaseFunction>()
+            .AddSingleton<IFunction, ToStringFunction>()
+            .AddSingleton<IFunction, ToUpperCaseFunction>();
 }

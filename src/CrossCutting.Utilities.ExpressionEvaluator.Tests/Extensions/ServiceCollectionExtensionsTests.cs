@@ -28,10 +28,36 @@ public class ServiceCollectionExtensionsTests
         expression.ShouldNotBeNull($"Expression {expressionType.FullName} could not be resolved, did you forget to register this?");
     }
 
+    [Theory]
+    [MemberData(nameof(GetAllFunctions))]
+    public void Can_Resolve_Function(Type functionType)
+    {
+        // Arrange
+        var serviceCollection = new ServiceCollection().AddExpressionEvaluator();
+        using var provider = serviceCollection.BuildServiceProvider();
+
+        // Act
+        var function = provider.GetServices<IFunction>().FirstOrDefault(x => x.GetType() == functionType);
+
+        // Assert
+        function.ShouldNotBeNull($"Function {functionType.FullName} could not be resolved, did you forget to register this?");
+    }
+
     public static TheoryData<Type> GetAllExpressions()
     {
         var data = new TheoryData<Type>();
         foreach (var t in typeof(IExpressionComponent).Assembly.GetExportedTypes().Where(x => !x.IsInterface && !x.IsAbstract && x.GetAllInterfaces().Contains(typeof(IExpressionComponent))))
+        {
+            data.Add(t);
+        }
+
+        return data;
+    }
+
+    public static TheoryData<Type> GetAllFunctions()
+    {
+        var data = new TheoryData<Type>();
+        foreach (var t in typeof(IExpressionComponent).Assembly.GetExportedTypes().Where(x => !x.IsInterface && !x.IsAbstract && x.GetAllInterfaces().Contains(typeof(IFunction))))
         {
             data.Add(t);
         }

@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
+﻿using System.Security.Cryptography;
+
+namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 
 public sealed class IntegrationTests : TestBase, IDisposable
 {
@@ -211,6 +213,90 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldBe(true);
+    }
+
+    [Fact]
+    public void Can_Evaluate_Expression_With_ToString_Function()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("ToString(true)", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(true.ToString());
+    }
+
+    [Fact]
+    public void Can_Evaluate_Expression_With_IsNull_Function()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("IsNull(\"some value that is not null\")", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(false);
+    }
+
+    [Fact]
+    public void Can_Evaluate_Expression_With_ToCamelCase_Function()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("ToCamelCase(\"expression\")", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("expression".ToCamelCase(CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Can_Evaluate_Expression_With_ToLowerCase_Function()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("ToLowerCase(\"expression\")", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("expression".ToLower(CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Can_Evaluate_Expression_With_ToPascalCase_Function()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("ToPascalCase(\"expression\")", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("expression".ToPascalCase(CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Can_Evaluate_Expression_With_ToUpperCase_Function()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("ToUpperCase(\"expression\")", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("expression".ToUpper(CultureInfo.InvariantCulture));
     }
 
     [Fact]
