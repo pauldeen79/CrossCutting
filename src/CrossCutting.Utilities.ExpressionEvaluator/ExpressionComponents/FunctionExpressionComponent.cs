@@ -93,7 +93,10 @@ public class FunctionExpressionComponent : IExpressionComponent
     {
         try
         {
-            var method = genericFunction.GetType().GetMethod(nameof(IGenericFunction.EvaluateGeneric))!.MakeGenericMethod(functionCallContext.FunctionCall.TypeArguments.ToArray());
+            var method = genericFunction
+                .GetType()
+                .GetMethod(nameof(IGenericFunction.EvaluateGeneric))!
+                .MakeGenericMethod(functionCallContext.FunctionCall.TypeArguments.ToArray());
 
             return (Result<object?>)method.Invoke(genericFunction, [functionCallContext]);
         }
