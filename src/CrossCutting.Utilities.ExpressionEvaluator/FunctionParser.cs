@@ -183,8 +183,6 @@ public class FunctionParser : IFunctionParser
     }
 
     private static Result ProcessPostArgumentsSection(FunctionParserState state)
-    {
         // remaining characters at the end, like MyFunction(a) ILLEGAL
-        return Result.Invalid<FunctionCall>("Input has additional characters after last close bracket");
-    }
+        => Result.Invalid("Input has additional characters after last close bracket");
 }
