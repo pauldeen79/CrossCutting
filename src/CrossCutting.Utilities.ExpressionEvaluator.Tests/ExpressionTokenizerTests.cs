@@ -266,5 +266,80 @@ public class ExpressionTokenizerTests : TestBase<ExpressionTokenizer>
             result.Value[1].Type.ShouldBe(ExpressionTokenType.Less);
             result.Value[2].Type.ShouldBe(ExpressionTokenType.EOF);
         }
+
+        [Fact]
+        public void Returns_Correct_Result_For_Value_With_Missing_Quotes()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Tokenize(CreateContext("\""));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBe(2);
+            result.Value[0].Type.ShouldBe(ExpressionTokenType.Other);
+            result.Value[0].Value.ShouldBe("\"");
+            result.Value[1].Type.ShouldBe(ExpressionTokenType.EOF);
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_For_Value_With_Empty_Quoted_Expression()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Tokenize(CreateContext("\"\""));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBe(2);
+            result.Value[0].Type.ShouldBe(ExpressionTokenType.Other);
+            result.Value[0].Value.ShouldBe("\"\"");
+            result.Value[1].Type.ShouldBe(ExpressionTokenType.EOF);
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_For_Value_With_Empty_Quoted_Expression_Extra_Quote()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Tokenize(CreateContext("\"\"\""));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBe(2);
+            result.Value[0].Type.ShouldBe(ExpressionTokenType.Other);
+            result.Value[0].Value.ShouldBe("\"\"\"");
+            result.Value[1].Type.ShouldBe(ExpressionTokenType.EOF);
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_For_Value_With_FunctionExpression_Missing_End_Quote()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Tokenize(CreateContext("MyFunction(\")"));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBe(4);
+            result.Value[0].Type.ShouldBe(ExpressionTokenType.Other);
+            result.Value[0].Value.ShouldBe("MyFunction");
+            result.Value[1].Type.ShouldBe(ExpressionTokenType.LeftParenthesis);
+            result.Value[2].Type.ShouldBe(ExpressionTokenType.Other);
+            result.Value[2].Value.ShouldBe("\")");
+            result.Value[3].Type.ShouldBe(ExpressionTokenType.EOF);
+        }
     }
 }
