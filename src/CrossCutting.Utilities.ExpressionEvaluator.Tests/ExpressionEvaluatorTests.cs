@@ -118,6 +118,22 @@ public class ExpressionEvaluatorTests : TestBase
         }
 
         [Fact]
+        public void Returns_First_Understood_TypedResult_When_Not_Successful()
+        {
+            // Arrange
+            Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
+            Expression.Evaluate(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Error<object?>("Kaboom"));
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.EvaluateTyped<string>("expression", new ExpressionEvaluatorSettingsBuilder());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+
+        [Fact]
         public void Returns_Invalid_When_Expression_Is_Not_Understood()
         {
             // Arrange
