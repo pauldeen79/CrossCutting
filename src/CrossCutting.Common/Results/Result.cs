@@ -324,14 +324,14 @@ public record Result
     {
         ArgumentGuard.IsNotNull(existingResult, nameof(existingResult));
 
-        return new(TryGetValue<T>(existingResult), existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors, existingResult.InnerResults, null);
+        return new(TryGetValue<T>(existingResult), existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors, existingResult.InnerResults, existingResult.Exception);
     }
 
     public static Result<T> FromExistingResult<T>(Result existingResult, T value)
     {
         ArgumentGuard.IsNotNull(existingResult, nameof(existingResult));
 
-        return new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors, existingResult.InnerResults, null);
+        return new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors, existingResult.InnerResults, existingResult.Exception);
     }
 
     public static Result<TTargetResult> FromExistingResult<TSourceResult, TTargetResult>(Result<TSourceResult> existingResult, Func<TSourceResult, TTargetResult> convertDelegate)
