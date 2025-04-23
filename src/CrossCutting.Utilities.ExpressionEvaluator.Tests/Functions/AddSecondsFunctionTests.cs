@@ -2,7 +2,7 @@
 
 public class AddSecondsFunctionTests : TestBase<AddSecondsFunction>
 {
-    public class EvaluateTyped : AddSecondsFunctionTests
+    public class Evaluate : AddSecondsFunctionTests
     {
         [Fact]
         public void Returns_Success_On_Correct_Arguments()
@@ -13,7 +13,7 @@ public class AddSecondsFunctionTests : TestBase<AddSecondsFunction>
             var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
-            var result = sut.EvaluateTyped(context);
+            var result = sut.Evaluate(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

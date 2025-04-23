@@ -2,7 +2,7 @@
 
 public class DateTimeFunctionTests : TestBase<DateTimeFunction>
 {
-    public class EvaluateTyped : DateTimeFunctionTests
+    public class Evaluate : DateTimeFunctionTests
     {
         [Fact]
         public void Returns_Success_On_Correct_Arguments()
@@ -13,7 +13,7 @@ public class DateTimeFunctionTests : TestBase<DateTimeFunction>
             var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
-            var result = sut.EvaluateTyped(context);
+            var result = sut.Evaluate(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -29,7 +29,7 @@ public class DateTimeFunctionTests : TestBase<DateTimeFunction>
             var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
-            var result = sut.EvaluateTyped(context);
+            var result = sut.Evaluate(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

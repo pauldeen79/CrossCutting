@@ -2,7 +2,7 @@
 
 public class AddYearsFunctionTests : TestBase<AddYearsFunction>
 {
-    public class EvaluateTyped : AddYearsFunctionTests
+    public class Evaluate : AddYearsFunctionTests
     {
         [Fact]
         public void Returns_Success_On_Correct_Arguments()
@@ -13,7 +13,7 @@ public class AddYearsFunctionTests : TestBase<AddYearsFunction>
             var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
-            var result = sut.EvaluateTyped(context);
+            var result = sut.Evaluate(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

@@ -2,7 +2,7 @@
 
 public class AddMinutesFunctionTests : TestBase<AddMinutesFunction>
 {
-    public class EvaluateTyped : AddMinutesFunctionTests
+    public class Evaluate : AddMinutesFunctionTests
     {
         [Fact]
         public void Returns_Success_On_Correct_Arguments()
@@ -13,7 +13,7 @@ public class AddMinutesFunctionTests : TestBase<AddMinutesFunction>
             var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
-            var result = sut.EvaluateTyped(context);
+            var result = sut.Evaluate(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
