@@ -19,6 +19,8 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IExpressionComponent, NumericExpressionComponent>()
             .AddSingleton<IExpressionTokenizer, ExpressionTokenizer>()
             .AddSingleton<IExpressionParser, ExpressionParser>()
+            .AddSingleton<IFunction, DateFunction>()
+            .AddSingleton<IFunction, DateTimeFunction>()
             .AddSingleton<IFunction, IsNullFunction>()
             .AddSingleton<IFunction, ToCamelCaseFunction>()
             .AddSingleton<IFunction, ToLowerCaseFunction>()
