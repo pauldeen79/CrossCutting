@@ -92,6 +92,11 @@ public abstract class TestBase
             return Result.Success<object?>(decimalNumber);
         }
 
+        if (context.Expression.StartsWith("System."))
+        {
+            return Result.Success<object?>(Type.GetType(context.Expression));
+        }
+
         if (bool.TryParse(context.Expression, out bool boolean))
         {
             return Result.Success<object?>(boolean);

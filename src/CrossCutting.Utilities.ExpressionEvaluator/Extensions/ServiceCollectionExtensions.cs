@@ -25,6 +25,8 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IFunction, AddMonthsFunction>()
             .AddSingleton<IFunction, AddSecondsFunction>()
             .AddSingleton<IFunction, AddYearsFunction>()
+            .AddSingleton<IFunction, CastFunction>()
+            .AddSingleton<IFunction, ConvertFunction>()
             .AddSingleton<IFunction, DateFunction>()
             .AddSingleton<IFunction, DatePartFunction>()
             .AddSingleton<IFunction, DateTimeFunction>()
