@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IFunction, AddSecondsFunction>()
             .AddSingleton<IFunction, AddYearsFunction>()
             .AddSingleton<IFunction, DateFunction>()
-            .AddSingleton<IFunction, DateOnlyFunction>()
+            .AddSingleton<IFunction, DatePartFunction>()
             .AddSingleton<IFunction, DateTimeFunction>()
             .AddSingleton<IFunction, IsNullFunction>()
             .AddSingleton<IFunction, ToCamelCaseFunction>()

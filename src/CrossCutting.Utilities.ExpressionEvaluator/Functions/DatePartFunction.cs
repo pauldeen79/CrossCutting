@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("Date")]
+[FunctionName("DatePart")]
 [FunctionArgument("DateTimeExpression", typeof(DateTime))]
-public class DateOnlyFunction : IFunction<DateTime>
+public class DatePartFunction : IFunction<DateTime>
 {
     public Result<object?> Evaluate(FunctionCallContext context)
         => EvaluateTyped(context).TryCastAllowNull<object?>();

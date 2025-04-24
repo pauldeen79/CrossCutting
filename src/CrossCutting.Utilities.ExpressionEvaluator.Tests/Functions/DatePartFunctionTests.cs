@@ -1,15 +1,16 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Functions;
 
-public class DateOnlyFunctionTests : TestBase<DateOnlyFunction>
+public class DatePartFunctionTests : TestBase<DatePartFunction>
 {
-    public class Evaluate : DateOnlyFunctionTests
+    public class Evaluate : DatePartFunctionTests
     {
         [Fact]
         public void Returns_Success_On_Correct_Arguments()
         {
             // Arrange
             var sut = CreateSut();
-            var functionCall = new FunctionCallBuilder().WithName("Date").AddArguments("2025-01-01 01:00:00");
+            // Note that the ExpressionEvaluator currently doesn't support DateTime values in ISO format, because it will see minus signs and try sub substract these values.
+            var functionCall = new FunctionCallBuilder().WithName("DatePart").AddArguments("2025-01-01 01:00:00");
             var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
