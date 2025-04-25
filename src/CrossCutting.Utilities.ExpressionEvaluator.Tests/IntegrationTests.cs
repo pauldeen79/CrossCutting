@@ -78,6 +78,21 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_Method_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "context.ToString()";
+
+        // Act
+        var result = sut.Evaluate(CreateContext(expression, context: "hello world", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("hello world".ToString());
+    }
+
+    [Fact]
     public void Can_Evaluate_Generic_Function_Expression()
     {
         // Arrange

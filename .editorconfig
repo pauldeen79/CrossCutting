@@ -161,6 +161,7 @@ dotnet_diagnostic.CA1062.severity = silent # CA1062 In externally visible method
 csharp_style_unused_value_expression_statement_preference = true:silent
 dotnet_diagnostic.S3776.severity = none # cognitive complexity
 dotnet_diagnostic.CA1308.severity = none # Normalize strings to uppercase
+dotnet_diagnostic.S2325.severity = none # Methods and properties that don't access instance data should be static
 
 # Set specific code analysis rules to warning (none by default)
 # Do not hide base class methods

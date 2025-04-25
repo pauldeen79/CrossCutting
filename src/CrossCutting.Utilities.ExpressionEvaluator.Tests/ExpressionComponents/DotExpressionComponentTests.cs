@@ -1,8 +1,10 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
 
-public class PropertyExpressionComponentTests : TestBase<PropertyExpressionComponent>
+public class DotExpressionComponentTests : TestBase
 {
-    public class Evaluate : PropertyExpressionComponentTests
+    protected static DotExpressionComponent CreateSut() => new DotExpressionComponent(new FunctionParser());
+
+    public class Evaluate : DotExpressionComponentTests
     {
         [Theory]
         [InlineData("")]
@@ -98,11 +100,26 @@ public class PropertyExpressionComponentTests : TestBase<PropertyExpressionCompo
             result.Value.ShouldBe(MyProperty);
         }
 
+        [Fact]
+        public void Returns_Success_When_Method_Exists()
+        {
+            // Arrange
+            var context = CreateContext("context.ToString()", context: this);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(ToString());
+        }
+
         public int MyProperty => 13;
         public Evaluate MyComplexProperty => this;
     }
 
-    public class Parse : PropertyExpressionComponentTests
+    public class Parse : DotExpressionComponentTests
     {
         [Theory]
         [InlineData("")]
