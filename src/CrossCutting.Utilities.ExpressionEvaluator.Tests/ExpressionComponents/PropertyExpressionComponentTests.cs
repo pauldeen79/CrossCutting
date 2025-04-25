@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-
-namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
 
 public class PropertyExpressionComponentTests : TestBase<PropertyExpressionComponent>
 {

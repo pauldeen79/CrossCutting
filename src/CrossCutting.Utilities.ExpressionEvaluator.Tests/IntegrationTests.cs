@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 
 public sealed class IntegrationTests : TestBase, IDisposable
 {
