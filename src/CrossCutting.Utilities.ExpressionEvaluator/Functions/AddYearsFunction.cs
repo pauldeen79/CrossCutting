@@ -1,4 +1,4 @@
-namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
 [FunctionName("AddYears")]
 [FunctionArgument("DateTimeExpression", typeof(DateTime))]
@@ -10,8 +10,8 @@ public class AddYearsFunction : IFunction<DateTime>
 
     public Result<DateTime> EvaluateTyped(FunctionCallContext context)
         => new ResultDictionaryBuilder()
-            .Add("DateTimeExpression", () => context.GetArgumentDateTimeValueResult(0, "DateTimeExpression"))
-            .Add("YearsToAdd", () => context.GetArgumentInt32ValueResult(1, "YearsToAdd"))
+            .Add<DateTime>(context, 0, "DateTimeExpression")
+            .Add<int>(context, 1, "YearsToAdd")
             .Build()
             .OnSuccess(results => Result.Success(results.GetValue<DateTime>("DateTimeExpression").AddYears(results.GetValue<int>("YearsToAdd"))));
 }

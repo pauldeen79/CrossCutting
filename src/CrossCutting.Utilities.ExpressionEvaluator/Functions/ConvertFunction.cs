@@ -7,8 +7,8 @@ public class ConvertFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)
         => new ResultDictionaryBuilder()
-            .Add("Type", () => context.GetArgumentValueResult<Type>(0, "Type"))
-            .Add("Expression", () => context.GetArgumentValueResult(1, "Expression"))
+            .Add<Type>(context, 0, "Type")
+            .Add(context, 1, "Expression")
             .Build()
             .OnSuccess(results =>
             {

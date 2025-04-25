@@ -11,9 +11,9 @@ public class DateFunction : IFunction<DateTime>
 
     public Result<DateTime> EvaluateTyped(FunctionCallContext context)
         => new ResultDictionaryBuilder()
-            .Add("Year", () => context.GetArgumentInt32ValueResult(0, "Year"))
-            .Add("Month", () => context.GetArgumentInt32ValueResult(1, "Month"))
-            .Add("Day", () => context.GetArgumentInt32ValueResult(2, "Day"))
+            .Add<int>(context, 0, "Year")
+            .Add<int>(context, 1, "Month")
+            .Add<int>(context, 2, "Day")
             .Build()
             .OnSuccess(results =>
             {

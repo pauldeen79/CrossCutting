@@ -14,12 +14,12 @@ public class DateTimeFunction : IFunction<DateTime>
 
     public Result<DateTime> EvaluateTyped(FunctionCallContext context)
         => new ResultDictionaryBuilder()
-            .Add("Year", () => context.GetArgumentInt32ValueResult(0, "Year"))
-            .Add("Month", () => context.GetArgumentInt32ValueResult(1, "Month"))
-            .Add("Day", () => context.GetArgumentInt32ValueResult(2, "Day"))
-            .Add("Hour", () => context.GetArgumentInt32ValueResult(3, "Hour"))
-            .Add("Minute", () => context.GetArgumentInt32ValueResult(4, "Minute"))
-            .Add("Second", () => context.GetArgumentInt32ValueResult(5, "Second"))
+            .Add<int>(context, 0, "Year")
+            .Add<int>(context, 1, "Month")
+            .Add<int>(context, 2, "Day")
+            .Add<int>(context, 3, "Hour")
+            .Add<int>(context, 4, "Minute")
+            .Add<int>(context, 5, "Second")
             .Build()
             .OnSuccess(results =>
             {

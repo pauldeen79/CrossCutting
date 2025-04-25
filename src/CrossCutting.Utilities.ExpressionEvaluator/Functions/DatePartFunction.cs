@@ -11,7 +11,7 @@ public class DatePartFunction : IFunction<DateTime>
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         
-        return context.GetArgumentDateTimeValueResult(0, "DateTimeExpression")
+        return context.GetArgumentValueResult<DateTime>(0, "DateTimeExpression")
             .OnSuccess(result => Result.Success(result.Value.Date));
     } 
 }
