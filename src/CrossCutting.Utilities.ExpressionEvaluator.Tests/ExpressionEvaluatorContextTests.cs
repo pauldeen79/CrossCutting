@@ -47,31 +47,5 @@ public class ExpressionEvaluatorContextTests : TestBase
             sut.ParentContext.Expression.ShouldBe("parent expression");
             sut.ParentContext.CurrentRecursionLevel.ShouldBe(1);
         }
-
-        [Fact]
-        public void Fills_QuoteMap_When_Quotes_Are_Present()
-        {
-            // Arrange
-            var expression = "\"Some \" + \"quoted \" + \"expression\"";
-
-            // Act
-            var sut = CreateContext(expression);
-
-            // Assert
-            sut.QuoteMap.Count().ShouldBe(3);
-        }
-
-        [Fact]
-        public void Leaves_QuoteMap_Empty_When_Quotes_Are_Not_Present()
-        {
-            // Arrange
-            var expression = "SomeUnquotedExpression()";
-
-            // Act
-            var sut = CreateContext(expression);
-
-            // Assert
-            sut.QuoteMap.Count().ShouldBe(0);
-        }
     }
 }

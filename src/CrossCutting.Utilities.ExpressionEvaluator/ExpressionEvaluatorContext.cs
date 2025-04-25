@@ -5,7 +5,6 @@ public class ExpressionEvaluatorContext
     public string Expression { get; }
     public ExpressionEvaluatorSettings Settings { get; }
     public object? Context { get; }
-    public IEnumerable<(int StartIndex, int EndIndex)> QuoteMap { get; }
     public int CurrentRecursionLevel { get; }
     public ExpressionEvaluatorContext? ParentContext { get; }
 
@@ -27,7 +26,6 @@ public class ExpressionEvaluatorContext
         Settings = settings;
         Context = context;
         Evaluator = evaluator;
-        QuoteMap = BuildQuoteMap(Expression);
         CurrentRecursionLevel = currentRecursionLevel;
         ParentContext = parentContext;
     }
@@ -64,30 +62,6 @@ public class ExpressionEvaluatorContext
 
     internal ExpressionEvaluatorContext CreateChildContext(string expression)
         => new ExpressionEvaluatorContext(expression, Settings, Context, Evaluator, CurrentRecursionLevel + 1, this);
-
-    private static IEnumerable<(int StartIndex, int EndIndex)> BuildQuoteMap(string value)
-    {
-        var inText = false;
-        var index = -1;
-        var lastQuote = -1;
-
-        foreach (var character in value)
-        {
-            index++;
-            if (character == '\"')
-            {
-                inText = !inText;
-                if (inText)
-                {
-                    lastQuote = index;
-                }
-                else
-                {
-                    yield return new(lastQuote, index);
-                }
-            }
-        }
-    }
 
     internal ExpressionEvaluatorContext FromRoot()
     {
