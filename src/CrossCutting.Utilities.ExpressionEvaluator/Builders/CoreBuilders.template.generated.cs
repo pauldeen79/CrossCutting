@@ -22,6 +22,8 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         private bool _validateArgumentTypes;
 
+        private bool _strictTypeChecking;
+
         private string _placeholderStart;
 
         private string _placeholderEnd;
@@ -101,6 +103,21 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
         }
 
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool StrictTypeChecking
+        {
+            get
+            {
+                return _strictTypeChecking;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_strictTypeChecking, value);
+                _strictTypeChecking = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StrictTypeChecking));
+            }
+        }
+
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [System.ComponentModel.DefaultValueAttribute(@"{")]
         public string PlaceholderStart
@@ -141,6 +158,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _maximumRecursion = source.MaximumRecursion;
             _escapeBraces = source.EscapeBraces;
             _validateArgumentTypes = source.ValidateArgumentTypes;
+            _strictTypeChecking = source.StrictTypeChecking;
             _placeholderStart = source.PlaceholderStart;
             _placeholderEnd = source.PlaceholderEnd;
         }
@@ -151,6 +169,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _maximumRecursion = 10;
             _escapeBraces = true;
             _validateArgumentTypes = true;
+            _strictTypeChecking = false;
             _placeholderStart = @"{"!;
             _placeholderEnd = @"}"!;
             SetDefaultValues();
@@ -158,7 +177,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         public CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings Build()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings(FormatProvider, StringComparison, MaximumRecursion, EscapeBraces, ValidateArgumentTypes, PlaceholderStart, PlaceholderEnd);
+            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings(FormatProvider, StringComparison, MaximumRecursion, EscapeBraces, ValidateArgumentTypes, StrictTypeChecking, PlaceholderStart, PlaceholderEnd);
         }
 
         partial void SetDefaultValues();
@@ -191,6 +210,12 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder WithValidateArgumentTypes(bool validateArgumentTypes = true)
         {
             ValidateArgumentTypes = validateArgumentTypes;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder WithStrictTypeChecking(bool strictTypeChecking = true)
+        {
+            StrictTypeChecking = strictTypeChecking;
             return this;
         }
 
