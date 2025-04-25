@@ -13,6 +13,6 @@ public class ToStringFunction : IFunction<string>
 
         return context
             .GetArgumentValueResult(0, "Expression")
-            .Transform(result => Result.Success(result.Value.ToStringWithDefault()));
+            .Transform(result => Result.Success(result.Value.ToString(context.Context.Settings.FormatProvider)));
     }
 }
