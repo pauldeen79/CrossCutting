@@ -1,0 +1,156 @@
+﻿using Newtonsoft.Json.Linq;
+
+namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
+
+public class PropertyExpressionComponentTests : TestBase<PropertyExpressionComponent>
+{
+    public class Evaluate : PropertyExpressionComponentTests
+    {
+        [Theory]
+        [InlineData("")]
+        [InlineData("SomeExpressionWithoutPeriods")]
+        [InlineData("\"Some expression with . within quotes\"")]
+        public void Returns_Continue_When_Expression_Does_Not_Contain_Period_Character(string input)
+        {
+            // Arrange
+            var context = CreateContext(input);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Left_Part_Of_Expression_Is_Null()
+        {
+            // Arrange
+            var context = CreateContext("null.MyProperty");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            // Error message sounds a little strange, but it's just repeating the left part of the expression, which is "null" in this case :)
+            result.ErrorMessage.ShouldBe("null is null, cannot get property MyProperty");
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Property_Name_Does_Not_Exist()
+        {
+            // Arrange
+            var context = CreateContext("1.MyProperty");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Type System.Int32 does not contain property MyProperty");
+        }
+
+        [Fact]
+        public void Returns_Error_From_First_Expression_When_Not_Successful()
+        {
+            // Arrange
+            var context = CreateContext("this.MyProperty", context: this);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            // The following error message actually comes from the ExpressionEvaluator, which parses the first part of the expression (this)
+            result.ErrorMessage.ShouldBe("Unsupported expression: this");
+        }
+
+        [Fact]
+        public void Returns_Success_When_Property_Name_Exists()
+        {
+            // Arrange
+            var context = CreateContext("context.MyProperty", context: this);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(MyProperty);
+        }
+
+        [Fact]
+        public void Returns_Success_When_Property_Name_Exists_Using_Nested_Expression()
+        {
+            // Arrange
+            var context = CreateContext("context.MyComplexProperty.MyComplexProperty.MyProperty", context: this);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(MyProperty);
+        }
+
+        public int MyProperty => 13;
+        public Evaluate MyComplexProperty => this;
+    }
+
+    public class Parse : PropertyExpressionComponentTests
+    {
+        [Theory]
+        [InlineData("")]
+        [InlineData("SomeExpressionWithoutPeriods")]
+        [InlineData("\"Some expression with . within quotes\"")]
+        public void Returns_Continue_When_Expression_Does_Not_Contain_Period_Character(string input)
+        {
+            // Arrange
+            var context = CreateContext(input);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Error_From_First_Expression_When_Not_Successful()
+        {
+            // Arrange
+            var context = CreateContext("error.SomeProperty");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            // The following error message actually comes from the ExpressionEvaluator, which parses the first part of the expression (error)
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+
+        [Fact]
+        public void Returns_Ok_When_Parsing_First_Expression_Succeeds()
+        {
+            // Arrange
+            var context = CreateContext("context.MyProperty", context: this);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+        }
+    }
+}

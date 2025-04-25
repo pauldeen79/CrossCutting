@@ -19,7 +19,7 @@ public partial class ExpressionParseResultBuilder
 
     public ExpressionParseResultBuilder SetStatusFromPartResults()
     {
-        var error = PartResults.FirstOrDefault(x => !x.Status.IsSuccessful());
+        var error = PartResults.FirstOrDefault(x => !x.IsSuccessful());
         
         return error is not null
             ? this.WithStatus(error.Status).WithErrorMessage("Parsing of the expression failed, see inner results for details")
@@ -35,4 +35,6 @@ public partial class ExpressionParseResultBuilder
             .WithStatus(result.Status)
             .AddValidationErrors(result.ValidationErrors);
     }
+
+    public bool IsSuccessful() => Status.IsSuccessful();
 }

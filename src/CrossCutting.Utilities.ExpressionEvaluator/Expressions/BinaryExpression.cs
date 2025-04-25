@@ -74,7 +74,7 @@ public sealed class BinaryExpression : IExpression
             .AddPartResult(rightResult ?? new ExpressionParseResultBuilder().FillFromResult(Right), Constants.RightExpression)
             .SetStatusFromPartResults();
 
-        if (!result.Status.IsSuccessful())
+        if (!result.IsSuccessful())
         {
             return result;
         }

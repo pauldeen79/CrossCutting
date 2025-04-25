@@ -9,7 +9,7 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         context = context.IsNotNull(nameof(context));
 
         var callArgumentResult = context.Context.Parse(callArgument);
-        if (!callArgumentResult.Status.IsSuccessful())
+        if (!callArgumentResult.IsSuccessful())
         {
             return callArgumentResult;
         }

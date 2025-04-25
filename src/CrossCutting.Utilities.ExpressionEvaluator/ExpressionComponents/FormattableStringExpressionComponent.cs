@@ -65,7 +65,7 @@ public class FormattableStringExpressionComponent : IExpressionComponent<Generic
     private static ExpressionParseResult ParseRecursive(ExpressionParseResultBuilder result, string format, ExpressionEvaluatorContext context)
     {
         var results = ProcessRecursive(format, context, true, out _);
-        var hasFailure = !results.IsSuccessful() || results.Value?.Any(x => !x.Status.IsSuccessful()) == true;
+        var hasFailure = !results.IsSuccessful() || results.Value?.Any(x => !x.IsSuccessful()) == true;
 
         return result
             .AddPartResults(results.Value?.Select((x, index) => new ExpressionParsePartResultBuilder().FillFromResult(x).WithPartName(index.ToString(context.Settings.FormatProvider))) ?? [new ExpressionParsePartResultBuilder().WithPartName("Validation").FillFromResult(results)])

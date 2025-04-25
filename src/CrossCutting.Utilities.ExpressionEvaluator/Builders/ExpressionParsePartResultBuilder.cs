@@ -11,4 +11,6 @@ public partial class ExpressionParsePartResultBuilder
             .WithStatus(result.Status)
             .AddValidationErrors(result.ValidationErrors);
     }
+
+    public bool IsSuccessful() => Status.IsSuccessful();
 }

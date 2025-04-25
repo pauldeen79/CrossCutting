@@ -73,7 +73,7 @@ public class FunctionResolver : IFunctionResolver
         foreach (var argument in arguments)
         {
             var validationResult = _functionCallArgumentValidator.Validate(argument.DescriptorArgument, argument.CallArgument, functionCallContext);
-            if (!validationResult.Status.IsSuccessful() && validationResult.ErrorMessage is not null)
+            if (!validationResult.IsSuccessful() && validationResult.ErrorMessage is not null)
             {
                 errors.Add(new ValidationError(validationResult.ErrorMessage, [argument.DescriptorArgument.Name]));
             }
