@@ -2,7 +2,7 @@
 
 public class FunctionParser : IFunctionParser
 {
-    private static readonly Regex _functionRegEx = new(@"\b[a-zA-Z_][a-zA-Z0-9_]*\s*(?:<[\w\s,.<>]*>)?\s*\(\s*[^)]*\s*\)", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
+    private static readonly Regex _functionRegEx = new(@"(?<!\.)\b[a-zA-Z_][a-zA-Z0-9_]*\s*(?:<[\w\s,.<>]*>)?\s*\(\s*[^)]*\s*\)", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
 
     private static readonly Func<FunctionParserState, Result>[] _processors =
         [

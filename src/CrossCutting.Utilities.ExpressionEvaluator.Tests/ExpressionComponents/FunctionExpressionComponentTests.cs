@@ -28,11 +28,14 @@ public class FunctionExpressionComponentTests : TestBase
                 => Result.Success<object?>("function result value");
         }
 
-        [Fact]
-        public void Returns_Continue_When_Expression_Is_Not_A_FunctionCall()
+        [Theory]
+        [InlineData("")]
+        [InlineData("no function")]
+        [InlineData("object.ToString()")]
+        public void Returns_Continue_When_Expression_Is_Not_A_FunctionCall(string expression)
         {
             // Arrange
-            var context = CreateContext("no function");
+            var context = CreateContext(expression);
             var sut = CreateSut();
 
             // Act
