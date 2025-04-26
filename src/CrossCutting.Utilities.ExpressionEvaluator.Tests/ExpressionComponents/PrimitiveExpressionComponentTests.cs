@@ -49,21 +49,6 @@ public class PrimitiveExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Correct_Result_For_Context()
-        {
-            // Arrange
-            var context = CreateContext("context", context: "the context value");
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Evaluate(context);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe("the context value");
-        }
-
-        [Fact]
         public void Returns_Correct_Result_For_DateTime_Now()
         {
             // Arrange
@@ -132,36 +117,6 @@ public class PrimitiveExpressionComponentTests : TestBase
         {
             // Arrange
             var context = CreateContext("null");
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.ResultType.ShouldBeNull();
-        }
-
-        [Fact]
-        public void Returns_Correct_Result_For_Context_When_Not_Null()
-        {
-            // Arrange
-            var context = CreateContext("context", context: "the context value");
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.ResultType.ShouldBe(typeof(string));
-        }
-
-        [Fact]
-        public void Returns_Correct_Result_For_Context_When_Null()
-        {
-            // Arrange
-            var context = CreateContext("context", context: null);
             var sut = CreateSut();
 
             // Act

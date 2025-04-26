@@ -7,12 +7,32 @@ public abstract class TestBase
 
     protected ExpressionEvaluatorContext CreateContext(
         string? expression,
-        object? context = null,
+        object? context,
         int currentRecursionLevel = 1,
         ExpressionEvaluatorContext? parentContext = null,
         IExpressionEvaluator? evaluator = null,
         ExpressionEvaluatorSettingsBuilder? settings = null)
-            => new ExpressionEvaluatorContext(expression, settings ?? new ExpressionEvaluatorSettingsBuilder(), context, evaluator ?? Evaluator, currentRecursionLevel, parentContext);
+    {
+        IReadOnlyDictionary<string, Func<Result<object?>>>? dict = null;
+        if (context is not null)
+        {
+            dict = new Dictionary<string, Func<Result<object?>>>
+            {
+                { "context", () => Result.Success<object?>(context) }
+            };
+        }
+
+        return CreateContext(expression, dict, currentRecursionLevel, parentContext, evaluator, settings);
+    }
+
+    protected ExpressionEvaluatorContext CreateContext(
+        string? expression,
+        IReadOnlyDictionary<string, Func<Result<object?>>>? context = null,
+        int currentRecursionLevel = 1,
+        ExpressionEvaluatorContext? parentContext = null,
+        IExpressionEvaluator? evaluator = null,
+        ExpressionEvaluatorSettingsBuilder? settings = null)
+            => new ExpressionEvaluatorContext(expression, settings ?? new ExpressionEvaluatorSettingsBuilder(), evaluator ?? Evaluator, context, currentRecursionLevel, parentContext);
 
     protected TestBase()
     {
@@ -47,9 +67,10 @@ public abstract class TestBase
             return Result.Success(default(object?));
         }
 
-        if (context.Expression == "context")
+        var success = context.Context.TryGetValue(context.Expression, out var dlg);
+        if (success)
         {
-            return Result.Success(context.Context);
+            return dlg!();
         }
 
         if (context.Expression == "context.Length")

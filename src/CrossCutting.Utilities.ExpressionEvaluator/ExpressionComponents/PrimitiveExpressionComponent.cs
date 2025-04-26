@@ -21,7 +21,6 @@ public class PrimitiveExpressionComponent : IExpressionComponent
             "true" => Result.Success<object?>(true),
             "false" => Result.Success<object?>(false),
             "null" => Result.Success<object?>(null),
-            "context" => Result.Success(context.Context),
             "DateTime.Now" => Result.Success<object?>(_dateTimeProvider.GetCurrentDateTime()),
             "DateTime.Today" => Result.Success<object?>(_dateTimeProvider.GetCurrentDateTime().Date),
             _ => Result.Continue<object?>()
@@ -41,7 +40,6 @@ public class PrimitiveExpressionComponent : IExpressionComponent
             "true" or "false" => result.WithResultType(typeof(bool)).WithStatus(ResultStatus.Ok),
             // for null, the result type is null
             "null" => result.WithStatus(ResultStatus.Ok),
-            "context" => result.WithResultType(context.Context?.GetType()).WithStatus(ResultStatus.Ok),
             "DateTime.Now" or "DateTime.Today" => result.WithResultType(typeof(DateTime)).WithStatus(ResultStatus.Ok),
             _ => result.WithStatus(ResultStatus.Continue)
         };

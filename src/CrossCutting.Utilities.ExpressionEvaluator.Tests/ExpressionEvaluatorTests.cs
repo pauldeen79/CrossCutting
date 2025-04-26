@@ -61,7 +61,7 @@ public class ExpressionEvaluatorTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), null, sut, int.MaxValue));
+            var result = sut.Evaluate(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut, null, int.MaxValue));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -157,7 +157,7 @@ public class ExpressionEvaluatorTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.EvaluateTyped<string>(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), null, sut, int.MaxValue));
+            var result = sut.EvaluateTyped<string>(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut, null, int.MaxValue));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -220,7 +220,7 @@ public class ExpressionEvaluatorTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), null, sut, int.MaxValue));
+            var result = sut.Parse(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut, null, int.MaxValue));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

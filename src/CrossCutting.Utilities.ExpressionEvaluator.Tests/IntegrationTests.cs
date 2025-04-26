@@ -434,9 +434,12 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Arrange
         var sut = CreateSut();
         var expression = "MyFunction(context)";
+        var context = new DeferredResultDictionaryBuilder<object?>()
+            .Add("context", Result.NoContent<object?>)
+            .Build();
 
         // Act
-        var result = sut.Parse(CreateContext(expression, evaluator: sut));
+        var result = sut.Parse(CreateContext(expression, context: context, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

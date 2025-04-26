@@ -4,7 +4,7 @@ public class ExpressionEvaluatorContext
 {
     public string Expression { get; }
     public ExpressionEvaluatorSettings Settings { get; }
-    public object? Context { get; }
+    public IReadOnlyDictionary<string, Func<Result<object?>>> Context { get; }
     public int CurrentRecursionLevel { get; }
     public ExpressionEvaluatorContext? ParentContext { get; }
 
@@ -14,8 +14,8 @@ public class ExpressionEvaluatorContext
     public ExpressionEvaluatorContext(
         string? expression,
         ExpressionEvaluatorSettings settings,
-        object? context,
         IExpressionEvaluator evaluator,
+        IReadOnlyDictionary<string, Func<Result<object?>>>? context = null,
         int currentRecursionLevel = 1,
         ExpressionEvaluatorContext? parentContext = null)
     {
@@ -24,7 +24,7 @@ public class ExpressionEvaluatorContext
 
         Expression = expression?.Trim() ?? string.Empty;
         Settings = settings;
-        Context = context;
+        Context = context ?? new Dictionary<string, Func<Result<object?>>>();
         Evaluator = evaluator;
         CurrentRecursionLevel = currentRecursionLevel;
         ParentContext = parentContext;
@@ -61,7 +61,7 @@ public class ExpressionEvaluatorContext
     }
 
     internal ExpressionEvaluatorContext CreateChildContext(string expression)
-        => new ExpressionEvaluatorContext(expression, Settings, Context, Evaluator, CurrentRecursionLevel + 1, this);
+        => new ExpressionEvaluatorContext(expression, Settings, Evaluator, Context, CurrentRecursionLevel + 1, this);
 
     internal ExpressionEvaluatorContext FromRoot()
     {

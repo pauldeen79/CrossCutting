@@ -37,7 +37,7 @@ public class ExpressionEvaluatorContextTests : TestBase
             var expression = "child expression";
 
             // Act
-            var sut = CreateContext(expression, currentRecursionLevel: 2, parentContext: new ExpressionEvaluatorContext("parent expression", new ExpressionEvaluatorSettingsBuilder(), null, Evaluator, currentRecursionLevel: 1));
+            var sut = CreateContext(expression, currentRecursionLevel: 2, parentContext: new ExpressionEvaluatorContext("parent expression", new ExpressionEvaluatorSettingsBuilder(), Evaluator, null, currentRecursionLevel: 1));
 
             // Assert
             sut.CurrentRecursionLevel.ShouldBe(2);

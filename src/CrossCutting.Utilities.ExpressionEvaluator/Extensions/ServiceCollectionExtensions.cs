@@ -7,6 +7,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IDateTimeProvider, DateTimeProvider>()
             .AddSingleton<IExpressionEvaluator, ExpressionEvaluator>()
             .AddSingleton<IExpressionComponent, PrimitiveExpressionComponent>()
+            .AddSingleton<IExpressionComponent, ContextExpressionComponent>()
             .AddSingleton<IExpressionComponent, DotExpressionComponent>()
             .AddSingleton<IExpressionComponent, StringExpressionComponent>()
             .AddSingleton<IExpressionComponent, FormattableStringExpressionComponent>()
