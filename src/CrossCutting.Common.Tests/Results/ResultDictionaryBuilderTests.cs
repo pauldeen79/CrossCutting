@@ -3,11 +3,11 @@
 public class ResultDictionaryBuilderTests
 {
     protected static Result NonGenericDelegate() => Result.Success();
-    protected static Result NonGenericArgumentDelegate(Dictionary<string, Result> results) => Result.Success();
+    protected static Result NonGenericArgumentDelegate(IReadOnlyDictionary<string, Result> results) => Result.Success();
     protected static Result<string> GenericDelegate() => Result.Success(string.Empty);
-    protected static Result<string> GenericArgumentDelegate(Dictionary<string, Result> results) => Result.Success(string.Empty);
-    protected static Result<string> GenericArgumentDelegate2(Dictionary<string, Result<string>> results) => Result.Success(string.Empty);
-    protected static Result GenericArgumentDelegate3(Dictionary<string, Result<string>> results) => Result.Success(string.Empty);
+    protected static Result<string> GenericArgumentDelegate(IReadOnlyDictionary<string, Result> results) => Result.Success(string.Empty);
+    protected static Result<string> GenericArgumentDelegate2(IReadOnlyDictionary<string, Result<string>> results) => Result.Success(string.Empty);
+    protected static Result GenericArgumentDelegate3(IReadOnlyDictionary<string, Result<string>> results) => Result.Success(string.Empty);
     protected static Result<string> GenericErrorDelegate() => Result.Error<string>("Kaboom");
 
     protected static IEnumerable<Result> NonGenericRangeDelegate() => [Result.Success(), Result.Success()];

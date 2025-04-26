@@ -12,14 +12,14 @@ public class ResultDictionaryContainerExtensionsTests
     protected static IEnumerable<Result> NonGenericErrorRangeDelegate() => [Result.Success(), Result.Error("Kaboom"), Result.Success()];
     protected static IEnumerable<Result<string>> GenericErrorRangeDelegate() => [Result.Success(string.Empty), Result.Error<string>("Kaboom"), Result.Success(string.Empty)];
 
-    protected static IResultDictionaryContainer<T> CreateSut<T>(Dictionary<string, Result<T>> resultDictionary)
+    protected static IResultDictionaryContainer<T> CreateSut<T>(IReadOnlyDictionary<string, Result<T>> resultDictionary)
     {
         var sut = Substitute.For<IResultDictionaryContainer<T>>();
         sut.Results.Returns(resultDictionary);
         return sut;
     }
 
-    protected static IResultDictionaryContainer CreateSut(Dictionary<string, Result> resultDictionary)
+    protected static IResultDictionaryContainer CreateSut(IReadOnlyDictionary<string, Result> resultDictionary)
     {
         var sut = Substitute.For<IResultDictionaryContainer>();
         sut.Results.Returns(resultDictionary);
