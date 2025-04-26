@@ -64,3 +64,24 @@ There have been some breaking changes.
 * IExpressionStringParser has been renamed to IExpressionStringEvaluator and IExpresionStringParserProcessor to IExpressionString.
 * IMathematicExpressionParser has been renamed to IMathematicExpressionEvaluator and IMathematicExpressionProcessor to IMathematicExpression.
 * FormattableStringParserResult has been renamed to GenericFormattableString.
+
+# ExpressionEvaluator
+
+The ExpressionEvaluator is a full rewrite of the Parsers project, where and Expression is the entry type for everything. An expression can contain the following things:
+* Strings, like "hello world"
+* Booleans "true" and "false"
+* DateTime.Now and DateTime.Today, as well as the Date and DateTime functions to create a custom DateTime value
+* Numeric values, both integer and floating point types like "1.3" and "12"
+* Interpolated strings, like "hello {name}"
+* Mathematic operators like +, -, * and / for example "(1 + 1) * 13"
+* Binary operators && and || for example "true && true"
+* Comparison operators <, <=, >, >=, == and != for example "true != false"
+* Built-in functions for DateTime values: AddDays, AddHours, AddMinuts, AddMonths, AddSeconds, AddYears and DatePart (which removes the time)
+* Built-in functions for String values: ToCamelCase, ToLowerCase, ToPascalCase and ToUpperCase
+* Cast and Convert functions to cast and convert values to other types
+* ToString function to convert objects to string
+* IsNull function to check for null values
+* Optional support for reflection to get property values, or invoke methods
+* Support for context using delegates, in order to allow lazy evaluation
+* Support for custom functions, using dependency injection
+* Support for adding custom expression types, using dependency injection
