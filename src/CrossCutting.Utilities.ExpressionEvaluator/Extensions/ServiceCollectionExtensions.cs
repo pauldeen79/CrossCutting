@@ -10,7 +10,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IExpressionComponent, ContextExpressionComponent>()
             .AddSingleton<IExpressionComponent, DotExpressionComponent>()
             .AddSingleton<IExpressionComponent, StringExpressionComponent>()
-            .AddSingleton<IExpressionComponent, FormattableStringExpressionComponent>()
+            .AddSingleton<IExpressionComponent, InterpolatedStringExpressionComponent>()
             .AddSingleton<IExpressionComponent, TypeOfExpressionComponent>()
             .AddSingleton<IExpressionComponent, FunctionExpressionComponent>()
             .AddSingleton<IFunctionCallArgumentValidator, FunctionCallArgumentValidator>()

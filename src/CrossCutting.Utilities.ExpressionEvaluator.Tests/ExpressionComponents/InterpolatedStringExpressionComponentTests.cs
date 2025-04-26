@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
 
-public class FormattableStringExpressionComponentTests : TestBase<FormattableStringExpressionComponent>
+public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedStringExpressionComponent>
 {
-    public class Evaluate : FormattableStringExpressionComponentTests
+    public class Evaluate : InterpolatedStringExpressionComponentTests
     {
         [Theory]
         [InlineData("")]
@@ -131,7 +131,7 @@ public class FormattableStringExpressionComponentTests : TestBase<FormattableStr
         }
     }
 
-    public class Parse : FormattableStringExpressionComponentTests
+    public class Parse : InterpolatedStringExpressionComponentTests
     {
         [Theory]
         [InlineData("")]

@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionComponents;
 
-public class FormattableStringExpressionComponent : IExpressionComponent<GenericFormattableString>
+public class InterpolatedStringExpressionComponent : IExpressionComponent<GenericFormattableString>
 {
     private const string TemporaryDelimiter = "\uE002";
 
@@ -32,7 +32,7 @@ public class FormattableStringExpressionComponent : IExpressionComponent<Generic
 
         var result = new ExpressionParseResultBuilder()
             .WithSourceExpression(context.Expression)
-            .WithExpressionComponentType(typeof(FormattableStringExpressionComponent))
+            .WithExpressionComponentType(typeof(InterpolatedStringExpressionComponent))
             .WithResultType(typeof(IFormattable));
 
         if (context.Expression.Length < 3 || !context.Expression.StartsWith("$\""))
