@@ -46,6 +46,12 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool AllowReflection
+        {
+            get;
+        }
+
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [System.ComponentModel.DefaultValueAttribute(@"{")]
         public string PlaceholderStart
@@ -60,7 +66,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public ExpressionEvaluatorSettings(System.IFormatProvider formatProvider, System.StringComparison stringComparison, int maximumRecursion, bool escapeBraces, bool validateArgumentTypes, bool strictTypeChecking, string placeholderStart, string placeholderEnd)
+        public ExpressionEvaluatorSettings(System.IFormatProvider formatProvider, System.StringComparison stringComparison, int maximumRecursion, bool escapeBraces, bool validateArgumentTypes, bool strictTypeChecking, bool allowReflection, string placeholderStart, string placeholderEnd)
         {
             this.FormatProvider = formatProvider;
             this.StringComparison = stringComparison;
@@ -68,6 +74,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             this.EscapeBraces = escapeBraces;
             this.ValidateArgumentTypes = validateArgumentTypes;
             this.StrictTypeChecking = strictTypeChecking;
+            this.AllowReflection = allowReflection;
             this.PlaceholderStart = placeholderStart;
             this.PlaceholderEnd = placeholderEnd;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);

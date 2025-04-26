@@ -18,6 +18,11 @@ public class DotExpressionComponent : IExpressionComponent
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
+        if (!context.Settings.AllowReflection)
+        {
+            return Result.Continue<object?>();
+        }
+
         var split = context.Expression.SplitDelimited('.', '"', leaveTextQualifier: true, trimItems: true);
         if (split.Length <= 1)
         {
@@ -97,6 +102,11 @@ public class DotExpressionComponent : IExpressionComponent
         var result = new ExpressionParseResultBuilder()
             .WithExpressionComponentType(typeof(DotExpressionComponent))
             .WithSourceExpression(context.Expression);
+
+        if (!context.Settings.AllowReflection)
+        {
+            return result.WithStatus(ResultStatus.Continue);
+        }
 
         var split = context.Expression.SplitDelimited('.', '"', leaveTextQualifier: true, trimItems: true);
         if (split.Length <= 1)

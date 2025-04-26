@@ -24,6 +24,20 @@ public class DotExpressionComponentTests : TestBase
         }
 
         [Fact]
+        public void Returns_Continue_When_Reflection_Is_Not_Allowed()
+        {
+            // Arrange
+            var context = CreateContext("context.MyProperty", context: this, settings: new ExpressionEvaluatorSettingsBuilder().WithAllowReflection(false));
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
         public void Returns_Invalid_When_Left_Part_Of_Expression_Is_Null()
         {
             // Arrange
@@ -129,6 +143,20 @@ public class DotExpressionComponentTests : TestBase
         {
             // Arrange
             var context = CreateContext(input);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Continue_When_Reflection_Is_Not_Allowed()
+        {
+            // Arrange
+            var context = CreateContext("context.MyProperty", context: this, settings: new ExpressionEvaluatorSettingsBuilder().WithAllowReflection(false));
             var sut = CreateSut();
 
             // Act
