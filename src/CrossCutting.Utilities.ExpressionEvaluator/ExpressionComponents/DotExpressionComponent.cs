@@ -69,11 +69,11 @@ public class DotExpressionComponent : IExpressionComponent
 
                 if (methods.Length == 0)
                 {
-                    return Result.Invalid<object?>($"Type {result.Value.GetType().FullName} does not contain method {part}");
+                    return Result.Invalid<object?>($"Type {result.Value.GetType().FullName} does not contain method {functionCall.Name}");
                 }
                 else if (methods.Length > 1)
                 {
-                    return Result.Invalid<object?>($"Method {part} on type {result.Value.GetType().FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
+                    return Result.Invalid<object?>($"Method {functionCall.Name} on type {result.Value.GetType().FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
                 }
 
                 var args = functionCall.Arguments

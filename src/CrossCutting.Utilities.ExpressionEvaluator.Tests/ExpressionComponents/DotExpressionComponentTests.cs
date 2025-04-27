@@ -1,4 +1,7 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
+﻿using System.Diagnostics;
+using Newtonsoft.Json.Bson;
+
+namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
 
 public class DotExpressionComponentTests : TestBase
 {
@@ -129,8 +132,73 @@ public class DotExpressionComponentTests : TestBase
             result.Value.ShouldBe(ToString());
         }
 
+        [Fact]
+        public void Returns_Invalid_When_Method_Name_Does_Not_Exist()
+        {
+            // Arrange
+            var context = CreateContext("1.MyMethod()");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Type System.Int32 does not contain method MyMethod");
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Method_Overload_Could_Not_Be_Resolved()
+        {
+            // Arrange
+            var context = CreateContext("context.Overload(\"hello\")", context: this);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Method Overload on type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+Evaluate has multiple overloads with 1 arguments, this is not supported");
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Method_Argument_Expression_Is_Not_Successful()
+        {
+            // Arrange
+            var context = CreateContext("context.DoSomething(error)", context: this);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Right_Expression_Is_Unrecognized()
+        {
+            // Arrange
+            var context = CreateContext("1.4unrecognized");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unrecognized expression: 4unrecognized");
+        }
+
         public int MyProperty => 13;
         public Evaluate MyComplexProperty => this;
+#pragma warning disable xUnit1013 // Public method should be marked as test
+        public void DoSomething(string argument) => Debug.WriteLine(argument);
+        public void Overload(string argument) => Debug.WriteLine(argument);
+        public void Overload(int argument) => Debug.WriteLine(argument);
+#pragma warning restore xUnit1013 // Public method should be marked as test
     }
 
     public class Parse : DotExpressionComponentTests
