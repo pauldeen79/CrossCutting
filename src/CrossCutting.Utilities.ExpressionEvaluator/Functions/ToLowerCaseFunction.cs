@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("ToLowerCase")]
 [FunctionArgument("StringExpression", typeof(object))]
 public class ToLowerCaseFunction : IFunction<string>
 {

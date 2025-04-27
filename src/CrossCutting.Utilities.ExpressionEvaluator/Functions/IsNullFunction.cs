@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("IsNull")]
 [FunctionArgument("Expression", typeof(object))]
 public class IsNullFunction : IFunction<bool>
 {

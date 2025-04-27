@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("ToString")]
 [FunctionArgument("Expression", typeof(object))]
 public class ToStringFunction : IFunction<string>
 {

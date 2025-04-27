@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("AddMonths")]
 [FunctionArgument("DateTimeExpression", typeof(DateTime))]
 [FunctionArgument("MonthsToAdd", typeof(int))]
 public class AddMonthsFunction : IFunction<DateTime>

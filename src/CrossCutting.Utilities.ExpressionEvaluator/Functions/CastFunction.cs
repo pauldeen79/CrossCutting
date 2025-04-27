@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("Cast")]
 [FunctionArgument("Type", typeof(Type))]
 [FunctionArgument("Expression", typeof(object))]
 public class CastFunction : IFunction

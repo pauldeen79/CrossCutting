@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("DatePart")]
 [FunctionArgument("DateTimeExpression", typeof(DateTime))]
 public class DatePartFunction : IFunction<DateTime>
 {

@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("ToCamelCase")]
 [FunctionArgument("StringExpression", typeof(object))]
 public class ToCamelCaseFunction : IFunction<string>
 {

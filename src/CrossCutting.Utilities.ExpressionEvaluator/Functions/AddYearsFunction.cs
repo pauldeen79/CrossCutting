@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("AddYears")]
 [FunctionArgument("DateTimeExpression", typeof(DateTime))]
 [FunctionArgument("YearsToAdd", typeof(int))]
 public class AddYearsFunction : IFunction<DateTime>

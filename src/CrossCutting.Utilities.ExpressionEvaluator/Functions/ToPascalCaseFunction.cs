@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("ToPascalCase")]
 [FunctionArgument("StringExpression", typeof(object))]
 public class ToPascalCaseFunction : IFunction<string>
 {

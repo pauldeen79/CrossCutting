@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("ToUpperCase")]
 [FunctionArgument("StringExpression", typeof(object))]
 public class ToUpperCaseFunction : IFunction<string>
 {

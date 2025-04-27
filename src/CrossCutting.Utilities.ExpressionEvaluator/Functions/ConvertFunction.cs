@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("Convert")]
 [FunctionArgument("Type", typeof(Type))]
 [FunctionArgument("Expression", typeof(object))]
 public class ConvertFunction : IFunction

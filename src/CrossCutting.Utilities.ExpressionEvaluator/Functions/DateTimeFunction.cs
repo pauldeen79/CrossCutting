@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionName("DateTime")]
 [FunctionArgument("Year", typeof(int))]
 [FunctionArgument("Month", typeof(int))]
 [FunctionArgument("Day", typeof(int))]
