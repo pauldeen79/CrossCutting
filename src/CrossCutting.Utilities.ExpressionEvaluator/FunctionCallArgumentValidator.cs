@@ -4,9 +4,9 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
 {
     public ExpressionParseResult Validate(FunctionDescriptorArgument descriptorArgument, string callArgument, FunctionCallContext context)
     {
-        descriptorArgument = descriptorArgument.IsNotNull(nameof(descriptorArgument));
-        callArgument = callArgument.IsNotNull(nameof(callArgument));
-        context = context.IsNotNull(nameof(context));
+        descriptorArgument = ArgumentGuard.IsNotNull(descriptorArgument, nameof(descriptorArgument));
+        callArgument = ArgumentGuard.IsNotNull(callArgument, nameof(callArgument));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         var callArgumentResult = context.Context.Parse(callArgument);
         if (!callArgumentResult.IsSuccessful())
