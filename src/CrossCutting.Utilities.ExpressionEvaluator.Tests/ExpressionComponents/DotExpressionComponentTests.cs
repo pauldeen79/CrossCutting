@@ -56,7 +56,6 @@ public class DotExpressionComponentTests : TestBase
             result.ErrorMessage.ShouldBe("null is null, cannot get property or method MyProperty");
         }
 
-
         [Fact]
         public void Returns_Invalid_When_Left_Part_Of_Expression_Is_Null_Method()
         {
@@ -74,7 +73,7 @@ public class DotExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Invalid_When_Property_Name_Does_Not_Exist()
+        public void Returns_Invalid_When_Property_Does_Not_Exist()
         {
             // Arrange
             var context = CreateContext("1.MyProperty");
@@ -150,7 +149,7 @@ public class DotExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Invalid_When_Method_Name_Does_Not_Exist()
+        public void Returns_Invalid_When_Method_Does_Not_Exist()
         {
             // Arrange
             var context = CreateContext("1.MyMethod()");
@@ -268,7 +267,7 @@ public class DotExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Ok_When_Parsing_First_Expression_Succeeds()
+        public void Returns_Ok_When_Parsing_First_Expression_Succeeds_Property()
         {
             // Arrange
             var context = CreateContext("context.MyProperty", context: this);
@@ -281,6 +280,85 @@ public class DotExpressionComponentTests : TestBase
             result.Status.ShouldBe(ResultStatus.Ok);
         }
 
+        [Fact]
+        public void Returns_Ok_When_Parsing_First_Expression_Succeeds_Method()
+        {
+            // Arrange
+            var context = CreateContext("context.DoSomething(\"hello\")", context: this);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Right_Expression_Is_Unrecognized()
+        {
+            // Arrange
+            var context = CreateContext("1.4unrecognized");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unrecognized expression: 4unrecognized");
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Property_Does_Not_Exist()
+        {
+            // Arrange
+            var context = CreateContext("1.MyProperty");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Type System.Int32 does not contain property MyProperty");
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Method_Does_Not_Exist()
+        {
+            // Arrange
+            var context = CreateContext("1.MyMethod()");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Type System.Int32 does not contain method MyMethod");
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Method_Overload_Could_Not_Be_Resolved()
+        {
+            // Arrange
+            var context = CreateContext("context.Overload(\"hello\")", context: this);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Method Overload on type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+Parse has multiple overloads with 1 arguments, this is not supported");
+        }
+
         public int MyProperty => 13;
+#pragma warning disable xUnit1013 // Public method should be marked as test
+        public void DoSomething(string argument) => Debug.WriteLine(argument);
+        public void Overload(string argument) => Debug.WriteLine(argument);
+        public void Overload(int argument) => Debug.WriteLine(argument);
+#pragma warning restore xUnit1013 // Public method should be marked as test
     }
 }

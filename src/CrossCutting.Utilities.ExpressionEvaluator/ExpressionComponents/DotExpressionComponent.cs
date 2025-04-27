@@ -122,7 +122,7 @@ public class DotExpressionComponent : IExpressionComponent
 
             if (!subResult.IsSuccessful())
             {
-                return result;
+                return result.FillFromResult(subResult);
             }
             else if (subResult.Status == ResultStatus.Continue)
             {
@@ -222,7 +222,7 @@ public class DotExpressionComponent : IExpressionComponent
         var property = state.ResultType!.GetProperty(state.Part, BindingFlags.Instance | BindingFlags.Public);
         if (property is null)
         {
-            return Result.Invalid<Type>($"Type {state.ResultType.FullName} does not contain property or method {state.Part}");
+            return Result.Invalid<Type>($"Type {state.ResultType.FullName} does not contain property {state.Part}");
         }
 
         return Result.Success(property.PropertyType);
@@ -239,18 +239,18 @@ public class DotExpressionComponent : IExpressionComponent
         }
 
         var functionCall = functionParseResult.GetValueOrThrow();
-        var methods = state.Value.GetType()
+        var methods = state.ResultType!
             .GetMethods(BindingFlags.Instance | BindingFlags.Public)
             .Where(x => x.Name == functionCall.Name && x.GetParameters().Length == functionCall.Arguments.Count)
             .ToArray();
 
         if (methods.Length == 0)
         {
-            return Result.Invalid<Type>($"Type {state.Value.GetType().FullName} does not contain method {functionCall.Name}");
+            return Result.Invalid<Type>($"Type {state.ResultType!.FullName} does not contain method {functionCall.Name}");
         }
         else if (methods.Length > 1)
         {
-            return Result.Invalid<Type>($"Method {functionCall.Name} on type {state.Value.GetType().FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
+            return Result.Invalid<Type>($"Method {functionCall.Name} on type {state.ResultType!.FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
         }
 
         return Result.Success(methods[0].ReturnType);
