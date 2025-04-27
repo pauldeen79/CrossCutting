@@ -41,7 +41,7 @@ public class DotExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Invalid_When_Left_Part_Of_Expression_Is_Null()
+        public void Returns_Invalid_When_Left_Part_Of_Expression_Is_Null_Property()
         {
             // Arrange
             var context = CreateContext("null.MyProperty");
@@ -53,7 +53,24 @@ public class DotExpressionComponentTests : TestBase
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             // Error message sounds a little strange, but it's just repeating the left part of the expression, which is "null" in this case :)
-            result.ErrorMessage.ShouldBe("null is null, cannot get property MyProperty");
+            result.ErrorMessage.ShouldBe("null is null, cannot get property or method MyProperty");
+        }
+
+
+        [Fact]
+        public void Returns_Invalid_When_Left_Part_Of_Expression_Is_Null_Method()
+        {
+            // Arrange
+            var context = CreateContext("null.MyMethod()");
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            // Error message sounds a little strange, but it's just repeating the left part of the expression, which is "null" in this case :)
+            result.ErrorMessage.ShouldBe("null is null, cannot get property or method MyMethod()");
         }
 
         [Fact]
@@ -263,5 +280,7 @@ public class DotExpressionComponentTests : TestBase
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
         }
+
+        public int MyProperty => 13;
     }
 }

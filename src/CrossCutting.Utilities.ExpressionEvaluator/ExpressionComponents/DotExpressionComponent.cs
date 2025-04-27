@@ -5,10 +5,16 @@ public class DotExpressionComponent : IExpressionComponent
     private static readonly Regex _propertyNameRegEx = new Regex("^[A-Za-z]+$", RegexOptions.Compiled, TimeSpan.FromMilliseconds(250));
     private readonly IFunctionParser _functionParser;
 
-    private static readonly Func<DotExpressionComponentState, Result<object?>>[] _processors =
+    private static readonly Func<DotExpressionComponentState, Result<object?>>[] _evaluateProcessors =
         [
-            ProcessProperty,
-            ProcessMethod
+            EvaluateProperty,
+            EvaluateMethod
+        ];
+
+    private static readonly Func<DotExpressionComponentState, Result<Type>>[] _validateProcessors =
+        [
+            ValidateProperty,
+            ValidateMethod
         ];
 
     public int Order => 30;
@@ -49,12 +55,12 @@ public class DotExpressionComponent : IExpressionComponent
 
             if (result.Value is null)
             {
-                return Result.Invalid<object?>($"{state.CurrentExpression} is null, cannot get property {state.Part}");
+                return Result.Invalid<object?>($"{state.CurrentExpression} is null, cannot get property or method {state.Part}");
             }
 
             state.Value = result.Value;
 
-            result = _processors
+            result = _evaluateProcessors
                 .Select(x => x.Invoke(state))
                 .TakeWhileWithFirstNonMatching(x => x.Status == ResultStatus.Continue)
                 .Last();
@@ -106,54 +112,30 @@ public class DotExpressionComponent : IExpressionComponent
 
             if (state.ResultType is null)
             {
-                break;
+                return result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"{state.CurrentExpression} is null, cannot get property or method {state.Part}");
             }
 
-            if (_propertyNameRegEx.IsMatch(state.Part))
+            var subResult = _validateProcessors
+                .Select(x => x.Invoke(state))
+                .TakeWhileWithFirstNonMatching(x => x.Status == ResultStatus.Continue)
+                .Last();
+
+            if (!subResult.IsSuccessful())
             {
-                var property = state.Value.GetType().GetProperty(state.Part, BindingFlags.Instance | BindingFlags.Public);
-                if (property is null)
-                {
-                    return result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Type {state.Value.GetType().FullName} does not contain property {state.Part}");
-                }
-
-                state.ResultType = property.PropertyType;
+                return result;
             }
-            else
+            else if (subResult.Status == ResultStatus.Continue)
             {
-                var functionParseResult = state.FunctionParser.Parse(state.Context.CreateChildContext(state.Part));
-                if (!functionParseResult.IsSuccessful())
-                {
-                    return result.FillFromResult(functionParseResult);
-                }
-                else if (functionParseResult.Status == ResultStatus.NotFound)
-                {
-                    return result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Unrecognized expression: {state.Part}");
-                }
-
-                var functionCall = functionParseResult.GetValueOrThrow();
-                var methods = state.Value.GetType()
-                    .GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(x => x.Name == functionCall.Name && x.GetParameters().Length == functionCall.Arguments.Count)
-                    .ToArray();
-
-                if (methods.Length == 0)
-                {
-                    return result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Type {state.Value.GetType().FullName} does not contain method {functionCall.Name}");
-                }
-                else if (methods.Length > 1)
-                {
-                    return result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Method {functionCall.Name} on type {state.Value.GetType().FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
-                }
-
-                state.ResultType = methods[0].ReturnType;
+                return result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Unrecognized expression: {state.Part}");
             }
+
+            state.ResultType = subResult.Value;
         }
 
         return result.WithStatus(ResultStatus.Ok);
     }
 
-    private static Result<object?> ProcessProperty(DotExpressionComponentState state)
+    private static Result<object?> EvaluateProperty(DotExpressionComponentState state)
     {
         if (!_propertyNameRegEx.IsMatch(state.Part))
         {
@@ -181,12 +163,14 @@ public class DotExpressionComponent : IExpressionComponent
 #pragma warning restore CA1031 // Do not catch general exception types
     }
 
-    private static Result<object?> ProcessMethod(DotExpressionComponentState state)
+    private static Result<object?> EvaluateMethod(DotExpressionComponentState state)
     {
         var functionParseResult = state.FunctionParser.Parse(state.Context.CreateChildContext(state.Part));
         if (!functionParseResult.IsSuccessful())
         {
-            return Result.Continue<object?>();
+            return functionParseResult.Status == ResultStatus.NotFound
+                ? Result.Continue<object?>()
+                : Result.FromExistingResult<object?>(functionParseResult);
         }
 
         var functionCall = functionParseResult.GetValueOrThrow();
@@ -226,5 +210,49 @@ public class DotExpressionComponent : IExpressionComponent
             return Result.Error<object?>(ex, $"Evaluation of method {functionCall.Name} on type {state.Value.GetType().FullName} threw an exception, see Exception property for more details");
         }
 #pragma warning restore CA1031 // Do not catch general exception types
+    }
+
+    private static Result<Type> ValidateProperty(DotExpressionComponentState state)
+    {
+        if (!_propertyNameRegEx.IsMatch(state.Part))
+        {
+            return Result.Continue<Type>();
+        }
+
+        var property = state.ResultType!.GetProperty(state.Part, BindingFlags.Instance | BindingFlags.Public);
+        if (property is null)
+        {
+            return Result.Invalid<Type>($"Type {state.ResultType.FullName} does not contain property or method {state.Part}");
+        }
+
+        return Result.Success(property.PropertyType);
+    }
+
+    private static Result<Type> ValidateMethod(DotExpressionComponentState state)
+    {
+        var functionParseResult = state.FunctionParser.Parse(state.Context.CreateChildContext(state.Part));
+        if (!functionParseResult.IsSuccessful())
+        {
+            return functionParseResult.Status == ResultStatus.NotFound
+                ? Result.Continue<Type>()
+                : Result.FromExistingResult<Type>(functionParseResult);
+        }
+
+        var functionCall = functionParseResult.GetValueOrThrow();
+        var methods = state.Value.GetType()
+            .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+            .Where(x => x.Name == functionCall.Name && x.GetParameters().Length == functionCall.Arguments.Count)
+            .ToArray();
+
+        if (methods.Length == 0)
+        {
+            return Result.Invalid<Type>($"Type {state.Value.GetType().FullName} does not contain method {functionCall.Name}");
+        }
+        else if (methods.Length > 1)
+        {
+            return Result.Invalid<Type>($"Method {functionCall.Name} on type {state.Value.GetType().FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
+        }
+
+        return Result.Success(methods[0].ReturnType);
     }
 }
