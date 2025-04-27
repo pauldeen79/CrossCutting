@@ -72,6 +72,87 @@ public class DotExpressionComponent : IExpressionComponent
         return result;
     }
 
+    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        var result = new ExpressionParseResultBuilder()
+            .WithExpressionComponentType(typeof(DotExpressionComponent))
+            .WithSourceExpression(context.Expression);
+
+        if (!context.Settings.AllowReflection)
+        {
+            return result.WithStatus(ResultStatus.Continue);
+        }
+
+        var split = context.Expression.SplitDelimited('.', '"', leaveTextQualifier: true, trimItems: true);
+        if (split.Length <= 1)
+        {
+            return result.WithStatus(ResultStatus.Continue);
+        }
+
+        var firstResult = context.Parse(split[0]);
+        if (!firstResult.IsSuccessful())
+        {
+            return firstResult.ToBuilder().WithExpressionComponentType(typeof(DotExpressionComponent));
+        }
+
+        var state = new DotExpressionComponentState(context, _functionParser, split[0]);
+        state.ResultType = firstResult.ResultType;
+
+        foreach (var part in split.Skip(1))
+        {
+            state.Part = part;
+
+            if (state.ResultType is null)
+            {
+                break;
+            }
+
+            if (_propertyNameRegEx.IsMatch(state.Part))
+            {
+                var property = state.Value.GetType().GetProperty(state.Part, BindingFlags.Instance | BindingFlags.Public);
+                if (property is null)
+                {
+                    return result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Type {state.Value.GetType().FullName} does not contain property {state.Part}");
+                }
+
+                state.ResultType = property.PropertyType;
+            }
+            else
+            {
+                var functionParseResult = state.FunctionParser.Parse(state.Context.CreateChildContext(state.Part));
+                if (!functionParseResult.IsSuccessful())
+                {
+                    return result.FillFromResult(functionParseResult);
+                }
+                else if (functionParseResult.Status == ResultStatus.NotFound)
+                {
+                    return result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Unrecognized expression: {state.Part}");
+                }
+
+                var functionCall = functionParseResult.GetValueOrThrow();
+                var methods = state.Value.GetType()
+                    .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                    .Where(x => x.Name == functionCall.Name && x.GetParameters().Length == functionCall.Arguments.Count)
+                    .ToArray();
+
+                if (methods.Length == 0)
+                {
+                    return result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Type {state.Value.GetType().FullName} does not contain method {functionCall.Name}");
+                }
+                else if (methods.Length > 1)
+                {
+                    return result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Method {functionCall.Name} on type {state.Value.GetType().FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
+                }
+
+                state.ResultType = methods[0].ReturnType;
+            }
+        }
+
+        return result.WithStatus(ResultStatus.Ok);
+    }
+
     private static Result<object?> ProcessProperty(DotExpressionComponentState state)
     {
         if (!_propertyNameRegEx.IsMatch(state.Part))
@@ -145,35 +226,5 @@ public class DotExpressionComponent : IExpressionComponent
             return Result.Error<object?>(ex, $"Evaluation of method {functionCall.Name} on type {state.Value.GetType().FullName} threw an exception, see Exception property for more details");
         }
 #pragma warning restore CA1031 // Do not catch general exception types
-    }
-
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        var result = new ExpressionParseResultBuilder()
-            .WithExpressionComponentType(typeof(DotExpressionComponent))
-            .WithSourceExpression(context.Expression);
-
-        if (!context.Settings.AllowReflection)
-        {
-            return result.WithStatus(ResultStatus.Continue);
-        }
-
-        var split = context.Expression.SplitDelimited('.', '"', leaveTextQualifier: true, trimItems: true);
-        if (split.Length <= 1)
-        {
-            return result.WithStatus(ResultStatus.Continue);
-        }
-
-        var firstResult = context.Parse(split[0]);
-        if (!firstResult.IsSuccessful())
-        {
-            return firstResult.ToBuilder().WithExpressionComponentType(typeof(DotExpressionComponent));
-        }
-
-        // For now, we assume everything is alright. We might check for property or method of the first right expression
-
-        return result.WithStatus(ResultStatus.Ok);
     }
 }

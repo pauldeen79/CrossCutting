@@ -7,6 +7,7 @@ internal sealed class DotExpressionComponentState
     public StringBuilder CurrentExpression { get; }
     public string Part { get; set; }
     public object Value { get; set; }
+    public Type? ResultType { get; set; }
 
     public DotExpressionComponentState(ExpressionEvaluatorContext context, IFunctionParser functionParser, string firstPart)
     {
