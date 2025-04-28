@@ -30,7 +30,7 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Continue_When_Reflection_Is_Not_Allowed()
         {
             // Arrange
-            var context = CreateContext("context.MyProperty", context: this, settings: new ExpressionEvaluatorSettingsBuilder().WithAllowReflection(false));
+            var context = CreateContext("context.MyProperty", state: this, settings: new ExpressionEvaluatorSettingsBuilder().WithAllowReflection(false));
             var sut = CreateSut();
 
             // Act
@@ -91,7 +91,7 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Error_From_First_Expression_When_Not_Successful()
         {
             // Arrange
-            var context = CreateContext("this.MyProperty", context: this);
+            var context = CreateContext("this.MyProperty", state: this);
             var sut = CreateSut();
 
             // Act
@@ -107,7 +107,7 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Success_When_Property_Name_Exists()
         {
             // Arrange
-            var context = CreateContext("context.MyProperty", context: this);
+            var context = CreateContext("state.MyProperty", state: this);
             var sut = CreateSut();
 
             // Act
@@ -122,7 +122,7 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Success_When_Property_Name_Exists_Using_Nested_Expression()
         {
             // Arrange
-            var context = CreateContext("context.MyComplexProperty.MyComplexProperty.MyProperty", context: this);
+            var context = CreateContext("state.MyComplexProperty.MyComplexProperty.MyProperty", state: this);
             var sut = CreateSut();
 
             // Act
@@ -137,7 +137,7 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Success_When_Method_Exists()
         {
             // Arrange
-            var context = CreateContext("context.ToString()", context: this);
+            var context = CreateContext("state.ToString()", state: this);
             var sut = CreateSut();
 
             // Act
@@ -167,7 +167,7 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Method_Overload_Could_Not_Be_Resolved()
         {
             // Arrange
-            var context = CreateContext("context.Overload(\"hello\")", context: this);
+            var context = CreateContext("state.Overload(\"hello\")", state: this);
             var sut = CreateSut();
 
             // Act
@@ -182,7 +182,7 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Method_Argument_Expression_Is_Not_Successful()
         {
             // Arrange
-            var context = CreateContext("context.DoSomething(error)", context: this);
+            var context = CreateContext("state.DoSomething(error)", state: this);
             var sut = CreateSut();
 
             // Act
@@ -240,7 +240,7 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Continue_When_Reflection_Is_Not_Allowed()
         {
             // Arrange
-            var context = CreateContext("context.MyProperty", context: this, settings: new ExpressionEvaluatorSettingsBuilder().WithAllowReflection(false));
+            var context = CreateContext("context.MyProperty", state: this, settings: new ExpressionEvaluatorSettingsBuilder().WithAllowReflection(false));
             var sut = CreateSut();
 
             // Act
@@ -270,7 +270,7 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Ok_When_Parsing_First_Expression_Succeeds_Property()
         {
             // Arrange
-            var context = CreateContext("context.MyProperty", context: this);
+            var context = CreateContext("state.MyProperty", state: this);
             var sut = CreateSut();
 
             // Act
@@ -284,7 +284,7 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Ok_When_Parsing_First_Expression_Succeeds_Method()
         {
             // Arrange
-            var context = CreateContext("context.DoSomething(\"hello\")", context: this);
+            var context = CreateContext("state.DoSomething(\"hello\")", state: this);
             var sut = CreateSut();
 
             // Act
@@ -343,7 +343,7 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Method_Overload_Could_Not_Be_Resolved()
         {
             // Arrange
-            var context = CreateContext("context.Overload(\"hello\")", context: this);
+            var context = CreateContext("state.Overload(\"hello\")", state: this);
             var sut = CreateSut();
 
             // Act

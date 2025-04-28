@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionComponents;
 
-public class ContextExpressionComponent : IExpressionComponent
+public class StateExpressionComponent : IExpressionComponent
 {
     public int Order => 25;
 
@@ -8,7 +8,7 @@ public class ContextExpressionComponent : IExpressionComponent
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var success = context.Context.TryGetValue(context.Expression, out var dlg);
+        var success = context.State.TryGetValue(context.Expression, out var dlg);
         if (success)
         {
             return dlg!();
@@ -23,9 +23,9 @@ public class ContextExpressionComponent : IExpressionComponent
 
         var result = new ExpressionParseResultBuilder()
             .WithSourceExpression(context.Expression)
-            .WithExpressionComponentType(typeof(ContextExpressionComponent));
+            .WithExpressionComponentType(typeof(StateExpressionComponent));
 
-        var success = context.Context.TryGetValue(context.Expression, out var dlg);
+        var success = context.State.TryGetValue(context.Expression, out var dlg);
         if (success)
         {
             return result.WithResultType(dlg!()?.Value?.GetType());

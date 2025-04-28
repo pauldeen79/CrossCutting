@@ -52,10 +52,10 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "MyFunction(context)";
+        var expression = "MyFunction(state)";
 
         // Act
-        var result = sut.EvaluateTyped<string>(CreateContext(expression, context: "hello world", evaluator: sut));
+        var result = sut.EvaluateTyped<string>(CreateContext(expression, state: "hello world", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -67,10 +67,10 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "context.Length";
+        var expression = "state.Length";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, context: "hello world", evaluator: sut));
+        var result = sut.Evaluate(CreateContext(expression, state: "hello world", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -82,10 +82,10 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "context.ToString()";
+        var expression = "state.ToString()";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, context: "hello world", evaluator: sut));
+        var result = sut.Evaluate(CreateContext(expression, state: "hello world", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -187,10 +187,10 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "$\"my value with {context} items\"";
+        var expression = "$\"my value with {state} items\"";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, context: "replaced", evaluator: sut));
+        var result = sut.Evaluate(CreateContext(expression, state: "replaced", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

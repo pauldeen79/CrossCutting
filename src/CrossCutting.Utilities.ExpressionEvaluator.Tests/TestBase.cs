@@ -7,18 +7,18 @@ public abstract class TestBase
 
     protected ExpressionEvaluatorContext CreateContext(
         string? expression,
-        object? context,
+        object? state,
         int currentRecursionLevel = 1,
         ExpressionEvaluatorContext? parentContext = null,
         IExpressionEvaluator? evaluator = null,
         ExpressionEvaluatorSettingsBuilder? settings = null)
     {
         IReadOnlyDictionary<string, Func<Result<object?>>>? dict = null;
-        if (context is not null)
+        if (state is not null)
         {
             dict = new Dictionary<string, Func<Result<object?>>>
             {
-                { "context", () => Result.Success<object?>(context) }
+                { "state", () => Result.Success<object?>(state) }
             };
         }
 
@@ -51,7 +51,7 @@ public abstract class TestBase
                     "string" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
                     "unknown" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok),
                     "object" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(object)),
-                    "context" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(x.ArgAt<ExpressionEvaluatorContext>(0).Context?.FirstOrDefault().Value?.Invoke().Value?.GetType()),
+                    "state" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(x.ArgAt<ExpressionEvaluatorContext>(0).State?.FirstOrDefault().Value?.Invoke().Value?.GetType()),
                     _ => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok)
                 });
 
@@ -70,15 +70,15 @@ public abstract class TestBase
             return Result.Success(default(object?));
         }
 
-        var success = context.Context.TryGetValue(context.Expression, out var dlg);
+        var success = context.State.TryGetValue(context.Expression, out var dlg);
         if (success)
         {
             return dlg!();
         }
 
-        if (context.Expression == "context.Length")
+        if (context.Expression == "state.Length")
         {
-            return Result.Success<object?>((context.Context?.ToString() ?? string.Empty).Length);
+            return Result.Success<object?>((context.State?.ToString() ?? string.Empty).Length);
         }
 
         if (context.Expression == "error")
