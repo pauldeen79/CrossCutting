@@ -192,6 +192,24 @@ public class ResultDictionaryBuilderTests
                 result.Count.ShouldBe(2);
                 result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
             }
+
+            [Fact]
+            public void Catches_Exception_And_Returns_Error()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder();
+                sut.Add("Test1", () => throw new InvalidOperationException("Kaboom"));
+                sut.Add("Test2", GenericDelegate);
+
+                // Act
+                var result = sut.Build();
+
+                // Assert
+                result.Count.ShouldBe(1);
+                result.First().Value.Status.ShouldBe(ResultStatus.Error);
+                result.First().Value.Exception.ShouldBeOfType<InvalidOperationException>();
+                result.First().Value.Exception!.Message.ShouldBe("Kaboom");
+            }
         }
     }
 
@@ -371,6 +389,24 @@ public class ResultDictionaryBuilderTests
                 // Assert
                 result.Count.ShouldBe(2);
                 result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
+            }
+
+            [Fact]
+            public void Catches_Exception_And_Returns_Error()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+                sut.Add("Test1", () => throw new InvalidOperationException("Kaboom"));
+                sut.Add("Test2", GenericDelegate);
+
+                // Act
+                var result = sut.Build();
+
+                // Assert
+                result.Count.ShouldBe(1);
+                result.First().Value.Status.ShouldBe(ResultStatus.Error);
+                result.First().Value.Exception.ShouldBeOfType<InvalidOperationException>();
+                result.First().Value.Exception!.Message.ShouldBe("Kaboom");
             }
         }
     }
