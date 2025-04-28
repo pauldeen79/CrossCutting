@@ -356,6 +356,30 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework()
+    {
+        // Observations:
+        // 1. We need to 'new' an InterpolatedStringExpressionComponent
+        // 2. We need to wrap the string within $""
+        // Otherwise, it works perfectly :)
+
+        // Arrange
+        var sut = new InterpolatedStringExpressionComponent();
+        var state = new DeferredResultDictionaryBuilder<object?>()
+            .Add("class.Name", () => Result.Success<object?>("MyClass"))
+            .Build();
+        var context = new ExpressionEvaluatorContext("$\"public class {class.Name}\"", new ExpressionEvaluatorSettingsBuilder(), CreateSut(), state);
+
+        // Act
+        var result = sut.EvaluateTyped(context);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        result.Value.ToString().ShouldBe("public class MyClass");
+    }
+
+    [Fact]
     public void Can_Parse_Binary_Operator_Expression()
     {
         // Arrange
