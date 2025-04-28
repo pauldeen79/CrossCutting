@@ -356,6 +356,34 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_Expression_With_Indexer()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state[1]", evaluator: sut, state: new object[] { 1, 2, 3 }));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(2);
+    }
+
+    [Fact]
+    public void Can_Evaluate_Expression_With_Indexer_And_Method()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state[1].ToString()", evaluator: sut, state: new object[] { 1, 2, 3 }));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("2");
+    }
+
+    [Fact]
     public void Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework()
     {
         // Observations:

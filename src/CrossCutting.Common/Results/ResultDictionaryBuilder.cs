@@ -46,7 +46,19 @@ public class ResultDictionaryBuilder
 
         foreach (var item in _resultset)
         {
-            var result = item.Value(results);
+            Result result = default!;
+
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                result = item.Value(results);
+            }
+            catch (Exception ex)
+            {
+                result = Result.Error(ex, $"Error occured while adding item with key {item.Key}, see Exception for details");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
@@ -115,9 +127,20 @@ public class ResultDictionaryBuilder<T>
     {
         var results = new Dictionary<string, Result<T>>();
 
+        Result<T> result = default!;
         foreach (var item in _resultset)
         {
-            var result = item.Value(results);
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                result = item.Value(results);
+            }
+            catch (Exception ex)
+            {
+                result = Result.Error<T>(ex, $"Error occured while adding item with key {item.Key}, see Exception for details");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {

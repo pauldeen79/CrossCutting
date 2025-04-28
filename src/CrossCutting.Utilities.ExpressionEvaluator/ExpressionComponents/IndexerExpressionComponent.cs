@@ -1,0 +1,70 @@
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionComponents;
+
+public class IndexerExpressionComponent : IExpressionComponent
+{
+    private static readonly Regex _indexerRegex = new Regex(@"(?<Expression>[^\[\]]+)\[(?<Index>\d+)\]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(250));
+    private const string Index = nameof(Index);
+    private const string Expression = nameof(Expression);
+
+    public int Order => 31;
+
+    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        var match = _indexerRegex.Match(context.Expression);
+        if (!match.Success)
+        {
+            return Result.Continue<object?>();
+        }
+
+        return new ResultDictionaryBuilder<object?>()
+            .Add(Expression, () => context.EvaluateTyped<IEnumerable>(match.Groups[Expression].Value))
+            .Add(Index, () => context.EvaluateTyped<int>(match.Groups[Index].Value))
+            .Build()
+            .OnSuccess(results =>
+            {
+                var enumerable = results[Expression].TryCastValueAs<IEnumerable>()!;
+                var index = results[Index].TryCastValueAs<int>()!;
+
+                return Result.Success(enumerable.OfType<object?>().ElementAtOrDefault(index));
+            });
+    }
+
+    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        var result = new ExpressionParseResultBuilder()
+            .WithExpressionComponentType(typeof(DotExpressionComponent))
+            .WithSourceExpression(context.Expression);
+
+        var match = _indexerRegex.Match(context.Expression);
+        if (!match.Success)
+        {
+            return result.WithStatus(ResultStatus.Continue);
+        }
+
+        //TODO: Review if we can use Parse here, instead of EvaluateTyped...
+        var results = new ResultDictionaryBuilder<object?>()
+            .Add(Expression, () => context.EvaluateTyped<IEnumerable>(match.Groups[Expression].Value))
+            .Add(Index, () => context.EvaluateTyped<int>(match.Groups[Index].Value))
+            .Build()
+            .OnSuccess(results =>
+            {
+                var enumerable = results[Expression].TryCastValueAs<IEnumerable>()!;
+                var index = results[Index].TryCastValueAs<int>()!;
+
+                return Result.Success<object?>(enumerable.OfType<object?>().ElementAtOrDefault(index)?.GetType());
+            });
+
+        if (!results.IsSuccessful())
+        {
+            return result.FillFromResult(results);
+        }
+
+        return result
+            .WithStatus(ResultStatus.Ok)
+            .WithResultType(results.TryCastAllowNull<Type>().Value);
+    }
+}

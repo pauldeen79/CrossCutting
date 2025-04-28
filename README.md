@@ -77,6 +77,7 @@ The ExpressionEvaluator is a full rewrite of the Parsers project, where and Expr
 * Binary operators && and || for example "true && true"
 * Unary operator ! to inverse a boolean value
 * Comparison operators <, <=, >, >=, == and != for example "true != false"
+* Indexers like MyArray[1]
 * Built-in functions for DateTime values: AddDays, AddHours, AddMinuts, AddMonths, AddSeconds, AddYears and DatePart (which removes the time)
 * Built-in functions for String values: ToCamelCase, ToLowerCase, ToPascalCase and ToUpperCase, Left, Right, Substring
 * Cast and Convert functions to cast and convert values to other types
