@@ -85,7 +85,7 @@ public static class NumericAggregator
         }
         catch (Exception ex)
         {
-            return Result.Error<object?>($"Aggregation failed. Error message: {ex.Message}");
+            return Result.Error<object?>(ex, $"Aggregation failed. Error message: {ex.Message}");
         }
 #pragma warning restore CA1031 // Do not catch general exception types
     }
