@@ -65,11 +65,11 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
             // Need a little hack here for EvaluateTyped...
             Evaluator
                 .EvaluateTyped<IEnumerable>(Arg.Any<ExpressionEvaluatorContext>())
-                .Returns(Result.Success<IEnumerable>(new object[] { 1, 2, 3 }));
+                .Returns(Result.Success<IEnumerable>(new int[] { 1, 2, 3 }));
             Evaluator
                 .EvaluateTyped<int>(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(Result.Success(1));
-            var context = CreateContext("state[1]", state: new object[] { 1, 2, 3 });
+            var context = CreateContext("state[1]", state: new int[] { 1, 2, 3 });
 
             // Act
             var result = sut.Parse(context);

@@ -45,18 +45,11 @@ public class IndexerExpressionComponent : IExpressionComponent
             return result.WithStatus(ResultStatus.Continue);
         }
 
-        //TODO: Review if we can use Parse here, instead of EvaluateTyped...
-        var results = new ResultDictionaryBuilder<object?>()
-            .Add(Expression, () => context.EvaluateTyped<IEnumerable>(match.Groups[Expression].Value))
-            .Add(Index, () => context.EvaluateTyped<int>(match.Groups[Index].Value))
+        var results = new ResultDictionaryBuilder<Type>()
+            .Add(Expression, () => context.Parse(match.Groups[Expression].Value).ToResult())
+            .Add(Index, () => context.Parse(match.Groups[Index].Value).ToResult())
             .Build()
-            .OnSuccess(results =>
-            {
-                var enumerable = results[Expression].TryCastValueAs<IEnumerable>()!;
-                var index = results[Index].TryCastValueAs<int>()!;
-
-                return Result.Success<object?>(enumerable.OfType<object?>().ElementAtOrDefault(index)?.GetType());
-            });
+            .OnSuccess(results => results[Expression]);
 
         if (!results.IsSuccessful())
         {
@@ -65,6 +58,6 @@ public class IndexerExpressionComponent : IExpressionComponent
 
         return result
             .WithStatus(ResultStatus.Ok)
-            .WithResultType(results.TryCastAllowNull<Type>().Value);
+            .WithResultType(results.Value?.GetElementType());
     }
 }
