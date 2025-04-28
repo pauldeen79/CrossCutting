@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Newtonsoft.Json.Bson;
+﻿using System.Reflection;
 
 namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
 
@@ -101,6 +100,38 @@ public class DotExpressionComponentTests : TestBase
             result.Status.ShouldBe(ResultStatus.NotSupported);
             // The following error message actually comes from the ExpressionEvaluator, which parses the first part of the expression (this)
             result.ErrorMessage.ShouldBe("Unsupported expression: this");
+        }
+
+        [Fact]
+        public void Returns_Error_When_Property_Throws_Exception()
+        {
+            // Arrange
+            var context = CreateContext("state.MyErrorProperty", state: this);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Evaluation of property MyErrorProperty on type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+Evaluate threw an exception, see Exception property for more details");
+            result.Exception.ShouldBeOfType<TargetInvocationException>();
+        }
+
+        [Fact]
+        public void Returns_Error_When_Method_Throws_Exception()
+        {
+            // Arrange
+            var context = CreateContext("state.ErrorMethod()", state: this);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Evaluate(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Evaluation of method ErrorMethod on type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+Evaluate threw an exception, see Exception property for more details");
+            result.Exception.ShouldBeOfType<TargetInvocationException>();
         }
 
         [Fact]
@@ -209,11 +240,13 @@ public class DotExpressionComponentTests : TestBase
         }
 
         public int MyProperty => 13;
+        public int MyErrorProperty => throw new InvalidOperationException("Kaboom");
         public Evaluate MyComplexProperty => this;
 #pragma warning disable xUnit1013 // Public method should be marked as test
-        public void DoSomething(string argument) => Debug.WriteLine(argument);
-        public void Overload(string argument) => Debug.WriteLine(argument);
-        public void Overload(int argument) => Debug.WriteLine(argument);
+        public void DoSomething(string argument) => System.Diagnostics.Debug.WriteLine(argument);
+        public void Overload(string argument) => System.Diagnostics.Debug.WriteLine(argument);
+        public void Overload(int argument) => System.Diagnostics.Debug.WriteLine(argument);
+        public void ErrorMethod() => throw new InvalidOperationException("Kaboom");
 #pragma warning restore xUnit1013 // Public method should be marked as test
     }
 
@@ -356,9 +389,9 @@ public class DotExpressionComponentTests : TestBase
 
         public int MyProperty => 13;
 #pragma warning disable xUnit1013 // Public method should be marked as test
-        public void DoSomething(string argument) => Debug.WriteLine(argument);
-        public void Overload(string argument) => Debug.WriteLine(argument);
-        public void Overload(int argument) => Debug.WriteLine(argument);
+        public void DoSomething(string argument) => System.Diagnostics.Debug.WriteLine(argument);
+        public void Overload(string argument) => System.Diagnostics.Debug.WriteLine(argument);
+        public void Overload(int argument) => System.Diagnostics.Debug.WriteLine(argument);
 #pragma warning restore xUnit1013 // Public method should be marked as test
     }
 }
