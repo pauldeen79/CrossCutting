@@ -25,10 +25,12 @@ public class ContextExpressionComponent : IExpressionComponent
             .WithSourceExpression(context.Expression)
             .WithExpressionComponentType(typeof(ContextExpressionComponent));
 
-        var success = context.Context.TryGetValue(context.Expression, out _);
+        var success = context.Context.TryGetValue(context.Expression, out var dlg);
+        if (success)
+        {
+            return result.WithResultType(dlg!()?.Value?.GetType());
+        }
 
-        return result.WithStatus(success
-            ? ResultStatus.Ok
-            : ResultStatus.Continue);
+        return result.WithStatus(ResultStatus.Continue);
     }
 }
