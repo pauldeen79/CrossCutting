@@ -78,12 +78,14 @@ The ExpressionEvaluator is a full rewrite of the Parsers project, where and Expr
 * Unary operator ! to inverse a boolean value
 * Comparison operators <, <=, >, >=, == and != for example "true != false"
 * Indexers like MyArray[1]
-* Built-in functions for DateTime values: AddDays, AddHours, AddMinuts, AddMonths, AddSeconds, AddYears and DatePart (which removes the time)
+* Built-in functions for DateTime values: AddDays, AddHours, AddMinuts, AddMonths, AddSeconds and AddYears
 * Built-in functions for String values: ToCamelCase, ToLowerCase, ToPascalCase and ToUpperCase, Left, Right, Substring
 * Cast and Convert functions to cast and convert values to other types
+* Coalesce function, to get the first value that is not null
 * ToString function to convert objects to string
 * IsNull function to check for null values
 * Optional support for reflection to get property values, or invoke methods
+* Type-safe properties, without reflection: Array.Length, String.Length, ICollection.Count, and Year/Month/Day/Hour/Minute/Second/Date for DateTime
 * Support for context using delegates, in order to allow lazy evaluation
 * Support for custom functions, using dependency injection
 * Support for adding custom expression components, using dependency injection
