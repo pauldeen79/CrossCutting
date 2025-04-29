@@ -16,6 +16,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IExpressionComponent, StringExpressionComponent>()
             .AddSingleton<IExpressionComponent, TypeOfExpressionComponent>()
             .AddSingleton<IDotExpressionComponent, ArrayDotExpressionComponent>()
+            .AddSingleton<IDotExpressionComponent, CollectionDotExpressionComponent>()
             .AddSingleton<IDotExpressionComponent, DateTimeDotExpressionComponent>()
             .AddSingleton<IDotExpressionComponent, ReflectionMethodDotExpressionComponent>()
             .AddSingleton<IDotExpressionComponent, ReflectionPropertyDotExpressionComponent>()

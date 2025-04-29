@@ -9,5 +9,5 @@ public class StringDotExpressionComponent : DotExpressionComponentBase<string>
     {
     }
 
-    public override int Order => 12;
+    public override int Order => 14;
 }
