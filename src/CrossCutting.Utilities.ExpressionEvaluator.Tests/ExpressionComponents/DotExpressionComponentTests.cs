@@ -375,6 +375,22 @@ public class DotExpressionComponentTests : TestBase
             result.ErrorMessage.ShouldBe("Method Overload on type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+Parse has multiple overloads with 1 arguments, this is not supported");
         }
 
+        [Fact]
+        public void Returns_Invalid_When_Left_Side_Is_Null()
+        {
+            // Arrange
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("null.MyProperty", state: this, settings: settings);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("null is null, cannot get property or method MyProperty");
+        }
+
         public int MyProperty => 13;
 #pragma warning disable xUnit1013 // Public method should be marked as test
         public void DoSomething(string argument) => System.Diagnostics.Debug.WriteLine(argument);
