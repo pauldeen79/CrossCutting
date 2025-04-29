@@ -1,6 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-public class CoalesceFunction : IDynamicDescriptorsFunction
+[FunctionArgument("Expression", typeof(object))]
+public class CoalesceFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)
     {
@@ -21,18 +22,5 @@ public class CoalesceFunction : IDynamicDescriptorsFunction
         }
 
         return Result.NoContent<object?>();
-    }
-
-    public IEnumerable<FunctionDescriptor> GetDescriptors()
-    {
-        yield return new FunctionDescriptorBuilder()
-            .WithName("Coalesce")
-            .WithDescription("Gets the first expression that is not null, or null when not found")
-            .WithFunctionType(typeof(CoalesceFunction))
-            .AddArguments(new FunctionDescriptorArgumentBuilder()
-                .WithName("expression")
-                .WithType(typeof(object))
-                .WithIsRequired(true)
-                .WithDescription("One or more expressions, from which the first expression that is not null will be returned"));
     }
 }
