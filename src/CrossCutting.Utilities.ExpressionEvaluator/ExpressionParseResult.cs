@@ -7,4 +7,11 @@ public partial record ExpressionParseResult
 
     public bool IsSuccessful()
         => Status.IsSuccessful();
+
+    public static implicit operator Result<Type>(ExpressionParseResult instance)
+    {
+        instance = ArgumentGuard.IsNotNull(instance, nameof(instance));
+
+        return instance.ToResult();
+    }
 }

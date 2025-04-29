@@ -280,6 +280,8 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         private string? _errorMessage;
 
+        private System.Exception? _exception;
+
         private string _sourceExpression;
 
         private System.Type? _expressionComponentType;
@@ -362,6 +364,20 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
         }
 
+        public System.Exception? Exception
+        {
+            get
+            {
+                return _exception;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Exception>.Default.Equals(_exception!, value!);
+                _exception = value;
+                if (hasChanged) HandlePropertyChanged(nameof(Exception));
+            }
+        }
+
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         public string SourceExpression
         {
@@ -415,6 +431,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _status = source.Status;
             if (source.ValidationErrors is not null) foreach (var item in source.ValidationErrors) _validationErrors.Add(item);
             _errorMessage = source.ErrorMessage;
+            _exception = source.Exception;
             _sourceExpression = source.SourceExpression;
             _expressionComponentType = source.ExpressionComponentType;
             _resultType = source.ResultType;
@@ -431,7 +448,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         public CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult Build()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult(PartName, PartResults.Select(x => x.Build()!).ToList().AsReadOnly(), Status, ValidationErrors, ErrorMessage, SourceExpression, ExpressionComponentType, ResultType);
+            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult(PartName, PartResults.Select(x => x.Build()!).ToList().AsReadOnly(), Status, ValidationErrors, ErrorMessage, Exception, SourceExpression, ExpressionComponentType, ResultType);
         }
 
         partial void SetDefaultValues();
@@ -475,6 +492,8 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         private System.Collections.Generic.List<CrossCutting.Common.Results.ValidationError> _validationErrors;
 
         private string? _errorMessage;
+
+        private System.Exception? _exception;
 
         private string _sourceExpression;
 
@@ -543,6 +562,20 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
         }
 
+        public System.Exception? Exception
+        {
+            get
+            {
+                return _exception;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Exception>.Default.Equals(_exception!, value!);
+                _exception = value;
+                if (hasChanged) HandlePropertyChanged(nameof(Exception));
+            }
+        }
+
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         public string SourceExpression
         {
@@ -595,6 +628,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _status = source.Status;
             if (source.ValidationErrors is not null) foreach (var item in source.ValidationErrors) _validationErrors.Add(item);
             _errorMessage = source.ErrorMessage;
+            _exception = source.Exception;
             _sourceExpression = source.SourceExpression;
             _expressionComponentType = source.ExpressionComponentType;
             _resultType = source.ResultType;
@@ -610,7 +644,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         public CrossCutting.Utilities.ExpressionEvaluator.ExpressionParseResult Build()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionParseResult(PartResults.Select(x => x.Build()!).ToList().AsReadOnly(), Status, ValidationErrors, ErrorMessage, SourceExpression, ExpressionComponentType, ResultType);
+            return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionParseResult(PartResults.Select(x => x.Build()!).ToList().AsReadOnly(), Status, ValidationErrors, ErrorMessage, Exception, SourceExpression, ExpressionComponentType, ResultType);
         }
 
         partial void SetDefaultValues();

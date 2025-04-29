@@ -112,7 +112,9 @@ public class DotExpressionComponent : IExpressionComponent
 
             if (state.ResultType is null)
             {
-                return result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"{state.CurrentExpression} is null, cannot get property or method {state.Part}");
+                return result
+                    .WithStatus(ResultStatus.Invalid)
+                    .WithErrorMessage($"{state.CurrentExpression} is null, cannot get property or method {state.Part}");
             }
 
             var subResult = _validateProcessors
@@ -126,7 +128,9 @@ public class DotExpressionComponent : IExpressionComponent
             }
             else if (subResult.Status == ResultStatus.Continue)
             {
-                return result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Unrecognized expression: {state.Part}");
+                return result
+                    .WithStatus(ResultStatus.Invalid)
+                    .WithErrorMessage($"Unrecognized expression: {state.Part}");
             }
 
             state.ResultType = subResult.Value;

@@ -41,6 +41,13 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions
             return instance;
         }
 
+        public static T WithException<T>(this T instance, System.Exception? exception)
+            where T : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IParseResultBuilder
+        {
+            instance.Exception = exception;
+            return instance;
+        }
+
         public static T WithSourceExpression<T>(this T instance, string sourceExpression)
             where T : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IParseResultBuilder
         {

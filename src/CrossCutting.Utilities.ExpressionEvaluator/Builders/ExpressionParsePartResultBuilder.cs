@@ -8,6 +8,7 @@ public partial class ExpressionParsePartResultBuilder
 
         return this
             .WithErrorMessage(result.ErrorMessage)
+            .WithException(result.Exception)
             .WithStatus(result.Status)
             .AddValidationErrors(result.ValidationErrors);
     }

@@ -9,12 +9,11 @@ public partial class ExpressionParseResultBuilder
 
         return AddPartResults(new ExpressionParsePartResultBuilder()
             .WithPartName(partName)
-            .FillFromResult(itemResult.ToResult())
+            .FillFromResult(itemResult)
             .WithExpressionComponentType(itemResult.ExpressionComponentType)
             .WithResultType(itemResult.ResultType)
             .AddPartResults(itemResult.PartResults.Select(x => x.ToBuilder()))
-            .WithSourceExpression(itemResult.SourceExpression)
-            );
+            .WithSourceExpression(itemResult.SourceExpression));
     }
 
     public ExpressionParseResultBuilder SetStatusFromPartResults()
@@ -32,6 +31,7 @@ public partial class ExpressionParseResultBuilder
 
         return this
             .WithErrorMessage(result.ErrorMessage)
+            .WithException(result.Exception)
             .WithStatus(result.Status)
             .AddValidationErrors(result.ValidationErrors);
     }

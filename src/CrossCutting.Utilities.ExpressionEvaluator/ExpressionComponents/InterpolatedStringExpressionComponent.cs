@@ -182,7 +182,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent<Generi
     private static Result<GenericFormattableString> ProcessPlaceholder(ExpressionEvaluatorContext context, bool validateOnly, string placeholder)
         => !validateOnly
             ? Result.FromExistingResult(context.Evaluate(placeholder), value => new GenericFormattableString(value))
-            : Result.FromExistingResult<GenericFormattableString>(context.Parse(placeholder).ToResult());
+            : Result.FromExistingResult<GenericFormattableString>(context.Parse(placeholder));
 
     private static Result<(int openIndex, int closeIndex)> GetPlaceholderSignsResult(ExpressionEvaluatorContext context, string remainder)
     {

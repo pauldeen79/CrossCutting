@@ -28,6 +28,11 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions
             get;
         }
 
+        System.Exception? Exception
+        {
+            get;
+        }
+
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         string SourceExpression
         {

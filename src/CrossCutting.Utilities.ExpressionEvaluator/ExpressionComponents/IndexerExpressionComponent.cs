@@ -22,13 +22,7 @@ public class IndexerExpressionComponent : IExpressionComponent
             .Add(Expression, () => context.EvaluateTyped<IEnumerable>(match.Groups[Expression].Value))
             .Add(Index, () => context.EvaluateTyped<int>(match.Groups[Index].Value))
             .Build()
-            .OnSuccess(results =>
-            {
-                var enumerable = results[Expression].TryCastValueAs<IEnumerable>()!;
-                var index = results[Index].TryCastValueAs<int>()!;
-
-                return Result.Success(enumerable.OfType<object?>().ElementAtOrDefault(index));
-            });
+            .OnSuccess(results => Result.Success(results[Expression].CastValueAs<IEnumerable>().OfType<object?>().ElementAtOrDefault(results[Index].CastValueAs<int>())));
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
@@ -46,15 +40,11 @@ public class IndexerExpressionComponent : IExpressionComponent
         }
 
         var results = new ResultDictionaryBuilder<Type>()
-            .Add(Expression, () => context.Parse(match.Groups[Expression].Value).ToResult())
-            .Add(Index, () => context.Parse(match.Groups[Index].Value).ToResult())
+            .Add(Expression, () => context.Parse(match.Groups[Expression].Value))
+            .Add(Index, () => context.Parse(match.Groups[Index].Value))
             .Build()
+            .OnFailure(innerResult => result.FillFromResult(innerResult))
             .OnSuccess(results => results[Expression]);
-
-        if (!results.IsSuccessful())
-        {
-            return result.FillFromResult(results);
-        }
 
         return result
             .WithStatus(ResultStatus.Ok)
