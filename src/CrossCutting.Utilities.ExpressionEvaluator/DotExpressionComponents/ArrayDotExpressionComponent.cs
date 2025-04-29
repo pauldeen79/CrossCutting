@@ -8,7 +8,7 @@ public class ArrayDotExpressionComponent : IDotExpressionComponent
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (state.Type == DotExpressionType.Property && state.Part == "Length" && state.CurrentEvaluateResult.Value?.GetType().IsArray == true)
+        if (state.Type == DotExpressionType.Property && state.Part == "Length" && state.CurrentEvaluateResult.Value!.GetType().IsArray)
         {
             return Result.Success<object?>(((Array)state.CurrentEvaluateResult.Value).Length);
         }
@@ -20,7 +20,7 @@ public class ArrayDotExpressionComponent : IDotExpressionComponent
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (state.Type == DotExpressionType.Property && state.Part == "Length" && state.ResultType?.IsArray == true)
+        if (state.Type == DotExpressionType.Property && state.Part == "Length" && state.ResultType!.IsArray)
         {
             return Result.Success(typeof(int));
         }
