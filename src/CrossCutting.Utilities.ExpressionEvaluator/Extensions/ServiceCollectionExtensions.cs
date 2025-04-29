@@ -35,6 +35,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IFunction, AddSecondsFunction>()
             .AddSingleton<IFunction, AddYearsFunction>()
             .AddSingleton<IFunction, CastFunction>()
+            .AddSingleton<IFunction, CoalesceFunction>()
             .AddSingleton<IFunction, ConvertFunction>()
             .AddSingleton<IFunction, CountFunction>()
             .AddSingleton<IFunction, DateFunction>()

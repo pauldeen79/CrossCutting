@@ -51,7 +51,7 @@ public class FunctionExpressionComponentTests : TestBase
             // Arrange
             var context = CreateContext("MyFunction()");
             Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
-            FunctionDescriptorProvider.GetAll().Returns([new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(string)).Build()]);
+            FunctionDescriptorProvider.GetAll().Returns([new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(string))]);
             var sut = CreateSut();
 
             // Act
@@ -68,7 +68,7 @@ public class FunctionExpressionComponentTests : TestBase
             // Arrange
             var context = CreateContext("MyFunction<System.String>()");
             var genericFunction = new MyGenericFunction();
-            FunctionDescriptorProvider.GetAll().Returns([new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(genericFunction.GetType()).WithReturnValueType(typeof(string)).Build()]);
+            FunctionDescriptorProvider.GetAll().Returns([new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(genericFunction.GetType()).WithReturnValueType(typeof(string))]);
             var sut = CreateSut(genericFunction);
 
             // Act
@@ -102,8 +102,8 @@ public class FunctionExpressionComponentTests : TestBase
             Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
             FunctionDescriptorProvider.GetAll().Returns(
                 [
-                    new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(string)).Build(),
-                    new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(int)).Build()
+                    new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(string)),
+                    new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(int)),
                 ]);
             var sut = CreateSut();
 
@@ -123,8 +123,8 @@ public class FunctionExpressionComponentTests : TestBase
             Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
             FunctionDescriptorProvider.GetAll().Returns(
                 [
-                    new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(string)).Build(),
-                    new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(int)).Build()
+                    new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(string)),
+                    new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(int)),
                 ]);
             var sut = CreateSut();
 
@@ -142,7 +142,7 @@ public class FunctionExpressionComponentTests : TestBase
             // Arrange
             var context = CreateContext("MyFunction()");
             Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
-            FunctionDescriptorProvider.GetAll().Returns([new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(GetType()).WithReturnValueType(typeof(string)).Build()]);
+            FunctionDescriptorProvider.GetAll().Returns([new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(GetType()).WithReturnValueType(typeof(string))]);
             var sut = CreateSut();
 
             // Act
@@ -159,7 +159,7 @@ public class FunctionExpressionComponentTests : TestBase
             // Arrange
             var context = CreateContext("MyFunction<System.String,System.String>()");
             var genericFunction = new MyGenericFunction();
-            FunctionDescriptorProvider.GetAll().Returns([new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(genericFunction.GetType()).WithReturnValueType(typeof(string)).Build()]);
+            FunctionDescriptorProvider.GetAll().Returns([new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(genericFunction.GetType()).WithReturnValueType(typeof(string))]);
             var sut = CreateSut(genericFunction);
 
             // Act
@@ -184,8 +184,7 @@ public class FunctionExpressionComponentTests : TestBase
                     .WithName("MyFunction")
                     .WithFunctionType(Function.GetType())
                     .WithReturnValueType(typeof(string))
-                    .AddArguments(new FunctionDescriptorArgumentBuilder().WithName("MyArgument").WithType(typeof(string)))
-                    .Build()]);
+                    .AddArguments(new FunctionDescriptorArgumentBuilder().WithName("MyArgument").WithType(typeof(string)))]);
             FunctionCallArgumentValidator
                 .Validate(Arg.Any<FunctionDescriptorArgument>(), Arg.Any<string>(), Arg.Any<FunctionCallContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Invalid).WithErrorMessage("I want a string, you give me an int!"));
@@ -242,7 +241,7 @@ public class FunctionExpressionComponentTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction()");
-            FunctionDescriptorProvider.GetAll().Returns([new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(string)).Build()]);
+            FunctionDescriptorProvider.GetAll().Returns([new FunctionDescriptorBuilder().WithName("MyFunction").WithFunctionType(Function.GetType()).WithReturnValueType(typeof(string))]);
             var sut = CreateSut();
 
             // Act

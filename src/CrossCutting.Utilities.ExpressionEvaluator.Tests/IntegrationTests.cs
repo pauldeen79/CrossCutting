@@ -552,6 +552,20 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_Coalesce_Function()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("Coalesce(null, null, 13)", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(13);
+    }
+
+    [Fact]
     public void Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework()
     {
         // Observations:
@@ -797,6 +811,20 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.ResultType.ShouldBe(collectionValue.Count.GetType());
+    }
+
+    [Fact]
+    public void Can_Parse_Coalesce_Function()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext("Coalesce(null, null, 13)", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBeNull(); // made this design decision because of the dynamic nature of this function. we can't evaluate the values while parsing
     }
 
     [Fact]

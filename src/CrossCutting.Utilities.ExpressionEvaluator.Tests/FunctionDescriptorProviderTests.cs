@@ -135,7 +135,7 @@ public class FunctionDescriptorProviderTests
 
             public IEnumerable<FunctionDescriptor> GetDescriptors()
             {
-                yield return new FunctionDescriptorBuilder().WithName("PassThrough").WithFunctionType(GetType()).Build();
+                yield return new FunctionDescriptorBuilder().WithName("PassThrough").WithFunctionType(GetType());
             }
         }
 
