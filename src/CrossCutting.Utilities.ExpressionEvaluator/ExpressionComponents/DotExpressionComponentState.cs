@@ -26,25 +26,32 @@ public class DotExpressionComponentState
         {
             _part = value;
             _functionParseResult = null;
+            _type = null;
         }
     }
 
+    private DotExpressionType? _type;
     public DotExpressionType Type
     {
         get
         {
-            if (_propertyNameRegEx.IsMatch(_part))
+            if (_type is null)
             {
-                return DotExpressionType.Property;
+                if (_propertyNameRegEx.IsMatch(_part))
+                {
+                    _type = DotExpressionType.Property;
+                }
+                else if (FunctionParseResult.IsSuccessful() || FunctionParseResult.Status != ResultStatus.NotFound)
+                {
+                    _type = DotExpressionType.Method;
+                }
+                else
+                {
+                    _type = DotExpressionType.Unknown;
+                }
             }
-            else if (FunctionParseResult.IsSuccessful() || FunctionParseResult.Status != ResultStatus.NotFound)
-            {
-                return DotExpressionType.Method;
-            }
-            else
-            {
-                return DotExpressionType.Unknown;
-            }
+
+            return _type.Value;
         }
     }
 
