@@ -94,4 +94,6 @@ Design decisions:
 * Extendable through Dependency Injection
 * Result-based, exception free. When an exception occurs, just check the Status property of the result, and you can see the details using the Exception property if you want
 * Free of reflection by default, but you can enable it
-* Allow duck-typing for properties and methods, with or without reflection. Without reflection, you have to write DotExpressionComponents to implement the members.
+* Allow duck-typing for properties and methods, with or without reflection
+* Without reflection, you have to write DotExpressionComponents to implement the members
+* Basic support for discoverability and validation, using a Parse method. This will return the status (Ok/Invalid) and the return type of the expression, as well as some details like the inner results, and the type that handles this expression
