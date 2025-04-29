@@ -9,6 +9,12 @@ public class DotExpressionComponentState
     public ExpressionEvaluatorContext Context { get; }
     public StringBuilder CurrentExpression { get; }
 
+    public Type? ResultType { get; internal set; }
+    public Result<Type> CurrentParseResult { get; internal set; }
+
+    public object Value { get; internal set; }
+    public Result<object?> CurrentEvaluateResult { get; internal set; }
+
     private string _part;
     public string Part
     {
@@ -16,15 +22,13 @@ public class DotExpressionComponentState
         {
             return _part;
         }
-        set
+        internal set
         {
             _part = value;
             _functionParseResult = null;
         }
     }
 
-    public object Value { get; set; }
-    public Type? ResultType { get; set; }
     public DotExpressionType Type
     {
         get
@@ -58,10 +62,11 @@ public class DotExpressionComponentState
         }
     }
 
-    public DotExpressionComponentState(ExpressionEvaluatorContext context, IFunctionParser functionParser, string firstPart)
+    public DotExpressionComponentState(ExpressionEvaluatorContext context, IFunctionParser functionParser, Result<object?> result, string firstPart)
     {
         ArgumentGuard.IsNotNull(context, nameof(context));
         ArgumentGuard.IsNotNull(functionParser, nameof(functionParser));
+        ArgumentGuard.IsNotNull(result, nameof(result));
         ArgumentGuard.IsNotNull(firstPart, nameof(firstPart));
 
         Context = context;
@@ -69,6 +74,8 @@ public class DotExpressionComponentState
         CurrentExpression = new StringBuilder(firstPart);
         _part = string.Empty;
         Value = default!;
+        CurrentParseResult = default!;
+        CurrentEvaluateResult = result;
     }
 
     public void AppendPart() => CurrentExpression.Append('.').Append(Part);

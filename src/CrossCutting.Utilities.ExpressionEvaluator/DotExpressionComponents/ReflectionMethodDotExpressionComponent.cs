@@ -2,7 +2,7 @@
 
 public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
 {
-    public int Order => 101;
+    public int Order => 102;
 
     public Result<object?> Evaluate(DotExpressionComponentState state)
     {

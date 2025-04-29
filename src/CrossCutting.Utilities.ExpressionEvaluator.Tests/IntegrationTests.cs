@@ -387,6 +387,21 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_Expression_With_StronglyTyped_Property_Without_Reflection()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.Date", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.Date);
+    }
+
+    [Fact]
     public void Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework()
     {
         // Observations:
@@ -467,6 +482,21 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.ErrorMessage.ShouldBe("Validation of function MyFunction failed, see validation errors for more details");
         result.ValidationErrors.Count.ShouldBe(1);
         result.ValidationErrors.First().ErrorMessage.ShouldBe("Argument Input is not of type System.String");
+    }
+
+    [Fact]
+    public void Can_Parse_Expression_With_StronglyTyped_Property_Without_Reflection()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext("state.Date", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBe(typeof(DateTime));
     }
 
     [Fact]

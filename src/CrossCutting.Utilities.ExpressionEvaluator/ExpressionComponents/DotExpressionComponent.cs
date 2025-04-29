@@ -20,11 +20,6 @@ public class DotExpressionComponent : IExpressionComponent
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (!context.Settings.AllowReflection)
-        {
-            return Result.Continue<object?>();
-        }
-
         var split = context.Expression.SplitDelimited('.', '"', leaveTextQualifier: true, trimItems: true);
         if (split.Length <= 1)
         {
@@ -37,35 +32,35 @@ public class DotExpressionComponent : IExpressionComponent
             return result;
         }
 
-        var state = new DotExpressionComponentState(context, _functionParser, split[0]);
+        var state = new DotExpressionComponentState(context, _functionParser, result, split[0]);
 
         foreach (var part in split.Skip(1))
         {
             state.Part = part;
 
-            if (result.Value is null)
+            if (state.CurrentEvaluateResult.Value is null)
             {
                 return Result.Invalid<object?>($"{state.CurrentExpression} is null, cannot get property or method {state.Part}");
             }
 
-            state.Value = result.Value;
+            state.Value = state.CurrentEvaluateResult.Value;
 
-            result = _components
+            state.CurrentEvaluateResult = _components
                 .Select(x => x.Evaluate(state))
                 .TakeWhileWithFirstNonMatching(x => x.Status == ResultStatus.Continue)
                 .Last();
 
-            if (!result.IsSuccessful())
+            if (!state.CurrentEvaluateResult.IsSuccessful())
             {
-                return result;
+                return state.CurrentEvaluateResult;
             }
-            else if (result.Status == ResultStatus.Continue)
+            else if (state.CurrentEvaluateResult.Status == ResultStatus.Continue)
             {
                 return Result.Invalid<object?>($"Unrecognized expression: {state.Part}");
             }
         }
 
-        return result;
+        return state.CurrentEvaluateResult;
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
@@ -88,7 +83,7 @@ public class DotExpressionComponent : IExpressionComponent
             return firstResult.ToBuilder().WithExpressionComponentType(typeof(DotExpressionComponent));
         }
 
-        var state = new DotExpressionComponentState(context, _functionParser, split[0]);
+        var state = new DotExpressionComponentState(context, _functionParser, firstResult.ToResult().TryCastAllowNull<object?>(), split[0]);
         state.ResultType = firstResult.ResultType;
 
         foreach (var part in split.Skip(1))
@@ -102,25 +97,27 @@ public class DotExpressionComponent : IExpressionComponent
                     .WithErrorMessage($"{state.CurrentExpression} is null, cannot get property or method {state.Part}");
             }
 
-            var subResult = _components
+            state.CurrentParseResult = _components
                 .Select(x => x.Validate(state))
                 .TakeWhileWithFirstNonMatching(x => x.Status == ResultStatus.Continue)
                 .Last();
 
-            if (!subResult.IsSuccessful())
+            if (!state.CurrentParseResult.IsSuccessful())
             {
-                return result.FillFromResult(subResult);
+                return result.FillFromResult(state.CurrentParseResult);
             }
-            else if (subResult.Status == ResultStatus.Continue)
+            else if (state.CurrentParseResult.Status == ResultStatus.Continue)
             {
                 return result
                     .WithStatus(ResultStatus.Invalid)
                     .WithErrorMessage($"Unrecognized expression: {state.Part}");
             }
 
-            state.ResultType = subResult.Value;
+            state.ResultType = state.CurrentParseResult.Value;
         }
 
-        return result.WithStatus(ResultStatus.Ok);
+        return result
+            .WithStatus(ResultStatus.Ok)
+            .WithResultType(state.ResultType);
     }
 }

@@ -24,20 +24,6 @@ public class DotExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Continue_When_Reflection_Is_Not_Allowed()
-        {
-            // Arrange
-            var context = CreateContext("state.MyProperty", state: this, settings: new ExpressionEvaluatorSettingsBuilder().WithAllowReflection(false));
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Evaluate(context);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Continue);
-        }
-
-        [Fact]
         public void Returns_Invalid_When_Left_Part_Of_Expression_Is_Null_Property()
         {
             // Arrange
@@ -278,21 +264,6 @@ public class DotExpressionComponentTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
-        }
-
-        [Fact]
-        public void Returns_Invalid_When_Reflection_Is_Not_Allowed()
-        {
-            // Arrange
-            var context = CreateContext("state.MyProperty", state: this, settings: new ExpressionEvaluatorSettingsBuilder().WithAllowReflection(false));
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Unrecognized expression: MyProperty");
         }
 
         [Fact]
