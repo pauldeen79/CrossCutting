@@ -15,6 +15,8 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IExpressionComponent, StateExpressionComponent>()
             .AddSingleton<IExpressionComponent, StringExpressionComponent>()
             .AddSingleton<IExpressionComponent, TypeOfExpressionComponent>()
+            .AddSingleton<IDotExpressionComponent, ReflectionMethodDotExpressionComponent>()
+            .AddSingleton<IDotExpressionComponent, ReflectionPropertyDotExpressionComponent>()
             .AddSingleton<IFunctionCallArgumentValidator, FunctionCallArgumentValidator>()
             .AddSingleton<IFunctionDescriptorMapper, FunctionDescriptorMapper>()
             .AddSingleton<IFunctionDescriptorProvider, FunctionDescriptorProvider>()

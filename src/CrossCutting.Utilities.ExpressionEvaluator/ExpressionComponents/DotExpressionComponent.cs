@@ -2,28 +2,15 @@
 
 public class DotExpressionComponent : IExpressionComponent
 {
-    private static readonly Regex _propertyNameRegEx = new Regex("^[A-Za-z]+$", RegexOptions.Compiled, TimeSpan.FromMilliseconds(250));
-    private readonly IFunctionParser _functionParser;
-
-    private static readonly Func<DotExpressionComponentState, Result<object?>>[] _evaluateProcessors =
-        [
-            EvaluateProperty,
-            EvaluateMethod
-        ];
-
-    private static readonly Func<DotExpressionComponentState, Result<Type>>[] _validateProcessors =
-        [
-            ValidateProperty,
-            ValidateMethod
-        ];
+    private readonly IDotExpressionComponent[] _components;
 
     public int Order => 30;
 
-    public DotExpressionComponent(IFunctionParser functionParser)
+    public DotExpressionComponent(IEnumerable<IDotExpressionComponent> components)
     {
-        ArgumentGuard.IsNotNull(functionParser, nameof(functionParser));
+        components = ArgumentGuard.IsNotNull(components, nameof(components));
 
-        _functionParser = functionParser;
+        _components = components.OrderBy(x => x.Order).ToArray();
     }
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
@@ -47,7 +34,7 @@ public class DotExpressionComponent : IExpressionComponent
             return result;
         }
 
-        var state = new DotExpressionComponentState(context, _functionParser, split[0]);
+        var state = new DotExpressionComponentState(context, split[0]);
 
         foreach (var part in split.Skip(1))
         {
@@ -60,8 +47,8 @@ public class DotExpressionComponent : IExpressionComponent
 
             state.Value = result.Value;
 
-            result = _evaluateProcessors
-                .Select(x => x.Invoke(state))
+            result = _components
+                .Select(x => x.Evaluate(state))
                 .TakeWhileWithFirstNonMatching(x => x.Status == ResultStatus.Continue)
                 .Last();
 
@@ -86,11 +73,6 @@ public class DotExpressionComponent : IExpressionComponent
             .WithExpressionComponentType(typeof(DotExpressionComponent))
             .WithSourceExpression(context.Expression);
 
-        if (!context.Settings.AllowReflection)
-        {
-            return result.WithStatus(ResultStatus.Continue);
-        }
-
         var split = context.Expression.SplitDelimited('.', '"', leaveTextQualifier: true, trimItems: true);
         if (split.Length <= 1)
         {
@@ -103,7 +85,7 @@ public class DotExpressionComponent : IExpressionComponent
             return firstResult.ToBuilder().WithExpressionComponentType(typeof(DotExpressionComponent));
         }
 
-        var state = new DotExpressionComponentState(context, _functionParser, split[0]);
+        var state = new DotExpressionComponentState(context, split[0]);
         state.ResultType = firstResult.ResultType;
 
         foreach (var part in split.Skip(1))
@@ -117,8 +99,8 @@ public class DotExpressionComponent : IExpressionComponent
                     .WithErrorMessage($"{state.CurrentExpression} is null, cannot get property or method {state.Part}");
             }
 
-            var subResult = _validateProcessors
-                .Select(x => x.Invoke(state))
+            var subResult = _components
+                .Select(x => x.Validate(state))
                 .TakeWhileWithFirstNonMatching(x => x.Status == ResultStatus.Continue)
                 .Last();
 
@@ -137,126 +119,5 @@ public class DotExpressionComponent : IExpressionComponent
         }
 
         return result.WithStatus(ResultStatus.Ok);
-    }
-
-    private static Result<object?> EvaluateProperty(DotExpressionComponentState state)
-    {
-        if (!_propertyNameRegEx.IsMatch(state.Part))
-        {
-            return Result.Continue<object?>();
-        }
-
-        var property = state.Value.GetType().GetProperty(state.Part, BindingFlags.Instance | BindingFlags.Public);
-        if (property is null)
-        {
-            return Result.Invalid<object?>($"Type {state.Value.GetType().FullName} does not contain property {state.Part}");
-        }
-
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
-        {
-            var propertyValue = property.GetValue(state.Value);
-            state.AppendPart();
-
-            return Result.Success<object?>(propertyValue);
-        }
-        catch (Exception ex)
-        {
-            return Result.Error<object?>(ex, $"Evaluation of property {state.Part} on type {state.Value.GetType().FullName} threw an exception, see Exception property for more details");
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
-    }
-
-    private static Result<object?> EvaluateMethod(DotExpressionComponentState state)
-    {
-        var functionParseResult = state.FunctionParser.Parse(state.Context.CreateChildContext(state.Part));
-        if (!functionParseResult.IsSuccessful())
-        {
-            return functionParseResult.Status == ResultStatus.NotFound
-                ? Result.Continue<object?>()
-                : Result.FromExistingResult<object?>(functionParseResult);
-        }
-
-        var functionCall = functionParseResult.GetValueOrThrow();
-        var methods = state.Value.GetType()
-            .GetMethods(BindingFlags.Instance | BindingFlags.Public)
-            .Where(x => x.Name == functionCall.Name && x.GetParameters().Length == functionCall.Arguments.Count)
-            .ToArray();
-
-        if (methods.Length == 0)
-        {
-            return Result.Invalid<object?>($"Type {state.Value.GetType().FullName} does not contain method {functionCall.Name}");
-        }
-        else if (methods.Length > 1)
-        {
-            return Result.Invalid<object?>($"Method {functionCall.Name} on type {state.Value.GetType().FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
-        }
-
-        var args = functionCall.Arguments
-            .Select(x => state.Context.Evaluate(x))
-            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
-            .ToArray();
-
-        if (args.Length > 0 && !args[args.Length - 1].IsSuccessful())
-        {
-            return args[args.Length - 1];
-        }
-
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
-        {
-            state.AppendPart();
-
-            return Result.Success<object?>(methods[0].Invoke(state.Value, args.Select(x => x.Value).ToArray()));
-        }
-        catch (Exception ex)
-        {
-            return Result.Error<object?>(ex, $"Evaluation of method {functionCall.Name} on type {state.Value.GetType().FullName} threw an exception, see Exception property for more details");
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
-    }
-
-    private static Result<Type> ValidateProperty(DotExpressionComponentState state)
-    {
-        if (!_propertyNameRegEx.IsMatch(state.Part))
-        {
-            return Result.Continue<Type>();
-        }
-
-        var property = state.ResultType!.GetProperty(state.Part, BindingFlags.Instance | BindingFlags.Public);
-        if (property is null)
-        {
-            return Result.Invalid<Type>($"Type {state.ResultType.FullName} does not contain property {state.Part}");
-        }
-
-        return Result.Success(property.PropertyType);
-    }
-
-    private static Result<Type> ValidateMethod(DotExpressionComponentState state)
-    {
-        var functionParseResult = state.FunctionParser.Parse(state.Context.CreateChildContext(state.Part));
-        if (!functionParseResult.IsSuccessful())
-        {
-            return functionParseResult.Status == ResultStatus.NotFound
-                ? Result.Continue<Type>()
-                : Result.FromExistingResult<Type>(functionParseResult);
-        }
-
-        var functionCall = functionParseResult.GetValueOrThrow();
-        var methods = state.ResultType!
-            .GetMethods(BindingFlags.Instance | BindingFlags.Public)
-            .Where(x => x.Name == functionCall.Name && x.GetParameters().Length == functionCall.Arguments.Count)
-            .ToArray();
-
-        if (methods.Length == 0)
-        {
-            return Result.Invalid<Type>($"Type {state.ResultType!.FullName} does not contain method {functionCall.Name}");
-        }
-        else if (methods.Length > 1)
-        {
-            return Result.Invalid<Type>($"Method {functionCall.Name} on type {state.ResultType!.FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
-        }
-
-        return Result.Success(methods[0].ReturnType);
     }
 }

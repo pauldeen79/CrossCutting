@@ -485,9 +485,9 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "MyFunction(context)";
+        var expression = "MyFunction(state)";
         var context = new DeferredResultDictionaryBuilder<object?>()
-            .Add("context", Result.NoContent<object?>)
+            .Add("state", Result.NoContent<object?>)
             .Build();
 
         // Act

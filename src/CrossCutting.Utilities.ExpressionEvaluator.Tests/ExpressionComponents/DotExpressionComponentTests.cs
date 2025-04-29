@@ -4,7 +4,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
 
 public class DotExpressionComponentTests : TestBase
 {
-    protected static DotExpressionComponent CreateSut() => new DotExpressionComponent(new FunctionParser());
+    protected static DotExpressionComponent CreateSut() => new DotExpressionComponent([new ReflectionMethodDotExpressionComponent(new FunctionParser()), new ReflectionPropertyDotExpressionComponent()]);
 
     public class Evaluate : DotExpressionComponentTests
     {
@@ -29,7 +29,7 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Continue_When_Reflection_Is_Not_Allowed()
         {
             // Arrange
-            var context = CreateContext("context.MyProperty", state: this, settings: new ExpressionEvaluatorSettingsBuilder().WithAllowReflection(false));
+            var context = CreateContext("state.MyProperty", state: this, settings: new ExpressionEvaluatorSettingsBuilder().WithAllowReflection(false));
             var sut = CreateSut();
 
             // Act
@@ -270,17 +270,18 @@ public class DotExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Continue_When_Reflection_Is_Not_Allowed()
+        public void Returns_Invalid_When_Reflection_Is_Not_Allowed()
         {
             // Arrange
-            var context = CreateContext("context.MyProperty", state: this, settings: new ExpressionEvaluatorSettingsBuilder().WithAllowReflection(false));
+            var context = CreateContext("state.MyProperty", state: this, settings: new ExpressionEvaluatorSettingsBuilder().WithAllowReflection(false));
             var sut = CreateSut();
 
             // Act
             var result = sut.Parse(context);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Unrecognized expression: MyProperty");
         }
 
         [Fact]
