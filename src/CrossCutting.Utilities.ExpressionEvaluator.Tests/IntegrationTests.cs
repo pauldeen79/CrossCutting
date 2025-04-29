@@ -522,6 +522,21 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_Enumerable_Count()
+    {
+        // Arrange
+        var enumerableValue = new string[] { "Hello", "", "world!" }.AsEnumerable();
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("Count(state)", evaluator: sut, state: enumerableValue));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(enumerableValue.Count());
+    }
+
+    [Fact]
     public void Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework()
     {
         // Observations:
