@@ -3,7 +3,7 @@
 [FunctionArgument("StringExpression", typeof(string))]
 [FunctionArgument("Index", typeof(int))]
 [FunctionArgument("Length", typeof(int))]
-public class SubstringFunction : IFunction<string>
+public class MidFunction : IFunction<string>
 {
     public Result<object?> Evaluate(FunctionCallContext context)
         => EvaluateTyped(context).TryCastAllowNull<object?>();

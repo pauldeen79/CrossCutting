@@ -43,7 +43,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IFunction, IsNullFunction>()
             .AddSingleton<IFunction, LeftFunction>()
             .AddSingleton<IFunction, RightFunction>()
-            .AddSingleton<IFunction, SubstringFunction>()
+            .AddSingleton<IFunction, MidFunction>()
             .AddSingleton<IFunction, ToCamelCaseFunction>()
             .AddSingleton<IFunction, ToLowerCaseFunction>()
             .AddSingleton<IFunction, ToPascalCaseFunction>()
