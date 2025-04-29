@@ -2,7 +2,7 @@
 
 public class DotExpressionComponentTests : TestBase
 {
-    protected static DotExpressionComponent CreateSut() => new DotExpressionComponent([new ReflectionMethodDotExpressionComponent(new FunctionParser()), new ReflectionPropertyDotExpressionComponent()]);
+    protected static DotExpressionComponent CreateSut() => new DotExpressionComponent(new FunctionParser(), [new ReflectionMethodDotExpressionComponent(), new ReflectionPropertyDotExpressionComponent()]);
 
     public class Evaluate : DotExpressionComponentTests
     {

@@ -2,14 +2,17 @@
 
 public class DotExpressionComponent : IExpressionComponent
 {
+    private readonly IFunctionParser _functionParser;
     private readonly IDotExpressionComponent[] _components;
 
     public int Order => 30;
 
-    public DotExpressionComponent(IEnumerable<IDotExpressionComponent> components)
+    public DotExpressionComponent(IFunctionParser functionParser, IEnumerable<IDotExpressionComponent> components)
     {
         components = ArgumentGuard.IsNotNull(components, nameof(components));
+        ArgumentGuard.IsNotNull(functionParser, nameof(functionParser));
 
+        _functionParser = functionParser;
         _components = components.OrderBy(x => x.Order).ToArray();
     }
 
@@ -34,7 +37,7 @@ public class DotExpressionComponent : IExpressionComponent
             return result;
         }
 
-        var state = new DotExpressionComponentState(context, split[0]);
+        var state = new DotExpressionComponentState(context, _functionParser, split[0]);
 
         foreach (var part in split.Skip(1))
         {
@@ -85,7 +88,7 @@ public class DotExpressionComponent : IExpressionComponent
             return firstResult.ToBuilder().WithExpressionComponentType(typeof(DotExpressionComponent));
         }
 
-        var state = new DotExpressionComponentState(context, split[0]);
+        var state = new DotExpressionComponentState(context, _functionParser, split[0]);
         state.ResultType = firstResult.ResultType;
 
         foreach (var part in split.Skip(1))

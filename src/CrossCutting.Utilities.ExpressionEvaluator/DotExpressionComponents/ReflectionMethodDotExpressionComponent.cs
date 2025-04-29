@@ -2,35 +2,25 @@
 
 public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
 {
-    private readonly IFunctionParser _functionParser;
-
     public int Order => 101;
-
-    public ReflectionMethodDotExpressionComponent(IFunctionParser functionParser)
-    {
-        ArgumentGuard.IsNotNull(functionParser, nameof(functionParser));
-
-        _functionParser = functionParser;
-    }
 
     public Result<object?> Evaluate(DotExpressionComponentState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (!state.Context.Settings.AllowReflection)
+        if (!state.Context.Settings.AllowReflection || state.Type != DotExpressionType.Method)
         {
             return Result.Continue<object?>();
         }
 
-        var functionParseResult = _functionParser.Parse(state.Context.CreateChildContext(state.Part));
-        if (!functionParseResult.IsSuccessful())
+        if (!state.FunctionParseResult.IsSuccessful())
         {
-            return functionParseResult.Status == ResultStatus.NotFound
+            return state.FunctionParseResult.Status == ResultStatus.NotFound
                 ? Result.Continue<object?>()
-                : Result.FromExistingResult<object?>(functionParseResult);
+                : Result.FromExistingResult<object?>(state.FunctionParseResult);
         }
 
-        var functionCall = functionParseResult.GetValueOrThrow();
+        var functionCall = state.FunctionParseResult.GetValueOrThrow();
         var methods = state.Value.GetType()
             .GetMethods(BindingFlags.Instance | BindingFlags.Public)
             .Where(x => x.Name == functionCall.Name && x.GetParameters().Length == functionCall.Arguments.Count)
@@ -73,20 +63,19 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (!state.Context.Settings.AllowReflection)
+        if (!state.Context.Settings.AllowReflection || state.Type != DotExpressionType.Method)
         {
             return Result.Continue<Type>();
         }
 
-        var functionParseResult = _functionParser.Parse(state.Context.CreateChildContext(state.Part));
-        if (!functionParseResult.IsSuccessful())
+        if (!state.FunctionParseResult.IsSuccessful())
         {
-            return functionParseResult.Status == ResultStatus.NotFound
+            return state.FunctionParseResult.Status == ResultStatus.NotFound
                 ? Result.Continue<Type>()
-                : Result.FromExistingResult<Type>(functionParseResult);
+                : Result.FromExistingResult<Type>(state.FunctionParseResult);
         }
 
-        var functionCall = functionParseResult.GetValueOrThrow();
+        var functionCall = state.FunctionParseResult.GetValueOrThrow();
         var methods = state.ResultType!
             .GetMethods(BindingFlags.Instance | BindingFlags.Public)
             .Where(x => x.Name == functionCall.Name && x.GetParameters().Length == functionCall.Arguments.Count)

@@ -2,20 +2,13 @@
 
 public class ReflectionPropertyDotExpressionComponent : IDotExpressionComponent
 {
-    private static readonly Regex _propertyNameRegEx = new Regex("^[A-Za-z]+$", RegexOptions.Compiled, TimeSpan.FromMilliseconds(250));
-
     public int Order => 101;
 
     public Result<object?> Evaluate(DotExpressionComponentState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (!state.Context.Settings.AllowReflection)
-        {
-            return Result.Continue<object?>();
-        }
-
-        if (!_propertyNameRegEx.IsMatch(state.Part))
+        if (!state.Context.Settings.AllowReflection || state.Type != DotExpressionType.Property)
         {
             return Result.Continue<object?>();
         }
@@ -45,12 +38,7 @@ public class ReflectionPropertyDotExpressionComponent : IDotExpressionComponent
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (!state.Context.Settings.AllowReflection)
-        {
-            return Result.Continue<Type>();
-        }
-
-        if (!_propertyNameRegEx.IsMatch(state.Part))
+        if (!state.Context.Settings.AllowReflection || state.Type != DotExpressionType.Property)
         {
             return Result.Continue<Type>();
         }
