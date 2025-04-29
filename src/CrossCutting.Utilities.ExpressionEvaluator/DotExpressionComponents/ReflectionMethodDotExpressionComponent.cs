@@ -13,13 +13,6 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
             return Result.Continue<object?>();
         }
 
-        if (!state.FunctionParseResult.IsSuccessful())
-        {
-            return state.FunctionParseResult.Status == ResultStatus.NotFound
-                ? Result.Continue<object?>()
-                : Result.FromExistingResult<object?>(state.FunctionParseResult);
-        }
-
         var functionCall = state.FunctionParseResult.GetValueOrThrow();
         var methods = state.Value.GetType()
             .GetMethods(BindingFlags.Instance | BindingFlags.Public)
@@ -66,13 +59,6 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
         if (!state.Context.Settings.AllowReflection || state.Type != DotExpressionType.Method)
         {
             return Result.Continue<Type>();
-        }
-
-        if (!state.FunctionParseResult.IsSuccessful())
-        {
-            return state.FunctionParseResult.Status == ResultStatus.NotFound
-                ? Result.Continue<Type>()
-                : Result.FromExistingResult<Type>(state.FunctionParseResult);
         }
 
         var functionCall = state.FunctionParseResult.GetValueOrThrow();
