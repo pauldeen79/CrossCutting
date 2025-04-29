@@ -507,6 +507,21 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_Array_Length()
+    {
+        // Arrange
+        var arrayValue = new string[] { "Hello", "", "world!" };
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.Length", evaluator: sut, state: arrayValue));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(arrayValue.Length);
+    }
+
+    [Fact]
     public void Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework()
     {
         // Observations:
@@ -590,7 +605,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_Expression_With_StronglyTyped_Property_Without_Reflection()
+    public void Can_Parse_DateTime_Year_Date()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
@@ -601,7 +616,127 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.ResultType.ShouldBe(typeof(DateTime));
+        result.ResultType.ShouldBe(dateTime.Date.GetType());
+    }
+
+    [Fact]
+    public void Can_Parse_DateTime_Year()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext("state.Year", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBe(dateTime.Year.GetType());
+    }
+
+    [Fact]
+    public void Can_Parse_DateTime_Month()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext("state.Month", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBe(dateTime.Month.GetType());
+    }
+
+    [Fact]
+    public void Can_Parse_DateTime_Day()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext("state.Day", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBe(dateTime.Day.GetType());
+    }
+
+    [Fact]
+    public void Can_Parse_DateTime_Hour()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext("state.Hour", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBe(dateTime.Hour.GetType());
+    }
+
+    [Fact]
+    public void Can_Parse_DateTime_Minute()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext("state.Minute", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBe(dateTime.Minute.GetType());
+    }
+
+    [Fact]
+    public void Can_Parse_DateTime_Second()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext("state.Second", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBe(dateTime.Second.GetType());
+    }
+
+    [Fact]
+    public void Can_Parse_String_Length()
+    {
+        // Arrange
+        var stringValue = "Hello world!";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext("state.Length", evaluator: sut, state: stringValue));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBe(stringValue.Length.GetType());
+    }
+
+    [Fact]
+    public void Can_Parse_Array_Length()
+    {
+        // Arrange
+        var arrayValue = new string[] { "Hello", "", "world!" };
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext("state.Length", evaluator: sut, state: arrayValue));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBe(arrayValue.Length.GetType());
     }
 
     [Fact]
