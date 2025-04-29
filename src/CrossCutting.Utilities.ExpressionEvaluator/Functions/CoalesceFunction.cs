@@ -6,11 +6,6 @@ public class CoalesceFunction : IDynamicDescriptorsFunction
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        if (context.FunctionCall.Name != "Coalesce")
-        {
-            return Result.Continue<object?>();
-        }
-
         foreach (var argument in context.FunctionCall.Arguments)
         {
             var result = context.Context.Evaluate(argument);
