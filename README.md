@@ -69,17 +69,17 @@ There have been some breaking changes.
 
 The ExpressionEvaluator is a full rewrite of the Parsers project, where and Expression is the entry type for everything. An expression can contain the following things:
 * Strings, like "hello world"
+* Interpolated strings, like "hello {name}"
 * Booleans "true" and "false"
 * DateTime.Now and DateTime.Today, as well as the Date and DateTime functions to create a custom DateTime value
 * Numeric values, both integer and floating point types like "1.3" and "12"
-* Interpolated strings, like "hello {name}"
-* Mathematic operators like +, -, * and / for example "(1 + 1) * 13"
+* Mathematic operators like +, -, * and /, including brackets, for example "(1 + 1) * 13"
 * Binary operators && and || for example "true && true"
-* Unary operator ! to inverse a boolean value
+* Unary operator ! to inverse a boolean value like "!true"
 * Comparison operators <, <=, >, >=, == and != for example "true != false"
 * Indexers like MyArray[1]
 * Built-in functions for DateTime values: AddDays, AddHours, AddMinuts, AddMonths, AddSeconds and AddYears
-* Built-in functions for String values: ToCamelCase, ToLowerCase, ToPascalCase and ToUpperCase, Left, Right, Substring
+* Built-in functions for String values: ToCamelCase, ToLowerCase, ToPascalCase and ToUpperCase, Left, Right, Mid
 * Cast and Convert functions to cast and convert values to other types
 * Coalesce function, to get the first value that is not null
 * ToString function to convert objects to string
@@ -89,3 +89,9 @@ The ExpressionEvaluator is a full rewrite of the Parsers project, where and Expr
 * Support for context using delegates, in order to allow lazy evaluation
 * Support for custom functions, using dependency injection
 * Support for adding custom expression components, using dependency injection
+
+Design decisions:
+* Extendable through Dependency Injection
+* Result-based, exception free. When an exception occurs, just check the Status property of the result, and you can see the details using the Exception property if you want
+* Free of reflection by default, but you can enable it
+* Allow duck-typing for properties and methods, with or without reflection. Without reflection, you have to write DotExpressionComponents to implement the members.
