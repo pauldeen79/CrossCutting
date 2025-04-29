@@ -46,7 +46,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        [System.ComponentModel.DefaultValueAttribute(true)]
+        [System.ComponentModel.DefaultValueAttribute(false)]
         public bool AllowReflection
         {
             get;

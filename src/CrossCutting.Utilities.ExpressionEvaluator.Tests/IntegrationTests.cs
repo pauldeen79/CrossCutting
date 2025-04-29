@@ -68,9 +68,10 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Arrange
         var sut = CreateSut();
         var expression = "state.Length";
+        var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, state: "hello world", evaluator: sut));
+        var result = sut.Evaluate(CreateContext(expression, state: "hello world", evaluator: sut, settings: settings));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -83,9 +84,10 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Arrange
         var sut = CreateSut();
         var expression = "state.ToString()";
+        var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, state: "hello world", evaluator: sut));
+        var result = sut.Evaluate(CreateContext(expression, state: "hello world", evaluator: sut, settings: settings));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -374,9 +376,10 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
+        var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state[1].ToString()", evaluator: sut, state: new object[] { 1, 2, 3 }));
+        var result = sut.Evaluate(CreateContext("state[1].ToString()", evaluator: sut, state: new object[] { 1, 2, 3 }, settings: settings));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

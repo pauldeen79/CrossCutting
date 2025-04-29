@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
 
 public class DotExpressionComponentTests : TestBase
 {
@@ -43,7 +41,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Left_Part_Of_Expression_Is_Null_Property()
         {
             // Arrange
-            var context = CreateContext("null.MyProperty");
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("null.MyProperty", settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -59,7 +58,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Left_Part_Of_Expression_Is_Null_Method()
         {
             // Arrange
-            var context = CreateContext("null.MyMethod()");
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("null.MyMethod()", settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -75,7 +75,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Property_Does_Not_Exist()
         {
             // Arrange
-            var context = CreateContext("1.MyProperty");
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("1.MyProperty", settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -90,7 +91,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Error_From_First_Expression_When_Not_Successful()
         {
             // Arrange
-            var context = CreateContext("this.MyProperty", state: this);
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("this.MyProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -106,7 +108,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Error_When_Property_Throws_Exception()
         {
             // Arrange
-            var context = CreateContext("state.MyErrorProperty", state: this);
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("state.MyErrorProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -122,7 +125,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Error_When_Method_Throws_Exception()
         {
             // Arrange
-            var context = CreateContext("state.ErrorMethod()", state: this);
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("state.ErrorMethod()", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -138,7 +142,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Success_When_Property_Name_Exists()
         {
             // Arrange
-            var context = CreateContext("state.MyProperty", state: this);
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("state.MyProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -153,7 +158,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Success_When_Property_Name_Exists_Using_Nested_Expression()
         {
             // Arrange
-            var context = CreateContext("state.MyComplexProperty.MyComplexProperty.MyProperty", state: this);
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("state.MyComplexProperty.MyComplexProperty.MyProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -168,7 +174,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Success_When_Method_Exists()
         {
             // Arrange
-            var context = CreateContext("state.ToString()", state: this);
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("state.ToString()", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -183,7 +190,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Method_Does_Not_Exist()
         {
             // Arrange
-            var context = CreateContext("1.MyMethod()");
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("1.MyMethod()", settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -198,7 +206,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Method_Overload_Could_Not_Be_Resolved()
         {
             // Arrange
-            var context = CreateContext("state.Overload(\"hello\")", state: this);
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("state.Overload(\"hello\")", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -213,7 +222,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Method_Argument_Expression_Is_Not_Successful()
         {
             // Arrange
-            var context = CreateContext("state.DoSomething(error)", state: this);
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("state.DoSomething(error)", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -228,7 +238,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Right_Expression_Is_Unrecognized()
         {
             // Arrange
-            var context = CreateContext("1.4unrecognized");
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("1.4unrecognized", settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -304,7 +315,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Ok_When_Parsing_First_Expression_Succeeds_Property()
         {
             // Arrange
-            var context = CreateContext("state.MyProperty", state: this);
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("state.MyProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -318,7 +330,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Ok_When_Parsing_First_Expression_Succeeds_Method()
         {
             // Arrange
-            var context = CreateContext("state.DoSomething(\"hello\")", state: this);
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("state.DoSomething(\"hello\")", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -347,7 +360,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Property_Does_Not_Exist()
         {
             // Arrange
-            var context = CreateContext("1.MyProperty");
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("1.MyProperty", settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -362,7 +376,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Method_Does_Not_Exist()
         {
             // Arrange
-            var context = CreateContext("1.MyMethod()");
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("1.MyMethod()", settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -377,7 +392,8 @@ public class DotExpressionComponentTests : TestBase
         public void Returns_Invalid_When_Method_Overload_Could_Not_Be_Resolved()
         {
             // Arrange
-            var context = CreateContext("state.Overload(\"hello\")", state: this);
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext("state.Overload(\"hello\")", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act

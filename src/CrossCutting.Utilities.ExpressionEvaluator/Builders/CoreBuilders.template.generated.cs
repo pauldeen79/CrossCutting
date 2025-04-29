@@ -120,7 +120,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
         }
 
-        [System.ComponentModel.DefaultValueAttribute(true)]
+        [System.ComponentModel.DefaultValueAttribute(false)]
         public bool AllowReflection
         {
             get
@@ -188,7 +188,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _escapeBraces = true;
             _validateArgumentTypes = true;
             _strictTypeChecking = false;
-            _allowReflection = true;
+            _allowReflection = false;
             _placeholderStart = @"{"!;
             _placeholderEnd = @"}"!;
             SetDefaultValues();

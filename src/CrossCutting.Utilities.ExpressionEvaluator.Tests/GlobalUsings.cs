@@ -4,6 +4,7 @@ global using System.Collections.Generic;
 global using System.ComponentModel;
 global using System.Globalization;
 global using System.Linq;
+global using System.Reflection;
 global using Castle.DynamicProxy.Internal;
 global using CrossCutting.Common.Abstractions;
 global using CrossCutting.Common.Extensions;
