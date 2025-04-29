@@ -387,7 +387,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_StronglyTyped_Property_Without_Reflection()
+    public void Can_Evaluate_DateTime_Year_Date()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
@@ -399,6 +399,111 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldBe(dateTime.Date);
+    }
+
+    [Fact]
+    public void Can_Evaluate_DateTime_Year()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.Year", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.Year);
+    }
+
+    [Fact]
+    public void Can_Evaluate_DateTime_Month()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.Month", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.Month);
+    }
+
+    [Fact]
+    public void Can_Evaluate_DateTime_Day()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.Day", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.Day);
+    }
+
+    [Fact]
+    public void Can_Evaluate_DateTime_Hour()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.Hour", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.Hour);
+    }
+
+    [Fact]
+    public void Can_Evaluate_DateTime_Minute()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.Minute", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.Minute);
+    }
+
+    [Fact]
+    public void Can_Evaluate_DateTime_Second()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.Second", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.Second);
+    }
+
+    [Fact]
+    public void Can_Evaluate_String_Length()
+    {
+        // Arrange
+        var stringValue = "Hello world!";
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.Length", evaluator: sut, state: stringValue));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(stringValue.Length);
     }
 
     [Fact]
