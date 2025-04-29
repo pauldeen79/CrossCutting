@@ -55,6 +55,10 @@ public class DotExpressionComponentState
         }
     }
 
+    public string Name => Type == DotExpressionType.Method
+        ? FunctionParseResult.Value!.Name
+        : Part;
+
     private Result<FunctionCall>? _functionParseResult;
     public Result<FunctionCall> FunctionParseResult
     {

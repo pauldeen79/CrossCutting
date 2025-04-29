@@ -17,7 +17,7 @@ public abstract class DotExpressionComponentBase<T> : IDotExpressionComponent
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (state.Type == DotExpressionType.Property && state.CurrentEvaluateResult.Value is T typedValue && _descriptor.Delegates.TryGetValue(state.Part, out var delegates))
+        if (state.CurrentEvaluateResult.Value is T typedValue && _descriptor.Delegates.TryGetValue(state.Name, out var delegates) && state.Type == delegates.ExpressionType)
         {
             return delegates.EvaluateDelegate(state, typedValue);
         }
@@ -29,7 +29,7 @@ public abstract class DotExpressionComponentBase<T> : IDotExpressionComponent
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (state.Type == DotExpressionType.Property && state.ResultType == typeof(T) && _descriptor.Delegates.TryGetValue(state.Part, out var delegates))
+        if (typeof(T).IsAssignableFrom(state.ResultType) && _descriptor.Delegates.TryGetValue(state.Name, out var delegates) && state.Type == delegates.ExpressionType)
         {
             return delegates.ParseDelegate(state);
         }
