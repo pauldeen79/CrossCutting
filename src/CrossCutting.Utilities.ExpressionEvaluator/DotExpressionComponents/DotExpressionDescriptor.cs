@@ -9,7 +9,5 @@ public class DotExpressionDescriptor<T>
         Delegates = delegates;
     }
 
-    public Type GetUnderlyingType => typeof(T);
-
     public Dictionary<string, DotExpressionDelegates<T>> Delegates { get; }
 }
