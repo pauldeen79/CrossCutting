@@ -6,7 +6,7 @@ public class CollectionDotExpressionComponent : DotExpressionComponentBase<IColl
 
     public CollectionDotExpressionComponent() : base(new DotExpressionDescriptor<ICollection>(new Dictionary<string, DotExpressionDelegates<ICollection>>()
     {
-        { "Count", new DotExpressionDelegates<ICollection>(DotExpressionType.Property, _ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Count)) },
+        { "Count", new DotExpressionDelegates<ICollection>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Count)) },
     }))
     {
     }

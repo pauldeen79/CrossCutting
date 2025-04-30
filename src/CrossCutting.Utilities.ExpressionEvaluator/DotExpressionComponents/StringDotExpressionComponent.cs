@@ -4,7 +4,7 @@ public class StringDotExpressionComponent : DotExpressionComponentBase<string>
 {
     public StringDotExpressionComponent() : base(new DotExpressionDescriptor<string>(new Dictionary<string, DotExpressionDelegates<string>>()
     {
-        { "Length", new DotExpressionDelegates<string>(DotExpressionType.Property, _ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Length)) },
+        { "Length", new DotExpressionDelegates<string>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Length)) },
     }))
     {
     }
