@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.DotExpressionComponents;
 
-public class ArrayDotExpressionComponent : IDotExpressionComponent, IDynamicDescriptorsProvider
+public class ArrayDotExpressionComponent : IDotExpressionComponent, IDynamicDescriptorsProvider, IMember
 {
     private static readonly MemberDescriptor _lengthDescriptor = new MemberDescriptorBuilder()
         .WithName(nameof(Array.Length))

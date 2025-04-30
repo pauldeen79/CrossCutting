@@ -42,5 +42,10 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IMember, ToCamelCaseFunction>()
             .AddSingleton<IMember, ToLowerCaseFunction>()
             .AddSingleton<IMember, ToPascalCaseFunction>()
-            .AddSingleton<IMember, ToUpperCaseFunction>();
+            .AddSingleton<IMember, ToUpperCaseFunction>()
+            .AddSingleton<IMember, ArrayDotExpressionComponent>()
+            .AddSingleton<IMember, CollectionDotExpressionComponent>()
+            .AddSingleton<IMember, DateTimeDotExpressionComponent>()
+            .AddSingleton<IMember, ObjectDotExpressionComponent>()
+            .AddSingleton<IMember, StringDotExpressionComponent>();
 }

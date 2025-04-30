@@ -961,6 +961,19 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.ValidationErrors.First().ErrorMessage.ShouldBe("Unknown expression type found in fragment: error");
     }
 
+    [Fact]
+    public void Can_Get_MemberDescriptors()
+    {
+        // Arrange
+        var sut = Provider.GetRequiredService<IMemberDescriptorProvider>();
+
+        // Act
+        var descriptors = sut.GetAll();
+
+        // Assert
+        descriptors.ShouldNotBeEmpty();
+    }
+
     public IntegrationTests()
     {
         Provider = new ServiceCollection()

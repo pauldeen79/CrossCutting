@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.DotExpressionComponents;
 
-public class CollectionDotExpressionComponent : DotExpressionComponentBase<ICollection>, IDynamicDescriptorsProvider
+public class CollectionDotExpressionComponent : DotExpressionComponentBase<ICollection>, IDynamicDescriptorsProvider, IMember
 {
     private static readonly MemberDescriptor _countDescriptor = new MemberDescriptorBuilder()
         .WithName(nameof(ICollection.Count))

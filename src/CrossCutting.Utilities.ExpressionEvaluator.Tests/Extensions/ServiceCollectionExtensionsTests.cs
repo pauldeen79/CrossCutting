@@ -72,7 +72,7 @@ public class ServiceCollectionExtensionsTests
     public static TheoryData<Type> GetAllMembers()
     {
         var data = new TheoryData<Type>();
-        foreach (var t in typeof(IExpressionComponent).Assembly.GetExportedTypes().Where(x => !x.IsInterface && !x.IsAbstract && x.GetAllInterfaces().Contains(typeof(IMember))))
+        foreach (var t in typeof(IMember).Assembly.GetExportedTypes().Where(x => !x.IsInterface && !x.IsAbstract && x.GetAllInterfaces().Contains(typeof(IMember))))
         {
             data.Add(t);
         }

@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.DotExpressionComponents;
 
-public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTime>, IDynamicDescriptorsProvider
+public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTime>, IDynamicDescriptorsProvider, IMember
 {
     private const string DaysToAdd = nameof(DaysToAdd);
     private const string HoursToAdd = nameof(HoursToAdd);
