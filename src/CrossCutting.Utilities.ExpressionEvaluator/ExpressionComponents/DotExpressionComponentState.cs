@@ -80,7 +80,7 @@ public class DotExpressionComponentState
             ? "expression"
             : Type.ToString().ToLowerInvariant();
 
-    public DotExpressionComponentState(ExpressionEvaluatorContext context, IFunctionParser functionParser, Result<object?> result, string firstPart)
+    public DotExpressionComponentState(ExpressionEvaluatorContext context, IFunctionParser functionParser, Result<object?> result, string firstPart, Type? resultType = null)
     {
         ArgumentGuard.IsNotNull(context, nameof(context));
         ArgumentGuard.IsNotNull(functionParser, nameof(functionParser));
@@ -95,6 +95,7 @@ public class DotExpressionComponentState
         CurrentParseResult = default!;
         CurrentEvaluateResult = result;
         PreviousPart = string.Empty;
+        ResultType = resultType;
     }
 
     public void AppendPart() => CurrentExpression.Append('.').Append(Part);

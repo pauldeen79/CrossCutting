@@ -21,7 +21,8 @@ public class StringDotExpressionComponent : DotExpressionComponentBase<string>
     public StringDotExpressionComponent(IFunctionCallArgumentValidator validator) : base(new DotExpressionDescriptor<string>(new Dictionary<string, DotExpressionDelegates<string>>()
     {
         { Length, new DotExpressionDelegates<string>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Length)) },
-        { Substring, new DotExpressionDelegates<string>(2, x => FunctionCallArgumentValidator.Validate(x, validator, _substringDescriptor, x.CurrentExpression.ToString()), EvaluateSubstring) },
+        // Note that we might validate the number of arguments, in case of overloads. But just set to 1 (the left part of the dot expression) so the function is always taken by name, regardless of number of arguments
+        { Substring, new DotExpressionDelegates<string>(0, x => FunctionCallArgumentValidator.Validate(x, validator, _substringDescriptor, x.CurrentExpression.ToString()), EvaluateSubstring) },
     }))
     {
         ArgumentGuard.IsNotNull(validator, nameof(validator));
