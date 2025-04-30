@@ -685,7 +685,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("Validation of function MyFunction failed, see validation errors for more details");
+        result.ErrorMessage.ShouldBe("Validation of member MyFunction failed, see validation errors for more details");
         result.ValidationErrors.Count.ShouldBe(1);
         result.ValidationErrors.First().ErrorMessage.ShouldBe("Argument Input is not of type System.String");
     }
@@ -956,7 +956,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("Validation of function MyFunction failed, see validation errors for more details");
+        result.ErrorMessage.ShouldBe("Validation of member MyFunction failed, see validation errors for more details");
         result.ValidationErrors.Count.ShouldBe(1);
         result.ValidationErrors.First().ErrorMessage.ShouldBe("Unknown expression type found in fragment: error");
     }
@@ -965,8 +965,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         Provider = new ServiceCollection()
             .AddExpressionEvaluator()
-            .AddSingleton<IFunction, MyFunction>()
-            .AddSingleton<IGenericFunction, MyGenericFunction>()
+            .AddSingleton<IMember, MyFunction>()
+            .AddSingleton<IMember, MyGenericFunction>()
             .BuildServiceProvider();
     }
 
@@ -994,6 +994,9 @@ public sealed class IntegrationTests : TestBase, IDisposable
     [FunctionTypeArgument("T", "Type argument to use")]
     private sealed class MyGenericFunction : IGenericFunction
     {
+        public Result<object?> Evaluate(FunctionCallContext context)
+            => context.Evaluate(this);
+
         public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
             => Result.Success<object?>(typeof(T));
     }

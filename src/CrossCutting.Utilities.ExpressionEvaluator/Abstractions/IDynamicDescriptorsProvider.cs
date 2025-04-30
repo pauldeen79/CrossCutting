@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 
-public interface IDynamicDescriptorsFunction : IFunction
+public interface IDynamicDescriptorsProvider
 {
     IEnumerable<FunctionDescriptor> GetDescriptors();
 }

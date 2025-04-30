@@ -3,19 +3,19 @@
 public class FunctionExpressionComponentTests : TestBase
 {
     protected IFunction Function { get; }
-    protected IFunctionDescriptorProvider FunctionDescriptorProvider { get; }
+    protected IMemberDescriptorProvider FunctionDescriptorProvider { get; }
     protected IFunctionCallArgumentValidator FunctionCallArgumentValidator { get; }
 
     protected FunctionExpressionComponent CreateSut(IFunction? function = null)
-        => new FunctionExpressionComponent(new FunctionParser(), new FunctionResolver(FunctionDescriptorProvider, FunctionCallArgumentValidator, [function ?? Function], Enumerable.Empty<IGenericFunction>()));
+        => new FunctionExpressionComponent(new FunctionParser(), new FunctionResolver(FunctionDescriptorProvider, FunctionCallArgumentValidator, [function ?? Function]));
 
     protected FunctionExpressionComponent CreateSut(IGenericFunction genericFunction)
-        => new FunctionExpressionComponent(new FunctionParser(), new FunctionResolver(FunctionDescriptorProvider, FunctionCallArgumentValidator, Enumerable.Empty<IFunction>(), [genericFunction]));
+        => new FunctionExpressionComponent(new FunctionParser(), new FunctionResolver(FunctionDescriptorProvider, FunctionCallArgumentValidator, [genericFunction]));
 
     public FunctionExpressionComponentTests()
     {
         Function = Substitute.For<IFunction>();
-        FunctionDescriptorProvider = Substitute.For<IFunctionDescriptorProvider>();
+        FunctionDescriptorProvider = Substitute.For<IMemberDescriptorProvider>();
         FunctionCallArgumentValidator = Substitute.For<IFunctionCallArgumentValidator>();
     }
 
@@ -24,6 +24,9 @@ public class FunctionExpressionComponentTests : TestBase
         // Manually mocked this because I can't get NSubstitute working with generic method...
         private sealed class MyGenericFunction : IGenericFunction
         {
+            public Result<object?> Evaluate(FunctionCallContext context)
+                => context.Evaluate(this);
+
             public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
                 => Result.Success<object?>("function result value");
         }
@@ -150,7 +153,7 @@ public class FunctionExpressionComponentTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotFound);
-            result.ErrorMessage.ShouldBe("Could not find function with type name CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.FunctionExpressionComponentTests+Evaluate");
+            result.ErrorMessage.ShouldBe("Could not find member with type name CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.FunctionExpressionComponentTests+Evaluate");
         }
 
         [Fact]
@@ -195,7 +198,7 @@ public class FunctionExpressionComponentTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Validation of function MyFunction failed, see validation errors for more details");
+            result.ErrorMessage.ShouldBe("Validation of member MyFunction failed, see validation errors for more details");
             result.ValidationErrors.Count.ShouldBe(1);
             result.ValidationErrors.First().ErrorMessage.ShouldBe("I want a string, you give me an int!");
             result.ValidationErrors.First().MemberNames.Count.ShouldBe(1);

@@ -2,14 +2,12 @@
 
 public class FunctionAndTypeDescriptor
 {
-    public FunctionAndTypeDescriptor(IFunction? function, IGenericFunction? genericFunction, Type? returnValueType)
+    public FunctionAndTypeDescriptor(IMember? member, Type? returnValueType)
     {
         ReturnValueType = returnValueType;
-        Function = function;
-        GenericFunction = genericFunction;
+        Member = member;
     }
 
     public Type? ReturnValueType { get; }
-    public IFunction? Function { get; }
-    public IGenericFunction? GenericFunction { get; }
+    public IMember? Member { get; }
 }

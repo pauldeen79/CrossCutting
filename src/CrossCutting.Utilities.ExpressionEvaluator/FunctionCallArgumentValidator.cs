@@ -34,7 +34,7 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         // Little hacking here... We need to add an 'instance' argument (sort of an extension method), to construct a FunctionCall from this DotExpression...
         var functionCall = state.FunctionParseResult.Value!.ToBuilder().Chain(x => x.Arguments.Insert(0, Constants.DummyArgument)).Build();
 
-        var result = Validate(validator, new FunctionCallContext(functionCall, state.Context), functionDescriptor, null, null);
+        var result = Validate(validator, new FunctionCallContext(functionCall, state.Context), functionDescriptor, null);
         if (!result.IsSuccessful())
         {
             return Result.FromExistingResult<Type>(result);
@@ -43,7 +43,7 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         return Result.Success(result.Value?.ReturnValueType!);
     }
 
-    public static Result<FunctionAndTypeDescriptor> Validate(IFunctionCallArgumentValidator functionCallArgumentValidator, FunctionCallContext functionCallContext, FunctionDescriptor functionDescriptor, IGenericFunction? genericFunction, IFunction? function)
+  public static Result<FunctionAndTypeDescriptor> Validate(IFunctionCallArgumentValidator functionCallArgumentValidator, FunctionCallContext functionCallContext, FunctionDescriptor functionDescriptor, IMember? member)
     {
         functionCallArgumentValidator = ArgumentGuard.IsNotNull(functionCallArgumentValidator, nameof(functionCallArgumentValidator));
         functionCallContext = ArgumentGuard.IsNotNull(functionCallContext, nameof(functionCallContext));
@@ -63,10 +63,10 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
 
         if (errors.Count > 0)
         {
-            return Result.Invalid<FunctionAndTypeDescriptor>($"Validation of function {functionCallContext.FunctionCall.Name} failed, see validation errors for more details", errors);
+            return Result.Invalid<FunctionAndTypeDescriptor>($"Validation of member {functionCallContext.FunctionCall.Name} failed, see validation errors for more details", errors);
         }
 
-        return Result.Success(new FunctionAndTypeDescriptor(function, genericFunction, functionDescriptor.ReturnValueType));
+        return Result.Success(new FunctionAndTypeDescriptor(member, functionDescriptor.ReturnValueType));
     }
 
     private static bool IsTypeValid(ExpressionEvaluatorSettings settings, FunctionDescriptorArgument descriptorArgument, ExpressionParseResult callArgumentResult)

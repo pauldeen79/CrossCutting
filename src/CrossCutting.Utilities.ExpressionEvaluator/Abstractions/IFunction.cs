@@ -1,8 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 
-public interface IFunction
+public interface IFunction : IMember
 {
-    Result<object?> Evaluate(FunctionCallContext context);
 }
 
 public interface IFunction<T> : IFunction

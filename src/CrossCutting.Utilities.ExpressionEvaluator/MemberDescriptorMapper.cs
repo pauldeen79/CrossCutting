@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-public class FunctionDescriptorMapper : IFunctionDescriptorMapper
+public class MemberDescriptorMapper : IMemberDescriptorMapper
 {
     public IEnumerable<FunctionDescriptor> Map(object source, Type? customFunctionType)
     {
@@ -8,7 +8,7 @@ public class FunctionDescriptorMapper : IFunctionDescriptorMapper
 
         var type = source.GetType();
 
-        if (source is IDynamicDescriptorsFunction dynamicDescriptorsFunction)
+        if (source is IDynamicDescriptorsProvider dynamicDescriptorsFunction)
         {
             foreach (var descriptor in dynamicDescriptorsFunction.GetDescriptors())
             {

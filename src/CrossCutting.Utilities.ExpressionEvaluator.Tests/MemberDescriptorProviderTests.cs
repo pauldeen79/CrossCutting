@@ -1,20 +1,19 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 
-public class FunctionDescriptorProviderTests
+public class MemberDescriptorProviderTests
 {
-    public class GetAll : FunctionDescriptorProviderTests
+    public class GetAll : MemberDescriptorProviderTests
     {
         [Fact]
         public void Returns_All_Available_Functions_Correctly()
         {
             // Arrange
-            var functions = new IFunction[]
+            var members = new IMember[]
             {
                 new MyFunction1(),
                 new MyFunction2()
             };
-            var genericFunctions = Enumerable.Empty<IGenericFunction>();
-            var sut = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), functions, genericFunctions);
+            var sut = new MemberDescriptorProvider(new MemberDescriptorMapper(), members);
 
             // Act
             var result = sut.GetAll();
@@ -37,7 +36,7 @@ public class FunctionDescriptorProviderTests
                 .AddSingleton<IFunction, MyFunction2>()
                 .AddSingleton<IFunction, PassThroughFunction>()
                 .BuildServiceProvider(true);
-            var sut = provider.GetRequiredService<IFunctionDescriptorProvider>();
+            var sut = provider.GetRequiredService<IMemberDescriptorProvider>();
 
             // Act
             var result = sut.GetAll();
@@ -50,12 +49,11 @@ public class FunctionDescriptorProviderTests
         public void Returns_Typed_Function_Correctly()
         {
             // Arrange
-            var functions = new IFunction[]
+            var members = new IMember[]
             {
                 new MyTypedFunction()
             };
-            var genericFunctions = Enumerable.Empty<IGenericFunction>();
-            var sut = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), functions, genericFunctions);
+            var sut = new MemberDescriptorProvider(new MemberDescriptorMapper(), members);
 
             // Act
             var result = sut.GetAll();
@@ -70,12 +68,11 @@ public class FunctionDescriptorProviderTests
         public void Returns_Generic_Function_Correctly()
         {
             // Arrange
-            var functions = Enumerable.Empty<IFunction>();
-            var genericFunctions = new IGenericFunction[]
+            var members = new IMember[]
             {
                 new MyGenericFunction()
             };
-            var sut = new FunctionDescriptorProvider(new FunctionDescriptorMapper(), functions, genericFunctions);
+            var sut = new MemberDescriptorProvider(new MemberDescriptorMapper(), members);
 
             // Act
             var result = sut.GetAll();
@@ -121,7 +118,7 @@ public class FunctionDescriptorProviderTests
             }
         }
 
-        private sealed class PassThroughFunction : IDynamicDescriptorsFunction
+        private sealed class PassThroughFunction : IFunction, IDynamicDescriptorsProvider
         {
             public Result<object?> Evaluate(FunctionCallContext context)
             {
@@ -145,6 +142,9 @@ public class FunctionDescriptorProviderTests
         [FunctionResultType(typeof(string))]
         private sealed class MyGenericFunction : IGenericFunction
         {
+            public Result<object?> Evaluate(FunctionCallContext context)
+                => context.Evaluate(this);
+
             public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
                 => throw new NotImplementedException();
         }

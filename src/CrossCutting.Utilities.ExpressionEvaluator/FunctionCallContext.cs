@@ -61,4 +61,31 @@ public class FunctionCallContext
 
     public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, DateTime defaultValue)
         => FunctionCall.GetArgumentDateTimeValueResult(index, argumentName, this, defaultValue);
+
+    public Result<object?> Evaluate(IGenericFunction genericFunction)
+    {
+        genericFunction = ArgumentGuard.IsNotNull(genericFunction, nameof(genericFunction));
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            var method = genericFunction
+                .GetType()
+                .GetMethod(nameof(IGenericFunction.EvaluateGeneric))!
+                .MakeGenericMethod(FunctionCall.TypeArguments.ToArray());
+
+            return (Result<object?>)method.Invoke(genericFunction, [this])
+                ?? Result.Error<object?>("Generic evaluation result was null");
+        }
+        catch (ArgumentException argException)
+        {
+            //The type or method has 1 generic parameter(s), but 0 generic argument(s) were provided. A generic argument must be provided for each generic parameter.
+            return Result.Invalid<object?>(argException.Message);
+        }
+        catch (Exception ex)
+        {
+            return Result.Error<object?>(ex, "Generic evaluation failed, see Exception property for more details");
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+    }
 }

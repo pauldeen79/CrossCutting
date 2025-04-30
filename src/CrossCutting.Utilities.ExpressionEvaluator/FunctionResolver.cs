@@ -3,24 +3,20 @@
 public class FunctionResolver : IFunctionResolver
 {
     private readonly IFunctionCallArgumentValidator _functionCallArgumentValidator;
-    private readonly IEnumerable<IFunction> _functions;
-    private readonly IEnumerable<IGenericFunction> _genericFunctions;
+    private readonly IEnumerable<IMember> _members;
 
     public FunctionResolver(
-        IFunctionDescriptorProvider functionDescriptorProvider,
+        IMemberDescriptorProvider functionDescriptorProvider,
         IFunctionCallArgumentValidator functionCallArgumentValidator,
-        IEnumerable<IFunction> functions,
-        IEnumerable<IGenericFunction> genericFunctions)
+        IEnumerable<IMember> members)
     {
         functionDescriptorProvider = ArgumentGuard.IsNotNull(functionDescriptorProvider, nameof(functionDescriptorProvider));
         ArgumentGuard.IsNotNull(functionCallArgumentValidator, nameof(functionCallArgumentValidator));
-        ArgumentGuard.IsNotNull(functions, nameof(functions));
-        ArgumentGuard.IsNotNull(genericFunctions, nameof(genericFunctions));
+        ArgumentGuard.IsNotNull(members, nameof(members));
 
         _functionCallArgumentValidator = functionCallArgumentValidator;
         _descriptors = new Lazy<IReadOnlyCollection<FunctionDescriptor>>(functionDescriptorProvider.GetAll);
-        _functions = functions;
-        _genericFunctions = genericFunctions;
+        _members = members;
     }
 
     private readonly Lazy<IReadOnlyCollection<FunctionDescriptor>> _descriptors;
@@ -54,19 +50,13 @@ public class FunctionResolver : IFunctionResolver
 
     private Result<FunctionAndTypeDescriptor> GetFunctionByDescriptor(FunctionCallContext functionCallContext, FunctionDescriptor functionDescriptor)
     {
-        IGenericFunction? genericFunction = null;
+        var member = _members.FirstOrDefault(x => x.GetType() == functionDescriptor.FunctionType);
 
-        var function = _functions.FirstOrDefault(x => x.GetType() == functionDescriptor.FunctionType);
-
-        if (function is null)
+        if (member is null)
         {
-            genericFunction = _genericFunctions.FirstOrDefault(x => x.GetType() == functionDescriptor.FunctionType);
-            if (genericFunction is null)
-            {
-                return Result.NotFound<FunctionAndTypeDescriptor>($"Could not find function with type name {functionDescriptor.FunctionType.FullName}");
-            }
+            return Result.NotFound<FunctionAndTypeDescriptor>($"Could not find member with type name {functionDescriptor.FunctionType.FullName}");
         }
 
-        return FunctionCallArgumentValidator.Validate(_functionCallArgumentValidator, functionCallContext, functionDescriptor, genericFunction, function);
+        return FunctionCallArgumentValidator.Validate(_functionCallArgumentValidator, functionCallContext, functionDescriptor, member);
     }
 }

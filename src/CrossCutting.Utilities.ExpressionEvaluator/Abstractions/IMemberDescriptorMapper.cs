@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 
-public interface IFunctionDescriptorMapper
+public interface IMemberDescriptorMapper
 {
     IEnumerable<FunctionDescriptor> Map(object source, Type? customFunctionType);
 }

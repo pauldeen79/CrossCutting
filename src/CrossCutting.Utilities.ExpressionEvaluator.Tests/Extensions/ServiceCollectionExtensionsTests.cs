@@ -29,18 +29,18 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Theory]
-    [MemberData(nameof(GetAllFunctions))]
-    public void Can_Resolve_Function(Type functionType)
+    [MemberData(nameof(GetAllMembers))]
+    public void Can_Resolve_Member(Type memberType)
     {
         // Arrange
         var serviceCollection = new ServiceCollection().AddExpressionEvaluator();
         using var provider = serviceCollection.BuildServiceProvider();
 
         // Act
-        var function = provider.GetServices<IFunction>().FirstOrDefault(x => x.GetType() == functionType);
+        var function = provider.GetServices<IMember>().FirstOrDefault(x => x.GetType() == memberType);
 
         // Assert
-        function.ShouldNotBeNull($"Function {functionType.FullName} could not be resolved, did you forget to register this?");
+        function.ShouldNotBeNull($"Member {memberType.FullName} could not be resolved, did you forget to register this?");
     }
 
     [Theory]
@@ -69,10 +69,10 @@ public class ServiceCollectionExtensionsTests
         return data;
     }
 
-    public static TheoryData<Type> GetAllFunctions()
+    public static TheoryData<Type> GetAllMembers()
     {
         var data = new TheoryData<Type>();
-        foreach (var t in typeof(IExpressionComponent).Assembly.GetExportedTypes().Where(x => !x.IsInterface && !x.IsAbstract && x.GetAllInterfaces().Contains(typeof(IFunction))))
+        foreach (var t in typeof(IExpressionComponent).Assembly.GetExportedTypes().Where(x => !x.IsInterface && !x.IsAbstract && x.GetAllInterfaces().Contains(typeof(IMember))))
         {
             data.Add(t);
         }

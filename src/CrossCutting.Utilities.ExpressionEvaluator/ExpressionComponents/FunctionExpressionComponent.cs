@@ -79,31 +79,11 @@ public class FunctionExpressionComponent : IExpressionComponent
     }
 
     private static Result<object?> EvaluateFunction(FunctionAndTypeDescriptor result, FunctionCallContext functionCallContext)
-    {
-        if (result.GenericFunction is not null)
+        => result.Member switch
         {
-            return EvaluateGenericFunction(result.GenericFunction, functionCallContext);
-        }
-
-        // We can safely assume that Function is not null, because the c'tor has verified this
-        return result.Function!.Evaluate(functionCallContext);
-    }
-
-    private static Result<object?> EvaluateGenericFunction(IGenericFunction genericFunction, FunctionCallContext functionCallContext)
-    {
-        try
-        {
-            var method = genericFunction
-                .GetType()
-                .GetMethod(nameof(IGenericFunction.EvaluateGeneric))!
-                .MakeGenericMethod(functionCallContext.FunctionCall.TypeArguments.ToArray());
-
-            return (Result<object?>)method.Invoke(genericFunction, [functionCallContext]);
-        }
-        catch (ArgumentException argException)
-        {
-            //The type or method has 1 generic parameter(s), but 0 generic argument(s) were provided. A generic argument must be provided for each generic parameter.
-            return Result.Invalid<object?>(argException.Message);
-        }
-    }
+            null => Result.Invalid<object?>("Member is null"),
+            IGenericFunction genericFunction => functionCallContext.Evaluate(genericFunction),
+            IFunction function => function.Evaluate(functionCallContext),
+            _ => Result.Invalid<object?>($"Unknown member type: {result.Member.GetType().FullName}")
+        };
 }
