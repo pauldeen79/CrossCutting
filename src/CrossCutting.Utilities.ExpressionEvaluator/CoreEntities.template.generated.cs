@@ -254,10 +254,16 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder(this);
         }
     }
-    public partial record FunctionDescriptor
+    public partial record MemberDescriptor
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Type ImplementationType
         {
             get;
         }
@@ -267,13 +273,12 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Type FunctionType
+        public System.Type? ReturnValueType
         {
             get;
         }
 
-        public System.Type? ReturnValueType
+        public System.Type? InstanceType
         {
             get;
         }
@@ -286,44 +291,45 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorArgument> Arguments
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorArgument> Arguments
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorTypeArgument> TypeArguments
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorTypeArgument> TypeArguments
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorResult> Results
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorResult> Results
         {
             get;
         }
 
-        public FunctionDescriptor(string name, CrossCutting.Utilities.ExpressionEvaluator.Domains.MemberType memberType, System.Type functionType, System.Type? returnValueType, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorArgument> arguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorTypeArgument> typeArguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorResult> results)
+        public MemberDescriptor(string name, System.Type implementationType, CrossCutting.Utilities.ExpressionEvaluator.Domains.MemberType memberType, System.Type? returnValueType, System.Type? instanceType, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorArgument> arguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorTypeArgument> typeArguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorResult> results)
         {
             this.Name = name;
+            this.ImplementationType = implementationType;
             this.MemberType = memberType;
-            this.FunctionType = functionType;
             this.ReturnValueType = returnValueType;
+            this.InstanceType = instanceType;
             this.Description = description;
-            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorArgument>(arguments);
-            this.TypeArguments = typeArguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorTypeArgument>(typeArguments);
-            this.Results = results is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorResult>(results);
+            this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorArgument>(arguments);
+            this.TypeArguments = typeArguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorTypeArgument>(typeArguments);
+            this.Results = results is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorResult>(results);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorBuilder ToBuilder()
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorBuilder(this);
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorBuilder(this);
         }
     }
-    public partial record FunctionDescriptorArgument
+    public partial record MemberDescriptorArgument
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name
@@ -348,7 +354,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public FunctionDescriptorArgument(string name, System.Type type, string description, bool isRequired)
+        public MemberDescriptorArgument(string name, System.Type type, string description, bool isRequired)
         {
             this.Name = name;
             this.Type = type;
@@ -357,12 +363,12 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorArgumentBuilder ToBuilder()
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorArgumentBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorArgumentBuilder(this);
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorArgumentBuilder(this);
         }
     }
-    public partial record FunctionDescriptorResult
+    public partial record MemberDescriptorResult
     {
         public CrossCutting.Common.Results.ResultStatus Status
         {
@@ -386,7 +392,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public FunctionDescriptorResult(CrossCutting.Common.Results.ResultStatus status, string value, System.Type? valueType, string description)
+        public MemberDescriptorResult(CrossCutting.Common.Results.ResultStatus status, string value, System.Type? valueType, string description)
         {
             this.Status = status;
             this.Value = value;
@@ -395,12 +401,12 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorResultBuilder ToBuilder()
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorResultBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorResultBuilder(this);
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorResultBuilder(this);
         }
     }
-    public partial record FunctionDescriptorTypeArgument
+    public partial record MemberDescriptorTypeArgument
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name
@@ -414,16 +420,16 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public FunctionDescriptorTypeArgument(string name, string description)
+        public MemberDescriptorTypeArgument(string name, string description)
         {
             this.Name = name;
             this.Description = description;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorTypeArgumentBuilder ToBuilder()
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorTypeArgumentBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorTypeArgumentBuilder(this);
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorTypeArgumentBuilder(this);
         }
     }
 }

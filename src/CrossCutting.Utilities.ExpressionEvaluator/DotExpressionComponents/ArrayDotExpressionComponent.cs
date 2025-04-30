@@ -1,7 +1,14 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.DotExpressionComponents;
 
-public class ArrayDotExpressionComponent : IDotExpressionComponent
+public class ArrayDotExpressionComponent : IDotExpressionComponent, IDynamicDescriptorsProvider
 {
+    private static readonly MemberDescriptor _lengthDescriptor = new MemberDescriptorBuilder()
+        .WithName(nameof(Array.Length))
+        .WithInstanceType(typeof(Array))
+        .WithMemberType(MemberType.Property)
+        .WithReturnValueType(typeof(int))
+        .WithImplementationType(typeof(ArrayDotExpressionComponent));
+
     public int Order => 13;
 
     public Result<object?> Evaluate(DotExpressionComponentState state)
@@ -15,6 +22,9 @@ public class ArrayDotExpressionComponent : IDotExpressionComponent
 
         return Result.Continue<object?>();
     }
+
+    public IEnumerable<MemberDescriptor> GetDescriptors()
+        => [_lengthDescriptor];
 
     public Result<Type> Validate(DotExpressionComponentState state)
     {

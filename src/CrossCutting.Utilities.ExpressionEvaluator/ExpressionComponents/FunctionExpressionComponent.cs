@@ -3,9 +3,9 @@
 public class FunctionExpressionComponent : IExpressionComponent
 {
     private readonly IFunctionParser _functionParser;
-    private readonly IFunctionResolver _functionResolver;
+    private readonly IMemberResolver _functionResolver;
 
-    public FunctionExpressionComponent(IFunctionParser functionParser, IFunctionResolver functionResolver)
+    public FunctionExpressionComponent(IFunctionParser functionParser, IMemberResolver functionResolver)
     {
         ArgumentGuard.IsNotNull(functionParser, nameof(functionParser));
         ArgumentGuard.IsNotNull(functionResolver, nameof(functionResolver));
@@ -78,7 +78,7 @@ public class FunctionExpressionComponent : IExpressionComponent
             .WithResultType(resolveResult.GetValueOrThrow().ReturnValueType);
     }
 
-    private static Result<object?> EvaluateFunction(FunctionAndTypeDescriptor result, FunctionCallContext functionCallContext)
+    private static Result<object?> EvaluateFunction(MemberAndTypeDescriptor result, FunctionCallContext functionCallContext)
         => result.Member switch
         {
             null => Result.Invalid<object?>("Member is null"),

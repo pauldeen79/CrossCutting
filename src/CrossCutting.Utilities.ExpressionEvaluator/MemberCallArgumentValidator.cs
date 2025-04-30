@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
+public class MemberCallArgumentValidator : IMemberCallArgumentValidator
 {
-    public ExpressionParseResult Validate(FunctionDescriptorArgument descriptorArgument, string callArgument, FunctionCallContext context)
+    public ExpressionParseResult Validate(MemberDescriptorArgument descriptorArgument, string callArgument, FunctionCallContext context)
     {
         descriptorArgument = ArgumentGuard.IsNotNull(descriptorArgument, nameof(descriptorArgument));
         callArgument = ArgumentGuard.IsNotNull(callArgument, nameof(callArgument));
@@ -25,16 +25,13 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         return callArgumentResult;
     }
 
-    public static Result<Type> Validate(DotExpressionComponentState state, IFunctionCallArgumentValidator validator, FunctionDescriptor functionDescriptor)
+    public static Result<Type> Validate(DotExpressionComponentState state, IMemberCallArgumentValidator validator, MemberDescriptor functionDescriptor)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
         validator = ArgumentGuard.IsNotNull(validator, nameof(validator));
         functionDescriptor = ArgumentGuard.IsNotNull(functionDescriptor, nameof(functionDescriptor));
 
-        // Little hacking here... We need to add an 'instance' argument (sort of an extension method), to construct a FunctionCall from this DotExpression...
-        var functionCall = state.FunctionParseResult.Value!.ToBuilder().Chain(x => x.Arguments.Insert(0, Constants.DummyArgument)).Build();
-
-        var result = Validate(validator, new FunctionCallContext(functionCall, state.Context), functionDescriptor, null);
+        var result = Validate(validator, new FunctionCallContext(state), functionDescriptor, null);
         if (!result.IsSuccessful())
         {
             return Result.FromExistingResult<Type>(result);
@@ -43,16 +40,16 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         return Result.Success(result.Value?.ReturnValueType!);
     }
 
-  public static Result<FunctionAndTypeDescriptor> Validate(IFunctionCallArgumentValidator functionCallArgumentValidator, FunctionCallContext functionCallContext, FunctionDescriptor functionDescriptor, IMember? member)
+  public static Result<MemberAndTypeDescriptor> Validate(IMemberCallArgumentValidator functionCallArgumentValidator, FunctionCallContext functionCallContext, MemberDescriptor functionDescriptor, IMember? member)
     {
         functionCallArgumentValidator = ArgumentGuard.IsNotNull(functionCallArgumentValidator, nameof(functionCallArgumentValidator));
         functionCallContext = ArgumentGuard.IsNotNull(functionCallContext, nameof(functionCallContext));
         functionDescriptor = ArgumentGuard.IsNotNull(functionDescriptor, nameof(functionDescriptor));
 
-        var arguments = functionDescriptor.Arguments.Zip(functionCallContext.FunctionCall.Arguments, (descriptor, call) => new FunctionArgumentInfo(descriptor, call));
+        var arguments = functionDescriptor.Arguments.Zip(functionCallContext.FunctionCall.Arguments, (descriptor, call) => new MemberArgumentInfo(descriptor, call));
 
         var errors = new List<ValidationError>();
-        foreach (var argument in arguments.Where(x => x.CallArgument != Constants.DummyArgument))
+        foreach (var argument in arguments.Where(x => x.CallArgument != Constants.DotArgument))
         {
             var validationResult = functionCallArgumentValidator.Validate(argument.DescriptorArgument, argument.CallArgument, functionCallContext);
             if (!validationResult.IsSuccessful() && validationResult.ErrorMessage is not null)
@@ -63,13 +60,13 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
 
         if (errors.Count > 0)
         {
-            return Result.Invalid<FunctionAndTypeDescriptor>($"Validation of member {functionCallContext.FunctionCall.Name} failed, see validation errors for more details", errors);
+            return Result.Invalid<MemberAndTypeDescriptor>($"Validation of member {functionCallContext.FunctionCall.Name} failed, see validation errors for more details", errors);
         }
 
-        return Result.Success(new FunctionAndTypeDescriptor(member, functionDescriptor.ReturnValueType));
+        return Result.Success(new MemberAndTypeDescriptor(member, functionDescriptor.ReturnValueType));
     }
 
-    private static bool IsTypeValid(ExpressionEvaluatorSettings settings, FunctionDescriptorArgument descriptorArgument, ExpressionParseResult callArgumentResult)
+    private static bool IsTypeValid(ExpressionEvaluatorSettings settings, MemberDescriptorArgument descriptorArgument, ExpressionParseResult callArgumentResult)
     {
         if (!settings.ValidateArgumentTypes)
         {

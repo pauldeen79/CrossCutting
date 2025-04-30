@@ -11,6 +11,15 @@ public class FunctionCallContext
         Context = context;
     }
 
+    public FunctionCallContext(DotExpressionComponentState state)
+    {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+
+        // Little hacking here... We need to add an 'instance' argument (sort of an extension method), to construct a FunctionCall from this DotExpression...
+        FunctionCall = state.FunctionParseResult.Value!.ToBuilder().Chain(x => x.Arguments.Insert(0, Constants.DotArgument)).Build();
+        Context = state.Context;
+    }
+
     public FunctionCall FunctionCall { get; }
     public ExpressionEvaluatorContext Context { get; }
 

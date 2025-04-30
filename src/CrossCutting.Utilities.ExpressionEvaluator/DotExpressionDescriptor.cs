@@ -1,6 +1,6 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.DotExpressionComponents;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-public class DotExpressionDescriptor<T>
+public sealed class DotExpressionDescriptor<T>
 {
     public DotExpressionDescriptor(Dictionary<string, DotExpressionDelegates<T>> delegates)
     {

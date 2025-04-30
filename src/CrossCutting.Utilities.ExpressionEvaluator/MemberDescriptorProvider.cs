@@ -14,6 +14,6 @@ public class MemberDescriptorProvider : IMemberDescriptorProvider
         _members = members;
     }
 
-    public IReadOnlyCollection<FunctionDescriptor> GetAll()
+    public IReadOnlyCollection<MemberDescriptor> GetAll()
         => _members.SelectMany(x => _functionDescriptorMapper.Map(x, null)).ToList();
 }

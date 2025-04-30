@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.Models;
 
-internal interface IFunctionDescriptorResult
+internal interface IMemberDescriptorResult
 {
     ResultStatus Status { get; }
     [Required(AllowEmptyStrings = true)] string Value { get; }

@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Domains;
 
 public enum ExpressionTokenType
 {

@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-public class FunctionAndTypeDescriptor
+public sealed class MemberAndTypeDescriptor
 {
-    public FunctionAndTypeDescriptor(IMember? member, Type? returnValueType)
+    public MemberAndTypeDescriptor(IMember? member, Type? returnValueType)
     {
         ReturnValueType = returnValueType;
         Member = member;

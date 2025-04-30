@@ -2,5 +2,5 @@
 
 public interface IMemberDescriptorMapper
 {
-    IEnumerable<FunctionDescriptor> Map(object source, Type? customFunctionType);
+    IEnumerable<MemberDescriptor> Map(object source, Type? customFunctionType);
 }

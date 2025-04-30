@@ -2,5 +2,5 @@
 
 public interface IDynamicDescriptorsProvider
 {
-    IEnumerable<FunctionDescriptor> GetDescriptors();
+    IEnumerable<MemberDescriptor> GetDescriptors();
 }

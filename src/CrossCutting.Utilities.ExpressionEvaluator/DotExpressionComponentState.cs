@@ -1,6 +1,6 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionComponents;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-public class DotExpressionComponentState
+public sealed class DotExpressionComponentState
 {
     private readonly IFunctionParser _functionParser;
 

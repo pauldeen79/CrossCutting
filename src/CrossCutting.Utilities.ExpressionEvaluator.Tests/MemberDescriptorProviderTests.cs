@@ -126,12 +126,12 @@ public class MemberDescriptorProviderTests
                 return Result.Success<object?>("Custom value");
             }
 
-            public IEnumerable<FunctionDescriptor> GetDescriptors()
+            public IEnumerable<MemberDescriptor> GetDescriptors()
             {
-                yield return new FunctionDescriptorBuilder()
+                yield return new MemberDescriptorBuilder()
                     .WithName("PassThrough")
                     .WithMemberType(MemberType.Function)
-                    .WithFunctionType(GetType());
+                    .WithImplementationType(GetType());
             }
         }
 

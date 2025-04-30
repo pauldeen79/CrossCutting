@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-public class FunctionArgumentInfo
+public sealed class MemberArgumentInfo
 {
-    public FunctionArgumentInfo(FunctionDescriptorArgument descriptorArgument, string callArgument)
+    public MemberArgumentInfo(MemberDescriptorArgument descriptorArgument, string callArgument)
     {
         ArgumentGuard.IsNotNull(descriptorArgument, nameof(descriptorArgument));
         ArgumentGuard.IsNotNull(callArgument, nameof(callArgument));
@@ -11,6 +11,6 @@ public class FunctionArgumentInfo
         CallArgument = callArgument;
     }
 
-    public FunctionDescriptorArgument DescriptorArgument { get; }
+    public MemberDescriptorArgument DescriptorArgument { get; }
     public string CallArgument { get; }
 }
