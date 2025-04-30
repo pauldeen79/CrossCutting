@@ -9,7 +9,7 @@ public class ObjectDotExpressionComponent : DotExpressionComponentBase<object>
 
     public ObjectDotExpressionComponent(IFunctionCallArgumentValidator validator) : base(new DotExpressionDescriptor<object>(new Dictionary<string, DotExpressionDelegates<object>>()
     {
-        // Note that we might validate the number of arguments, in case of overloads. But just set to 1 (the left part of the dot expression) so the function is always taken by name, regardless of number of arguments
+        // Note that we might validate the number of arguments, in case of overloads. But just set to 0 so the function is always taken by name, regardless of number of arguments
         { nameof(ToString), new DotExpressionDelegates<object>(0, x => FunctionCallArgumentValidator.Validate(x, validator, _toStringDescriptor), EvaluateToString) },
     }))
     {
