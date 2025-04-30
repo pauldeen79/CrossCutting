@@ -6,7 +6,7 @@ public class FunctionResultAttributeTests
     public void Should_Construct_1()
     {
         // Act & Assert
-        Action a = () => _ = new FunctionResultAttribute(ResultStatus.Ok, typeof(string), "value", "description");
+        Action a = () => _ = new MemberResultAttribute(ResultStatus.Ok, typeof(string), "value", "description");
         a.ShouldNotThrow();
     }
 
@@ -14,7 +14,7 @@ public class FunctionResultAttributeTests
     public void Should_Construct_2()
     {
         // Act & Assert
-        Action a = () => _ = new FunctionResultAttribute(ResultStatus.Ok, "description");
+        Action a = () => _ = new MemberResultAttribute(ResultStatus.Ok, "description");
         a.ShouldNotThrow();
     }
 
@@ -22,7 +22,7 @@ public class FunctionResultAttributeTests
     public void Should_Construct_3()
     {
         // Act & Assert
-        Action a = () => _ = new FunctionResultAttribute(ResultStatus.Ok);
+        Action a = () => _ = new MemberResultAttribute(ResultStatus.Ok);
         a.ShouldNotThrow();
     }
 }

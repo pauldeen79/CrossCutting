@@ -95,9 +95,9 @@ public class MemberDescriptorProviderTests
                 => throw new NotImplementedException();
         }
 
-        [FunctionName("MyCustomFunctionName")]
-        [FunctionArgument("Argument1", typeof(string), "Description of argument 1", true)]
-        [FunctionArgument("Argument2", typeof(int), "Description of argument 2", false)]
+        [MemberName("MyCustomFunctionName")]
+        [MemberArgument("Argument1", typeof(string), "Description of argument 1", true)]
+        [MemberArgument("Argument2", typeof(int), "Description of argument 2", false)]
         [Description("This is a very cool function")]
         private sealed class MyFunction2 : IFunction
         {
@@ -105,7 +105,7 @@ public class MemberDescriptorProviderTests
                 => throw new NotImplementedException();
         }
 
-        [FunctionResultType(typeof(string))]
+        [MemberResultType(typeof(string))]
         private sealed class MyTypedFunction : IFunction
         {
             public Result<object?> Evaluate(FunctionCallContext context)
@@ -135,10 +135,10 @@ public class MemberDescriptorProviderTests
             }
         }
 
-        [FunctionName("MyGenericFunction")]
-        [FunctionTypeArgument("T", "Description of T type argument")]
-        [FunctionResult(ResultStatus.Ok, "Success")]
-        [FunctionResultType(typeof(string))]
+        [MemberName("MyGenericFunction")]
+        [MemberTypeArgument("T", "Description of T type argument")]
+        [MemberResult(ResultStatus.Ok, "Success")]
+        [MemberResultType(typeof(string))]
         private sealed class MyGenericFunction : IGenericFunction
         {
             public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)

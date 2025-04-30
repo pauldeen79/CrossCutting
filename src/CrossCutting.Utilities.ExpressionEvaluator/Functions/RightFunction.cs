@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionResultType(typeof(string))]
-[FunctionArgument("StringExpression", typeof(string))]
-[FunctionArgument("Length", typeof(int))]
+[MemberResultType(typeof(string))]
+[MemberArgument("StringExpression", typeof(string))]
+[MemberArgument("Length", typeof(int))]
 public class RightFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)

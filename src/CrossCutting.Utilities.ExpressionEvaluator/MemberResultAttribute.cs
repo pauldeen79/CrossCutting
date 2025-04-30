@@ -1,14 +1,14 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public sealed class FunctionResultAttribute : Attribute
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+public sealed class MemberResultAttribute : Attribute
 {
     public ResultStatus Status { get; }
     public string Value { get; }
     public Type? ValueType { get; }
     public string Description { get; }
 
-    public FunctionResultAttribute(ResultStatus status, Type valueType, string value, string description)
+    public MemberResultAttribute(ResultStatus status, Type valueType, string value, string description)
     {
         ArgumentGuard.IsNotNull(valueType, nameof(valueType));
         ArgumentGuard.IsNotNull(value, nameof(value));
@@ -20,7 +20,7 @@ public sealed class FunctionResultAttribute : Attribute
         Description = description;
     }
 
-    public FunctionResultAttribute(ResultStatus status, string description)
+    public MemberResultAttribute(ResultStatus status, string description)
     {
         ArgumentGuard.IsNotNull(description, nameof(description));
 
@@ -30,7 +30,7 @@ public sealed class FunctionResultAttribute : Attribute
         Description = description;
     }
 
-    public FunctionResultAttribute(ResultStatus status)
+    public MemberResultAttribute(ResultStatus status)
     {
         Status = status;
         Value = string.Empty;

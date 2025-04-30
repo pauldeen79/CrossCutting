@@ -989,8 +989,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
     public void Dispose() => Provider.Dispose();
 
-    [FunctionName("MyFunction")]
-    [FunctionArgument("Input", typeof(string))]
+    [MemberName("MyFunction")]
+    [MemberArgument("Input", typeof(string))]
     private sealed class MyFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
@@ -1000,8 +1000,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
                 .OnSuccess(results => Result.Success<object?>(results.GetValue<string>("Input").ToUpperInvariant()));
     }
 
-    [FunctionName("MyGenericFunction")]
-    [FunctionTypeArgument("T", "Type argument to use")]
+    [MemberName("MyGenericFunction")]
+    [MemberTypeArgument("T", "Type argument to use")]
     private sealed class MyGenericFunction : IGenericFunction
     {
         public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)

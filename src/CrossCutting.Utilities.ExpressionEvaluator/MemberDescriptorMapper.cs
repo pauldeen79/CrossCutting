@@ -2,7 +2,7 @@
 
 public class MemberDescriptorMapper : IMemberDescriptorMapper
 {
-    public IEnumerable<MemberDescriptor> Map(object source, Type? customFunctionType)
+    public IEnumerable<MemberDescriptor> Map(object source, Type? customImplementationType)
     {
         source = ArgumentGuard.IsNotNull(source, nameof(source));
 
@@ -19,15 +19,47 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
         {
             yield return new MemberDescriptorBuilder()
                 .WithMemberType(GetMemberType(source))
-                .WithName(type.GetCustomAttribute<FunctionNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
+                .WithName(type.GetCustomAttribute<MemberNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
                 .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
-                .WithImplementationType(customFunctionType ?? type)
-                .WithReturnValueType(type.GetCustomAttribute<FunctionResultTypeAttribute>()?.Type)
-                .AddArguments(type.GetCustomAttributes<FunctionArgumentAttribute>().Select(CreateFunctionArgument))
-                .AddTypeArguments(type.GetCustomAttributes<FunctionTypeArgumentAttribute>().Select(CreateFunctionTypeArgument))
-                .AddResults(type.GetCustomAttributes<FunctionResultAttribute>().Select(CreateFunctionResult))
+                .WithImplementationType(customImplementationType ?? type)
+                .WithReturnValueType(type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type)
+                .AddArguments(type.GetCustomAttributes<MemberArgumentAttribute>().Select(CreateFunctionArgument))
+                .AddTypeArguments(type.GetCustomAttributes<MemberTypeArgumentAttribute>().Select(CreateFunctionTypeArgument))
+                .AddResults(type.GetCustomAttributes<MemberResultAttribute>().Select(CreateFunctionResult))
                 .Build();
         }
+    }
+
+    public Result<MemberDescriptor> Map(Delegate @delegate)
+    {
+        @delegate = ArgumentGuard.IsNotNull(@delegate, nameof(@delegate));
+
+        var declaringType = @delegate.Method.DeclaringType;
+        var method = declaringType.GetMethod(@delegate.Method.Name, BindingFlags.Static | BindingFlags.Public);
+        var instanceType = method.GetCustomAttribute<MemberInstanceTypeAttribute>()?.Type;
+
+        if (method is null)
+        {
+            return Result.Invalid<MemberDescriptor>($"Could not find method {@delegate.Method.Name} on type {declaringType.FullName}");
+        }
+
+        if (instanceType is null)
+        {
+            return Result.Invalid<MemberDescriptor>($"Method {@delegate.Method.Name} on type {declaringType.FullName} does not have a {nameof(MemberInstanceTypeAttribute)}, this is required");
+        }
+
+        return Result.Success<MemberDescriptor>(new MemberDescriptorBuilder()
+            .WithMemberType(MemberType.Method)
+            .WithName(method.GetCustomAttribute<MemberNameAttribute>()?.Name ?? @delegate.Method.Name)
+            .WithDescription(method.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
+            .WithImplementationType(declaringType)
+            .WithInstanceType(instanceType)
+            .WithReturnValueType(method.GetCustomAttribute<MemberResultTypeAttribute>()?.Type)
+            .AddArguments(new MemberDescriptorArgumentBuilder().WithName(Constants.DotArgument).WithIsRequired().WithType(instanceType))
+            .AddArguments(method.GetCustomAttributes<MemberArgumentAttribute>().Select(CreateFunctionArgument))
+            // Note that TypeArguments are skipped, this is not supported at this time.
+            // Besides, the MemberTypeArgumentAttribute can only be placed on a Class, at this time, to prevent mistakes ;-)
+            .AddResults(method.GetCustomAttributes<MemberResultAttribute>().Select(CreateFunctionResult)));
     }
 
     private static MemberType GetMemberType(object source)
@@ -38,19 +70,19 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
             _ => MemberType.Unknown
         };
 
-    private static MemberDescriptorArgumentBuilder CreateFunctionArgument(FunctionArgumentAttribute attribute)
+    private static MemberDescriptorArgumentBuilder CreateFunctionArgument(MemberArgumentAttribute attribute)
         => new MemberDescriptorArgumentBuilder()
             .WithName(attribute.Name)
             .WithDescription(attribute.Description)
             .WithType(attribute.Type)
             .WithIsRequired(attribute.IsRequired);
 
-    private static MemberDescriptorTypeArgumentBuilder CreateFunctionTypeArgument(FunctionTypeArgumentAttribute attribute)
+    private static MemberDescriptorTypeArgumentBuilder CreateFunctionTypeArgument(MemberTypeArgumentAttribute attribute)
         => new MemberDescriptorTypeArgumentBuilder()
             .WithName(attribute.Name)
             .WithDescription(attribute.Description);
 
-    private static MemberDescriptorResultBuilder CreateFunctionResult(FunctionResultAttribute attribute)
+    private static MemberDescriptorResultBuilder CreateFunctionResult(MemberResultAttribute attribute)
         => new MemberDescriptorResultBuilder()
             .WithDescription(attribute.Description)
             .WithStatus(attribute.Status)

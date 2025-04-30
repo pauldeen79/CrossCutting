@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionResultType(typeof(int))]
-[FunctionArgument("EnumerableExpression", typeof(IEnumerable))]
+[MemberResultType(typeof(int))]
+[MemberArgument("EnumerableExpression", typeof(IEnumerable))]
 public class CountFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)

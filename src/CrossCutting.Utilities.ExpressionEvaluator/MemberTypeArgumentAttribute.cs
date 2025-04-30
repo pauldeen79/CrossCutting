@@ -1,13 +1,13 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
 #pragma warning disable CA1019 // Define accessors for attribute arguments
-public sealed class FunctionTypeArgumentAttribute : Attribute
+public sealed class MemberTypeArgumentAttribute : Attribute
 {
     public string Name { get; }
     public string Description { get; }
 
-    public FunctionTypeArgumentAttribute(string name)
+    public MemberTypeArgumentAttribute(string name)
     {
         ArgumentGuard.IsNotNull(name, nameof(name));
 
@@ -15,7 +15,7 @@ public sealed class FunctionTypeArgumentAttribute : Attribute
         Description = string.Empty;
     }
 
-    public FunctionTypeArgumentAttribute(string name, string description)
+    public MemberTypeArgumentAttribute(string name, string description)
     {
         ArgumentGuard.IsNotNull(name, nameof(name));
         ArgumentGuard.IsNotNull(description, nameof(description));

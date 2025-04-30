@@ -1,9 +1,9 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionResultType(typeof(DateTime))]
-[FunctionArgument("Year", typeof(int))]
-[FunctionArgument("Month", typeof(int))]
-[FunctionArgument("Day", typeof(int))]
+[MemberResultType(typeof(DateTime))]
+[MemberArgument("Year", typeof(int))]
+[MemberArgument("Month", typeof(int))]
+[MemberArgument("Day", typeof(int))]
 public class DateFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)

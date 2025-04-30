@@ -2,5 +2,6 @@
 
 public interface IMemberDescriptorMapper
 {
-    IEnumerable<MemberDescriptor> Map(object source, Type? customFunctionType);
+    IEnumerable<MemberDescriptor> Map(object source, Type? customImplementationType);
+    Result<MemberDescriptor> Map(Delegate @delegate);
 }

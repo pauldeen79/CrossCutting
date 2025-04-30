@@ -6,7 +6,7 @@ public class FunctionArgumentAttributeTests
     public void Should_Construct_1()
     {
         // Act & Assert
-        Action a = () => _ = new FunctionArgumentAttribute("Name", typeof(string));
+        Action a = () => _ = new MemberArgumentAttribute("Name", typeof(string));
         a.ShouldNotThrow();
     }
 
@@ -14,7 +14,7 @@ public class FunctionArgumentAttributeTests
     public void Should_Construct_2()
     {
         // Act & Assert
-        Action a = () => _ = new FunctionArgumentAttribute("Name", typeof(string), "Description");
+        Action a = () => _ = new MemberArgumentAttribute("Name", typeof(string), "Description");
         a.ShouldNotThrow();
     }
 
@@ -22,7 +22,7 @@ public class FunctionArgumentAttributeTests
     public void Should_Construct_3()
     {
         // Act & Assert
-        Action a = () => _ = new FunctionArgumentAttribute("Name", typeof(string), true);
+        Action a = () => _ = new MemberArgumentAttribute("Name", typeof(string), true);
         a.ShouldNotThrow();
     }
 
@@ -30,7 +30,7 @@ public class FunctionArgumentAttributeTests
     public void Should_Construct_4()
     {
         // Act & Assert
-        Action a = () => _ = new FunctionArgumentAttribute("Name", typeof(string), "Description", true);
+        Action a = () => _ = new MemberArgumentAttribute("Name", typeof(string), "Description", true);
         a.ShouldNotThrow();
     }
 }

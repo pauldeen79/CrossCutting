@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionArgument("Type", typeof(Type))]
-[FunctionArgument("Expression", typeof(object))]
+[MemberArgument("Type", typeof(Type))]
+[MemberArgument("Expression", typeof(object))]
 public class ConvertFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)

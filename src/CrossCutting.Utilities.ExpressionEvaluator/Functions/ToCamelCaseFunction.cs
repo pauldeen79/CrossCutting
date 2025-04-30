@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionResultType(typeof(string))]
-[FunctionArgument("StringExpression", typeof(object))]
+[MemberResultType(typeof(string))]
+[MemberArgument("StringExpression", typeof(object))]
 public class ToCamelCaseFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)

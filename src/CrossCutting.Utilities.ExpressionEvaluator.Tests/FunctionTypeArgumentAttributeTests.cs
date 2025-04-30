@@ -6,7 +6,7 @@ public class FunctionTypeArgumentAttributeTests
     public void Should_Construct_1()
     {
         // Act & Assert
-        Action a = () => _ = new FunctionTypeArgumentAttribute("Name");
+        Action a = () => _ = new MemberTypeArgumentAttribute("Name");
         a.ShouldNotThrow();
     }
 
@@ -14,7 +14,7 @@ public class FunctionTypeArgumentAttributeTests
     public void Should_Construct_2()
     {
         // Act & Assert
-        Action a = () => _ = new FunctionTypeArgumentAttribute("Name", "Description");
+        Action a = () => _ = new MemberTypeArgumentAttribute("Name", "Description");
         a.ShouldNotThrow();
     }
 }

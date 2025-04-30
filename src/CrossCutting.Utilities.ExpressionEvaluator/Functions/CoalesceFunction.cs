@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionArgument("Expression", typeof(object))]
+[MemberArgument("Expression", typeof(object))]
 public class CoalesceFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)

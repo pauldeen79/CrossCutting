@@ -1,15 +1,15 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
 #pragma warning disable CA1019 // Define accessors for attribute arguments
-public sealed class FunctionArgumentAttribute : Attribute
+public sealed class MemberArgumentAttribute : Attribute
 {
     public string Name { get; }
     public Type Type { get; }
     public string Description { get; }
     public bool IsRequired { get; }
 
-    public FunctionArgumentAttribute(string name, Type type)
+    public MemberArgumentAttribute(string name, Type type)
     {
         ArgumentGuard.IsNotNull(name, nameof(name));
         ArgumentGuard.IsNotNull(type, nameof(type));
@@ -20,7 +20,7 @@ public sealed class FunctionArgumentAttribute : Attribute
         IsRequired = true;
     }
 
-    public FunctionArgumentAttribute(string name, Type type, string description)
+    public MemberArgumentAttribute(string name, Type type, string description)
     {
         ArgumentGuard.IsNotNull(name, nameof(name));
         ArgumentGuard.IsNotNull(type, nameof(type));
@@ -32,7 +32,7 @@ public sealed class FunctionArgumentAttribute : Attribute
         IsRequired = true;
     }
 
-    public FunctionArgumentAttribute(string name, Type type, bool isRequired)
+    public MemberArgumentAttribute(string name, Type type, bool isRequired)
     {
         ArgumentGuard.IsNotNull(name, nameof(name));
         ArgumentGuard.IsNotNull(type, nameof(type));
@@ -43,7 +43,7 @@ public sealed class FunctionArgumentAttribute : Attribute
         IsRequired = isRequired;
     }
 
-    public FunctionArgumentAttribute(string name, Type type, string description, bool isRequired)
+    public MemberArgumentAttribute(string name, Type type, string description, bool isRequired)
     {
         ArgumentGuard.IsNotNull(name, nameof(name));
         ArgumentGuard.IsNotNull(type, nameof(type));

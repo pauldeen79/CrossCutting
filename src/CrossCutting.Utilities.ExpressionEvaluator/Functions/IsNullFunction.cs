@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionResultType(typeof(bool))]
-[FunctionArgument("Expression", typeof(object))]
+[MemberResultType(typeof(bool))]
+[MemberArgument("Expression", typeof(object))]
 public class IsNullFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)

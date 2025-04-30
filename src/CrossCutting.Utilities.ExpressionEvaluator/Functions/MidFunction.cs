@@ -1,9 +1,9 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
-[FunctionResultType(typeof(string))]
-[FunctionArgument("StringExpression", typeof(string))]
-[FunctionArgument("Index", typeof(int))]
-[FunctionArgument("Length", typeof(int))]
+[MemberResultType(typeof(string))]
+[MemberArgument("StringExpression", typeof(string))]
+[MemberArgument("Index", typeof(int))]
+[MemberArgument("Length", typeof(int))]
 public class MidFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)

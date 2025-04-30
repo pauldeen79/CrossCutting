@@ -1,11 +1,11 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public sealed class FunctionResultTypeAttribute : Attribute
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public sealed class MemberInstanceTypeAttribute : Attribute
 {
     public Type Type { get; }
 
-    public FunctionResultTypeAttribute(Type type)
+    public MemberInstanceTypeAttribute(Type type)
     {
         ArgumentGuard.IsNotNull(type, nameof(type));
 
