@@ -994,9 +994,6 @@ public sealed class IntegrationTests : TestBase, IDisposable
     [FunctionTypeArgument("T", "Type argument to use")]
     private sealed class MyGenericFunction : IGenericFunction
     {
-        public Result<object?> Evaluate(FunctionCallContext context)
-            => context.Evaluate(this);
-
         public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
             => Result.Success<object?>(typeof(T));
     }

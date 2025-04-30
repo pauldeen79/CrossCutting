@@ -145,9 +145,6 @@ public class MemberDescriptorProviderTests
         [FunctionResultType(typeof(string))]
         private sealed class MyGenericFunction : IGenericFunction
         {
-            public Result<object?> Evaluate(FunctionCallContext context)
-                => context.Evaluate(this);
-
             public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
                 => throw new NotImplementedException();
         }

@@ -24,9 +24,6 @@ public class FunctionExpressionComponentTests : TestBase
         // Manually mocked this because I can't get NSubstitute working with generic method...
         private sealed class MyGenericFunction : IGenericFunction
         {
-            public Result<object?> Evaluate(FunctionCallContext context)
-                => context.Evaluate(this);
-
             public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
                 => Result.Success<object?>("function result value");
         }
