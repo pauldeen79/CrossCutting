@@ -2,6 +2,8 @@
 
 public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTime>, IDynamicDescriptorsProvider
 {
+    private const string DaysToAdd = nameof(DaysToAdd);
+
     private static readonly MemberDescriptor _dateDescriptor = new MemberDescriptorBuilder()
         .WithName(nameof(DateTime.Date))
         .WithInstanceType(typeof(DateTime))
@@ -51,7 +53,15 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
         .WithReturnValueType(typeof(int))
         .WithImplementationType(typeof(DateTimeDotExpressionComponent));
 
-    public DateTimeDotExpressionComponent() : base(new DotExpressionDescriptor<DateTime>(new Dictionary<string, DotExpressionDelegates<DateTime>>()
+    private static readonly MemberDescriptor _addDaysDescriptor = new MemberDescriptorBuilder()
+        .WithName(nameof(DateTime.AddDays))
+        .WithInstanceType(typeof(DateTime))
+        .WithMemberType(MemberType.Method)
+        .WithReturnValueType(typeof(DateTime))
+        .WithImplementationType(typeof(DateTimeDotExpressionComponent))
+        .AddArguments(new MemberDescriptorArgumentBuilder().WithName(nameof(DaysToAdd)).WithIsRequired().WithType(typeof(int)));
+
+    public DateTimeDotExpressionComponent(IMemberCallArgumentValidator validator) : base(new DotExpressionDescriptor<DateTime>(new Dictionary<string, DotExpressionDelegates<DateTime>>()
     {
         { nameof(DateTime.Date), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(DateTime)), (_, typedValue) => Result.Success<object?>(typedValue.Date)) },
         { nameof(DateTime.Year), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Year)) },
@@ -60,6 +70,7 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
         { nameof(DateTime.Hour), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Hour)) },
         { nameof(DateTime.Minute), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Minute)) },
         { nameof(DateTime.Second), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Second)) },
+        { nameof(DateTime.AddDays), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addDaysDescriptor), EvaluateAddDays) },
     }))
     {
     }
@@ -67,5 +78,15 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
     public override int Order => 11;
 
     public IEnumerable<MemberDescriptor> GetDescriptors()
-        => [_dateDescriptor, _yearDescriptor, _monthDescriptor, _dayDescriptor, _hourDescriptor, _minuteDescriptor, _secondDescriptor];
+        => [_dateDescriptor, _yearDescriptor, _monthDescriptor, _dayDescriptor, _hourDescriptor, _minuteDescriptor, _secondDescriptor, _addDaysDescriptor];
+
+    private static Result<object?> EvaluateAddDays(DotExpressionComponentState state, DateTime sourceValue)
+    {
+        var context = new FunctionCallContext(state);
+
+        return new ResultDictionaryBuilder()
+            .Add(DaysToAdd, () => context.FunctionCall.GetArgumentValueResult<int>(1, DaysToAdd, context))
+            .Build()
+            .OnSuccess(results => Result.Success<object?>(sourceValue.AddDays(results.GetValue<int>(DaysToAdd))));
+    }
 }

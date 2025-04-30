@@ -29,7 +29,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IMemberResolver, MemberResolver>()
             .AddSingleton<IExpressionTokenizer, ExpressionTokenizer>()
             .AddSingleton<IExpressionParser, ExpressionParser>()
-            .AddSingleton<IMember, AddDaysFunction>()
             .AddSingleton<IMember, AddHoursFunction>()
             .AddSingleton<IMember, AddMinutesFunction>()
             .AddSingleton<IMember, AddMonthsFunction>()
