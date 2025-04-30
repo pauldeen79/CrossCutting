@@ -29,5 +29,5 @@ public class ObjectDotExpressionComponent : DotExpressionComponentBase<object>
 
     }
 
-    public override int Order => 14;
+    public override int Order => 99;
 }
