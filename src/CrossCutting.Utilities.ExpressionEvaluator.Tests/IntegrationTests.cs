@@ -898,6 +898,22 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Parse_Method_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "1.ToString()";
+        var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+
+        // Act
+        var result = sut.Parse(CreateContext(expression, evaluator: sut, settings: settings));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBe(typeof(string));
+    }
+
+    [Fact]
     public void Can_Skip_Validation_On_ArgumentTypes_Using_Setting()
     {
         // Arrange
