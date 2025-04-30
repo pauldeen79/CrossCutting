@@ -25,16 +25,14 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         return callArgumentResult;
     }
 
-    public static Result<Type> Validate(DotExpressionComponentState state, IFunctionCallArgumentValidator validator, FunctionDescriptor functionDescriptor, string? sourceExpression)
+    public static Result<Type> Validate(DotExpressionComponentState state, IFunctionCallArgumentValidator validator, FunctionDescriptor functionDescriptor)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
         validator = ArgumentGuard.IsNotNull(validator, nameof(validator));
         functionDescriptor = ArgumentGuard.IsNotNull(functionDescriptor, nameof(functionDescriptor));
 
-        // Little hacking here... The source expression should be inserted as first argument, to construct a FunctionCall from this DotExpression...
-        var functionCall = sourceExpression is not null
-            ? state.FunctionParseResult.Value!.ToBuilder().Chain(x => x.Arguments.Insert(0, sourceExpression)).Build()
-            : state.FunctionParseResult.Value!;
+        // Little hacking here... We need to add an 'instance' argument (sort of an extension method), to construct a FunctionCall from this DotExpression...
+        var functionCall = state.FunctionParseResult.Value!.ToBuilder().Chain(x => x.Arguments.Insert(0, Constants.DummyArgument)).Build();
 
         var result = Validate(validator, new FunctionCallContext(functionCall, state.Context), functionDescriptor, null, null);
         if (!result.IsSuccessful())
@@ -54,7 +52,7 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         var arguments = functionDescriptor.Arguments.Zip(functionCallContext.FunctionCall.Arguments, (descriptor, call) => new FunctionArgumentInfo(descriptor, call));
 
         var errors = new List<ValidationError>();
-        foreach (var argument in arguments)
+        foreach (var argument in arguments.Where(x => x.CallArgument != Constants.DummyArgument))
         {
             var validationResult = functionCallArgumentValidator.Validate(argument.DescriptorArgument, argument.CallArgument, functionCallContext);
             if (!validationResult.IsSuccessful() && validationResult.ErrorMessage is not null)

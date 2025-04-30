@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IDotExpressionComponent, ArrayDotExpressionComponent>()
             .AddSingleton<IDotExpressionComponent, CollectionDotExpressionComponent>()
             .AddSingleton<IDotExpressionComponent, DateTimeDotExpressionComponent>()
+            .AddSingleton<IDotExpressionComponent, ObjectDotExpressionComponent>()
             .AddSingleton<IDotExpressionComponent, ReflectionMethodDotExpressionComponent>()
             .AddSingleton<IDotExpressionComponent, ReflectionPropertyDotExpressionComponent>()
             .AddSingleton<IDotExpressionComponent, StringDotExpressionComponent>()
@@ -47,6 +48,5 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IFunction, ToCamelCaseFunction>()
             .AddSingleton<IFunction, ToLowerCaseFunction>()
             .AddSingleton<IFunction, ToPascalCaseFunction>()
-            .AddSingleton<IFunction, ToStringFunction>()
             .AddSingleton<IFunction, ToUpperCaseFunction>();
 }

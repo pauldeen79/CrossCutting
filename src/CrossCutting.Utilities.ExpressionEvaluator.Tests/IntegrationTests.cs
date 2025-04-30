@@ -246,17 +246,31 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToString_Function()
+    public void Can_Evaluate_Expression_With_ToString_DotExpression_Method()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("ToString(true)", evaluator: sut));
+        var result = sut.Evaluate(CreateContext("true.ToString()", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldBe(true.ToString());
+    }
+
+    [Fact]
+    public void Evaluate_ToString_DotExpression_On_Null_Expression_Gives_Correct_Result()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("null.ToString()", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ErrorMessage.ShouldBe("null is null, cannot evaluate method ToString");
     }
 
     [Fact]

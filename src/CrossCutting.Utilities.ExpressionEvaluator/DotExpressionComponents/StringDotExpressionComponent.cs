@@ -22,7 +22,7 @@ public class StringDotExpressionComponent : DotExpressionComponentBase<string>
     {
         { Length, new DotExpressionDelegates<string>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Length)) },
         // Note that we might validate the number of arguments, in case of overloads. But just set to 1 (the left part of the dot expression) so the function is always taken by name, regardless of number of arguments
-        { Substring, new DotExpressionDelegates<string>(0, x => FunctionCallArgumentValidator.Validate(x, validator, _substringDescriptor, x.CurrentExpression.ToString()), EvaluateSubstring) },
+        { Substring, new DotExpressionDelegates<string>(0, x => FunctionCallArgumentValidator.Validate(x, validator, _substringDescriptor), EvaluateSubstring) },
     }))
     {
         ArgumentGuard.IsNotNull(validator, nameof(validator));
@@ -30,11 +30,11 @@ public class StringDotExpressionComponent : DotExpressionComponentBase<string>
 
     private static Result<object?> EvaluateSubstring(DotExpressionComponentState state, string sourceValue)
     {
-        // Little hacking here... The source value (which is a typed value) should be inserted as first argument, to construct a FunctionCall from this DotExpression...
-        var context = new FunctionCallContext(state.FunctionParseResult.Value!.ToBuilder().Chain(x => x.Arguments.Insert(0, $"\"{sourceValue}\"")).Build(), state.Context);
+        // Little hacking here... We need to add an 'instance' argument (sort of an extension method), to construct a FunctionCall from this DotExpression...
+        var context = new FunctionCallContext(state.FunctionParseResult.Value!.ToBuilder().Chain(x => x.Arguments.Insert(0, Constants.DummyArgument)).Build(), state.Context);
 
         return new ResultDictionaryBuilder()
-            .Add(StringExpression, () => context.FunctionCall.GetArgumentValueResult<string>(0, StringExpression, context))
+            .Add(StringExpression, () => Result.Success(sourceValue))
             .Add(Index, () => context.FunctionCall.GetArgumentValueResult<int>(1, Index, context))
             .Add(Length, () => context.FunctionCall.GetArgumentValueResult<int?>(2, Length, context, null))
             .Build()
