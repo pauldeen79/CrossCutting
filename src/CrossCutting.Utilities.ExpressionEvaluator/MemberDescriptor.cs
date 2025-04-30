@@ -5,7 +5,7 @@ public partial record MemberDescriptor : IValidatableObject
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         => Validate(MemberType, InstanceType, Arguments.Count, TypeArguments.Count);
 
-    public static IEnumerable<ValidationResult> Validate(
+    internal static IEnumerable<ValidationResult> Validate(
         MemberType memberType,
         Type? instanceType,
         int argumentCount,
