@@ -37,7 +37,7 @@ public class DotExpressionComponentTests : TestBase
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             // Error message sounds a little strange, but it's just repeating the left part of the expression, which is "null" in this case :)
-            result.ErrorMessage.ShouldBe("null is null, cannot get property or method MyProperty");
+            result.ErrorMessage.ShouldBe("null is null, cannot evaluate property MyProperty");
         }
 
         [Fact]
@@ -54,7 +54,7 @@ public class DotExpressionComponentTests : TestBase
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             // Error message sounds a little strange, but it's just repeating the left part of the expression, which is "null" in this case :)
-            result.ErrorMessage.ShouldBe("null is null, cannot get property or method MyMethod()");
+            result.ErrorMessage.ShouldBe("null is null, cannot evaluate method MyMethod");
         }
 
         [Fact]
@@ -233,7 +233,7 @@ public class DotExpressionComponentTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Unrecognized expression: 4unrecognized");
+            result.ErrorMessage.ShouldBe("Unknown expression on type System.Object: 4unrecognized");
         }
 
         public int MyProperty => 13;
@@ -324,7 +324,7 @@ public class DotExpressionComponentTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Unrecognized expression: 4unrecognized");
+            result.ErrorMessage.ShouldBe("Unknown expression: 4unrecognized");
         }
 
         [Fact]
@@ -388,7 +388,7 @@ public class DotExpressionComponentTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("null is null, cannot get property or method MyProperty");
+            result.ErrorMessage.ShouldBe("null is null, cannot evaluate property MyProperty");
         }
 
         public int MyProperty => 13;

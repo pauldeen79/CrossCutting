@@ -40,7 +40,7 @@ public class DotExpressionComponent : IExpressionComponent
 
             if (state.CurrentEvaluateResult.Value is null)
             {
-                return Result.Invalid<object?>($"{state.CurrentExpression} is null, cannot get property or method {state.Part}");
+                return Result.Invalid<object?>($"{state.CurrentExpression} is null, cannot evaluate {state.TypeDisplayName} {state.Name}");
             }
 
             state.Value = state.CurrentEvaluateResult.Value;
@@ -56,7 +56,7 @@ public class DotExpressionComponent : IExpressionComponent
             }
             else if (state.CurrentEvaluateResult.Status == ResultStatus.Continue)
             {
-                return Result.Invalid<object?>($"Unrecognized expression: {state.Part}");
+                return Result.Invalid<object?>($"Unknown {state.TypeDisplayName} on type {(state.ResultType ?? typeof(object)).FullName}: {state.Name}");
             }
         }
 
@@ -94,7 +94,7 @@ public class DotExpressionComponent : IExpressionComponent
             {
                 return result
                     .WithStatus(ResultStatus.Invalid)
-                    .WithErrorMessage($"{state.CurrentExpression} is null, cannot get property or method {state.Part}");
+                    .WithErrorMessage($"{state.CurrentExpression} is null, cannot evaluate {state.TypeDisplayName} {state.Name}");
             }
 
             state.CurrentParseResult = _components
@@ -110,7 +110,7 @@ public class DotExpressionComponent : IExpressionComponent
             {
                 return result
                     .WithStatus(ResultStatus.Invalid)
-                    .WithErrorMessage($"Unrecognized expression: {state.Part}");
+                    .WithErrorMessage($"Unknown {state.TypeDisplayName}: {state.Name}");
             }
 
             state.ResultType = state.CurrentParseResult.Value;

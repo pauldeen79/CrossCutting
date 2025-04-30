@@ -73,6 +73,11 @@ public class DotExpressionComponentState
         }
     }
 
+    public string TypeDisplayName =>
+        Type == DotExpressionType.Unknown
+            ? "expression"
+            : Type.ToString().ToLowerInvariant();
+
     public DotExpressionComponentState(ExpressionEvaluatorContext context, IFunctionParser functionParser, Result<object?> result, string firstPart)
     {
         ArgumentGuard.IsNotNull(context, nameof(context));

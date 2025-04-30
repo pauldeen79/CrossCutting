@@ -54,6 +54,7 @@ dotnet_diagnostic.IDE0058.severity = silent
 # dotnet_diagnostic.IDE0007.severity = silent
 # If statement can be simplified
 dotnet_diagnostic.IDE0046.severity = silent
+dotnet_diagnostic.CA1308.severity = silent # Normalize strings to uppercase
 
 ###############################
 # Naming Conventions          #
