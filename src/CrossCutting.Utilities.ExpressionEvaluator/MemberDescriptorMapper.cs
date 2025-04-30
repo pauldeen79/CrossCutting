@@ -22,7 +22,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
                 .WithName(type.GetCustomAttribute<FunctionNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
                 .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
                 .WithImplementationType(customFunctionType ?? type)
-                .WithReturnValueType(type.GetCustomAttribute<FunctionResultTypeAttribute>()?.Type ?? GetTypedResultType(type))
+                .WithReturnValueType(type.GetCustomAttribute<FunctionResultTypeAttribute>()?.Type)
                 .AddArguments(type.GetCustomAttributes<FunctionArgumentAttribute>().Select(CreateFunctionArgument))
                 .AddTypeArguments(type.GetCustomAttributes<FunctionTypeArgumentAttribute>().Select(CreateFunctionTypeArgument))
                 .AddResults(type.GetCustomAttributes<FunctionResultAttribute>().Select(CreateFunctionResult))
@@ -37,21 +37,6 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
             IFunction => MemberType.Function,
             _ => MemberType.Unknown
         };
-
-    private static Type? GetTypedResultType(Type type)
-    {
-        // Only when you implement one ITypedFunction<T>!
-        var typedFunctions = type
-            .GetInterfaces()
-            .Where(x => x.FullName.StartsWith(typeof(IFunction).FullName) && x.GenericTypeArguments.Length == 1)
-            .ToArray();
-        if (typedFunctions.Length == 1)
-        {
-            return typedFunctions[0].GenericTypeArguments[0];
-        }
-
-        return null;
-    }
 
     private static MemberDescriptorArgumentBuilder CreateFunctionArgument(FunctionArgumentAttribute attribute)
         => new MemberDescriptorArgumentBuilder()
