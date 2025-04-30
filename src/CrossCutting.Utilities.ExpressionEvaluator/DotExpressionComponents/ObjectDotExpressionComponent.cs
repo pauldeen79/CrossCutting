@@ -4,7 +4,8 @@ public class ObjectDotExpressionComponent : DotExpressionComponentBase<object>
 {
     private static readonly FunctionDescriptor _toStringDescriptor = new FunctionDescriptorBuilder()
         .WithName(nameof(ToString))
-        .WithFunctionType(typeof(StringDotExpressionComponent))
+        .WithMemberType(MemberType.Method)
+        .WithFunctionType(typeof(ObjectDotExpressionComponent))
         .WithReturnValueType(typeof(string));
 
     public ObjectDotExpressionComponent(IFunctionCallArgumentValidator validator) : base(new DotExpressionDescriptor<object>(new Dictionary<string, DotExpressionDelegates<object>>()

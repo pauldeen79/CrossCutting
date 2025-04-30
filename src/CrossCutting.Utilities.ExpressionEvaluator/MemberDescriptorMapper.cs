@@ -18,6 +18,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
         else
         {
             yield return new FunctionDescriptorBuilder()
+                .WithMemberType(GetMemberType(source))
                 .WithName(type.GetCustomAttribute<FunctionNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
                 .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
                 .WithFunctionType(customFunctionType ?? type)
@@ -28,6 +29,14 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
                 .Build();
         }
     }
+
+    private static MemberType GetMemberType(object source)
+        => source switch
+        {
+            IGenericFunction => MemberType.GenericFunction,
+            IFunction => MemberType.Function,
+            _ => MemberType.Unknown
+        };
 
     private static Type? GetTypedResultType(Type type)
     {

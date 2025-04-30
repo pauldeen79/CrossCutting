@@ -3,6 +3,7 @@
 internal interface IFunctionDescriptor
 {
     [Required] string Name { get; }
+    MemberType MemberType { get; }
     [Required] Type FunctionType { get; }
     Type? ReturnValueType { get; }
     [Required(AllowEmptyStrings = true)] string Description { get; }

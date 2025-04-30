@@ -132,7 +132,10 @@ public class MemberDescriptorProviderTests
 
             public IEnumerable<FunctionDescriptor> GetDescriptors()
             {
-                yield return new FunctionDescriptorBuilder().WithName("PassThrough").WithFunctionType(GetType());
+                yield return new FunctionDescriptorBuilder()
+                    .WithName("PassThrough")
+                    .WithMemberType(MemberType.Function)
+                    .WithFunctionType(GetType());
             }
         }
 

@@ -262,6 +262,11 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
+        public CrossCutting.Utilities.ExpressionEvaluator.Domains.MemberType MemberType
+        {
+            get;
+        }
+
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public System.Type FunctionType
         {
@@ -300,9 +305,10 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public FunctionDescriptor(string name, System.Type functionType, System.Type? returnValueType, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorArgument> arguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorTypeArgument> typeArguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorResult> results)
+        public FunctionDescriptor(string name, CrossCutting.Utilities.ExpressionEvaluator.Domains.MemberType memberType, System.Type functionType, System.Type? returnValueType, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorArgument> arguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorTypeArgument> typeArguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorResult> results)
         {
             this.Name = name;
+            this.MemberType = memberType;
             this.FunctionType = functionType;
             this.ReturnValueType = returnValueType;
             this.Description = description;

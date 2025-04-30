@@ -932,6 +932,8 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
     {
         private string _name;
 
+        private CrossCutting.Utilities.ExpressionEvaluator.Domains.MemberType _memberType;
+
         private System.Type _functionType;
 
         private System.Type? _returnValueType;
@@ -958,6 +960,20 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_name!, value!);
                 _name = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Name));
+            }
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Domains.MemberType MemberType
+        {
+            get
+            {
+                return _memberType;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Domains.MemberType>.Default.Equals(_memberType, value);
+                _memberType = value;
+                if (hasChanged) HandlePropertyChanged(nameof(MemberType));
             }
         }
 
@@ -1060,6 +1076,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _typeArguments = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorTypeArgumentBuilder>();
             _results = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorResultBuilder>();
             _name = source.Name;
+            _memberType = source.MemberType;
             _functionType = source.FunctionType;
             _returnValueType = source.ReturnValueType;
             _description = source.Description;
@@ -1081,7 +1098,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         public CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptor Build()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptor(Name, FunctionType, ReturnValueType, Description, Arguments.Select(x => x.Build()!).ToList().AsReadOnly(), TypeArguments.Select(x => x.Build()!).ToList().AsReadOnly(), Results.Select(x => x.Build()!).ToList().AsReadOnly());
+            return new CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptor(Name, MemberType, FunctionType, ReturnValueType, Description, Arguments.Select(x => x.Build()!).ToList().AsReadOnly(), TypeArguments.Select(x => x.Build()!).ToList().AsReadOnly(), Results.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         partial void SetDefaultValues();
@@ -1129,6 +1146,12 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         {
             if (name is null) throw new System.ArgumentNullException(nameof(name));
             Name = name;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorBuilder WithMemberType(CrossCutting.Utilities.ExpressionEvaluator.Domains.MemberType memberType)
+        {
+            MemberType = memberType;
             return this;
         }
 

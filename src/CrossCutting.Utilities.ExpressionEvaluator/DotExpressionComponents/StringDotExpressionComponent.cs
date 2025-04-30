@@ -4,6 +4,7 @@ public class StringDotExpressionComponent : DotExpressionComponentBase<string>
 {
     private static readonly FunctionDescriptor _substringDescriptor = new FunctionDescriptorBuilder()
         .WithName(Substring)
+        .WithMemberType(MemberType.Method)
         .WithFunctionType(typeof(StringDotExpressionComponent))
         .WithReturnValueType(typeof(string))
         .AddArguments
