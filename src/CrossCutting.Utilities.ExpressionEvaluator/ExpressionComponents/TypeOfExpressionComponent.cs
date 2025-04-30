@@ -1,22 +1,19 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionComponents;
 
-public class TypeOfExpressionComponent : IExpressionComponent<Type>
+public class TypeOfExpressionComponent : IExpressionComponent
 {
     private static readonly Regex _typeOfRegEx = new(@"^typeof\((?<typename>.+?)\)$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(250));
 
     public int Order => 13;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-        => EvaluateTyped(context).TryCastAllowNull<object?>();
-
-    public Result<Type> EvaluateTyped(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         var match = _typeOfRegEx.Match(context.Expression);
         if (!match.Success)
         {
-            return Result.Continue<Type>();
+            return Result.Continue<object?>();
         }
 
         var typename = match.Groups["typename"].Value;
@@ -24,10 +21,10 @@ public class TypeOfExpressionComponent : IExpressionComponent<Type>
         var type = Type.GetType(typename, false);
         if (type is null)
         {
-            return Result.Invalid<Type>($"Unknown type: {typename}");
+            return Result.Invalid<object?>($"Unknown type: {typename}");
         }
 
-        return Result.Success(type!);
+        return Result.Success<object?>(type!);
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)

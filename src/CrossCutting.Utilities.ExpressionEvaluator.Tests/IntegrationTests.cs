@@ -623,7 +623,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var context = new ExpressionEvaluatorContext("$\"public class {class.Name}\"", new ExpressionEvaluatorSettingsBuilder(), CreateSut(), state);
 
         // Act
-        var result = sut.EvaluateTyped(context);
+        var result = sut.Evaluate(context);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

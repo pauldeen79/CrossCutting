@@ -1,22 +1,19 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionComponents;
 
-public class StringExpressionComponent : IExpressionComponent<string>
+public class StringExpressionComponent : IExpressionComponent
 {
     public int Order => 11;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-        => EvaluateTyped(context).TryCastAllowNull<object?>();
-
-    public Result<string> EvaluateTyped(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         if (context.Expression.Length < 2 || !context.Expression.StartsWith("\"") || !context.Expression.EndsWith("\""))
         {
-            return Result.Continue<string>();
+            return Result.Continue<object?>();
         }
 
-        return Result.Success(context.Expression.Substring(1, context.Expression.Length - 2));
+        return Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2));
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)

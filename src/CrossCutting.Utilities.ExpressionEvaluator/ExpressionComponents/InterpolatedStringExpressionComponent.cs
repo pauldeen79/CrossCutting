@@ -1,29 +1,27 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionComponents;
 
-public class InterpolatedStringExpressionComponent : IExpressionComponent<GenericFormattableString>
+public class InterpolatedStringExpressionComponent : IExpressionComponent
 {
     private const string TemporaryDelimiter = "\uE002";
 
     public int Order => 12;
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-        => EvaluateTyped(context).TryCastAllowNull<object?>();
-
-    public Result<GenericFormattableString> EvaluateTyped(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         if (context.Expression.Length < 3 || !context.Expression.StartsWith("$\""))
         {
-            return Result.Continue<GenericFormattableString>();
+            return Result.Continue<object?>();
         }
 
         if (!context.Expression.EndsWith("\""))
         {
-            return Result.Invalid<GenericFormattableString>("FormattableString is not closed correctly");
+            return Result.Invalid<object?>("FormattableString is not closed correctly");
         }
 
-        return EvaluateRecursive(context.Expression.Substring(2, context.Expression.Length - 3), context);
+        return EvaluateRecursive(context.Expression.Substring(2, context.Expression.Length - 3), context)
+            .TryCastAllowNull<object?>();
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
