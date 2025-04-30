@@ -17,17 +17,7 @@ public class ObjectDotExpressionComponent : DotExpressionComponentBase<object>
     }
 
     private static Result<object?> EvaluateToString(DotExpressionComponentState state, object sourceValue)
-    {
-        // Little hacking here... We need to add an 'instance' argument (sort of an extension method), to construct a FunctionCall from this DotExpression...
-        var context = new FunctionCallContext(state.FunctionParseResult.Value!.ToBuilder().Chain(x => x.Arguments.Insert(0, Constants.DummyArgument)).Build(), state.Context);
-
-        return new ResultDictionaryBuilder()
-            .Add(Constants.Expression, () => Result.Success(sourceValue))
-            .Build()
-            .OnSuccess(results =>
-                Result.Success<object?>(results.GetValue(Constants.Expression).ToString(context.Context.Settings.FormatProvider)));
-
-    }
+        => Result.Success<object?>(sourceValue.ToString(state.Context.Settings.FormatProvider));
 
     public override int Order => 99;
 }
