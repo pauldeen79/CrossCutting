@@ -7,7 +7,8 @@ public class ObjectDotExpressionComponent : DotExpressionComponentBase<object>, 
         .WithMemberType(MemberType.Method)
         .WithInstanceType(typeof(object))
         .WithImplementationType(typeof(ObjectDotExpressionComponent))
-        .WithReturnValueType(typeof(string));
+        .WithReturnValueType(typeof(string))
+        .AddArguments(new MemberDescriptorArgumentBuilder().WithName(Constants.DotArgument).WithType(typeof(DateTime)).WithIsRequired());
 
     public ObjectDotExpressionComponent(IMemberCallArgumentValidator validator) : base(new DotExpressionDescriptor<object>(new Dictionary<string, DotExpressionDelegates<object>>()
     {

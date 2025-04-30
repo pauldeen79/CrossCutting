@@ -64,7 +64,9 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
         .WithMemberType(MemberType.Method)
         .WithReturnValueType(typeof(DateTime))
         .WithImplementationType(typeof(DateTimeDotExpressionComponent))
-        .AddArguments(new MemberDescriptorArgumentBuilder().WithName(DaysToAdd).WithIsRequired().WithType(typeof(int)));
+        .AddArguments(
+            new MemberDescriptorArgumentBuilder().WithName(Constants.DotArgument).WithType(typeof(DateTime)).WithIsRequired(),
+            new MemberDescriptorArgumentBuilder().WithName(DaysToAdd).WithType(typeof(int)).WithIsRequired());
 
     private static readonly MemberDescriptor _addHoursDescriptor = new MemberDescriptorBuilder()
         .WithName(nameof(DateTime.AddHours))
@@ -72,7 +74,9 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
         .WithMemberType(MemberType.Method)
         .WithReturnValueType(typeof(DateTime))
         .WithImplementationType(typeof(DateTimeDotExpressionComponent))
-        .AddArguments(new MemberDescriptorArgumentBuilder().WithName(HoursToAdd).WithIsRequired().WithType(typeof(int)));
+        .AddArguments(
+            new MemberDescriptorArgumentBuilder().WithName(Constants.DotArgument).WithType(typeof(DateTime)).WithIsRequired(),
+            new MemberDescriptorArgumentBuilder().WithName(HoursToAdd).WithType(typeof(int)).WithIsRequired());
 
     private static readonly MemberDescriptor _addMinutesDescriptor = new MemberDescriptorBuilder()
         .WithName(nameof(DateTime.AddMinutes))
@@ -80,7 +84,9 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
         .WithMemberType(MemberType.Method)
         .WithReturnValueType(typeof(DateTime))
         .WithImplementationType(typeof(DateTimeDotExpressionComponent))
-        .AddArguments(new MemberDescriptorArgumentBuilder().WithName(MinutesToAdd).WithIsRequired().WithType(typeof(int)));
+        .AddArguments(
+            new MemberDescriptorArgumentBuilder().WithName(Constants.DotArgument).WithType(typeof(DateTime)).WithIsRequired(),
+            new MemberDescriptorArgumentBuilder().WithName(MinutesToAdd).WithType(typeof(int)).WithIsRequired());
 
     private static readonly MemberDescriptor _addMonthsDescriptor = new MemberDescriptorBuilder()
         .WithName(nameof(DateTime.AddMonths))
@@ -88,7 +94,9 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
         .WithMemberType(MemberType.Method)
         .WithReturnValueType(typeof(DateTime))
         .WithImplementationType(typeof(DateTimeDotExpressionComponent))
-        .AddArguments(new MemberDescriptorArgumentBuilder().WithName(MonthsToAdd).WithIsRequired().WithType(typeof(int)));
+        .AddArguments(
+            new MemberDescriptorArgumentBuilder().WithName(Constants.DotArgument).WithType(typeof(DateTime)).WithIsRequired(), 
+            new MemberDescriptorArgumentBuilder().WithName(MonthsToAdd).WithType(typeof(int)).WithIsRequired());
 
     private static readonly MemberDescriptor _addSecondsDescriptor = new MemberDescriptorBuilder()
         .WithName(nameof(DateTime.AddSeconds))
@@ -96,7 +104,9 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
         .WithMemberType(MemberType.Method)
         .WithReturnValueType(typeof(DateTime))
         .WithImplementationType(typeof(DateTimeDotExpressionComponent))
-        .AddArguments(new MemberDescriptorArgumentBuilder().WithName(SecondsToAdd).WithIsRequired().WithType(typeof(int)));
+        .AddArguments(
+            new MemberDescriptorArgumentBuilder().WithName(Constants.DotArgument).WithType(typeof(DateTime)).WithIsRequired(),
+            new MemberDescriptorArgumentBuilder().WithName(SecondsToAdd).WithType(typeof(int)).WithIsRequired());
 
     private static readonly MemberDescriptor _addYearsDescriptor = new MemberDescriptorBuilder()
         .WithName(nameof(DateTime.AddYears))
@@ -104,7 +114,9 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
         .WithMemberType(MemberType.Method)
         .WithReturnValueType(typeof(DateTime))
         .WithImplementationType(typeof(DateTimeDotExpressionComponent))
-        .AddArguments(new MemberDescriptorArgumentBuilder().WithName(YearsToAdd).WithIsRequired().WithType(typeof(int)));
+        .AddArguments(
+            new MemberDescriptorArgumentBuilder().WithName(Constants.DotArgument).WithType(typeof(DateTime)).WithIsRequired(),
+            new MemberDescriptorArgumentBuilder().WithName(YearsToAdd).WithType(typeof(int)).WithIsRequired());
 
     public DateTimeDotExpressionComponent(IMemberCallArgumentValidator validator) : base(new DotExpressionDescriptor<DateTime>(new Dictionary<string, DotExpressionDelegates<DateTime>>()
     {
