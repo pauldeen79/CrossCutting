@@ -978,16 +978,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
     [FunctionName("MyFunction")]
     [FunctionArgument("Input", typeof(string))]
-    private sealed class MyFunction : IFunction<string>
+    private sealed class MyFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-            => EvaluateTyped(context).TryCastAllowNull<object?>();
-
-        public Result<string> EvaluateTyped(FunctionCallContext context)
             => new ResultDictionaryBuilder()
                 .Add("Input", () => context.GetArgumentValueResult<string>(0, "Input"))
                 .Build()
-                .OnSuccess(results => Result.Success(results.GetValue<string>("Input").ToUpperInvariant()));
+                .OnSuccess(results => Result.Success<object?>(results.GetValue<string>("Input").ToUpperInvariant()));
     }
 
     [FunctionName("MyGenericFunction")]

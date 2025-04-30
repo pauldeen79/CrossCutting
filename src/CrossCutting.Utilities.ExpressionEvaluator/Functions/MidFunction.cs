@@ -1,14 +1,12 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
+[FunctionResultType(typeof(string))]
 [FunctionArgument("StringExpression", typeof(string))]
 [FunctionArgument("Index", typeof(int))]
 [FunctionArgument("Length", typeof(int))]
-public class MidFunction : IFunction<string>
+public class MidFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)
-        => EvaluateTyped(context).TryCastAllowNull<object?>();
-
-    public Result<string> EvaluateTyped(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -24,8 +22,8 @@ public class MidFunction : IFunction<string>
                 var length = results.GetValue<int>("Length");
 
                 return stringExpression.Length >= index + length
-                    ? Result.Success(stringExpression.Substring(index, length))
-                    : Result.Invalid<string>("Index and length must refer to a location within the string");
+                    ? Result.Success<object?>(stringExpression.Substring(index, length))
+                    : Result.Invalid<object?>("Index and length must refer to a location within the string");
             });
     }
 }

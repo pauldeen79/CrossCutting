@@ -105,14 +105,10 @@ public class MemberDescriptorProviderTests
                 => throw new NotImplementedException();
         }
 
-        private sealed class MyTypedFunction : IFunction<string>
+        [FunctionResultType(typeof(string))]
+        private sealed class MyTypedFunction : IFunction
         {
             public Result<object?> Evaluate(FunctionCallContext context)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Result<string> EvaluateTyped(FunctionCallContext context)
             {
                 throw new NotImplementedException();
             }
