@@ -25,6 +25,52 @@ public class FunctionCallArgumentValidator : IFunctionCallArgumentValidator
         return callArgumentResult;
     }
 
+    public static Result<Type> Validate(DotExpressionComponentState state, IFunctionCallArgumentValidator validator, FunctionDescriptor functionDescriptor, string? sourceExpression)
+    {
+        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        validator = ArgumentGuard.IsNotNull(validator, nameof(validator));
+        functionDescriptor = ArgumentGuard.IsNotNull(functionDescriptor, nameof(functionDescriptor));
+
+        // Little hacking here... The source expression should be inserted as first argument, to construct a FunctionCall from this DotExpression...
+        var functionCall = sourceExpression is not null
+            ? state.FunctionParseResult.Value!.ToBuilder().Chain(x => x.Arguments.Insert(0, sourceExpression)).Build()
+            : state.FunctionParseResult.Value!;
+
+        var result = Validate(validator, new FunctionCallContext(functionCall, state.Context), functionDescriptor, null, null);
+        if (!result.IsSuccessful())
+        {
+            return Result.FromExistingResult<Type>(result);
+        }
+
+        return Result.Success(result.Value?.ReturnValueType!);
+    }
+
+    public static Result<FunctionAndTypeDescriptor> Validate(IFunctionCallArgumentValidator functionCallArgumentValidator, FunctionCallContext functionCallContext, FunctionDescriptor functionDescriptor, IGenericFunction? genericFunction, IFunction? function)
+    {
+        functionCallArgumentValidator = ArgumentGuard.IsNotNull(functionCallArgumentValidator, nameof(functionCallArgumentValidator));
+        functionCallContext = ArgumentGuard.IsNotNull(functionCallContext, nameof(functionCallContext));
+        functionDescriptor = ArgumentGuard.IsNotNull(functionDescriptor, nameof(functionDescriptor));
+
+        var arguments = functionDescriptor.Arguments.Zip(functionCallContext.FunctionCall.Arguments, (descriptor, call) => new FunctionArgumentInfo(descriptor, call));
+
+        var errors = new List<ValidationError>();
+        foreach (var argument in arguments)
+        {
+            var validationResult = functionCallArgumentValidator.Validate(argument.DescriptorArgument, argument.CallArgument, functionCallContext);
+            if (!validationResult.IsSuccessful() && validationResult.ErrorMessage is not null)
+            {
+                errors.Add(new ValidationError(validationResult.ErrorMessage, [argument.DescriptorArgument.Name]));
+            }
+        }
+
+        if (errors.Count > 0)
+        {
+            return Result.Invalid<FunctionAndTypeDescriptor>($"Validation of function {functionCallContext.FunctionCall.Name} failed, see validation errors for more details", errors);
+        }
+
+        return Result.Success(new FunctionAndTypeDescriptor(function, genericFunction, functionDescriptor.ReturnValueType));
+    }
+
     private static bool IsTypeValid(ExpressionEvaluatorSettings settings, FunctionDescriptorArgument descriptorArgument, ExpressionParseResult callArgumentResult)
     {
         if (!settings.ValidateArgumentTypes)

@@ -30,6 +30,8 @@ public class DotExpressionComponentState
         }
     }
 
+    public string PreviousPart { get; internal set; }
+
     private DotExpressionType? _type;
     public DotExpressionType Type
     {
@@ -92,6 +94,7 @@ public class DotExpressionComponentState
         Value = default!;
         CurrentParseResult = default!;
         CurrentEvaluateResult = result;
+        PreviousPart = string.Empty;
     }
 
     public void AppendPart() => CurrentExpression.Append('.').Append(Part);

@@ -566,6 +566,34 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_String_Substring_DotExpression_One_Argument()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("\"hello world\".Substring(6)", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("hello world".Substring(6));
+    }
+
+    [Fact]
+    public void Can_Evaluate_String_Substring_DotExpression_Two_Arguments()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("\"hello world\".Substring(0, 5)", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("hello world".Substring(0, 5));
+    }
+
+    [Fact]
     public void Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework()
     {
         // Observations:
@@ -825,6 +853,34 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.ResultType.ShouldBeNull(); // made this design decision because of the dynamic nature of this function. we can't evaluate the values while parsing
+    }
+
+    [Fact]
+    public void Can_Parse_String_Substring_DotExpression_One_Argument()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext("\"hello world\".Substring(6)", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBe("hello world".Substring(6).GetType());
+    }
+
+    [Fact]
+    public void Can_Parse_String_Substring_DotExpression_Two_Arguments()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Parse(CreateContext("\"hello world\".Substring(0, 5)", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ResultType.ShouldBe("hello world".Substring(0, 5).GetType());
     }
 
     [Fact]
