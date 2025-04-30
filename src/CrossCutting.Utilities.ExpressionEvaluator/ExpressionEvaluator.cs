@@ -76,17 +76,10 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         return context.Validate<object?>()
             .OnSuccess(() => _expressions
-                .Select(x => EvaluateBase(x, context))
+                .Select(x => x.Evaluate(context))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                     ?? Result.Invalid<object?>($"Unknown expression type found in fragment: {context.Expression}"));
     }
-
-    private static Result<object?> EvaluateBase(IExpressionComponent expressionComponentBase, ExpressionEvaluatorContext context)
-        => expressionComponentBase switch
-        {
-            IExpressionComponent untyped => untyped.Evaluate(context),
-            _ => Result.Continue<object?>()
-        };
 
     public Result<T> EvaluateTypedCallback<T>(ExpressionEvaluatorContext context)
     {
@@ -94,7 +87,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         return context.Validate<T>()
             .OnSuccess(() => _expressions
-                .Select(x => EvaluateBase(x, context).TryCastAllowNull<T>())
+                .Select(x => x.Evaluate(context).TryCastAllowNull<T>())
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                     ?? Result.Invalid<T>($"Unknown expression type found in fragment: {context.Expression}"));
     }
