@@ -126,7 +126,7 @@ public class MemberDescriptorProviderTests
                 return Result.Success<object?>("Custom value");
             }
 
-            public IEnumerable<MemberDescriptor> GetDescriptors()
+            public IEnumerable<MemberDescriptor> GetDescriptors(IMemberDescriptorCallback callback)
             {
                 yield return new MemberDescriptorBuilder()
                     .WithName("PassThrough")

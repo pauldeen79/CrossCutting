@@ -139,7 +139,7 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
 
     public override int Order => 11;
 
-    public IEnumerable<MemberDescriptor> GetDescriptors()
+    public IEnumerable<MemberDescriptor> GetDescriptors(IMemberDescriptorCallback callback)
         => [
             _dateDescriptor,
             _yearDescriptor,

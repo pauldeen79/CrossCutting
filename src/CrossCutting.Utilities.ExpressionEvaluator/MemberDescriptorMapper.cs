@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-public class MemberDescriptorMapper : IMemberDescriptorMapper
+public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptorCallback
 {
     public IEnumerable<MemberDescriptor> Map(object source, Type? customImplementationType)
     {
@@ -10,7 +10,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
 
         if (source is IDynamicDescriptorsProvider dynamicDescriptorsFunction)
         {
-            foreach (var descriptor in dynamicDescriptorsFunction.GetDescriptors())
+            foreach (var descriptor in dynamicDescriptorsFunction.GetDescriptors(this))
             {
                 yield return descriptor;
             }
@@ -30,7 +30,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
         }
     }
 
-    public Result<MemberDescriptor> Map(Delegate @delegate)
+    Result<MemberDescriptor> IMemberDescriptorCallback.Map(Delegate @delegate)
     {
         @delegate = ArgumentGuard.IsNotNull(@delegate, nameof(@delegate));
 

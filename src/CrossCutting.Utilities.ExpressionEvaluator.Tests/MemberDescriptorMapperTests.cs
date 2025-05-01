@@ -2,7 +2,7 @@
 
 public class MemberDescriptorMapperTests : TestBase<MemberDescriptorMapper>
 {
-    public class Map : MemberDescriptorMapperTests
+    public class Map : MemberDescriptorMapperTests, IDynamicDescriptorsProvider
     {
         [Fact]
         public void Returns_Correct_Result_On_Function_Class()
@@ -29,19 +29,19 @@ public class MemberDescriptorMapperTests : TestBase<MemberDescriptorMapper>
         public void Returns_Correct_Result_On_DotEpression_Method()
         {
             // Arrange
-            var sut = CreateSut();
+            var sut = this;
+            var callback = CreateSut();
 
             // Act
-            var result = sut.Map(EvaluateToString);
+            var result = sut.GetDescriptors(callback).ToArray();
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldNotBeNull();
-            result.Value.Name.ShouldBe("ToString");
-            result.Value.Arguments.Count.ShouldBe(1);
-            result.Value.Arguments.First().Name.ShouldBe(Constants.DotArgument);
-            result.Value.Arguments.First().Type.ShouldBe(typeof(object));
-            result.Value.Arguments.First().IsRequired.ShouldBe(true);
+            result.Length.ShouldBe(1);
+            result[0].Name.ShouldBe("ToString");
+            result[0].Arguments.Count.ShouldBe(1);
+            result[0].Arguments.First().Name.ShouldBe(Constants.DotArgument);
+            result[0].Arguments.First().Type.ShouldBe(typeof(object));
+            result[0].Arguments.First().IsRequired.ShouldBe(true);
         }
 
         [MemberName("MyCustomName")]
@@ -58,5 +58,10 @@ public class MemberDescriptorMapperTests : TestBase<MemberDescriptorMapper>
         [MemberResultType(typeof(string))]
         public static Result<object?> EvaluateToString(DotExpressionComponentState state, object sourceValue)
             => Result.Success<object?>(sourceValue.ToString(state.Context.Settings.FormatProvider));
+
+        public IEnumerable<MemberDescriptor> GetDescriptors(IMemberDescriptorCallback callback)
+        {
+            yield return callback.Map(EvaluateToString).GetValueOrThrow();
+        }
     }
 }
