@@ -19,8 +19,8 @@ public class ObjectDotExpressionComponent : DotExpressionComponentBase<object>, 
         ArgumentGuard.IsNotNull(validator, nameof(validator));
     }
 
-    public IEnumerable<MemberDescriptor> GetDescriptors(IMemberDescriptorCallback callback)
-        => [_toStringDescriptor];
+    public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback)
+        => Result.Success<IReadOnlyCollection<MemberDescriptor>>([_toStringDescriptor]);
 
     public override int Order => 99;
 

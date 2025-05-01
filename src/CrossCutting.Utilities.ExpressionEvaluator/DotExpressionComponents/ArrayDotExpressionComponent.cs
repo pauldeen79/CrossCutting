@@ -23,8 +23,8 @@ public class ArrayDotExpressionComponent : IDotExpressionComponent, IDynamicDesc
         return Result.Continue<object?>();
     }
 
-    public IEnumerable<MemberDescriptor> GetDescriptors(IMemberDescriptorCallback callback)
-        => [_lengthDescriptor];
+    public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback)
+        => Result.Success<IReadOnlyCollection<MemberDescriptor>>([_lengthDescriptor]);
 
     public Result<Type> Validate(DotExpressionComponentState state)
     {

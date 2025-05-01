@@ -11,18 +11,20 @@ public class MemberDescriptorMapperTests : TestBase<MemberDescriptorMapper>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Map(new MyFunction(), null).ToArray();
+            var result = sut.Map(new MyFunction(), null);
 
             // Assert
-            result.Length.ShouldBe(1);
-            result[0].Name.ShouldBe("MyCustomName");
-            result[0].Arguments.Count.ShouldBe(2);
-            result[0].Arguments.First().Name.ShouldBe("Argument1");
-            result[0].Arguments.First().Type.ShouldBe(typeof(string));
-            result[0].Arguments.First().IsRequired.ShouldBe(true);
-            result[0].Arguments.Last().Name.ShouldBe("Argument2");
-            result[0].Arguments.Last().Type.ShouldBe(typeof(object));
-            result[0].Arguments.Last().IsRequired.ShouldBe(false);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBe(1);
+            result.Value.First().Name.ShouldBe("MyCustomName");
+            result.Value.First().Arguments.Count.ShouldBe(2);
+            result.Value.First().Arguments.First().Name.ShouldBe("Argument1");
+            result.Value.First().Arguments.First().Type.ShouldBe(typeof(string));
+            result.Value.First().Arguments.First().IsRequired.ShouldBe(true);
+            result.Value.First().Arguments.Last().Name.ShouldBe("Argument2");
+            result.Value.First().Arguments.Last().Type.ShouldBe(typeof(object));
+            result.Value.First().Arguments.Last().IsRequired.ShouldBe(false);
         }
 
         [Fact]
@@ -33,15 +35,17 @@ public class MemberDescriptorMapperTests : TestBase<MemberDescriptorMapper>
             var callback = CreateSut();
 
             // Act
-            var result = sut.GetDescriptors(callback).ToArray();
+            var result = sut.GetDescriptors(callback);
 
             // Assert
-            result.Length.ShouldBe(1);
-            result[0].Name.ShouldBe("ToString");
-            result[0].Arguments.Count.ShouldBe(1);
-            result[0].Arguments.First().Name.ShouldBe(Constants.DotArgument);
-            result[0].Arguments.First().Type.ShouldBe(typeof(object));
-            result[0].Arguments.First().IsRequired.ShouldBe(true);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBe(1);
+            result.Value.First().Name.ShouldBe("ToString");
+            result.Value.First().Arguments.Count.ShouldBe(1);
+            result.Value.First().Arguments.First().Name.ShouldBe(Constants.DotArgument);
+            result.Value.First().Arguments.First().Type.ShouldBe(typeof(object));
+            result.Value.First().Arguments.First().IsRequired.ShouldBe(true);
         }
 
         [MemberName("MyCustomName")]
@@ -59,9 +63,9 @@ public class MemberDescriptorMapperTests : TestBase<MemberDescriptorMapper>
         public static Result<object?> EvaluateToString(DotExpressionComponentState state, object sourceValue)
             => Result.Success<object?>(sourceValue.ToString(state.Context.Settings.FormatProvider));
 
-        public IEnumerable<MemberDescriptor> GetDescriptors(IMemberDescriptorCallback callback)
+        public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback)
         {
-            yield return callback.Map(EvaluateToString).GetValueOrThrow();
+            return Result.Success<IReadOnlyCollection<MemberDescriptor>>(new List<MemberDescriptor>([callback.Map(EvaluateToString).GetValueOrThrow()]));
         }
     }
 }

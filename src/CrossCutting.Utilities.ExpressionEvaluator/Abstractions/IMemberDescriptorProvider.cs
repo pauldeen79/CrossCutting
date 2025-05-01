@@ -2,5 +2,5 @@
 
 public interface IMemberDescriptorProvider
 {
-    IReadOnlyCollection<MemberDescriptor> GetAll();
+    Result<IReadOnlyCollection<MemberDescriptor>> GetAll();
 }

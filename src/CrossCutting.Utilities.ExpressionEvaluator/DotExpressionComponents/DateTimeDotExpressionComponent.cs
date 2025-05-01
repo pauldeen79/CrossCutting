@@ -139,8 +139,8 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
 
     public override int Order => 11;
 
-    public IEnumerable<MemberDescriptor> GetDescriptors(IMemberDescriptorCallback callback)
-        => [
+    public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback)
+        => Result.Success<IReadOnlyCollection<MemberDescriptor>>([
             _dateDescriptor,
             _yearDescriptor,
             _monthDescriptor,
@@ -154,7 +154,7 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
             _addMonthsDescriptor,
             _addSecondsDescriptor,
             _addYearsDescriptor
-           ];
+           ]);
 
     private static Result<object?> EvaluateAddDays(DotExpressionComponentState state, DateTime sourceValue)
     {

@@ -18,6 +18,6 @@ public class CollectionDotExpressionComponent : DotExpressionComponentBase<IColl
     {
     }
 
-    public IEnumerable<MemberDescriptor> GetDescriptors(IMemberDescriptorCallback callback)
-        => [_countDescriptor];
+    public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback)
+        => Result.Success<IReadOnlyCollection<MemberDescriptor>>([_countDescriptor]);
 }

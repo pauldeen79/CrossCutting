@@ -2,7 +2,7 @@
 
 public interface IMemberDescriptorMapper
 {
-    IEnumerable<MemberDescriptor> Map(object source, Type? customImplementationType);
+    Result<IReadOnlyCollection<MemberDescriptor>> Map(object source, Type? customImplementationType);
 }
 
 public interface IMemberDescriptorCallback

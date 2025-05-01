@@ -19,11 +19,13 @@ public class MemberDescriptorProviderTests
             var result = sut.GetAll();
 
             // Assert
-            result.Count.ShouldBe(2);
-            result.First().Name.ShouldBe(nameof(MyFunction1));
-            result.First().Description.ShouldBeEmpty();
-            result.Last().Name.ShouldBe("MyCustomFunctionName");
-            result.Last().Description.ShouldBe("This is a very cool function");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBe(2);
+            result.Value.First().Name.ShouldBe(nameof(MyFunction1));
+            result.Value.First().Description.ShouldBeEmpty();
+            result.Value.Last().Name.ShouldBe("MyCustomFunctionName");
+            result.Value.Last().Description.ShouldBe("This is a very cool function");
         }
 
         [Fact]
@@ -42,7 +44,9 @@ public class MemberDescriptorProviderTests
             var result = sut.GetAll();
 
             // Assert
-            result.Count.ShouldBeGreaterThanOrEqualTo(3);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBeGreaterThanOrEqualTo(3);
         }
 
         [Fact]
@@ -59,9 +63,11 @@ public class MemberDescriptorProviderTests
             var result = sut.GetAll();
 
             // Assert
-            result.Count.ShouldBe(1);
-            result.First().Name.ShouldBe("MyTyped"); /// note that the Function suffix is removed, which seems logical for stuff like "ToUpperCaseFunction";
-            result.First().ReturnValueType.ShouldBe(typeof(string)); /// because of implementation of ITypedFunction<string>;
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBe(1);
+            result.Value.First().Name.ShouldBe("MyTyped"); /// note that the Function suffix is removed, which seems logical for stuff like "ToUpperCaseFunction";
+            result.Value.First().ReturnValueType.ShouldBe(typeof(string)); /// because of implementation of ITypedFunction<string>;
         }
 
         [Fact]
@@ -78,15 +84,17 @@ public class MemberDescriptorProviderTests
             var result = sut.GetAll();
 
             // Assert
-            result.Count.ShouldBe(1);
-            result.First().Name.ShouldBe("MyGenericFunction");
-            result.First().TypeArguments.Count.ShouldBe(1);
-            result.First().TypeArguments.First().Name.ShouldBe("T");
-            result.First().TypeArguments.First().Description.ShouldBe("Description of T type argument");
-            result.First().ReturnValueType.ShouldBe(typeof(string));
-            result.First().Results.Count.ShouldBe(1);
-            result.First().Results.First().Status.ShouldBe(ResultStatus.Ok);
-            result.First().Results.First().Description.ShouldBe("Success");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Count.ShouldBe(1);
+            result.Value.First().Name.ShouldBe("MyGenericFunction");
+            result.Value.First().TypeArguments.Count.ShouldBe(1);
+            result.Value.First().TypeArguments.First().Name.ShouldBe("T");
+            result.Value.First().TypeArguments.First().Description.ShouldBe("Description of T type argument");
+            result.Value.First().ReturnValueType.ShouldBe(typeof(string));
+            result.Value.First().Results.Count.ShouldBe(1);
+            result.Value.First().Results.First().Status.ShouldBe(ResultStatus.Ok);
+            result.Value.First().Results.First().Description.ShouldBe("Success");
         }
 
         private sealed class MyFunction1 : IFunction
@@ -126,12 +134,12 @@ public class MemberDescriptorProviderTests
                 return Result.Success<object?>("Custom value");
             }
 
-            public IEnumerable<MemberDescriptor> GetDescriptors(IMemberDescriptorCallback callback)
+            public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback)
             {
-                yield return new MemberDescriptorBuilder()
+                return Result.Success<IReadOnlyCollection<MemberDescriptor>>(new List<MemberDescriptor>([new MemberDescriptorBuilder()
                     .WithName("PassThrough")
                     .WithMemberType(MemberType.Function)
-                    .WithImplementationType(GetType());
+                    .WithImplementationType(GetType())]));
             }
         }
 

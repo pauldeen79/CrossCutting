@@ -2,32 +2,46 @@
 
 public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptorCallback
 {
-    public IEnumerable<MemberDescriptor> Map(object source, Type? customImplementationType)
+    public Result<IReadOnlyCollection<MemberDescriptor>> Map(object source, Type? customImplementationType)
     {
         source = ArgumentGuard.IsNotNull(source, nameof(source));
 
         var type = source.GetType();
+        var descriptors = new List<MemberDescriptor>();
 
-        if (source is IDynamicDescriptorsProvider dynamicDescriptorsFunction)
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
         {
-            foreach (var descriptor in dynamicDescriptorsFunction.GetDescriptors(this))
+            if (source is IDynamicDescriptorsProvider dynamicDescriptorsFunction)
             {
-                yield return descriptor;
+                var descriptorsResult = dynamicDescriptorsFunction.GetDescriptors(this);
+                if (!descriptorsResult.IsSuccessful())
+                {
+                    return descriptorsResult;
+                }
+
+                descriptors.AddRange(descriptorsResult.GetValueOrThrow());
             }
+            else
+            {
+                descriptors.Add(new MemberDescriptorBuilder()
+                    .WithMemberType(GetMemberType(source))
+                    .WithName(type.GetCustomAttribute<MemberNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
+                    .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
+                    .WithImplementationType(customImplementationType ?? type)
+                    .WithReturnValueType(type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type)
+                    .AddArguments(type.GetCustomAttributes<MemberArgumentAttribute>().Select(CreateFunctionArgument))
+                    .AddTypeArguments(type.GetCustomAttributes<MemberTypeArgumentAttribute>().Select(CreateFunctionTypeArgument))
+                    .AddResults(type.GetCustomAttributes<MemberResultAttribute>().Select(CreateFunctionResult)));
+            }
+
+            return Result.Success<IReadOnlyCollection<MemberDescriptor>>(descriptors);
         }
-        else
+        catch (Exception ex)
         {
-            yield return new MemberDescriptorBuilder()
-                .WithMemberType(GetMemberType(source))
-                .WithName(type.GetCustomAttribute<MemberNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
-                .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
-                .WithImplementationType(customImplementationType ?? type)
-                .WithReturnValueType(type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type)
-                .AddArguments(type.GetCustomAttributes<MemberArgumentAttribute>().Select(CreateFunctionArgument))
-                .AddTypeArguments(type.GetCustomAttributes<MemberTypeArgumentAttribute>().Select(CreateFunctionTypeArgument))
-                .AddResults(type.GetCustomAttributes<MemberResultAttribute>().Select(CreateFunctionResult))
-                .Build();
+            return Result.Error<IReadOnlyCollection<MemberDescriptor>>(ex, "Error occured while mapping memberdescriptor, see Exception for more details");
         }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     Result<MemberDescriptor> IMemberDescriptorCallback.Map(Delegate @delegate)
@@ -35,7 +49,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptor
         @delegate = ArgumentGuard.IsNotNull(@delegate, nameof(@delegate));
 
         var declaringType = @delegate.Method.DeclaringType;
-        var method = declaringType.GetMethod(@delegate.Method.Name, BindingFlags.Static | BindingFlags.Public);
+        var method = @delegate.GetMethodInfo();
         var instanceType = method.GetCustomAttribute<MemberInstanceTypeAttribute>()?.Type;
 
         if (method is null)

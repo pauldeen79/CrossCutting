@@ -38,8 +38,8 @@ public class StringDotExpressionComponent : DotExpressionComponentBase<string>, 
 
     public override int Order => 14;
 
-    public IEnumerable<MemberDescriptor> GetDescriptors(IMemberDescriptorCallback callback)
-        => [_substringDescriptor, _lengthDescriptor];
+    public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback)
+        => Result.Success<IReadOnlyCollection<MemberDescriptor>>([_substringDescriptor, _lengthDescriptor]);
 
     private static Result<object?> EvaluateSubstring(DotExpressionComponentState state, string sourceValue)
     {

@@ -51,11 +51,11 @@ public class FunctionExpressionComponentTests : TestBase
             // Arrange
             var context = CreateContext("MyFunction()");
             Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
-            MemberDescriptorProvider.GetAll().Returns([new MemberDescriptorBuilder()
+            MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
                 .WithName("MyFunction")
                 .WithMemberType(MemberType.Function)
                 .WithImplementationType(Function.GetType())
-                .WithReturnValueType(typeof(string))]);
+                .WithReturnValueType(typeof(string))]));
             var sut = CreateSut();
 
             // Act
@@ -72,11 +72,11 @@ public class FunctionExpressionComponentTests : TestBase
             // Arrange
             var context = CreateContext("MyFunction<System.String>()");
             var genericFunction = new MyGenericFunction();
-            MemberDescriptorProvider.GetAll().Returns([new MemberDescriptorBuilder()
+            MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
                 .WithName("MyFunction")
                 .WithMemberType(MemberType.Function)
                 .WithImplementationType(genericFunction.GetType())
-                .WithReturnValueType(typeof(string))]);
+                .WithReturnValueType(typeof(string))]));
             var sut = CreateSut(genericFunction);
 
             // Act
@@ -92,6 +92,9 @@ public class FunctionExpressionComponentTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction()");
+            MemberDescriptorProvider
+                .GetAll()
+                .Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>(new List<MemberDescriptor>()));
             var sut = CreateSut();
 
             // Act
@@ -108,11 +111,11 @@ public class FunctionExpressionComponentTests : TestBase
             // Arrange
             var context = CreateContext("MyFunction(context)");
             Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
-            MemberDescriptorProvider.GetAll().Returns(
+            MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>(
                 [
                     new MemberDescriptorBuilder().WithName("MyFunction").WithImplementationType(Function.GetType()).WithMemberType(MemberType.Function).WithReturnValueType(typeof(string)),
                     new MemberDescriptorBuilder().WithName("MyFunction").WithImplementationType(Function.GetType()).WithMemberType(MemberType.Function).WithReturnValueType(typeof(int)),
-                ]);
+                ]));
             var sut = CreateSut();
 
             // Act
@@ -129,11 +132,11 @@ public class FunctionExpressionComponentTests : TestBase
             // Arrange
             var context = CreateContext("MyFunction()");
             Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
-            MemberDescriptorProvider.GetAll().Returns(
+            MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>(
                 [
                     new MemberDescriptorBuilder().WithName("MyFunction").WithMemberType(MemberType.Function).WithImplementationType(Function.GetType()).WithReturnValueType(typeof(string)),
                     new MemberDescriptorBuilder().WithName("MyFunction").WithMemberType(MemberType.Function).WithImplementationType(Function.GetType()).WithReturnValueType(typeof(int)),
-                ]);
+                ]));
             var sut = CreateSut();
 
             // Act
@@ -150,11 +153,11 @@ public class FunctionExpressionComponentTests : TestBase
             // Arrange
             var context = CreateContext("MyFunction()");
             Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
-            MemberDescriptorProvider.GetAll().Returns([new MemberDescriptorBuilder()
+            MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
                 .WithName("MyFunction")
                 .WithMemberType(MemberType.Function)
                 .WithImplementationType(GetType())
-                .WithReturnValueType(typeof(string))]);
+                .WithReturnValueType(typeof(string))]));
             var sut = CreateSut();
 
             // Act
@@ -171,11 +174,11 @@ public class FunctionExpressionComponentTests : TestBase
             // Arrange
             var context = CreateContext("MyFunction<System.String,System.String>()");
             var genericFunction = new MyGenericFunction();
-            MemberDescriptorProvider.GetAll().Returns([new MemberDescriptorBuilder()
+            MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
                 .WithName("MyFunction")
                 .WithMemberType(MemberType.Function)
                 .WithImplementationType(genericFunction.GetType())
-                .WithReturnValueType(typeof(string))]);
+                .WithReturnValueType(typeof(string))]));
             var sut = CreateSut(genericFunction);
 
             // Act
@@ -196,12 +199,12 @@ public class FunctionExpressionComponentTests : TestBase
                 .Returns(Result.Success<object?>("function result value"));
             MemberDescriptorProvider
                 .GetAll()
-                .Returns([new MemberDescriptorBuilder()
+                .Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
                     .WithName("MyFunction")
                     .WithMemberType(MemberType.Function)
                     .WithImplementationType(Function.GetType())
                     .WithReturnValueType(typeof(string))
-                    .AddArguments(new MemberDescriptorArgumentBuilder().WithName("MyArgument").WithType(typeof(string)))]);
+                    .AddArguments(new MemberDescriptorArgumentBuilder().WithName("MyArgument").WithType(typeof(string)))]));
             FunctionCallArgumentValidator
                 .Validate(Arg.Any<MemberDescriptorArgument>(), Arg.Any<string>(), Arg.Any<FunctionCallContext>())
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Invalid).WithErrorMessage("I want a string, you give me an int!"));
@@ -258,11 +261,11 @@ public class FunctionExpressionComponentTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction()");
-            MemberDescriptorProvider.GetAll().Returns([new MemberDescriptorBuilder()
+            MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
                 .WithName("MyFunction")
                 .WithMemberType(MemberType.Function)
                 .WithImplementationType(Function.GetType())
-                .WithReturnValueType(typeof(string))]);
+                .WithReturnValueType(typeof(string))]));
             var sut = CreateSut();
 
             // Act
@@ -280,6 +283,9 @@ public class FunctionExpressionComponentTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction()");
+            MemberDescriptorProvider
+                .GetAll()
+                .Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>(new List<MemberDescriptor>()));
             var sut = CreateSut();
 
             // Act

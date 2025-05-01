@@ -971,7 +971,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var descriptors = sut.GetAll();
 
         // Assert
-        descriptors.ShouldNotBeEmpty();
+        descriptors.Status.ShouldBe(ResultStatus.Ok);
+        descriptors.Value.ShouldNotBeEmpty();
     }
 
     public IntegrationTests()
