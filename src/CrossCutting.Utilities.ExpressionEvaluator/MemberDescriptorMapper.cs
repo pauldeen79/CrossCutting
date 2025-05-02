@@ -58,11 +58,6 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptor
                 var method = @delegate.GetMethodInfo();
                 var instanceType = method.GetCustomAttribute<MemberInstanceTypeAttribute>()?.Type;
 
-                if (method is null)
-                {
-                    return Result.Invalid<MemberDescriptor>($"Could not find method {@delegate.Method.Name} on type {declaringType.FullName}");
-                }
-
                 if (instanceType is null)
                 {
                     return Result.Invalid<MemberDescriptor>($"Method {@delegate.Method.Name} on type {declaringType.FullName} does not have a {nameof(MemberInstanceTypeAttribute)}, this is required");
