@@ -404,6 +404,40 @@ public record Result
         return errorResultDelegate(errors);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Result WrapException(Func<Result> resultDelegate)
+    {
+        ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return resultDelegate();
+        }
+        catch (Exception ex)
+        {
+            return Result.Error(ex, "Exception occured");
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Result<T> WrapException<T>(Func<Result<T>> resultDelegate)
+    {
+        ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return resultDelegate();
+        }
+        catch (Exception ex)
+        {
+            return Result.Error<T>(ex, "Exception occured");
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+    }
+
     private static T? TryGetValue<T>(Result existingResult) => existingResult.GetValue() is T t
         ? t
         : default;
@@ -420,4 +454,5 @@ public record Result
         => ThrowIfInvalid(string.IsNullOrEmpty(ErrorMessage)
             ? $"Result: {Status}"
             : $"Result: {Status}, ErrorMessage: {ErrorMessage}");
+
 }
