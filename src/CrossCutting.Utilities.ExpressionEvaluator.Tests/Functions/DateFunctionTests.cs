@@ -33,7 +33,7 @@ public class DateFunctionTests : TestBase<DateFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("Could not create date, see exception for more details");
+            result.ErrorMessage.ShouldBe("Exception occured");
             result.Exception.ShouldNotBeNull();
             result.Exception.Message.ShouldBe("Year, Month, and Day parameters describe an un-representable DateTime.");
         }

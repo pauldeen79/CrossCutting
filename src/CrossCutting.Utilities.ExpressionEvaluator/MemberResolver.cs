@@ -27,8 +27,7 @@ public class MemberResolver : IMemberResolver
     {
         functionCallContext = ArgumentGuard.IsNotNull(functionCallContext, nameof(functionCallContext));
 
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
+        return Result.WrapException(() =>
         {
             if (!Descriptors.IsSuccessful())
             {
@@ -55,12 +54,7 @@ public class MemberResolver : IMemberResolver
                 1 => GetFunctionByDescriptor(functionCallContext, functionsWithRightArgumentCount[0]),
                 _ => Result.NotFound<MemberAndTypeDescriptor>($"Function {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely")
             };
-        }
-        catch (Exception ex)
-        {
-            return Result.Error<MemberAndTypeDescriptor>(ex, "Error occured while resolving function, see Exception for more details");
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
+        });
     }
 
     private Result<MemberAndTypeDescriptor> GetFunctionByDescriptor(FunctionCallContext functionCallContext, MemberDescriptor memberDescriptor)

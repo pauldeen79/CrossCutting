@@ -33,7 +33,7 @@ public class ConvertFunctionTests : TestBase<ConvertFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("Could not convert value to target type, see exception for more details");
+            result.ErrorMessage.ShouldBe("Exception occured");
         }
     }
 }

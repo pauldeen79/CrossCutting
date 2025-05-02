@@ -33,7 +33,7 @@ public class DateTimeFunctionTests : TestBase<DateTimeFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("Could not create datetime, see exception for more details");
+            result.ErrorMessage.ShouldBe("Exception occured");
             result.Exception.ShouldNotBeNull();
             result.Exception.Message.ShouldBe("Hour, Minute, and Second parameters describe an un-representable DateTime.");
         }

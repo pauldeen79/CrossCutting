@@ -38,18 +38,9 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
             return args[args.Length - 1];
         }
 
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
-        {
-            state.AppendPart();
+        state.AppendPart();
 
-            return Result.Success<object?>(methods[0].Invoke(state.Value, args.Select(x => x.Value).ToArray()));
-        }
-        catch (Exception ex)
-        {
-            return Result.Error<object?>(ex, $"Evaluation of method {functionCall.Name} on type {state.Value.GetType().FullName} threw an exception, see Exception property for more details");
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
+        return Result.WrapException(() => Result.Success<object?>(methods[0].Invoke(state.Value, args.Select(x => x.Value).ToArray())));
     }
 
     public Result<Type> Validate(DotExpressionComponentState state)

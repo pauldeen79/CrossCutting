@@ -103,7 +103,7 @@ public class DotExpressionComponentTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("Evaluation of property MyErrorProperty on type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+Evaluate threw an exception, see Exception property for more details");
+            result.ErrorMessage.ShouldBe("Exception occured");
             result.Exception.ShouldBeOfType<TargetInvocationException>();
         }
 
@@ -120,7 +120,7 @@ public class DotExpressionComponentTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("Evaluation of method ErrorMethod on type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+Evaluate threw an exception, see Exception property for more details");
+            result.ErrorMessage.ShouldBe("Exception occured");
             result.Exception.ShouldBeOfType<TargetInvocationException>();
         }
 

@@ -33,7 +33,7 @@ public class CastFunctionTests : TestBase<CastFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("Could not cast value to target type, see exception for more details");
+            result.ErrorMessage.ShouldBe("Exception occured");
         }
     }
 }

@@ -19,19 +19,13 @@ public class ReflectionPropertyDotExpressionComponent : IDotExpressionComponent
             return Result.Invalid<object?>($"Type {state.Value.GetType().FullName} does not contain property {state.Part}");
         }
 
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
+        return Result.WrapException(() =>
         {
             var propertyValue = property.GetValue(state.Value);
             state.AppendPart();
 
             return Result.Success<object?>(propertyValue);
-        }
-        catch (Exception ex)
-        {
-            return Result.Error<object?>(ex, $"Evaluation of property {state.Part} on type {state.Value.GetType().FullName} threw an exception, see Exception property for more details");
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
+        });
     }
 
     public Result<Type> Validate(DotExpressionComponentState state)

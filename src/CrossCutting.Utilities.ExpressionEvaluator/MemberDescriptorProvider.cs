@@ -18,27 +18,17 @@ public class MemberDescriptorProvider : IMemberDescriptorProvider
     {
         var descriptors = new List<MemberDescriptor>();
 
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
+        foreach (var member in _members)
         {
-            foreach (var member in _members)
+            var result = Result.WrapException(() => _functionDescriptorMapper.Map(member, null));
+            if (!result.IsSuccessful())
             {
-                var result = _functionDescriptorMapper.Map(member, null);
-                if (!result.IsSuccessful())
-                {
-                    return result;
-                }
-
-                descriptors.AddRange(result.GetValueOrThrow());
+                return result;
             }
 
-            return Result.Success<IReadOnlyCollection<MemberDescriptor>>(descriptors);
+            descriptors.AddRange(result.GetValueOrThrow());
         }
-        catch (Exception ex)
-        {
-            return Result.Error<IReadOnlyCollection<MemberDescriptor>>(ex, "Error occured while getting member descriptors, see Exception property for more details");
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
 
+        return Result.Success<IReadOnlyCollection<MemberDescriptor>>(descriptors);
     }
 }

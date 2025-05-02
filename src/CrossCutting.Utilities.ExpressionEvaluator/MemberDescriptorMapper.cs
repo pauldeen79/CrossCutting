@@ -11,8 +11,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptor
         var type = source.GetType();
         var descriptors = new List<MemberDescriptor>();
 
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
+        return Result.WrapException(() =>
         {
             if (source is IDynamicDescriptorsProvider dynamicDescriptorsFunction)
             {
@@ -38,12 +37,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptor
             }
 
             return Result.Success<IReadOnlyCollection<MemberDescriptor>>(descriptors);
-        }
-        catch (Exception ex)
-        {
-            return Result.Error<IReadOnlyCollection<MemberDescriptor>>(ex, "Error occured while mapping memberdescriptor, see Exception for more details");
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
+        });
     }
 
     Result<MemberDescriptor> IMemberDescriptorCallback.Map(Delegate @delegate)
@@ -55,8 +49,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptor
             return result;
         }
 
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
+        return Result.WrapException(() =>
         {
             var declaringType = @delegate.Method.DeclaringType;
             var method = @delegate.GetMethodInfo();
@@ -88,12 +81,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptor
             _memberDescriptorCache.Add(@delegate, result);
 
             return result;
-        }
-        catch (Exception ex)
-        {
-            return Result.Error<MemberDescriptor>(ex, "Error occured wihle mapping member descriptor, see Exception for more details");
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
+        });
     }
 
     private static MemberType GetMemberType(object source)

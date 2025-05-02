@@ -18,17 +18,5 @@ public class DateTimeFunction : IFunction
             .Add<int>(context, 4, "Minute")
             .Add<int>(context, 5, "Second")
             .Build()
-            .OnSuccess(results =>
-            {
-#pragma warning disable CA1031 // Do not catch general exception types
-                try
-                {
-                    return Result.Success<object?>(new DateTime(results.GetValue<int>("Year"), results.GetValue<int>("Month"), results.GetValue<int>("Day"), results.GetValue<int>("Hour"), results.GetValue<int>("Minute"), results.GetValue<int>("Second"), DateTimeKind.Unspecified));
-                }
-                catch (Exception ex)
-                {
-                    return Result.Error<object?>(ex, "Could not create datetime, see exception for more details");
-                }
-#pragma warning restore CA1031 // Do not catch general exception types
-            });
+            .OnSuccess(results => Result.WrapException(() => Result.Success<object?>(new DateTime(results.GetValue<int>("Year"), results.GetValue<int>("Month"), results.GetValue<int>("Day"), results.GetValue<int>("Hour"), results.GetValue<int>("Minute"), results.GetValue<int>("Second"), DateTimeKind.Unspecified))));
 }
