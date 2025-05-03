@@ -74,7 +74,7 @@ public class FunctionExpressionComponentTests : TestBase
             var genericFunction = new MyGenericFunction();
             MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
                 .WithName("MyFunction")
-                .WithMemberType(MemberType.Function)
+                .WithMemberType(MemberType.GenericFunction)
                 .WithImplementationType(genericFunction.GetType())
                 .WithReturnValueType(typeof(string))]));
             var sut = CreateSut(genericFunction);
@@ -176,7 +176,7 @@ public class FunctionExpressionComponentTests : TestBase
             var genericFunction = new MyGenericFunction();
             MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
                 .WithName("MyFunction")
-                .WithMemberType(MemberType.Function)
+                .WithMemberType(MemberType.GenericFunction)
                 .WithImplementationType(genericFunction.GetType())
                 .WithReturnValueType(typeof(string))]));
             var sut = CreateSut(genericFunction);

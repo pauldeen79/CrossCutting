@@ -24,10 +24,11 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptor
             else
             {
                 descriptors.Add(new MemberDescriptorBuilder()
-                    .WithMemberType(GetMemberType(source))
+                    .WithMemberType(GetMemberType(type, source, MemberType.Unknown))
                     .WithName(type.GetCustomAttribute<MemberNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
                     .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
                     .WithImplementationType(customImplementationType ?? type)
+                    .WithInstanceType(type.GetCustomAttribute<MemberInstanceTypeAttribute>()?.Type)
                     .WithReturnValueType(type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type)
                     .AddArguments(type.GetCustomAttributes<MemberArgumentAttribute>().Select(CreateFunctionArgument))
                     .AddTypeArguments(type.GetCustomAttributes<MemberTypeArgumentAttribute>().Select(CreateFunctionTypeArgument))
@@ -54,7 +55,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptor
             }
 
             return Result.Success<MemberDescriptor>(new MemberDescriptorBuilder()
-                .WithMemberType(MemberType.Method)
+                .WithMemberType(GetMemberType(declaringType, null, MemberType.Method))
                 .WithName(method.GetCustomAttribute<MemberNameAttribute>()?.Name ?? @delegate.Method.Name)
                 .WithDescription(method.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
                 .WithImplementationType(declaringType)
@@ -69,13 +70,22 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptor
         });
     }
 
-    private static MemberType GetMemberType(object source)
-        => source switch
+    private static MemberType GetMemberType(Type type, object? source, MemberType defaultValue)
+    {
+        var memberType = type.GetCustomAttribute<MemberTypeAttribute>()?.MemberType;
+        if (memberType is not null)
+        {
+            return memberType.Value;
+        }
+
+        return source switch
         {
             IGenericFunction => MemberType.GenericFunction,
             IFunction => MemberType.Function,
-            _ => MemberType.Unknown
+            //TODO: Review this path
+            _ => defaultValue
         };
+    }
 
     private static MemberDescriptorArgumentBuilder CreateFunctionArgument(MemberArgumentAttribute attribute)
         => new MemberDescriptorArgumentBuilder()

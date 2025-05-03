@@ -50,10 +50,14 @@ public class FunctionParser : IFunctionParser
             return Result.FromExistingResult<FunctionCall>(genericTypeArgumentsResult);
         }
 
+        var genericTypeArguments = genericTypeArgumentsResult.GetValueOrThrow();
         return Result.Success<FunctionCall>(new FunctionCallBuilder()
             .WithName(state.NameBuilder.ToString().Trim())
+            .WithMemberType(genericTypeArguments.Count > 0
+                ? MemberType.GenericFunction 
+                : MemberType.Function)
             .AddArguments(state.Arguments)
-            .AddTypeArguments(genericTypeArgumentsResult.GetValueOrThrow()));
+            .AddTypeArguments(genericTypeArguments));
     }
 
     private static Result<List<Type>> GetTypeArguments(string[] generics)

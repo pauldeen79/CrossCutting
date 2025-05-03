@@ -2,13 +2,14 @@
 
 public class FunctionCallContext
 {
-    public FunctionCallContext(FunctionCall functionCall, ExpressionEvaluatorContext context)
+    public FunctionCallContext(FunctionCall functionCall, ExpressionEvaluatorContext context, object? instanceValue = null)
     {
         ArgumentGuard.IsNotNull(functionCall, nameof(functionCall));
         ArgumentGuard.IsNotNull(context, nameof(context));
 
         FunctionCall = functionCall;
         Context = context;
+        InstanceValue = instanceValue;
     }
 
     public FunctionCallContext(DotExpressionComponentState state)
@@ -22,6 +23,7 @@ public class FunctionCallContext
 
     public FunctionCall FunctionCall { get; }
     public ExpressionEvaluatorContext Context { get; }
+    public object? InstanceValue { get; }
 
     public Result<object?> GetArgumentValueResult(int index, string argumentName)
         => FunctionCall.GetArgumentValueResult(index, argumentName, this);
@@ -94,4 +96,14 @@ public class FunctionCallContext
             }
         });
     }
+
+    public Result<T> GetInstanceValueResult<T>()
+        => InstanceValue is T typedValue
+            ? Result.Success(typedValue)
+            : Result.Error<T>(GetInstanceValueErrorMessage<T>());
+
+    private string GetInstanceValueErrorMessage<T>()
+        => InstanceValue is null
+            ? "Instance value is null"
+            : $"Instance value is not of type {typeof(T).FullName}";
 }

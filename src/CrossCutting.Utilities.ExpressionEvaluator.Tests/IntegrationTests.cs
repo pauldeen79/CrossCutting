@@ -288,13 +288,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToCamelCase_Function()
+    public void Can_Evaluate_Expression_With_ToCamelCase_DotExpression_Method()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("ToCamelCase(\"expression\")", evaluator: sut));
+        var result = sut.Evaluate(CreateContext("\"expression\".ToCamelCase()", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

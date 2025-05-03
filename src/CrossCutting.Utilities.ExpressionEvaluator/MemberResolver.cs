@@ -36,7 +36,9 @@ public class MemberResolver : IMemberResolver
 
             var functionsByName = Descriptors
                 .GetValueOrThrow()
-                .Where(x => x.Name.Equals(functionCallContext.FunctionCall.Name, StringComparison.OrdinalIgnoreCase))
+                .Where(x =>
+                    x.Name.Equals(functionCallContext.FunctionCall.Name, StringComparison.OrdinalIgnoreCase)
+                    && x.MemberType == functionCallContext.FunctionCall.MemberType)
                 .ToArray();
 
             if (functionsByName.Length == 0)
