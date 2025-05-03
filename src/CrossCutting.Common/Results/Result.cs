@@ -78,18 +78,6 @@ public record Result<T> : Result
 
         return this;
     }
-
-    public Result<T> EnsureValid()
-    {
-        ThrowIfInvalid();
-        return this;
-    }
-
-    public Result<T> EnsureValid(string errorMessage)
-    {
-        ThrowIfInvalid(errorMessage);
-        return this;
-    }
 }
 
 public record Result
