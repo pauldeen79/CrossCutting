@@ -28,24 +28,66 @@ public class MemberDescriptorMapperTests : TestBase<MemberDescriptorMapper>
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_DotEpression_Method()
+        public void Returns_Correct_Result_On_DotExpression_Method()
         {
             // Arrange
-            var sut = this;
-            var callback = CreateSut();
+            IMemberDescriptorCallback sut = CreateSut();
 
             // Act
-            var result = sut.GetDescriptors(callback);
+            var result = sut.Map(EvaluateToString);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldNotBeNull();
-            result.Value.Count.ShouldBe(1);
-            result.Value.First().Name.ShouldBe("ToString");
-            result.Value.First().Arguments.Count.ShouldBe(1);
-            result.Value.First().Arguments.First().Name.ShouldBe(Constants.DotArgument);
-            result.Value.First().Arguments.First().Type.ShouldBe(typeof(object));
-            result.Value.First().Arguments.First().IsRequired.ShouldBe(true);
+            result.Value.Name.ShouldBe("ToString");
+            result.Value.Arguments.Count.ShouldBe(1);
+            result.Value.Arguments.First().Name.ShouldBe(Constants.DotArgument);
+            result.Value.Arguments.First().Type.ShouldBe(typeof(object));
+            result.Value.Arguments.First().IsRequired.ShouldBe(true);
+        }
+
+        [Fact]
+        public void Returns_Invalid_On_DotExpression_Method_When_InstanceType_Is_Null()
+        {
+            // Arrange
+            IMemberDescriptorCallback sut = CreateSut();
+
+            // Act
+            var result = sut.Map(MissingMemberInstanceTypeAttribute);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Method MissingMemberInstanceTypeAttribute on type CrossCutting.Utilities.ExpressionEvaluator.Tests.MemberDescriptorMapperTests+Map does not have a MemberInstanceTypeAttribute, this is required");
+        }
+
+        [Fact]
+        public void Returns_Non_Successful_Result_From_DynamicDescriptorProvider()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Map(this, null);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+
+        [Fact]
+        public void Returns_Non_Successful_Result_When_SourceObject_Is_Not_Function_Or_GenericFunction()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Map(new object(), null);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
+            result.Exception.ShouldNotBeNull();
+            result.Exception.Message.ShouldBe("MemberType cannot be Unknown");
         }
 
         [MemberName("MyCustomName")]
@@ -63,9 +105,12 @@ public class MemberDescriptorMapperTests : TestBase<MemberDescriptorMapper>
         public static Result<object?> EvaluateToString(DotExpressionComponentState state, object sourceValue)
             => Result.Success<object?>(sourceValue.ToString(state.Context.Settings.FormatProvider));
 
+        [MemberName(nameof(object.ToString))]
+        [MemberResultType(typeof(string))]
+        public static Result<object?> MissingMemberInstanceTypeAttribute(DotExpressionComponentState state, object sourceValue)
+            => Result.Success<object?>(sourceValue.ToString(state.Context.Settings.FormatProvider));
+
         public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback)
-        {
-            return Result.Success<IReadOnlyCollection<MemberDescriptor>>(new List<MemberDescriptor>([callback.Map(EvaluateToString).GetValueOrThrow()]));
-        }
+            => Result.Error<IReadOnlyCollection<MemberDescriptor>>("Kaboom");
     }
 }

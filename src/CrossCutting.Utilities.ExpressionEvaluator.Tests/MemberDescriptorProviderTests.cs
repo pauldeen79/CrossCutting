@@ -97,6 +97,29 @@ public class MemberDescriptorProviderTests
             result.Value.First().Results.First().Description.ShouldBe("Success");
         }
 
+        [Fact]
+        public void Returns_Non_Successful_Result_Correctly()
+        {
+            // Arrange
+            var members = new IMember[]
+            {
+                new MyFunction1(),
+                new MyFunction2()
+            };
+            var mapper = Substitute.For<IMemberDescriptorMapper>();
+            mapper
+                .Map(Arg.Any<object>(), Arg.Any<Type?>())
+                .Returns(Result.Error<IReadOnlyCollection<MemberDescriptor>>("Kaboom"));
+            var sut = new MemberDescriptorProvider(mapper, members);
+
+            // Act
+            var result = sut.GetAll();
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+
         private sealed class MyFunction1 : IFunction
         {
             public Result<object?> Evaluate(FunctionCallContext context)
