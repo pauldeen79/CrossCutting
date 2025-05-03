@@ -2,20 +2,24 @@
 
 public class ObjectDotExpressionComponent : DotExpressionComponentBase<object>, IDynamicDescriptorsProvider, IMember
 {
-    public ObjectDotExpressionComponent(IMemberCallArgumentValidator validator, IMemberDescriptorCallback callback) : base(new DotExpressionDescriptor<object>(new Dictionary<string, DotExpressionDelegates<object>>()
-    {
-        // Note that we might validate the number of arguments, in case of overloads. But just set to 0 so the function is always taken by name, regardless of number of arguments
-        { nameof(ToString), new DotExpressionDelegates<object>(0, x => MemberCallArgumentValidator.Validate(x, validator, callback.Map(EvaluateToString).GetValueOrThrow()), EvaluateToString) },
-    }))
+    private readonly MemberDescriptor _toStringDescriptor;
+
+    public ObjectDotExpressionComponent(IMemberCallArgumentValidator validator, IMemberDescriptorCallback callback)
     {
         ArgumentGuard.IsNotNull(validator, nameof(validator));
+        callback = ArgumentGuard.IsNotNull(callback, nameof(callback));
+
+        _toStringDescriptor = callback.Map(EvaluateToString).GetValueOrThrow();
+
+        Descriptor = new DotExpressionDescriptor<object>(new Dictionary<string, DotExpressionDelegates<object>>()
+        {
+            // Note that we might validate the number of arguments, in case of overloads. But just set to 0 so the function is always taken by name, regardless of number of arguments
+            { nameof(ToString), new DotExpressionDelegates<object>(0, x => MemberCallArgumentValidator.Validate(x, validator, _toStringDescriptor), EvaluateToString) },
+        });
     }
 
     public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback)
-        => new ResultDictionaryBuilder()
-            .Add(nameof(EvaluateToString), () => callback.Map(EvaluateToString))
-            .Build()
-            .OnSuccess(results => Result.Success<IReadOnlyCollection<MemberDescriptor>>([results.GetValue<MemberDescriptor>(nameof(EvaluateToString))]));
+        => Result.Success<IReadOnlyCollection<MemberDescriptor>>([_toStringDescriptor]);
 
     public override int Order => 99;
 

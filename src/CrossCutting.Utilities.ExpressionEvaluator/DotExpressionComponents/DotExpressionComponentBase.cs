@@ -2,14 +2,7 @@
 
 public abstract class DotExpressionComponentBase<T> : IDotExpressionComponent
 {
-    private readonly DotExpressionDescriptor<T> _descriptor;
-
-    protected DotExpressionComponentBase(DotExpressionDescriptor<T> descriptor)
-    {
-        ArgumentGuard.IsNotNull(descriptor, nameof(descriptor));
-
-        _descriptor = descriptor;
-    }
+    protected DotExpressionDescriptor<T> Descriptor { get; set; } = default!;
 
     public abstract int Order { get; }
 
@@ -17,7 +10,7 @@ public abstract class DotExpressionComponentBase<T> : IDotExpressionComponent
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (state.CurrentEvaluateResult.Value is T typedValue && _descriptor.Delegates.TryGetValue(state.Name, out var delegates) && state.Type == delegates.ExpressionType && ArgumentsValid(delegates, state.FunctionParseResult))
+        if (state.CurrentEvaluateResult.Value is T typedValue && Descriptor.Delegates.TryGetValue(state.Name, out var delegates) && state.Type == delegates.ExpressionType && ArgumentsValid(delegates, state.FunctionParseResult))
         {
             return delegates.EvaluateDelegate(state, typedValue);
         }
@@ -29,7 +22,7 @@ public abstract class DotExpressionComponentBase<T> : IDotExpressionComponent
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        if (typeof(T).IsAssignableFrom(state.ResultType) && _descriptor.Delegates.TryGetValue(state.Name, out var delegates) && state.Type == delegates.ExpressionType && ArgumentsValid(delegates, state.FunctionParseResult))
+        if (typeof(T).IsAssignableFrom(state.ResultType) && Descriptor.Delegates.TryGetValue(state.Name, out var delegates) && state.Type == delegates.ExpressionType && ArgumentsValid(delegates, state.FunctionParseResult))
         {
             return delegates.ParseDelegate(state);
         }

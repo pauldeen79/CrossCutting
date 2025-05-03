@@ -26,14 +26,16 @@ public class StringDotExpressionComponent : DotExpressionComponentBase<string>, 
     private const string Index = nameof(Index);
     private const string Length = nameof(Length);
 
-    public StringDotExpressionComponent(IMemberCallArgumentValidator validator) : base(new DotExpressionDescriptor<string>(new Dictionary<string, DotExpressionDelegates<string>>()
-    {
-        { Length, new DotExpressionDelegates<string>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Length)) },
-        // Note that we might validate the number of arguments, in case of overloads. But just set to 0 so the function is always taken by name, regardless of number of arguments
-        { Substring, new DotExpressionDelegates<string>(0, x => MemberCallArgumentValidator.Validate(x, validator, _substringDescriptor), EvaluateSubstring) },
-    }))
+    public StringDotExpressionComponent(IMemberCallArgumentValidator validator)
     {
         ArgumentGuard.IsNotNull(validator, nameof(validator));
+
+        Descriptor = new DotExpressionDescriptor<string>(new Dictionary<string, DotExpressionDelegates<string>>()
+        {
+            { Length, new DotExpressionDelegates<string>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Length)) },
+            // Note that we might validate the number of arguments, in case of overloads. But just set to 0 so the function is always taken by name, regardless of number of arguments
+            { Substring, new DotExpressionDelegates<string>(0, x => MemberCallArgumentValidator.Validate(x, validator, _substringDescriptor), EvaluateSubstring) },
+        });
     }
 
     public override int Order => 14;

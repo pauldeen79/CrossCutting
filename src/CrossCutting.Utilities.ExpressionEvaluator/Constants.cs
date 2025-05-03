@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionComponents;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
 [ExcludeFromCodeCoverage] // Don't know why, but I don't get code coverage on constants. But they're definitely covered in unit tests!
 public static class Constants

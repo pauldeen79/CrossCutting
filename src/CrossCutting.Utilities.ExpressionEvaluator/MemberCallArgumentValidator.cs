@@ -40,7 +40,7 @@ public class MemberCallArgumentValidator : IMemberCallArgumentValidator
         return Result.Success(result.Value?.ReturnValueType!);
     }
 
-  public static Result<MemberAndTypeDescriptor> Validate(IMemberCallArgumentValidator functionCallArgumentValidator, FunctionCallContext functionCallContext, MemberDescriptor functionDescriptor, IMember? member)
+    public static Result<MemberAndTypeDescriptor> Validate(IMemberCallArgumentValidator functionCallArgumentValidator, FunctionCallContext functionCallContext, MemberDescriptor functionDescriptor, IMember? member)
     {
         functionCallArgumentValidator = ArgumentGuard.IsNotNull(functionCallArgumentValidator, nameof(functionCallArgumentValidator));
         functionCallContext = ArgumentGuard.IsNotNull(functionCallContext, nameof(functionCallContext));

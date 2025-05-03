@@ -118,23 +118,26 @@ public class DateTimeDotExpressionComponent : DotExpressionComponentBase<DateTim
             new MemberDescriptorArgumentBuilder().WithName(Constants.DotArgument).WithType(typeof(DateTime)).WithIsRequired(),
             new MemberDescriptorArgumentBuilder().WithName(YearsToAdd).WithType(typeof(int)).WithIsRequired());
 
-    public DateTimeDotExpressionComponent(IMemberCallArgumentValidator validator) : base(new DotExpressionDescriptor<DateTime>(new Dictionary<string, DotExpressionDelegates<DateTime>>()
+    public DateTimeDotExpressionComponent(IMemberCallArgumentValidator validator)
     {
-        { nameof(DateTime.Date), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(DateTime)), (_, typedValue) => Result.Success<object?>(typedValue.Date)) },
-        { nameof(DateTime.Year), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Year)) },
-        { nameof(DateTime.Month), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Month)) },
-        { nameof(DateTime.Day), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Day)) },
-        { nameof(DateTime.Hour), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Hour)) },
-        { nameof(DateTime.Minute), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Minute)) },
-        { nameof(DateTime.Second), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Second)) },
-        { nameof(DateTime.AddDays), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addDaysDescriptor), EvaluateAddDays) },
-        { nameof(DateTime.AddHours), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addHoursDescriptor), EvaluateAddHours) },
-        { nameof(DateTime.AddMinutes), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addMinutesDescriptor), EvaluateAddMinutes) },
-        { nameof(DateTime.AddMonths), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addMonthsDescriptor), EvaluateAddMonths) },
-        { nameof(DateTime.AddSeconds), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addSecondsDescriptor), EvaluateAddSeconds) },
-        { nameof(DateTime.AddYears), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addYearsDescriptor), EvaluateAddYears) },
-    }))
-    {
+        ArgumentGuard.IsNotNull(validator, nameof(validator));
+
+        Descriptor = new DotExpressionDescriptor<DateTime>(new Dictionary<string, DotExpressionDelegates<DateTime>>()
+        {
+            { nameof(DateTime.Date), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(DateTime)), (_, typedValue) => Result.Success<object?>(typedValue.Date)) },
+            { nameof(DateTime.Year), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Year)) },
+            { nameof(DateTime.Month), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Month)) },
+            { nameof(DateTime.Day), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Day)) },
+            { nameof(DateTime.Hour), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Hour)) },
+            { nameof(DateTime.Minute), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Minute)) },
+            { nameof(DateTime.Second), new DotExpressionDelegates<DateTime>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Second)) },
+            { nameof(DateTime.AddDays), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addDaysDescriptor), EvaluateAddDays) },
+            { nameof(DateTime.AddHours), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addHoursDescriptor), EvaluateAddHours) },
+            { nameof(DateTime.AddMinutes), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addMinutesDescriptor), EvaluateAddMinutes) },
+            { nameof(DateTime.AddMonths), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addMonthsDescriptor), EvaluateAddMonths) },
+            { nameof(DateTime.AddSeconds), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addSecondsDescriptor), EvaluateAddSeconds) },
+            { nameof(DateTime.AddYears), new DotExpressionDelegates<DateTime>(0, x => MemberCallArgumentValidator.Validate(x, validator, _addYearsDescriptor), EvaluateAddYears) },
+            });
     }
 
     public override int Order => 11;

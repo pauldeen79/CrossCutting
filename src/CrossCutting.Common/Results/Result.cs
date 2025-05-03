@@ -78,6 +78,18 @@ public record Result<T> : Result
 
         return this;
     }
+
+    public Result<T> EnsureValid()
+    {
+        ThrowIfInvalid();
+        return this;
+    }
+
+    public Result<T> EnsureValid(string errorMessage)
+    {
+        ThrowIfInvalid(errorMessage);
+        return this;
+    }
 }
 
 public record Result
@@ -416,7 +428,7 @@ public record Result
         }
         catch (Exception ex)
         {
-            return Result.Error(ex, "Exception occured");
+            return Error(ex, "Exception occured");
         }
 #pragma warning restore CA1031 // Do not catch general exception types
     }
@@ -433,7 +445,7 @@ public record Result
         }
         catch (Exception ex)
         {
-            return Result.Error<T>(ex, "Exception occured");
+            return Error<T>(ex, "Exception occured");
         }
 #pragma warning restore CA1031 // Do not catch general exception types
     }
@@ -454,5 +466,4 @@ public record Result
         => ThrowIfInvalid(string.IsNullOrEmpty(ErrorMessage)
             ? $"Result: {Status}"
             : $"Result: {Status}, ErrorMessage: {ErrorMessage}");
-
 }

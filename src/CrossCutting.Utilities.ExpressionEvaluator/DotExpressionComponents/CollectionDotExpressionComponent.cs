@@ -11,11 +11,12 @@ public class CollectionDotExpressionComponent : DotExpressionComponentBase<IColl
 
     public override int Order => 12;
 
-    public CollectionDotExpressionComponent() : base(new DotExpressionDescriptor<ICollection>(new Dictionary<string, DotExpressionDelegates<ICollection>>()
+    public CollectionDotExpressionComponent()
     {
-        { nameof(ICollection.Count), new DotExpressionDelegates<ICollection>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Count)) },
-    }))
-    {
+        Descriptor = new DotExpressionDescriptor<ICollection>(new Dictionary<string, DotExpressionDelegates<ICollection>>()
+        {
+            { nameof(ICollection.Count), new DotExpressionDelegates<ICollection>(_ => Result.Success(typeof(int)), (_, typedValue) => Result.Success<object?>(typedValue.Count)) },
+        });
     }
 
     public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback)
