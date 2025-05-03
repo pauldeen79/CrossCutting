@@ -3,7 +3,7 @@
 public class StringDotExpressionComponentTests : TestBase
 {
     protected StringDotExpressionComponent CreateSut()
-        => new StringDotExpressionComponent(new MemberCallArgumentValidator());
+        => new StringDotExpressionComponent(new MemberCallArgumentValidator(), new MemberDescriptorMapper());
 
     protected IFunctionParser FunctionParser { get; }
 

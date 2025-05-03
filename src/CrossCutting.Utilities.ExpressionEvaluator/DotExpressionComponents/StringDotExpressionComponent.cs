@@ -2,18 +2,7 @@
 
 public class StringDotExpressionComponent : DotExpressionComponentBase<string>, IDynamicDescriptorsProvider, IMember
 {
-    private static readonly MemberDescriptor _substringDescriptor = new MemberDescriptorBuilder()
-        .WithName(Substring)
-        .WithMemberType(MemberType.Method)
-        .WithInstanceType(typeof(string))
-        .WithImplementationType(typeof(StringDotExpressionComponent))
-        .WithReturnValueType(typeof(string))
-        .AddArguments
-        (
-            new MemberDescriptorArgumentBuilder().WithName(Constants.DotArgument).WithType(typeof(string)).WithIsRequired(),
-            new MemberDescriptorArgumentBuilder().WithName(Index).WithType(typeof(int)).WithIsRequired(),
-            new MemberDescriptorArgumentBuilder().WithName(Length).WithType(typeof(int)).WithIsRequired()
-        );
+    private readonly MemberDescriptor _substringDescriptor;
 
     private static readonly MemberDescriptor _lengthDescriptor = new MemberDescriptorBuilder()
         .WithName(Length)
@@ -26,9 +15,12 @@ public class StringDotExpressionComponent : DotExpressionComponentBase<string>, 
     private const string Index = nameof(Index);
     private const string Length = nameof(Length);
 
-    public StringDotExpressionComponent(IMemberCallArgumentValidator validator)
+    public StringDotExpressionComponent(IMemberCallArgumentValidator validator, IMemberDescriptorCallback callback)
     {
         ArgumentGuard.IsNotNull(validator, nameof(validator));
+        callback = ArgumentGuard.IsNotNull(callback, nameof(callback));
+
+        _substringDescriptor = callback.Map(EvaluateSubstring).GetValueOrThrow();
 
         Descriptor = new DotExpressionDescriptor<string>(new Dictionary<string, DotExpressionDelegates<string>>()
         {
@@ -43,6 +35,11 @@ public class StringDotExpressionComponent : DotExpressionComponentBase<string>, 
     public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback)
         => Result.Success<IReadOnlyCollection<MemberDescriptor>>([_substringDescriptor, _lengthDescriptor]);
 
+    [MemberName(nameof(string.Substring))]
+    [MemberInstanceType(typeof(string))]
+    [MemberResultType(typeof(string))]
+    [MemberArgument(Index, typeof(int))]
+    [MemberArgument(Length, typeof(int), false)]
     private static Result<object?> EvaluateSubstring(DotExpressionComponentState state, string sourceValue)
     {
         var context = new FunctionCallContext(state);
