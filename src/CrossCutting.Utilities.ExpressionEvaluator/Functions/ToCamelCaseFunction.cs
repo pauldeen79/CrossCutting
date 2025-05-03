@@ -9,8 +9,12 @@ public class ToCamelCaseFunction : IFunction
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context
-            .GetInstanceValueResult<string>()
-            .Transform(result => Result.Success<object?>(result.GetValueOrThrow().ToCamelCase(context.Context.Settings.FormatProvider.ToCultureInfo())));
+        var instanceValueResult = context.GetInstanceValueResult<string>();
+        if (!instanceValueResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<object?>(instanceValueResult);
+        }
+        
+        return Result.Success<object?>(instanceValueResult.GetValueOrThrow().ToCamelCase(context.Context.Settings.FormatProvider.ToCultureInfo()));
     }
 }
