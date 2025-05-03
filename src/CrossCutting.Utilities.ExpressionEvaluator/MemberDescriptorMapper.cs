@@ -2,9 +2,6 @@
 
 public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptorCallback
 {
-    private static readonly object _lockObject = new object();
-    private static readonly Dictionary<Delegate, Result<MemberDescriptor>> _memberDescriptorCache = new Dictionary<Delegate, Result<MemberDescriptor>>();
-
     public Result<IReadOnlyCollection<MemberDescriptor>> Map(object source, Type? customImplementationType)
     {
         source = ArgumentGuard.IsNotNull(source, nameof(source));
@@ -45,42 +42,31 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptor
     {
         @delegate = ArgumentGuard.IsNotNull(@delegate, nameof(@delegate));
 
-        lock (_lockObject)
+        return Result.WrapException(() =>
         {
-            if (_memberDescriptorCache.TryGetValue(@delegate, out var result))
+            var declaringType = @delegate.Method.DeclaringType;
+            var method = @delegate.GetMethodInfo();
+            var instanceType = method.GetCustomAttribute<MemberInstanceTypeAttribute>()?.Type;
+
+            if (instanceType is null)
             {
-                return result;
+                return Result.Invalid<MemberDescriptor>($"Method {@delegate.Method.Name} on type {declaringType.FullName} does not have a {nameof(MemberInstanceTypeAttribute)}, this is required");
             }
 
-            return Result.WrapException(() =>
-            {
-                var declaringType = @delegate.Method.DeclaringType;
-                var method = @delegate.GetMethodInfo();
-                var instanceType = method.GetCustomAttribute<MemberInstanceTypeAttribute>()?.Type;
+            return Result.Success<MemberDescriptor>(new MemberDescriptorBuilder()
+                .WithMemberType(MemberType.Method)
+                .WithName(method.GetCustomAttribute<MemberNameAttribute>()?.Name ?? @delegate.Method.Name)
+                .WithDescription(method.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
+                .WithImplementationType(declaringType)
+                .WithInstanceType(instanceType)
+                .WithReturnValueType(method.GetCustomAttribute<MemberResultTypeAttribute>()?.Type)
+                .AddArguments(new MemberDescriptorArgumentBuilder().WithName(Constants.DotArgument).WithIsRequired().WithType(instanceType))
+                .AddArguments(method.GetCustomAttributes<MemberArgumentAttribute>().Select(CreateFunctionArgument))
+                // Note that TypeArguments are skipped, this is not supported at this time.
+                // Besides, the MemberTypeArgumentAttribute can only be placed on a Class, at this time, to prevent mistakes ;-)
+                .AddResults(method.GetCustomAttributes<MemberResultAttribute>().Select(CreateFunctionResult)));
 
-                if (instanceType is null)
-                {
-                    return Result.Invalid<MemberDescriptor>($"Method {@delegate.Method.Name} on type {declaringType.FullName} does not have a {nameof(MemberInstanceTypeAttribute)}, this is required");
-                }
-
-                result = Result.Success<MemberDescriptor>(new MemberDescriptorBuilder()
-                    .WithMemberType(MemberType.Method)
-                    .WithName(method.GetCustomAttribute<MemberNameAttribute>()?.Name ?? @delegate.Method.Name)
-                    .WithDescription(method.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
-                    .WithImplementationType(declaringType)
-                    .WithInstanceType(instanceType)
-                    .WithReturnValueType(method.GetCustomAttribute<MemberResultTypeAttribute>()?.Type)
-                    .AddArguments(new MemberDescriptorArgumentBuilder().WithName(Constants.DotArgument).WithIsRequired().WithType(instanceType))
-                    .AddArguments(method.GetCustomAttributes<MemberArgumentAttribute>().Select(CreateFunctionArgument))
-                    // Note that TypeArguments are skipped, this is not supported at this time.
-                    // Besides, the MemberTypeArgumentAttribute can only be placed on a Class, at this time, to prevent mistakes ;-)
-                    .AddResults(method.GetCustomAttributes<MemberResultAttribute>().Select(CreateFunctionResult)));
-
-                _memberDescriptorCache.Add(@delegate, result);
-
-                return result;
-            });
-        }
+        });
     }
 
     private static MemberType GetMemberType(object source)
