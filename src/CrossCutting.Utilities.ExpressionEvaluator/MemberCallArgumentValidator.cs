@@ -49,7 +49,7 @@ public class MemberCallArgumentValidator : IMemberCallArgumentValidator
         var arguments = functionDescriptor.Arguments.Zip(functionCallContext.FunctionCall.Arguments, (descriptor, call) => new MemberArgumentInfo(descriptor, call));
 
         var errors = new List<ValidationError>();
-        foreach (var argument in arguments.Where(x => x.CallArgument != Constants.DotArgument))
+        foreach (var argument in arguments)
         {
             var validationResult = functionCallArgumentValidator.Validate(argument.DescriptorArgument, argument.CallArgument, functionCallContext);
             if (!validationResult.IsSuccessful() && validationResult.ErrorMessage is not null)
