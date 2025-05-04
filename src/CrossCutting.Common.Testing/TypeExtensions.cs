@@ -83,8 +83,8 @@ public static class TypeExtensions
     public static object? CreateInstance(
         this Type type,
         Func<Type, object?> classFactory,
-        Func<ParameterInfo, object?>? parameterReplaceDelegate,
-        Func<ConstructorInfo, bool>? constructorPredicate)
+        Func<ParameterInfo, object?>? parameterReplaceDelegate = null,
+        Func<ConstructorInfo, bool>? constructorPredicate = null)
     {
         if (type.IsInterface)
         {
