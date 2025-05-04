@@ -140,7 +140,18 @@ public abstract class TestBase
     }
 }
 
-public abstract class TestBase<T> : TestBase where T : new()
+public abstract class TestBase<T> : TestBase
 {
-    protected static T CreateSut() => new T();
+    protected T CreateSut() => (T)Common.Testing.TypeExtensions.CreateInstance(typeof(T), ClassFactory(), p =>
+    {
+        if (p.ParameterType == typeof(IExpressionEvaluator)) return new ExpressionEvaluator(new ExpressionTokenizer(), new ExpressionParser(), [Expression]);
+        if (p.ParameterType == typeof(IExpressionTokenizer)) return new ExpressionTokenizer();
+        if (p.ParameterType == typeof(IExpressionParser)) return new ExpressionParser();
+        if (p.ParameterType == typeof(IExpressionComponent)) return Expression;
+        if (p.ParameterType == typeof(IEnumerable<IExpressionComponent>)) return new IExpressionComponent[] { Expression };
+        return null;
+    }, null)!;
+
+    protected static Func<Type, object?> ClassFactory()
+        => t => t.CreateInstance(parameterType => Substitute.For([parameterType], []), null, null);
 }

@@ -1,10 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 
-public class ExpressionEvaluatorTests : TestBase
+public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
 {
-    protected ExpressionEvaluator CreateSut() => new ExpressionEvaluator(new 
-        ExpressionTokenizer(), new ExpressionParser(), [Expression]);
-
     public class Evaluate : ExpressionEvaluatorTests
     {
         [Fact]

@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CrossCutting.Common.Testing\CrossCutting.Common.Testing.csproj" />
     <ProjectReference Include="..\CrossCutting.Utilities.ExpressionEvaluator\CrossCutting.Utilities.ExpressionEvaluator.csproj" />
   </ItemGroup>
 
