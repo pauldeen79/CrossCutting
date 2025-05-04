@@ -13,7 +13,7 @@ public class FunctionCallContext
 
         if (MemberType == MemberType.Unknown)
         {
-            throw new InvalidOperationException("MemberType cannot be Unknown");
+            throw new ArgumentException("MemberType cannot be Unknown", nameof(memberType));
         }
     }
 
@@ -26,11 +26,6 @@ public class FunctionCallContext
         MemberType = state.Type.ToMemberType();
         InstanceValue = state.Value;
         ResultType = state.ResultType;
-
-        if (MemberType == MemberType.Unknown)
-        {
-            throw new InvalidOperationException("MemberType cannot be Unknown");
-        }
     }
 
     public FunctionCall FunctionCall { get; }

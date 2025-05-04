@@ -50,6 +50,22 @@ public class FunctionCallContextTests : TestBase
             Action a = () => _ = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), null!, MemberType.Function);
             a.ShouldThrow<ArgumentNullException>();
         }
+
+        [Fact]
+        public void Throws_On_MemberType_Unknown()
+        {
+            // Act & Assert
+            Action a = () => _ = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), CreateContext("Dummy"), MemberType.Unknown);
+            a.ShouldThrow<ArgumentException>();
+        }
+
+        [Fact]
+        public void Throws_On_No_FunctionCall_Found()
+        {
+            // Act & Assert
+            Action a = () => _ = new FunctionCallContext(new DotExpressionComponentState(CreateContext("Dummy"), new FunctionParser(), Result.Continue<object?>(), "function()"));
+            a.ShouldThrow<InvalidOperationException>();
+        }
     }
 
     public class GetArgumentValueResultNoDefaultValue : FunctionCallContextTests
