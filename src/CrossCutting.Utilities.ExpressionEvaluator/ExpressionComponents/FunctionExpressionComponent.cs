@@ -20,19 +20,17 @@ public class FunctionExpressionComponent : IExpressionComponent
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var functionCallResult = _functionParser.Parse(context);
-        if (functionCallResult.Status == ResultStatus.NotFound)
-        {
-            return Result.Continue<object?>();
-        }
-        else if (!functionCallResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(functionCallResult);
-        }
+        return _functionParser
+            .Parse(context)
+            .IgnoreNotFound()
+            .Transform(functionCall =>
+            {
+                var functionCallContext = new FunctionCallContext(functionCall, context, MemberType.Function);
 
-        var functionCallContext = new FunctionCallContext(functionCallResult.GetValueOrThrow(), context, MemberType.Function);
-
-        return _functionResolver.Resolve(functionCallContext).Transform(result => EvaluateFunction(result, functionCallContext));
+                return _functionResolver
+                    .Resolve(functionCallContext)
+                    .Transform(result => EvaluateFunction(result, functionCallContext));
+            });
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)

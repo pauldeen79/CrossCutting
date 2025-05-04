@@ -18,19 +18,14 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
         var context = new FunctionCallContext(state);
-        var result = _memberResolver.Resolve(context);
-        if (result.Status == ResultStatus.NotFound)
-        {
-            return Result.Continue<object?>();
-        }
-
-        var member = result.GetValueOrThrow().Member;
-        return member switch
-        {
-            IMethod method => method.Evaluate(context),
-            IProperty property => property.Evaluate(context),
-            _ => Result.NotSupported<object?>("Resolved member should be of type Method or Property")
-        };
+        return _memberResolver.Resolve(context)
+            .IgnoreNotFound()
+            .Transform(result => result.GetValueOrThrow().Member switch
+            {
+                IMethod method => method.Evaluate(context),
+                IProperty property => property.Evaluate(context),
+                _ => Result.NotSupported<object?>("Resolved member should be of type Method or Property")
+            });
     }
 
     public Result<Type> Validate(DotExpressionComponentState state)
@@ -39,17 +34,8 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
 
         var context = new FunctionCallContext(state);
 
-        var result = _memberResolver.Resolve(context);
-        if (result.Status == ResultStatus.NotFound)
-        {
-            return Result.Continue<Type>();
-        }
-
-        if (!result.Status.IsSuccessful())
-        {
-            return Result.FromExistingResult<Type>(result);
-        }
-
-        return Result.Success(result.GetValueOrThrow().ReturnValueType!);
+        return _memberResolver.Resolve(context)
+            .IgnoreNotFound()
+            .Transform(result => Result.Success(result.GetValueOrThrow().ReturnValueType!));
     }
 }
