@@ -25,7 +25,7 @@ public class MemberCallArgumentValidator : IMemberCallArgumentValidator
         return callArgumentResult;
     }
 
-    public Result<MemberAndTypeDescriptor> Validate(FunctionCallContext context, MemberDescriptor functionDescriptor, IMember member)
+    public Result<MemberAndTypeDescriptor> Validate(MemberDescriptor functionDescriptor, IMember member, FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         functionDescriptor = ArgumentGuard.IsNotNull(functionDescriptor, nameof(functionDescriptor));
