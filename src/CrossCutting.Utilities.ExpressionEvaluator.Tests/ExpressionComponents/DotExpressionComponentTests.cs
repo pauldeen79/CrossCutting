@@ -1,9 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
 
-public class DotExpressionComponentTests : TestBase
+public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
 {
-    protected static DotExpressionComponent CreateSut() => new DotExpressionComponent(new FunctionParser(), [new ReflectionMethodDotExpressionComponent(), new ReflectionPropertyDotExpressionComponent()]);
-
     public class Evaluate : DotExpressionComponentTests
     {
         [Theory]

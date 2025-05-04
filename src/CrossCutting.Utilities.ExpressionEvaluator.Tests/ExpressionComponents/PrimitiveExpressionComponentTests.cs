@@ -1,19 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents;
 
-public class PrimitiveExpressionComponentTests : TestBase
+public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionComponent>
 {
-    protected IDateTimeProvider DateTimeProvider { get; }
-    protected DateTime CurrentDateTime { get; }
-
-    public PrimitiveExpressionComponentTests()
-    {
-        DateTimeProvider = Substitute.For<IDateTimeProvider>();
-        CurrentDateTime = new DateTime(2025, 2, 1, 5, 30, 0, DateTimeKind.Utc);
-        DateTimeProvider.GetCurrentDateTime().Returns(CurrentDateTime);
-    }
-
-    protected PrimitiveExpressionComponent CreateSut() => new PrimitiveExpressionComponent(DateTimeProvider);
-    
     public class Evaluate : PrimitiveExpressionComponentTests
     {
         [Theory]

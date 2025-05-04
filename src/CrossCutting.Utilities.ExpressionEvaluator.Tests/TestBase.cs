@@ -4,6 +4,8 @@ public abstract class TestBase
 {
     protected IExpressionEvaluator Evaluator { get; }
     protected IExpressionComponent Expression { get; }
+    protected IDateTimeProvider DateTimeProvider { get; }
+    protected DateTime CurrentDateTime { get; }
 
     protected ExpressionEvaluatorContext CreateContext(
         string? expression,
@@ -58,6 +60,12 @@ public abstract class TestBase
         // Initialize expression
         Expression = Substitute.For<IExpressionComponent>();
         // Note that you have to setup Evaluate and Validate method yourself
+
+        // Freeze DateTime.Now to a predicatable value
+        DateTimeProvider = Substitute.For<IDateTimeProvider>();
+        CurrentDateTime =  new DateTime(2025, 2, 1, 5, 30, 0, DateTimeKind.Utc);
+        DateTimeProvider.GetCurrentDateTime().Returns(CurrentDateTime);
+
     }
 
     // Test stub for expression evaluation, that supports strings, integers, long integers, decimals, booleans and DeteTimes (by using TryParse), as well as the context and null keywords
@@ -147,8 +155,11 @@ public abstract class TestBase<T> : TestBase
         if (p.ParameterType == typeof(IExpressionEvaluator)) return new ExpressionEvaluator(new ExpressionTokenizer(), new ExpressionParser(), [Expression]);
         if (p.ParameterType == typeof(IExpressionTokenizer)) return new ExpressionTokenizer();
         if (p.ParameterType == typeof(IExpressionParser)) return new ExpressionParser();
+        if (p.ParameterType == typeof(IFunctionParser)) return new FunctionParser();
+        if (p.ParameterType == typeof(IDateTimeProvider)) return DateTimeProvider;
         if (p.ParameterType == typeof(IExpressionComponent)) return Expression;
         if (p.ParameterType == typeof(IEnumerable<IExpressionComponent>)) return new IExpressionComponent[] { Expression };
+        if (p.ParameterType == typeof(IEnumerable<IDotExpressionComponent>)) return new IDotExpressionComponent[] { new ReflectionMethodDotExpressionComponent(), new ReflectionPropertyDotExpressionComponent() };
         return null;
     }, null)!;
 
