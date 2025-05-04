@@ -13,9 +13,9 @@ public class DateTimeAddMinutesMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return new ResultDictionaryBuilder()
-            .Add(Constants.DotArgument, () => context.GetInstanceValueResult<DateTime>())
+            .Add(Constants.Instance, () => context.GetInstanceValueResult<DateTime>())
             .Add(MinutesToAdd, () => context.GetArgumentValueResult<int>(0, "MinutesToAdd"))
             .Build()
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.DotArgument).AddMinutes(results.GetValue<int>(MinutesToAdd))));
+            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.Instance).AddMinutes(results.GetValue<int>(MinutesToAdd))));
     }
 }

@@ -9,12 +9,7 @@ public class DateYearProperty : IProperty
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var instanceResult = context.GetInstanceValueResult<DateTime>();
-        if (!instanceResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(instanceResult);
-        }
-
-        return Result.Success<object?>(instanceResult.GetValueOrThrow().Year);
+        return context.GetInstanceValueResult<DateTime>()
+            .Transform(x => Result.Success<object?>(x.GetValueOrThrow().Year));
     }
 }

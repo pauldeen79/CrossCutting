@@ -13,9 +13,9 @@ public class DateTimeAddMonthsMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return new ResultDictionaryBuilder()
-            .Add(Constants.DotArgument, () => context.GetInstanceValueResult<DateTime>())
+            .Add(Constants.Instance, () => context.GetInstanceValueResult<DateTime>())
             .Add(MonthsToAdd, () => context.GetArgumentValueResult<int>(0, "MonthsToAdd"))
             .Build()
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.DotArgument).AddMonths(results.GetValue<int>(MonthsToAdd))));
+            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.Instance).AddMonths(results.GetValue<int>(MonthsToAdd))));
     }
 }

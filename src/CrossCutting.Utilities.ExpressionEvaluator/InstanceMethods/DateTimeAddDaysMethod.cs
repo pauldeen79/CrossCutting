@@ -13,9 +13,9 @@ public class DateTimeAddDaysMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return new ResultDictionaryBuilder()
-            .Add(Constants.DotArgument, () => context.GetInstanceValueResult<DateTime>())
+            .Add(Constants.Instance, () => context.GetInstanceValueResult<DateTime>())
             .Add(DaysToAdd, () => context.GetArgumentValueResult<int>(0, "DaysToAdd"))
             .Build()
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.DotArgument).AddDays(results.GetValue<int>(DaysToAdd))));
+            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.Instance).AddDays(results.GetValue<int>(DaysToAdd))));
     }
 }

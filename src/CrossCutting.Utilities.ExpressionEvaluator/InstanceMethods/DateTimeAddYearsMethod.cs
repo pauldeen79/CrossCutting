@@ -13,9 +13,9 @@ public class DateTimeAddYearsMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return new ResultDictionaryBuilder()
-            .Add(Constants.DotArgument, () => context.GetInstanceValueResult<DateTime>())
+            .Add(Constants.Instance, () => context.GetInstanceValueResult<DateTime>())
             .Add(YearsToAdd, () => context.GetArgumentValueResult<int>(0, "YearsToAdd"))
             .Build()
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.DotArgument).AddYears(results.GetValue<int>(YearsToAdd))));
+            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.Instance).AddYears(results.GetValue<int>(YearsToAdd))));
     }
 }

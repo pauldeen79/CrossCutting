@@ -9,14 +9,7 @@ public class StringToCamelCaseMethod : IMethod
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var instanceResult = context.GetInstanceValueResult<string>();
-        if (!instanceResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(instanceResult);
-        }
-
-        var sourceValue = instanceResult.GetValueOrThrow();
-
-        return Result.Success<object?>(sourceValue.ToCamelCase(context.Context.Settings.FormatProvider.ToCultureInfo()));
+        return context.GetInstanceValueResult<string>()
+            .Transform(x => Result.Success<object?>(x.GetValueOrThrow().ToCamelCase(context.Context.Settings.FormatProvider.ToCultureInfo())));
     }
 }

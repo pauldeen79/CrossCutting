@@ -13,9 +13,9 @@ public class DateTimeAddSecondsMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return new ResultDictionaryBuilder()
-            .Add(Constants.DotArgument, () => context.GetInstanceValueResult<DateTime>())
+            .Add(Constants.Instance, () => context.GetInstanceValueResult<DateTime>())
             .Add(SecondsToAdd, () => context.GetArgumentValueResult<int>(0, "SecondsToAdd"))
             .Build()
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.DotArgument).AddSeconds(results.GetValue<int>(SecondsToAdd))));
+            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.Instance).AddSeconds(results.GetValue<int>(SecondsToAdd))));
     }
 }

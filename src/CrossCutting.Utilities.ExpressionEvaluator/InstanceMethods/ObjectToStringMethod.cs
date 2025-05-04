@@ -9,14 +9,7 @@ public class ObjectToStringMethod : IMethod
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var instanceResult = context.GetInstanceValueResult<object>();
-        if (!instanceResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(instanceResult);
-        }
-
-        var sourceValue = instanceResult.GetValueOrThrow();
-
-        return Result.Success<object?>(sourceValue.ToString(context.Context.Settings.FormatProvider));
+        return context.GetInstanceValueResult<object>()
+            .Transform(x => Result.Success<object?>(x.GetValueOrThrow().ToString(context.Context.Settings.FormatProvider)));
     }
 }

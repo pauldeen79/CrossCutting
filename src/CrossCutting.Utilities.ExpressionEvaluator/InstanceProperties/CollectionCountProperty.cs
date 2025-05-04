@@ -9,12 +9,7 @@ public class CollectionCountProperty : IProperty
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var instanceResult = context.GetInstanceValueResult<ICollection>();
-        if (!instanceResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(instanceResult);
-        }
-
-        return Result.Success<object?>(instanceResult.GetValueOrThrow().Count);
+        return context.GetInstanceValueResult<ICollection>()
+            .Transform(x => Result.Success<object?>(x.GetValueOrThrow().Count));
     }
 }

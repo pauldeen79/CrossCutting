@@ -7,5 +7,5 @@ public static class Constants
     public const string RightExpression = nameof(RightExpression);
     public const string Expression = nameof(Expression);
     public const string Operand = nameof(Operand);
-    public const string DotArgument = "$$DotExpression$$";
+    public const string Instance = nameof(Instance);
 }

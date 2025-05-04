@@ -14,20 +14,14 @@ public class StringSubstringMethod : IMethod
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var instanceResult = context.GetInstanceValueResult<string>();
-        if (!instanceResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(instanceResult);
-        }
-
-        var sourceValue = instanceResult.GetValueOrThrow();
-
         return new ResultDictionaryBuilder()
+            .Add(Constants.Instance, () => context.GetInstanceValueResult<string>())
             .Add(Index, () => context.FunctionCall.GetArgumentValueResult<int>(0, Index, context))
             .Add(Length, () => context.FunctionCall.GetArgumentValueResult<int?>(1, Length, context, null))
             .Build()
             .OnSuccess(results =>
             {
+                var sourceValue = results.GetValue<string>(nameof(Constants.Instance));
                 var index = results.GetValue<int>(Index);
                 var length = results.GetValue<int?>(Length);
 
