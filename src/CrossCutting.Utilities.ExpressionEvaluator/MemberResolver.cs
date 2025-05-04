@@ -38,7 +38,8 @@ public class MemberResolver : IMemberResolver
                 .GetValueOrThrow()
                 .Where(x =>
                     x.Name.Equals(functionCallContext.FunctionCall.Name, StringComparison.OrdinalIgnoreCase)
-                    && x.MemberType == functionCallContext.FunctionCall.MemberType)
+                    && x.MemberType == functionCallContext.FunctionCall.MemberType
+                    && IsInstanceTypeValid(x.InstanceType, functionCallContext.InstanceValue))
                 .ToArray();
 
             if (functionsByName.Length == 0)
@@ -57,6 +58,31 @@ public class MemberResolver : IMemberResolver
                 _ => Result.NotFound<MemberAndTypeDescriptor>($"Function {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely")
             };
         });
+    }
+
+    private static bool IsInstanceTypeValid(Type? instanceType, object? instanceValue)
+    {
+        if (instanceType is null)
+        {
+            // Function/GenericFunction
+            return instanceValue is null;
+        }
+
+        if (instanceValue is null)
+        {
+            // There is an instance type, but the instance value is null.
+            // This should not be possible, and the calling component should handle this.
+            return false;
+        }
+
+        if (instanceValue is Type instanceValueType)
+        {
+            // Validate
+            return instanceType.IsAssignableFrom(instanceValueType);
+        }
+
+        // Evaluate
+        return instanceType.IsInstanceOfType(instanceValue);
     }
 
     private Result<MemberAndTypeDescriptor> GetFunctionByDescriptor(FunctionCallContext functionCallContext, MemberDescriptor memberDescriptor)

@@ -29,7 +29,7 @@ public class MemberDescriptorTests : TestBase
 
             // Assert
             results.Length.ShouldBe(1);
-            results[0].ErrorMessage.ShouldBe("InstanceType is required when MemberType is Method or Property");
+            results[0].ErrorMessage.ShouldBe("InstanceType is required when MemberType is Method, Property or Constructor");
         }
 
         [Fact]
@@ -43,7 +43,7 @@ public class MemberDescriptorTests : TestBase
 
             // Assert
             results.Length.ShouldBe(1);
-            results[0].ErrorMessage.ShouldBe("TypeArguments are not allowed when MemberType is Method or Property");
+            results[0].ErrorMessage.ShouldBe("TypeArguments are not allowed when MemberType is Method, Property or Constructor");
         }
 
         [Fact]
@@ -57,7 +57,7 @@ public class MemberDescriptorTests : TestBase
 
             // Assert
             results.Length.ShouldBe(1);
-            results[0].ErrorMessage.ShouldBe("InstanceType is not allowed when MemberType is not Method or Property");
+            results[0].ErrorMessage.ShouldBe("InstanceType is not allowed when MemberType is not Method, Property or Constructor");
         }
 
         [Fact]

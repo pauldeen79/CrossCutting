@@ -6,5 +6,6 @@ public enum MemberType
     Function,
     GenericFunction,
     Method,
-    Property
+    Property,
+    Constructor
 }

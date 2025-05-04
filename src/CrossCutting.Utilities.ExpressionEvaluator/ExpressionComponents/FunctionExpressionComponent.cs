@@ -84,6 +84,6 @@ public class FunctionExpressionComponent : IExpressionComponent
             null => Result.Invalid<object?>("Member is null"),
             IGenericFunction genericFunction => functionCallContext.Evaluate(genericFunction),
             IFunction function => function.Evaluate(functionCallContext),
-            _ => Result.Invalid<object?>($"Unknown member type: {result.Member.GetType().FullName}")
+            _ => Result.NotSupported<object?>($"Unsupported member type: {result.Member.GetType().FullName}")
         };
 }

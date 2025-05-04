@@ -1,10 +1,10 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.DotExpressionComponents;
 
-public class FunctionDotExpressionComponent : IDotExpressionComponent
+public class MemberDotExpressionComponent : IDotExpressionComponent
 {
     private readonly IMemberResolver _memberResolver;
 
-    public FunctionDotExpressionComponent(IMemberResolver memberResolver)
+    public MemberDotExpressionComponent(IMemberResolver memberResolver)
     {
         ArgumentGuard.IsNotNull(memberResolver, nameof(memberResolver));
 
@@ -32,7 +32,8 @@ public class FunctionDotExpressionComponent : IDotExpressionComponent
         var member = result.GetValueOrThrow().Member;
         return member switch
         {
-            IFunction function => function.Evaluate(context),
+            IMethod method => method.Evaluate(context),
+            IProperty property => property.Evaluate(context),
             _ => Result.Continue<object?>() //TODO: Review this path
         };
     }
@@ -46,7 +47,8 @@ public class FunctionDotExpressionComponent : IDotExpressionComponent
             .WithMemberType(state.Type == DotExpressionType.Method
                 ? MemberType.Method
                 : MemberType.Property)
-            .Chain(x => x.Arguments.Insert(0, Constants.DotArgument)).Build()), state.Context, state.Value);
+            .Build()), state.Context, state.ResultType);
+
         var result = _memberResolver.Resolve(context);
         if (result.Status == ResultStatus.NotFound)
         {
@@ -58,13 +60,6 @@ public class FunctionDotExpressionComponent : IDotExpressionComponent
             return Result.FromExistingResult<Type>(result);
         }
 
-        //var member = result.Value?.Member;
-        //return member switch
-        //{
-        //    IFunction => Result.Success(result.Value?.ReturnValueType!),
-        //    _ => Result.Continue<Type>() //TODO: Review this path
-        //};
-
-        return Result.Success(result.Value?.ReturnValueType!);
+        return Result.Success(result.GetValueOrThrow().ReturnValueType!);
     }
 }

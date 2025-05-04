@@ -16,23 +16,23 @@ public partial record MemberDescriptor : IValidatableObject
             yield return new ValidationResult($"{nameof(MemberType)} cannot be Unknown", [nameof(MemberType)]);
         }
 
-        if (memberType.In(MemberType.Method, MemberType.Property))
+        if (memberType.In(MemberType.Method, MemberType.Property, MemberType.Constructor))
         {
             if (instanceType is null)
             {
-                yield return new ValidationResult($"{nameof(InstanceType)} is required when MemberType is Method or Property", [nameof(InstanceType)]);
+                yield return new ValidationResult($"{nameof(InstanceType)} is required when MemberType is Method, Property or Constructor", [nameof(InstanceType)]);
             }
 
             if (typeArgumentsCount > 0)
             {
-                yield return new ValidationResult($"{nameof(TypeArguments)} are not allowed when MemberType is Method or Property", [nameof(TypeArguments)]);
+                yield return new ValidationResult($"{nameof(TypeArguments)} are not allowed when MemberType is Method, Property or Constructor", [nameof(TypeArguments)]);
             }
         }
         else
         {
             if (instanceType is not null)
             {
-                yield return new ValidationResult($"{nameof(InstanceType)} is not allowed when MemberType is not Method or Property", [nameof(InstanceType)]);
+                yield return new ValidationResult($"{nameof(InstanceType)} is not allowed when MemberType is not Method, Property or Constructor", [nameof(InstanceType)]);
             }
         }
 

@@ -82,6 +82,9 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper, IMemberDescriptor
         {
             IGenericFunction => MemberType.GenericFunction,
             IFunction => MemberType.Function,
+            IMethod => MemberType.Method,
+            IProperty => MemberType.Property,
+            IConstructor => MemberType.Constructor,
             //TODO: Review this path
             _ => defaultValue
         };

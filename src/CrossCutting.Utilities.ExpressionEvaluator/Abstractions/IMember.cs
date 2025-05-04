@@ -4,5 +4,4 @@
 public interface IMember
 #pragma warning restore CA1040 // Avoid empty interfaces
 {
-    // Marker interface
 }

@@ -302,13 +302,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToLowerCase_Function()
+    public void Can_Evaluate_Expression_With_ToLower_DotExpression_Method()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("ToLowerCase(\"expression\")", evaluator: sut));
+        var result = sut.Evaluate(CreateContext("\"expression\".ToLower()", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -316,13 +316,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToPascalCase_Function()
+    public void Can_Evaluate_Expression_With_ToPascalCase_DotExpression_Method()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("ToPascalCase(\"expression\")", evaluator: sut));
+        var result = sut.Evaluate(CreateContext("\"expression\".ToPascalCase()", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -330,13 +330,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToUpperCase_Function()
+    public void Can_Evaluate_Expression_With_ToUpper_DotExpression_Method()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("ToUpperCase(\"expression\")", evaluator: sut));
+        var result = sut.Evaluate(CreateContext("\"expression\".ToUpper()", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

@@ -25,13 +25,13 @@ public class MemberCallArgumentValidator : IMemberCallArgumentValidator
         return callArgumentResult;
     }
 
-    public static Result<Type> Validate(DotExpressionComponentState state, IMemberCallArgumentValidator validator, MemberDescriptor functionDescriptor)
+    public static Result<Type> Validate(DotExpressionComponentState state, IMemberCallArgumentValidator validator, MemberDescriptor functionDescriptor, IMember member)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
         validator = ArgumentGuard.IsNotNull(validator, nameof(validator));
         functionDescriptor = ArgumentGuard.IsNotNull(functionDescriptor, nameof(functionDescriptor));
 
-        var result = Validate(validator, new FunctionCallContext(state), functionDescriptor, null);
+        var result = Validate(validator, new FunctionCallContext(state), functionDescriptor, member);
         if (!result.IsSuccessful())
         {
             return Result.FromExistingResult<Type>(result);
@@ -40,7 +40,7 @@ public class MemberCallArgumentValidator : IMemberCallArgumentValidator
         return Result.Success(result.Value?.ReturnValueType!);
     }
 
-    public static Result<MemberAndTypeDescriptor> Validate(IMemberCallArgumentValidator functionCallArgumentValidator, FunctionCallContext functionCallContext, MemberDescriptor functionDescriptor, IMember? member)
+    public static Result<MemberAndTypeDescriptor> Validate(IMemberCallArgumentValidator functionCallArgumentValidator, FunctionCallContext functionCallContext, MemberDescriptor functionDescriptor, IMember member)
     {
         functionCallArgumentValidator = ArgumentGuard.IsNotNull(functionCallArgumentValidator, nameof(functionCallArgumentValidator));
         functionCallContext = ArgumentGuard.IsNotNull(functionCallContext, nameof(functionCallContext));
