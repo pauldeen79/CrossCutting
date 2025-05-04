@@ -2,7 +2,7 @@
 
 public class ResultDictionaryBuilderExtensionsTests : TestBase
 {
-    private FunctionCallContext CreateFunctionCallContext() => new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").AddArguments("1"), CreateContext("Dummy"));
+    private FunctionCallContext CreateFunctionCallContext() => new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").AddArguments("1"), CreateContext("Dummy"), MemberType.Function);
 
     [Fact]
     public void Add_Untyped_NonGeneric_Returns_Correct_Result()

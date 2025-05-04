@@ -10,7 +10,7 @@ public class ConvertFunctionTests : TestBase<ConvertFunction>
             // Arrange
             var sut = CreateSut();
             var functionCall = new FunctionCallBuilder().WithName("Convert").AddArguments("System.Int32", "1");
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"), MemberType.Function);
 
             // Act
             var result = sut.Evaluate(context);
@@ -26,7 +26,7 @@ public class ConvertFunctionTests : TestBase<ConvertFunction>
             // Arrange
             var sut = CreateSut();
             var functionCall = new FunctionCallBuilder().WithName("Convert").AddArguments("System.DateTime", "1");
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"), MemberType.Function);
 
             // Act
             var result = sut.Evaluate(context);

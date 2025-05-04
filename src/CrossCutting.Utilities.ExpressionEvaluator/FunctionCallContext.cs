@@ -2,14 +2,20 @@
 
 public class FunctionCallContext
 {
-    public FunctionCallContext(FunctionCall functionCall, ExpressionEvaluatorContext context, object? instanceValue = null)
+    public FunctionCallContext(FunctionCall functionCall, ExpressionEvaluatorContext context, MemberType memberType, object? instanceValue = null)
     {
         ArgumentGuard.IsNotNull(functionCall, nameof(functionCall));
         ArgumentGuard.IsNotNull(context, nameof(context));
 
         FunctionCall = functionCall;
         Context = context;
+        MemberType = memberType;
         InstanceValue = instanceValue;
+
+        if (MemberType == MemberType.Unknown)
+        {
+            throw new InvalidOperationException("MemberType cannot be Unknown");
+        }
     }
 
     public FunctionCallContext(DotExpressionComponentState state)
@@ -19,10 +25,17 @@ public class FunctionCallContext
         // Little hacking here... We need to add an 'instance' argument (sort of an extension method), to construct a FunctionCall from this DotExpression...
         FunctionCall = state.FunctionParseResult.Value!.ToBuilder().Chain(x => x.Arguments.Insert(0, Constants.DotArgument)).Build();
         Context = state.Context;
+        MemberType = state.Type.ToMemberType();
+
+        if (MemberType == MemberType.Unknown)
+        {
+            throw new InvalidOperationException("MemberType cannot be Unknown");
+        }
     }
 
     public FunctionCall FunctionCall { get; }
     public ExpressionEvaluatorContext Context { get; }
+    public MemberType MemberType { get; }
     public object? InstanceValue { get; }
 
     public Result<object?> GetArgumentValueResult(int index, string argumentName)

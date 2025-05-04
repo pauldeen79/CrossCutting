@@ -38,7 +38,7 @@ public class MemberResolver : IMemberResolver
                 .GetValueOrThrow()
                 .Where(x =>
                     x.Name.Equals(functionCallContext.FunctionCall.Name, StringComparison.OrdinalIgnoreCase)
-                    && x.MemberType == functionCallContext.FunctionCall.MemberType
+                    && IsMemberTypeValid(x.MemberType, functionCallContext.MemberType)
                     && IsInstanceTypeValid(x.InstanceType, functionCallContext.InstanceValue))
                 .ToArray();
 
@@ -60,6 +60,16 @@ public class MemberResolver : IMemberResolver
         });
     }
 
+    private static bool IsMemberTypeValid(MemberType descriptorMemberType, MemberType contextMemberType)
+    {
+        if (contextMemberType == MemberType.Function)
+        {
+            return descriptorMemberType.In(MemberType.Function, MemberType.GenericFunction);
+        }
+
+        return descriptorMemberType == contextMemberType;
+    }
+
     private static bool IsInstanceTypeValid(Type? instanceType, object? instanceValue)
     {
         if (instanceType is null)
@@ -78,11 +88,11 @@ public class MemberResolver : IMemberResolver
         if (instanceValue is Type instanceValueType)
         {
             // Validate
-            return instanceType.IsAssignableFrom(instanceValueType);
+            return instanceType!.IsAssignableFrom(instanceValueType);
         }
 
         // Evaluate
-        return instanceType.IsInstanceOfType(instanceValue);
+        return instanceType!.IsInstanceOfType(instanceValue);
     }
 
     private Result<MemberAndTypeDescriptor> GetFunctionByDescriptor(FunctionCallContext functionCallContext, MemberDescriptor memberDescriptor)

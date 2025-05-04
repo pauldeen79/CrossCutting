@@ -228,11 +228,6 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Domains.MemberType MemberType
-        {
-            get;
-        }
-
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         public System.Collections.Generic.IReadOnlyCollection<string> Arguments
@@ -246,10 +241,9 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public FunctionCall(string name, CrossCutting.Utilities.ExpressionEvaluator.Domains.MemberType memberType, System.Collections.Generic.IEnumerable<string> arguments, System.Collections.Generic.IEnumerable<System.Type> typeArguments)
+        public FunctionCall(string name, System.Collections.Generic.IEnumerable<string> arguments, System.Collections.Generic.IEnumerable<System.Type> typeArguments)
         {
             this.Name = name;
-            this.MemberType = memberType;
             this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(arguments);
             this.TypeArguments = typeArguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.Type>(typeArguments);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);

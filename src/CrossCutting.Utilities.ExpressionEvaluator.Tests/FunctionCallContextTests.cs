@@ -26,7 +26,7 @@ public class FunctionCallContextTests : TestBase
         Expression
             .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
             .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression.EndsWith("()")
-                ? function.Evaluate(new FunctionCallContext(new FunctionCallBuilder().WithName(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.ReplaceSuffix("()", string.Empty, StringComparison.Ordinal)), x.ArgAt<ExpressionEvaluatorContext>(0)))
+                ? function.Evaluate(new FunctionCallContext(new FunctionCallBuilder().WithName(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.ReplaceSuffix("()", string.Empty, StringComparison.Ordinal)), x.ArgAt<ExpressionEvaluatorContext>(0), MemberType.Function))
                 : EvaluateExpression(x));
         Evaluator
             .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -39,7 +39,7 @@ public class FunctionCallContextTests : TestBase
         public void Throws_On_Null_FunctionCall()
         {
             // Act & Assert
-            Action a = () => _ = new FunctionCallContext(null!, CreateContext("Dummy"));
+            Action a = () => _ = new FunctionCallContext(null!, CreateContext("Dummy"), MemberType.Function);
             a.ShouldThrow<ArgumentNullException>();
         }
 
@@ -47,7 +47,7 @@ public class FunctionCallContextTests : TestBase
         public void Throws_On_Null_FunctionEvaluator()
         {
             // Act & Assert
-            Action a = () => _ = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), null!);
+            Action a = () => _ = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), null!, MemberType.Function);
             a.ShouldThrow<ArgumentNullException>();
         }
     }
@@ -313,11 +313,11 @@ public class FunctionCallContextTests : TestBase
         => new FunctionCallContext(new FunctionCallBuilder()
             .WithName("Test")
             .AddArguments("\"some value\"")
-            .Build(), CreateContext("Dummy"));
+            .Build(), CreateContext("Dummy"), MemberType.Function);
 
     protected FunctionCallContext CreateFunctionCallContextWithFunctionArgument(string functionName)
         => new FunctionCallContext(new FunctionCallBuilder()
             .WithName("Test")
             .AddArguments($"{functionName}()")
-            .Build(), CreateContext("Dummy"));
+            .Build(), CreateContext("Dummy"), MemberType.Function);
 }

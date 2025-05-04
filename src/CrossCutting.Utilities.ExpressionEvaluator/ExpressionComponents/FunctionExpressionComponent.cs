@@ -30,7 +30,7 @@ public class FunctionExpressionComponent : IExpressionComponent
             return Result.FromExistingResult<object?>(functionCallResult);
         }
 
-        var functionCallContext = new FunctionCallContext(functionCallResult.GetValueOrThrow(), context);
+        var functionCallContext = new FunctionCallContext(functionCallResult.GetValueOrThrow(), context, MemberType.Function);
 
         return _functionResolver.Resolve(functionCallContext).Transform(result => EvaluateFunction(result, functionCallContext));
     }
@@ -55,7 +55,7 @@ public class FunctionExpressionComponent : IExpressionComponent
                 .WithSourceExpression(context.Expression);
         }
 
-        var functionCallContext = new FunctionCallContext(functionCallResult.GetValueOrThrow(), context);
+        var functionCallContext = new FunctionCallContext(functionCallResult.GetValueOrThrow(), context, MemberType.Function);
         var resolveResult = _functionResolver.Resolve(functionCallContext);
 
         if (!resolveResult.IsSuccessful())

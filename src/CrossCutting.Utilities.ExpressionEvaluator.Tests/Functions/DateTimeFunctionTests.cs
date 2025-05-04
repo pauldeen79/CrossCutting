@@ -10,7 +10,7 @@ public class DateTimeFunctionTests : TestBase<DateTimeFunction>
             // Arrange
             var sut = CreateSut();
             var functionCall = new FunctionCallBuilder().WithName("DateTime").AddArguments("2025", "1", "1", "0", "0", "0");
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"), MemberType.Function);
 
             // Act
             var result = sut.Evaluate(context);
@@ -26,7 +26,7 @@ public class DateTimeFunctionTests : TestBase<DateTimeFunction>
             // Arrange
             var sut = CreateSut();
             var functionCall = new FunctionCallBuilder().WithName("DateTime").AddArguments("2025", "1", "1", "25", "0", "0"); // hour 25 is not okay!
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"), MemberType.Function);
 
             // Act
             var result = sut.Evaluate(context);
