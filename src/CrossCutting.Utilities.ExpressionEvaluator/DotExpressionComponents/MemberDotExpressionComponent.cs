@@ -29,7 +29,7 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
         {
             IMethod method => method.Evaluate(context),
             IProperty property => property.Evaluate(context),
-            _ => Result.Continue<object?>() //TODO: Review this path
+            _ => Result.NotSupported<object?>("Resolved member should be of type Method or Property")
         };
     }
 

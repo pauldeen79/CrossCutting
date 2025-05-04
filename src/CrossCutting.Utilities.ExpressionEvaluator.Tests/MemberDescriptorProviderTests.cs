@@ -157,7 +157,7 @@ public class MemberDescriptorProviderTests
                 return Result.Success<object?>("Custom value");
             }
 
-            public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback)
+            public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors()
             {
                 return Result.Success<IReadOnlyCollection<MemberDescriptor>>(new List<MemberDescriptor>([new MemberDescriptorBuilder()
                     .WithName("PassThrough")

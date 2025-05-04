@@ -2,5 +2,5 @@
 
 public interface IDynamicDescriptorsProvider
 {
-    Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors(IMemberDescriptorCallback callback);
+    Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors();
 }

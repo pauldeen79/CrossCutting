@@ -20,7 +20,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IDotExpressionComponent, ReflectionPropertyDotExpressionComponent>()
             .AddSingleton<IMemberCallArgumentValidator, MemberCallArgumentValidator>()
             .AddSingleton<IMemberDescriptorMapper, MemberDescriptorMapper>()
-            .AddSingleton<IMemberDescriptorCallback, MemberDescriptorMapper>()
             .AddSingleton<IMemberDescriptorProvider, MemberDescriptorProvider>()
             .AddSingleton<IFunctionParser, FunctionParser>()
             .AddSingleton<IMemberResolver, MemberResolver>()
