@@ -17,7 +17,7 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        var context = new FunctionCallContext(state.FunctionParseResult.GetValueOrThrow(), state.Context, state.Type.ToMemberType(), state.Value);
+        var context = new FunctionCallContext(state);
         var result = _memberResolver.Resolve(context);
         if (result.Status == ResultStatus.NotFound)
         {
@@ -37,7 +37,7 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        var context = new FunctionCallContext(state.FunctionParseResult.GetValueOrThrow(), state.Context, state.Type.ToMemberType(), state.ResultType);
+        var context = new FunctionCallContext(state);
 
         var result = _memberResolver.Resolve(context);
         if (result.Status == ResultStatus.NotFound)

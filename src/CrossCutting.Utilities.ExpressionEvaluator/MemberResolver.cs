@@ -39,7 +39,7 @@ public class MemberResolver : IMemberResolver
                 .Where(x =>
                     x.Name.Equals(functionCallContext.FunctionCall.Name, StringComparison.OrdinalIgnoreCase)
                     && IsMemberTypeValid(x.MemberType, functionCallContext.MemberType)
-                    && IsInstanceTypeValid(x.InstanceType, functionCallContext.InstanceValue))
+                    && IsInstanceTypeValid(x.InstanceType, functionCallContext.InstanceValue, functionCallContext.ResultType))
                 .ToArray();
 
             if (functionsByName.Length == 0)
@@ -70,7 +70,7 @@ public class MemberResolver : IMemberResolver
         return descriptorMemberType == contextMemberType;
     }
 
-    private static bool IsInstanceTypeValid(Type? instanceType, object? instanceValue)
+    private static bool IsInstanceTypeValid(Type? instanceType, object? instanceValue, Type? resultType)
     {
         if (instanceType is null)
         {
@@ -78,17 +78,10 @@ public class MemberResolver : IMemberResolver
             return instanceValue is null;
         }
 
-        if (instanceValue is null)
-        {
-            // There is an instance type, but the instance value is null.
-            // This should not be possible, and the calling component should handle this.
-            return false;
-        }
-
-        if (instanceValue is Type instanceValueType)
+        if (resultType is not null)
         {
             // Validate
-            return instanceType!.IsAssignableFrom(instanceValueType);
+            return instanceType!.IsAssignableFrom(resultType);
         }
 
         // Evaluate
