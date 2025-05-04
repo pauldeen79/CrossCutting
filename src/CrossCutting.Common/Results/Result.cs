@@ -35,7 +35,7 @@ public record Result<T> : Result
     {
         ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
 
-        if (!IsSuccessful())
+        if (!IsSuccessful() || Value is null)
         {
             return FromExistingResult<TTarget>(this);
         }
@@ -47,7 +47,7 @@ public record Result<T> : Result
     {
         ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
 
-        if (!IsSuccessful())
+        if (!IsSuccessful() || Value is null)
         {
             return FromExistingResult<TTarget>(this);
         }

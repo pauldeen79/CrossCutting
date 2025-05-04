@@ -3369,4 +3369,56 @@ public class ResultTests
         result.ErrorMessage.ShouldBe("Exception occured");
         result.Exception.ShouldNotBeNull();
     }
+
+    [Fact]
+    public void IgnoreNotFound_Untyped_Returns_Continue_When_Status_Is_NotFound()
+    {
+        // Arrange
+        var sut = Result.NotFound();
+
+        // Act
+        var result = sut.IgnoreNotFound();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Continue);
+    }
+
+    [Fact]
+    public void IgnoreNotFound_Untyped_Returns_Ok_When_Status_Is_Ok()
+    {
+        // Arrange
+        var sut = Result.Success();
+
+        // Act
+        var result = sut.IgnoreNotFound();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void IgnoreNotFound_Typed_Returns_Continue_When_Status_Is_NotFound()
+    {
+        // Arrange
+        var sut = Result.NotFound<int>();
+
+        // Act
+        var result = sut.IgnoreNotFound();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Continue);
+    }
+
+    [Fact]
+    public void IgnoreNotFound_Typed_Returns_Ok_When_Status_Is_Ok()
+    {
+        // Arrange
+        var sut = Result.Success(1);
+
+        // Act
+        var result = sut.IgnoreNotFound();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
 }

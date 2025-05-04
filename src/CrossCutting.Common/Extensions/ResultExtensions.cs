@@ -273,4 +273,24 @@ public static class ResultExtensions
 
         return Task.FromResult(instance);
     }
+
+    public static Result IgnoreNotFound(this Result instance)
+    {
+        if (instance.Status == ResultStatus.NotFound)
+        {
+            return Result.Continue();
+        }
+
+        return instance;
+    }
+
+    public static Result<T> IgnoreNotFound<T>(this Result<T> instance)
+    {
+        if (instance.Status == ResultStatus.NotFound)
+        {
+            return Result.Continue<T>();
+        }
+
+        return instance;
+    }
 }
