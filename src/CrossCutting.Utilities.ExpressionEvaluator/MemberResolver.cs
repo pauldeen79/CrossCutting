@@ -97,6 +97,6 @@ public class MemberResolver : IMemberResolver
             return Result.NotFound<MemberAndTypeDescriptor>($"Could not find member with type name {memberDescriptor.ImplementationType.FullName}");
         }
 
-        return MemberCallArgumentValidator.Validate(_memberCallArgumentValidator, functionCallContext, memberDescriptor, member);
+        return _memberCallArgumentValidator.Validate(functionCallContext, memberDescriptor, member);
     }
 }

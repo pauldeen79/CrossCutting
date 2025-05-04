@@ -25,33 +25,17 @@ public class MemberCallArgumentValidator : IMemberCallArgumentValidator
         return callArgumentResult;
     }
 
-    public static Result<Type> Validate(DotExpressionComponentState state, IMemberCallArgumentValidator validator, MemberDescriptor functionDescriptor, IMember member)
+    public Result<MemberAndTypeDescriptor> Validate(FunctionCallContext context, MemberDescriptor functionDescriptor, IMember member)
     {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
-        validator = ArgumentGuard.IsNotNull(validator, nameof(validator));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
         functionDescriptor = ArgumentGuard.IsNotNull(functionDescriptor, nameof(functionDescriptor));
 
-        var result = Validate(validator, new FunctionCallContext(state), functionDescriptor, member);
-        if (!result.IsSuccessful())
-        {
-            return Result.FromExistingResult<Type>(result);
-        }
-
-        return Result.Success(result.Value?.ReturnValueType!);
-    }
-
-    public static Result<MemberAndTypeDescriptor> Validate(IMemberCallArgumentValidator functionCallArgumentValidator, FunctionCallContext functionCallContext, MemberDescriptor functionDescriptor, IMember member)
-    {
-        functionCallArgumentValidator = ArgumentGuard.IsNotNull(functionCallArgumentValidator, nameof(functionCallArgumentValidator));
-        functionCallContext = ArgumentGuard.IsNotNull(functionCallContext, nameof(functionCallContext));
-        functionDescriptor = ArgumentGuard.IsNotNull(functionDescriptor, nameof(functionDescriptor));
-
-        var arguments = functionDescriptor.Arguments.Zip(functionCallContext.FunctionCall.Arguments, (descriptor, call) => new MemberArgumentInfo(descriptor, call));
+        var arguments = functionDescriptor.Arguments.Zip(context.FunctionCall.Arguments, (descriptor, call) => new MemberArgumentInfo(descriptor, call));
 
         var errors = new List<ValidationError>();
         foreach (var argument in arguments)
         {
-            var validationResult = functionCallArgumentValidator.Validate(argument.DescriptorArgument, argument.CallArgument, functionCallContext);
+            var validationResult = Validate(argument.DescriptorArgument, argument.CallArgument, context);
             if (!validationResult.IsSuccessful() && validationResult.ErrorMessage is not null)
             {
                 errors.Add(new ValidationError(validationResult.ErrorMessage, [argument.DescriptorArgument.Name]));
@@ -60,7 +44,7 @@ public class MemberCallArgumentValidator : IMemberCallArgumentValidator
 
         if (errors.Count > 0)
         {
-            return Result.Invalid<MemberAndTypeDescriptor>($"Validation of member {functionCallContext.FunctionCall.Name} failed, see validation errors for more details", errors);
+            return Result.Invalid<MemberAndTypeDescriptor>($"Validation of member {context.FunctionCall.Name} failed, see validation errors for more details", errors);
         }
 
         return Result.Success(new MemberAndTypeDescriptor(member, functionDescriptor.ReturnValueType));

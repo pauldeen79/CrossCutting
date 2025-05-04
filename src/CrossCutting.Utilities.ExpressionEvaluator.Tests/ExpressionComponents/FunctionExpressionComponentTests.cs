@@ -4,19 +4,19 @@ public class FunctionExpressionComponentTests : TestBase
 {
     protected IFunction Function { get; }
     protected IMemberDescriptorProvider MemberDescriptorProvider { get; }
-    protected IMemberCallArgumentValidator FunctionCallArgumentValidator { get; }
+    protected IMemberCallArgumentValidator MemberCallArgumentValidator { get; }
 
     protected FunctionExpressionComponent CreateSut(IFunction? function = null)
-        => new FunctionExpressionComponent(new FunctionParser(), new MemberResolver(MemberDescriptorProvider, FunctionCallArgumentValidator, [function ?? Function]));
+        => new FunctionExpressionComponent(new FunctionParser(), new MemberResolver(MemberDescriptorProvider, MemberCallArgumentValidator, [function ?? Function]));
 
     protected FunctionExpressionComponent CreateSut(IGenericFunction genericFunction)
-        => new FunctionExpressionComponent(new FunctionParser(), new MemberResolver(MemberDescriptorProvider, FunctionCallArgumentValidator, [genericFunction]));
+        => new FunctionExpressionComponent(new FunctionParser(), new MemberResolver(MemberDescriptorProvider, MemberCallArgumentValidator, [genericFunction]));
 
     public FunctionExpressionComponentTests()
     {
         Function = Substitute.For<IFunction>();
         MemberDescriptorProvider = Substitute.For<IMemberDescriptorProvider>();
-        FunctionCallArgumentValidator = Substitute.For<IMemberCallArgumentValidator>();
+        MemberCallArgumentValidator = Substitute.For<IMemberCallArgumentValidator>();
     }
 
     public class Evaluate : FunctionExpressionComponentTests
@@ -50,7 +50,12 @@ public class FunctionExpressionComponentTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction()");
-            Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
+            Function
+                .Evaluate(Arg.Any<FunctionCallContext>())
+                .Returns(Result.Success<object?>("function result value"));
+            MemberCallArgumentValidator
+                .Validate(Arg.Any<FunctionCallContext>(), Arg.Any<MemberDescriptor>(), Arg.Any<IMember>())
+                .Returns(x => new MemberCallArgumentValidator().Validate(x.ArgAt<FunctionCallContext>(0), x.ArgAt<MemberDescriptor>(1), x.ArgAt<IMember>(2)));
             MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
                 .WithName("MyFunction")
                 .WithMemberType(MemberType.Function)
@@ -72,11 +77,16 @@ public class FunctionExpressionComponentTests : TestBase
             // Arrange
             var context = CreateContext("MyFunction<System.String>()");
             var genericFunction = new MyGenericFunction();
-            MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
-                .WithName("MyFunction")
-                .WithMemberType(MemberType.GenericFunction)
-                .WithImplementationType(genericFunction.GetType())
-                .WithReturnValueType(typeof(string))]));
+            MemberDescriptorProvider
+                .GetAll()
+                .Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
+                    .WithName("MyFunction")
+                    .WithMemberType(MemberType.GenericFunction)
+                    .WithImplementationType(genericFunction.GetType())
+                    .WithReturnValueType(typeof(string))]));
+            MemberCallArgumentValidator
+                .Validate(Arg.Any<FunctionCallContext>(), Arg.Any<MemberDescriptor>(), Arg.Any<IMember>())
+                .Returns(x => new MemberCallArgumentValidator().Validate(x.ArgAt<FunctionCallContext>(0), x.ArgAt<MemberDescriptor>(1), x.ArgAt<IMember>(2)));
             var sut = CreateSut(genericFunction);
 
             // Act
@@ -174,11 +184,16 @@ public class FunctionExpressionComponentTests : TestBase
             // Arrange
             var context = CreateContext("MyFunction<System.String,System.String>()");
             var genericFunction = new MyGenericFunction();
-            MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
-                .WithName("MyFunction")
-                .WithMemberType(MemberType.GenericFunction)
-                .WithImplementationType(genericFunction.GetType())
-                .WithReturnValueType(typeof(string))]));
+            MemberDescriptorProvider
+                .GetAll()
+                .Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
+                    .WithName("MyFunction")
+                    .WithMemberType(MemberType.GenericFunction)
+                    .WithImplementationType(genericFunction.GetType())
+                    .WithReturnValueType(typeof(string))]));
+            MemberCallArgumentValidator
+                .Validate(Arg.Any<FunctionCallContext>(), Arg.Any<MemberDescriptor>(), Arg.Any<IMember>())
+                .Returns(x => new MemberCallArgumentValidator().Validate(x.ArgAt<FunctionCallContext>(0), x.ArgAt<MemberDescriptor>(1), x.ArgAt<IMember>(2)));
             var sut = CreateSut(genericFunction);
 
             // Act
@@ -205,9 +220,9 @@ public class FunctionExpressionComponentTests : TestBase
                     .WithImplementationType(Function.GetType())
                     .WithReturnValueType(typeof(string))
                     .AddArguments(new MemberDescriptorArgumentBuilder().WithName("MyArgument").WithType(typeof(string)))]));
-            FunctionCallArgumentValidator
-                .Validate(Arg.Any<MemberDescriptorArgument>(), Arg.Any<string>(), Arg.Any<FunctionCallContext>())
-                .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Invalid).WithErrorMessage("I want a string, you give me an int!"));
+            MemberCallArgumentValidator
+                .Validate(Arg.Any<FunctionCallContext>(), Arg.Any<MemberDescriptor>(), Arg.Any<IMember>())
+                .Returns(x => new MemberCallArgumentValidator().Validate(x.ArgAt<FunctionCallContext>(0), x.ArgAt<MemberDescriptor>(1), x.ArgAt<IMember>(2)));
             var sut = CreateSut();
 
             // Act
@@ -217,7 +232,7 @@ public class FunctionExpressionComponentTests : TestBase
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Validation of member MyFunction failed, see validation errors for more details");
             result.ValidationErrors.Count.ShouldBe(1);
-            result.ValidationErrors.First().ErrorMessage.ShouldBe("I want a string, you give me an int!");
+            result.ValidationErrors.First().ErrorMessage.ShouldBe("Argument MyArgument is not of type System.String");
             result.ValidationErrors.First().MemberNames.Count.ShouldBe(1);
             result.ValidationErrors.First().MemberNames.First().ShouldBe("MyArgument");
         }
@@ -261,11 +276,16 @@ public class FunctionExpressionComponentTests : TestBase
         {
             // Arrange
             var context = CreateContext("MyFunction()");
-            MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
-                .WithName("MyFunction")
-                .WithMemberType(MemberType.Function)
-                .WithImplementationType(Function.GetType())
-                .WithReturnValueType(typeof(string))]));
+            MemberDescriptorProvider
+                .GetAll()
+                .Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
+                    .WithName("MyFunction")
+                    .WithMemberType(MemberType.Function)
+                    .WithImplementationType(Function.GetType())
+                    .WithReturnValueType(typeof(string))]));
+            MemberCallArgumentValidator
+                .Validate(Arg.Any<FunctionCallContext>(), Arg.Any<MemberDescriptor>(), Arg.Any<IMember>())
+                .Returns(x => new MemberCallArgumentValidator().Validate(x.ArgAt<FunctionCallContext>(0), x.ArgAt<MemberDescriptor>(1), x.ArgAt<IMember>(2)));
             var sut = CreateSut();
 
             // Act
