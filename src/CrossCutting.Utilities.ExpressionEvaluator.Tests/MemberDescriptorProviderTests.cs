@@ -108,7 +108,7 @@ public class MemberDescriptorProviderTests
             };
             var mapper = Substitute.For<IMemberDescriptorMapper>();
             mapper
-                .Map(Arg.Any<object>(), Arg.Any<Type?>())
+                .Map(Arg.Any<IMember>(), Arg.Any<Type?>())
                 .Returns(Result.Error<IReadOnlyCollection<MemberDescriptor>>("Kaboom"));
             var sut = new MemberDescriptorProvider(mapper, members);
 

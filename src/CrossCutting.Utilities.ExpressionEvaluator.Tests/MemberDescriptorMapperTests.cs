@@ -2,7 +2,7 @@
 
 public class MemberDescriptorMapperTests : TestBase<MemberDescriptorMapper>
 {
-    public class Map : MemberDescriptorMapperTests, IDynamicDescriptorsProvider
+    public class Map : MemberDescriptorMapperTests, IDynamicDescriptorsProvider, IMember
     {
         [Fact]
         public void Returns_Correct_Result_On_Function_Class()
@@ -48,7 +48,7 @@ public class MemberDescriptorMapperTests : TestBase<MemberDescriptorMapper>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Map(new object(), null);
+            var result = sut.Map(Substitute.For<IMember>(), null);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

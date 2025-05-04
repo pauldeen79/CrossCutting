@@ -2,5 +2,5 @@
 
 public interface IMemberDescriptorMapper
 {
-    Result<IReadOnlyCollection<MemberDescriptor>> Map(object source, Type? customImplementationType);
+    Result<IReadOnlyCollection<MemberDescriptor>> Map(IMember source, Type? customImplementationType);
 }

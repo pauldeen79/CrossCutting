@@ -2,7 +2,7 @@
 
 public class MemberDescriptorMapper : IMemberDescriptorMapper
 {
-    public Result<IReadOnlyCollection<MemberDescriptor>> Map(object source, Type? customImplementationType)
+    public Result<IReadOnlyCollection<MemberDescriptor>> Map(IMember source, Type? customImplementationType)
     {
         source = ArgumentGuard.IsNotNull(source, nameof(source));
 
