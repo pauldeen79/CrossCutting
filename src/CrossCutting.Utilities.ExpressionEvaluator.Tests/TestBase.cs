@@ -150,7 +150,7 @@ public abstract class TestBase
 
 public abstract class TestBase<T> : TestBase
 {
-    protected T CreateSut() => (T)Common.Testing.TypeExtensions.CreateInstance(typeof(T), ClassFactory(), p =>
+    protected T CreateSut() => Testing.CreateInstance<T>(ClassFactory, p =>
     {
         if (p.ParameterType == typeof(IExpressionEvaluator)) return new ExpressionEvaluator(new ExpressionTokenizer(), new ExpressionParser(), [Expression]);
         if (p.ParameterType == typeof(IExpressionTokenizer)) return new ExpressionTokenizer();
@@ -161,8 +161,9 @@ public abstract class TestBase<T> : TestBase
         if (p.ParameterType == typeof(IEnumerable<IExpressionComponent>)) return new IExpressionComponent[] { Expression };
         if (p.ParameterType == typeof(IEnumerable<IDotExpressionComponent>)) return new IDotExpressionComponent[] { new ReflectionMethodDotExpressionComponent(), new ReflectionPropertyDotExpressionComponent() };
         return null;
-    }, null)!;
+    })!;
 
-    protected static Func<Type, object?> ClassFactory()
-        => t => t.CreateInstance(parameterType => Substitute.For([parameterType], []), null, null);
+    // Class factory for NSubstitute, see Readme.md
+    private static object? ClassFactory(Type t)
+        => t.CreateInstance(parameterType => Substitute.For([parameterType], []), null, null);
 }
