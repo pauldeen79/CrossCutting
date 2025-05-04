@@ -79,7 +79,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Method_Expression()
+    public void Can_Evaluate_Instance_Method_Expression()
     {
         // Arrange
         var sut = CreateSut();
@@ -246,7 +246,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToString_DotExpression_Method()
+    public void Can_Evaluate_Expression_With_ToString_Instance_Method()
     {
         // Arrange
         var sut = CreateSut();
@@ -260,7 +260,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Evaluate_ToString_DotExpression_On_Null_Expression_Gives_Correct_Result()
+    public void Evaluate_ToString_Instance_Method_On_Null_Expression_Gives_Correct_Result()
     {
         // Arrange
         var sut = CreateSut();
@@ -288,7 +288,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToCamelCase_DotExpression_Method()
+    public void Can_Evaluate_Expression_With_ToCamelCase_Instance_Method()
     {
         // Arrange
         var sut = CreateSut();
@@ -302,7 +302,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToLower_DotExpression_Method()
+    public void Can_Evaluate_Expression_With_ToLower_Instance_Method()
     {
         // Arrange
         var sut = CreateSut();
@@ -316,7 +316,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToPascalCase_DotExpression_Method()
+    public void Can_Evaluate_Expression_With_ToPascalCase_Instance_Method()
     {
         // Arrange
         var sut = CreateSut();
@@ -330,7 +330,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToUpper_DotExpression_Method()
+    public void Can_Evaluate_Expression_With_ToUpper_Instance_Method()
     {
         // Arrange
         var sut = CreateSut();
@@ -506,6 +506,96 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public void Can_Evaluate_DateTime_AddYears()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.AddYears(1)", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.AddYears(1));
+    }
+
+    [Fact]
+    public void Can_Evaluate_DateTime_AddMonths()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.AddMonths(1)", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.AddMonths(1));
+    }
+
+    [Fact]
+    public void Can_Evaluate_DateTime_AddDays()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.AddDays(1)", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.AddDays(1));
+    }
+
+    [Fact]
+    public void Can_Evaluate_DateTime_AddHours()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.AddHours(1)", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.AddHours(1));
+    }
+
+    [Fact]
+    public void Can_Evaluate_DateTime_AddMinutes()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.AddMinutes(1)", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.AddMinutes(1));
+    }
+
+    [Fact]
+    public void Can_Evaluate_DateTime_AddSeconds()
+    {
+        // Arrange
+        var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Evaluate(CreateContext("state.AddSeconds(1)", evaluator: sut, state: dateTime));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(dateTime.AddSeconds(1));
+    }
+
+    [Fact]
     public void Can_Evaluate_String_Length()
     {
         // Arrange
@@ -580,7 +670,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_String_Substring_DotExpression_One_Argument()
+    public void Can_Evaluate_String_Substring_Instance_Method_One_Argument()
     {
         // Arrange
         var sut = CreateSut();
@@ -594,7 +684,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_String_Substring_DotExpression_Two_Arguments()
+    public void Can_Evaluate_String_Substring_Instance_Method_Two_Arguments()
     {
         // Arrange
         var sut = CreateSut();
@@ -870,7 +960,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_String_Substring_DotExpression_One_Argument()
+    public void Can_Parse_String_Substring_Instance_Method_One_Argument()
     {
         // Arrange
         var sut = CreateSut();
@@ -884,7 +974,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_String_Substring_DotExpression_Two_Arguments()
+    public void Can_Parse_String_Substring_Instance_Method_Two_Arguments()
     {
         // Arrange
         var sut = CreateSut();
@@ -898,7 +988,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_Method_Expression()
+    public void Can_Parse_Instance_Method_Expression()
     {
         // Arrange
         var sut = CreateSut();
