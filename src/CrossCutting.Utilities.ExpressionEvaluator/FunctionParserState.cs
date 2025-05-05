@@ -49,7 +49,7 @@ internal sealed class FunctionParserState
             {
                 Arguments.Add(arg);
             }
-            
+
             ArgumentsComplete = true;
         }
         else

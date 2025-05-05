@@ -108,7 +108,7 @@ public class FunctionCallContext
 
     public Result<T> GetInstanceValueResult<T>()
         => InstanceValue is T typedValue
-            ? Result.Success(typedValue)
+            ? Result.Success(typedValue).EnsureValue()
             : Result.Error<T>(GetInstanceValueErrorMessage<T>());
 
     private string GetInstanceValueErrorMessage<T>()

@@ -9,7 +9,12 @@ public class StringLengthProperty : IProperty
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.GetInstanceValueResult<string>()
-            .Transform(x => Result.Success<object?>(x.GetValueOrThrow().Length));
+        var instanceValueResult = context.GetInstanceValueResult<string>();
+        if (!instanceValueResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<object?>(instanceValueResult);
+        }
+
+        return Result.Success<object?>(instanceValueResult.Value!.Length);
     }
 }

@@ -18,9 +18,10 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
         var context = new FunctionCallContext(state);
-        return _memberResolver.Resolve(context)
-            .IgnoreNotFound()
-            .Transform(result => result.GetValueOrThrow().Member switch
+        return new ResultDictionaryBuilder()
+            .Add("Resolve", () => _memberResolver.Resolve(context).IgnoreNotFound())
+            .Build()
+            .OnSuccess(results => results.GetValue<MemberAndTypeDescriptor>("Resolve").Member switch
             {
                 IMethod method => method.Evaluate(context),
                 IProperty property => property.Evaluate(context),
@@ -34,8 +35,9 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
 
         var context = new FunctionCallContext(state);
 
-        return _memberResolver.Resolve(context)
-            .IgnoreNotFound()
-            .Transform(result => Result.Success(result.GetValueOrThrow().ReturnValueType!));
+        return new ResultDictionaryBuilder()
+            .Add("Resolve", () => _memberResolver.Resolve(context).IgnoreNotFound())
+            .Build()
+            .OnSuccess(results => Result.Success<Type>(results.GetValue<MemberAndTypeDescriptor>("Resolve").ReturnValueType!));
     }
 }

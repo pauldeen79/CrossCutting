@@ -7,7 +7,7 @@
 public class DateTimeAddYearsMethod : IMethod
 {
     private const string YearsToAdd = nameof(YearsToAdd);
-    
+
     public Result<object?> Evaluate(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));

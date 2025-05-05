@@ -58,7 +58,7 @@ public sealed class DotExpressionComponentState
     }
 
     public string Name => Type == DotExpressionType.Method
-        ? FunctionParseResult.Value!.Name
+        ? FunctionParseResult.GetValueOrThrow().Name
         : Part;
 
     private Result<FunctionCall>? _functionParseResult;

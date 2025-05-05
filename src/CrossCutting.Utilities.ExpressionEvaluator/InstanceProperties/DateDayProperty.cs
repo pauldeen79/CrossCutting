@@ -9,7 +9,12 @@ public class DateDayProperty : IProperty
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.GetInstanceValueResult<DateTime>()
-            .Transform(x => Result.Success<object?>(x.GetValueOrThrow().Day));
+        var instanceValueResult = context.GetInstanceValueResult<DateTime>();
+        if (!instanceValueResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<object?>(instanceValueResult);
+        }
+
+        return Result.Success<object?>(instanceValueResult.Value!.Day);
     }
 }

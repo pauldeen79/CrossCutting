@@ -28,7 +28,7 @@ public sealed class OtherExpression : IExpression
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
-        
+
         return context.Parse(Expression);
     }
 }

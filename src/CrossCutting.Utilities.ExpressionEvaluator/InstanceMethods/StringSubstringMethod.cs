@@ -9,7 +9,7 @@ public class StringSubstringMethod : IMethod
 {
     private const string Index = nameof(Index);
     private const string Length = nameof(Length);
-    
+
     public Result<object?> Evaluate(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));

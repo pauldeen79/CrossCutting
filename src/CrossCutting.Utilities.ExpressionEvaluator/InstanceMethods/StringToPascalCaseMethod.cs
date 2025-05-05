@@ -9,7 +9,9 @@ public class StringToPascalCaseMethod : IMethod
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.GetInstanceValueResult<string>()
-            .Transform(x => Result.Success<object?>(x.GetValueOrThrow().ToPascalCase(context.Context.Settings.FormatProvider.ToCultureInfo())));
+        return new ResultDictionaryBuilder()
+            .Add(Constants.Instance, () => context.GetInstanceValueResult<string>())
+            .Build()
+            .OnSuccess(results => Result.Success<object?>(results.GetValue<string>(Constants.Instance).ToPascalCase(context.Context.Settings.FormatProvider.ToCultureInfo())));
     }
 }

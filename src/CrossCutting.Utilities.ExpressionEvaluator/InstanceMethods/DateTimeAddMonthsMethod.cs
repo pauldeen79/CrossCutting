@@ -7,7 +7,7 @@
 public class DateTimeAddMonthsMethod : IMethod
 {
     private const string MonthsToAdd = nameof(MonthsToAdd);
-    
+
     public Result<object?> Evaluate(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));

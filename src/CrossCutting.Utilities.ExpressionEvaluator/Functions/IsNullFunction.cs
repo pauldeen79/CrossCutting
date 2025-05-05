@@ -8,8 +8,12 @@ public class IsNullFunction : IFunction
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context
-            .GetArgumentValueResult(0, "Expression")
-            .Transform(result => Result.Success<object?>(result.Value is null));
+        var expressionResult = context.GetArgumentValueResult(0, "Expression");
+        if (!expressionResult.IsSuccessful())
+        {
+            return expressionResult;
+        }
+
+        return Result.Success<object?>(expressionResult.Value is null);
     }
 }

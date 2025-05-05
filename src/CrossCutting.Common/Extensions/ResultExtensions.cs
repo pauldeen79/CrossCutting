@@ -293,4 +293,24 @@ public static class ResultExtensions
 
         return instance;
     }
+
+    public static Result EnsureValue(this Result instance, string? errorMessage = null)
+    {
+        if (instance.IsSuccessful() && instance.GetValue() is null)
+        {
+            return Result.Error(errorMessage.WhenNullOrEmpty(() => "Result value is required"));
+        }
+
+        return instance;
+    }
+
+    public static Result<T> EnsureValue<T>(this Result<T> instance, string? errorMessage = null)
+    {
+        if (instance.IsSuccessful() && instance.Value is null)
+        {
+            return Result.Error<T>(errorMessage.WhenNullOrEmpty(() => "Result value is required"));
+        }
+
+        return instance;
+    }
 }

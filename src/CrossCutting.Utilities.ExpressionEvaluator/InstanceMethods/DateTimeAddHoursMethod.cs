@@ -7,7 +7,7 @@
 public class DateTimeAddHoursMethod : IMethod
 {
     private const string HoursToAdd = nameof(HoursToAdd);
-    
+
     public Result<object?> Evaluate(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));

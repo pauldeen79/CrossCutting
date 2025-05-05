@@ -7,7 +7,7 @@
 public class DateTimeAddMinutesMethod : IMethod
 {
     private const string MinutesToAdd = nameof(MinutesToAdd);
-    
+
     public Result<object?> Evaluate(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
