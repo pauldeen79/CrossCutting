@@ -21,7 +21,7 @@ public class StringSubstringMethod : IMethod
             .Build()
             .OnSuccess(results =>
             {
-                var sourceValue = results.GetValue<string>(nameof(Constants.Instance));
+                var sourceValue = results.GetValue<string>(Constants.Instance);
                 var index = results.GetValue<int>(Index);
                 var length = results.GetValue<int?>(Length);
 
