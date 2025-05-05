@@ -344,13 +344,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_Date_Function()
+    public void Can_Evaluate_Expression_With_Date_Instance_Constructor()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("Date(2025, 1, 1)", evaluator: sut));
+        var result = sut.Evaluate(CreateContext("new DateTime(2025, 1, 1)", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -358,13 +358,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_DateTime_Function()
+    public void Can_Evaluate_Expression_With_DateTime_Instance_Constructor()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("DateTime(2025, 1, 1, 12, 13, 14)", evaluator: sut));
+        var result = sut.Evaluate(CreateContext("new DateTime(2025, 1, 1, 12, 13, 14)", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

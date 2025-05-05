@@ -1,5 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 
-public interface IConstructor : INonFunctionMember
+public interface IConstructor : INonGenericMember
 {
 }

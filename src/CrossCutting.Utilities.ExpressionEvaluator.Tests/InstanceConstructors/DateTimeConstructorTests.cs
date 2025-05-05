@@ -1,16 +1,16 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Functions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.InstanceConstructors;
 
-public class DateTimeFunctionTests : TestBase<DateTimeFunction>
+public class DateTimeConstructorTests : TestBase<DateTimeConstructor>
 {
-    public class Evaluate : DateTimeFunctionTests
+    public class Evaluate : DateTimeConstructorTests
     {
         [Fact]
         public void Returns_Success_On_Correct_Arguments()
         {
             // Arrange
             var sut = CreateSut();
-            var functionCall = new FunctionCallBuilder().WithName("DateTime").AddArguments("2025", "1", "1", "0", "0", "0");
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"), MemberType.Function);
+            var functionCall = new FunctionCallBuilder().WithName("DateTime").WithMemberType(MemberType.Constructor).AddArguments("2025", "1", "1", "0", "0", "0");
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
             var result = sut.Evaluate(context);
@@ -25,8 +25,8 @@ public class DateTimeFunctionTests : TestBase<DateTimeFunction>
         {
             // Arrange
             var sut = CreateSut();
-            var functionCall = new FunctionCallBuilder().WithName("DateTime").AddArguments("2025", "1", "1", "25", "0", "0"); // hour 25 is not okay!
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"), MemberType.Function);
+            var functionCall = new FunctionCallBuilder().WithName("DateTime").WithMemberType(MemberType.Constructor).AddArguments("2025", "1", "1", "25", "0", "0"); // hour 25 is not okay!
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
             var result = sut.Evaluate(context);

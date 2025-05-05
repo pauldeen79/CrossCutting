@@ -8,7 +8,7 @@ public class CoalesceFunctionTests : TestBase<CoalesceFunction>
         public void Returns_NoContent_When_All_Expressions_Are_Null()
         {
             // Arrange
-            var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Coalesce").AddArguments("null", "null", "null"), CreateContext("Dummy"), MemberType.Function);
+            var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Coalesce").WithMemberType(MemberType.Function).AddArguments("null", "null", "null"), CreateContext("Dummy"));
             var sut = CreateSut();
 
             // Act
@@ -23,7 +23,7 @@ public class CoalesceFunctionTests : TestBase<CoalesceFunction>
         public void Returns_Non_Succesful_Result_From_Expressions_When_Present()
         {
             // Arrange
-            var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Coalesce").AddArguments("null", "null", "error"), CreateContext("Dummy"), MemberType.Function);
+            var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Coalesce").WithMemberType(MemberType.Function).AddArguments("null", "null", "error"), CreateContext("Dummy"));
             var sut = CreateSut();
 
             // Act
@@ -38,7 +38,7 @@ public class CoalesceFunctionTests : TestBase<CoalesceFunction>
         public void Returns_Succesful_Result_From_Expressions_When_Value_Is_Not_Null()
         {
             // Arrange
-            var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Coalesce").AddArguments("null", "null", "1"), CreateContext("Dummy"), MemberType.Function);
+            var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Coalesce").WithMemberType(MemberType.Function).AddArguments("null", "null", "1"), CreateContext("Dummy"));
             var sut = CreateSut();
 
             // Act

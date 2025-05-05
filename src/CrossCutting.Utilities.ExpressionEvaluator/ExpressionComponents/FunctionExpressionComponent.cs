@@ -3,15 +3,15 @@
 public class FunctionExpressionComponent : IExpressionComponent
 {
     private readonly IFunctionParser _functionParser;
-    private readonly IMemberResolver _functionResolver;
+    private readonly IMemberResolver _memberResolver;
 
-    public FunctionExpressionComponent(IFunctionParser functionParser, IMemberResolver functionResolver)
+    public FunctionExpressionComponent(IFunctionParser functionParser, IMemberResolver memberResolver)
     {
         ArgumentGuard.IsNotNull(functionParser, nameof(functionParser));
-        ArgumentGuard.IsNotNull(functionResolver, nameof(functionResolver));
+        ArgumentGuard.IsNotNull(memberResolver, nameof(memberResolver));
 
         _functionParser = functionParser;
-        _functionResolver = functionResolver;
+        _memberResolver = memberResolver;
     }
 
     public int Order => 20;
@@ -25,9 +25,9 @@ public class FunctionExpressionComponent : IExpressionComponent
             .IgnoreNotFound()
             .Transform(functionCall =>
             {
-                var functionCallContext = new FunctionCallContext(functionCall, context, MemberType.Function);
+                var functionCallContext = new FunctionCallContext(functionCall, context);
 
-                return _functionResolver
+                return _memberResolver
                     .Resolve(functionCallContext)
                     .Transform(result => EvaluateFunction(result, functionCallContext));
             });
@@ -53,8 +53,8 @@ public class FunctionExpressionComponent : IExpressionComponent
                 .WithSourceExpression(context.Expression);
         }
 
-        var functionCallContext = new FunctionCallContext(functionCallResult.GetValueOrThrow(), context, MemberType.Function);
-        var resolveResult = _functionResolver.Resolve(functionCallContext);
+        var functionCallContext = new FunctionCallContext(functionCallResult.GetValueOrThrow(), context);
+        var resolveResult = _memberResolver.Resolve(functionCallContext);
 
         if (!resolveResult.IsSuccessful())
         {
@@ -81,7 +81,7 @@ public class FunctionExpressionComponent : IExpressionComponent
         {
             null => Result.Invalid<object?>("Member is null"),
             IGenericFunction genericFunction => functionCallContext.Evaluate(genericFunction),
-            IFunction function => function.Evaluate(functionCallContext),
+            INonGenericMember nonGenericMember => nonGenericMember.Evaluate(functionCallContext),
             _ => Result.NotSupported<object?>($"Unsupported member type: {result.Member.GetType().FullName}")
         };
 }

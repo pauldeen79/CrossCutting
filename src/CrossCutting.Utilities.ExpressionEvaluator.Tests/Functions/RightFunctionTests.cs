@@ -8,7 +8,7 @@ public class RightFunctionTests : TestBase<RightFunction>
         public void Returns_Ok_When_String_Expression_Is_Long_Enough()
         {
             // Arrange
-            var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Right").AddArguments("\"hello world\"", "5"), CreateContext("Dummy"), MemberType.Function);
+            var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Right").WithMemberType(MemberType.Function).AddArguments("\"hello world\"", "5"), CreateContext("Dummy"));
             var sut = CreateSut();
 
             // Act
@@ -23,7 +23,7 @@ public class RightFunctionTests : TestBase<RightFunction>
         public void Returns_Invalid_When_String_Expression_Is_Not_Long_Enough()
         {
             // Arrange
-            var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Right").AddArguments("\"hello world\"", "100000"), CreateContext("Dummy"), MemberType.Function);
+            var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Right").WithMemberType(MemberType.Function).AddArguments("\"hello world\"", "100000"), CreateContext("Dummy"));
             var sut = CreateSut();
 
             // Act

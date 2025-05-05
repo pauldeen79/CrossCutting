@@ -9,8 +9,8 @@ public class CastFunctionTests : TestBase<CastFunction>
         {
             // Arrange
             var sut = CreateSut();
-            var functionCall = new FunctionCallBuilder().WithName("Cast").AddArguments("System.Int32", "1");
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"), MemberType.Function);
+            var functionCall = new FunctionCallBuilder().WithName("Cast").WithMemberType(MemberType.Function).AddArguments("System.Int32", "1");
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
             var result = sut.Evaluate(context);
@@ -25,8 +25,8 @@ public class CastFunctionTests : TestBase<CastFunction>
         {
             // Arrange
             var sut = CreateSut();
-            var functionCall = new FunctionCallBuilder().WithName("Cast").AddArguments("System.Int64", "1");
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"), MemberType.Function);
+            var functionCall = new FunctionCallBuilder().WithName("Cast").WithMemberType(MemberType.Function).AddArguments("System.Int64", "1");
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
             var result = sut.Evaluate(context);

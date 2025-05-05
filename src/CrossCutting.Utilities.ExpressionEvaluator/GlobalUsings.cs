@@ -24,6 +24,7 @@ global using CrossCutting.Utilities.ExpressionEvaluator.ExpressionComponents;
 global using CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Functions;
+global using CrossCutting.Utilities.ExpressionEvaluator.InstanceConstructors;
 global using CrossCutting.Utilities.ExpressionEvaluator.InstanceMethods;
 global using CrossCutting.Utilities.ExpressionEvaluator.InstanceProperties;
 global using CrossCutting.Utilities.Operators;

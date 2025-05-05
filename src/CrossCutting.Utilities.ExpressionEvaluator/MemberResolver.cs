@@ -39,7 +39,7 @@ public class MemberResolver : IMemberResolver
                 .Where(x =>
                     x.Name.Equals(functionCallContext.FunctionCall.Name, StringComparison.OrdinalIgnoreCase)
                     && IsMemberTypeValid(x.MemberType, functionCallContext.MemberType)
-                    && IsInstanceTypeValid(x.InstanceType, functionCallContext.InstanceValue, functionCallContext.ResultType))
+                    && IsInstanceTypeValid(x.InstanceType, functionCallContext.InstanceValue, functionCallContext.ResultType, functionCallContext.MemberType))
                 .ToArray();
 
             if (functionsByName.Length == 0)
@@ -70,8 +70,13 @@ public class MemberResolver : IMemberResolver
         return descriptorMemberType == contextMemberType;
     }
 
-    private static bool IsInstanceTypeValid(Type? instanceType, object? instanceValue, Type? resultType)
+    private static bool IsInstanceTypeValid(Type? instanceType, object? instanceValue, Type? resultType, MemberType memberType)
     {
+        if (memberType == MemberType.Constructor)
+        {
+            return instanceType is not null && instanceValue is null;
+        }
+
         if (instanceType is null)
         {
             // Function/GenericFunction

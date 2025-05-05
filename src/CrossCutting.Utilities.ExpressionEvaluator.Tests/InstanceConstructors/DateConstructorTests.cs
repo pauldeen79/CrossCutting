@@ -1,16 +1,16 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Functions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.InstanceConstructors;
 
-public class DateFunctionTests : TestBase<DateFunction>
+public class DateConstructorTests : TestBase<DateConstructor>
 {
-    public class Evaluate : DateFunctionTests
+    public class Evaluate : DateConstructorTests
     {
         [Fact]
         public void Returns_Success_On_Correct_Arguments()
         {
             // Arrange
             var sut = CreateSut();
-            var functionCall = new FunctionCallBuilder().WithName("Date").AddArguments("2025", "1", "1");
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"), MemberType.Function);
+            var functionCall = new FunctionCallBuilder().WithName("Date").WithMemberType(MemberType.Constructor).AddArguments("2025", "1", "1");
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
             var result = sut.Evaluate(context);
@@ -25,8 +25,8 @@ public class DateFunctionTests : TestBase<DateFunction>
         {
             // Arrange
             var sut = CreateSut();
-            var functionCall = new FunctionCallBuilder().WithName("Date").AddArguments("2025", "13", "1"); // month 13 is not okay!
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"), MemberType.Function);
+            var functionCall = new FunctionCallBuilder().WithName("Date").WithMemberType(MemberType.Constructor).AddArguments("2025", "13", "1"); // month 13 is not okay!
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
             var result = sut.Evaluate(context);

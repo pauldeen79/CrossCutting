@@ -8,9 +8,9 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
         public void Returns_Non_Successful_Result_From_CallArgument_Parse()
         {
             // Arrange
-            var functionCall = new FunctionCallBuilder().WithName("MyFunction");
+            var functionCall = new FunctionCallBuilder().WithName("MyFunction").WithMemberType(MemberType.Function);
             var settings = new ExpressionEvaluatorSettingsBuilder().WithValidateArgumentTypes().WithStrictTypeChecking();
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy", settings: settings), MemberType.Function);
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy", settings: settings));
             var descriptorArgument = new MemberDescriptorArgumentBuilder().WithName("Argument").WithType(typeof(string));
             var sut = CreateSut();
 
@@ -26,9 +26,9 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
         public void Returns_Invalid_When_Type_Is_Not_Assignable()
         {
             // Arrange
-            var functionCall = new FunctionCallBuilder().WithName("MyFunction");
+            var functionCall = new FunctionCallBuilder().WithName("MyFunction").WithMemberType(MemberType.Function);
             var settings = new ExpressionEvaluatorSettingsBuilder().WithValidateArgumentTypes().WithStrictTypeChecking();
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy", settings: settings), MemberType.Function);
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy", settings: settings));
             var descriptorArgument = new MemberDescriptorArgumentBuilder().WithName("Argument").WithType(typeof(string));
             var sut = CreateSut();
 
@@ -44,9 +44,9 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
         public void Returns_Ok_When_ValidateArgumentTypes_Is_False()
         {
             // Arrange
-            var functionCall = new FunctionCallBuilder().WithName("MyFunction");
+            var functionCall = new FunctionCallBuilder().WithName("MyFunction").WithMemberType(MemberType.Function);
             var settings = new ExpressionEvaluatorSettingsBuilder().WithValidateArgumentTypes(false);
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy", settings: settings), MemberType.Function);
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy", settings: settings));
             var descriptorArgument = new MemberDescriptorArgumentBuilder().WithName("Argument").WithType(typeof(string));
             var sut = CreateSut();
 
@@ -61,9 +61,9 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
         public void Returns_Ok_When_DescriptorArgument_Type_Is_Object()
         {
             // Arrange
-            var functionCall = new FunctionCallBuilder().WithName("MyFunction");
+            var functionCall = new FunctionCallBuilder().WithName("MyFunction").WithMemberType(MemberType.Function);
             var settings = new ExpressionEvaluatorSettingsBuilder().WithValidateArgumentTypes().WithStrictTypeChecking();
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy", settings: settings), MemberType.Function);
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy", settings: settings));
             var descriptorArgument = new MemberDescriptorArgumentBuilder().WithName("Argument").WithType(typeof(object));
             var sut = CreateSut();
 
@@ -78,9 +78,9 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
         public void Returns_Ok_When_CallArgument_ResultType_Is_Null()
         {
             // Arrange
-            var functionCall = new FunctionCallBuilder().WithName("MyFunction");
+            var functionCall = new FunctionCallBuilder().WithName("MyFunction").WithMemberType(MemberType.Function);
             var settings = new ExpressionEvaluatorSettingsBuilder().WithValidateArgumentTypes().WithStrictTypeChecking();
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy", settings: settings), MemberType.Function);
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy", settings: settings));
             var descriptorArgument = new MemberDescriptorArgumentBuilder().WithName("Argument").WithType(typeof(object));
             var sut = CreateSut();
 
@@ -95,9 +95,9 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
         public void Returns_Ok_When_CallArgument_ResultType_Is_Object_And_StrictTypeChecking_Is_False()
         {
             // Arrange
-            var functionCall = new FunctionCallBuilder().WithName("MyFunction");
+            var functionCall = new FunctionCallBuilder().WithName("MyFunction").WithMemberType(MemberType.Function);
             var settings = new ExpressionEvaluatorSettingsBuilder().WithValidateArgumentTypes().WithStrictTypeChecking(false);
-            var context = new FunctionCallContext(functionCall, CreateContext("Dummy", settings: settings), MemberType.Function);
+            var context = new FunctionCallContext(functionCall, CreateContext("Dummy", settings: settings));
             var descriptorArgument = new MemberDescriptorArgumentBuilder().WithName("Argument").WithType(typeof(string));
             var sut = CreateSut();
 

@@ -29,8 +29,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IMember, CoalesceFunction>()
             .AddSingleton<IMember, ConvertFunction>()
             .AddSingleton<IMember, CountFunction>()
-            .AddSingleton<IMember, DateFunction>()
-            .AddSingleton<IMember, DateTimeFunction>()
             .AddSingleton<IMember, IsNullFunction>()
             .AddSingleton<IMember, LeftFunction>()
             .AddSingleton<IMember, RightFunction>()
@@ -56,5 +54,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IMember, StringToCamelCaseMethod>()
             .AddSingleton<IMember, StringToLowerMethod>()
             .AddSingleton<IMember, StringToPascalCaseMethod>()
-            .AddSingleton<IMember, StringToUpperMethod>();
+            .AddSingleton<IMember, StringToUpperMethod>()
+            .AddSingleton<IMember, DateConstructor>()
+            .AddSingleton<IMember, DateTimeConstructor>();
 }

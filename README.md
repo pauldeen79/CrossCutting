@@ -71,6 +71,7 @@ The ExpressionEvaluator is a full rewrite of the Parsers project, where and Expr
 * Strings, like "hello world"
 * Interpolated strings, like "hello {name}"
 * Booleans "true" and "false"
+* Constructors like "new DateTime(2025, 1 ,1)"
 * DateTime.Now and DateTime.Today, as well as the Date and DateTime functions to create a custom DateTime value
 * Numeric values, both integer and floating point types like "1.3" and "12"
 * Mathematic operators like +, -, * and /, including brackets, for example "(1 + 1) * 13"
@@ -88,9 +89,9 @@ The ExpressionEvaluator is a full rewrite of the Parsers project, where and Expr
 * Optional support for reflection to get property values or invoke methods
 * Type-safe properties, without reflection: Array.Length, String.Length, ICollection.Count, and Year/Month/Day/Hour/Minute/Second/Date for DateTime
 * Support for context using delegates, in order to allow lazy evaluation
-* Support for adding custom functions, using dependency injection
+* Support for adding custom functions and generic functions, using dependency injection
 * Support for adding custom expression components, using dependency injection
-* Support for adding custom dot methods and properties, using dependency injection
+* Support for adding custom instance methods, constructors and properties, using dependency injection
 
 Design decisions:
 * Extendable through Dependency Injection

@@ -23,12 +23,15 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
             }
             else
             {
+                var memberType = GetMemberType(source);
                 descriptors.Add(new MemberDescriptorBuilder()
-                    .WithMemberType(GetMemberType(source))
+                    .WithMemberType(memberType)
                     .WithName(type.GetCustomAttribute<MemberNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
                     .WithDescription(type.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty)
                     .WithImplementationType(customImplementationType ?? type)
-                    .WithInstanceType(type.GetCustomAttribute<MemberInstanceTypeAttribute>()?.Type)
+                    .WithInstanceType(memberType == MemberType.Constructor
+                        ? type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type
+                        : type.GetCustomAttribute<MemberInstanceTypeAttribute>()?.Type)
                     .WithReturnValueType(type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type)
                     .AddArguments(type.GetCustomAttributes<MemberArgumentAttribute>().Select(CreateFunctionArgument))
                     .AddTypeArguments(type.GetCustomAttributes<MemberTypeArgumentAttribute>().Select(CreateFunctionTypeArgument))

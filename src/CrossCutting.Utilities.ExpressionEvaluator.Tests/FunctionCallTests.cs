@@ -26,7 +26,9 @@ public sealed class FunctionCallTests : TestBase
         Expression
             .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
             .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression.EndsWith("()")
-                ? function.Evaluate(new FunctionCallContext(new FunctionCallBuilder().WithName(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.ReplaceSuffix("()", string.Empty, StringComparison.Ordinal)), x.ArgAt<ExpressionEvaluatorContext>(0), MemberType.Function))
+                ? function.Evaluate(new FunctionCallContext(new FunctionCallBuilder()
+                    .WithName(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.ReplaceSuffix("()", string.Empty, StringComparison.Ordinal))
+                    .WithMemberType(MemberType.Function), x.ArgAt<ExpressionEvaluatorContext>(0)))
                 : EvaluateExpression(x));
         Evaluator
             .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
@@ -39,7 +41,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentValueResult(1, "SomeName", context);
@@ -55,7 +57,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentValueResult(0, "SomeName", context);
@@ -71,7 +73,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentValueResult(0, "SomeName", context, (object)"ignored");
@@ -87,7 +89,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("MyNestedFunction");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentValueResult(0, "SomeName", context);
@@ -103,7 +105,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithoutArguments();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentValueResult(0, "SomeName", context, (object)"some value");
@@ -119,7 +121,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentStringValueResult(1, "SomeName", context);
@@ -135,7 +137,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("NumericFunction");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentStringValueResult(0, "SomeName", context);
@@ -151,7 +153,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentStringValueResult(0, "SomeName", context);
@@ -167,7 +169,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithoutArguments();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentStringValueResult(0, "SomeName", context, "default value");
@@ -183,7 +185,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt32ValueResult(1, "SomeName", context);
@@ -199,7 +201,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("NumericFunction");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
@@ -215,7 +217,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunction");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
@@ -231,7 +233,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("UnknownExpressionString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
@@ -247,7 +249,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunctionAsString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
@@ -263,7 +265,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("NumericFunctionAsString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
@@ -279,7 +281,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithoutArguments();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context, 13);
@@ -295,7 +297,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt64ValueResult(1, "SomeName", context);
@@ -311,7 +313,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("LongFunction");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
@@ -327,7 +329,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunction");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
@@ -343,7 +345,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("UnknownExpressionString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
@@ -359,7 +361,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunctionAsString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
@@ -375,7 +377,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("LongFunctionAsString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
@@ -391,7 +393,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithoutArguments();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context, 13L);
@@ -407,7 +409,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDecimalValueResult(1, "SomeName", context);
@@ -423,7 +425,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("DecimalFunction");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
@@ -439,7 +441,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunction");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
@@ -455,7 +457,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("UnknownExpressionString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
@@ -471,7 +473,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunctionAsString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
@@ -487,7 +489,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("DecimalFunctionAsString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
@@ -503,7 +505,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithoutArguments();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context, 13.5M);
@@ -519,7 +521,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentBooleanValueResult(1, "SomeName", context);
@@ -535,7 +537,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("BooleanFunction");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
@@ -551,7 +553,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunction");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
@@ -567,7 +569,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("UnknownExpressionString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
@@ -583,7 +585,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunctionAsString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
@@ -599,7 +601,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("BooleanFunctionAsString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
@@ -615,7 +617,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithoutArguments();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context, true);
@@ -631,7 +633,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDateTimeValueResult(1, "SomeName", context);
@@ -647,7 +649,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunction");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
@@ -663,7 +665,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("NumericFunction");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
@@ -679,7 +681,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("UnknownExpressionString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
@@ -695,7 +697,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("NumericFunctionAsString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
@@ -711,7 +713,7 @@ public sealed class FunctionCallTests : TestBase
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunctionAsString");
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
@@ -728,7 +730,7 @@ public sealed class FunctionCallTests : TestBase
         var argument = CreateFunctionCallWithoutArguments();
         var dt = DateTime.Now;
         var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").Build(), expressionEvaluatorContext, MemberType.Function);
+        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
         var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context, dt);
@@ -741,17 +743,20 @@ public sealed class FunctionCallTests : TestBase
     private static FunctionCall CreateFunctionCallWithoutArguments()
         => new FunctionCallBuilder()
             .WithName("Test")
+            .WithMemberType(MemberType.Function)
             .Build();
 
     private static FunctionCall CreateFunctionCallWithConstantArgument()
         => new FunctionCallBuilder()
             .WithName("Test")
+            .WithMemberType(MemberType.Function)
             .AddArguments("\"some value\"")
             .Build();
 
     private static FunctionCall CreateFunctionCallWithFunctionArgument(string functionName)
         => new FunctionCallBuilder()
             .WithName("Test")
+            .WithMemberType(MemberType.Function)
             .AddArguments($"{functionName}()")
             .Build();
 }

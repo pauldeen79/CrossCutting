@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 
-public interface INonFunctionMember : IMember
+public interface INonGenericMember : IMember
 {
     Result<object?> Evaluate(FunctionCallContext context);
 }

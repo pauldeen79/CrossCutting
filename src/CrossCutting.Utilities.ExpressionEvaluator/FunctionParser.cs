@@ -24,9 +24,13 @@ public class FunctionParser : IFunctionParser
             return Result.NotFound<FunctionCall>();
         }
 
-        var state = new FunctionParserState(context.Expression);
+        var expression = context.Expression.StartsWith("new ")
+            ? context.Expression.Substring(4)
+            : context.Expression;
 
-        foreach (var c in context.Expression)
+        var state = new FunctionParserState(expression);
+
+        foreach (var c in expression)
         {
             state.CurrentCharacter = c;
 
@@ -53,8 +57,24 @@ public class FunctionParser : IFunctionParser
         var genericTypeArguments = genericTypeArgumentsResult.GetValueOrThrow();
         return Result.Success<FunctionCall>(new FunctionCallBuilder()
             .WithName(state.NameBuilder.ToString().Trim())
+            .WithMemberType(GetMemberType(context.Expression, genericTypeArguments.Count))
             .AddArguments(state.Arguments)
             .AddTypeArguments(genericTypeArguments));
+    }
+
+    private static MemberType GetMemberType(string expression, int genericArgumentCount)
+    {
+        if (expression.StartsWith("new "))
+        {
+            return MemberType.Constructor;
+        }
+
+        if (genericArgumentCount > 0)
+        {
+            return MemberType.GenericFunction;
+        }
+
+        return MemberType.Function;
     }
 
     private static Result<List<Type>> GetTypeArguments(string[] generics)

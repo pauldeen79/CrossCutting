@@ -2,18 +2,18 @@
 
 public class FunctionCallContext
 {
-    public FunctionCallContext(FunctionCall functionCall, ExpressionEvaluatorContext context, MemberType memberType)
+    public FunctionCallContext(FunctionCall functionCall, ExpressionEvaluatorContext context)
     {
-        ArgumentGuard.IsNotNull(functionCall, nameof(functionCall));
+        functionCall = ArgumentGuard.IsNotNull(functionCall, nameof(functionCall));
         ArgumentGuard.IsNotNull(context, nameof(context));
 
         FunctionCall = functionCall;
         Context = context;
-        MemberType = memberType;
+        MemberType = functionCall.MemberType;
 
         if (MemberType == MemberType.Unknown)
         {
-            throw new ArgumentException("MemberType cannot be Unknown", nameof(memberType));
+            throw new ArgumentException("MemberType cannot be Unknown", nameof(functionCall));
         }
     }
 

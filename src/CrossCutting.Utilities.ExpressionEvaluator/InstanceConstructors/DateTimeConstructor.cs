@@ -1,5 +1,6 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.InstanceConstructors;
 
+[MemberName(nameof(DateTime))]
 [MemberResultType(typeof(DateTime))]
 [MemberArgument("Year", typeof(int))]
 [MemberArgument("Month", typeof(int))]
@@ -7,7 +8,7 @@
 [MemberArgument("Hour", typeof(int))]
 [MemberArgument("Minute", typeof(int))]
 [MemberArgument("Second", typeof(int))]
-public class DateTimeFunction : IFunction
+public class DateTimeConstructor : IConstructor
 {
     public Result<object?> Evaluate(FunctionCallContext context)
         => new ResultDictionaryBuilder()
