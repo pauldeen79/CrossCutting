@@ -30,6 +30,7 @@ public class IndexerExpressionComponent : IExpressionComponent
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         var result = new ExpressionParseResultBuilder()
+            .WithStatus(ResultStatus.Ok)
             .WithExpressionComponentType(typeof(DotExpressionComponent))
             .WithSourceExpression(context.Expression);
 
@@ -39,15 +40,13 @@ public class IndexerExpressionComponent : IExpressionComponent
             return result.WithStatus(ResultStatus.Continue);
         }
 
-        var results = new ResultDictionaryBuilder<Type>()
+        var parseResult = new ResultDictionaryBuilder<Type>()
             .Add(Expression, () => context.Parse(match.Groups[Expression].Value))
             .Add(Index, () => context.Parse(match.Groups[Index].Value))
             .Build()
             .OnFailure(innerResult => result.FillFromResult(innerResult))
             .OnSuccess(results => results[Expression]);
 
-        return result
-            .WithStatus(ResultStatus.Ok)
-            .WithResultType(results.Value?.GetElementType());
+        return result.WithResultType(parseResult.Value?.GetElementType());
     }
 }
