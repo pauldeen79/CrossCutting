@@ -9,12 +9,9 @@ public class ArrayLengthProperty : IProperty
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var instanceValueResult = context.GetInstanceValueResult<Array>();
-        if (!instanceValueResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(instanceValueResult);
-        }
-
-        return Result.Success<object?>(instanceValueResult.Value!.Length);
+        return new ResultDictionaryBuilder()
+            .Add(Constants.Instance, () => context.GetInstanceValueResult<Array>())
+            .Build()
+            .OnSuccess(results => Result.Success<object?>(results.GetValue<Array>(Constants.Instance).Length));
     }
 }

@@ -9,12 +9,9 @@ public class DateMonthProperty : IProperty
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var instanceValueResult = context.GetInstanceValueResult<DateTime>();
-        if (!instanceValueResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(instanceValueResult);
-        }
-
-        return Result.Success<object?>(instanceValueResult.Value!.Month);
+        return new ResultDictionaryBuilder()
+            .Add(Constants.Instance, () => context.GetInstanceValueResult<DateTime>())
+            .Build()
+            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.Instance).Month));
     }
 }
