@@ -325,6 +325,54 @@ public class FunctionCallContextTests : TestBase
         }
     }
 
+    public class GetInstanceValueResult : FunctionCallContextTests
+    {
+        [Fact]
+        public void Returns_Error_When_InstanceValue_Is_Of_Wrong_Type()
+        {
+            // Arrange
+            var state = CreateDotExpressionComponentState("\"string value\".Dummy()", "string value", "Dummy()");
+            var sut = new FunctionCallContext(state);
+
+            // Act
+            var result = sut.GetInstanceValueResult<int>();
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Instance value is not of type System.Int32");
+        }
+
+        [Fact]
+        public void Returns_Error_When_InstanceValue_Is_Null()
+        {
+            // Arrange
+            var state = CreateDotExpressionComponentState("null.Dummy()", null, "Dummy()");
+            var sut = new FunctionCallContext(state);
+
+            // Act
+            var result = sut.GetInstanceValueResult<int>();
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Instance value is null");
+        }
+
+        [Fact]
+        public void Returns_Ok_When_InstanceValue_Is_Of_Correct_Type()
+        {
+            // Arrange
+            var state = CreateDotExpressionComponentState("\"string value\".Dummy()", "string value", "Dummy()");
+            var sut = new FunctionCallContext(state);
+
+            // Act
+            var result = sut.GetInstanceValueResult<string>();
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("string value");
+        }
+    }
+
     protected FunctionCallContext CreateFunctionCallContextWithConstantArgument()
         => new FunctionCallContext(new FunctionCallBuilder()
             .WithName("Test")

@@ -36,6 +36,15 @@ public abstract class TestBase
         ExpressionEvaluatorSettingsBuilder? settings = null)
             => new ExpressionEvaluatorContext(expression, settings ?? new ExpressionEvaluatorSettingsBuilder(), evaluator ?? Evaluator, context, currentRecursionLevel, parentContext);
 
+    protected DotExpressionComponentState CreateDotExpressionComponentState(string expression, object? left, string right)
+    {
+        var state = new DotExpressionComponentState(CreateContext(expression), new FunctionParser(), Result.Continue<object?>(), string.Empty, null);
+        //hacking
+        state.GetType().GetProperty(nameof(DotExpressionComponentState.Value), BindingFlags.Instance | BindingFlags.Public)!.SetValue(state, left);
+        state.GetType().GetProperty(nameof(DotExpressionComponentState.Part), BindingFlags.Instance | BindingFlags.Public)!.SetValue(state, right);
+        return state;
+    }
+
     protected TestBase()
     {
         // Initialize evaluator
