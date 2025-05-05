@@ -9,9 +9,6 @@ public class ArrayLengthProperty : IProperty
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return new ResultDictionaryBuilder()
-            .Add(Constants.Instance, () => context.GetInstanceValueResult<Array>())
-            .Build()
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<Array>(Constants.Instance).Length));
+        return context.GetInstanceValueResult<Array>().Transform<object?>(result => result.Length);
     }
 }

@@ -9,9 +9,6 @@ public class CollectionCountProperty : IProperty
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return new ResultDictionaryBuilder()
-            .Add(Constants.Instance, () => context.GetInstanceValueResult<ICollection>())
-            .Build()
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<ICollection>(Constants.Instance).Count));
+        return context.GetInstanceValueResult<ICollection>().Transform<object?>(result => result.Count);
     }
 }

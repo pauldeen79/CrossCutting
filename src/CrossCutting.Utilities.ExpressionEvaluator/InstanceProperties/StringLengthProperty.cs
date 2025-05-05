@@ -9,9 +9,6 @@ public class StringLengthProperty : IProperty
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return new ResultDictionaryBuilder()
-            .Add(Constants.Instance, () => context.GetInstanceValueResult<string>())
-            .Build()
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<string>(Constants.Instance).Length));
+        return context.GetInstanceValueResult<string>().Transform<object?>(result => result.Length);
     }
 }

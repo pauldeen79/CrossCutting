@@ -9,9 +9,6 @@ public class DateMinuteProperty : IProperty
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return new ResultDictionaryBuilder()
-            .Add(Constants.Instance, () => context.GetInstanceValueResult<DateTime>())
-            .Build()
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.Instance).Minute));
+        return context.GetInstanceValueResult<DateTime>().Transform<object?>(result => result.Minute);
     }
 }
