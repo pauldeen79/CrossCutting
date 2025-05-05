@@ -35,19 +35,19 @@ public record Result<T> : Result
     {
         ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
 
-        if (!IsSuccessful())
+        if (!IsSuccessful() || Value is null)
         {
             return FromExistingResult<TTarget>(this);
         }
 
-        return Success(transformDelegate(Value!));
+        return new(transformDelegate(Value!), Status, ErrorMessage, ValidationErrors, InnerResults, null);
     }
 
     public Result<TTarget> Transform<TTarget>(Func<T, Result<TTarget>> transformDelegate)
     {
         ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
 
-        if (!IsSuccessful())
+        if (!IsSuccessful() || Value is null)
         {
             return FromExistingResult<TTarget>(this);
         }
@@ -59,7 +59,7 @@ public record Result<T> : Result
     {
         ArgumentGuard.IsNotNull(transformDelegate, nameof(transformDelegate));
 
-        if (!IsSuccessful())
+        if (!IsSuccessful() || Value is null)
         {
             return this;
         }
@@ -82,11 +82,11 @@ public record Result<T> : Result
 
 public record Result
 {
-    protected Result(ResultStatus status,
-                     string? errorMessage,
-                     IEnumerable<ValidationError> validationErrors,
-                     IEnumerable<Result> innerResults,
-                     Exception? exception)
+    internal Result(ResultStatus status,
+                    string? errorMessage,
+                    IEnumerable<ValidationError> validationErrors,
+                    IEnumerable<Result> innerResults,
+                    Exception? exception)
     {
         ArgumentGuard.IsNotNull(validationErrors, nameof(validationErrors));
         ArgumentGuard.IsNotNull(innerResults, nameof(innerResults));
@@ -100,11 +100,11 @@ public record Result
 
     public virtual object? GetValue() => null;
 
-    public Result<TCast?> TryCastAllowNull<TCast>(string? errorMessage)
-        => TryCast<TCast?>(true, errorMessage);
+    public Result<TCast> TryCastAllowNull<TCast>(string? errorMessage)
+        => TryCast<TCast>(true, errorMessage);
 
-    public Result<TCast?> TryCastAllowNull<TCast>()
-        => TryCast<TCast?>(true, null);
+    public Result<TCast> TryCastAllowNull<TCast>()
+        => TryCast<TCast>(true, null);
 
     public Result<TCast> TryCast<TCast>(string? errorMessage)
         => TryCast<TCast>(false, errorMessage)!;
@@ -112,25 +112,25 @@ public record Result
     public Result<TCast> TryCast<TCast>()
         => TryCast<TCast>(false, null)!;
 
-    private Result<TCast?> TryCast<TCast>(bool allowNull, string? errorMessage)
+    private Result<TCast> TryCast<TCast>(bool allowNull, string? errorMessage)
     {
         if (!IsSuccessful())
         {
-            return FromExistingResult<TCast?>(this);
+            return FromExistingResult<TCast>(this);
         }
 
         var value = GetValue();
         if (allowNull && value is null)
         {
-            return new Result<TCast?>(default, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
+            return new Result<TCast>(default, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
         }
 
         if (value is not TCast castValue)
         {
-            return Invalid<TCast?>(errorMessage ?? $"Could not cast {value?.GetType().FullName} to {typeof(TCast).FullName}");
+            return Invalid<TCast>(errorMessage ?? $"Could not cast {value?.GetType().FullName} to {typeof(TCast).FullName}");
         }
 
-        return new Result<TCast?>(castValue, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
+        return new Result<TCast>(castValue, Status, ErrorMessage, ValidationErrors, InnerResults, Exception);
     }
 
     public T? TryCastValueAs<T>()
@@ -166,7 +166,7 @@ public record Result
         return (T)value!;
     }
 
-    public bool IsSuccessful() => Status is ResultStatus.Ok or ResultStatus.NoContent or ResultStatus.Continue;
+    public bool IsSuccessful() => Status.IsSuccessful();
     public string? ErrorMessage { get; }
     public Exception? Exception { get; }
     public ResultStatus Status { get; }
@@ -324,14 +324,14 @@ public record Result
     {
         ArgumentGuard.IsNotNull(existingResult, nameof(existingResult));
 
-        return new(TryGetValue<T>(existingResult), existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors, existingResult.InnerResults, null);
+        return new(TryGetValue<T>(existingResult), existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors, existingResult.InnerResults, existingResult.Exception);
     }
 
     public static Result<T> FromExistingResult<T>(Result existingResult, T value)
     {
         ArgumentGuard.IsNotNull(existingResult, nameof(existingResult));
 
-        return new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors, existingResult.InnerResults, null);
+        return new(value, existingResult.Status, existingResult.ErrorMessage, existingResult.ValidationErrors, existingResult.InnerResults, existingResult.Exception);
     }
 
     public static Result<TTargetResult> FromExistingResult<TSourceResult, TTargetResult>(Result<TSourceResult> existingResult, Func<TSourceResult, TTargetResult> convertDelegate)
@@ -402,6 +402,40 @@ public record Result
         }
 
         return errorResultDelegate(errors);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Result WrapException(Func<Result> resultDelegate)
+    {
+        ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return resultDelegate();
+        }
+        catch (Exception ex)
+        {
+            return Error(ex, "Exception occured");
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Result<T> WrapException<T>(Func<Result<T>> resultDelegate)
+    {
+        ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return resultDelegate();
+        }
+        catch (Exception ex)
+        {
+            return Error<T>(ex, "Exception occured");
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     private static T? TryGetValue<T>(Result existingResult) => existingResult.GetValue() is T t

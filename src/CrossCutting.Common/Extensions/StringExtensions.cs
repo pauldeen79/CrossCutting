@@ -257,7 +257,7 @@ public static class StringExtensions
         return result.Select(x => trimItems ? x.Trim() : x).ToArray();
     }
 
-    public static IEnumerable<string> SplitDelimited(this string instance, string[] delimiters, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false, bool addDelimiters = false)
+    public static string[] SplitDelimited(this string instance, string[] delimiters, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false, bool addDelimiters = false, StringComparison comparisonType = StringComparison.CurrentCulture)
     {
         ArgumentGuard.IsNotNull(delimiters, nameof(delimiters));
 
@@ -289,7 +289,7 @@ public static class StringExtensions
             if (!insideQualifier)
             {
                 foreach (var delimiter in from string delimiter in delimiters
-                                          where instance.Substring(i).StartsWith(delimiter)
+                                          where instance.Substring(i).StartsWith(delimiter, comparisonType)
                                           select delimiter)
                 {
                     AddCurrentSegmentToResults(trimItems, addDelimiters, results, currentSegment, delimiter);
@@ -313,7 +313,7 @@ NextChar:;
 
         AddLastSegmentIfNotEmpty(trimItems, results, currentSegment);
 
-        return results;
+        return results.ToArray();
     }
 
     private static void AddLastSegmentIfNotEmpty(bool trimItems, List<string> results, List<char> currentSegment)
@@ -450,16 +450,54 @@ NextChar:;
             ? value
             : string.Concat(value.Substring(0, 1).ToLower(cultureInfo), value.Substring(1));
 
-    public static string ReplaceSuffix(this string instance, string find, string replace, StringComparison stringComparison)
+    public static string ReplaceSuffix(this string instance, string find, string replace, StringComparison comparisonType)
     {
         find = find.IsNotNull(nameof(find));
 
-        var index = instance.LastIndexOf(find, stringComparison);
+        var index = instance.LastIndexOf(find, comparisonType);
         if (index == -1 || index < instance.Length - find.Length)
         {
             return instance;
         }
 
         return instance.Substring(0, instance.Length - find.Length) + replace;
+    }
+
+    public static IEnumerable<int> FindAllOccurences(this string instance, char characterToFind)
+    {
+        int index = -1;
+
+        do
+        {
+            index = instance.IndexOf(characterToFind, index + 1);
+            
+            if (index == -1)
+            {
+                break;
+            }
+            
+            yield return index;
+
+        } while (true);
+    }
+
+    public static IEnumerable<int> FindAllOccurences(this string instance, string stringToFind, StringComparison comparisonType)
+    {
+        ArgumentGuard.IsNotNullOrEmpty(stringToFind, nameof(stringToFind));
+
+        int index = -1;
+
+        do
+        {
+            index = instance.IndexOf(stringToFind, index + 1, comparisonType);
+
+            if (index == -1)
+            {
+                break;
+            }
+
+            yield return index;
+
+        } while (true);
     }
 }

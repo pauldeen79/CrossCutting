@@ -158,12 +158,12 @@ public class ToUpperCaseFunction : ITypedFunction<string>, IValidatableFunction
     }
 
     // *** Strongly-typed access to arguments
-    private static string Expression(Dictionary<string, Result> resultDictionary) => resultDictionary.GetValue<string>("Expression");
-    private static CultureInfo? CultureInfo(Dictionary<string, Result> resultsDictionary) => resultsDictionary.TryGetValue<CultureInfo>("Culture");
+    private static string Expression(IReadOnlyDictionary<string, Result> resultDictionary) => resultDictionary.GetValue<string>("Expression");
+    private static CultureInfo? CultureInfo(IReadOnlyDictionary<string, Result> resultsDictionary) => resultsDictionary.TryGetValue<CultureInfo>("Culture");
 
     // *** Scaffold code, by default throw a NotImplementedException.
-    // in case you need access to FuctionCallContext: private static Func<Dictionary<string, Result>, Result<string>> OnSuccess(FunctionCallContext context)
-    private static Result<string> OnSuccess(Dictionary<string, Result> results)
+    // in case you need access to FuctionCallContext: private static Func<IReadOnlyDictionary<string, Result>, Result<string>> OnSuccess(FunctionCallContext context)
+    private static Result<string> OnSuccess(IReadOnlyDictionary<string, Result> results)
     {
         // Note that if you provide a static Evaluate method without FunctionCallContext, then you can't use the function call context (format provider, expression evaluator etc.)
         return Result.Success(Expression(results).ToUpper(CultureInfo(results)));

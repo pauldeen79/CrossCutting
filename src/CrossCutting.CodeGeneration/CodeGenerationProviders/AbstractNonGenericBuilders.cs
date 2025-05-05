@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.CodeGeneration.CodeGenerationProviders.FunctionParseResultArguments;
+﻿namespace CrossCutting.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 public class AbstractNonGenericBuilders(IPipelineService pipelineService) : CrossCuttingCSharpClassBase(pipelineService)

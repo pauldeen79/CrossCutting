@@ -3,11 +3,11 @@
 public class ResultDictionaryBuilderTests
 {
     protected static Result NonGenericDelegate() => Result.Success();
-    protected static Result NonGenericArgumentDelegate(Dictionary<string, Result> results) => Result.Success();
+    protected static Result NonGenericArgumentDelegate(IReadOnlyDictionary<string, Result> results) => Result.Success();
     protected static Result<string> GenericDelegate() => Result.Success(string.Empty);
-    protected static Result<string> GenericArgumentDelegate(Dictionary<string, Result> results) => Result.Success(string.Empty);
-    protected static Result<string> GenericArgumentDelegate2(Dictionary<string, Result<string>> results) => Result.Success(string.Empty);
-    protected static Result GenericArgumentDelegate3(Dictionary<string, Result<string>> results) => Result.Success(string.Empty);
+    protected static Result<string> GenericArgumentDelegate(IReadOnlyDictionary<string, Result> results) => Result.Success(string.Empty);
+    protected static Result<string> GenericArgumentDelegate2(IReadOnlyDictionary<string, Result<string>> results) => Result.Success(string.Empty);
+    protected static Result GenericArgumentDelegate3(IReadOnlyDictionary<string, Result<string>> results) => Result.Success(string.Empty);
     protected static Result<string> GenericErrorDelegate() => Result.Error<string>("Kaboom");
 
     protected static IEnumerable<Result> NonGenericRangeDelegate() => [Result.Success(), Result.Success()];
@@ -192,6 +192,24 @@ public class ResultDictionaryBuilderTests
                 result.Count.ShouldBe(2);
                 result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
             }
+
+            [Fact]
+            public void Catches_Exception_And_Returns_Error()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder();
+                sut.Add("Test1", () => throw new InvalidOperationException("Kaboom"));
+                sut.Add("Test2", GenericDelegate);
+
+                // Act
+                var result = sut.Build();
+
+                // Assert
+                result.Count.ShouldBe(1);
+                result.First().Value.Status.ShouldBe(ResultStatus.Error);
+                result.First().Value.Exception.ShouldBeOfType<InvalidOperationException>();
+                result.First().Value.Exception!.Message.ShouldBe("Kaboom");
+            }
         }
     }
 
@@ -371,6 +389,24 @@ public class ResultDictionaryBuilderTests
                 // Assert
                 result.Count.ShouldBe(2);
                 result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
+            }
+
+            [Fact]
+            public void Catches_Exception_And_Returns_Error()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+                sut.Add("Test1", () => throw new InvalidOperationException("Kaboom"));
+                sut.Add("Test2", GenericDelegate);
+
+                // Act
+                var result = sut.Build();
+
+                // Assert
+                result.Count.ShouldBe(1);
+                result.First().Value.Status.ShouldBe(ResultStatus.Error);
+                result.First().Value.Exception.ShouldBeOfType<InvalidOperationException>();
+                result.First().Value.Exception!.Message.ShouldBe("Kaboom");
             }
         }
     }

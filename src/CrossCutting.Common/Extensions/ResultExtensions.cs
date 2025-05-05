@@ -273,4 +273,44 @@ public static class ResultExtensions
 
         return Task.FromResult(instance);
     }
+
+    public static Result IgnoreNotFound(this Result instance)
+    {
+        if (instance.Status == ResultStatus.NotFound)
+        {
+            return Result.Continue();
+        }
+
+        return instance;
+    }
+
+    public static Result<T> IgnoreNotFound<T>(this Result<T> instance)
+    {
+        if (instance.Status == ResultStatus.NotFound)
+        {
+            return Result.Continue<T>();
+        }
+
+        return instance;
+    }
+
+    public static Result EnsureValue(this Result instance, string? errorMessage = null)
+    {
+        if (instance.IsSuccessful() && instance.GetValue() is null)
+        {
+            return Result.Error(errorMessage.WhenNullOrEmpty(() => "Result value is required"));
+        }
+
+        return instance;
+    }
+
+    public static Result<T> EnsureValue<T>(this Result<T> instance, string? errorMessage = null)
+    {
+        if (instance.IsSuccessful() && instance.Value is null)
+        {
+            return Result.Error<T>(errorMessage.WhenNullOrEmpty(() => "Result value is required"));
+        }
+
+        return instance;
+    }
 }

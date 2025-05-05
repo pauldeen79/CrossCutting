@@ -3338,6 +3338,179 @@ public class ResultTests
         Action a = () => sut.CastValueAs<string?>();
         a.ShouldThrow<InvalidOperationException>();
 
-        // Note that if you don't know if the value is null, you can simply use TryCast<string> because this will return a nullable string.
+        // Note that if you don't know if the value is null, you can simply use TryCastAllowNull<string>
+    }
+
+    [Fact]
+    public void WrapException_Returns_Correct_Result()
+    {
+        // Arrange
+        var resultDelegate = new Func<Result>(Result.Success);
+
+        // Act
+        var result = Result.WrapException(resultDelegate);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Exception.ShouldBeNull();
+    }
+
+    [Fact]
+    public void WrapException_Returns_Error_When_Exception_Occurs()
+    {
+        // Arrange
+        var resultDelegate = new Func<Result>(() => throw new InvalidOperationException("Kaboom"));
+
+        // Act
+        var result = Result.WrapException(resultDelegate);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Exception occured");
+        result.Exception.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void IgnoreNotFound_Untyped_Returns_Continue_When_Status_Is_NotFound()
+    {
+        // Arrange
+        var sut = Result.NotFound();
+
+        // Act
+        var result = sut.IgnoreNotFound();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Continue);
+    }
+
+    [Fact]
+    public void IgnoreNotFound_Untyped_Returns_Ok_When_Status_Is_Ok()
+    {
+        // Arrange
+        var sut = Result.Success();
+
+        // Act
+        var result = sut.IgnoreNotFound();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void IgnoreNotFound_Typed_Returns_Continue_When_Status_Is_NotFound()
+    {
+        // Arrange
+        var sut = Result.NotFound<int>();
+
+        // Act
+        var result = sut.IgnoreNotFound();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Continue);
+    }
+
+    [Fact]
+    public void IgnoreNotFound_Typed_Returns_Ok_When_Status_Is_Ok()
+    {
+        // Arrange
+        var sut = Result.Success(1);
+
+        // Act
+        var result = sut.IgnoreNotFound();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void EnsureValue_Returns_Non_Successful_Result_Untyped()
+    {
+        // Arrange
+        var sut = Result.Error("Kaboom");
+
+        // Act
+        var result = sut.EnsureValue();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+    }
+
+    [Fact]
+    public void EnsureValue_Returns_Successful_Result_With_Value_Untyped()
+    {
+        // Arrange
+        var sut = new MyResult("Value");
+
+        // Act
+        var result = sut.EnsureValue();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void EnsureValue_Returns_Error_On_Successful_Result_Without_Value_Untyped()
+    {
+        // Arrange
+        var sut = new MyResult(null);
+
+        // Act
+        var result = sut.EnsureValue();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Result value is required");
+    }
+
+    [Fact]
+    public void EnsureValue_Returns_Non_Successful_Result_Typed()
+    {
+        // Arrange
+        var sut = Result.Error<string>("Kaboom");
+
+        // Act
+        var result = sut.EnsureValue();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+    }
+
+    [Fact]
+    public void EnsureValue_Returns_Successful_Result_With_Value_Typed()
+    {
+        // Arrange
+        var sut = Result.Success("Value");
+
+        // Act
+        var result = sut.EnsureValue();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public void EnsureValue_Returns_Error_On_Successful_Result_Without_Value_Typed()
+    {
+        // Arrange
+        var sut = Result.NoContent<string>();
+
+        // Act
+        var result = sut.EnsureValue();
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Result value is required");
+    }
+
+    public sealed record MyResult: Result
+    {
+        public MyResult(object? value) : base(ResultStatus.Ok, null, Enumerable.Empty<ValidationError>(), Enumerable.Empty<Result>(), null)
+        {
+            Value = value;
+        }
+
+        public object? Value { get; }
+
+        public override object? GetValue() => Value;
     }
 }

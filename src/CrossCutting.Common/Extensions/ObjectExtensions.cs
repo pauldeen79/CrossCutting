@@ -110,6 +110,30 @@ public static class ObjectExtensions
     public static bool IsFalse<T>(this T instance, Func<T, bool> predicate)
         => !predicate?.Invoke(instance) ?? false;
 
+    public static bool IsTruthy(this object? value)
+    {
+        if (value is null)
+        {
+            return false;
+        }
+
+        var type = value.GetType();
+
+        if (type.IsValueType)
+        {
+            var defaultValue = Activator.CreateInstance(type);
+            return !value.Equals(defaultValue);
+        }
+
+        if (value is string s)
+        {
+            return !string.IsNullOrEmpty(s);
+        }
+
+        // All other non-null reference types are truthy
+        return true;
+    }
+
     /// <summary>
     /// Determines whether the specified value is contained within the specified sequence.
     /// </summary>

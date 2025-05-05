@@ -83,8 +83,8 @@ public static class TypeExtensions
     public static object? CreateInstance(
         this Type type,
         Func<Type, object?> classFactory,
-        Func<ParameterInfo, object?>? parameterReplaceDelegate,
-        Func<ConstructorInfo, bool>? constructorPredicate)
+        Func<ParameterInfo, object?>? parameterReplaceDelegate = null,
+        Func<ConstructorInfo, bool>? constructorPredicate = null)
     {
         if (type.IsInterface)
         {
@@ -175,7 +175,7 @@ public static class TypeExtensions
             {
                 mocksCopy[j] = Activator.CreateInstance(parameters[j].ParameterType, 0);
             }
-            else if (parameters[j].ParameterType.FullName?.StartsWith("System.Collections.Generic.IEnumerable", StringComparison.InvariantCulture) == true)
+            else if (parameters[j].ParameterType.FullName?.StartsWith("System.Collections.Generic.IEnumerable", StringComparison.InvariantCulture) == true && mocksCopy[j] is null)
             {
                 // note that for now, we only allow generic Enumerables to work.
                 // this needs to be extended to generic collections and lists of more types.

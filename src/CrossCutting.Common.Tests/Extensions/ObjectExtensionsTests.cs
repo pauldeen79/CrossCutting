@@ -216,6 +216,409 @@ public class ObjectExtensionsTests
     }
 
     [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Bool_True()
+    {
+        // Arrange
+        var input = true;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Bool_False()
+    {
+        // Arrange
+        var input = false;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_String_Null()
+    {
+        // Arrange
+        string? input = null;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_String_Empty()
+    {
+        // Arrange
+        var input = string.Empty;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_String_Not_Empty()
+    {
+        // Arrange
+        var input = "non null string";
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_ReferenceType_Null()
+    {
+        // Arrange
+        var input = default(object?);
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_ReferenceType_Not_Null()
+    {
+        // Arrange
+        var input = this;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Int_Zero()
+    {
+        // Arrange
+        var input = 0;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Int_Not_Zero()
+    {
+        // Arrange
+        var input = 1;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Long_Zero()
+    {
+        // Arrange
+        var input = 0L;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Long_Not_Zero()
+    {
+        // Arrange
+        var input = 1L;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Float_Zero()
+    {
+        // Arrange
+        var input = 0f;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Float_Not_Zero()
+    {
+        // Arrange
+        var input = 1f;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Double_Zero()
+    {
+        // Arrange
+        var input = 0D;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Double_Not_Zero()
+    {
+        // Arrange
+        var input = 1D;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Decimal_Zero()
+    {
+        // Arrange
+        var input = 0M;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Decimal_Not_Zero()
+    {
+        // Arrange
+        var input = 1M;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Signned_Byte_Zero()
+    {
+        // Arrange
+        sbyte input = 0;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Signed_Byte_Not_Zero()
+    {
+        // Arrange
+        sbyte input = 1;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Byte_Zero()
+    {
+        // Arrange
+        byte input = 0;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Byte_Not_Zero()
+    {
+        // Arrange
+        byte input = 1;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Short_Zero()
+    {
+        // Arrange
+        short input = 0;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Shortt_Not_Zero()
+    {
+        // Arrange
+        short input = 1;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Unsigned_Short_Zero()
+    {
+        // Arrange
+        ushort input = 0;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Unsigned_Short_Not_Zero()
+    {
+        // Arrange
+        ushort input = 1;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Unsigned_Int_Zero()
+    {
+        // Arrange
+        uint input = 0;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Unsigned_Int_Not_Zero()
+    {
+        // Arrange
+        uint input = 1;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Unsigned_Long_Zero()
+    {
+        // Arrange
+        ulong input = 0;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Unsigned_Long_Not_Zero()
+    {
+        // Arrange
+        ulong input = 1;
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Char_Zero()
+    {
+        // Arrange
+        var input = '\0';
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(false);
+    }
+
+    [Fact]
+    public void IsTruthy_Returns_Correct_Result_For_Char_Not_Zero()
+    {
+        // Arrange
+        var input = 'x';
+
+        // Act
+        var result = input.IsTruthy();
+
+        // Assert
+        result.ShouldBe(true);
+    }
+
+    [Fact]
     public void In_Returns_True_When_Array_Of_Arguments_Contains_Correct_Value()
     {
         // Arrange

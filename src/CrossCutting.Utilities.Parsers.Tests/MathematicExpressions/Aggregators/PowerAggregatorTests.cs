@@ -10,7 +10,7 @@ public class PowerAggregatorTests
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBeEquivalentTo(16);
+        result.Value.ShouldBe(16);
     }
 
     [Fact]
@@ -21,7 +21,7 @@ public class PowerAggregatorTests
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBeEquivalentTo(16);
+        result.Value.ShouldBe(16);
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class PowerAggregatorTests
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBeEquivalentTo(16);
+        result.Value.ShouldBe(16);
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class PowerAggregatorTests
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBeEquivalentTo((long)16);
+        result.Value.ShouldBe(16);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class PowerAggregatorTests
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBeEquivalentTo((double)16);
+        result.Value.ShouldBe(16);
     }
 
     [Fact]

@@ -3,17 +3,18 @@ Generic utilities and other stuff, usable in any layer of any solution. We're ta
 
 This repository consists of the following packages:
 
-| Package name                          | Description                                                                                                                                                                             |
-| :------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| CrossCutting.Common                   | Provider for system date and user name, some useful extension methods on System.Object and System.String, and the Result class                                                          |
-| CrossCutting.Common.Testing           | Helps you test constructors on null checks                                                                                                                                              |
-| CrossCutting.Data.Abstractions        | Abstraction for executing database commands using System.Data namespace (IDbConnection and IDbCommand)                                                                                  |
-| CrossCutting.Data.Core                | Default implementation of database commands                                                                                                                                             |
-| CrossCutting.Data.Sql                 | Extension methods for working with database commands in System.Data namespace (IDbConnection)                                                                                           |
-| CrossCutting.DataTableDumper          | Produces flat-text data tables from objects                                                                                                                                             |
-| CrossCutting.Utilities.ObjectDumper   | Produces readable flat-text representation from objects, for use in logging                                                                                                             |
-| CrossCutting.Utilities.Parsers        | Parser for pipe-delmited data table strings, TSQL INSERT INTO statements, expression strings, function strings, math expressions and formattable strings (dynamic interpolated strings) |
-| System.Data.Stub                      | Stubs for System.Data interfaces like IDbConnection, IDbCommand and IDataReader                                                                                                         |
+| Package name                               | Description                                                                                                                                                                              |
+| :----------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CrossCutting.Common                        | Provider for system date and user name, some useful extension methods on System.Object and System.String, and the Result class                                                           |
+| CrossCutting.Common.Testing                | Helps you test constructors on null checks                                                                                                                                               |
+| CrossCutting.Data.Abstractions             | Abstraction for executing database commands using System.Data namespace (IDbConnection and IDbCommand)                                                                                   |
+| CrossCutting.Data.Core                     | Default implementation of database commands                                                                                                                                              |
+| CrossCutting.Data.Sql                      | Extension methods for working with database commands in System.Data namespace (IDbConnection)                                                                                            |
+| CrossCutting.DataTableDumper               | Produces flat-text data tables from objects                                                                                                                                              |
+| CrossCutting.Utilities.ObjectDumper        | Produces readable flat-text representation from objects, for use in logging                                                                                                              |
+| CrossCutting.Utilities.Parsers             | Parsers for pipe-delmited data table strings, TSQL INSERT INTO statements, expression strings, function strings, math expressions and formattable strings (dynamic interpolated strings) |
+| CrossCutting.Utilities.ExpressionEvaluator | Expression evaluator to dynamically evaluate strings, with support for all kinds of stuff, like: operators, functions, mathematic expressions, and so on                                 |
+| System.Data.Stub                           | Stubs for System.Data interfaces like IDbConnection, IDbCommand and IDataReader                                                                                                          |
 
 # Using NSubstitute or Moq as mock factory for CrossCutting.Common.Testing
 
@@ -63,3 +64,39 @@ There have been some breaking changes.
 * IExpressionStringParser has been renamed to IExpressionStringEvaluator and IExpresionStringParserProcessor to IExpressionString.
 * IMathematicExpressionParser has been renamed to IMathematicExpressionEvaluator and IMathematicExpressionProcessor to IMathematicExpression.
 * FormattableStringParserResult has been renamed to GenericFormattableString.
+
+# ExpressionEvaluator
+
+The ExpressionEvaluator is a full rewrite of the Parsers project, where and Expression is the entry type for everything. An expression can contain the following things:
+* Strings, like "hello world"
+* Interpolated strings, like "hello {name}"
+* Booleans "true" and "false"
+* Constructors like "new DateTime(2025, 1 ,1)"
+* DateTime.Now and DateTime.Today, as well as the Date and DateTime functions to create a custom DateTime value
+* Numeric values, both integer and floating point types like "1.3" and "12"
+* Mathematic operators like +, -, * and /, including brackets, for example "(1 + 1) * 13"
+* Binary operators && and || for example "true && true"
+* Unary operator ! to inverse a boolean value like "!true"
+* Comparison operators <, <=, >, >=, == and != for example "true != false"
+* Indexers like MyArray[1]
+* Built-in methods for DateTime values: AddDays, AddHours, AddMinuts, AddMonths, AddSeconds and AddYears
+* Built-in functions for String values: Left, Right, Mid
+* Built-in methods for String values: ToCamelCase, ToLower, ToPascalCase and ToUpper
+* Cast and Convert functions to cast and convert values to other types
+* Coalesce function, to get the first value that is not null
+* ToString method to convert objects to string
+* IsNull function to check for null values
+* Optional support for reflection to get property values or invoke methods
+* Type-safe properties, without reflection: Array.Length, String.Length, ICollection.Count, and Year/Month/Day/Hour/Minute/Second/Date for DateTime
+* Support for context using delegates, in order to allow lazy evaluation
+* Support for adding custom functions and generic functions, using dependency injection
+* Support for adding custom expression components, using dependency injection
+* Support for adding custom instance methods, constructors and properties, using dependency injection
+
+Design decisions:
+* Extendable through Dependency Injection
+* Result-based, exception free. When an exception occurs, just check the Status property of the result, and you can see the details using the Exception property if you want
+* Free of reflection by default, but you can enable it
+* Allow duck-typing for properties and methods, with or without reflection
+* Without reflection, you have to write DotExpressionComponents to implement the members
+* Basic support for discoverability and validation, using a Parse method. This will return the status (Ok/Invalid) and the return type of the expression, as well as some details like the inner results, and the type that handles this expression

@@ -2,16 +2,20 @@
 
 public class ResultDictionaryBuilder
 {
-    private readonly Dictionary<string, Func<Dictionary<string, Result>, Result>> _resultset = new();
+    private readonly Dictionary<string, Func<IReadOnlyDictionary<string, Result>, Result>> _resultset = new();
 
     public ResultDictionaryBuilder Add(string name, Func<Result> value)
     {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
         _resultset.Add(name, _ => value());
         return this;
     }
 
-    public ResultDictionaryBuilder Add(string name, Func<Dictionary<string, Result>, Result> value)
+    public ResultDictionaryBuilder Add(string name, Func<IReadOnlyDictionary<string, Result>, Result> value)
     {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
         _resultset.Add(name, value);
         return this;
     }
@@ -36,13 +40,25 @@ public class ResultDictionaryBuilder
         return this;
     }
 
-    public Dictionary<string, Result> Build()
+    public IReadOnlyDictionary<string, Result> Build()
     {
         var results = new Dictionary<string, Result>();
 
         foreach (var item in _resultset)
         {
-            var result = item.Value(results);
+            Result result = default!;
+
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                result = item.Value(results);
+            }
+            catch (Exception ex)
+            {
+                result = Result.Error(ex, $"Error occured while adding item with key {item.Key}, see Exception for details");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
@@ -56,7 +72,7 @@ public class ResultDictionaryBuilder
 
 public class ResultDictionaryBuilder<T>
 {
-    private readonly Dictionary<string, Func<Dictionary<string, Result<T>>, Result<T>>> _resultset = new();
+    private readonly Dictionary<string, Func<IReadOnlyDictionary<string, Result<T>>, Result<T>>> _resultset = new();
 
     public ResultDictionaryBuilder<T> Add(string name, Func<Result<T>> value)
     {
@@ -64,7 +80,7 @@ public class ResultDictionaryBuilder<T>
         return this;
     }
 
-    public ResultDictionaryBuilder<T> Add(string name, Func<Dictionary<string, Result<T>>, Result<T>> value)
+    public ResultDictionaryBuilder<T> Add(string name, Func<IReadOnlyDictionary<string, Result<T>>, Result<T>> value)
     {
         _resultset.Add(name, value);
         return this;
@@ -76,7 +92,7 @@ public class ResultDictionaryBuilder<T>
         return this;
     }
 
-    public ResultDictionaryBuilder<T> Add(string name, Func<Dictionary<string, Result<T>>, Result> value)
+    public ResultDictionaryBuilder<T> Add(string name, Func<IReadOnlyDictionary<string, Result<T>>, Result> value)
     {
         _resultset.Add(name, results => Result.FromExistingResult<T>(value(results)));
         return this;
@@ -107,13 +123,24 @@ public class ResultDictionaryBuilder<T>
         return AddRange(nameFormatString, () => value().Select(x => Result.FromExistingResult<T>(x)));
     }
 
-    public Dictionary<string, Result<T>> Build()
+    public IReadOnlyDictionary<string, Result<T>> Build()
     {
         var results = new Dictionary<string, Result<T>>();
 
+        Result<T> result = default!;
         foreach (var item in _resultset)
         {
-            var result = item.Value(results);
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                result = item.Value(results);
+            }
+            catch (Exception ex)
+            {
+                result = Result.Error<T>(ex, $"Error occured while adding item with key {item.Key}, see Exception for details");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {

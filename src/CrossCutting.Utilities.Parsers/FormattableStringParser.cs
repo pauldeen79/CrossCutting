@@ -148,6 +148,6 @@ public class FormattableStringParser : IFormattableStringParser
 
     private static bool NeedRecurse(string format, FormattableStringParserSettings settings, string placeholderResultValue)
         => placeholderResultValue.Contains(settings.PlaceholderStart)
-            && placeholderResultValue.Contains(settings.PlaceholderEnd)
-            && placeholderResultValue != format;
+        && placeholderResultValue.Contains(settings.PlaceholderEnd)
+        && placeholderResultValue != format;
 }

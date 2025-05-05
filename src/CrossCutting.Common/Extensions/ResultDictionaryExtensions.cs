@@ -2,13 +2,13 @@
 
 public static class ResultDictionaryExtensions
 {
-    public static Result<T> GetError<T>(this Dictionary<string, Result<T>> resultDictionary)
+    public static Result<T> GetError<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary)
         => resultDictionary.Select(x => x.Value).FirstOrDefault(x => !x.IsSuccessful());
 
-    public static Result GetError(this Dictionary<string, Result> resultDictionary)
+    public static Result GetError(this IReadOnlyDictionary<string, Result> resultDictionary)
         => resultDictionary.Select(x => x.Value).FirstOrDefault(x => !x.IsSuccessful());
 
-    public static Result OnSuccess<T>(this Dictionary<string, Result<T>> resultDictionary, Func<Dictionary<string, Result<T>>, Result> successDelegate)
+    public static Result OnSuccess<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, Func<IReadOnlyDictionary<string, Result<T>>, Result> successDelegate)
     {
         successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
@@ -21,7 +21,7 @@ public static class ResultDictionaryExtensions
         };
     }
 
-    public static Result OnSuccess(this Dictionary<string, Result> resultDictionary, Func<Dictionary<string, Result>, Result> successDelegate)
+    public static Result<T> OnSuccess<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, Func<IReadOnlyDictionary<string, Result<T>>, Result<T>> successDelegate)
     {
         successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
@@ -34,7 +34,20 @@ public static class ResultDictionaryExtensions
         };
     }
 
-    public static Result<T> OnSuccess<T>(this Dictionary<string, Result> resultDictionary, Func<Dictionary<string, Result>, Result<T>> successDelegate)
+    public static Result OnSuccess(this IReadOnlyDictionary<string, Result> resultDictionary, Func<IReadOnlyDictionary<string, Result>, Result> successDelegate)
+    {
+        successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        var error = resultDictionary.GetError();
+
+        return error switch
+        {
+            not null => error,
+            _ => successDelegate(resultDictionary)
+        };
+    }
+
+    public static Result<T> OnSuccess<T>(this IReadOnlyDictionary<string, Result> resultDictionary, Func<IReadOnlyDictionary<string, Result>, Result<T>> successDelegate)
     {
         successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
@@ -47,13 +60,13 @@ public static class ResultDictionaryExtensions
         };
     }
 
-    public static Result OnSuccess<T>(this Dictionary<string, Result<T>> resultDictionary, Action<Dictionary<string, Result<T>>> successDelegate)
+    public static Result OnSuccess<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, Action<IReadOnlyDictionary<string, Result<T>>> successDelegate)
         => resultDictionary.OnSuccess(_ => { successDelegate(resultDictionary); return Result.Success(); });
 
-    public static Result OnSuccess(this Dictionary<string, Result> resultDictionary, Action<Dictionary<string, Result>> successDelegate)
+    public static Result OnSuccess(this IReadOnlyDictionary<string, Result> resultDictionary, Action<IReadOnlyDictionary<string, Result>> successDelegate)
         => resultDictionary.OnSuccess(_ => { successDelegate(resultDictionary); return Result.Success(); });
 
-    public static Dictionary<string, Result<T>> OnFailure<T>(this Dictionary<string, Result<T>> resultDictionary, Action<Result<T>> errorDelegate)
+    public static IReadOnlyDictionary<string, Result<T>> OnFailure<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, Action<Result<T>> errorDelegate)
     {
         errorDelegate = ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
 
@@ -66,7 +79,7 @@ public static class ResultDictionaryExtensions
         return resultDictionary;
     }
 
-    public static Dictionary<string, Result> OnFailure(this Dictionary<string, Result> resultDictionary, Action<Result> errorDelegate)
+    public static IReadOnlyDictionary<string, Result> OnFailure(this IReadOnlyDictionary<string, Result> resultDictionary, Action<Result> errorDelegate)
     {
         errorDelegate = ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
 
@@ -79,7 +92,7 @@ public static class ResultDictionaryExtensions
         return resultDictionary;
     }
 
-    public static Dictionary<string, Result<T>> OnFailure<T>(this Dictionary<string, Result<T>> resultDictionary, Func<Result<T>, Result<T>> errorDelegate)
+    public static IReadOnlyDictionary<string, Result<T>> OnFailure<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, Func<Result<T>, Result<T>> errorDelegate)
     {
         errorDelegate = ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
 
@@ -96,7 +109,7 @@ public static class ResultDictionaryExtensions
         return resultDictionary;
     }
 
-    public static Dictionary<string, Result> OnFailure(this Dictionary<string, Result> resultDictionary, Func<Result, Result> errorDelegate)
+    public static IReadOnlyDictionary<string, Result> OnFailure(this IReadOnlyDictionary<string, Result> resultDictionary, Func<Result, Result> errorDelegate)
     {
         errorDelegate = ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
 
@@ -113,23 +126,71 @@ public static class ResultDictionaryExtensions
         return resultDictionary;
     }
 
-    public static object? GetValue(this Dictionary<string, Result> resultDictionary, string resultKey)
+    public static object? GetValue(this IReadOnlyDictionary<string, Result> resultDictionary, string resultKey)
         => resultDictionary.TryGetValue(resultKey, out Result result)
             ? result.GetValue()
             : throw new ArgumentOutOfRangeException(nameof(resultKey), $"Unknown argument: {resultKey}");
 
-    public static T GetValue<T>(this Dictionary<string, Result> resultDictionary, string resultKey)
+    public static T GetValue<T>(this IReadOnlyDictionary<string, Result> resultDictionary, string resultKey)
         => resultDictionary.TryGetValue(resultKey, out Result result)
             ? result.CastValueAs<T>()
             : throw new ArgumentOutOfRangeException(nameof(resultKey), $"Unknown argument: {resultKey}");
 
-    public static T? TryGetValue<T>(this Dictionary<string, Result> resultDictionary, string resultKey)
+    public static T GetValue<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, string resultKey)
+        => resultDictionary.TryGetValue(resultKey, out Result<T> result)
+            ? result.Value!
+            : throw new ArgumentOutOfRangeException(nameof(resultKey), $"Unknown argument: {resultKey}");
+
+    public static T? TryGetValue<T>(this IReadOnlyDictionary<string, Result> resultDictionary, string resultKey)
         => resultDictionary.TryGetValue(resultKey, out Result result)
             ? result.TryCastValueAs<T>()
             : default;
 
-    public static T? TryGetValue<T>(this Dictionary<string, Result> resultDictionary, string resultKey, T? defaultValue)
+    public static T? TryGetValue<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, string resultKey)
+        => resultDictionary.TryGetValue(resultKey, out Result<T> result)
+            ? result.Value
+            : default;
+
+    public static T? TryGetValue<T>(this IReadOnlyDictionary<string, Result> resultDictionary, string resultKey, T? defaultValue)
         => resultDictionary.TryGetValue(resultKey, out Result result)
             ? result.TryCastValueAs(defaultValue)
             : defaultValue;
+
+    public static T? TryGetValue<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, string resultKey, T? defaultValue)
+        => resultDictionary.TryGetValue(resultKey, out Result<T> result)
+            ? result.Value
+            : defaultValue;
+
+    public static Result Aggregate(this IReadOnlyDictionary<string, Result> resultDictionary)
+    {
+        var error = resultDictionary.GetError();
+        if (error is not null)
+        {
+            return error;
+        }
+
+        return resultDictionary.Last().Value;
+    }
+
+    public static Result<T> Aggregate<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary)
+    {
+        var error = resultDictionary.GetError();
+        if (error is not null)
+        {
+            return error;
+        }
+
+        return resultDictionary.Last().Value;
+    }
+
+    public static Result<T> Aggregate<T>(this IReadOnlyDictionary<string, Result> resultDictionary)
+    {
+        var error = resultDictionary.GetError();
+        if (error is not null)
+        {
+            return Result.FromExistingResult<T>(error);
+        }
+
+        return Result.FromExistingResult<T>(resultDictionary.Last().Value);
+    }
 }
