@@ -18,13 +18,6 @@ public sealed class OtherExpression : IExpression
         return context.Evaluate(Expression);
     }
 
-    public Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        return context.EvaluateTyped<T>(Expression);
-    }
-
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));

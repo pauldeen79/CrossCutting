@@ -54,9 +54,6 @@ public sealed class BinaryExpression : IExpression
         };
     }
 
-    public Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context)
-        => Evaluate(context).TryCastAllowNull<T>();
-
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));

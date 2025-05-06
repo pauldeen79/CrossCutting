@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public sealed class UnaryExpression : IExpression
+public sealed class UnaryExpression : IExpression<bool>
 {
     public Result<IExpression> Operand { get; }
 
@@ -12,15 +12,7 @@ public sealed class UnaryExpression : IExpression
     }
 
     public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-    {
-        ArgumentGuard.IsNotNull(context, nameof(context));
-
-        return (Operand.Value?.Evaluate(context) ?? Result.FromExistingResult<object?>(Operand))
-            .OnSuccess(result => Result.Success<object?>(!result.Value.IsTruthy()));
-    }
-
-    public Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context)
-        => Evaluate(context).TryCastAllowNull<T>();
+        => EvaluateTyped(context).TryCastAllowNull<object?>();
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
     {
@@ -36,5 +28,13 @@ public sealed class UnaryExpression : IExpression
             .SetStatusFromPartResults();
 
         return result;
+    }
+
+    public Result<bool> EvaluateTyped(ExpressionEvaluatorContext context)
+    {
+        ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return (Operand.Value?.Evaluate(context).TryCastAllowNull<bool>() ?? Result.FromExistingResult<bool>(Operand))
+            .OnSuccess(result => Result.Success(!result.Value.IsTruthy()));
     }
 }

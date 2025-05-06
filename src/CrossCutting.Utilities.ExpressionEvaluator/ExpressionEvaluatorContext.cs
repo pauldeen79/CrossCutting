@@ -37,8 +37,8 @@ public class ExpressionEvaluatorContext
 
     public Result<T> EvaluateTyped<T>(string expression)
         => UseCallback
-            ? Evaluator.EvaluateTypedCallback<T>(CreateChildContext(expression))
-            : Evaluator.EvaluateTyped<T>(CreateChildContext(expression));
+            ? Evaluator.EvaluateCallback(CreateChildContext(expression)).TryCastAllowNull<T>()
+            : Evaluator.Evaluate(CreateChildContext(expression)).TryCastAllowNull<T>();
 
     public ExpressionParseResult Parse(string expression)
         => UseCallback

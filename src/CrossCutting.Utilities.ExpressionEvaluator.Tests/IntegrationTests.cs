@@ -55,7 +55,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "MyFunction(state)";
 
         // Act
-        var result = sut.EvaluateTyped<string>(CreateContext(expression, state: "hello world", evaluator: sut));
+        var result = sut.Evaluate(CreateContext(expression, state: "hello world", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -117,7 +117,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "null";
 
         // Act
-        var result = sut.EvaluateTyped<string>(CreateContext(expression, evaluator: sut));
+        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -177,7 +177,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var expression = "\"my string value\"";
 
         // Act
-        var result = sut.EvaluateTyped<string>(CreateContext(expression, evaluator: sut));
+        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
