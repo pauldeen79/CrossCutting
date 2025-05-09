@@ -2,7 +2,11 @@
 
 public interface IExpression
 {
-    Result<object?> Evaluate(ExpressionEvaluatorContext context);
-    Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context);
-    ExpressionParseResult Parse(ExpressionEvaluatorContext context);
+    Result<object?> Evaluate();
+    ExpressionParseResult Parse();
+}
+
+public interface IExpression<T> : IExpression
+{
+    Result<T> EvaluateTyped();
 }

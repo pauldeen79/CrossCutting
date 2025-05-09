@@ -8,6 +8,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Logical_Or()
         {
             // Arrange
+            var context = CreateContext("false || true");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "false"),
@@ -18,7 +19,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -28,7 +29,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("false || true"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false || true);
         }
@@ -37,6 +38,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Logical_And()
         {
             // Arrange
+            var context = CreateContext("false && true");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "false"),
@@ -47,7 +49,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -57,7 +59,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("false && true"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false && true);
         }
@@ -66,6 +68,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Equal()
         {
             // Arrange
+            var context = CreateContext("false == true");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "false"),
@@ -76,7 +79,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -86,7 +89,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("false == true"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false == true);
         }
@@ -95,6 +98,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_NotEqual()
         {
             // Arrange
+            var context = CreateContext("false != true");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "false"),
@@ -105,7 +109,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -115,7 +119,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("false != true"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false != true);
         }
@@ -124,6 +128,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Less()
         {
             // Arrange
+            var context = CreateContext("1 < 2");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -134,7 +139,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -144,7 +149,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("1 < 2"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 < 2);
         }
@@ -153,6 +158,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_LessOrEqual()
         {
             // Arrange
+            var context = CreateContext("1 <= 2");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -163,7 +169,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -173,7 +179,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("1 <= 2"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 <= 2);
         }
@@ -182,6 +188,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Greater()
         {
             // Arrange
+            var context = CreateContext("1 > 2");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -192,7 +199,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -202,7 +209,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("1 > 2"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 > 2);
         }
@@ -211,6 +218,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_GreaterOrEqual()
         {
             // Arrange
+            var context = CreateContext("1 >= 2");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -221,7 +229,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -231,7 +239,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("1 >= 2"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 >= 2);
         }
@@ -240,6 +248,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Plus()
         {
             // Arrange
+            var context = CreateContext("1 + 2");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -250,7 +259,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -260,7 +269,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("1 + 2"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 + 2);
         }
@@ -269,6 +278,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Minus()
         {
             // Arrange
+            var context = CreateContext("1 - 2");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -279,7 +289,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -289,7 +299,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("1 - 2"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 - 2);
         }
@@ -298,6 +308,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Multiply()
         {
             // Arrange
+            var context = CreateContext("1 * 2");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -308,7 +319,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -318,7 +329,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("1 * 2"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 * 2);
         }
@@ -327,6 +338,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Divide()
         {
             // Arrange
+            var context = CreateContext("1 / 2");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -337,7 +349,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -347,7 +359,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("1 / 2"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 / 2);
         }
@@ -356,6 +368,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Modulo()
         {
             // Arrange
+            var context = CreateContext("1 % 2");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -366,7 +379,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -376,7 +389,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("1 % 2"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 % 2);
         }
@@ -385,6 +398,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Bang()
         {
             // Arrange
+            var context = CreateContext("!true");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Bang),
@@ -394,7 +408,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -402,7 +416,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var unaryOperator = (UnaryExpression)result.Value;
             unaryOperator.Operand.Status.ShouldBe(ResultStatus.Ok);
             unaryOperator.Operand.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate(CreateContext("!true"));
+            var evaluationResult = result.Value.Evaluate();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(!true);
         }
@@ -411,6 +425,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Invalid_Token()
         {
             // Arrange
+            var context = CreateContext("(");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.LeftParenthesis),
@@ -419,7 +434,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -430,6 +445,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Function_With_Missing_Close_Parenthesis()
         {
             // Arrange
+            var context = CreateContext("MyFunction(");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "MyFunction"),
@@ -439,7 +455,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -450,6 +466,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Generic_Function_With_Missing_Close_Parenthesis()
         {
             // Arrange
+            var context = CreateContext("MyFunction<System.String>(");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "MyFunction"),
@@ -462,7 +479,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -473,6 +490,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Generic_Function_With_Arguments_But_Missing_Close_Parenthesis()
         {
             // Arrange
+            var context = CreateContext("MyFunction<System.String>(arguments");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "MyFunction"),
@@ -486,7 +504,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -497,6 +515,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Function_Without_Arguments()
         {
             // Arrange
+            var context = CreateContext("MyFunction()");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "MyFunction"),
@@ -507,7 +526,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -517,6 +536,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Function_With_Arguments()
         {
             // Arrange
+            var context = CreateContext("MyFunction(arguments)");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "MyFunction"),
@@ -528,7 +548,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -538,6 +558,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Generic_Function_Without_Arguments()
         {
             // Arrange
+            var context = CreateContext("MyFunction<System.String>()");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "MyFunction"),
@@ -551,7 +572,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -561,6 +582,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Generic_Function_With_Arguments()
         {
             // Arrange
+            var context = CreateContext("MyFunction<System.String>(arguments)");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "MyFunction"),
@@ -575,7 +597,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -585,6 +607,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Generic_Function_Missing_FunctionName_Without_Arguments()
         {
             // Arrange
+            var context = CreateContext("<System.String>()");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Less),
@@ -597,7 +620,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -608,6 +631,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Less_Sign_At_Start()
         {
             // Arrange
+            var context = CreateContext("< 2");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Less),
@@ -617,7 +641,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -628,6 +652,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Bang_With_Missing_Expression()
         {
             // Arrange
+            var context = CreateContext("!");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Bang),
@@ -636,7 +661,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -647,6 +672,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Less_With_Error()
         {
             // Arrange
+            var context = CreateContext("1 < ");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -656,7 +682,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -667,6 +693,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Equal_With_Error()
         {
             // Arrange
+            var context = CreateContext("1 == ");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -676,7 +703,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -687,6 +714,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_And_With_Error()
         {
             // Arrange
+            var context = CreateContext("1 && ");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -696,7 +724,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -707,6 +735,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Or_With_Error()
         {
             // Arrange
+            var context = CreateContext("1 || ");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -716,7 +745,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -727,6 +756,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Plus_With_Error()
         {
             // Arrange
+            var context = CreateContext("1 + ");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -736,7 +766,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -747,6 +777,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Multiply_With_Error()
         {
             // Arrange
+            var context = CreateContext("1 * ");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
@@ -756,7 +787,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -767,6 +798,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         public void Returns_Correct_Result_On_Missing_Close_Parenthesis()
         {
             // Arrange
+            var context = CreateContext("(1 + 1");
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.LeftParenthesis),
@@ -778,7 +810,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(tokens);
+            var result = sut.Parse(context, tokens);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

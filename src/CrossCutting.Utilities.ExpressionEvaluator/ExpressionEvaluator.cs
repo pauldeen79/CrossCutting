@@ -26,25 +26,10 @@ public class ExpressionEvaluator : IExpressionEvaluator
         return new ResultDictionaryBuilder()
             .Add("Validate", () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context))
-            .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
-            .Add(nameof(Evaluate), results => results.GetValue<IExpression>(nameof(Parse)).Evaluate(context))
+            .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
+            .Add(nameof(Evaluate), results => results.GetValue<IExpression>(nameof(Parse)).Evaluate())
             .Build()
             .Aggregate<object?>();
-    }
-
-    public Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        context = context.FromRoot();
-
-        return new ResultDictionaryBuilder()
-            .Add("Validate", () => context.Validate<object?>())
-            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context))
-            .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
-            .Add(nameof(Evaluate), results => results.GetValue<IExpression>(nameof(Parse)).EvaluateTyped<T>(context))
-            .Build()
-            .Aggregate<T>();
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
@@ -58,7 +43,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         var results = new ResultDictionaryBuilder()
             .Add("Validate", () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context))
-            .Add(nameof(Parse), results => _parser.Parse(results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
+            .Add(nameof(Parse), results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
             .Build();
 
         var error = results.GetError();
@@ -67,7 +52,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             return result.FillFromResult(error);
         }
 
-        return results.GetValue<IExpression>(nameof(Parse)).Parse(context);
+        return results.GetValue<IExpression>(nameof(Parse)).Parse();
     }
 
     public Result<object?> EvaluateCallback(ExpressionEvaluatorContext context)
@@ -79,17 +64,6 @@ public class ExpressionEvaluator : IExpressionEvaluator
                 .Select(x => x.Evaluate(context))
                 .FirstOrDefault(x => x.Status != ResultStatus.Continue)
                     ?? Result.Invalid<object?>($"Unknown expression type found in fragment: {context.Expression}"));
-    }
-
-    public Result<T> EvaluateTypedCallback<T>(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        return context.Validate<T>()
-            .OnSuccess(() => _components
-                .Select(x => x.Evaluate(context).TryCastAllowNull<T>())
-                .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                    ?? Result.Invalid<T>($"Unknown expression type found in fragment: {context.Expression}"));
     }
 
     public ExpressionParseResult ParseCallback(ExpressionEvaluatorContext context)

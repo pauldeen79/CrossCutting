@@ -15,10 +15,11 @@ public class UnaryExpressionTests : TestBase
         public void Returns_Error_From_Expression()
         {
             // Arrange
-            var sut = new UnaryExpression(Result.Error<IExpression>("Kaboom"));
+            var context = CreateContext("kaboom");
+            var sut = new UnaryExpression(context, Result.Error<IExpression>("Kaboom"));
 
             // Act
-            var result = sut.Evaluate(CreateContext("kaboom"));
+            var result = sut.Evaluate();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -29,14 +30,15 @@ public class UnaryExpressionTests : TestBase
         public void Returns_Error_From_Expression_Parsing()
         {
             // Arrange
+            var context = CreateContext("!kaboom");
             Operand
-                .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
+                .Evaluate()
                 .Returns(Result.Error<object?>("Kaboom"));
 
-            var sut = new UnaryExpression(Result.Success(Operand));
+            var sut = new UnaryExpression(context, Result.Success(Operand));
 
             // Act
-            var result = sut.Evaluate(CreateContext("!kaboom"));
+            var result = sut.Evaluate();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -50,10 +52,11 @@ public class UnaryExpressionTests : TestBase
         public void Returns_Error_From_Expression()
         {
             // Arrange
-            var sut = new UnaryExpression(Result.Error<IExpression>("Kaboom"));
+            var context = CreateContext("kaboom");
+            var sut = new UnaryExpression(context, Result.Error<IExpression>("Kaboom"));
 
             // Act
-            var result = sut.Parse(CreateContext("kaboom"));
+            var result = sut.Parse();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -66,14 +69,15 @@ public class UnaryExpressionTests : TestBase
         public void Returns_Error_From_Expression_Parsing()
         {
             // Arrange
+            var context = CreateContext("!kaboom");
             Operand
-                .Parse(Arg.Any<ExpressionEvaluatorContext>())
+                .Parse()
                 .Returns(new ExpressionParseResultBuilder().WithErrorMessage("Kaboom").WithStatus(ResultStatus.Error));
 
-            var sut = new UnaryExpression(Result.Success(Operand));
+            var sut = new UnaryExpression(context, Result.Success(Operand));
 
             // Act
-            var result = sut.Parse(CreateContext("!kaboom"));
+            var result = sut.Parse();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

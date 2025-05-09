@@ -8,14 +8,15 @@ public class OtherExpressionTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new OtherExpression("expression");
             var evaluator = Substitute.For<IExpressionEvaluator>();
+            var context = CreateContext("dummy expression", evaluator: evaluator);
+            var sut = new OtherExpression(context, "expression");
             evaluator
                 .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(Result.Success<object?>("the result"));
 
             // Act
-            var result = sut.Evaluate(CreateContext("dummy expression", evaluator: evaluator));
+            var result = sut.Evaluate();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -29,14 +30,15 @@ public class OtherExpressionTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new OtherExpression("expression");
             var evaluator = Substitute.For<IExpressionEvaluator>();
+            var context = CreateContext("dummy expression", evaluator: evaluator);
+            var sut = new OtherExpression(context, "expression");
             evaluator
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithSourceExpression("expression").WithExpressionComponentType(GetType()).WithResultType(typeof(string)));
 
             // Act
-            var result = sut.Parse(CreateContext("dummy expression", evaluator: evaluator));
+            var result = sut.Parse();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
