@@ -7,25 +7,32 @@ public sealed class BinaryExpression : IExpression
     public Result<IExpression> Right { get; }
     public string SourceExpression { get; }
 
-    public BinaryExpression(Result<IExpression> left, ExpressionTokenType @operator, Result<IExpression> right, string sourceExpression)
+    private readonly ExpressionEvaluatorContext _context;
+
+    public BinaryExpression(
+        ExpressionEvaluatorContext context,
+        Result<IExpression> left,
+        ExpressionTokenType @operator,
+        Result<IExpression> right,
+        string sourceExpression)
     {
+        ArgumentGuard.IsNotNull(context, nameof(context));
         ArgumentGuard.IsNotNull(left, nameof(left));
         ArgumentGuard.IsNotNull(right, nameof(right));
         ArgumentGuard.IsNotNull(sourceExpression, nameof(sourceExpression));
 
+        _context = context;
         Left = left;
         Operator = @operator;
         Right = right;
         SourceExpression = sourceExpression;
     }
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    public Result<object?> Evaluate()
     {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
         var results = new ResultDictionaryBuilder<object?>()
-            .Add(Constants.LeftExpression, () => Left.Value?.Evaluate(context) ?? Result.FromExistingResult<object?>(Left))
-            .Add(Constants.RightExpression, () => Right.Value?.Evaluate(context) ?? Result.FromExistingResult<object?>(Right))
+            .Add(Constants.LeftExpression, () => Left.Value?.Evaluate() ?? Result.FromExistingResult<object?>(Left))
+            .Add(Constants.RightExpression, () => Right.Value?.Evaluate() ?? Result.FromExistingResult<object?>(Right))
             .Build();
 
         var error = results.GetError();
@@ -36,30 +43,28 @@ public sealed class BinaryExpression : IExpression
 
         return Operator switch
         {
-            ExpressionTokenType.Plus => Add.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
-            ExpressionTokenType.Minus => Subtract.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
-            ExpressionTokenType.Multiply => Multiply.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
-            ExpressionTokenType.Divide => Divide.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
-            ExpressionTokenType.Equal => Equal.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.StringComparison).TryCastAllowNull<object?>(),
-            ExpressionTokenType.NotEqual => NotEqual.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.StringComparison).TryCastAllowNull<object?>(),
+            ExpressionTokenType.Plus => Add.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
+            ExpressionTokenType.Minus => Subtract.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
+            ExpressionTokenType.Multiply => Multiply.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
+            ExpressionTokenType.Divide => Divide.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
+            ExpressionTokenType.Equal => Equal.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.StringComparison).TryCastAllowNull<object?>(),
+            ExpressionTokenType.NotEqual => NotEqual.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.StringComparison).TryCastAllowNull<object?>(),
             ExpressionTokenType.Less => SmallerThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
             ExpressionTokenType.LessOrEqual => SmallerOrEqualThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
             ExpressionTokenType.Greater => GreaterThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
             ExpressionTokenType.GreaterOrEqual => GreaterOrEqualThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)).TryCastAllowNull<object?>(),
             ExpressionTokenType.And => EvaluateAnd(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
             ExpressionTokenType.Or => EvaluateOr(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
-            ExpressionTokenType.Modulo => Modulus.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
-            ExpressionTokenType.Exponentiation => Power.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), context.Settings.FormatProvider),
+            ExpressionTokenType.Modulo => Modulus.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
+            ExpressionTokenType.Exponentiation => Power.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
             _ => Result.Invalid<object?>($"Unsupported operator: {Operator}")
         };
     }
 
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
+    public ExpressionParseResult Parse()
     {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        var leftResult = Left.Value?.Parse(context);
-        var rightResult = Right.Value?.Parse(context);
+        var leftResult = Left.Value?.Parse();
+        var rightResult = Right.Value?.Parse();
 
         var result = new ExpressionParseResultBuilder()
             .WithExpressionComponentType(typeof(BinaryExpression))

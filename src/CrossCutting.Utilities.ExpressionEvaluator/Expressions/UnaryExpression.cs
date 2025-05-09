@@ -2,39 +2,37 @@
 
 public sealed class UnaryExpression : IExpression<bool>
 {
+    private readonly ExpressionEvaluatorContext _context;
+
     public Result<IExpression> Operand { get; }
 
-    public UnaryExpression(Result<IExpression> operand)
+    public UnaryExpression(ExpressionEvaluatorContext context, Result<IExpression> operand)
     {
+        ArgumentGuard.IsNotNull(context, nameof(context));
         ArgumentGuard.IsNotNull(operand, nameof(operand));
 
+        _context = context;
         Operand = operand;
     }
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-        => EvaluateTyped(context).TryCastAllowNull<object?>();
+    public Result<object?> Evaluate()
+        => EvaluateTyped().TryCastAllowNull<object?>();
 
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
+    public Result<bool> EvaluateTyped()
+        => (Operand.Value?.Evaluate().TryCastAllowNull<bool>() ?? Result.FromExistingResult<bool>(Operand))
+            .OnSuccess(result => Result.Success(!result.Value.IsTruthy()));
+
+    public ExpressionParseResult Parse()
     {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        var operandResult = Operand.Value?.Parse(context);
+        var operandResult = Operand.Value?.Parse();
 
         var result = new ExpressionParseResultBuilder()
             .WithExpressionComponentType(typeof(UnaryExpression))
-            .WithSourceExpression(context.Expression)
+            .WithSourceExpression(_context.Expression)
             .WithResultType(typeof(bool))
             .AddPartResult(operandResult ?? new ExpressionParseResultBuilder().FillFromResult(Operand), Constants.Operand)
             .SetStatusFromPartResults();
 
         return result;
-    }
-
-    public Result<bool> EvaluateTyped(ExpressionEvaluatorContext context)
-    {
-        ArgumentGuard.IsNotNull(context, nameof(context));
-
-        return (Operand.Value?.Evaluate(context).TryCastAllowNull<bool>() ?? Result.FromExistingResult<bool>(Operand))
-            .OnSuccess(result => Result.Success(!result.Value.IsTruthy()));
     }
 }

@@ -2,157 +2,157 @@
 
 public sealed class ExpressionParser : IExpressionParser
 {
-    public Result<IExpression> Parse(ICollection<ExpressionToken> tokens)
-        => ParseLogicalOr(new ExpressionParserState(tokens));
+    public Result<IExpression> Parse(ExpressionEvaluatorContext context, ICollection<ExpressionToken> tokens)
+        => ParseLogicalOr(context, new ExpressionParserState(tokens));
 
-    private static Result<IExpression> ParseLogicalOr(ExpressionParserState state)
+    private static Result<IExpression> ParseLogicalOr(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
-        var expr = ParseLogicalAnd(state);
+        var expr = ParseLogicalAnd(context, state);
 
         while (expr.IsSuccessful() && Match(state, ExpressionTokenType.Or))
         {
             var op = Previous(state);
-            var right = ParseLogicalAnd(state);
+            var right = ParseLogicalAnd(context, state);
             if (!right.IsSuccessful())
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new BinaryExpression(expr, op.Type, right, op.Value));
+            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value));
         }
 
         return expr;
     }
 
-    private static Result<IExpression> ParseLogicalAnd(ExpressionParserState state)
+    private static Result<IExpression> ParseLogicalAnd(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
-        var expr = ParseEquality(state);
+        var expr = ParseEquality(context, state);
 
         while (expr.IsSuccessful() && Match(state, ExpressionTokenType.And))
         {
             var op = Previous(state);
-            var right = ParseEquality(state);
+            var right = ParseEquality(context, state);
             if (!right.IsSuccessful())
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new BinaryExpression(expr, op.Type, right, op.Value));
+            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value));
         }
 
         return expr;
     }
 
-    private static Result<IExpression> ParseEquality(ExpressionParserState state)
+    private static Result<IExpression> ParseEquality(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
-        var expr = ParseComparison(state);
+        var expr = ParseComparison(context, state);
 
         while (expr.IsSuccessful() && Match(state, ExpressionTokenType.Equal, ExpressionTokenType.NotEqual))
         {
             var op = Previous(state);
-            var right = ParseAdditive(state);
+            var right = ParseAdditive(context, state);
             if (!right.IsSuccessful())
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new BinaryExpression(expr, op.Type, right, op.Value));
+            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value));
         }
 
         return expr;
     }
 
-    private static Result<IExpression> ParseComparison(ExpressionParserState state)
+    private static Result<IExpression> ParseComparison(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
-        var expr = ParseAdditive(state);
+        var expr = ParseAdditive(context, state);
 
         while (expr.IsSuccessful() && Match(state, ExpressionTokenType.Less, ExpressionTokenType.LessOrEqual, ExpressionTokenType.Greater, ExpressionTokenType.GreaterOrEqual))
         {
             var op = Previous(state);
-            var right = ParseAdditive(state);
+            var right = ParseAdditive(context, state);
             if (!right.IsSuccessful())
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new BinaryExpression(expr, op.Type, right, op.Value));
+            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value));
         }
 
         return expr;
     }
 
-    private static Result<IExpression> ParseAdditive(ExpressionParserState state)
+    private static Result<IExpression> ParseAdditive(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
-        var expr = ParseMultiplicative(state);
+        var expr = ParseMultiplicative(context, state);
 
         while (expr.IsSuccessful() && Match(state, ExpressionTokenType.Plus, ExpressionTokenType.Minus))
         {
             var op = Previous(state);
-            var right = ParseMultiplicative(state);
+            var right = ParseMultiplicative(context, state);
             if (!right.IsSuccessful())
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new BinaryExpression(expr, op.Type, right, op.Value));
+            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value));
         }
 
         return expr;
     }
 
-    private static Result<IExpression> ParseMultiplicative(ExpressionParserState state)
+    private static Result<IExpression> ParseMultiplicative(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
-        var expr = ParseUnary(state);
+        var expr = ParseUnary(context, state);
 
         while (expr.IsSuccessful() && Match(state, ExpressionTokenType.Multiply, ExpressionTokenType.Divide, ExpressionTokenType.Modulo))
         {
             var op = Previous(state);
-            var right = ParseUnary(state);
+            var right = ParseUnary(context, state);
             if (!right.IsSuccessful())
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new BinaryExpression(expr, op.Type, right, op.Value));
+            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value));
         }
 
         return expr;
     }
 
-    private static Result<IExpression> ParseUnary(ExpressionParserState state)
+    private static Result<IExpression> ParseUnary(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
         if (Match(state, ExpressionTokenType.Bang))
         {
-            var right = ParseUnary(state); // right-associative
+            var right = ParseUnary(context, state); // right-associative
             if (!right.IsSuccessful())
             {
                 return right;
             }
 
-            return Result.Success<IExpression>(new UnaryExpression(right));
+            return Result.Success<IExpression>(new UnaryExpression(context, right));
         }
 
-        return ParsePrimary(state);
+        return ParsePrimary(context, state);
     }
 
-    private static Result<IExpression> ParsePrimary(ExpressionParserState state)
+    private static Result<IExpression> ParsePrimary(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
         if (Match(state, ExpressionTokenType.Other))
         {
             var peek = Peek(state);
             if (peek.Type == ExpressionTokenType.LeftParenthesis)
             {
-                return ParseFunction(state, ref peek);
+                return ParseFunction(context, state, ref peek);
             }
             else if (peek.Type == ExpressionTokenType.Less
                 && PeekNext(state, 1).Type == ExpressionTokenType.Other
                 && PeekNext(state, 2).Type == ExpressionTokenType.Greater
                 && PeekNext(state, 3).Type == ExpressionTokenType.LeftParenthesis)
             {
-                return ParseGenericFunction(state);
+                return ParseGenericFunction(context, state);
             }
 
-            return Result.Success<IExpression>(new OtherExpression(Previous(state).Value));
+            return Result.Success<IExpression>(new OtherExpression(context, Previous(state).Value));
         }
 
         if (Match(state, ExpressionTokenType.LeftParenthesis))
         {
             var childState = new ExpressionParserState(state.Tokens.Skip(state.Position).ToList());
-            var operatorResult = ParseLogicalOr(childState);
+            var operatorResult = ParseLogicalOr(context, childState);
             if (!operatorResult.IsSuccessful())
             {
                 return operatorResult;
@@ -171,7 +171,7 @@ public sealed class ExpressionParser : IExpressionParser
         return Result.Invalid<IExpression>("Unexpected token");
     }
 
-    private static Result<IExpression> ParseFunction(ExpressionParserState state, ref ExpressionToken peek)
+    private static Result<IExpression> ParseFunction(ExpressionEvaluatorContext context, ExpressionParserState state, ref ExpressionToken peek)
     {
         if (PeekNext(state, 1).Type == ExpressionTokenType.EOF)
         {
@@ -195,10 +195,10 @@ public sealed class ExpressionParser : IExpressionParser
             Advance(state);
         }
 
-        return Result.Success<IExpression>(new OtherExpression(builder.ToString()));
+        return Result.Success<IExpression>(new OtherExpression(context, builder.ToString()));
     }
 
-    private static Result<IExpression> ParseGenericFunction(ExpressionParserState state)
+    private static Result<IExpression> ParseGenericFunction(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
         //format: function<type>(
         //a.k.a. other, less, other, greater, left parenthesis
@@ -216,7 +216,7 @@ public sealed class ExpressionParser : IExpressionParser
             var numberOfItemsToTake = afterParenthesis.Type == ExpressionTokenType.Other
                 ? 7
                 : 6;
-            var result = Result.Success<IExpression>(new OtherExpression(string.Concat(state.Tokens.Skip(state.Position - 1).Take(numberOfItemsToTake).Select(x => x.Value))));
+            var result = Result.Success<IExpression>(new OtherExpression(context, string.Concat(state.Tokens.Skip(state.Position - 1).Take(numberOfItemsToTake).Select(x => x.Value))));
             state.Position += numberOfItemsToTake - 1;
             return result;
         }
