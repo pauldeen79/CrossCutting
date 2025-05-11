@@ -18,11 +18,11 @@ public class IndexerExpressionComponent : IExpressionComponent
             return Result.Continue<object?>();
         }
 
-        return new ResultDictionaryBuilder<object?>()
+        return new ResultDictionaryBuilder()
             .Add(Expression, () => context.EvaluateTyped<IEnumerable>(match.Groups[Expression].Value))
             .Add(Index, () => context.EvaluateTyped<int>(match.Groups[Index].Value))
             .Build()
-            .OnSuccess(results => Result.Success(results[Expression].CastValueAs<IEnumerable>().OfType<object?>().ElementAtOrDefault(results[Index].CastValueAs<int>())));
+            .OnSuccess(results => Result.Success(results.GetValue<IEnumerable>(Expression).OfType<object?>().ElementAtOrDefault(results.GetValue<int>(Index))));
     }
 
     public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
