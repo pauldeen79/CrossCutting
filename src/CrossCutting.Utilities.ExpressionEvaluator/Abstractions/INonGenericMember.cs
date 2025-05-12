@@ -2,5 +2,5 @@
 
 public interface INonGenericMember : IMember
 {
-    Result<object?> Evaluate(FunctionCallContext context);
+    Task<Result<object?>> EvaluateAsync(FunctionCallContext context);
 }

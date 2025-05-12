@@ -5,13 +5,16 @@
 [MemberResultType(typeof(string))]
 public class ObjectToStringMethod : IMethod
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return new ResultDictionaryBuilder()
-            .Add(Constants.Instance, () => context.GetInstanceValueResult<object>())
-            .Build()
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<object?>(Constants.Instance).ToString(context.Context.Settings.FormatProvider)));
+        //return (await new AsyncResultDictionaryBuilder()
+        //    .Add(Constants.Instance, context.GetInstanceValueResultAsync<object>())
+        //    .Build().ConfigureAwait(false))
+        //    .OnSuccess(results => Result.Success<object?>(results.GetValue<object?>(Constants.Instance).ToString(context.Context.Settings.FormatProvider)));
+
+        return (await context.GetInstanceValueResultAsync<object?>().ConfigureAwait(false))
+            .OnSuccess(x => Result.Success<object?>(x.Value.ToString(context.Context.Settings.FormatProvider)));
     }
 }

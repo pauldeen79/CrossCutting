@@ -8,78 +8,78 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
         [InlineData("")]
         [InlineData("\"normal string \"")]
         [InlineData("$\"")]
-        public void Returns_Continue_On_Non_FormattableString_Expression(string expression)
+        public async Task Returns_Continue_On_Non_FormattableString_Expression(string expression)
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(CreateContext(expression));
+            var result = await sut.EvaluateAsync(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
-        public void Returns_Invalid_On_Missing_End_Character()
+        public async Task Returns_Invalid_On_Missing_End_Character()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(CreateContext("$\"some non terminated string"));
+            var result = await sut.EvaluateAsync(CreateContext("$\"some non terminated string"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
         [Fact]
-        public void Returns_Invalid_On_Missing_Start_Placeholder()
+        public async Task Returns_Invalid_On_Missing_Start_Placeholder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(CreateContext("$\"some } string\""));
+            var result = await sut.EvaluateAsync(CreateContext("$\"some } string\""));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
         [Fact]
-        public void Returns_Invalid_On_Missing_End_Placeholder()
+        public async Task Returns_Invalid_On_Missing_End_Placeholder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(CreateContext("$\"some { string\""));
+            var result = await sut.EvaluateAsync(CreateContext("$\"some { string\""));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
         [Fact]
-        public void Returns_Invalid_On_Missing_Expression_In_Placeholder()
+        public async Task Returns_Invalid_On_Missing_Expression_In_Placeholder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(CreateContext("$\"some {} value\""));
+            var result = await sut.EvaluateAsync(CreateContext("$\"some {} value\""));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
         [Fact]
-        public void Returns_First_Error_On_Non_Successful_Expressions()
+        public async Task Returns_First_Error_On_Non_Successful_Expressions()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(CreateContext("$\"some {error} {1} {error} value\""));
+            var result = await sut.EvaluateAsync(CreateContext("$\"some {error} {1} {error} value\""));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -87,13 +87,13 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
         }
 
         [Fact]
-        public void Returns_Ok_On_Valid_And_Successful_Expression()
+        public async Task Returns_Ok_On_Valid_And_Successful_Expression()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(CreateContext("$\"some {state}\"", "value"));
+            var result = await sut.EvaluateAsync(CreateContext("$\"some {state}\"", "value"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -101,13 +101,13 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
         }
 
         [Fact]
-        public void Can_Use_Recursive_Placeholder()
+        public async Task Can_Use_Recursive_Placeholder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(CreateContext("$\"{recursiveplaceholder}\""));
+            var result = await sut.EvaluateAsync(CreateContext("$\"{recursiveplaceholder}\""));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -115,7 +115,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
         }
 
         [Fact]
-        public void Can_Use_Different_Placeholder_Signs()
+        public async Task Can_Use_Different_Placeholder_Signs()
         {
             // Arrange
             var sut = CreateSut();
@@ -123,7 +123,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var context = CreateContext("$\"<#= state #>\"", state: "Hello world!", settings: new ExpressionEvaluatorSettingsBuilder().WithPlaceholderStart("<#=").WithPlaceholderEnd("#>"));
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -137,78 +137,78 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
         [InlineData("")]
         [InlineData("\"normal string \"")]
         [InlineData("$\"")]
-        public void Returns_Continue_On_Non_FormattableString_Expression(string expression)
+        public async Task Returns_Continue_On_Non_FormattableString_Expression(string expression)
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(CreateContext(expression));
+            var result = await sut.ParseAsync(CreateContext(expression));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
-        public void Returns_Invalid_On_Missing_End_Character()
+        public async Task Returns_Invalid_On_Missing_End_Character()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(CreateContext("$\"some non terminated string"));
+            var result = await sut.ParseAsync(CreateContext("$\"some non terminated string"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
         [Fact]
-        public void Returns_Invalid_On_Missing_Start_Placeholder()
+        public async Task Returns_Invalid_On_Missing_Start_Placeholder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(CreateContext("$\"some } string\""));
+            var result = await sut.ParseAsync(CreateContext("$\"some } string\""));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
         [Fact]
-        public void Returns_Invalid_On_Missing_End_Placeholder()
+        public async Task Returns_Invalid_On_Missing_End_Placeholder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(CreateContext("$\"some { string\""));
+            var result = await sut.ParseAsync(CreateContext("$\"some { string\""));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
         [Fact]
-        public void Returns_Invalid_On_Missing_Expression_In_Placeholder()
+        public async Task Returns_Invalid_On_Missing_Expression_In_Placeholder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(CreateContext("$\"some {} value\""));
+            var result = await sut.ParseAsync(CreateContext("$\"some {} value\""));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
         [Fact]
-        public void Returns_All_Errors_On_Non_Successful_Expressions()
+        public async Task Returns_All_Errors_On_Non_Successful_Expressions()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(CreateContext("$\"some {error} {1} {error} value\""));
+            var result = await sut.ParseAsync(CreateContext("$\"some {error} {1} {error} value\""));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -217,26 +217,26 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
         }
 
         [Fact]
-        public void Returns_Ok_On_Valid_And_Successful_Expression()
+        public async Task Returns_Ok_On_Valid_And_Successful_Expression()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(CreateContext("$\"some {context}\"", "value"));
+            var result = await sut.ParseAsync(CreateContext("$\"some {context}\"", "value"));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
-        public void Can_Use_Recursive_Placeholder()
+        public async Task Can_Use_Recursive_Placeholder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(CreateContext("$\"{recursiveplaceholder}\""));
+            var result = await sut.ParseAsync(CreateContext("$\"{recursiveplaceholder}\""));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

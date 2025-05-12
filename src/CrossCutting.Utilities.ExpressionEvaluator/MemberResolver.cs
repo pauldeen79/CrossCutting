@@ -23,11 +23,12 @@ public class MemberResolver : IMemberResolver
 
     public Result<IReadOnlyCollection<MemberDescriptor>> Descriptors => _descriptors.Value;
 
-    public Result<MemberAndTypeDescriptor> Resolve(FunctionCallContext functionCallContext)
+    public async Task<Result<MemberAndTypeDescriptor>> ResolveAsync(FunctionCallContext functionCallContext)
     {
         functionCallContext = ArgumentGuard.IsNotNull(functionCallContext, nameof(functionCallContext));
 
-        return Result.WrapException(() =>
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
         {
             if (!Descriptors.IsSuccessful())
             {
@@ -54,10 +55,15 @@ public class MemberResolver : IMemberResolver
             return functionsWithRightArgumentCount.Length switch
             {
                 0 => Result.NotFound<MemberAndTypeDescriptor>($"No overload of the {functionCallContext.FunctionCall.Name} function takes {functionCallContext.FunctionCall.Arguments.Count} arguments"),
-                1 => GetFunctionByDescriptor(functionCallContext, functionsWithRightArgumentCount[0]),
-                _ => Result.NotFound<MemberAndTypeDescriptor>($"Function {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely")
+                1 => await GetFunctionByDescriptor(functionCallContext, functionsWithRightArgumentCount[0]).ConfigureAwait(false),
+                _ => Result.NotFound<MemberAndTypeDescriptor>($"Function {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely"),
             };
-        });
+        }
+        catch (Exception ex)
+        {
+            return Result.Error<MemberAndTypeDescriptor>(ex, "Exception occured");
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     private static bool IsMemberTypeValid(MemberType descriptorMemberType, MemberType contextMemberType)
@@ -93,7 +99,7 @@ public class MemberResolver : IMemberResolver
         return instanceType!.IsInstanceOfType(instanceValue);
     }
 
-    private Result<MemberAndTypeDescriptor> GetFunctionByDescriptor(FunctionCallContext functionCallContext, MemberDescriptor memberDescriptor)
+    private async Task<Result<MemberAndTypeDescriptor>> GetFunctionByDescriptor(FunctionCallContext functionCallContext, MemberDescriptor memberDescriptor)
     {
         var member = _members.FirstOrDefault(x => x.GetType() == memberDescriptor.ImplementationType);
 
@@ -102,6 +108,6 @@ public class MemberResolver : IMemberResolver
             return Result.NotFound<MemberAndTypeDescriptor>($"Could not find member with type name {memberDescriptor.ImplementationType.FullName}");
         }
 
-        return _memberCallArgumentValidator.Validate(memberDescriptor, member, functionCallContext);
+        return await _memberCallArgumentValidator.ValidateAsync(memberDescriptor, member, functionCallContext).ConfigureAwait(false);
     }
 }

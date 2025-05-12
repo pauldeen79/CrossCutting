@@ -15,16 +15,20 @@ public sealed class UnaryExpression : IExpression<bool>
         Operand = operand;
     }
 
-    public Result<object?> Evaluate()
-        => EvaluateTyped().TryCastAllowNull<object?>();
+    public async Task<Result<object?>> EvaluateAsync()
+        => (await EvaluateTypedAsync().ConfigureAwait(false)).TryCastAllowNull<object?>();
 
-    public Result<bool> EvaluateTyped()
-        => (Operand.Value?.Evaluate().TryCastAllowNull<bool>() ?? Result.FromExistingResult<bool>(Operand))
-            .OnSuccess(result => Result.Success(!result.Value.IsTruthy()));
+    public async Task<Result<bool>> EvaluateTypedAsync()
+        => (Operand.Value is not null
+            ? (await Operand.Value.EvaluateAsync().ConfigureAwait(false)).TryCastAllowNull<bool>()
+            : Result.FromExistingResult<bool>(Operand))
+        .OnSuccess(result => Result.Success(!result.Value.IsTruthy()));
 
-    public ExpressionParseResult Parse()
+    public async Task<ExpressionParseResult> ParseAsync()
     {
-        var operandResult = Operand.Value?.Parse();
+        var operandResult = Operand.Value is not null
+            ? await Operand.Value.ParseAsync().ConfigureAwait(false)
+            : null;
 
         var result = new ExpressionParseResultBuilder()
             .WithExpressionComponentType(typeof(UnaryExpression))

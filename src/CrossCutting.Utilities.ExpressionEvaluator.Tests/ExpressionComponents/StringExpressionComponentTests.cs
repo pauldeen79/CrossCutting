@@ -5,14 +5,14 @@ public class StringExpressionComponentTests : TestBase<StringExpressionComponent
     public class Evaluate : StringExpressionComponentTests
     {
         [Fact]
-        public void Returns_Success_On_String_Expression()
+        public async Task Returns_Success_On_String_Expression()
         {
             // Arrange
             var sut = CreateSut();
             var context = CreateContext("\"my string value\"");
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -20,14 +20,14 @@ public class StringExpressionComponentTests : TestBase<StringExpressionComponent
         }
 
         [Fact]
-        public void Returns_Continue_On_Non_String_Expression()
+        public async Task Returns_Continue_On_Non_String_Expression()
         {
             // Arrange
             var sut = CreateSut();
             var context = CreateContext("null");
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -37,14 +37,14 @@ public class StringExpressionComponentTests : TestBase<StringExpressionComponent
     public class Parse : StringExpressionComponentTests
     {
         [Fact]
-        public void Returns_Success_On_String_Expression()
+        public async Task Returns_Success_On_String_Expression()
         {
             // Arrange
             var sut = CreateSut();
             var context = CreateContext("\"my string value\"");
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -53,14 +53,14 @@ public class StringExpressionComponentTests : TestBase<StringExpressionComponent
         }
 
         [Fact]
-        public void Returns_Continue_On_Non_String_Expression()
+        public async Task Returns_Continue_On_Non_String_Expression()
         {
             // Arrange
             var sut = CreateSut();
             var context = CreateContext("null");
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);

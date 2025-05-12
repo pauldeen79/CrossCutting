@@ -4,12 +4,12 @@
 [MemberArgument("EnumerableExpression", typeof(IEnumerable))]
 public class CountFunction : IFunction
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context
-            .GetArgumentValueResult<IEnumerable>(0, "EnumerableExpression")
+        return (await context
+            .GetArgumentValueResultAsync<IEnumerable>(0, "EnumerableExpression").ConfigureAwait(false))
             .Transform<object?>(enumerable => enumerable.OfType<object?>().Count());
     }
 }

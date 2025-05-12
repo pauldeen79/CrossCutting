@@ -24,38 +24,38 @@ public class FunctionExpressionComponentTests : TestBase
         // Manually mocked this because I can't get NSubstitute working with generic method...
         private sealed class MyGenericFunction : IGenericFunction
         {
-            public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
-                => Result.Success<object?>("function result value");
+            public Task<Result<object?>> EvaluateGenericAsync<T>(FunctionCallContext context)
+                => Task.FromResult(Result.Success<object?>("function result value"));
         }
 
         [Theory]
         [InlineData("")]
         [InlineData("no function")]
         [InlineData("object.ToString()")]
-        public void Returns_Continue_When_Expression_Is_Not_A_FunctionCall(string expression)
+        public async Task Returns_Continue_When_Expression_Is_Not_A_FunctionCall(string expression)
         {
             // Arrange
             var context = CreateContext(expression);
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
+        public async Task Returns_Correct_Result_On_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
         {
             // Arrange
             var context = CreateContext("MyFunction()");
             Function
-                .Evaluate(Arg.Any<FunctionCallContext>())
+                .EvaluateAsync(Arg.Any<FunctionCallContext>())
                 .Returns(Result.Success<object?>("function result value"));
             MemberCallArgumentValidator
-                .Validate(Arg.Any<MemberDescriptor>(), Arg.Any<IMember>(), Arg.Any<FunctionCallContext>())
-                .Returns(x => new MemberCallArgumentValidator().Validate(x.ArgAt<MemberDescriptor>(0), x.ArgAt<IMember>(1), x.ArgAt<FunctionCallContext>(2)));
+                .ValidateAsync(Arg.Any<MemberDescriptor>(), Arg.Any<IMember>(), Arg.Any<FunctionCallContext>())
+                .Returns(x => new MemberCallArgumentValidator().ValidateAsync(x.ArgAt<MemberDescriptor>(0), x.ArgAt<IMember>(1), x.ArgAt<FunctionCallContext>(2)));
             MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
                 .WithName("MyFunction")
                 .WithMemberType(MemberType.Function)
@@ -64,7 +64,7 @@ public class FunctionExpressionComponentTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -72,7 +72,7 @@ public class FunctionExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_Generic_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
+        public async Task Returns_Correct_Result_On_Generic_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
         {
             // Arrange
             var context = CreateContext("MyFunction<System.String>()");
@@ -85,12 +85,12 @@ public class FunctionExpressionComponentTests : TestBase
                     .WithImplementationType(genericFunction.GetType())
                     .WithReturnValueType(typeof(string))]));
             MemberCallArgumentValidator
-                .Validate(Arg.Any<MemberDescriptor>(), Arg.Any<IMember>(), Arg.Any<FunctionCallContext>())
-                .Returns(x => new MemberCallArgumentValidator().Validate(x.ArgAt<MemberDescriptor>(0), x.ArgAt<IMember>(1), x.ArgAt<FunctionCallContext>(2)));
+                .ValidateAsync(Arg.Any<MemberDescriptor>(), Arg.Any<IMember>(), Arg.Any<FunctionCallContext>())
+                .Returns(x => new MemberCallArgumentValidator().ValidateAsync(x.ArgAt<MemberDescriptor>(0), x.ArgAt<IMember>(1), x.ArgAt<FunctionCallContext>(2)));
             var sut = CreateSut(genericFunction);
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -98,7 +98,7 @@ public class FunctionExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_NotFound_On_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
+        public async Task Returns_NotFound_On_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
         {
             // Arrange
             var context = CreateContext("MyFunction()");
@@ -108,7 +108,7 @@ public class FunctionExpressionComponentTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotFound);
@@ -116,11 +116,11 @@ public class FunctionExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_NotFound_When_ArgumentCount_Is_Incorrect()
+        public async Task Returns_NotFound_When_ArgumentCount_Is_Incorrect()
         {
             // Arrange
             var context = CreateContext("MyFunction(context)");
-            Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
+            Function.EvaluateAsync(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
             MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>(
                 [
                     new MemberDescriptorBuilder().WithName("MyFunction").WithImplementationType(Function.GetType()).WithMemberType(MemberType.Function).WithReturnValueType(typeof(string)),
@@ -129,7 +129,7 @@ public class FunctionExpressionComponentTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotFound);
@@ -137,11 +137,11 @@ public class FunctionExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_NotFound_When_Function_Is_Registered_Twice_With_Same_ArgumentCount()
+        public async Task Returns_NotFound_When_Function_Is_Registered_Twice_With_Same_ArgumentCount()
         {
             // Arrange
             var context = CreateContext("MyFunction()");
-            Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
+            Function.EvaluateAsync(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
             MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>(
                 [
                     new MemberDescriptorBuilder().WithName("MyFunction").WithMemberType(MemberType.Function).WithImplementationType(Function.GetType()).WithReturnValueType(typeof(string)),
@@ -150,7 +150,7 @@ public class FunctionExpressionComponentTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotFound);
@@ -158,11 +158,11 @@ public class FunctionExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_NotFound_When_Function_Could_Not_Be_Found_From_Descriptor()
+        public async Task Returns_NotFound_When_Function_Could_Not_Be_Found_From_Descriptor()
         {
             // Arrange
             var context = CreateContext("MyFunction()");
-            Function.Evaluate(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
+            Function.EvaluateAsync(Arg.Any<FunctionCallContext>()).Returns(Result.Success<object?>("function result value"));
             MemberDescriptorProvider.GetAll().Returns(Result.Success<IReadOnlyCollection<MemberDescriptor>>([new MemberDescriptorBuilder()
                 .WithName("MyFunction")
                 .WithMemberType(MemberType.Function)
@@ -171,7 +171,7 @@ public class FunctionExpressionComponentTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotFound);
@@ -179,7 +179,7 @@ public class FunctionExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Invalid_On_Generic_FunctionCall_With_Wrong_Number_Of_Type_Arguments()
+        public async Task Returns_Invalid_On_Generic_FunctionCall_With_Wrong_Number_Of_Type_Arguments()
         {
             // Arrange
             var context = CreateContext("MyFunction<System.String,System.String>()");
@@ -192,12 +192,12 @@ public class FunctionExpressionComponentTests : TestBase
                     .WithImplementationType(genericFunction.GetType())
                     .WithReturnValueType(typeof(string))]));
             MemberCallArgumentValidator
-                .Validate(Arg.Any<MemberDescriptor>(), Arg.Any<IMember>(), Arg.Any<FunctionCallContext>())
-                .Returns(x => new MemberCallArgumentValidator().Validate(x.ArgAt<MemberDescriptor>(0), x.ArgAt<IMember>(1), x.ArgAt<FunctionCallContext>(2)));
+                .ValidateAsync(Arg.Any<MemberDescriptor>(), Arg.Any<IMember>(), Arg.Any<FunctionCallContext>())
+                .Returns(x => new MemberCallArgumentValidator().ValidateAsync(x.ArgAt<MemberDescriptor>(0), x.ArgAt<IMember>(1), x.ArgAt<FunctionCallContext>(2)));
             var sut = CreateSut(genericFunction);
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -205,12 +205,12 @@ public class FunctionExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Invalid_On_Argument_Validation_Errors()
+        public async Task Returns_Invalid_On_Argument_Validation_Errors()
         {
             // Arrange
             var context = CreateContext("MyFunction(1)");
             Function
-                .Evaluate(Arg.Any<FunctionCallContext>())
+                .EvaluateAsync(Arg.Any<FunctionCallContext>())
                 .Returns(Result.Success<object?>("function result value"));
             MemberDescriptorProvider
                 .GetAll()
@@ -221,12 +221,12 @@ public class FunctionExpressionComponentTests : TestBase
                     .WithReturnValueType(typeof(string))
                     .AddArguments(new MemberDescriptorArgumentBuilder().WithName("MyArgument").WithType(typeof(string)))]));
             MemberCallArgumentValidator
-                .Validate(Arg.Any<MemberDescriptor>(), Arg.Any<IMember>(), Arg.Any<FunctionCallContext>())
-                .Returns(x => new MemberCallArgumentValidator().Validate(x.ArgAt<MemberDescriptor>(0), x.ArgAt<IMember>(1), x.ArgAt<FunctionCallContext>(2)));
+                .ValidateAsync(Arg.Any<MemberDescriptor>(), Arg.Any<IMember>(), Arg.Any<FunctionCallContext>())
+                .Returns(x => new MemberCallArgumentValidator().ValidateAsync(x.ArgAt<MemberDescriptor>(0), x.ArgAt<IMember>(1), x.ArgAt<FunctionCallContext>(2)));
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -238,14 +238,14 @@ public class FunctionExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Non_Successful_Result_From_Parsing_When_Parsing_Is_Not_Successful()
+        public async Task Returns_Non_Successful_Result_From_Parsing_When_Parsing_Is_Not_Successful()
         {
             // Arrange
             var context = CreateContext("MyFunction())");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -256,14 +256,14 @@ public class FunctionExpressionComponentTests : TestBase
     public class Parse : FunctionExpressionComponentTests
     {
         [Fact]
-        public void Returns_Continue_When_Expression_Is_Not_A_FunctionCall()
+        public async Task Returns_Continue_When_Expression_Is_Not_A_FunctionCall()
         {
             // Arrange
             var context = CreateContext("no function");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -272,7 +272,7 @@ public class FunctionExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
+        public async Task Returns_Correct_Result_On_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
         {
             // Arrange
             var context = CreateContext("MyFunction()");
@@ -284,12 +284,12 @@ public class FunctionExpressionComponentTests : TestBase
                     .WithImplementationType(Function.GetType())
                     .WithReturnValueType(typeof(string))]));
             MemberCallArgumentValidator
-                .Validate(Arg.Any<MemberDescriptor>(), Arg.Any<IMember>(), Arg.Any<FunctionCallContext>())
-                .Returns(x => new MemberCallArgumentValidator().Validate(x.ArgAt<MemberDescriptor>(0), x.ArgAt<IMember>(1), x.ArgAt<FunctionCallContext>(2)));
+                .ValidateAsync(Arg.Any<MemberDescriptor>(), Arg.Any<IMember>(), Arg.Any<FunctionCallContext>())
+                .Returns(x => new MemberCallArgumentValidator().ValidateAsync(x.ArgAt<MemberDescriptor>(0), x.ArgAt<IMember>(1), x.ArgAt<FunctionCallContext>(2)));
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -299,7 +299,7 @@ public class FunctionExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_NotFound_On_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
+        public async Task Returns_NotFound_On_FunctionCall_Without_Arguments_That_Could_Be_Resolved()
         {
             // Arrange
             var context = CreateContext("MyFunction()");
@@ -309,7 +309,7 @@ public class FunctionExpressionComponentTests : TestBase
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotFound);
@@ -320,14 +320,14 @@ public class FunctionExpressionComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Non_Successful_Result_From_Parsing_When_Parsing_Is_Not_Successful()
+        public async Task Returns_Non_Successful_Result_From_Parsing_When_Parsing_Is_Not_Successful()
         {
             // Arrange
             var context = CreateContext("MyFunction())");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

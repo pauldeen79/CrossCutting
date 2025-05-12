@@ -5,7 +5,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
     public class Parse : ExpressionParserTests
     {
         [Fact]
-        public void Returns_Correct_Result_On_Logical_Or()
+        public async Task Returns_Correct_Result_On_Logical_Or()
         {
             // Arrange
             var context = CreateContext("false || true");
@@ -29,13 +29,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false || true);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_Logical_And()
+        public async Task Returns_Correct_Result_On_Logical_And()
         {
             // Arrange
             var context = CreateContext("false && true");
@@ -59,13 +59,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false && true);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_Equal()
+        public async Task Returns_Correct_Result_On_Equal()
         {
             // Arrange
             var context = CreateContext("false == true");
@@ -89,13 +89,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false == true);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_NotEqual()
+        public async Task Returns_Correct_Result_On_NotEqual()
         {
             // Arrange
             var context = CreateContext("false != true");
@@ -119,13 +119,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false != true);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_Less()
+        public async Task Returns_Correct_Result_On_Less()
         {
             // Arrange
             var context = CreateContext("1 < 2");
@@ -149,13 +149,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 < 2);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_LessOrEqual()
+        public async Task Returns_Correct_Result_On_LessOrEqual()
         {
             // Arrange
             var context = CreateContext("1 <= 2");
@@ -179,13 +179,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 <= 2);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_Greater()
+        public async Task Returns_Correct_Result_On_Greater()
         {
             // Arrange
             var context = CreateContext("1 > 2");
@@ -209,13 +209,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 > 2);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_GreaterOrEqual()
+        public async Task Returns_Correct_Result_On_GreaterOrEqual()
         {
             // Arrange
             var context = CreateContext("1 >= 2");
@@ -239,13 +239,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 >= 2);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_Plus()
+        public async Task Returns_Correct_Result_On_Plus()
         {
             // Arrange
             var context = CreateContext("1 + 2");
@@ -269,13 +269,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 + 2);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_Minus()
+        public async Task Returns_Correct_Result_On_Minus()
         {
             // Arrange
             var context = CreateContext("1 - 2");
@@ -299,13 +299,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 - 2);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_Multiply()
+        public async Task Returns_Correct_Result_On_Multiply()
         {
             // Arrange
             var context = CreateContext("1 * 2");
@@ -329,13 +329,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 * 2);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_Divide()
+        public async Task Returns_Correct_Result_On_Divide()
         {
             // Arrange
             var context = CreateContext("1 / 2");
@@ -359,13 +359,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 / 2);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_Modulo()
+        public async Task Returns_Correct_Result_On_Modulo()
         {
             // Arrange
             var context = CreateContext("1 % 2");
@@ -389,13 +389,13 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
             binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
             binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 % 2);
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_Bang()
+        public async Task Returns_Correct_Result_On_Bang()
         {
             // Arrange
             var context = CreateContext("!true");
@@ -416,7 +416,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var unaryOperator = (UnaryExpression)result.Value;
             unaryOperator.Operand.Status.ShouldBe(ResultStatus.Ok);
             unaryOperator.Operand.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = result.Value.Evaluate();
+            var evaluationResult = await result.Value.EvaluateAsync();
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(!true);
         }

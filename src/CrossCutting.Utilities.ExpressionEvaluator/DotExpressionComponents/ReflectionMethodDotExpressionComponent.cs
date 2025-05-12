@@ -4,7 +4,7 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
 {
     public int Order => 102;
 
-    public Result<object?> Evaluate(DotExpressionComponentState state)
+    public async Task<Result<object?>> EvaluateAsync(DotExpressionComponentState state)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
@@ -28,14 +28,20 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
             return Result.Invalid<object?>($"Method {functionCall.Name} on type {state.Value.GetType().FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
         }
 
-        var args = functionCall.Arguments
-            .Select(x => state.Context.Evaluate(x))
-            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
-            .ToArray();
-
-        if (args.Length > 0 && !args[args.Length - 1].IsSuccessful())
+        var args = new List<Result<object?>>();
+        foreach (var argument in functionCall.Arguments)
         {
-            return args[args.Length - 1];
+            var argumentResult = await state.Context.EvaluateAsync(argument).ConfigureAwait(false);
+            args.Add(argumentResult);
+            if (!argumentResult.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        if (args.Count > 0 && !args[args.Count - 1].IsSuccessful())
+        {
+            return args[args.Count - 1];
         }
 
         state.AppendPart();
@@ -43,30 +49,31 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
         return Result.WrapException(() => Result.Success<object?>(methods[0].Invoke(state.Value, args.Select(x => x.Value).ToArray())));
     }
 
-    public Result<Type> Validate(DotExpressionComponentState state)
-    {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
-
-        if (!state.Context.Settings.AllowReflection || state.Type != DotExpressionType.Method)
+    public Task<Result<Type>> ValidateAsync(DotExpressionComponentState state)
+        => Task.Run(() =>
         {
-            return Result.Continue<Type>();
-        }
+            state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        var functionCall = state.FunctionParseResult.GetValueOrThrow();
-        var methods = state.ResultType!
-            .GetMethods(BindingFlags.Instance | BindingFlags.Public)
-            .Where(x => x.Name == functionCall.Name && x.GetParameters().Length == functionCall.Arguments.Count)
-            .ToArray();
+            if (!state.Context.Settings.AllowReflection || state.Type != DotExpressionType.Method)
+            {
+                return Result.Continue<Type>();
+            }
 
-        if (methods.Length == 0)
-        {
-            return Result.Invalid<Type>($"Type {state.ResultType!.FullName} does not contain method {functionCall.Name}");
-        }
-        else if (methods.Length > 1)
-        {
-            return Result.Invalid<Type>($"Method {functionCall.Name} on type {state.ResultType!.FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
-        }
+            var functionCall = state.FunctionParseResult.GetValueOrThrow();
+            var methods = state.ResultType!
+                .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .Where(x => x.Name == functionCall.Name && x.GetParameters().Length == functionCall.Arguments.Count)
+                .ToArray();
 
-        return Result.Success(methods[0].ReturnType);
-    }
+            if (methods.Length == 0)
+            {
+                return Result.Invalid<Type>($"Type {state.ResultType!.FullName} does not contain method {functionCall.Name}");
+            }
+            else if (methods.Length > 1)
+            {
+                return Result.Invalid<Type>($"Method {functionCall.Name} on type {state.ResultType!.FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
+            }
+
+            return Result.Success(methods[0].ReturnType);
+        });
 }

@@ -16,24 +16,33 @@ public class FunctionExpressionComponent : IExpressionComponent
 
     public int Order => 20;
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return _functionParser
-            .Parse(context)
-            .IgnoreNotFound()
-            .Transform(functionCall =>
-            {
-                var functionCallContext = new FunctionCallContext(functionCall, context);
+        var parseResult = _functionParser.Parse(context);
 
-                return _memberResolver
-                    .Resolve(functionCallContext)
-                    .Transform(result => EvaluateFunction(result, functionCallContext));
-            });
+        if (parseResult.Status == ResultStatus.NotFound)
+        {
+            return Result.Continue<object?>();
+        }
+
+        if (!parseResult.IsSuccessful())
+        {
+            return parseResult.TryCastAllowNull<object?>();
+        }
+
+        var functionCallContext = new FunctionCallContext(parseResult.Value!, context);
+        var resolveResult = (await _memberResolver.ResolveAsync(functionCallContext).ConfigureAwait(false));
+        if (!resolveResult.IsSuccessful())
+        {
+            return resolveResult.TryCastAllowNull<object?>();
+        }
+
+        return await EvaluateFunction(resolveResult.Value!, functionCallContext).ConfigureAwait(false);
     }
 
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -54,7 +63,7 @@ public class FunctionExpressionComponent : IExpressionComponent
         }
 
         var functionCallContext = new FunctionCallContext(functionCallResult.GetValueOrThrow(), context);
-        var resolveResult = _memberResolver.Resolve(functionCallContext);
+        var resolveResult = await _memberResolver.ResolveAsync(functionCallContext).ConfigureAwait(false);
 
         if (!resolveResult.IsSuccessful())
         {
@@ -76,12 +85,12 @@ public class FunctionExpressionComponent : IExpressionComponent
             .WithResultType(resolveResult.GetValueOrThrow().ReturnValueType);
     }
 
-    private static Result<object?> EvaluateFunction(MemberAndTypeDescriptor result, FunctionCallContext functionCallContext)
+    private static async Task<Result<object?>> EvaluateFunction(MemberAndTypeDescriptor result, FunctionCallContext functionCallContext)
         => result.Member switch
         {
             null => Result.Invalid<object?>("Member is null"),
-            IGenericFunction genericFunction => functionCallContext.Evaluate(genericFunction),
-            INonGenericMember nonGenericMember => nonGenericMember.Evaluate(functionCallContext),
+            IGenericFunction genericFunction => await functionCallContext.EvaluateAsync(genericFunction).ConfigureAwait(false),
+            INonGenericMember nonGenericMember => await nonGenericMember.EvaluateAsync(functionCallContext).ConfigureAwait(false),
             _ => Result.NotSupported<object?>($"Unsupported member type: {result.Member.GetType().FullName}")
         };
 }

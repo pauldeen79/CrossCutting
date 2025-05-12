@@ -3,6 +3,6 @@
 public interface IExpressionComponent
 {
     int Order { get; }
-    ExpressionParseResult Parse(ExpressionEvaluatorContext context);
-    Result<object?> Evaluate(ExpressionEvaluatorContext context);
+    Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context);
+    Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context);
 }

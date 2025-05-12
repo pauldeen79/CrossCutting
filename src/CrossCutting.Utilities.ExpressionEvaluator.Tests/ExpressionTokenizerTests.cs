@@ -4,7 +4,9 @@ public class ExpressionTokenizerTests : TestBase<ExpressionTokenizer>
 {
     public ExpressionTokenizerTests()
     {
-        Expression.Parse(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
+        Expression
+            .ParseAsync(Arg.Any<ExpressionEvaluatorContext>())
+            .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
     }
 
     public class Tokenize : ExpressionTokenizerTests

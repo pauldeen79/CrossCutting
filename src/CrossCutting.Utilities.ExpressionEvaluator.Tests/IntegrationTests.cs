@@ -3,14 +3,14 @@
 public sealed class IntegrationTests : TestBase, IDisposable
 {
     [Fact]
-    public void Can_Evaluate_Binary_Operator_Expression()
+    public async Task Can_Evaluate_Binary_Operator_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "true && true && \"string value\"";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -18,14 +18,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Comparison_Operator_Expression()
+    public async Task Can_Evaluate_Comparison_Operator_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "2 > 1";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -33,14 +33,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Mathematic_Expression()
+    public async Task Can_Evaluate_Mathematic_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "-1 + 1 + 1";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -48,14 +48,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Function_Expression()
+    public async Task Can_Evaluate_Function_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "MyFunction(state)";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, state: "hello world", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext(expression, state: "hello world", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -63,7 +63,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Property_Expression()
+    public async Task Can_Evaluate_Property_Expression()
     {
         // Arrange
         var sut = CreateSut();
@@ -71,7 +71,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, state: "hello world", evaluator: sut, settings: settings));
+        var result = await sut.EvaluateAsync(CreateContext(expression, state: "hello world", evaluator: sut, settings: settings));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -79,7 +79,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Instance_Method_Expression()
+    public async Task Can_Evaluate_Instance_Method_Expression()
     {
         // Arrange
         var sut = CreateSut();
@@ -87,7 +87,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, state: "hello world", evaluator: sut, settings: settings));
+        var result = await sut.EvaluateAsync(CreateContext(expression, state: "hello world", evaluator: sut, settings: settings));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -95,14 +95,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Generic_Function_Expression()
+    public async Task Can_Evaluate_Generic_Function_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "MyGenericFunction<System.String>()";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -110,14 +110,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Primitive_Expression()
+    public async Task Can_Evaluate_Primitive_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "null";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -125,14 +125,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Numeric_Expression()
+    public async Task Can_Evaluate_Numeric_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "13";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -140,14 +140,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Negative_Numeric_Expression()
+    public async Task Can_Evaluate_Negative_Numeric_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "-13";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -155,14 +155,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Negate_Boolean_Expression()
+    public async Task Can_Evaluate_Negate_Boolean_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "!false";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -170,14 +170,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_String_Expression()
+    public async Task Can_Evaluate_String_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "\"my string value\"";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -185,14 +185,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Formattable_String_Expression()
+    public async Task Can_Evaluate_Formattable_String_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "$\"my value with {state} items\"";
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, state: "replaced", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext(expression, state: "replaced", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -204,13 +204,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     [InlineData("(1 == 1) && 2 == 2")]
     [InlineData("MyFunction(\"a\") != MyFunction(\"b\")")]
     [InlineData("MyFunction(\"+\") != MyFunction(\"-\")")]
-    public void Can_Evaluate_Operator_Expression(string expression)
+    public async Task Can_Evaluate_Operator_Expression(string expression)
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext(expression, evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -218,13 +218,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Operator_Expression_With_Bang_Operator()
+    public async Task Can_Evaluate_Operator_Expression_With_Bang_Operator()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("!true", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("!true", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -232,13 +232,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Operator_Expression_With_Double_Bang_Operator()
+    public async Task Can_Evaluate_Operator_Expression_With_Double_Bang_Operator()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("!!true", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("!!true", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -246,13 +246,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToString_Instance_Method()
+    public async Task Can_Evaluate_Expression_With_ToString_Instance_Method()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("true.ToString()", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("true.ToString()", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -260,13 +260,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Evaluate_ToString_Instance_Method_On_Null_Expression_Gives_Correct_Result()
+    public async Task Evaluate_ToString_Instance_Method_On_Null_Expression_Gives_Correct_Result()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("null.ToString()", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("null.ToString()", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -274,13 +274,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_IsNull_Function()
+    public async Task Can_Evaluate_Expression_With_IsNull_Function()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("IsNull(\"some value that is not null\")", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("IsNull(\"some value that is not null\")", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -288,13 +288,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToCamelCase_Instance_Method()
+    public async Task Can_Evaluate_Expression_With_ToCamelCase_Instance_Method()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("\"expression\".ToCamelCase()", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("\"expression\".ToCamelCase()", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -302,13 +302,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToLower_Instance_Method()
+    public async Task Can_Evaluate_Expression_With_ToLower_Instance_Method()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("\"expression\".ToLower()", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("\"expression\".ToLower()", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -316,13 +316,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToPascalCase_Instance_Method()
+    public async Task Can_Evaluate_Expression_With_ToPascalCase_Instance_Method()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("\"expression\".ToPascalCase()", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("\"expression\".ToPascalCase()", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -330,13 +330,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_ToUpper_Instance_Method()
+    public async Task Can_Evaluate_Expression_With_ToUpper_Instance_Method()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("\"expression\".ToUpper()", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("\"expression\".ToUpper()", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -344,13 +344,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_Date_Instance_Constructor()
+    public async Task Can_Evaluate_Expression_With_Date_Instance_Constructor()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("new DateTime(2025, 1, 1)", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("new DateTime(2025, 1, 1)", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -358,13 +358,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_DateTime_Instance_Constructor()
+    public async Task Can_Evaluate_Expression_With_DateTime_Instance_Constructor()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("new DateTime(2025, 1, 1, 12, 13, 14)", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("new DateTime(2025, 1, 1, 12, 13, 14)", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -372,13 +372,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_Indexer()
+    public async Task Can_Evaluate_Expression_With_Indexer()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state[1]", evaluator: sut, state: new object[] { 1, 2, 3 }));
+        var result = await sut.EvaluateAsync(CreateContext("state[1]", evaluator: sut, state: new object[] { 1, 2, 3 }));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -386,14 +386,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Expression_With_Indexer_And_Method()
+    public async Task Can_Evaluate_Expression_With_Indexer_And_Method()
     {
         // Arrange
         var sut = CreateSut();
         var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state[1].ToString()", evaluator: sut, state: new object[] { 1, 2, 3 }, settings: settings));
+        var result = await sut.EvaluateAsync(CreateContext("state[1].ToString()", evaluator: sut, state: new object[] { 1, 2, 3 }, settings: settings));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -401,14 +401,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_Year_Date()
+    public async Task Can_Evaluate_DateTime_Year_Date()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.Date", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.Date", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -416,14 +416,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_Year()
+    public async Task Can_Evaluate_DateTime_Year()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.Year", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.Year", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -431,14 +431,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_Month()
+    public async Task Can_Evaluate_DateTime_Month()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.Month", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.Month", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -446,14 +446,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_Day()
+    public async Task Can_Evaluate_DateTime_Day()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.Day", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.Day", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -461,14 +461,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_Hour()
+    public async Task Can_Evaluate_DateTime_Hour()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.Hour", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.Hour", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -476,14 +476,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_Minute()
+    public async Task Can_Evaluate_DateTime_Minute()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.Minute", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.Minute", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -491,14 +491,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_Second()
+    public async Task Can_Evaluate_DateTime_Second()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.Second", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.Second", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -506,14 +506,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_AddYears()
+    public async Task Can_Evaluate_DateTime_AddYears()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.AddYears(1)", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.AddYears(1)", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -521,14 +521,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_AddMonths()
+    public async Task Can_Evaluate_DateTime_AddMonths()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.AddMonths(1)", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.AddMonths(1)", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -536,14 +536,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_AddDays()
+    public async Task Can_Evaluate_DateTime_AddDays()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.AddDays(1)", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.AddDays(1)", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -551,14 +551,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_AddHours()
+    public async Task Can_Evaluate_DateTime_AddHours()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.AddHours(1)", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.AddHours(1)", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -566,14 +566,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_AddMinutes()
+    public async Task Can_Evaluate_DateTime_AddMinutes()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.AddMinutes(1)", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.AddMinutes(1)", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -581,14 +581,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_DateTime_AddSeconds()
+    public async Task Can_Evaluate_DateTime_AddSeconds()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.AddSeconds(1)", evaluator: sut, state: dateTime));
+        var result = await sut.EvaluateAsync(CreateContext("state.AddSeconds(1)", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -596,14 +596,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_String_Length()
+    public async Task Can_Evaluate_String_Length()
     {
         // Arrange
         var stringValue = "Hello world!";
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.Length", evaluator: sut, state: stringValue));
+        var result = await sut.EvaluateAsync(CreateContext("state.Length", evaluator: sut, state: stringValue));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -611,14 +611,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Array_Length()
+    public async Task Can_Evaluate_Array_Length()
     {
         // Arrange
         var arrayValue = new string[] { "Hello", "", "world!" };
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.Length", evaluator: sut, state: arrayValue));
+        var result = await sut.EvaluateAsync(CreateContext("state.Length", evaluator: sut, state: arrayValue));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -626,14 +626,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Enumerable_Count()
+    public async Task Can_Evaluate_Enumerable_Count()
     {
         // Arrange
         var enumerableValue = new string[] { "Hello", "", "world!" }.AsEnumerable();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("Count(state)", evaluator: sut, state: enumerableValue));
+        var result = await sut.EvaluateAsync(CreateContext("Count(state)", evaluator: sut, state: enumerableValue));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -641,14 +641,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Collection_Count()
+    public async Task Can_Evaluate_Collection_Count()
     {
         // Arrange
         var collectionValue = new List<string> { "Hello", "", "world!" };
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("state.Count", evaluator: sut, state: collectionValue));
+        var result = await sut.EvaluateAsync(CreateContext("state.Count", evaluator: sut, state: collectionValue));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -656,13 +656,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_Coalesce_Function()
+    public async Task Can_Evaluate_Coalesce_Function()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("Coalesce(null, null, 13)", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("Coalesce(null, null, 13)", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -670,13 +670,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_String_Substring_Instance_Method_One_Argument()
+    public async Task Can_Evaluate_String_Substring_Instance_Method_One_Argument()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("\"hello world\".Substring(6)", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("\"hello world\".Substring(6)", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -684,13 +684,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Evaluate_String_Substring_Instance_Method_Two_Arguments()
+    public async Task Can_Evaluate_String_Substring_Instance_Method_Two_Arguments()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Evaluate(CreateContext("\"hello world\".Substring(0, 5)", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("\"hello world\".Substring(0, 5)", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -698,7 +698,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework()
+    public async Task Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework()
     {
         // Observations:
         // 1. We need to 'new' an InterpolatedStringExpressionComponent
@@ -710,10 +710,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var state = new DeferredResultDictionaryBuilder<object?>()
             .Add("class.Name", () => Result.Success<object?>("MyClass"))
             .Build();
+        //var state = await new AsyncResultDictionaryBuilder<object?>()
+        //    .Add("class.Name", Task.FromResult(Result.Success<object?>("MyClass")))
+        //    .Build();
         var context = new ExpressionEvaluatorContext("$\"public class {class.Name}\"", new ExpressionEvaluatorSettingsBuilder(), CreateSut(), state);
 
         // Act
-        var result = sut.Evaluate(context);
+        var result = await sut.EvaluateAsync(context);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -722,56 +725,56 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_Binary_Operator_Expression()
+    public async Task Can_Parse_Binary_Operator_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "true && true && \"string value\"";
 
         // Act
-        var result = sut.Parse(CreateContext(expression, evaluator: sut));
+        var result = await sut.ParseAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
-    public void Can_Parse_Comparison_Operator_Expression()
+    public async Task Can_Parse_Comparison_Operator_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "2 > 1";
 
         // Act
-        var result = sut.Parse(CreateContext(expression, evaluator: sut));
+        var result = await sut.ParseAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
-    public void Can_Parse_Mathematic_Expression()
+    public async Task Can_Parse_Mathematic_Expression()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "(-1 + 1) + 1";
 
         // Act
-        var result = sut.Parse(CreateContext(expression, evaluator: sut));
+        var result = await sut.ParseAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
-    public void Can_Parse_Function_With_Wrong_ArgumentType()
+    public async Task Can_Parse_Function_With_Wrong_ArgumentType()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "MyFunction(123)";
 
         // Act
-        var result = sut.Parse(CreateContext(expression, evaluator: sut));
+        var result = await sut.ParseAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -781,14 +784,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_DateTime_Year_Date()
+    public async Task Can_Parse_DateTime_Year_Date()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("state.Date", evaluator: sut, state: dateTime));
+        var result = await sut.ParseAsync(CreateContext("state.Date", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -796,14 +799,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_DateTime_Year()
+    public async Task Can_Parse_DateTime_Year()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("state.Year", evaluator: sut, state: dateTime));
+        var result = await sut.ParseAsync(CreateContext("state.Year", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -811,14 +814,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_DateTime_Month()
+    public async Task Can_Parse_DateTime_Month()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("state.Month", evaluator: sut, state: dateTime));
+        var result = await sut.ParseAsync(CreateContext("state.Month", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -826,14 +829,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_DateTime_Day()
+    public async Task Can_Parse_DateTime_Day()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("state.Day", evaluator: sut, state: dateTime));
+        var result = await sut.ParseAsync(CreateContext("state.Day", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -841,14 +844,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_DateTime_Hour()
+    public async Task Can_Parse_DateTime_Hour()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("state.Hour", evaluator: sut, state: dateTime));
+        var result = await sut.ParseAsync(CreateContext("state.Hour", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -856,14 +859,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_DateTime_Minute()
+    public async Task Can_Parse_DateTime_Minute()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("state.Minute", evaluator: sut, state: dateTime));
+        var result = await sut.ParseAsync(CreateContext("state.Minute", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -871,14 +874,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_DateTime_Second()
+    public async Task Can_Parse_DateTime_Second()
     {
         // Arrange
         var dateTime = new DateTime(2025, 1, 1, 11, 10, 9, DateTimeKind.Unspecified);
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("state.Second", evaluator: sut, state: dateTime));
+        var result = await sut.ParseAsync(CreateContext("state.Second", evaluator: sut, state: dateTime));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -886,14 +889,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_String_Length()
+    public async Task Can_Parse_String_Length()
     {
         // Arrange
         var stringValue = "Hello world!";
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("state.Length", evaluator: sut, state: stringValue));
+        var result = await sut.ParseAsync(CreateContext("state.Length", evaluator: sut, state: stringValue));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -901,14 +904,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_Array_Length()
+    public async Task Can_Parse_Array_Length()
     {
         // Arrange
         var arrayValue = new string[] { "Hello", "", "world!" };
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("state.Length", evaluator: sut, state: arrayValue));
+        var result = await sut.ParseAsync(CreateContext("state.Length", evaluator: sut, state: arrayValue));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -916,14 +919,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_Enumerable_Count()
+    public async Task Can_Parse_Enumerable_Count()
     {
         // Arrange
         var enumerableValue = new string[] { "Hello", "", "world!" }.AsEnumerable();
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("Count(state)", evaluator: sut, state: enumerableValue));
+        var result = await sut.ParseAsync(CreateContext("Count(state)", evaluator: sut, state: enumerableValue));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -931,14 +934,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_Collection_Count()
+    public async Task Can_Parse_Collection_Count()
     {
         // Arrange
         var collectionValue = new List<string> { "Hello", "", "world!" };
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("state.Count", evaluator: sut, state: collectionValue));
+        var result = await sut.ParseAsync(CreateContext("state.Count", evaluator: sut, state: collectionValue));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -946,13 +949,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_Coalesce_Function()
+    public async Task Can_Parse_Coalesce_Function()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("Coalesce(null, null, 13)", evaluator: sut));
+        var result = await sut.ParseAsync(CreateContext("Coalesce(null, null, 13)", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -960,13 +963,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_String_Substring_Instance_Method_One_Argument()
+    public async Task Can_Parse_String_Substring_Instance_Method_One_Argument()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("\"hello world\".Substring(6)", evaluator: sut));
+        var result = await sut.ParseAsync(CreateContext("\"hello world\".Substring(6)", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -974,13 +977,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_String_Substring_Instance_Method_Two_Arguments()
+    public async Task Can_Parse_String_Substring_Instance_Method_Two_Arguments()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = sut.Parse(CreateContext("\"hello world\".Substring(0, 5)", evaluator: sut));
+        var result = await sut.ParseAsync(CreateContext("\"hello world\".Substring(0, 5)", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -988,7 +991,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Parse_Instance_Method_Expression()
+    public async Task Can_Parse_Instance_Method_Expression()
     {
         // Arrange
         var sut = CreateSut();
@@ -996,7 +999,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
 
         // Act
-        var result = sut.Parse(CreateContext(expression, evaluator: sut, settings: settings));
+        var result = await sut.ParseAsync(CreateContext(expression, evaluator: sut, settings: settings));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -1004,21 +1007,21 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Can_Skip_Validation_On_ArgumentTypes_Using_Setting()
+    public async Task Can_Skip_Validation_On_ArgumentTypes_Using_Setting()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "MyFunction(123)";
 
         // Act
-        var result = sut.Parse(CreateContext(expression, settings: new ExpressionEvaluatorSettingsBuilder().WithValidateArgumentTypes(false), evaluator: sut));
+        var result = await sut.ParseAsync(CreateContext(expression, settings: new ExpressionEvaluatorSettingsBuilder().WithValidateArgumentTypes(false), evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
-    public void Can_Parse_Function_With_Unknown_ArgumentType()
+    public async Task Can_Parse_Function_With_Unknown_ArgumentType()
     {
         // Arrange
         var sut = CreateSut();
@@ -1028,21 +1031,21 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .Build();
 
         // Act
-        var result = sut.Parse(CreateContext(expression, context: context, evaluator: sut));
+        var result = await sut.ParseAsync(CreateContext(expression, context: context, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
     }
 
     [Fact]
-    public void Can_Parse_Function_With_Parse_Error()
+    public async Task Can_Parse_Function_With_Parse_Error()
     {
         // Arrange
         var sut = CreateSut();
         var expression = "MyFunction(error)";
 
         // Act
-        var result = sut.Parse(CreateContext(expression, evaluator: sut));
+        var result = await sut.ParseAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -1084,10 +1087,10 @@ public sealed class IntegrationTests : TestBase, IDisposable
     [MemberArgument("Input", typeof(string))]
     private sealed class MyFunction : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallContext context)
-            => new ResultDictionaryBuilder()
-                .Add("Input", () => context.GetArgumentValueResult<string>(0, "Input"))
-                .Build()
+        public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
+            => (await new AsyncResultDictionaryBuilder()
+                .Add("Input", context.GetArgumentValueResultAsync<string>(0, "Input"))
+                .Build().ConfigureAwait(false))
                 .OnSuccess(results => Result.Success<object?>(results.GetValue<string>("Input").ToUpperInvariant()));
     }
 
@@ -1095,7 +1098,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     [MemberTypeArgument("T", "Type argument to use")]
     private sealed class MyGenericFunction : IGenericFunction
     {
-        public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
-            => Result.Success<object?>(typeof(T));
+        public Task<Result<object?>> EvaluateGenericAsync<T>(FunctionCallContext context)
+            => Task.FromResult(Result.Success<object?>(typeof(T)));
     }
 }

@@ -16,7 +16,7 @@ public class DotExpressionComponent : IExpressionComponent
         _components = components.OrderBy(x => x.Order).ToArray();
     }
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -26,7 +26,7 @@ public class DotExpressionComponent : IExpressionComponent
             return Result.Continue<object?>();
         }
 
-        var result = context.Evaluate(split[0]);
+        var result = await context.EvaluateAsync(split[0]).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -45,10 +45,14 @@ public class DotExpressionComponent : IExpressionComponent
 
             state.Value = state.CurrentEvaluateResult.Value;
 
-            state.CurrentEvaluateResult = _components
-                .Select(x => x.Evaluate(state))
-                .TakeWhileWithFirstNonMatching(x => x.Status == ResultStatus.Continue)
-                .Last();
+            foreach (var component in _components)
+            {
+                state.CurrentEvaluateResult = await component.EvaluateAsync(state).ConfigureAwait(false);
+                if (state.CurrentEvaluateResult.Status != ResultStatus.Continue)
+                {
+                    break;
+                }
+            }
 
             if (!state.CurrentEvaluateResult.IsSuccessful())
             {
@@ -63,7 +67,7 @@ public class DotExpressionComponent : IExpressionComponent
         return state.CurrentEvaluateResult;
     }
 
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -77,7 +81,7 @@ public class DotExpressionComponent : IExpressionComponent
             return result.WithStatus(ResultStatus.Continue);
         }
 
-        var firstResult = context.Parse(split[0]);
+        var firstResult = await context.ParseAsync(split[0]).ConfigureAwait(false);
         if (!firstResult.IsSuccessful())
         {
             return firstResult.ToBuilder().WithExpressionComponentType(typeof(DotExpressionComponent));
@@ -97,10 +101,14 @@ public class DotExpressionComponent : IExpressionComponent
                     .WithErrorMessage($"{state.CurrentExpression} is null, cannot evaluate {state.TypeDisplayName} {state.Name}");
             }
 
-            state.CurrentParseResult = _components
-                .Select(x => x.Validate(state))
-                .TakeWhileWithFirstNonMatching(x => x.Status == ResultStatus.Continue)
-                .Last();
+            foreach (var component in _components)
+            {
+                state.CurrentParseResult = await component.ValidateAsync(state).ConfigureAwait(false);
+                if (state.CurrentParseResult.Status != ResultStatus.Continue)
+                {
+                    break;
+                }
+            }
 
             if (!state.CurrentParseResult.IsSuccessful())
             {

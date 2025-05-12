@@ -5,13 +5,13 @@
 [MemberResultType(typeof(string))]
 public class StringToCamelCaseMethod : IMethod
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return new ResultDictionaryBuilder()
-            .Add(Constants.Instance, () => context.GetInstanceValueResult<string>())
-            .Build()
+        return (await new AsyncResultDictionaryBuilder()
+            .Add(Constants.Instance, context.GetInstanceValueResultAsync<string>())
+            .Build().ConfigureAwait(false))
             .OnSuccess(results => Result.Success<object?>(results.GetValue<string>(Constants.Instance).ToCamelCase(context.Context.Settings.FormatProvider.ToCultureInfo())));
     }
 }

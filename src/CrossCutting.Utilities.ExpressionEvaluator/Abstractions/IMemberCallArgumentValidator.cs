@@ -2,6 +2,6 @@
 
 public interface IMemberCallArgumentValidator
 {
-    ExpressionParseResult Validate(MemberDescriptorArgument descriptorArgument, string callArgument, FunctionCallContext context);
-    Result<MemberAndTypeDescriptor> Validate(MemberDescriptor functionDescriptor, IMember member, FunctionCallContext context);
+    Task<ExpressionParseResult> ValidateAsync(MemberDescriptorArgument descriptorArgument, string callArgument, FunctionCallContext context);
+    Task<Result<MemberAndTypeDescriptor>> ValidateAsync(MemberDescriptor functionDescriptor, IMember member, FunctionCallContext context);
 }

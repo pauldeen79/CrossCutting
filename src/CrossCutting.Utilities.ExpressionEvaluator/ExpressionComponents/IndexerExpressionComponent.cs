@@ -8,7 +8,7 @@ public class IndexerExpressionComponent : IExpressionComponent
 
     public int Order => 31;
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -18,14 +18,16 @@ public class IndexerExpressionComponent : IExpressionComponent
             return Result.Continue<object?>();
         }
 
-        return new ResultDictionaryBuilder()
-            .Add(Expression, () => context.EvaluateTyped<IEnumerable>(match.Groups[Expression].Value))
-            .Add(Index, () => context.EvaluateTyped<int>(match.Groups[Index].Value))
+        var results = await new AsyncResultDictionaryBuilder()
+            .Add(Expression, context.EvaluateTypedAsync<IEnumerable>(match.Groups[Expression].Value))
+            .Add(Index, context.EvaluateTypedAsync<int>(match.Groups[Index].Value))
             .Build()
-            .OnSuccess(results => Result.Success(results.GetValue<IEnumerable>(Expression).OfType<object?>().ElementAtOrDefault(results.GetValue<int>(Index))));
+            .ConfigureAwait(false);
+
+        return Result.Success(results.GetValue<IEnumerable>(Expression).OfType<object?>().ElementAtOrDefault(results.GetValue<int>(Index)));
     }
 
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -40,13 +42,24 @@ public class IndexerExpressionComponent : IExpressionComponent
             return result.WithStatus(ResultStatus.Continue);
         }
 
-        var parseResult = new ResultDictionaryBuilder<Type>()
-            .Add(Expression, () => context.Parse(match.Groups[Expression].Value))
-            .Add(Index, () => context.Parse(match.Groups[Index].Value))
-            .Build()
-            .OnFailure(innerResult => result.FillFromResult(innerResult))
-            .OnSuccess(results => results[Expression]);
+        var expressionResult = await context.ParseAsync(match.Groups[Expression].Value).ConfigureAwait(false);
+        var indexResult = await context.ParseAsync(match.Groups[Index].Value).ConfigureAwait(false);
 
-        return result.WithResultType(parseResult.Value?.GetElementType());
+        var parseResult = new ResultDictionaryBuilder()
+            .Add(Expression, () => expressionResult)
+            .Add(Index, () => indexResult)
+            .Build();
+
+        var error = parseResult.GetError();
+        if (error is not null)
+        {
+            result.FillFromResult(error);
+        }
+        else
+        {
+            result.WithResultType(expressionResult.ResultType!.GetElementType());
+        }
+
+        return result;
     }
 }

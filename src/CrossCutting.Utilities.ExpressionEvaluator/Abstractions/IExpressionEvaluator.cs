@@ -2,9 +2,9 @@
 
 public interface IExpressionEvaluator
 {
-    ExpressionParseResult Parse(ExpressionEvaluatorContext context);
-    Result<object?> Evaluate(ExpressionEvaluatorContext context);
+    Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context);
+    Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context);
 
-    ExpressionParseResult ParseCallback(ExpressionEvaluatorContext context);
-    Result<object?> EvaluateCallback(ExpressionEvaluatorContext context);
+    Task<ExpressionParseResult> ParseCallbackAsync(ExpressionEvaluatorContext context);
+    Task<Result<object?>> EvaluateCallbackAsync(ExpressionEvaluatorContext context);
 }

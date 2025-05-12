@@ -2,11 +2,11 @@
 
 public interface IExpression
 {
-    Result<object?> Evaluate();
-    ExpressionParseResult Parse();
+    Task<Result<object?>> EvaluateAsync();
+    Task<ExpressionParseResult> ParseAsync();
 }
 
 public interface IExpression<T> : IExpression
 {
-    Result<T> EvaluateTyped();
+    Task<Result<T>> EvaluateTypedAsync();
 }

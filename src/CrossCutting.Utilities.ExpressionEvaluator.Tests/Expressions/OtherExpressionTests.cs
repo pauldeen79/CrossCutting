@@ -5,18 +5,18 @@ public class OtherExpressionTests : TestBase
     public class Evaluate : OtherExpressionTests
     {
         [Fact]
-        public void Returns_Correct_Result()
+        public async Task Returns_Correct_Result()
         {
             // Arrange
             var evaluator = Substitute.For<IExpressionEvaluator>();
             var context = CreateContext("dummy expression", evaluator: evaluator);
             var sut = new OtherExpression(context, "expression");
             evaluator
-                .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(Result.Success<object?>("the result"));
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -27,18 +27,18 @@ public class OtherExpressionTests : TestBase
     public class Parse : OtherExpressionTests
     {
         [Fact]
-        public void Returns_Correct_Result()
+        public async Task Returns_Correct_Result()
         {
             // Arrange
             var evaluator = Substitute.For<IExpressionEvaluator>();
             var context = CreateContext("dummy expression", evaluator: evaluator);
             var sut = new OtherExpression(context, "expression");
             evaluator
-                .Parse(Arg.Any<ExpressionEvaluatorContext>())
+                .ParseAsync(Arg.Any<ExpressionEvaluatorContext>())
                 .Returns(new ExpressionParseResultBuilder().WithSourceExpression("expression").WithExpressionComponentType(GetType()).WithResultType(typeof(string)));
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

@@ -30,20 +30,20 @@ public class ExpressionEvaluatorContext
         ParentContext = parentContext;
     }
 
-    public Result<object?> Evaluate(string expression)
+    public Task<Result<object?>> EvaluateAsync(string expression)
         => UseCallback
-            ? Evaluator.EvaluateCallback(CreateChildContext(expression))
-            : Evaluator.Evaluate(CreateChildContext(expression));
+            ? Evaluator.EvaluateCallbackAsync(CreateChildContext(expression))
+            : Evaluator.EvaluateAsync(CreateChildContext(expression));
 
-    public Result<T> EvaluateTyped<T>(string expression)
+    public async Task<Result<T>> EvaluateTypedAsync<T>(string expression)
         => UseCallback
-            ? Evaluator.EvaluateCallback(CreateChildContext(expression)).TryCastAllowNull<T>()
-            : Evaluator.Evaluate(CreateChildContext(expression)).TryCastAllowNull<T>();
+            ? (await Evaluator.EvaluateCallbackAsync(CreateChildContext(expression)).ConfigureAwait(false)).TryCastAllowNull<T>()
+            : (await Evaluator.EvaluateAsync(CreateChildContext(expression)).ConfigureAwait(false)).TryCastAllowNull<T>();
 
-    public ExpressionParseResult Parse(string expression)
+    public async Task<ExpressionParseResult> ParseAsync(string expression)
         => UseCallback
-            ? Evaluator.ParseCallback(CreateChildContext(expression))
-            : Evaluator.Parse(CreateChildContext(expression));
+            ? await Evaluator.ParseCallbackAsync(CreateChildContext(expression)).ConfigureAwait(false)
+            : await Evaluator.ParseAsync(CreateChildContext(expression)).ConfigureAwait(false);
 
     public Result<T> Validate<T>()
     {

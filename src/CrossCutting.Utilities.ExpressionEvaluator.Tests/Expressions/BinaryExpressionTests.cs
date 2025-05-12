@@ -7,12 +7,15 @@ public class BinaryExpressionTests : TestBase
     public BinaryExpressionTests()
     {
         Operator = Substitute.For<IExpression>();
+        Operator
+            .EvaluateAsync()
+            .Returns(Result.NoContent<object?>());
     }
 
     public class Evaluate : BinaryExpressionTests
     {
         [Fact]
-        public void Returns_Error_From_Left_Expression()
+        public async Task Returns_Error_From_Left_Expression()
         {
             // Arrange
             var expression = "1 + 2";
@@ -20,7 +23,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Error<IExpression>("Kaboom"), ExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -28,7 +31,7 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Error_From_Right_Expression()
+        public async Task Returns_Error_From_Right_Expression()
         {
             // Arrange
             var expression = "1 + 2";
@@ -36,7 +39,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Error<IExpression>("Kaboom"), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -44,19 +47,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Error_From_Left_Expression_Parsing()
+        public async Task Returns_Error_From_Left_Expression_Parsing()
         {
             // Arrange
             var expression = "1 + 2";
             var context = CreateContext(expression);
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(Result.Error<object?>("Kaboom"));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -64,14 +67,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Error_From_Right_Expression_Parsing()
+        public async Task Returns_Error_From_Right_Expression_Parsing()
         {
             // Arrange
             var expression = "1 + 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                  {
                      counter++;
@@ -86,7 +89,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -94,14 +97,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Invalid_On_Unsupported_Operator()
+        public async Task Returns_Invalid_On_Unsupported_Operator()
         {
             // Arrange
             var expression = "1 + 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -112,7 +115,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.LeftParenthesis, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -120,14 +123,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Plus_Operator()
+        public async Task Returns_Success_On_Plus_Operator()
         {
             // Arrange
             var expression = "1 + 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -138,7 +141,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -146,14 +149,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Minus_Operator()
+        public async Task Returns_Success_On_Minus_Operator()
         {
             // Arrange
             var expression = "1 - 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -164,7 +167,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Minus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -172,14 +175,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Multiply_Operator()
+        public async Task Returns_Success_On_Multiply_Operator()
         {
             // Arrange
             var expression = "1 * 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -190,7 +193,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Multiply, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -198,14 +201,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Divide_Operator()
+        public async Task Returns_Success_On_Divide_Operator()
         {
             // Arrange
             var expression = "1 / 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -216,7 +219,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Divide, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -224,14 +227,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Equal_Operator()
+        public async Task Returns_Success_On_Equal_Operator()
         {
             // Arrange
             var expression = "1 == 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -242,7 +245,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Equal, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -250,14 +253,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_NotEqual_Operator()
+        public async Task Returns_Success_On_NotEqual_Operator()
         {
             // Arrange
             var expression = "1 != 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -268,7 +271,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.NotEqual, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -276,14 +279,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Less_Operator()
+        public async Task Returns_Success_On_Less_Operator()
         {
             // Arrange
             var expression = "1 < 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -294,7 +297,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Less, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -302,14 +305,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_LessOrEqual_Operator()
+        public async Task Returns_Success_On_LessOrEqual_Operator()
         {
             // Arrange
             var expression = "1 <= 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -320,7 +323,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.LessOrEqual, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -328,14 +331,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Greater_Operator()
+        public async Task Returns_Success_On_Greater_Operator()
         {
             // Arrange
             var expression = "1 > 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -346,7 +349,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Greater, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -354,14 +357,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_GreaterOrEqual_Operator()
+        public async Task Returns_Success_On_GreaterOrEqual_Operator()
         {
             // Arrange
             var expression = "1 >= 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -372,7 +375,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.GreaterOrEqual, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -380,14 +383,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_And_Operator()
+        public async Task Returns_Success_On_And_Operator()
         {
             // Arrange
             var expression = "1 && 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -398,7 +401,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.And, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -406,14 +409,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Or_Operator()
+        public async Task Returns_Success_On_Or_Operator()
         {
             // Arrange
             var expression = "1 || 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -424,7 +427,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Or, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -432,14 +435,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Modulus_Operator()
+        public async Task Returns_Success_On_Modulus_Operator()
         {
             // Arrange
             var expression = "1 % 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -450,7 +453,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Modulo, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -458,14 +461,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Exponential_Operator()
+        public async Task Returns_Success_On_Exponential_Operator()
         {
             // Arrange
             var expression = "1 ^ 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Evaluate()
+                .EvaluateAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -476,7 +479,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Exponentiation, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Evaluate();
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -487,7 +490,7 @@ public class BinaryExpressionTests : TestBase
     public class Parse : BinaryExpressionTests
     {
         [Fact]
-        public void Returns_Error_From_Left_Expression()
+        public async Task Returns_Error_From_Left_Expression()
         {
             // Arrange
             var expression = "1 + 2";
@@ -495,7 +498,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Error<IExpression>("Kaboom"), ExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -505,7 +508,7 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Error_From_Right_Expression()
+        public async Task Returns_Error_From_Right_Expression()
         {
             // Arrange
             var expression = "1 + 2";
@@ -513,7 +516,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Error<IExpression>("Kaboom"), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -523,19 +526,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Error_From_Left_Expression_Parsing()
+        public async Task Returns_Error_From_Left_Expression_Parsing()
         {
             // Arrange
             var expression = "1 + 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithErrorMessage("Kaboom").WithStatus(ResultStatus.Error));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -545,14 +548,14 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Error_From_Right_Expression_Parsing()
+        public async Task Returns_Error_From_Right_Expression_Parsing()
         {
             // Arrange
             var expression = "1 + 2";
             var context = CreateContext(expression);
             var counter = 0;
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(_ =>
                 {
                     counter++;
@@ -567,7 +570,7 @@ public class BinaryExpressionTests : TestBase
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -577,19 +580,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Invalid_On_Unsupported_Operator()
+        public async Task Returns_Invalid_On_Unsupported_Operator()
         {
             // Arrange
             var expression = "1 + 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.LeftParenthesis, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -597,19 +600,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Plus_Operator()
+        public async Task Returns_Success_On_Plus_Operator()
         {
             // Arrange
             var expression = "1 + 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -618,19 +621,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Minus_Operator()
+        public async Task Returns_Success_On_Minus_Operator()
         {
             // Arrange
             var expression = "1 - 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Minus, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -639,19 +642,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Multiply_Operator()
+        public async Task Returns_Success_On_Multiply_Operator()
         {
             // Arrange
             var expression = "1 * 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Multiply, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -660,19 +663,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Divide_Operator()
+        public async Task Returns_Success_On_Divide_Operator()
         {
             // Arrange
             var expression = "1 / 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Divide, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -681,19 +684,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Equal_Operator()
+        public async Task Returns_Success_On_Equal_Operator()
         {
             // Arrange
             var expression = "1 == 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Equal, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -702,19 +705,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_NotEqual_Operator()
+        public async Task Returns_Success_On_NotEqual_Operator()
         {
             // Arrange
             var expression = "1 != 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.NotEqual, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -723,19 +726,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Less_Operator()
+        public async Task Returns_Success_On_Less_Operator()
         {
             // Arrange
             var expression = "1 < 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Less, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -744,19 +747,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_LessOrEqual_Operator()
+        public async Task Returns_Success_On_LessOrEqual_Operator()
         {
             // Arrange
             var expression = "1 <= 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.LessOrEqual, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -765,19 +768,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Greater_Operator()
+        public async Task Returns_Success_On_Greater_Operator()
         {
             // Arrange
             var expression = "1 > 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Greater, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -786,19 +789,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_GreaterOrEqual_Operator()
+        public async Task Returns_Success_On_GreaterOrEqual_Operator()
         {
             // Arrange
             var expression = "1 >= 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.GreaterOrEqual, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -807,19 +810,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_And_Operator()
+        public async Task Returns_Success_On_And_Operator()
         {
             // Arrange
             var expression = "1 && 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.And, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -828,19 +831,19 @@ public class BinaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Success_On_Or_Operator()
+        public async Task Returns_Success_On_Or_Operator()
         {
             // Arrange
             var expression = "1 || 2";
             var context = CreateContext(expression);
             Operator
-                .Parse()
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
             var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Or, Result.Success(Operator), expression);
 
             // Act
-            var result = sut.Parse();
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

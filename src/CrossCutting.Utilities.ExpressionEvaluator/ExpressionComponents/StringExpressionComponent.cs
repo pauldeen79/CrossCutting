@@ -4,32 +4,34 @@ public class StringExpressionComponent : IExpressionComponent
 {
     public int Order => 11;
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        if (context.Expression.Length < 2 || !context.Expression.StartsWith("\"") || !context.Expression.EndsWith("\""))
+    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
+        => Task.Run(() =>
         {
-            return Result.Continue<object?>();
-        }
+            context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2));
-    }
+            if (context.Expression.Length < 2 || !context.Expression.StartsWith("\"") || !context.Expression.EndsWith("\""))
+            {
+                return Result.Continue<object?>();
+            }
 
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
+            return Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2));
+        });
 
-        var result = new ExpressionParseResultBuilder()
-            .WithSourceExpression(context.Expression)
-            .WithExpressionComponentType(typeof(StringExpressionComponent))
-            .WithResultType(typeof(string));
-
-        if (context.Expression.Length < 2 || !context.Expression.StartsWith("\"") || !context.Expression.EndsWith("\""))
+    public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
+        => Task.Run<ExpressionParseResult>(() =>
         {
-            return result.WithStatus(ResultStatus.Continue);
-        }
+            context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return result.WithStatus(ResultStatus.Ok);
-    }
+            var result = new ExpressionParseResultBuilder()
+                .WithSourceExpression(context.Expression)
+                .WithExpressionComponentType(typeof(StringExpressionComponent))
+                .WithResultType(typeof(string));
+
+            if (context.Expression.Length < 2 || !context.Expression.StartsWith("\"") || !context.Expression.EndsWith("\""))
+            {
+                return result.WithStatus(ResultStatus.Continue);
+            }
+
+            return result.WithStatus(ResultStatus.Ok);
+        });
 }

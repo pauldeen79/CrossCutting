@@ -5,10 +5,11 @@
 [MemberResultType(typeof(int))]
 public class ArrayLengthProperty : IProperty
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
+    public Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
+        => Task.Run(() =>
+        {
+            context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.GetInstanceValueResult<Array>().Transform<object?>(result => result.Length);
-    }
+            return context.GetInstanceValueResult<Array>().Transform<object?>(result => result.Length);
+        });
 }

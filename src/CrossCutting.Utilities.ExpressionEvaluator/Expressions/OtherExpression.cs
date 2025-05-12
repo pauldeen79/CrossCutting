@@ -15,9 +15,9 @@ public sealed class OtherExpression : IExpression
         Expression = expression;
     }
 
-    public Result<object?> Evaluate()
-        => _context.Evaluate(Expression);
+    public Task<Result<object?>> EvaluateAsync()
+        => _context.EvaluateAsync(Expression);
 
-    public ExpressionParseResult Parse()
-        => _context.Parse(Expression);
+    public Task<ExpressionParseResult> ParseAsync()
+        => _context.ParseAsync(Expression);
 }
