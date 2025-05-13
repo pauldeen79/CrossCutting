@@ -62,6 +62,22 @@ public class AsyncResultDictionaryBuilder<T>
         return this;
     }
 
+    public AsyncResultDictionaryBuilder<T> Add(string name, Func<Result<T>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        _resultset.Add(name, Task.Run(value));
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder<T> Add(string name, Result<T> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        _resultset.Add(name, Task.FromResult(value));
+        return this;
+    }
+
     public IReadOnlyDictionary<string, Task<Result<T>>> BuildDeferred()
     {
         var results = new Dictionary<string, Task<Result<T>>>();

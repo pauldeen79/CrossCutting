@@ -28,7 +28,7 @@ public class FunctionCallContextTests : TestBase
             .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression.EndsWith("()")
                 ? function.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder()
                     .WithName(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.ReplaceSuffix("()", string.Empty, StringComparison.Ordinal))
-                    .WithMemberType(MemberType.Function), x.ArgAt<ExpressionEvaluatorContext>(0))).Result
+                    .WithMemberType(MemberType.Function), x.ArgAt<ExpressionEvaluatorContext>(0)))
                 : EvaluateExpression(x));
         Evaluator
             .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>())

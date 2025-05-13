@@ -15,12 +15,12 @@ public abstract class TestBase
         IExpressionEvaluator? evaluator = null,
         ExpressionEvaluatorSettingsBuilder? settings = null)
     {
-        IReadOnlyDictionary<string, Func<Result<object?>>>? dict = null;
+        IReadOnlyDictionary<string, Task<Result<object?>>>? dict = null;
         if (state is not null)
         {
-            dict = new Dictionary<string, Func<Result<object?>>>
+            dict = new Dictionary<string, Task<Result<object?>>>
             {
-                { "state", () => Result.Success<object?>(state) }
+                { "state", Task.FromResult(Result.Success<object?>(state)) }
             };
         }
 
@@ -29,12 +29,12 @@ public abstract class TestBase
 
     protected ExpressionEvaluatorContext CreateContext(
         string? expression,
-        IReadOnlyDictionary<string, Func<Result<object?>>>? context = null,
+        IReadOnlyDictionary<string, Task<Result<object?>>>? state = null,
         int currentRecursionLevel = 1,
         ExpressionEvaluatorContext? parentContext = null,
         IExpressionEvaluator? evaluator = null,
         ExpressionEvaluatorSettingsBuilder? settings = null)
-            => new ExpressionEvaluatorContext(expression, settings ?? new ExpressionEvaluatorSettingsBuilder(), evaluator ?? Evaluator, context, currentRecursionLevel, parentContext);
+            => new ExpressionEvaluatorContext(expression, settings ?? new ExpressionEvaluatorSettingsBuilder(), evaluator ?? Evaluator, state, currentRecursionLevel, parentContext);
 
     protected DotExpressionComponentState CreateDotExpressionComponentState(string expression, object? left, string right)
         => new DotExpressionComponentState(CreateContext(expression), new FunctionParser(), Result.Continue<object?>(), string.Empty, null)
@@ -60,7 +60,7 @@ public abstract class TestBase
                     "string" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
                     "unknown" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok),
                     "object" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(object)),
-                    "state" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(x.ArgAt<ExpressionEvaluatorContext>(0).State?.FirstOrDefault().Value?.Invoke().Value?.GetType()),
+                    "state" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(x.ArgAt<ExpressionEvaluatorContext>(0).State?.FirstOrDefault().Value?.Result.Value?.GetType()),
                     _ => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok)
                 });
 
@@ -76,7 +76,7 @@ public abstract class TestBase
     }
 
     // Test stub for expression evaluation, that supports strings, integers, long integers, decimals, booleans and DeteTimes (by using TryParse), as well as the context and null keywords
-    protected static Result<object?> EvaluateExpression(CallInfo callInfo)
+    protected static async Task<Result<object?>> EvaluateExpression(CallInfo callInfo)
     {
         var context = callInfo.ArgAt<ExpressionEvaluatorContext>(0);
 
@@ -86,9 +86,9 @@ public abstract class TestBase
         }
 
         var success = context.State.TryGetValue(context.Expression, out var dlg);
-        if (success)
+        if (success && dlg is not null)
         {
-            return dlg!();
+            return await dlg.ConfigureAwait(false);
         }
 
         if (context.Expression == "state.Length")

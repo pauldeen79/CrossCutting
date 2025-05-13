@@ -4,35 +4,34 @@ public class StateExpressionComponent : IExpressionComponent
 {
     public int Order => 25;
 
-    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
-        => Task.Run(() =>
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        var success = context.State.TryGetValue(context.Expression, out var dlg);
+        if (success)
         {
-            context = ArgumentGuard.IsNotNull(context, nameof(context));
+            return await dlg.ConfigureAwait(false);
+        }
 
-            var success = context.State.TryGetValue(context.Expression, out var dlg);
-            if (success)
-            {
-                return dlg();
-            }
+        return Result.Continue<object?>();
+    }
 
-            return Result.Continue<object?>();
-        });
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-    public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
-        => Task.Run<ExpressionParseResult>(() =>
+        var result = new ExpressionParseResultBuilder()
+            .WithSourceExpression(context.Expression)
+            .WithExpressionComponentType(typeof(StateExpressionComponent));
+
+        var success = context.State.TryGetValue(context.Expression, out var dlg);
+        if (success)
         {
-            context = ArgumentGuard.IsNotNull(context, nameof(context));
+            var stateResult = await dlg.ConfigureAwait(false);
+            return result.WithResultType(stateResult.Value?.GetType());
+        }
 
-            var result = new ExpressionParseResultBuilder()
-                .WithSourceExpression(context.Expression)
-                .WithExpressionComponentType(typeof(StateExpressionComponent));
-
-            var success = context.State.TryGetValue(context.Expression, out var dlg);
-            if (success)
-            {
-                return result.WithResultType(dlg().Value?.GetType());
-            }
-
-            return result.WithStatus(ResultStatus.Continue);
-        });
+        return result.WithStatus(ResultStatus.Continue);
+    }
 }

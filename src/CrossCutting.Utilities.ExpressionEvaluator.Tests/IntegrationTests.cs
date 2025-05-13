@@ -707,12 +707,9 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
         // Arrange
         var sut = new InterpolatedStringExpressionComponent();
-        var state = new DeferredResultDictionaryBuilder<object?>()
-            .Add("class.Name", () => Result.Success<object?>("MyClass"))
-            .Build();
-        //var state = await new AsyncResultDictionaryBuilder<object?>()
-        //    .Add("class.Name", Task.FromResult(Result.Success<object?>("MyClass")))
-        //    .Build();
+        var state = new AsyncResultDictionaryBuilder<object?>()
+            .Add("class.Name", Result.Success<object?>("MyClass"))
+            .BuildDeferred();
         var context = new ExpressionEvaluatorContext("$\"public class {class.Name}\"", new ExpressionEvaluatorSettingsBuilder(), CreateSut(), state);
 
         // Act
@@ -1026,12 +1023,12 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Arrange
         var sut = CreateSut();
         var expression = "MyFunction(state)";
-        var context = new DeferredResultDictionaryBuilder<object?>()
+        var state = new AsyncResultDictionaryBuilder<object?>()
             .Add("state", Result.NoContent<object?>)
-            .Build();
+            .BuildDeferred();
 
         // Act
-        var result = await sut.ParseAsync(CreateContext(expression, context: context, evaluator: sut));
+        var result = await sut.ParseAsync(CreateContext(expression, state: state, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
