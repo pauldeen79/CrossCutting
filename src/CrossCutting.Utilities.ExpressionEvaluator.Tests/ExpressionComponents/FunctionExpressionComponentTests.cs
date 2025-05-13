@@ -3,7 +3,6 @@
 public class FunctionExpressionComponentTests : TestBase
 {
     protected IFunction Function { get; }
-    protected IMemberDescriptorProvider MemberDescriptorProvider { get; }
     protected IMemberCallArgumentValidator MemberCallArgumentValidator { get; }
 
     protected FunctionExpressionComponent CreateSut(IFunction? function = null)
@@ -15,7 +14,6 @@ public class FunctionExpressionComponentTests : TestBase
     public FunctionExpressionComponentTests()
     {
         Function = Substitute.For<IFunction>();
-        MemberDescriptorProvider = Substitute.For<IMemberDescriptorProvider>();
         MemberCallArgumentValidator = Substitute.For<IMemberCallArgumentValidator>();
     }
 
