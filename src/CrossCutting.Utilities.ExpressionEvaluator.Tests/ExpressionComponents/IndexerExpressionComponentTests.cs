@@ -23,12 +23,6 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
         {
             // Arrange
             var sut = CreateSut();
-            // Need a little hack here for EvaluateTyped...
-            Evaluator
-                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>())
-                .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "state"
-                    ? Result.Success<object?>(new object[] { 1, 2, 3 })
-                    : Result.Success<object?>(1));
             var context = CreateContext("state[1]", state: new object[] { 1, 2, 3 });
 
             // Act
@@ -61,12 +55,6 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
         {
             // Arrange
             var sut = CreateSut();
-            // Need a little hack here for EvaluateTyped...
-            Evaluator
-                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>())
-                .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "state"
-                    ? Result.Success<object?>(new object[] { 1, 2, 3 })
-                    : Result.Success<object?>(1));
             var context = CreateContext("state[1]", state: new int[] { 1, 2, 3 });
 
             // Act
@@ -75,6 +63,30 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.ResultType.ShouldBe(typeof(int));
+        }
+
+        [Fact]
+        public async Task Returns_Error_On_Matching_Expression_When_Parse_Result_Is_Not_Successful()
+        {
+            // Arrange
+            var sut = CreateSut();
+            Evaluator
+                .ParseAsync(Arg.Any<ExpressionEvaluatorContext>())
+                .Returns(x =>
+                    x.ArgAt<ExpressionEvaluatorContext>(0).Expression switch
+                    {
+                        "1" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Error).WithErrorMessage("Kaboom"),
+                        "state" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(x.ArgAt<ExpressionEvaluatorContext>(0).State?.FirstOrDefault().Value?.Result.Value?.GetType()),
+                        _ => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok)
+                    });
+            var context = CreateContext("state[1]", state: new int[] { 1, 2, 3 });
+
+            // Act
+            var result = await sut.ParseAsync(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
     }
 }
