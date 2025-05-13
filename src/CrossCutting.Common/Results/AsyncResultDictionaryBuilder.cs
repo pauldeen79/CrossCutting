@@ -1,7 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-
-namespace CrossCutting.Common.Results;
+﻿namespace CrossCutting.Common.Results;
 
 public class AsyncResultDictionaryBuilder
 {
