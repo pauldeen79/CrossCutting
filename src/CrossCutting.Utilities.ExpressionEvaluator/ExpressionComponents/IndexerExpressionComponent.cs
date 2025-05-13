@@ -4,7 +4,6 @@ public class IndexerExpressionComponent : IExpressionComponent
 {
     private static readonly Regex _indexerRegex = new Regex(@"(?<Expression>[^\[\]]+)\[(?<Index>\d+)\]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(250));
     private const string Index = nameof(Index);
-    private const string Expression = nameof(Expression);
 
     public int Order => 60;
 
@@ -19,12 +18,12 @@ public class IndexerExpressionComponent : IExpressionComponent
         }
 
         var results = await new AsyncResultDictionaryBuilder()
-            .Add(Expression, context.EvaluateTypedAsync<IEnumerable>(match.Groups[Expression].Value))
+            .Add(Constants.Expression, context.EvaluateTypedAsync<IEnumerable>(match.Groups[Constants.Expression].Value))
             .Add(Index, context.EvaluateTypedAsync<int>(match.Groups[Index].Value))
             .Build()
             .ConfigureAwait(false);
 
-        return Result.Success(results.GetValue<IEnumerable>(Expression).OfType<object?>().ElementAtOrDefault(results.GetValue<int>(Index)));
+        return Result.Success(results.GetValue<IEnumerable>(Constants.Expression).OfType<object?>().ElementAtOrDefault(results.GetValue<int>(Index)));
     }
 
     public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
@@ -42,11 +41,11 @@ public class IndexerExpressionComponent : IExpressionComponent
             return result.WithStatus(ResultStatus.Continue);
         }
 
-        var expressionResult = await context.ParseAsync(match.Groups[Expression].Value).ConfigureAwait(false);
+        var expressionResult = await context.ParseAsync(match.Groups[Constants.Expression].Value).ConfigureAwait(false);
         var indexResult = await context.ParseAsync(match.Groups[Index].Value).ConfigureAwait(false);
 
         var parseResult = new ResultDictionaryBuilder()
-            .Add(Expression, () => expressionResult)
+            .Add(Constants.Expression, () => expressionResult)
             .Add(Index, () => indexResult)
             .Build();
 
