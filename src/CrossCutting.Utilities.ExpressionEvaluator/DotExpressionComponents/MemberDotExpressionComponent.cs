@@ -19,12 +19,12 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
 
         var context = new FunctionCallContext(state);
         var result = (await _memberResolver.ResolveAsync(context).ConfigureAwait(false)).IgnoreNotFound();
-        if (!result.IsSuccessful())
+        if (!result.IsSuccessful() || result.Value is null)
         {
             return result.TryCastAllowNull<object?>();
         }
 
-        return result.Value!.Member switch
+        return result.Value.Member switch
         {
             INonGenericMember nonGenericMember => await nonGenericMember.EvaluateAsync(context).ConfigureAwait(false),
             _ => Result.NotSupported<object?>("Resolved member should be of type Method or Property")
