@@ -5,6 +5,7 @@ public abstract class TestBase
     protected IExpressionEvaluator Evaluator { get; }
     protected IExpressionComponent Expression { get; }
     protected IMemberResolver MemberResolver { get; }
+    protected IMemberDescriptorProvider MemberDescriptorProvider { get; }
     protected IDateTimeProvider DateTimeProvider { get; }
     protected DateTime CurrentDateTime { get; }
 
@@ -71,6 +72,9 @@ public abstract class TestBase
 
         MemberResolver = Substitute.For<IMemberResolver>();
         // Note that you have to setup ResolveAsync yourself
+
+        MemberDescriptorProvider = Substitute.For<IMemberDescriptorProvider>();
+        // Note that you have to setup GetAll yourself
 
         // Freeze DateTime.Now to a predicatable value
         DateTimeProvider = Substitute.For<IDateTimeProvider>();
@@ -169,6 +173,7 @@ public abstract class TestBase<T> : TestBase
         if (p.ParameterType == typeof(IDateTimeProvider)) return DateTimeProvider;
         if (p.ParameterType == typeof(IExpressionComponent)) return Expression;
         if (p.ParameterType == typeof(IMemberResolver)) return MemberResolver;
+        if (p.ParameterType == typeof(IMemberDescriptorProvider)) return MemberDescriptorProvider;
         if (p.ParameterType == typeof(IEnumerable<IExpressionComponent>)) return new IExpressionComponent[] { Expression };
         if (p.ParameterType == typeof(IEnumerable<IDotExpressionComponent>)) return new IDotExpressionComponent[] { new ReflectionMethodDotExpressionComponent(), new ReflectionPropertyDotExpressionComponent() };
         return null;

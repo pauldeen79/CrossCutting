@@ -25,5 +25,6 @@ global using CrossCutting.Utilities.ExpressionEvaluator.InstanceMethods;
 global using Microsoft.Extensions.DependencyInjection;
 global using NSubstitute;
 global using NSubstitute.Core;
+global using NSubstitute.ExceptionExtensions;
 global using Shouldly;
 global using Xunit;
