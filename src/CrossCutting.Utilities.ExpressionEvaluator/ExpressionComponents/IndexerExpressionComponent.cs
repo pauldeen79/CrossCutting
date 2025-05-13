@@ -6,7 +6,7 @@ public class IndexerExpressionComponent : IExpressionComponent
     private const string Index = nameof(Index);
     private const string Expression = nameof(Expression);
 
-    public int Order => 31;
+    public int Order => 60;
 
     public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
     {

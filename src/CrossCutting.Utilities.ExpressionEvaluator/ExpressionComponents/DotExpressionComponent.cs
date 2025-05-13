@@ -5,7 +5,7 @@ public class DotExpressionComponent : IExpressionComponent
     private readonly IFunctionParser _functionParser;
     private readonly IDotExpressionComponent[] _components;
 
-    public int Order => 30;
+    public int Order => 50;
 
     public DotExpressionComponent(IFunctionParser functionParser, IEnumerable<IDotExpressionComponent> components)
     {

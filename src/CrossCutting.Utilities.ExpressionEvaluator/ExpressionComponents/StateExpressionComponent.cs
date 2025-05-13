@@ -2,7 +2,7 @@
 
 public class StateExpressionComponent : IExpressionComponent
 {
-    public int Order => 25;
+    public int Order => 40;
 
     public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
     {

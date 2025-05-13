@@ -14,7 +14,7 @@ public class FunctionExpressionComponent : IExpressionComponent
         _memberResolver = memberResolver;
     }
 
-    public int Order => 20;
+    public int Order => 30;
 
     public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
     {
