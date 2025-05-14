@@ -63,6 +63,21 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public async Task Can_Evaluate_Typed_Function_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var expression = "MyTypedFunction(state)";
+
+        // Act
+        var result = await sut.EvaluateAsync(CreateContext(expression, state: "hello world", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("HELLO WORLD");
+    }
+
+    [Fact]
     public async Task Can_Evaluate_Property_Expression()
     {
         // Arrange
@@ -1070,6 +1085,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         Provider = new ServiceCollection()
             .AddExpressionEvaluator()
             .AddSingleton<IMember, MyFunction>()
+            .AddSingleton<IMember, MyTypedFunction>()
             .AddSingleton<IMember, MyGenericFunction>()
             .BuildServiceProvider();
     }
@@ -1089,6 +1105,20 @@ public sealed class IntegrationTests : TestBase, IDisposable
                 .Add("Input", context.GetArgumentValueResultAsync<string>(0, "Input"))
                 .Build().ConfigureAwait(false))
                 .OnSuccess(results => Result.Success<object?>(results.GetValue<string>("Input").ToUpperInvariant()));
+    }
+
+    [MemberName("MyTypedFunction")]
+    [MemberArgument("Input", typeof(string))]
+    private sealed class MyTypedFunction : IFunction<string>
+    {
+        public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
+            => (await EvaluateTypedAsync(context).ConfigureAwait(false)).TryCastAllowNull<object?>();
+
+        public async Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context)
+            => (await new AsyncResultDictionaryBuilder()
+                .Add("Input", context.GetArgumentValueResultAsync<string>(0, "Input"))
+                .Build().ConfigureAwait(false))
+                .OnSuccess(results => Result.Success(results.GetValue<string>("Input").ToUpperInvariant()));
     }
 
     [MemberName("MyGenericFunction")]
