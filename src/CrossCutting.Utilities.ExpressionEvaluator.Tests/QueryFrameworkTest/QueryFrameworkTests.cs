@@ -10,17 +10,17 @@ internal interface IQuery
 {
     int? Limit { get; set; }
     int? Offset { get; set; }
-    IReadOnlyCollection<IComposableEvaluatable> Conditions { get; set; }
+    IReadOnlyCollection<ICondition> Conditions { get; set; }
     IReadOnlyCollection<IQuerySortOrder> OrderByFields { get; set; }
 }
 
 internal interface IQuerySortOrder
 {
-    IExpression FieldNameExpression { get; set; }
+    IEvaluatable FieldNameExpression { get; set; }
     QuerySortOrderDirection Order { get; set; }
 }
 
-internal interface IComposableEvaluatable : IEvaluatable<bool>
+internal interface ICondition
 {
     StringComparison StringComparison { get; set; }
 
@@ -45,63 +45,12 @@ internal enum Combination
     Or
 }
 
-internal sealed class MyQuery : IQuery
+internal sealed class MyQuery : IQuery, IValidatableObject
 {
     public int? Limit { get; set; }
     public int? Offset { get; set; }
-    public IReadOnlyCollection<IComposableEvaluatable> Conditions { get; set; }
+    public IReadOnlyCollection<ICondition> Conditions { get; set; }
     public IReadOnlyCollection<IQuerySortOrder> OrderByFields { get; set; }
-}
-
-internal sealed class QuerySortOrder : IQuerySortOrder
-{
-    public IExpression FieldNameExpression { get; set; }
-    public QuerySortOrderDirection Order { get; set; }
-}
-
-internal sealed class ComposableEvaluatable : IComposableEvaluatable
-{
-    public StringComparison StringComparison { get; set; }
-
-    public IEvaluatable LeftExpression { get; set; }
-    public IOperator Operator { get; set; }
-    public IEvaluatable RightExpression { get; set; }
-
-    public Combination? Combination { get; set; }
-    public bool StartGroup { get; set; }
-    public bool EndGroup { get; set; }
-
-    public async Task<Result<object?>> EvaluateAsync()
-        => (await EvaluateTypedAsync().ConfigureAwait(false)).TryCastAllowNull<object?>();
-
-    public async Task<Result<bool>> EvaluateTypedAsync()
-        => await (await new AsyncResultDictionaryBuilder()
-            .Add(Constants.LeftExpression, LeftExpression.EvaluateAsync())
-            .Add(Constants.RightExpression, RightExpression.EvaluateAsync())
-            .Build()
-            .ConfigureAwait(false))
-            .OnSuccess(async results => await Operator
-                .EvaluateAsync(results.GetValue<object?>(Constants.LeftExpression), results.GetValue<object?>(Constants.RightExpression), StringComparison)
-                .ConfigureAwait(false))
-            .ConfigureAwait(false);
-}
-
-internal sealed class ComposedEvaluatable : IEvaluatable<bool>, IValidatableObject
-{
-    public IReadOnlyCollection<IComposableEvaluatable> Conditions { get; set; }
-
-    public async Task<Result<object?>> EvaluateAsync()
-        => (await EvaluateTypedAsync().ConfigureAwait(false)).TryCastAllowNull<object?>();
-
-    public async Task<Result<bool>> EvaluateTypedAsync()
-    {
-        if (CanEvaluateSimpleConditions(Conditions))
-        {
-            return await EvaluateSimpleConditions(Conditions).ConfigureAwait(false);
-        }
-
-        return await EvaluateComplexConditions(Conditions).ConfigureAwait(false);
-    }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
@@ -137,15 +86,52 @@ internal sealed class ComposedEvaluatable : IEvaluatable<bool>, IValidatableObje
             yield return new ValidationResult($"{groupCounter} missing EndGroups", [nameof(Conditions)]);
         }
     }
+}
 
-    private static bool CanEvaluateSimpleConditions(IEnumerable<IComposableEvaluatable> conditions)
+internal sealed class QuerySortOrder : IQuerySortOrder
+{
+    public IEvaluatable FieldNameExpression { get; set; }
+    public QuerySortOrderDirection Order { get; set; }
+}
+
+internal sealed class ComposableEvaluatable : ICondition
+{
+    public StringComparison StringComparison { get; set; }
+
+    public IEvaluatable LeftExpression { get; set; }
+    public IOperator Operator { get; set; }
+    public IEvaluatable RightExpression { get; set; }
+
+    public Combination? Combination { get; set; }
+    public bool StartGroup { get; set; }
+    public bool EndGroup { get; set; }
+}
+
+internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
+{
+    public IQuery Query { get; set; }
+
+    public async Task<Result<object?>> EvaluateAsync()
+        => (await EvaluateTypedAsync().ConfigureAwait(false)).TryCastAllowNull<object?>();
+
+    public async Task<Result<bool>> EvaluateTypedAsync()
+    {
+        if (CanEvaluateSimpleConditions(Query.Conditions))
+        {
+            return await EvaluateSimpleConditions(Query.Conditions).ConfigureAwait(false);
+        }
+
+        return await EvaluateComplexConditions(Query.Conditions).ConfigureAwait(false);
+    }
+
+    private static bool CanEvaluateSimpleConditions(IEnumerable<ICondition> conditions)
         => !conditions.Any(x =>
             (x.Combination ?? Combination.And) == Combination.Or
             || x.StartGroup
             || x.EndGroup
         );
 
-    private static async Task<Result<bool>> EvaluateSimpleConditions(IEnumerable<IComposableEvaluatable> conditions)
+    private static async Task<Result<bool>> EvaluateSimpleConditions(IEnumerable<ICondition> conditions)
     {
         foreach (var evaluatable in conditions)
         {
@@ -164,7 +150,7 @@ internal sealed class ComposedEvaluatable : IEvaluatable<bool>, IValidatableObje
         return Result.Success(true);
     }
 
-    private static async Task<Result<bool>> EvaluateComplexConditions(IEnumerable<IComposableEvaluatable> conditions)
+    private static async Task<Result<bool>> EvaluateComplexConditions(IEnumerable<ICondition> conditions)
     {
         var builder = new StringBuilder();
         foreach (var evaluatable in conditions)
@@ -191,8 +177,16 @@ internal sealed class ComposedEvaluatable : IEvaluatable<bool>, IValidatableObje
         return Result.Success(EvaluateBooleanExpression(builder.ToString()));
     }
 
-    private static Task<Result<bool>> IsItemValid(IComposableEvaluatable condition)
-        => condition.EvaluateTypedAsync();
+    private static async Task<Result<bool>> IsItemValid(ICondition condition)
+        => await(await new AsyncResultDictionaryBuilder()
+            .Add(Constants.LeftExpression, condition.LeftExpression.EvaluateAsync())
+            .Add(Constants.RightExpression, condition.RightExpression.EvaluateAsync())
+            .Build()
+            .ConfigureAwait(false))
+            .OnSuccess(async results => await condition.Operator
+                .EvaluateAsync(results.GetValue<object?>(Constants.LeftExpression), results.GetValue<object?>(Constants.RightExpression), condition.StringComparison)
+                .ConfigureAwait(false))
+            .ConfigureAwait(false);
 
     private static bool EvaluateBooleanExpression(string expression)
     {
@@ -268,9 +262,9 @@ internal sealed class EqualsOperator : IOperator
         => Task.FromResult(Equal.Evaluate(leftValue, rightValue, stringComparison));
 }
 
-internal sealed class ConstantExpression : IEvaluatable
+internal sealed class ConstantEvaluatable : IEvaluatable
 {
-    public ConstantExpression(object? value)
+    public ConstantEvaluatable(object? value)
     {
         Value = value;
     }
@@ -281,9 +275,9 @@ internal sealed class ConstantExpression : IEvaluatable
         => Task.FromResult(Result.Success(Value));
 }
 
-internal sealed class ConstantExpression<T> : IEvaluatable<T>
+internal sealed class ConstantEvaluatable<T> : IEvaluatable<T>
 {
-    public ConstantExpression(T value)
+    public ConstantEvaluatable(T value)
     {
         Value = value;
     }
@@ -310,12 +304,13 @@ public class QueryFrameworkTests : TestBase
             Offset = 100,
             Conditions = 
             [
-                new ComposableEvaluatable { LeftExpression = new ConstantExpression<string>("A"), Operator = new EqualsOperator(), RightExpression = new ConstantExpression<string>("A") }
+                new ComposableEvaluatable { LeftExpression = new ConstantEvaluatable<string>("A"), Operator = new EqualsOperator(), RightExpression = new ConstantEvaluatable<string>("A") }
             ]
         };
+        var processor = new InMemoryQueryProcessor { Query = query };
 
         // Act
-        var result = await new ComposedEvaluatable { Conditions = query.Conditions }.EvaluateTypedAsync();
+        var result = await processor.EvaluateTypedAsync();
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
