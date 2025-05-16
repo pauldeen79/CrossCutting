@@ -60,6 +60,19 @@ public static class ResultDictionaryExtensions
         };
     }
 
+    public static Task<Result<T>> OnSuccess<T>(this IReadOnlyDictionary<string, Result> resultDictionary, Func<IReadOnlyDictionary<string, Result>, Task<Result<T>>> successDelegate)
+    {
+        successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        var error = resultDictionary.GetError();
+
+        return error switch
+        {
+            not null => Task.FromResult(Result.FromExistingResult<T>(error)),
+            _ => successDelegate(resultDictionary)
+        };
+    }
+
     public static Result OnSuccess<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, Action<IReadOnlyDictionary<string, Result<T>>> successDelegate)
         => resultDictionary.OnSuccess(_ => { successDelegate(resultDictionary); return Result.Success(); });
 
