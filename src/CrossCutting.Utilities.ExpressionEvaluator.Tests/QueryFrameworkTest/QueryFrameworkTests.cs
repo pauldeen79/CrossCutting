@@ -50,7 +50,7 @@ internal enum Combination
     Or
 }
 
-internal class MyQuery : IQuery
+internal sealed class MyQuery : IQuery
 {
     public int? Limit { get; set; }
     public int? Offset { get; set; }
@@ -58,13 +58,13 @@ internal class MyQuery : IQuery
     public IReadOnlyCollection<IQuerySortOrder> OrderByFields { get; set; }
 }
 
-internal class QuerySortOrder : IQuerySortOrder
+internal sealed class QuerySortOrder : IQuerySortOrder
 {
     public IExpression FieldNameExpression { get; set; }
     public QuerySortOrderDirection Order { get; set; }
 }
 
-internal class ComposableEvaluatable : IComposableEvaluatable
+internal sealed class ComposableEvaluatable : IComposableEvaluatable
 {
     public StringComparison StringComparison { get; set; }
 
@@ -91,7 +91,7 @@ internal class ComposableEvaluatable : IComposableEvaluatable
             .ConfigureAwait(false);
 }
 
-internal class ComposedEvaluatable : IComposedEvaluatable, IValidatableObject
+internal sealed class ComposedEvaluatable : IComposedEvaluatable, IValidatableObject
 {
     public IReadOnlyCollection<IComposableEvaluatable> Conditions { get; set; }
     public string SourceExpression { get; set; }
@@ -268,13 +268,13 @@ internal class ComposedEvaluatable : IComposedEvaluatable, IValidatableObject
             : expression.Substring(closeIndex + 1);
 }
 
-internal class EqualsOperator : IOperator
+internal sealed class EqualsOperator : IOperator
 {
     public Task<Result<bool>> EvaluateAsync(object? leftValue, object? rightValue, StringComparison stringComparison)
         => Task.FromResult(Equal.Evaluate(leftValue, rightValue, stringComparison));
 }
 
-internal class ConstantExpression : IEvaluatable
+internal sealed class ConstantExpression : IEvaluatable
 {
     public ConstantExpression(object? value)
     {
@@ -287,7 +287,7 @@ internal class ConstantExpression : IEvaluatable
         => Task.FromResult(Result.Success(Value));
 }
 
-internal class ConstantExpression<T> : IEvaluatable<T>
+internal sealed class ConstantExpression<T> : IEvaluatable<T>
 {
     public ConstantExpression(T value)
     {
