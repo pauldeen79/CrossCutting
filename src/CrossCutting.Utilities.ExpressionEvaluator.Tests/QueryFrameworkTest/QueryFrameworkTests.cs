@@ -16,7 +16,7 @@ internal interface IQuery
 
 internal interface IQuerySortOrder
 {
-    IEvaluatable FieldNameExpression { get; set; }
+    IEvaluatable Expression { get; set; }
     QuerySortOrderDirection Order { get; set; }
 }
 
@@ -90,7 +90,7 @@ internal sealed class MyQuery : IQuery, IValidatableObject
 
 internal sealed class QuerySortOrder : IQuerySortOrder
 {
-    public IEvaluatable FieldNameExpression { get; set; }
+    public IEvaluatable Expression { get; set; }
     public QuerySortOrderDirection Order { get; set; }
 }
 
