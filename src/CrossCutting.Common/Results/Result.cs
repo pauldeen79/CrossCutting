@@ -86,7 +86,7 @@ public record Result<T> : Result
         return result.TryCastAllowNull<object?>();
     }
 
-    public Result<object?> ToResult()
+    public Result<object?> ToObjectResult()
         => TryCastAllowNull<object?>();
 }
 

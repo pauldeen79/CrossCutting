@@ -2409,13 +2409,27 @@ public class ResultTests
     }
 
     [Fact]
-    public void Can_Cast_Any_Typed_Result_To_Result_Of_Object()
+    public void Can_Cast_Any_Typed_Result_To_Result_Of_Object_Using_Implicit_Operator()
     {
         // Arrange
         var sut = Result.Success("Hello");
 
         // Act
         Result<object?> untyped = sut;
+
+        // Assert
+        untyped.Status.ShouldBe(ResultStatus.Ok);
+        untyped.Value.ShouldBe("Hello");
+    }
+
+    [Fact]
+    public void Can_Cast_Any_Typed_Result_To_Result_Of_Object_Using_ToResult_Instance_Method()
+    {
+        // Arrange
+        var sut = Result.Success("Hello");
+
+        // Act
+        var untyped = sut.ToObjectResult();
 
         // Assert
         untyped.Status.ShouldBe(ResultStatus.Ok);
