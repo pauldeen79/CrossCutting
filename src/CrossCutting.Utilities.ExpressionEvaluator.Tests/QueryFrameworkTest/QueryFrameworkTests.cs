@@ -10,7 +10,7 @@ internal interface IQuery
 {
     int? Limit { get; set; }
     int? Offset { get; set; }
-    IComposedEvaluatable Filter { get; set; }
+    IReadOnlyCollection<IComposableEvaluatable> Conditions { get; set; }
     IReadOnlyCollection<IQuerySortOrder> OrderByFields { get; set; }
 }
 
@@ -18,11 +18,6 @@ internal interface IQuerySortOrder
 {
     IExpression FieldNameExpression { get; set; }
     QuerySortOrderDirection Order { get; set; }
-}
-
-interface IComposedEvaluatable : IEvaluatable<bool>
-{
-    IReadOnlyCollection<IComposableEvaluatable> Conditions { get; set; }
 }
 
 internal interface IComposableEvaluatable : IEvaluatable<bool>
@@ -54,7 +49,7 @@ internal sealed class MyQuery : IQuery
 {
     public int? Limit { get; set; }
     public int? Offset { get; set; }
-    public IComposedEvaluatable Filter { get; set; }
+    public IReadOnlyCollection<IComposableEvaluatable> Conditions { get; set; }
     public IReadOnlyCollection<IQuerySortOrder> OrderByFields { get; set; }
 }
 
@@ -91,10 +86,9 @@ internal sealed class ComposableEvaluatable : IComposableEvaluatable
             .ConfigureAwait(false);
 }
 
-internal sealed class ComposedEvaluatable : IComposedEvaluatable, IValidatableObject
+internal sealed class ComposedEvaluatable : IEvaluatable<bool>, IValidatableObject
 {
     public IReadOnlyCollection<IComposableEvaluatable> Conditions { get; set; }
-    public string SourceExpression { get; set; }
 
     public async Task<Result<object?>> EvaluateAsync()
         => (await EvaluateTypedAsync().ConfigureAwait(false)).TryCastAllowNull<object?>();
@@ -314,18 +308,14 @@ public class QueryFrameworkTests : TestBase
         {
             Limit = 10,
             Offset = 100,
-            Filter = new ComposedEvaluatable
-            {
-                SourceExpression = "Some source expression",
-                Conditions =
-                [
-                    new ComposableEvaluatable { LeftExpression = new ConstantExpression<string>("A"), Operator = new EqualsOperator(), RightExpression = new ConstantExpression<string>("A") }
-                ]
-            }
+            Conditions = 
+            [
+                new ComposableEvaluatable { LeftExpression = new ConstantExpression<string>("A"), Operator = new EqualsOperator(), RightExpression = new ConstantExpression<string>("A") }
+            ]
         };
 
         // Act
-        var result = await query.Filter.EvaluateTypedAsync();
+        var result = await new ComposedEvaluatable { Conditions = query.Conditions }.EvaluateTypedAsync();
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
