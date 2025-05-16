@@ -16,7 +16,7 @@ public sealed class UnaryExpression : IExpression<bool>
     }
 
     public async Task<Result<object?>> EvaluateAsync()
-        => (await EvaluateTypedAsync().ConfigureAwait(false)).TryCastAllowNull<object?>();
+        => (await EvaluateTypedAsync().ConfigureAwait(false));
 
     public async Task<Result<bool>> EvaluateTypedAsync()
         => (Operand.Value is not null

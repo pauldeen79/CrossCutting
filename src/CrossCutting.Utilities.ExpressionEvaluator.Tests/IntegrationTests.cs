@@ -1112,7 +1112,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     private sealed class MyTypedFunction : IFunction<string>
     {
         public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
-            => (await EvaluateTypedAsync(context).ConfigureAwait(false)).TryCastAllowNull<object?>();
+            => await EvaluateTypedAsync(context).ConfigureAwait(false);
 
         public async Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context)
             => (await new AsyncResultDictionaryBuilder()

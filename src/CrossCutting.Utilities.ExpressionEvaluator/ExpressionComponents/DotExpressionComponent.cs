@@ -87,7 +87,7 @@ public class DotExpressionComponent : IExpressionComponent
             return firstResult.ToBuilder().WithExpressionComponentType(typeof(DotExpressionComponent));
         }
 
-        var state = new DotExpressionComponentState(context, _functionParser, firstResult.ToResult().TryCastAllowNull<object?>(), split[0]);
+        var state = new DotExpressionComponentState(context, _functionParser, firstResult.ToResult(), split[0]);
         state.ResultType = firstResult.ResultType;
 
         foreach (var part in split.Skip(1))

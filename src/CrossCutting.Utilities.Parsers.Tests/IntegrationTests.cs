@@ -72,12 +72,12 @@ public sealed class IntegrationTests : IDisposable
     private sealed class MyBooleanFunction : ITypedFunction<bool>
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-            => EvaluateTyped(context).TryCastAllowNull<object?>();
+            => EvaluateTyped(context);
 
         public Result<bool> EvaluateTyped(FunctionCallContext context)
             => new ResultDictionaryBuilder()
-            .Add("Expression", () => context.GetArgumentBooleanValueResult(0, "Expression"))
-            .Build()
-            .OnSuccess(results => Result.Success(results.GetValue<bool>("Expression")));
+                .Add("Expression", () => context.GetArgumentBooleanValueResult(0, "Expression"))
+                .Build()
+                .OnSuccess(results => Result.Success(results.GetValue<bool>("Expression")));
     }
 }

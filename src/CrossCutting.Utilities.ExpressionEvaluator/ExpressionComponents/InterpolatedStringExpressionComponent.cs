@@ -20,8 +20,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
             return Result.Invalid<object?>("FormattableString is not closed correctly");
         }
 
-        return (await EvaluateRecursiveAsync(context.Expression.Substring(2, context.Expression.Length - 3), context).ConfigureAwait(false))
-            .TryCastAllowNull<object?>();
+        return await EvaluateRecursiveAsync(context.Expression.Substring(2, context.Expression.Length - 3), context).ConfigureAwait(false);
     }
 
     public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)

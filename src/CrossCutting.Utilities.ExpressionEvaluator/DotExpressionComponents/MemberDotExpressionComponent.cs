@@ -21,7 +21,7 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
         var result = (await _memberResolver.ResolveAsync(context).ConfigureAwait(false)).IgnoreNotFound();
         if (!result.IsSuccessful() || result.Value is null)
         {
-            return result.TryCastAllowNull<object?>();
+            return result;
         }
 
         return result.Value.Member switch

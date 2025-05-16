@@ -112,7 +112,7 @@ internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
     public IQuery Query { get; set; }
 
     public async Task<Result<object?>> EvaluateAsync()
-        => (await EvaluateTypedAsync().ConfigureAwait(false)).TryCastAllowNull<object?>();
+        => await EvaluateTypedAsync().ConfigureAwait(false);
 
     public async Task<Result<bool>> EvaluateTypedAsync()
     {
