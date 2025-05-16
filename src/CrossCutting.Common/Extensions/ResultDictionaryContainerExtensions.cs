@@ -17,6 +17,12 @@ public static class ResultDictionaryContainerExtensions
     public static Result<T> OnSuccess<T>(this IResultDictionaryContainer instance, Func<IReadOnlyDictionary<string, Result>, Result<T>> successDelegate)
         => instance.Results.OnSuccess(successDelegate);
 
+    public static Task<Result> OnSuccess(this IResultDictionaryContainer instance, Func<IReadOnlyDictionary<string, Result>, Task<Result>> successDelegate)
+        => instance.Results.OnSuccess(successDelegate);
+
+    public static Task<Result<T>> OnSuccess<T>(this IResultDictionaryContainer instance, Func<IReadOnlyDictionary<string, Result>, Task<Result<T>>> successDelegate)
+        => instance.Results.OnSuccess(successDelegate);
+
     public static Result OnSuccess<T>(this IResultDictionaryContainer<T> instance, Action<IReadOnlyDictionary<string, Result<T>>> successDelegate)
         => instance.Results.OnSuccess(successDelegate);
 
