@@ -20,18 +20,18 @@ internal interface IQuerySortOrder
     QuerySortOrderDirection Order { get; set; }
 }
 
-interface IComposedEvaluatable : IExpression<bool>
+interface IComposedEvaluatable : IEvaluatable<bool>
 {
     IReadOnlyCollection<IComposableEvaluatable> Conditions { get; set; }
 }
 
-internal interface IComposableEvaluatable : IExpression<bool>
+internal interface IComposableEvaluatable : IEvaluatable<bool>
 {
     StringComparison StringComparison { get; set; }
 
-    IExpression LeftExpression { get; set; }
+    IEvaluatable LeftExpression { get; set; }
     IOperator Operator { get; set; }
-    IExpression RightExpression { get; set; }
+    IEvaluatable RightExpression { get; set; }
 
     Combination? Combination { get; set; }
     bool StartGroup { get; set; }
@@ -53,18 +53,14 @@ internal enum Combination
 internal class MyQuery : IQuery
 {
     public int? Limit { get; set; }
-
     public int? Offset { get; set; }
-
     public IComposedEvaluatable Filter { get; set; }
-
     public IReadOnlyCollection<IQuerySortOrder> OrderByFields { get; set; }
 }
 
 internal class QuerySortOrder : IQuerySortOrder
 {
     public IExpression FieldNameExpression { get; set; }
-
     public QuerySortOrderDirection Order { get; set; }
 }
 
@@ -72,14 +68,12 @@ internal class ComposableEvaluatable : IComposableEvaluatable
 {
     public StringComparison StringComparison { get; set; }
 
-    public IExpression LeftExpression { get; set; }
+    public IEvaluatable LeftExpression { get; set; }
     public IOperator Operator { get; set; }
-    public IExpression RightExpression { get; set; }
+    public IEvaluatable RightExpression { get; set; }
 
     public Combination? Combination { get; set; }
-
     public bool StartGroup { get; set; }
-
     public bool EndGroup { get; set; }
 
     public async Task<Result<object?>> EvaluateAsync()
@@ -95,12 +89,6 @@ internal class ComposableEvaluatable : IComposableEvaluatable
                 .EvaluateAsync(results.GetValue<object?>(Constants.LeftExpression), results.GetValue<object?>(Constants.RightExpression), StringComparison)
                 .ConfigureAwait(false))
             .ConfigureAwait(false);
-
-    public Task<ExpressionParseResult> ParseAsync()
-        => Task.FromResult<ExpressionParseResult>(new ExpressionParseResultBuilder()
-            .WithResultType(typeof(bool))
-            .WithSourceExpression("Dummy")
-            .WithExpressionComponentType(GetType()));
 }
 
 internal class ComposedEvaluatable : IComposedEvaluatable, IValidatableObject
@@ -120,9 +108,6 @@ internal class ComposedEvaluatable : IComposedEvaluatable, IValidatableObject
 
         return await EvaluateComplexConditions(Conditions).ConfigureAwait(false);
     }
-
-    public Task<ExpressionParseResult> ParseAsync()
-        => Task.FromResult<ExpressionParseResult>(new ExpressionParseResultBuilder().WithResultType(typeof(bool)).WithSourceExpression(SourceExpression).WithExpressionComponentType(GetType()));
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
@@ -289,7 +274,7 @@ internal class EqualsOperator : IOperator
         => Task.FromResult(Equal.Evaluate(leftValue, rightValue, stringComparison));
 }
 
-internal class ConstantExpression : IExpression
+internal class ConstantExpression : IEvaluatable
 {
     public ConstantExpression(object? value)
     {
@@ -300,14 +285,23 @@ internal class ConstantExpression : IExpression
 
     public Task<Result<object?>> EvaluateAsync()
         => Task.FromResult(Result.Success(Value));
-
-    public Task<ExpressionParseResult> ParseAsync()
-        => Task.FromResult<ExpressionParseResult>(new ExpressionParseResultBuilder()
-            .WithSourceExpression("Dummy")
-            .WithResultType(Value?.GetType())
-            .WithExpressionComponentType(GetType()));
 }
 
+internal class ConstantExpression<T> : IEvaluatable<T>
+{
+    public ConstantExpression(T value)
+    {
+        Value = value;
+    }
+
+    public T Value { get; }
+
+    public Task<Result<object?>> EvaluateAsync()
+        => Task.FromResult(Result.Success<object?>(Value));
+
+    public Task<Result<T>> EvaluateTypedAsync()
+        => Task.FromResult(Result.Success(Value));
+}
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
 public class QueryFrameworkTests : TestBase
@@ -325,7 +319,7 @@ public class QueryFrameworkTests : TestBase
                 SourceExpression = "Some source expression",
                 Conditions =
                 [
-                    new ComposableEvaluatable { LeftExpression = new ConstantExpression("A"), Operator = new EqualsOperator(), RightExpression = new ConstantExpression("A") }
+                    new ComposableEvaluatable { LeftExpression = new ConstantExpression<string>("A"), Operator = new EqualsOperator(), RightExpression = new ConstantExpression<string>("A") }
                 ]
             }
         };
@@ -336,8 +330,5 @@ public class QueryFrameworkTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldBe(true);
-
-        // Findings:
-        // -You have to implement ParseAsync on an IExpression (ComposableEvaluatable and ConstantExpression), but we are not parsing anything. We are constructing expression ourselves. Maybe refactor IExpression to inherit from IEvaluatable and IEvaluatable<T>.
     }
 }
