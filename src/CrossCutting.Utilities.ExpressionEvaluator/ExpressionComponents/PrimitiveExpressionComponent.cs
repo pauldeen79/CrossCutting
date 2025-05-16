@@ -12,36 +12,38 @@ public class PrimitiveExpressionComponent : IExpressionComponent
 
     public int Order => 10;
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        return context.Expression switch
+    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
+        => Task.Run(() =>
         {
-            "true" => Result.Success<object?>(true),
-            "false" => Result.Success<object?>(false),
-            "null" => Result.Success<object?>(null),
-            "DateTime.Now" => Result.Success<object?>(_dateTimeProvider.GetCurrentDateTime()),
-            "DateTime.Today" => Result.Success<object?>(_dateTimeProvider.GetCurrentDateTime().Date),
-            _ => Result.Continue<object?>()
-        };
-    }
+            context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
+            return context.Expression switch
+            {
+                "true" => Result.Success<object?>(true),
+                "false" => Result.Success<object?>(false),
+                "null" => Result.Success<object?>(null),
+                "DateTime.Now" => Result.Success<object?>(_dateTimeProvider.GetCurrentDateTime()),
+                "DateTime.Today" => Result.Success<object?>(_dateTimeProvider.GetCurrentDateTime().Date),
+                _ => Result.Continue<object?>()
+            };
+        });
 
-        var result = new ExpressionParseResultBuilder()
-            .WithSourceExpression(context.Expression)
-            .WithExpressionComponentType(typeof(PrimitiveExpressionComponent));
-
-        return context.Expression switch
+    public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
+        => Task.Run<ExpressionParseResult>(() =>
         {
-            "true" or "false" => result.WithResultType(typeof(bool)).WithStatus(ResultStatus.Ok),
-            // for null, the result type is null
-            "null" => result.WithStatus(ResultStatus.Ok),
-            "DateTime.Now" or "DateTime.Today" => result.WithResultType(typeof(DateTime)).WithStatus(ResultStatus.Ok),
-            _ => result.WithStatus(ResultStatus.Continue)
-        };
-    }
+            context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+            var result = new ExpressionParseResultBuilder()
+                .WithSourceExpression(context.Expression)
+                .WithExpressionComponentType(typeof(PrimitiveExpressionComponent));
+
+            return context.Expression switch
+            {
+                "true" or "false" => result.WithResultType(typeof(bool)).WithStatus(ResultStatus.Ok),
+                // for null, the result type is null
+                "null" => result.WithStatus(ResultStatus.Ok),
+                "DateTime.Now" or "DateTime.Today" => result.WithResultType(typeof(DateTime)).WithStatus(ResultStatus.Ok),
+                _ => result.WithStatus(ResultStatus.Continue)
+            };
+        });
 }

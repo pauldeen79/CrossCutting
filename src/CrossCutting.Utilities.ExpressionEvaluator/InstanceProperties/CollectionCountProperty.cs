@@ -5,10 +5,11 @@
 [MemberResultType(typeof(int))]
 public class CollectionCountProperty : IProperty
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
+    public Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
+        => Task.Run(() =>
+        {
+            context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.GetInstanceValueResult<ICollection>().Transform<object?>(result => result.Count);
-    }
+            return context.GetInstanceValueResult<ICollection>().Transform<object?>(result => result.Count);
+        });
 }

@@ -2,119 +2,121 @@
 
 public partial record FunctionCall
 {
-    public Result<object?> GetArgumentValueResult(int index, string argumentName, FunctionCallContext context)
+    public async Task<Result<object?>> GetArgumentValueResultAsync(int index, string argumentName, FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return index + 1 > Arguments.Count
             ? Result.Invalid<object?>($"Missing argument: {argumentName}")
-            : context.Context.Evaluate(Arguments.ElementAt(index));
+            : await context.Context.EvaluateAsync(Arguments.ElementAt(index)).ConfigureAwait(false);
     }
 
-    public Result<object?> GetArgumentValueResult(int index, string argumentName, FunctionCallContext context, object? defaultValue)
+    public async Task<Result<object?>> GetArgumentValueResultAsync(int index, string argumentName, FunctionCallContext context, object? defaultValue)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return index + 1 > Arguments.Count
             ? Result.Success(defaultValue)
-            : context.Context.Evaluate(Arguments.ElementAt(index));
+            : await context.Context.EvaluateAsync(Arguments.ElementAt(index)).ConfigureAwait(false);
     }
 
-    public Result<T> GetArgumentValueResult<T>(int index, string argumentName, FunctionCallContext context)
+    public async Task<Result<T>> GetArgumentValueResultAsync<T>(int index, string argumentName, FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return index + 1 > Arguments.Count
             ? Result.Invalid<T>($"Missing argument: {argumentName}")
-            : context.Context.Evaluate(Arguments.ElementAt(index)).TryCast<T>();
+            : (await context.Context.EvaluateAsync(Arguments.ElementAt(index)).ConfigureAwait(false)).TryCast<T>();
     }
 
-    public Result<T?> GetArgumentValueResult<T>(int index, string argumentName, FunctionCallContext context, T? defaultValue)
+    public async Task<Result<T?>> GetArgumentValueResultAsync<T>(int index, string argumentName, FunctionCallContext context, T? defaultValue)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return index + 1 > Arguments.Count
             ? Result.Success(defaultValue)
-            : context.Context.Evaluate(Arguments.ElementAt(index)).TryCastAllowNull<T>().Transform(value => value is null ? defaultValue : value);
+            : (await context.Context.EvaluateAsync(Arguments.ElementAt(index)).ConfigureAwait(false))
+                .TryCastAllowNull<T>()
+                .Transform(value => value is null ? defaultValue : value);
     }
 
-    public Result<string> GetArgumentStringValueResult(int index, string argumentName, FunctionCallContext context)
-        => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, context));
+    public async Task<Result<string>> GetArgumentStringValueResultAsync(int index, string argumentName, FunctionCallContext context)
+        => ProcessStringArgumentResult(argumentName, await GetArgumentValueResultAsync(index, argumentName, context).ConfigureAwait(false));
 
-    public Result<string> GetArgumentStringValueResult(int index, string argumentName, FunctionCallContext context, string defaultValue)
-        => ProcessStringArgumentResult(argumentName, GetArgumentValueResult(index, argumentName, context, (object)defaultValue));
+    public async Task<Result<string>> GetArgumentStringValueResultAsync(int index, string argumentName, FunctionCallContext context, string defaultValue)
+        => ProcessStringArgumentResult(argumentName, await GetArgumentValueResultAsync(index, argumentName, context, (object)defaultValue).ConfigureAwait(false));
 
-    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, FunctionCallContext context)
+    public async Task<Result<int>> GetArgumentInt32ValueResultAsync(int index, string argumentName, FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return ProcessInt32ArgumentResult(argumentName, context, GetArgumentValueResult(index, argumentName, context));
+        return await ProcessInt32ArgumentResultAsync(argumentName, context, await GetArgumentValueResultAsync(index, argumentName, context).ConfigureAwait(false)).ConfigureAwait(false);
     }
 
-    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, FunctionCallContext context, int defaultValue)
+    public async Task<Result<int>> GetArgumentInt32ValueResultAsync(int index, string argumentName, FunctionCallContext context, int defaultValue)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return ProcessInt32ArgumentResult(argumentName, context, GetArgumentValueResult(index, argumentName, context, (object)defaultValue));
+        return await ProcessInt32ArgumentResultAsync(argumentName, context, await GetArgumentValueResultAsync(index, argumentName, context, (object)defaultValue).ConfigureAwait(false)).ConfigureAwait(false);
     }
 
-    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, FunctionCallContext context)
+    public async Task<Result<long>> GetArgumentInt64ValueResultAsync(int index, string argumentName, FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return ProcessInt64ArgumentResult(argumentName, context, GetArgumentValueResult(index, argumentName, context));
+        return await ProcessInt64ArgumentResultAsync(argumentName, context, await GetArgumentValueResultAsync(index, argumentName, context).ConfigureAwait(false)).ConfigureAwait(false);
     }
 
-    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, FunctionCallContext context, long defaultValue)
+    public async Task<Result<long>> GetArgumentInt64ValueResultAsync(int index, string argumentName, FunctionCallContext context, long defaultValue)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return ProcessInt64ArgumentResult(argumentName, context, GetArgumentValueResult(index, argumentName, context, (object)defaultValue));
+        return await ProcessInt64ArgumentResultAsync(argumentName, context, await GetArgumentValueResultAsync(index, argumentName, context, (object)defaultValue).ConfigureAwait(false)).ConfigureAwait(false);
     }
 
-    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, FunctionCallContext context)
+    public async Task<Result<decimal>> GetArgumentDecimalValueResultAsync(int index, string argumentName, FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return ProcessDecimalArgumentResult(argumentName, context, GetArgumentValueResult(index, argumentName, context));
+        return await ProcessDecimalArgumentResultAsync(argumentName, context, await GetArgumentValueResultAsync(index, argumentName, context).ConfigureAwait(false)).ConfigureAwait(false);
     }
 
-    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, FunctionCallContext context, decimal defaultValue)
+    public async Task<Result<decimal>> GetArgumentDecimalValueResultAsync(int index, string argumentName, FunctionCallContext context, decimal defaultValue)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return ProcessDecimalArgumentResult(argumentName, context, GetArgumentValueResult(index, argumentName, context, (object)defaultValue));
+        return await ProcessDecimalArgumentResultAsync(argumentName, context, await GetArgumentValueResultAsync(index, argumentName, context, (object)defaultValue).ConfigureAwait(false)).ConfigureAwait(false);
     }
 
-    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, FunctionCallContext context)
+    public async Task<Result<bool>> GetArgumentBooleanValueResultAsync(int index, string argumentName, FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return ProcessBooleanArgumentResult(argumentName, context, GetArgumentValueResult(index, argumentName, context));
+        return await ProcessBooleanArgumentResultAsync(argumentName, context, await GetArgumentValueResultAsync(index, argumentName, context).ConfigureAwait(false)).ConfigureAwait(false);
     }
 
-    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, FunctionCallContext context, bool defaultValue)
+    public async Task<Result<bool>> GetArgumentBooleanValueResultAsync(int index, string argumentName, FunctionCallContext context, bool defaultValue)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return ProcessBooleanArgumentResult(argumentName, context, GetArgumentValueResult(index, argumentName, context, (object)defaultValue));
+        return await ProcessBooleanArgumentResultAsync(argumentName, context, await GetArgumentValueResultAsync(index, argumentName, context, (object)defaultValue).ConfigureAwait(false)).ConfigureAwait(false);
     }
 
-    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, FunctionCallContext context)
+    public async Task<Result<DateTime>> GetArgumentDateTimeValueResultAsync(int index, string argumentName, FunctionCallContext context)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return ProcessDateTimeArgumentResult(argumentName, context, GetArgumentValueResult(index, argumentName, context));
+        return await ProcessDateTimeArgumentResultAsync(argumentName, context, await GetArgumentValueResultAsync(index, argumentName, context).ConfigureAwait(false)).ConfigureAwait(false);
     }
 
-    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, FunctionCallContext context, DateTime defaultValue)
+    public async Task<Result<DateTime>> GetArgumentDateTimeValueResultAsync(int index, string argumentName, FunctionCallContext context, DateTime defaultValue)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return ProcessDateTimeArgumentResult(argumentName, context, GetArgumentValueResult(index, argumentName, context, (object)defaultValue));
+        return await ProcessDateTimeArgumentResultAsync(argumentName, context, await GetArgumentValueResultAsync(index, argumentName, context, (object)defaultValue).ConfigureAwait(false)).ConfigureAwait(false);
     }
 
-    private static Result<int> ProcessInt32ArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
+    private static async Task<Result<int>> ProcessInt32ArgumentResultAsync(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -131,7 +133,7 @@ public partial record FunctionCall
             return Result.Invalid<int>($"{argumentName} is not of type integer");
         }
 
-        var parseResult = context.Context.Evaluate(s);
+        var parseResult = await context.Context.EvaluateAsync(s).ConfigureAwait(false);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<int>($"{argumentName} is not of type integer");
@@ -142,7 +144,7 @@ public partial record FunctionCall
             : Result.Invalid<int>($"{argumentName} is not of type integer");
     }
 
-    private static Result<long> ProcessInt64ArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
+    private static async Task<Result<long>> ProcessInt64ArgumentResultAsync(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -159,7 +161,7 @@ public partial record FunctionCall
             return Result.Invalid<long>($"{argumentName} is not of type long integer");
         }
 
-        var parseResult = context.Context.Evaluate(s);
+        var parseResult = await context.Context.EvaluateAsync(s).ConfigureAwait(false);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<long>($"{argumentName} is not of type long integer");
@@ -170,7 +172,7 @@ public partial record FunctionCall
             : Result.Invalid<long>($"{argumentName} is not of type long integer");
     }
 
-    private static Result<decimal> ProcessDecimalArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
+    private static async Task<Result<decimal>> ProcessDecimalArgumentResultAsync(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -187,7 +189,7 @@ public partial record FunctionCall
             return Result.Invalid<decimal>($"{argumentName} is not of type decimal");
         }
 
-        var parseResult = context.Context.Evaluate(s);
+        var parseResult = await context.Context.EvaluateAsync(s).ConfigureAwait(false);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<decimal>($"{argumentName} is not of type decimal");
@@ -198,7 +200,7 @@ public partial record FunctionCall
             : Result.Invalid<decimal>($"{argumentName} is not of type decimal");
     }
 
-    private static Result<bool> ProcessBooleanArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
+    private static async Task<Result<bool>> ProcessBooleanArgumentResultAsync(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -215,7 +217,7 @@ public partial record FunctionCall
             return Result.Invalid<bool>($"{argumentName} is not of type boolean");
         }
 
-        var parseResult = context.Context.Evaluate(s);
+        var parseResult = await context.Context.EvaluateAsync(s).ConfigureAwait(false);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<bool>($"{argumentName} is not of type boolean");
@@ -226,7 +228,7 @@ public partial record FunctionCall
             : Result.Invalid<bool>($"{argumentName} is not of type boolean");
     }
 
-    private static Result<DateTime> ProcessDateTimeArgumentResult(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
+    private static async Task<Result<DateTime>> ProcessDateTimeArgumentResultAsync(string argumentName, FunctionCallContext context, Result<object?> argumentValueResult)
     {
         if (!argumentValueResult.IsSuccessful())
         {
@@ -242,7 +244,7 @@ public partial record FunctionCall
         {
             return Result.Invalid<DateTime>($"{argumentName} is not of type datetime");
         }
-        var parseResult = context.Context.Evaluate(s);
+        var parseResult = await context.Context.EvaluateAsync(s).ConfigureAwait(false);
         if (!parseResult.IsSuccessful())
         {
             return Result.Invalid<DateTime>($"{argumentName} is not of type datetime");

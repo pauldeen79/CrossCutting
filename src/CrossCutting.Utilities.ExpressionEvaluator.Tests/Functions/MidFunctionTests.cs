@@ -5,14 +5,14 @@ public class MidFunctionTests : TestBase<MidFunction>
     public class Evaluate : MidFunctionTests
     {
         [Fact]
-        public void Returns_Ok_When_String_Expression_Is_Long_Enough()
+        public async Task Returns_Ok_When_String_Expression_Is_Long_Enough()
         {
             // Arrange
             var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Mid").WithMemberType(MemberType.Function).AddArguments("\"hello world\"", "1", "4"), CreateContext("Dummy"));
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -20,14 +20,14 @@ public class MidFunctionTests : TestBase<MidFunction>
         }
 
         [Fact]
-        public void Returns_Invalid_When_Index_Plus_Value_Is_Too_High()
+        public async Task Returns_Invalid_When_Index_Plus_Value_Is_Too_High()
         {
             // Arrange
             var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Mid").WithMemberType(MemberType.Function).AddArguments("\"hello world\"", "0", "100000"), CreateContext("Dummy"));
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -35,14 +35,14 @@ public class MidFunctionTests : TestBase<MidFunction>
         }
 
         [Fact]
-        public void Returns_Invalid_When_Index_Is_Too_High()
+        public async Task Returns_Invalid_When_Index_Is_Too_High()
         {
             // Arrange
             var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Mid").WithMemberType(MemberType.Function).AddArguments("\"hello world\"", "100000", "1"), CreateContext("Dummy"));
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

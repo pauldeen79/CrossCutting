@@ -4,6 +4,8 @@ public abstract class TestBase
 {
     protected IExpressionEvaluator Evaluator { get; }
     protected IExpressionComponent Expression { get; }
+    protected IMemberResolver MemberResolver { get; }
+    protected IMemberDescriptorProvider MemberDescriptorProvider { get; }
     protected IDateTimeProvider DateTimeProvider { get; }
     protected DateTime CurrentDateTime { get; }
 
@@ -15,12 +17,12 @@ public abstract class TestBase
         IExpressionEvaluator? evaluator = null,
         ExpressionEvaluatorSettingsBuilder? settings = null)
     {
-        IReadOnlyDictionary<string, Func<Result<object?>>>? dict = null;
+        IReadOnlyDictionary<string, Task<Result<object?>>>? dict = null;
         if (state is not null)
         {
-            dict = new Dictionary<string, Func<Result<object?>>>
+            dict = new Dictionary<string, Task<Result<object?>>>
             {
-                { "state", () => Result.Success<object?>(state) }
+                { "state", Task.FromResult(Result.Success<object?>(state)) }
             };
         }
 
@@ -29,31 +31,29 @@ public abstract class TestBase
 
     protected ExpressionEvaluatorContext CreateContext(
         string? expression,
-        IReadOnlyDictionary<string, Func<Result<object?>>>? context = null,
+        IReadOnlyDictionary<string, Task<Result<object?>>>? state = null,
         int currentRecursionLevel = 1,
         ExpressionEvaluatorContext? parentContext = null,
         IExpressionEvaluator? evaluator = null,
         ExpressionEvaluatorSettingsBuilder? settings = null)
-            => new ExpressionEvaluatorContext(expression, settings ?? new ExpressionEvaluatorSettingsBuilder(), evaluator ?? Evaluator, context, currentRecursionLevel, parentContext);
+            => new ExpressionEvaluatorContext(expression, settings ?? new ExpressionEvaluatorSettingsBuilder(), evaluator ?? Evaluator, state, currentRecursionLevel, parentContext);
 
     protected DotExpressionComponentState CreateDotExpressionComponentState(string expression, object? left, string right)
-    {
-        var state = new DotExpressionComponentState(CreateContext(expression), new FunctionParser(), Result.Continue<object?>(), string.Empty, null);
-        //hacking
-        state.GetType().GetProperty(nameof(DotExpressionComponentState.Value), BindingFlags.Instance | BindingFlags.Public)!.SetValue(state, left);
-        state.GetType().GetProperty(nameof(DotExpressionComponentState.Part), BindingFlags.Instance | BindingFlags.Public)!.SetValue(state, right);
-        return state;
-    }
+        => new DotExpressionComponentState(CreateContext(expression), new FunctionParser(), Result.Continue<object?>(), string.Empty, null)
+        {
+            Value = left!,
+            Part = right
+        };
 
     protected TestBase()
     {
         // Initialize evaluator
         Evaluator = Substitute.For<IExpressionEvaluator>();
         Evaluator
-            .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
+            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>())
             .Returns(EvaluateExpression);
         Evaluator
-            .Parse(Arg.Any<ExpressionEvaluatorContext>())
+            .ParseAsync(Arg.Any<ExpressionEvaluatorContext>())
             .Returns(x =>
                 x.ArgAt<ExpressionEvaluatorContext>(0).Expression switch
                 {
@@ -62,23 +62,28 @@ public abstract class TestBase
                     "string" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
                     "unknown" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok),
                     "object" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(object)),
-                    "state" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(x.ArgAt<ExpressionEvaluatorContext>(0).State?.FirstOrDefault().Value?.Invoke().Value?.GetType()),
+                    "state" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(x.ArgAt<ExpressionEvaluatorContext>(0).State?.FirstOrDefault().Value?.Result.Value?.GetType()),
                     _ => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok)
                 });
 
         // Initialize expression
         Expression = Substitute.For<IExpressionComponent>();
-        // Note that you have to setup Evaluate and Validate method yourself
+        // Note that you have to setup EvaluateAsync and ValidateAsync yourself
+
+        MemberResolver = Substitute.For<IMemberResolver>();
+        // Note that you have to setup ResolveAsync yourself
+
+        MemberDescriptorProvider = Substitute.For<IMemberDescriptorProvider>();
+        // Note that you have to setup GetAll yourself
 
         // Freeze DateTime.Now to a predicatable value
         DateTimeProvider = Substitute.For<IDateTimeProvider>();
         CurrentDateTime =  new DateTime(2025, 2, 1, 5, 30, 0, DateTimeKind.Utc);
         DateTimeProvider.GetCurrentDateTime().Returns(CurrentDateTime);
-
     }
 
     // Test stub for expression evaluation, that supports strings, integers, long integers, decimals, booleans and DeteTimes (by using TryParse), as well as the context and null keywords
-    protected static Result<object?> EvaluateExpression(CallInfo callInfo)
+    protected static async Task<Result<object?>> EvaluateExpression(CallInfo callInfo)
     {
         var context = callInfo.ArgAt<ExpressionEvaluatorContext>(0);
 
@@ -88,9 +93,9 @@ public abstract class TestBase
         }
 
         var success = context.State.TryGetValue(context.Expression, out var dlg);
-        if (success)
+        if (success && dlg is not null)
         {
-            return dlg!();
+            return await dlg.ConfigureAwait(false);
         }
 
         if (context.Expression == "state.Length")
@@ -167,6 +172,8 @@ public abstract class TestBase<T> : TestBase
         if (p.ParameterType == typeof(IFunctionParser)) return new FunctionParser();
         if (p.ParameterType == typeof(IDateTimeProvider)) return DateTimeProvider;
         if (p.ParameterType == typeof(IExpressionComponent)) return Expression;
+        if (p.ParameterType == typeof(IMemberResolver)) return MemberResolver;
+        if (p.ParameterType == typeof(IMemberDescriptorProvider)) return MemberDescriptorProvider;
         if (p.ParameterType == typeof(IEnumerable<IExpressionComponent>)) return new IExpressionComponent[] { Expression };
         if (p.ParameterType == typeof(IEnumerable<IDotExpressionComponent>)) return new IDotExpressionComponent[] { new ReflectionMethodDotExpressionComponent(), new ReflectionPropertyDotExpressionComponent() };
         return null;

@@ -1,36 +1,38 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public sealed class UnaryExpression : IExpression
+public sealed class UnaryExpression : IExpression<bool>
 {
+    private readonly ExpressionEvaluatorContext _context;
+
     public Result<IExpression> Operand { get; }
 
-    public UnaryExpression(Result<IExpression> operand)
+    public UnaryExpression(ExpressionEvaluatorContext context, Result<IExpression> operand)
     {
+        ArgumentGuard.IsNotNull(context, nameof(context));
         ArgumentGuard.IsNotNull(operand, nameof(operand));
 
+        _context = context;
         Operand = operand;
     }
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    public async Task<Result<object?>> EvaluateAsync()
+        => (await EvaluateTypedAsync().ConfigureAwait(false));
+
+    public async Task<Result<bool>> EvaluateTypedAsync()
+        => (Operand.Value is not null
+            ? (await Operand.Value.EvaluateAsync().ConfigureAwait(false)).TryCastAllowNull<bool>()
+            : Result.FromExistingResult<bool>(Operand))
+        .OnSuccess(result => Result.Success(!result.Value.IsTruthy()));
+
+    public async Task<ExpressionParseResult> ParseAsync()
     {
-        ArgumentGuard.IsNotNull(context, nameof(context));
-
-        return (Operand.Value?.Evaluate(context) ?? Result.FromExistingResult<object?>(Operand))
-            .OnSuccess(result => Result.Success<object?>(!result.Value.IsTruthy()));
-    }
-
-    public Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context)
-        => Evaluate(context).TryCastAllowNull<T>();
-
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        var operandResult = Operand.Value?.Parse(context);
+        var operandResult = Operand.Value is not null
+            ? await Operand.Value.ParseAsync().ConfigureAwait(false)
+            : null;
 
         var result = new ExpressionParseResultBuilder()
             .WithExpressionComponentType(typeof(UnaryExpression))
-            .WithSourceExpression(context.Expression)
+            .WithSourceExpression(_context.Expression)
             .WithResultType(typeof(bool))
             .AddPartResult(operandResult ?? new ExpressionParseResultBuilder().FillFromResult(Operand), Constants.Operand)
             .SetStatusFromPartResults();

@@ -32,7 +32,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
                     .WithInstanceType(memberType == MemberType.Constructor
                         ? type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type
                         : type.GetCustomAttribute<MemberInstanceTypeAttribute>()?.Type)
-                    .WithReturnValueType(type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type)
+                    .WithReturnValueType(type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type ?? TryGetReturnValueType(type))
                     .AddArguments(type.GetCustomAttributes<MemberArgumentAttribute>().Select(CreateFunctionArgument))
                     .AddTypeArguments(type.GetCustomAttributes<MemberTypeArgumentAttribute>().Select(CreateFunctionTypeArgument))
                     .AddResults(type.GetCustomAttributes<MemberResultAttribute>().Select(CreateFunctionResult)));
@@ -40,6 +40,17 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
 
             return Result.Success<IReadOnlyCollection<MemberDescriptor>>(descriptors);
         });
+    }
+
+    private static Type? TryGetReturnValueType(Type type)
+    {
+        var typedFunctions = type.GetInterfaces().Where(x => x.FullName.StartsWith(typeof(IFunction).FullName, StringComparison.Ordinal) && x.IsGenericType && x.GenericTypeArguments.Length == 1).ToArray();
+        if (typedFunctions.Length == 1)
+        {
+            return typedFunctions[0].GenericTypeArguments[0];
+        }
+
+        return null;
     }
 
     private static MemberType GetMemberType(object? source)

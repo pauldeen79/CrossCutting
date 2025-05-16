@@ -4,10 +4,10 @@
 [MemberArgument("Expression", typeof(object))]
 public class ConvertFunction : IFunction
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
-        => new ResultDictionaryBuilder()
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
+        => (await new AsyncResultDictionaryBuilder()
             .Add<Type>(context, 0, "Type")
             .Add(context, 1, "Expression")
-            .Build()
+            .Build().ConfigureAwait(false))
             .OnSuccess(results => Result.WrapException(() => Result.Success<object?>(Convert.ChangeType(results.GetValue("Expression")!, results.GetValue<Type>("Type")))));
 }

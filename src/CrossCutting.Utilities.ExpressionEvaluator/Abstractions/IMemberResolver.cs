@@ -2,5 +2,5 @@
 
 public interface IMemberResolver
 {
-    Result<MemberAndTypeDescriptor> Resolve(FunctionCallContext functionCallContext);
+    Task<Result<MemberAndTypeDescriptor>> ResolveAsync(FunctionCallContext functionCallContext);
 }

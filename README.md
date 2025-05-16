@@ -67,7 +67,7 @@ There have been some breaking changes.
 
 # ExpressionEvaluator
 
-The ExpressionEvaluator is a full rewrite of the Parsers project, where and Expression is the entry type for everything. An expression can contain the following things:
+The ExpressionEvaluator is a complete rewrite of the Parsers project, where and Expression is the entry type for everything. An expression can contain the following things:
 * Strings, like "hello world"
 * Interpolated strings, like "hello {name}"
 * Booleans "true" and "false"

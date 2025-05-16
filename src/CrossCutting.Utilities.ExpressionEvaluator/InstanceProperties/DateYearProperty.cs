@@ -5,10 +5,11 @@
 [MemberResultType(typeof(int))]
 public class DateYearProperty : IProperty
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
+    public Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
+        => Task.Run(() =>
+        {
+            context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.GetInstanceValueResult<DateTime>().Transform<object?>(result => result.Year);
-    }
+            return context.GetInstanceValueResult<DateTime>().Transform<object?>(result => result.Year);
+        });
 }

@@ -12,13 +12,14 @@ public class UnaryExpressionTests : TestBase
     public class Evaluate : UnaryExpressionTests
     {
         [Fact]
-        public void Returns_Error_From_Expression()
+        public async Task Returns_Error_From_Expression()
         {
             // Arrange
-            var sut = new UnaryExpression(Result.Error<IExpression>("Kaboom"));
+            var context = CreateContext("kaboom");
+            var sut = new UnaryExpression(context, Result.Error<IExpression>("Kaboom"));
 
             // Act
-            var result = sut.Evaluate(CreateContext("kaboom"));
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -26,17 +27,18 @@ public class UnaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Error_From_Expression_Parsing()
+        public async Task Returns_Error_From_Expression_Parsing()
         {
             // Arrange
+            var context = CreateContext("!kaboom");
             Operand
-                .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
+                .EvaluateAsync()
                 .Returns(Result.Error<object?>("Kaboom"));
 
-            var sut = new UnaryExpression(Result.Success(Operand));
+            var sut = new UnaryExpression(context, Result.Success(Operand));
 
             // Act
-            var result = sut.Evaluate(CreateContext("!kaboom"));
+            var result = await sut.EvaluateAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -47,13 +49,14 @@ public class UnaryExpressionTests : TestBase
     public class Parse : UnaryExpressionTests
     {
         [Fact]
-        public void Returns_Error_From_Expression()
+        public async Task Returns_Error_From_Expression()
         {
             // Arrange
-            var sut = new UnaryExpression(Result.Error<IExpression>("Kaboom"));
+            var context = CreateContext("kaboom");
+            var sut = new UnaryExpression(context, Result.Error<IExpression>("Kaboom"));
 
             // Act
-            var result = sut.Parse(CreateContext("kaboom"));
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -63,17 +66,18 @@ public class UnaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Error_From_Expression_Parsing()
+        public async Task Returns_Error_From_Expression_Parsing()
         {
             // Arrange
+            var context = CreateContext("!kaboom");
             Operand
-                .Parse(Arg.Any<ExpressionEvaluatorContext>())
+                .ParseAsync()
                 .Returns(new ExpressionParseResultBuilder().WithErrorMessage("Kaboom").WithStatus(ResultStatus.Error));
 
-            var sut = new UnaryExpression(Result.Success(Operand));
+            var sut = new UnaryExpression(context, Result.Success(Operand));
 
             // Act
-            var result = sut.Parse(CreateContext("!kaboom"));
+            var result = await sut.ParseAsync();
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

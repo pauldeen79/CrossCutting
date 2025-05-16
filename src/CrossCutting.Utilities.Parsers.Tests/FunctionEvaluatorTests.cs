@@ -709,14 +709,10 @@ public sealed class FunctionEvaluatorTests : IDisposable
     private sealed class ErrorFunction : IValidatableFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            return Result.Error<object?>("Kaboom");
-        }
+            => Result.Error<object?>("Kaboom");
 
         public Result<Type> Validate(FunctionCallContext context)
-        {
-            return Result.Error<Type>("Kaboom");
-        }
+            => Result.Error<Type>("Kaboom");
     }
 
     [FunctionName("MyFunction")]
@@ -724,23 +720,17 @@ public sealed class FunctionEvaluatorTests : IDisposable
     private sealed class MyFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            return Result.Success<object?>("function result");
-        }
+            => Result.Success<object?>("function result");
     }
 
     [FunctionName("MyTypedFunction")]
     private sealed class MyTypedFunction : ITypedFunction<string>
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            return Result.Success<object?>("function result");
-        }
+            => Result.Success<object?>("function result");
 
         public Result<string> EvaluateTyped(FunctionCallContext context)
-        {
-            return Result.Success("function result");
-        }
+            => Result.Success("function result");
     }
 
     [FunctionName("MyFunction2")]
@@ -748,14 +738,10 @@ public sealed class FunctionEvaluatorTests : IDisposable
     private sealed class MyFunction2 : IValidatableFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            return Result.Success<object?>("function result");
-        }
+            => Result.Success<object?>("function result");
 
         public Result<Type> Validate(FunctionCallContext context)
-        {
-            return Result.Invalid<Type>("Custom validation message");
-        }
+            => Result.Invalid<Type>("Custom validation message");
     }
 
     private sealed class PassThroughFunction : IDynamicDescriptorsFunction
@@ -781,9 +767,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     private sealed class OverloadTest1 : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            throw new NotImplementedException();
-        }
+            => Result.NotImplemented<object?>();
     }
 
     [FunctionName("Overload")]
@@ -792,9 +776,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     private sealed class OverloadTest2 : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            throw new NotImplementedException();
-        }
+            => Result.NotImplemented<object?>();
     }
 
     [FunctionName("Overload")]
@@ -803,9 +785,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     private sealed class OverloadTest3 : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            throw new NotImplementedException();
-        }
+            => Result.NotImplemented<object?>();
     }
 
     [FunctionName("Optional")]
@@ -824,9 +804,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     private sealed class AnimalFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            throw new NotImplementedException();
-        }
+            => Result.NotImplemented<object?>();
     }
 
     [FunctionName("MyInterfaceFunction")]
@@ -834,9 +812,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     private sealed class MyInterfaceFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            throw new NotImplementedException();
-        }
+            => Result.NotImplemented<object?>();
     }
 
     [FunctionName("ObjectArgumentFunction")]
@@ -844,18 +820,14 @@ public sealed class FunctionEvaluatorTests : IDisposable
     private sealed class ObjectArgumentFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            throw new NotImplementedException();
-        }
+            => Result.NotImplemented<object?>();
     }
 
     [FunctionName("ObjectResultFunction")]
     private sealed class ObjectResultFunction : IFunction
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            return Result.Success<object?>("My value");
-        }
+            => Result.Success<object?>("My value");
     }
 
     [FunctionName("StringArgumentFunction")]
@@ -863,14 +835,10 @@ public sealed class FunctionEvaluatorTests : IDisposable
     private sealed class StringArgumentFunction : ITypedFunction<string>
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-        {
-            return EvaluateTyped(context).TryCastAllowNull<object?>();
-        }
+            => EvaluateTyped(context);
 
         public Result<string> EvaluateTyped(FunctionCallContext context)
-        {
-            return context.GetArgumentStringValueResult(0, "Argument1");
-        }
+            => context.GetArgumentStringValueResult(0, "Argument1");
     }
 
     [FunctionName("Cast")]
