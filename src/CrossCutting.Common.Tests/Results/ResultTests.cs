@@ -2409,6 +2409,20 @@ public class ResultTests
     }
 
     [Fact]
+    public void Can_Cast_Any_Typed_Result_To_Result_Of_Object()
+    {
+        // Arrange
+        var sut = Result.Success("Hello");
+
+        // Act
+        Result<object?> untyped = sut;
+
+        // Assert
+        untyped.Status.ShouldBe(ResultStatus.Ok);
+        untyped.Value.ShouldBe("Hello");
+    }
+
+    [Fact]
     public void ThrowIfInvalid_Does_Not_Throw_When_Result_Is_Success()
     {
         // Arrange
