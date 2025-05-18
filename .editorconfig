@@ -171,7 +171,7 @@ dotnet_diagnostic.CA1061.severity = warning
 # Implement IDisposable Correctly
 dotnet_diagnostic.CA1063.severity = warning
 #Avoid excessive complexity
-dotnet_diagnostic.CA1502.severity = warning
+# dotnet_diagnostic.CA1502.severity = warning
 #Avoid unmaintainable code
 dotnet_diagnostic.CA1505.severity = warning
 #Avoid excessive class coupling
