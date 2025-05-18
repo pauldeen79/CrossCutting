@@ -5,13 +5,13 @@
 [MemberArgument("Length", typeof(int))]
 public class LeftFunction : IFunction
 {
-    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add<string>(context, 0, "StringExpression")
-            .Add<int>(context, 1, "Length")
+            .Add<string>(context, 0, "StringExpression", token)
+            .Add<int>(context, 1, "Length", token)
             .Build().ConfigureAwait(false))
             .OnSuccess(results =>
             {

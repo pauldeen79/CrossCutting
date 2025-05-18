@@ -13,7 +13,7 @@ public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
             var context = new FunctionCallContext(state);
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -29,7 +29,7 @@ public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
             var context = new FunctionCallContext(state);
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -45,7 +45,7 @@ public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
             var context = new FunctionCallContext(state);
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -61,7 +61,7 @@ public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
             var context = new FunctionCallContext(state);
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

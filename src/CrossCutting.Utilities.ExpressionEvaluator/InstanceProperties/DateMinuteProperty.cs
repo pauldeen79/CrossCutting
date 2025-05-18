@@ -5,11 +5,11 @@
 [MemberResultType(typeof(int))]
 public class DateMinuteProperty : IProperty
 {
-    public Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
+    public Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
         => Task.Run(() =>
         {
             context = ArgumentGuard.IsNotNull(context, nameof(context));
 
             return context.GetInstanceValueResult<DateTime>().Transform<object?>(result => result.Minute);
-        });
+        }, token);
 }

@@ -14,7 +14,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(CreateContext(expression));
+            var result = await sut.EvaluateAsync(CreateContext(expression), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -27,7 +27,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(CreateContext("$\"some non terminated string"));
+            var result = await sut.EvaluateAsync(CreateContext("$\"some non terminated string"), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -40,7 +40,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(CreateContext("$\"some } string\""));
+            var result = await sut.EvaluateAsync(CreateContext("$\"some } string\""), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -53,7 +53,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(CreateContext("$\"some { string\""));
+            var result = await sut.EvaluateAsync(CreateContext("$\"some { string\""), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -66,7 +66,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(CreateContext("$\"some {} value\""));
+            var result = await sut.EvaluateAsync(CreateContext("$\"some {} value\""), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -79,7 +79,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(CreateContext("$\"some {error} {1} {error} value\""));
+            var result = await sut.EvaluateAsync(CreateContext("$\"some {error} {1} {error} value\""), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -93,7 +93,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(CreateContext("$\"some {state}\"", "value"));
+            var result = await sut.EvaluateAsync(CreateContext("$\"some {state}\"", "value"), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -107,7 +107,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(CreateContext("$\"{recursiveplaceholder}\""));
+            var result = await sut.EvaluateAsync(CreateContext("$\"{recursiveplaceholder}\""), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -123,7 +123,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var context = CreateContext("$\"<#= state #>\"", state: "Hello world!", settings: new ExpressionEvaluatorSettingsBuilder().WithPlaceholderStart("<#=").WithPlaceholderEnd("#>"));
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -143,7 +143,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(CreateContext(expression));
+            var result = await sut.ParseAsync(CreateContext(expression), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -156,7 +156,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(CreateContext("$\"some non terminated string"));
+            var result = await sut.ParseAsync(CreateContext("$\"some non terminated string"), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -169,7 +169,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(CreateContext("$\"some } string\""));
+            var result = await sut.ParseAsync(CreateContext("$\"some } string\""), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -182,7 +182,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(CreateContext("$\"some { string\""));
+            var result = await sut.ParseAsync(CreateContext("$\"some { string\""), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -195,7 +195,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(CreateContext("$\"some {} value\""));
+            var result = await sut.ParseAsync(CreateContext("$\"some {} value\""), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -208,7 +208,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(CreateContext("$\"some {error} {1} {error} value\""));
+            var result = await sut.ParseAsync(CreateContext("$\"some {error} {1} {error} value\""), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -223,7 +223,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(CreateContext("$\"some {context}\"", "value"));
+            var result = await sut.ParseAsync(CreateContext("$\"some {context}\"", "value"), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -236,7 +236,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(CreateContext("$\"{recursiveplaceholder}\""));
+            var result = await sut.ParseAsync(CreateContext("$\"{recursiveplaceholder}\""), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

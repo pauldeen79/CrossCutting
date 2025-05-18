@@ -5,7 +5,7 @@ public class ExpressionTokenizerTests : TestBase<ExpressionTokenizer>
     public ExpressionTokenizerTests()
     {
         Expression
-            .ParseAsync(Arg.Any<ExpressionEvaluatorContext>())
+            .ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
             .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
     }
 

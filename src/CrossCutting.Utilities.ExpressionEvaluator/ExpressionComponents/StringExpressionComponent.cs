@@ -4,7 +4,7 @@ public class StringExpressionComponent : IExpressionComponent
 {
     public int Order => 11;
 
-    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
+    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => Task.Run(() =>
         {
             context = ArgumentGuard.IsNotNull(context, nameof(context));
@@ -15,9 +15,9 @@ public class StringExpressionComponent : IExpressionComponent
             }
 
             return Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2));
-        });
+        }, token);
 
-    public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
+    public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => Task.Run<ExpressionParseResult>(() =>
         {
             context = ArgumentGuard.IsNotNull(context, nameof(context));
@@ -33,5 +33,5 @@ public class StringExpressionComponent : IExpressionComponent
             }
 
             return result.WithStatus(ResultStatus.Ok);
-        });
+        }, token);
 }

@@ -4,7 +4,7 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
 {
     public int Order => 102;
 
-    public async Task<Result<object?>> EvaluateAsync(DotExpressionComponentState state)
+    public async Task<Result<object?>> EvaluateAsync(DotExpressionComponentState state, CancellationToken token)
     {
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
@@ -31,7 +31,7 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
         var args = new List<Result<object?>>();
         foreach (var argument in functionCall.Arguments)
         {
-            var argumentResult = await state.Context.EvaluateAsync(argument).ConfigureAwait(false);
+            var argumentResult = await state.Context.EvaluateAsync(argument, token).ConfigureAwait(false);
             args.Add(argumentResult);
             if (!argumentResult.IsSuccessful())
             {
@@ -49,7 +49,7 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
         return Result.WrapException(() => Result.Success<object?>(methods[0].Invoke(state.Value, args.Select(x => x.Value).ToArray())));
     }
 
-    public Task<Result<Type>> ValidateAsync(DotExpressionComponentState state)
+    public Task<Result<Type>> ValidateAsync(DotExpressionComponentState state, CancellationToken token)
         => Task.Run(() =>
         {
             state = ArgumentGuard.IsNotNull(state, nameof(state));
@@ -75,5 +75,5 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
             }
 
             return Result.Success(methods[0].ReturnType);
-        });
+        }, token);
 }

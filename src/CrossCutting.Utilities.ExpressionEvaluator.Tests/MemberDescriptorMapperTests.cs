@@ -62,7 +62,7 @@ public class MemberDescriptorMapperTests : TestBase<MemberDescriptorMapper>
         [MemberArgument("Argument2", typeof(object), false)]
         public class MyFunction : IFunction
         {
-            public Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
+            public Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
                 => Task.FromResult(Result.NotImplemented<object?>());
         }
 

@@ -50,10 +50,10 @@ public abstract class TestBase
         // Initialize evaluator
         Evaluator = Substitute.For<IExpressionEvaluator>();
         Evaluator
-            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>())
+            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
             .Returns(EvaluateExpression);
         Evaluator
-            .ParseAsync(Arg.Any<ExpressionEvaluatorContext>())
+            .ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
             .Returns(x =>
                 x.ArgAt<ExpressionEvaluatorContext>(0).Expression switch
                 {

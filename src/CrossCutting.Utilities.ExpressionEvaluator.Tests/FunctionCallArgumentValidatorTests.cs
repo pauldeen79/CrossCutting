@@ -15,7 +15,7 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ValidateAsync(descriptorArgument, "error", context);
+            var result = await sut.ValidateAsync(descriptorArgument, "error", context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -33,7 +33,7 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ValidateAsync(descriptorArgument, "1", context);
+            var result = await sut.ValidateAsync(descriptorArgument, "1", context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -51,7 +51,7 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ValidateAsync(descriptorArgument, "1", context);
+            var result = await sut.ValidateAsync(descriptorArgument, "1", context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -68,7 +68,7 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ValidateAsync(descriptorArgument, "1", context);
+            var result = await sut.ValidateAsync(descriptorArgument, "1", context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -85,7 +85,7 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ValidateAsync(descriptorArgument, "unknown", context);
+            var result = await sut.ValidateAsync(descriptorArgument, "unknown", context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -102,7 +102,7 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ValidateAsync(descriptorArgument, "object", context);
+            var result = await sut.ValidateAsync(descriptorArgument, "object", context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

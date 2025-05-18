@@ -4,10 +4,10 @@
 [MemberArgument("Expression", typeof(object))]
 public class CastFunction : IFunction
 {
-    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
         => (await new AsyncResultDictionaryBuilder()
-            .Add<Type>(context, 0, "Type")
-            .Add(context, 1, "Expression")
+            .Add<Type>(context, 0, "Type", token)
+            .Add(context, 1, "Expression", token)
             .Build().ConfigureAwait(false))
             .OnSuccess(results =>
             {

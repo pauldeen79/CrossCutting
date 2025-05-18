@@ -12,7 +12,7 @@ public class Int64ExpressionComponentTests : TestBase<Int64ExpressionComponent>
             var context = CreateContext(((long)int.MaxValue + 1).ToString(CultureInfo.InvariantCulture));
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -27,7 +27,7 @@ public class Int64ExpressionComponentTests : TestBase<Int64ExpressionComponent>
             var context = CreateContext("13L");
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -45,7 +45,7 @@ public class Int64ExpressionComponentTests : TestBase<Int64ExpressionComponent>
             var context = CreateContext(((long)int.MaxValue + 1).ToString(CultureInfo.InvariantCulture));
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -59,7 +59,7 @@ public class Int64ExpressionComponentTests : TestBase<Int64ExpressionComponent>
             var context = CreateContext("13L");
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

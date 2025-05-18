@@ -2,5 +2,5 @@
 
 public interface IGenericFunction : IMember
 {
-    Task<Result<object?>> EvaluateGenericAsync<T>(FunctionCallContext context);
+    Task<Result<object?>> EvaluateGenericAsync<T>(FunctionCallContext context, CancellationToken token);
 }

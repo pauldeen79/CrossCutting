@@ -23,7 +23,7 @@ public class MemberResolver : IMemberResolver
 
     public Result<IReadOnlyCollection<MemberDescriptor>> Descriptors => _descriptors.Value;
 
-    public async Task<Result<MemberAndTypeDescriptor>> ResolveAsync(FunctionCallContext functionCallContext)
+    public async Task<Result<MemberAndTypeDescriptor>> ResolveAsync(FunctionCallContext functionCallContext, CancellationToken token)
     {
         functionCallContext = ArgumentGuard.IsNotNull(functionCallContext, nameof(functionCallContext));
 
@@ -55,7 +55,7 @@ public class MemberResolver : IMemberResolver
             return functionsWithRightArgumentCount.Length switch
             {
                 0 => Result.NotFound<MemberAndTypeDescriptor>($"No overload of the {functionCallContext.FunctionCall.Name} function takes {functionCallContext.FunctionCall.Arguments.Count} arguments"),
-                1 => await GetFunctionByDescriptor(functionCallContext, functionsWithRightArgumentCount[0]).ConfigureAwait(false),
+                1 => await GetFunctionByDescriptor(functionCallContext, functionsWithRightArgumentCount[0], token).ConfigureAwait(false),
                 _ => Result.NotFound<MemberAndTypeDescriptor>($"Function {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely"),
             };
         }
@@ -99,7 +99,7 @@ public class MemberResolver : IMemberResolver
         return instanceType!.IsInstanceOfType(instanceValue);
     }
 
-    private async Task<Result<MemberAndTypeDescriptor>> GetFunctionByDescriptor(FunctionCallContext functionCallContext, MemberDescriptor memberDescriptor)
+    private async Task<Result<MemberAndTypeDescriptor>> GetFunctionByDescriptor(FunctionCallContext functionCallContext, MemberDescriptor memberDescriptor, CancellationToken token)
     {
         var member = _members.FirstOrDefault(x => x.GetType() == memberDescriptor.ImplementationType);
 
@@ -108,6 +108,6 @@ public class MemberResolver : IMemberResolver
             return Result.NotFound<MemberAndTypeDescriptor>($"Could not find member with type name {memberDescriptor.ImplementationType.FullName}");
         }
 
-        return await _memberCallArgumentValidator.ValidateAsync(memberDescriptor, member, functionCallContext).ConfigureAwait(false);
+        return await _memberCallArgumentValidator.ValidateAsync(memberDescriptor, member, functionCallContext, token).ConfigureAwait(false);
     }
 }

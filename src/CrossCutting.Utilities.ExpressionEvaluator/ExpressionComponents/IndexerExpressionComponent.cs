@@ -7,7 +7,7 @@ public class IndexerExpressionComponent : IExpressionComponent
 
     public int Order => 60;
 
-    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -18,15 +18,15 @@ public class IndexerExpressionComponent : IExpressionComponent
         }
 
         var results = await new AsyncResultDictionaryBuilder()
-            .Add(Constants.Expression, context.EvaluateTypedAsync<IEnumerable>(match.Groups[Constants.Expression].Value))
-            .Add(Index, context.EvaluateTypedAsync<int>(match.Groups[Index].Value))
+            .Add(Constants.Expression, context.EvaluateTypedAsync<IEnumerable>(match.Groups[Constants.Expression].Value, token))
+            .Add(Index, context.EvaluateTypedAsync<int>(match.Groups[Index].Value, token))
             .Build()
             .ConfigureAwait(false);
 
         return Result.Success(results.GetValue<IEnumerable>(Constants.Expression).OfType<object?>().ElementAtOrDefault(results.GetValue<int>(Index)));
     }
 
-    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -41,8 +41,8 @@ public class IndexerExpressionComponent : IExpressionComponent
             return result.WithStatus(ResultStatus.Continue);
         }
 
-        var expressionResult = await context.ParseAsync(match.Groups[Constants.Expression].Value).ConfigureAwait(false);
-        var indexResult = await context.ParseAsync(match.Groups[Index].Value).ConfigureAwait(false);
+        var expressionResult = await context.ParseAsync(match.Groups[Constants.Expression].Value, token).ConfigureAwait(false);
+        var indexResult = await context.ParseAsync(match.Groups[Index].Value, token).ConfigureAwait(false);
 
         var parseResult = new ResultDictionaryBuilder()
             .Add(Constants.Expression, () => expressionResult)

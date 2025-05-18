@@ -6,7 +6,7 @@ public sealed class FunctionCallTests : TestBase
     {
         var function = Substitute.For<IFunction>();
         function
-            .EvaluateAsync(Arg.Any<FunctionCallContext>())
+            .EvaluateAsync(Arg.Any<FunctionCallContext>(), Arg.Any<CancellationToken>())
             .Returns(x => x.ArgAt<FunctionCallContext>(0).FunctionCall.Name switch
             {
                 "MyNestedFunction" => Result.Success<object?>("Evaluated result"),
@@ -24,15 +24,15 @@ public sealed class FunctionCallTests : TestBase
                 _ => Result.NotSupported<object?>("Only Parsed result function is supported")
             });
         Expression
-            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>())
+            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
             .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression.EndsWith("()")
                 ? function.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder()
                     .WithName(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.ReplaceSuffix("()", string.Empty, StringComparison.Ordinal))
-                    .WithMemberType(MemberType.Function), x.ArgAt<ExpressionEvaluatorContext>(0)))
+                    .WithMemberType(MemberType.Function), x.ArgAt<ExpressionEvaluatorContext>(0)), x.ArgAt<CancellationToken>(1))
                 : EvaluateExpression(x));
         Evaluator
-            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>())
-            .Returns(x => Expression.EvaluateAsync(x.ArgAt<ExpressionEvaluatorContext>(0)));
+            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+            .Returns(x => Expression.EvaluateAsync(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)));
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentValueResultAsync(1, "SomeName", context);
+        var result = await argument.GetArgumentValueResultAsync(1, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -60,7 +60,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -76,7 +76,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentValueResultAsync(0, "SomeName", context, (object)"ignored");
+        var result = await argument.GetArgumentValueResultAsync(0, "SomeName", context, (object)"ignored", CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -92,7 +92,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -108,7 +108,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentValueResultAsync(0, "SomeName", context, (object)"some value");
+        var result = await argument.GetArgumentValueResultAsync(0, "SomeName", context, (object)"some value", CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -124,7 +124,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentStringValueResultAsync(1, "SomeName", context);
+        var result = await argument.GetArgumentStringValueResultAsync(1, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -140,7 +140,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentStringValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentStringValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -156,7 +156,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentStringValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentStringValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -172,7 +172,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentStringValueResultAsync(0, "SomeName", context, "default value");
+        var result = await argument.GetArgumentStringValueResultAsync(0, "SomeName", context, "default value", CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -188,7 +188,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt32ValueResultAsync(1, "SomeName", context);
+        var result = await argument.GetArgumentInt32ValueResultAsync(1, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -204,7 +204,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt32ValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentInt32ValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -220,7 +220,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt32ValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentInt32ValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -236,7 +236,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt32ValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentInt32ValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -252,7 +252,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt32ValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentInt32ValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -268,7 +268,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt32ValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentInt32ValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -284,7 +284,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt32ValueResultAsync(0, "SomeName", context, 13);
+        var result = await argument.GetArgumentInt32ValueResultAsync(0, "SomeName", context, 13, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -300,7 +300,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt64ValueResultAsync(1, "SomeName", context);
+        var result = await argument.GetArgumentInt64ValueResultAsync(1, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -316,7 +316,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt64ValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentInt64ValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -332,7 +332,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt64ValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentInt64ValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -348,7 +348,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt64ValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentInt64ValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -364,7 +364,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt64ValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentInt64ValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -380,7 +380,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt64ValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentInt64ValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -396,7 +396,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentInt64ValueResultAsync(0, "SomeName", context, 13L);
+        var result = await argument.GetArgumentInt64ValueResultAsync(0, "SomeName", context, 13L, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -412,7 +412,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDecimalValueResultAsync(1, "SomeName", context);
+        var result = await argument.GetArgumentDecimalValueResultAsync(1, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -428,7 +428,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDecimalValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentDecimalValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -444,7 +444,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDecimalValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentDecimalValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -460,7 +460,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDecimalValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentDecimalValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -476,7 +476,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDecimalValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentDecimalValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -492,7 +492,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDecimalValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentDecimalValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -508,7 +508,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDecimalValueResultAsync(0, "SomeName", context, 13.5M);
+        var result = await argument.GetArgumentDecimalValueResultAsync(0, "SomeName", context, 13.5M, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -524,7 +524,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentBooleanValueResultAsync(1, "SomeName", context);
+        var result = await argument.GetArgumentBooleanValueResultAsync(1, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -540,7 +540,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentBooleanValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentBooleanValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -556,7 +556,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentBooleanValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentBooleanValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -572,7 +572,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentBooleanValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentBooleanValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -588,7 +588,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentBooleanValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentBooleanValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -604,7 +604,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentBooleanValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentBooleanValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -620,7 +620,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentBooleanValueResultAsync(0, "SomeName", context, true);
+        var result = await argument.GetArgumentBooleanValueResultAsync(0, "SomeName", context, true, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -636,7 +636,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDateTimeValueResultAsync(1, "SomeName", context);
+        var result = await argument.GetArgumentDateTimeValueResultAsync(1, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -652,7 +652,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDateTimeValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentDateTimeValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -668,7 +668,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDateTimeValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentDateTimeValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -684,7 +684,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDateTimeValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentDateTimeValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -700,7 +700,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDateTimeValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentDateTimeValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -716,7 +716,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDateTimeValueResultAsync(0, "SomeName", context);
+        var result = await argument.GetArgumentDateTimeValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -733,7 +733,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = await argument.GetArgumentDateTimeValueResultAsync(0, "SomeName", context, dt);
+        var result = await argument.GetArgumentDateTimeValueResultAsync(0, "SomeName", context, dt, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

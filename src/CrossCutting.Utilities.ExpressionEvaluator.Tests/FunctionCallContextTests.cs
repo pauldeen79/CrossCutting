@@ -6,7 +6,7 @@ public class FunctionCallContextTests : TestBase
     {
         var function = Substitute.For<IFunction>();
         function
-            .EvaluateAsync(Arg.Any<FunctionCallContext>())
+            .EvaluateAsync(Arg.Any<FunctionCallContext>(), Arg.Any<CancellationToken>())
             .Returns(x => x.ArgAt<FunctionCallContext>(0).FunctionCall.Name switch
             {
                 "MyNestedFunction" => Result.Success<object?>("Evaluated result"),
@@ -24,15 +24,15 @@ public class FunctionCallContextTests : TestBase
                 _ => Result.NotSupported<object?>("Only Parsed result function is supported")
             });
         Expression
-            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>())
+            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
             .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression.EndsWith("()")
                 ? function.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder()
                     .WithName(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.ReplaceSuffix("()", string.Empty, StringComparison.Ordinal))
-                    .WithMemberType(MemberType.Function), x.ArgAt<ExpressionEvaluatorContext>(0)))
+                    .WithMemberType(MemberType.Function), x.ArgAt<ExpressionEvaluatorContext>(0)), x.ArgAt<CancellationToken>(1))
                 : EvaluateExpression(x));
         Evaluator
-            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>())
-            .Returns(x => Expression.EvaluateAsync(x.ArgAt<ExpressionEvaluatorContext>(0)));
+            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+            .Returns(x => Expression.EvaluateAsync(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)));
     }
 
     public class Constructor : FunctionCallContextTests
@@ -79,7 +79,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithConstantArgument();
 
             // Act
-            var result = await sut.GetArgumentValueResultAsync(0, "SomeName");
+            var result = await sut.GetArgumentValueResultAsync(0, "SomeName", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -96,7 +96,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithConstantArgument();
 
             // Act
-            var result = await sut.GetArgumentValueResultAsync(0, "SomeName", (object?)"ignored default value");
+            var result = await sut.GetArgumentValueResultAsync(0, "SomeName", (object?)"ignored default value", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -113,7 +113,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithConstantArgument();
 
             // Act
-            var result = await sut.GetArgumentValueResultAsync<string>(0, "SomeName");
+            var result = await sut.GetArgumentValueResultAsync<string>(0, "SomeName", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -130,7 +130,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithConstantArgument();
 
             // Act
-            var result = await sut.GetArgumentValueResultAsync(0, "SomeName", "ignored default value");
+            var result = await sut.GetArgumentValueResultAsync(0, "SomeName", "ignored default value", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -147,7 +147,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithConstantArgument();
 
             // Act
-            var result = await sut.GetArgumentStringValueResultAsync(0, "SomeName");
+            var result = await sut.GetArgumentStringValueResultAsync(0, "SomeName", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -164,7 +164,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithConstantArgument();
 
             // Act
-            var result = await sut.GetArgumentStringValueResultAsync(0, "SomeName", "ignored default value");
+            var result = await sut.GetArgumentStringValueResultAsync(0, "SomeName", "ignored default value", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -181,7 +181,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithFunctionArgument("NumericFunction");
 
             // Act
-            var result = await sut.GetArgumentInt32ValueResultAsync(0, "SomeName");
+            var result = await sut.GetArgumentInt32ValueResultAsync(0, "SomeName", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -195,7 +195,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithFunctionArgument("NumericFunction");
 
             // Act
-            var result = await sut.GetArgumentInt32ValueResultAsync(0, "SomeName", 13);
+            var result = await sut.GetArgumentInt32ValueResultAsync(0, "SomeName", 13, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -212,7 +212,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithFunctionArgument("LongFunction");
 
             // Act
-            var result = await sut.GetArgumentInt64ValueResultAsync(0, "SomeName");
+            var result = await sut.GetArgumentInt64ValueResultAsync(0, "SomeName", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -226,7 +226,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithFunctionArgument("LongFunction");
 
             // Act
-            var result = await sut.GetArgumentInt64ValueResultAsync(0, "SomeName", 13);
+            var result = await sut.GetArgumentInt64ValueResultAsync(0, "SomeName", 13, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -243,7 +243,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithFunctionArgument("DecimalFunction");
 
             // Act
-            var result = await sut.GetArgumentDecimalValueResultAsync(0, "SomeName");
+            var result = await sut.GetArgumentDecimalValueResultAsync(0, "SomeName", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -257,7 +257,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithFunctionArgument("DecimalFunction");
 
             // Act
-            var result = await sut.GetArgumentDecimalValueResultAsync(0, "SomeName", 3.4M);
+            var result = await sut.GetArgumentDecimalValueResultAsync(0, "SomeName", 3.4M, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -274,7 +274,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithFunctionArgument("BooleanFunction");
 
             // Act
-            var result = await sut.GetArgumentBooleanValueResultAsync(0, "SomeName");
+            var result = await sut.GetArgumentBooleanValueResultAsync(0, "SomeName", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -288,7 +288,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithFunctionArgument("BooleanFunction");
 
             // Act
-            var result = await sut.GetArgumentBooleanValueResultAsync(0, "SomeName", false);
+            var result = await sut.GetArgumentBooleanValueResultAsync(0, "SomeName", false, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -305,7 +305,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithFunctionArgument("DateTimeFunction");
 
             // Act
-            var result = await sut.GetArgumentDateTimeValueResultAsync(0, "SomeName");
+            var result = await sut.GetArgumentDateTimeValueResultAsync(0, "SomeName", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -319,7 +319,7 @@ public class FunctionCallContextTests : TestBase
             var sut = CreateFunctionCallContextWithFunctionArgument("DateTimeFunction");
 
             // Act
-            var result = await sut.GetArgumentDateTimeValueResultAsync(0, "SomeName", DateTime.Today.AddDays(-1));
+            var result = await sut.GetArgumentDateTimeValueResultAsync(0, "SomeName", DateTime.Today.AddDays(-1), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -337,7 +337,7 @@ public class FunctionCallContextTests : TestBase
             var sut = new FunctionCallContext(state);
 
             // Act
-            var result = await sut.GetInstanceValueResultAsync<int>();
+            var result = await sut.GetInstanceValueResultAsync<int>(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -352,7 +352,7 @@ public class FunctionCallContextTests : TestBase
             var sut = new FunctionCallContext(state);
 
             // Act
-            var result = await sut.GetInstanceValueResultAsync<int>();
+            var result = await sut.GetInstanceValueResultAsync<int>(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -367,7 +367,7 @@ public class FunctionCallContextTests : TestBase
             var sut = new FunctionCallContext(state);
 
             // Act
-            var result = await sut.GetInstanceValueResultAsync<string>();
+            var result = await sut.GetInstanceValueResultAsync<string>(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

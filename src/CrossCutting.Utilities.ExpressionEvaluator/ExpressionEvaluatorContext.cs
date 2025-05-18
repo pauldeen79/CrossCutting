@@ -30,20 +30,20 @@ public class ExpressionEvaluatorContext
         ParentContext = parentContext;
     }
 
-    public Task<Result<object?>> EvaluateAsync(string expression)
+    public Task<Result<object?>> EvaluateAsync(string expression, CancellationToken token)
         => UseCallback
-            ? Evaluator.EvaluateCallbackAsync(CreateChildContext(expression))
-            : Evaluator.EvaluateAsync(CreateChildContext(expression));
+            ? Evaluator.EvaluateCallbackAsync(CreateChildContext(expression), token)
+            : Evaluator.EvaluateAsync(CreateChildContext(expression), token);
 
-    public async Task<Result<T>> EvaluateTypedAsync<T>(string expression)
+    public async Task<Result<T>> EvaluateTypedAsync<T>(string expression, CancellationToken token)
         => UseCallback
-            ? (await Evaluator.EvaluateCallbackAsync(CreateChildContext(expression)).ConfigureAwait(false)).TryCastAllowNull<T>()
-            : (await Evaluator.EvaluateAsync(CreateChildContext(expression)).ConfigureAwait(false)).TryCastAllowNull<T>();
+            ? (await Evaluator.EvaluateCallbackAsync(CreateChildContext(expression), token).ConfigureAwait(false)).TryCastAllowNull<T>()
+            : (await Evaluator.EvaluateAsync(CreateChildContext(expression), token).ConfigureAwait(false)).TryCastAllowNull<T>();
 
-    public async Task<ExpressionParseResult> ParseAsync(string expression)
+    public async Task<ExpressionParseResult> ParseAsync(string expression, CancellationToken token)
         => UseCallback
-            ? await Evaluator.ParseCallbackAsync(CreateChildContext(expression)).ConfigureAwait(false)
-            : await Evaluator.ParseAsync(CreateChildContext(expression)).ConfigureAwait(false);
+            ? await Evaluator.ParseCallbackAsync(CreateChildContext(expression), token).ConfigureAwait(false)
+            : await Evaluator.ParseAsync(CreateChildContext(expression), token).ConfigureAwait(false);
 
     public Result<T> Validate<T>()
     {

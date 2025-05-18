@@ -6,7 +6,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
 
     public int Order => 12;
 
-    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -20,10 +20,10 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
             return Result.Invalid<object?>("FormattableString is not closed correctly");
         }
 
-        return await EvaluateRecursiveAsync(context.Expression.Substring(2, context.Expression.Length - 3), context).ConfigureAwait(false);
+        return await EvaluateRecursiveAsync(context.Expression.Substring(2, context.Expression.Length - 3), context, token).ConfigureAwait(false);
     }
 
-    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -44,12 +44,12 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
                 .WithErrorMessage("FormattableString is not closed correctly");
         }
 
-        return await ParseRecursiveAsync(result, context.Expression.Substring(2, context.Expression.Length - 3), context).ConfigureAwait(false);
+        return await ParseRecursiveAsync(result, context.Expression.Substring(2, context.Expression.Length - 3), context, token).ConfigureAwait(false);
     }
 
-    private static async Task<Result<GenericFormattableString>> EvaluateRecursiveAsync(string format, ExpressionEvaluatorContext context)
+    private static async Task<Result<GenericFormattableString>> EvaluateRecursiveAsync(string format, ExpressionEvaluatorContext context, CancellationToken token)
     {
-        var results = await ProcessRecursiveAsync(format, context, false).ConfigureAwait(false);
+        var results = await ProcessRecursiveAsync(format, context, false, token).ConfigureAwait(false);
 
         if (!results.EnsureValue().IsSuccessful())
         {
@@ -59,9 +59,9 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
         return Result.Success(new GenericFormattableString(results.Value!.Remainder, [.. results.Value.Results.Select(x => x.Value?.ToString(context.Settings.FormatProvider))!]));
     }
 
-    private static async Task<ExpressionParseResult> ParseRecursiveAsync(ExpressionParseResultBuilder result, string format, ExpressionEvaluatorContext context)
+    private static async Task<ExpressionParseResult> ParseRecursiveAsync(ExpressionParseResultBuilder result, string format, ExpressionEvaluatorContext context, CancellationToken token)
     {
-        var results = await ProcessRecursiveAsync(format, context, true).ConfigureAwait(false);
+        var results = await ProcessRecursiveAsync(format, context, true, token).ConfigureAwait(false);
         var hasFailure = !results.EnsureValue().IsSuccessful() || results.Value!.Results.Any(x => !x.IsSuccessful());
 
         return result
@@ -74,7 +74,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
                 : null);
     }
 
-    private static async Task<Result<ProcessResult>> ProcessRecursiveAsync(string format, ExpressionEvaluatorContext context, bool validateOnly)
+    private static async Task<Result<ProcessResult>> ProcessRecursiveAsync(string format, ExpressionEvaluatorContext context, bool validateOnly, CancellationToken token)
     {
         // Handle escaped markers (e.g., {{ -> {)
         var escapedStart = context.Settings.PlaceholderStart + context.Settings.PlaceholderStart;
@@ -116,7 +116,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
                 + $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"
                 + remainder.Substring(placeholderSignsResult.Value.closeIndex + context.Settings.PlaceholderEnd.Length);
 
-            var placeholderResult = await ProcessPlaceholder(context, validateOnly, placeholder).ConfigureAwait(false);
+            var placeholderResult = await ProcessPlaceholder(context, validateOnly, placeholder, token).ConfigureAwait(false);
 
             if (!placeholderResult.IsSuccessful())
             {
@@ -132,7 +132,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
                 continue;
             }
 
-            placeholderResult = await HandleRecursion(context, placeholderResult).ConfigureAwait(false);
+            placeholderResult = await HandleRecursion(context, placeholderResult, token).ConfigureAwait(false);
 
             results.Add(placeholderResult);
         } while (true);
@@ -162,22 +162,22 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
         return remainder;
     }
 
-    private static async Task<Result<GenericFormattableString>> HandleRecursion(ExpressionEvaluatorContext context, Result<GenericFormattableString> placeholderResult)
+    private static async Task<Result<GenericFormattableString>> HandleRecursion(ExpressionEvaluatorContext context, Result<GenericFormattableString> placeholderResult, CancellationToken token)
     {
         string? s = placeholderResult.Value!;
         if (s?.StartsWith(context.Settings.PlaceholderStart) == true && s.EndsWith(context.Settings.PlaceholderEnd))
         {
-            placeholderResult = await EvaluateRecursiveAsync(s, context).ConfigureAwait(false);
+            placeholderResult = await EvaluateRecursiveAsync(s, context, token).ConfigureAwait(false);
         }
 
         return placeholderResult;
     }
 
     // Replace placeholder with placeholder expression result
-    private static async Task<Result<GenericFormattableString>> ProcessPlaceholder(ExpressionEvaluatorContext context, bool validateOnly, string placeholder)
+    private static async Task<Result<GenericFormattableString>> ProcessPlaceholder(ExpressionEvaluatorContext context, bool validateOnly, string placeholder, CancellationToken token)
         => !validateOnly
-            ? Result.FromExistingResult(await context.EvaluateAsync(placeholder).ConfigureAwait(false), value => new GenericFormattableString(value))
-            : Result.FromExistingResult<GenericFormattableString>(await context.ParseAsync(placeholder).ConfigureAwait(false));
+            ? Result.FromExistingResult(await context.EvaluateAsync(placeholder, token).ConfigureAwait(false), value => new GenericFormattableString(value))
+            : Result.FromExistingResult<GenericFormattableString>(await context.ParseAsync(placeholder, token).ConfigureAwait(false));
 
     private static Result<(int openIndex, int closeIndex)> GetPlaceholderSignsResult(ExpressionEvaluatorContext context, string remainder)
     {

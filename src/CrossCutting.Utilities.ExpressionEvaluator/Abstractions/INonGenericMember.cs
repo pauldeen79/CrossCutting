@@ -2,10 +2,10 @@
 
 public interface INonGenericMember : IMember
 {
-    Task<Result<object?>> EvaluateAsync(FunctionCallContext context);
+    Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token);
 }
 
 public interface INonGenericMember<T> : IMember
 {
-    Task<Result<T>> EvaluateTypedAsync(FunctionCallContext context);
+    Task<Result<T>> EvaluateTypedAsync(FunctionCallContext context, CancellationToken token);
 }

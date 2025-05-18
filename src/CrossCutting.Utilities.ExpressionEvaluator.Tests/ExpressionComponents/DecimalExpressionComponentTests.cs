@@ -12,7 +12,7 @@ public class DecimalExpressionComponentTests : TestBase<DecimalExpressionCompone
             var context = CreateContext("1.3");
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -27,7 +27,7 @@ public class DecimalExpressionComponentTests : TestBase<DecimalExpressionCompone
             var context = CreateContext("13M");
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -45,7 +45,7 @@ public class DecimalExpressionComponentTests : TestBase<DecimalExpressionCompone
             var context = CreateContext("1.3");
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -59,7 +59,7 @@ public class DecimalExpressionComponentTests : TestBase<DecimalExpressionCompone
             var context = CreateContext("13M");
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

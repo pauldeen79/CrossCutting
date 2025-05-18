@@ -2,9 +2,9 @@
 
 public interface IEvaluatable
 {
-    Task<Result<object?>> EvaluateAsync();
+    Task<Result<object?>> EvaluateAsync(CancellationToken token);
 }
 public interface IEvaluatable<T> : IEvaluatable
 {
-    Task<Result<T>> EvaluateTypedAsync();
+    Task<Result<T>> EvaluateTypedAsync(CancellationToken token);
 }

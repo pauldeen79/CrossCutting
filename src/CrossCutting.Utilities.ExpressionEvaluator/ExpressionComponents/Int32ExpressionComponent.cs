@@ -6,7 +6,7 @@ public class Int32ExpressionComponent : IExpressionComponent
     
     public int Order => 20;
 
-    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
+    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => Task.Run(() =>
         {
             context = ArgumentGuard.IsNotNull(context, nameof(context));
@@ -19,9 +19,9 @@ public class Int32ExpressionComponent : IExpressionComponent
             }
 
             return Result.Continue<object?>();
-        });
+        }, token);
 
-    public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
+    public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => Task.Run<ExpressionParseResult>(() =>
         {
             context = ArgumentGuard.IsNotNull(context, nameof(context));
@@ -42,5 +42,5 @@ public class Int32ExpressionComponent : IExpressionComponent
                 .WithExpressionComponentType(typeof(Int32ExpressionComponent))
                 .WithSourceExpression(context.Expression)
                 .WithResultType(type);
-        });
+        }, token);
 }

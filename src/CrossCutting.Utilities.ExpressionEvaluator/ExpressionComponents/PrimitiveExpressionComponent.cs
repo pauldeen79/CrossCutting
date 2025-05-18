@@ -12,7 +12,7 @@ public class PrimitiveExpressionComponent : IExpressionComponent
 
     public int Order => 10;
 
-    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
+    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => Task.Run(() =>
         {
             context = ArgumentGuard.IsNotNull(context, nameof(context));
@@ -26,9 +26,9 @@ public class PrimitiveExpressionComponent : IExpressionComponent
                 "DateTime.Today" => Result.Success<object?>(_dateTimeProvider.GetCurrentDateTime().Date),
                 _ => Result.Continue<object?>()
             };
-        });
+        }, token);
 
-    public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
+    public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => Task.Run<ExpressionParseResult>(() =>
         {
             context = ArgumentGuard.IsNotNull(context, nameof(context));
@@ -45,5 +45,5 @@ public class PrimitiveExpressionComponent : IExpressionComponent
                 "DateTime.Now" or "DateTime.Today" => result.WithResultType(typeof(DateTime)).WithStatus(ResultStatus.Ok),
                 _ => result.WithStatus(ResultStatus.Continue)
             };
-        });
+        }, token);
 }

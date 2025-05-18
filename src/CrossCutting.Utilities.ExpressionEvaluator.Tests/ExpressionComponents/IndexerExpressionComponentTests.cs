@@ -12,7 +12,7 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
             var context = CreateContext("Some expression without indexer");
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -26,7 +26,7 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
             var context = CreateContext("state[1]", state: new object[] { 1, 2, 3 });
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -44,7 +44,7 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
             var context = CreateContext("Some expression without indexer");
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -58,7 +58,7 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
             var context = CreateContext("state[1]", state: new int[] { 1, 2, 3 });
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -71,7 +71,7 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
             // Arrange
             var sut = CreateSut();
             Evaluator
-                .ParseAsync(Arg.Any<ExpressionEvaluatorContext>())
+                .ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(x =>
                     x.ArgAt<ExpressionEvaluatorContext>(0).Expression switch
                     {
@@ -82,7 +82,7 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
             var context = CreateContext("state[1]", state: new int[] { 1, 2, 3 });
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

@@ -2429,7 +2429,7 @@ public class ResultTests
         var sut = Result.Success("Hello");
 
         // Act
-        var untyped = sut.ToObjectResult();
+        var untyped = sut.FromResult();
 
         // Assert
         untyped.Status.ShouldBe(ResultStatus.Ok);

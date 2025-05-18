@@ -15,7 +15,7 @@ public class AsyncResultDictionaryBuilderExtensionsTests : TestBase
         var context = CreateFunctionCallContext();
 
         // Act
-        var result = sut.Add(context, 0, "MyName");
+        var result = sut.Add(context, 0, "MyName", CancellationToken.None);
 
         // Assert
         var dict = await result.Build();
@@ -33,7 +33,7 @@ public class AsyncResultDictionaryBuilderExtensionsTests : TestBase
         var context = CreateFunctionCallContext();
 
         // Act
-        var result = sut.Add<int>(context, 0, "MyName");
+        var result = sut.Add<int>(context, 0, "MyName", CancellationToken.None);
 
         // Assert
         var dict = await result.Build();
@@ -51,7 +51,7 @@ public class AsyncResultDictionaryBuilderExtensionsTests : TestBase
         var context = CreateFunctionCallContext();
 
         // Act
-        var result = sut.Add(context, 0, "MyName");
+        var result = sut.Add(context, 0, "MyName", CancellationToken.None);
 
         // Assert
         var dict = await result.Build();

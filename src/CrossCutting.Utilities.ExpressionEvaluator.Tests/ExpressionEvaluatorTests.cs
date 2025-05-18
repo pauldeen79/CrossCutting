@@ -22,8 +22,8 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         public async Task Returns_First_Understood_Result_When_Not_Equal_To_Continue()
         {
             // Arrange
-            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
-            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<object?>("result value"));
+            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
+            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success<object?>("result value"));
             var sut = CreateSut();
 
             // Act
@@ -38,8 +38,8 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         public async Task Returns_Invalid_When_Expression_Is_Not_Understood()
         {
             // Arrange
-            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
-            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Continue<object?>());
+            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
+            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(Result.Continue<object?>());
             var sut = CreateSut();
 
             // Act
@@ -54,11 +54,11 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         public async Task Returns_Invalid_When_Maximum_Recursion_Has_Been_Reached()
         {
             // Arrange
-            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<object?>("result value"));
+            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success<object?>("result value"));
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut, null, int.MaxValue));
+            var result = await sut.EvaluateAsync(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut, null, int.MaxValue), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -86,8 +86,8 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         public async Task Returns_First_Understood_Result_When_Not_Equal_To_Continue()
         {
             // Arrange
-            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
-            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<object?>("result value"));
+            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
+            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success<object?>("result value"));
             var sut = CreateSut();
 
             // Act
@@ -102,8 +102,8 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         public async Task Returns_First_Understood_TypedResult_When_Not_Equal_To_Continue()
         {
             // Arrange
-            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
-            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<object?>("result value"));
+            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
+            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success<object?>("result value"));
             var sut = CreateSut();
 
             // Act
@@ -118,8 +118,8 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         public async Task Returns_First_Understood_TypedResult_When_Not_Successful()
         {
             // Arrange
-            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
-            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Error<object?>("Kaboom"));
+            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
+            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(Result.Error<object?>("Kaboom"));
             var sut = CreateSut();
 
             // Act
@@ -134,8 +134,8 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         public async Task Returns_Invalid_When_Expression_Is_Not_Understood()
         {
             // Arrange
-            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
-            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Continue<object?>());
+            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
+            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(Result.Continue<object?>());
             var sut = CreateSut();
 
             // Act
@@ -150,11 +150,11 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         public async Task Returns_Invalid_When_Maximum_Recursion_Has_Been_Reached()
         {
             // Arrange
-            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<object?>("result value"));
+            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success<object?>("result value"));
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut, null, int.MaxValue));
+            var result = await sut.EvaluateAsync(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut, null, int.MaxValue), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -183,7 +183,7 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         {
             // Arrange
             // Note that this setup simulates the implementation of ComparisonExpression
-            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithSourceExpression("Dummy").WithStatus(ResultStatus.Ok).WithResultType(typeof(bool)));
+            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(new ExpressionParseResultBuilder().WithSourceExpression("Dummy").WithStatus(ResultStatus.Ok).WithResultType(typeof(bool)));
             var sut = CreateSut();
 
             // Act
@@ -198,7 +198,7 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         public async Task Returns_Invalid_When_Expression_Is_Not_Understood()
         {
             // Arrange
-            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(new ExpressionParseResultBuilder().WithSourceExpression("Dummy").WithStatus(ResultStatus.Continue));
+            Expression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(new ExpressionParseResultBuilder().WithSourceExpression("Dummy").WithStatus(ResultStatus.Continue));
             var sut = CreateSut();
 
             // Act
@@ -213,11 +213,11 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         public async Task Returns_Invalid_When_Maximum_Recursion_Has_Been_Reached()
         {
             // Arrange
-            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>()).Returns(Result.Success<object?>("result value"));
+            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success<object?>("result value"));
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut, null, int.MaxValue));
+            var result = await sut.ParseAsync(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut, null, int.MaxValue), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

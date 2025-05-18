@@ -17,7 +17,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         _components = components.OrderBy(x => x.Order).ToArray();
     }
 
-    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context)
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -35,10 +35,10 @@ public class ExpressionEvaluator : IExpressionEvaluator
             return Result.FromExistingResult<object?>(error);
         }
 
-        return await results.GetValue<IExpression>(nameof(IExpressionParser.Parse)).EvaluateAsync().ConfigureAwait(false);
+        return await results.GetValue<IExpression>(nameof(IExpressionParser.Parse)).EvaluateAsync(token).ConfigureAwait(false);
     }
 
-    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context)
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -58,10 +58,10 @@ public class ExpressionEvaluator : IExpressionEvaluator
             return result.FillFromResult(error);
         }
 
-        return await results.GetValue<IExpression>(nameof(ParseAsync)).ParseAsync().ConfigureAwait(false);
+        return await results.GetValue<IExpression>(nameof(ParseAsync)).ParseAsync(token).ConfigureAwait(false);
     }
 
-    public Task<Result<object?>> EvaluateCallbackAsync(ExpressionEvaluatorContext context)
+    public Task<Result<object?>> EvaluateCallbackAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -70,7 +70,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             {
                 foreach (var component in _components)
                 {
-                    var result = await component.EvaluateAsync(context).ConfigureAwait(false);
+                    var result = await component.EvaluateAsync(context, token).ConfigureAwait(false);
                     if (result.Status != ResultStatus.Continue)
                     {
                         return result;
@@ -81,7 +81,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             });
     }
 
-    public async Task<ExpressionParseResult> ParseCallbackAsync(ExpressionEvaluatorContext context)
+    public async Task<ExpressionParseResult> ParseCallbackAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -93,7 +93,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         foreach (var component in _components)
         {
-            var result = await component.ParseAsync(context).ConfigureAwait(false);
+            var result = await component.ParseAsync(context, token).ConfigureAwait(false);
             if (result.Status != ResultStatus.Continue)
             {
                 return result;

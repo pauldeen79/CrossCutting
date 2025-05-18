@@ -15,7 +15,7 @@ public class MemberResolverTests : TestBase<MemberResolver>
                 .Returns(Result.Error<IReadOnlyCollection<MemberDescriptor>>("Kaboom"));
 
             // Act
-            var result = await sut.ResolveAsync(functionCallContext);
+            var result = await sut.ResolveAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -33,7 +33,7 @@ public class MemberResolverTests : TestBase<MemberResolver>
                 .Throws<InvalidOperationException>();
 
             // Act
-            var result = await sut.ResolveAsync(functionCallContext);
+            var result = await sut.ResolveAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

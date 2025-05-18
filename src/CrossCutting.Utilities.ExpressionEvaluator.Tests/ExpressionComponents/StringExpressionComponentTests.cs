@@ -12,7 +12,7 @@ public class StringExpressionComponentTests : TestBase<StringExpressionComponent
             var context = CreateContext("\"my string value\"");
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -27,7 +27,7 @@ public class StringExpressionComponentTests : TestBase<StringExpressionComponent
             var context = CreateContext("null");
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -44,7 +44,7 @@ public class StringExpressionComponentTests : TestBase<StringExpressionComponent
             var context = CreateContext("\"my string value\"");
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -60,7 +60,7 @@ public class StringExpressionComponentTests : TestBase<StringExpressionComponent
             var context = CreateContext("null");
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);

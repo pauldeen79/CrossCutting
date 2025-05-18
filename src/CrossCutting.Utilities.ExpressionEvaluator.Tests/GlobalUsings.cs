@@ -6,6 +6,7 @@ global using System.Globalization;
 global using System.Linq;
 global using System.Reflection;
 global using System.Text;
+global using System.Threading;
 global using System.Threading.Tasks;
 global using Castle.DynamicProxy.Internal;
 global using CrossCutting.Common.Abstractions;

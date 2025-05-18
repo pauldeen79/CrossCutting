@@ -12,11 +12,11 @@ public class OtherExpressionTests : TestBase
             var context = CreateContext("dummy expression", evaluator: evaluator);
             var sut = new OtherExpression(context, "expression");
             evaluator
-                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>())
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success<object?>("the result"));
 
             // Act
-            var result = await sut.EvaluateAsync();
+            var result = await sut.EvaluateAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -34,11 +34,11 @@ public class OtherExpressionTests : TestBase
             var context = CreateContext("dummy expression", evaluator: evaluator);
             var sut = new OtherExpression(context, "expression");
             evaluator
-                .ParseAsync(Arg.Any<ExpressionEvaluatorContext>())
+                .ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(new ExpressionParseResultBuilder().WithSourceExpression("expression").WithExpressionComponentType(GetType()).WithResultType(typeof(string)));
 
             // Act
-            var result = await sut.ParseAsync();
+            var result = await sut.ParseAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

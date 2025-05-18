@@ -19,7 +19,7 @@ public class UnaryExpressionTests : TestBase
             var sut = new UnaryExpression(context, Result.Error<IExpression>("Kaboom"));
 
             // Act
-            var result = await sut.EvaluateAsync();
+            var result = await sut.EvaluateAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -32,13 +32,13 @@ public class UnaryExpressionTests : TestBase
             // Arrange
             var context = CreateContext("!kaboom");
             Operand
-                .EvaluateAsync()
+                .EvaluateAsync(CancellationToken.None)
                 .Returns(Result.Error<object?>("Kaboom"));
 
             var sut = new UnaryExpression(context, Result.Success(Operand));
 
             // Act
-            var result = await sut.EvaluateAsync();
+            var result = await sut.EvaluateAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -56,7 +56,7 @@ public class UnaryExpressionTests : TestBase
             var sut = new UnaryExpression(context, Result.Error<IExpression>("Kaboom"));
 
             // Act
-            var result = await sut.ParseAsync();
+            var result = await sut.ParseAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -71,13 +71,13 @@ public class UnaryExpressionTests : TestBase
             // Arrange
             var context = CreateContext("!kaboom");
             Operand
-                .ParseAsync()
+                .ParseAsync(Arg.Any<CancellationToken>())
                 .Returns(new ExpressionParseResultBuilder().WithErrorMessage("Kaboom").WithStatus(ResultStatus.Error));
 
             var sut = new UnaryExpression(context, Result.Success(Operand));
 
             // Act
-            var result = await sut.ParseAsync();
+            var result = await sut.ParseAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

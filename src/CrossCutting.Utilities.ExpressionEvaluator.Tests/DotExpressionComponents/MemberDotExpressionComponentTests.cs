@@ -16,7 +16,7 @@ public class MemberDotExpressionComponentTests : TestBase<MemberDotExpressionCom
         {
             // Arrange
             MemberResolver
-                .ResolveAsync(Arg.Any<FunctionCallContext>())
+                .ResolveAsync(Arg.Any<FunctionCallContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Error<MemberAndTypeDescriptor>("Kaboom"));
             FunctionParser
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
@@ -26,7 +26,7 @@ public class MemberDotExpressionComponentTests : TestBase<MemberDotExpressionCom
             var state = new DotExpressionComponentState(context, FunctionParser, Result.NoContent<object?>(), "Dummy");
 
             // Act
-            var result = await sut.EvaluateAsync(state);
+            var result = await sut.EvaluateAsync(state, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -38,7 +38,7 @@ public class MemberDotExpressionComponentTests : TestBase<MemberDotExpressionCom
         {
             // Arrange
             MemberResolver
-                .ResolveAsync(Arg.Any<FunctionCallContext>())
+                .ResolveAsync(Arg.Any<FunctionCallContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.NoContent<MemberAndTypeDescriptor>());
             FunctionParser
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
@@ -48,7 +48,7 @@ public class MemberDotExpressionComponentTests : TestBase<MemberDotExpressionCom
             var state = new DotExpressionComponentState(context, FunctionParser, Result.NoContent<object?>(), "Dummy");
 
             // Act
-            var result = await sut.EvaluateAsync(state);
+            var result = await sut.EvaluateAsync(state, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NoContent);
@@ -59,7 +59,7 @@ public class MemberDotExpressionComponentTests : TestBase<MemberDotExpressionCom
         {
             // Arrange
             MemberResolver
-                .ResolveAsync(Arg.Any<FunctionCallContext>())
+                .ResolveAsync(Arg.Any<FunctionCallContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.NotFound<MemberAndTypeDescriptor>());
             FunctionParser
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
@@ -69,7 +69,7 @@ public class MemberDotExpressionComponentTests : TestBase<MemberDotExpressionCom
             var state = new DotExpressionComponentState(context, FunctionParser, Result.NoContent<object?>(), "Dummy");
 
             // Act
-            var result = await sut.EvaluateAsync(state);
+            var result = await sut.EvaluateAsync(state, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -80,7 +80,7 @@ public class MemberDotExpressionComponentTests : TestBase<MemberDotExpressionCom
         {
             // Arrange
             MemberResolver
-                .ResolveAsync(Arg.Any<FunctionCallContext>())
+                .ResolveAsync(Arg.Any<FunctionCallContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success(new MemberAndTypeDescriptor(Substitute.For<IMember>(), null)));
             FunctionParser
                 .Parse(Arg.Any<ExpressionEvaluatorContext>())
@@ -90,7 +90,7 @@ public class MemberDotExpressionComponentTests : TestBase<MemberDotExpressionCom
             var state = new DotExpressionComponentState(context, FunctionParser, Result.NoContent<object?>(), "Dummy");
 
             // Act
-            var result = await sut.EvaluateAsync(state);
+            var result = await sut.EvaluateAsync(state, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotSupported);

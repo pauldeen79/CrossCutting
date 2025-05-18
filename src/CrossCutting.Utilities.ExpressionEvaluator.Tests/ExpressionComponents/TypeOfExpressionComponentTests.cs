@@ -12,7 +12,7 @@ public class TypeOfExpressionComponentTests  : TestBase<TypeOfExpressionComponen
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -26,7 +26,7 @@ public class TypeOfExpressionComponentTests  : TestBase<TypeOfExpressionComponen
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -41,7 +41,7 @@ public class TypeOfExpressionComponentTests  : TestBase<TypeOfExpressionComponen
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -59,7 +59,7 @@ public class TypeOfExpressionComponentTests  : TestBase<TypeOfExpressionComponen
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -73,7 +73,7 @@ public class TypeOfExpressionComponentTests  : TestBase<TypeOfExpressionComponen
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -88,7 +88,7 @@ public class TypeOfExpressionComponentTests  : TestBase<TypeOfExpressionComponen
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

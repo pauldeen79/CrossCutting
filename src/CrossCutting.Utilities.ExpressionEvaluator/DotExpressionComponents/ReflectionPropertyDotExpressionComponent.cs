@@ -4,7 +4,7 @@ public class ReflectionPropertyDotExpressionComponent : IDotExpressionComponent
 {
     public int Order => 101;
 
-    public Task<Result<object?>> EvaluateAsync(DotExpressionComponentState state)
+    public Task<Result<object?>> EvaluateAsync(DotExpressionComponentState state, CancellationToken token)
         => Task.Run(() =>
         {
             state = ArgumentGuard.IsNotNull(state, nameof(state));
@@ -27,9 +27,9 @@ public class ReflectionPropertyDotExpressionComponent : IDotExpressionComponent
 
                 return Result.Success<object?>(propertyValue);
             });
-        });
+        }, token);
 
-    public Task<Result<Type>> ValidateAsync(DotExpressionComponentState state)
+    public Task<Result<Type>> ValidateAsync(DotExpressionComponentState state, CancellationToken token)
         => Task.Run(() =>
         {
             state = ArgumentGuard.IsNotNull(state, nameof(state));
@@ -46,5 +46,5 @@ public class ReflectionPropertyDotExpressionComponent : IDotExpressionComponent
             }
 
             return Result.Success(property.PropertyType);
-        });
+        }, token);
 }

@@ -34,55 +34,56 @@ public class FunctionCallContext
     public object? InstanceValue { get; }
     public Type? ResultType { get; }
 
-    public Task<Result<object?>> GetArgumentValueResultAsync(int index, string argumentName)
-        => FunctionCall.GetArgumentValueResultAsync(index, argumentName, this);
+    public Task<Result<object?>> GetArgumentValueResultAsync(int index, string argumentName, CancellationToken token)
+        => FunctionCall.GetArgumentValueResultAsync(index, argumentName, this, token);
 
-    public Task<Result<object?>> GetArgumentValueResultAsync(int index, string argumentName, object? defaultValue)
-        => FunctionCall.GetArgumentValueResultAsync(index, argumentName, this, defaultValue);
+    public Task<Result<object?>> GetArgumentValueResultAsync(int index, string argumentName, object? defaultValue, CancellationToken token)
+        => FunctionCall.GetArgumentValueResultAsync(index, argumentName, this, defaultValue, token);
 
-    public Task<Result<T>> GetArgumentValueResultAsync<T>(int index, string argumentName)
-        => FunctionCall.GetArgumentValueResultAsync<T>(index, argumentName, this);
+    public Task<Result<T>> GetArgumentValueResultAsync<T>(int index, string argumentName, CancellationToken token)
+        => FunctionCall.GetArgumentValueResultAsync<T>(index, argumentName, this, token);
 
-    public Task<Result<T?>> GetArgumentValueResultAsync<T>(int index, string argumentName, T? defaultValue)
-        => FunctionCall.GetArgumentValueResultAsync(index, argumentName, this, defaultValue);
+    public Task<Result<T?>> GetArgumentValueResultAsync<T>(int index, string argumentName, T? defaultValue, CancellationToken token)
+        => FunctionCall.GetArgumentValueResultAsync(index, argumentName, this, defaultValue, token);
 
-    public Task<Result<string>> GetArgumentStringValueResultAsync(int index, string argumentName)
-        => FunctionCall.GetArgumentStringValueResultAsync(index, argumentName, this);
+    //TODO: Remove custom methods for string, int32 etc. below
+    public Task<Result<string>> GetArgumentStringValueResultAsync(int index, string argumentName, CancellationToken token)
+        => FunctionCall.GetArgumentStringValueResultAsync(index, argumentName, this, token);
 
-    public Task<Result<string>> GetArgumentStringValueResultAsync(int index, string argumentName, string defaultValue)
-        => FunctionCall.GetArgumentStringValueResultAsync(index, argumentName, this, defaultValue);
+    public Task<Result<string>> GetArgumentStringValueResultAsync(int index, string argumentName, string defaultValue, CancellationToken token)
+        => FunctionCall.GetArgumentStringValueResultAsync(index, argumentName, this, defaultValue, token);
 
-    public Task<Result<int>> GetArgumentInt32ValueResultAsync(int index, string argumentName)
-        => FunctionCall.GetArgumentInt32ValueResultAsync(index, argumentName, this);
+    public Task<Result<int>> GetArgumentInt32ValueResultAsync(int index, string argumentName, CancellationToken token)
+        => FunctionCall.GetArgumentInt32ValueResultAsync(index, argumentName, this, token);
 
-    public Task<Result<int>> GetArgumentInt32ValueResultAsync(int index, string argumentName, int defaultValue)
-        => FunctionCall.GetArgumentInt32ValueResultAsync(index, argumentName, this, defaultValue);
+    public Task<Result<int>> GetArgumentInt32ValueResultAsync(int index, string argumentName, int defaultValue, CancellationToken token)
+        => FunctionCall.GetArgumentInt32ValueResultAsync(index, argumentName, this, defaultValue, token);
 
-    public Task<Result<long>> GetArgumentInt64ValueResultAsync(int index, string argumentName)
-        => FunctionCall.GetArgumentInt64ValueResultAsync(index, argumentName, this);
+    public Task<Result<long>> GetArgumentInt64ValueResultAsync(int index, string argumentName, CancellationToken token)
+        => FunctionCall.GetArgumentInt64ValueResultAsync(index, argumentName, this, token);
 
-    public Task<Result<long>> GetArgumentInt64ValueResultAsync(int index, string argumentName, long defaultValue)
-        => FunctionCall.GetArgumentInt64ValueResultAsync(index, argumentName, this, defaultValue);
+    public Task<Result<long>> GetArgumentInt64ValueResultAsync(int index, string argumentName, long defaultValue, CancellationToken token)
+        => FunctionCall.GetArgumentInt64ValueResultAsync(index, argumentName, this, defaultValue, token);
 
-    public Task<Result<decimal>> GetArgumentDecimalValueResultAsync(int index, string argumentName)
-        => FunctionCall.GetArgumentDecimalValueResultAsync(index, argumentName, this);
+    public Task<Result<decimal>> GetArgumentDecimalValueResultAsync(int index, string argumentName, CancellationToken token)
+        => FunctionCall.GetArgumentDecimalValueResultAsync(index, argumentName, this, token);
 
-    public Task<Result<decimal>> GetArgumentDecimalValueResultAsync(int index, string argumentName, decimal defaultValue)
-        => FunctionCall.GetArgumentDecimalValueResultAsync(index, argumentName, this, defaultValue);
+    public Task<Result<decimal>> GetArgumentDecimalValueResultAsync(int index, string argumentName, decimal defaultValue, CancellationToken token)
+        => FunctionCall.GetArgumentDecimalValueResultAsync(index, argumentName, this, defaultValue, token);
 
-    public Task<Result<bool>> GetArgumentBooleanValueResultAsync(int index, string argumentName)
-        => FunctionCall.GetArgumentBooleanValueResultAsync(index, argumentName, this);
+    public Task<Result<bool>> GetArgumentBooleanValueResultAsync(int index, string argumentName, CancellationToken token)
+        => FunctionCall.GetArgumentBooleanValueResultAsync(index, argumentName, this, token);
 
-    public Task<Result<bool>> GetArgumentBooleanValueResultAsync(int index, string argumentName, bool defaultValue)
-        => FunctionCall.GetArgumentBooleanValueResultAsync(index, argumentName, this, defaultValue);
+    public Task<Result<bool>> GetArgumentBooleanValueResultAsync(int index, string argumentName, bool defaultValue, CancellationToken token)
+        => FunctionCall.GetArgumentBooleanValueResultAsync(index, argumentName, this, defaultValue, token);
 
-    public Task<Result<DateTime>> GetArgumentDateTimeValueResultAsync(int index, string argumentName)
-        => FunctionCall.GetArgumentDateTimeValueResultAsync(index, argumentName, this);
+    public Task<Result<DateTime>> GetArgumentDateTimeValueResultAsync(int index, string argumentName, CancellationToken token)
+        => FunctionCall.GetArgumentDateTimeValueResultAsync(index, argumentName, this, token);
 
-    public Task<Result<DateTime>> GetArgumentDateTimeValueResultAsync(int index, string argumentName, DateTime defaultValue)
-        => FunctionCall.GetArgumentDateTimeValueResultAsync(index, argumentName, this, defaultValue);
+    public Task<Result<DateTime>> GetArgumentDateTimeValueResultAsync(int index, string argumentName, DateTime defaultValue, CancellationToken token)
+        => FunctionCall.GetArgumentDateTimeValueResultAsync(index, argumentName, this, defaultValue, token);
 
-    public Task<Result<object?>> EvaluateAsync(IGenericFunction genericFunction)
+    public Task<Result<object?>> EvaluateAsync(IGenericFunction genericFunction, CancellationToken token)
     {
         genericFunction = ArgumentGuard.IsNotNull(genericFunction, nameof(genericFunction));
 
@@ -93,7 +94,7 @@ public class FunctionCallContext
                 .GetMethod(nameof(IGenericFunction.EvaluateGenericAsync))!
                 .MakeGenericMethod(FunctionCall.TypeArguments.ToArray());
 
-            return (Task<Result<object?>>)method.Invoke(genericFunction, [this]);
+            return (Task<Result<object?>>)method.Invoke(genericFunction, [this, token]);
         }
         catch (ArgumentException argException)
         {
@@ -107,8 +108,8 @@ public class FunctionCallContext
             ? Result.Success(typedValue)
             : Result.Error<T>(GetInstanceValueErrorMessage<T>());
 
-    public Task<Result<T>> GetInstanceValueResultAsync<T>()
-        => Task.Run(GetInstanceValueResult<T>);
+    public Task<Result<T>> GetInstanceValueResultAsync<T>(CancellationToken token)
+        => Task.Run(GetInstanceValueResult<T>, token);
 
     private string GetInstanceValueErrorMessage<T>()
         => InstanceValue is null

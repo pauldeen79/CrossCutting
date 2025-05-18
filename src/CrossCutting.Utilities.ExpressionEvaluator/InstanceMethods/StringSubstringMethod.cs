@@ -10,14 +10,14 @@ public class StringSubstringMethod : IMethod
     private const string Index = nameof(Index);
     private const string Length = nameof(Length);
 
-    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add(Constants.Instance, context.GetInstanceValueResultAsync<string>())
-            .Add(Index, context.FunctionCall.GetArgumentValueResultAsync<int>(0, Index, context))
-            .Add(Length, context.FunctionCall.GetArgumentValueResultAsync<int?>(1, Length, context, null))
+            .Add(Constants.Instance, context.GetInstanceValueResultAsync<string>(token))
+            .Add(Index, context.FunctionCall.GetArgumentValueResultAsync<int>(0, Index, context, token))
+            .Add(Length, context.FunctionCall.GetArgumentValueResultAsync<int?>(1, Length, context, null, token))
             .Build().ConfigureAwait(false))
             .OnSuccess(results =>
             {

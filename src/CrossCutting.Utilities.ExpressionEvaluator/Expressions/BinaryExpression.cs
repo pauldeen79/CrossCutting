@@ -28,11 +28,11 @@ public sealed class BinaryExpression : IExpression
         SourceExpression = sourceExpression;
     }
 
-    public async Task<Result<object?>> EvaluateAsync()
+    public async Task<Result<object?>> EvaluateAsync(CancellationToken token)
     {
         var results = await new AsyncResultDictionaryBuilder()
-            .Add(nameof(Constants.LeftExpression), Left.Value is not null ? Left.Value.EvaluateAsync() : Task.FromResult(Result.FromExistingResult<object?>(Left)))
-            .Add(nameof(Constants.RightExpression), Right.Value is not null ? Right.Value.EvaluateAsync() : Task.FromResult(Result.FromExistingResult<object?>(Right)))
+            .Add(nameof(Constants.LeftExpression), Left.Value is not null ? Left.Value.EvaluateAsync(token) : Task.FromResult(Result.FromExistingResult<object?>(Left)))
+            .Add(nameof(Constants.RightExpression), Right.Value is not null ? Right.Value.EvaluateAsync(token) : Task.FromResult(Result.FromExistingResult<object?>(Right)))
             .Build()
             .ConfigureAwait(false);
 
@@ -62,19 +62,19 @@ public sealed class BinaryExpression : IExpression
         };
     }
 
-    public async Task<ExpressionParseResult> ParseAsync()
+    public async Task<ExpressionParseResult> ParseAsync(CancellationToken token)
     {
         ExpressionParseResult? leftResult = null;
         ExpressionParseResult? rightResult = null;
 
         if (Left.IsSuccessful() && Left.Value is not null)
         {
-            leftResult = await Left.Value.ParseAsync().ConfigureAwait(false);
+            leftResult = await Left.Value.ParseAsync(token).ConfigureAwait(false);
         }
 
         if (Right.IsSuccessful() && Right.Value is not null)
         {
-            rightResult = await Right.Value.ParseAsync().ConfigureAwait(false);
+            rightResult = await Right.Value.ParseAsync(token).ConfigureAwait(false);
         }
 
         var result = new ExpressionParseResultBuilder()

@@ -12,7 +12,7 @@ public class LeftFunctionTests : TestBase<LeftFunction>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -27,7 +27,7 @@ public class LeftFunctionTests : TestBase<LeftFunction>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

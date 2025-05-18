@@ -13,7 +13,7 @@ public class DateConstructorTests : TestBase<DateConstructor>
             var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -29,7 +29,7 @@ public class DateConstructorTests : TestBase<DateConstructor>
             var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

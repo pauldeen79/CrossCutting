@@ -14,7 +14,7 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -29,7 +29,7 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -44,7 +44,7 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -59,7 +59,7 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -74,7 +74,7 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -93,7 +93,7 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -108,7 +108,7 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -123,7 +123,7 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -138,7 +138,7 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -153,7 +153,7 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ParseAsync(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
