@@ -713,15 +713,35 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public async Task Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework()
+    public async Task Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework_Using_ExpressionComponent()
     {
         // Observations:
-        // 1. We need to 'new' an InterpolatedStringExpressionComponent
+        // 1. We need to 'new' an InterpolatedStringExpressionComponent (optional - see alternative test below)
         // 2. We need to wrap the string within $""
+        // 3. The result is of type object?, rather than GenericFormattableString or string
         // Otherwise, it works perfectly :)
 
         // Arrange
         var sut = new InterpolatedStringExpressionComponent();
+        var state = new AsyncResultDictionaryBuilder<object?>()
+            .Add("class.Name", Result.Success<object?>("MyClass"))
+            .BuildDeferred();
+        var context = new ExpressionEvaluatorContext("$\"public class {class.Name}\"", new ExpressionEvaluatorSettingsBuilder(), CreateSut(), state);
+
+        // Act
+        var result = await sut.EvaluateAsync(context, CancellationToken.None);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        result.Value.ToString().ShouldBe("public class MyClass");
+    }
+
+    [Fact]
+    public async Task Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework_Using_ExpressionEvaluator()
+    {
+        // Arrange
+        var sut = CreateSut();
         var state = new AsyncResultDictionaryBuilder<object?>()
             .Add("class.Name", Result.Success<object?>("MyClass"))
             .BuildDeferred();
