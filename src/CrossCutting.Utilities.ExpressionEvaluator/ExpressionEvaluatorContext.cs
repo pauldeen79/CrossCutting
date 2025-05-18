@@ -4,7 +4,7 @@ public class ExpressionEvaluatorContext
 {
     public string Expression { get; }
     public ExpressionEvaluatorSettings Settings { get; }
-    public IReadOnlyDictionary<string, Func<Result<object?>>> State { get; }
+    public IReadOnlyDictionary<string, Task<Result<object?>>> State { get; }
     public int CurrentRecursionLevel { get; }
     public ExpressionEvaluatorContext? ParentContext { get; }
 
@@ -15,7 +15,7 @@ public class ExpressionEvaluatorContext
         string? expression,
         ExpressionEvaluatorSettings settings,
         IExpressionEvaluator evaluator,
-        IReadOnlyDictionary<string, Func<Result<object?>>>? state = null,
+        IReadOnlyDictionary<string, Task<Result<object?>>>? state = null,
         int currentRecursionLevel = 1,
         ExpressionEvaluatorContext? parentContext = null)
     {
@@ -24,26 +24,26 @@ public class ExpressionEvaluatorContext
 
         Expression = expression?.Trim() ?? string.Empty;
         Settings = settings;
-        State = state ?? new Dictionary<string, Func<Result<object?>>>();
+        State = state ?? new Dictionary<string, Task<Result<object?>>>();
         Evaluator = evaluator;
         CurrentRecursionLevel = currentRecursionLevel;
         ParentContext = parentContext;
     }
 
-    public Result<object?> Evaluate(string expression)
+    public Task<Result<object?>> EvaluateAsync(string expression, CancellationToken token)
         => UseCallback
-            ? Evaluator.EvaluateCallback(CreateChildContext(expression))
-            : Evaluator.Evaluate(CreateChildContext(expression));
+            ? Evaluator.EvaluateCallbackAsync(CreateChildContext(expression), token)
+            : Evaluator.EvaluateAsync(CreateChildContext(expression), token);
 
-    public Result<T> EvaluateTyped<T>(string expression)
+    public async Task<Result<T>> EvaluateTypedAsync<T>(string expression, CancellationToken token)
         => UseCallback
-            ? Evaluator.EvaluateTypedCallback<T>(CreateChildContext(expression))
-            : Evaluator.EvaluateTyped<T>(CreateChildContext(expression));
+            ? await Evaluator.EvaluateTypedCallbackAsync<T>(CreateChildContext(expression), token).ConfigureAwait(false)
+            : await Evaluator.EvaluateTypedAsync<T>(CreateChildContext(expression), token).ConfigureAwait(false);
 
-    public ExpressionParseResult Parse(string expression)
+    public async Task<ExpressionParseResult> ParseAsync(string expression, CancellationToken token)
         => UseCallback
-            ? Evaluator.ParseCallback(CreateChildContext(expression))
-            : Evaluator.Parse(CreateChildContext(expression));
+            ? await Evaluator.ParseCallbackAsync(CreateChildContext(expression), token).ConfigureAwait(false)
+            : await Evaluator.ParseAsync(CreateChildContext(expression), token).ConfigureAwait(false);
 
     public Result<T> Validate<T>()
     {

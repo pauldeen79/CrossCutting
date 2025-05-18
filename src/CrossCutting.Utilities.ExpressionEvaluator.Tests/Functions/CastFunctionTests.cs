@@ -2,10 +2,10 @@
 
 public class CastFunctionTests : TestBase<CastFunction>
 {
-    public class Evaluate : CastFunctionTests
+    public class EvaluateAsync : CastFunctionTests
     {
         [Fact]
-        public void Returns_Success_On_Correct_Arguments()
+        public async Task Returns_Success_On_Correct_Arguments()
         {
             // Arrange
             var sut = CreateSut();
@@ -13,7 +13,7 @@ public class CastFunctionTests : TestBase<CastFunction>
             var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -21,7 +21,7 @@ public class CastFunctionTests : TestBase<CastFunction>
         }
 
         [Fact]
-        public void Returns_Error_When_Cast_Is_Not_Possible()
+        public async Task Returns_Error_When_Cast_Is_Not_Possible()
         {
             // Arrange
             var sut = CreateSut();
@@ -29,7 +29,7 @@ public class CastFunctionTests : TestBase<CastFunction>
             var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

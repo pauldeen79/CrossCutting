@@ -1,30 +1,32 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionComponents;
 
-public class InterpolatedStringExpressionComponent : IExpressionComponent
+public class InterpolatedStringExpressionComponent : IExpressionComponent<GenericFormattableString>
 {
     private const string TemporaryDelimiter = "\uE002";
 
     public int Order => 12;
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
+
+    public async Task<Result<GenericFormattableString>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         if (context.Expression.Length < 3 || !context.Expression.StartsWith("$\""))
         {
-            return Result.Continue<object?>();
+            return Result.Continue<GenericFormattableString>();
         }
 
         if (!context.Expression.EndsWith("\""))
         {
-            return Result.Invalid<object?>("FormattableString is not closed correctly");
+            return Result.Invalid<GenericFormattableString>("FormattableString is not closed correctly");
         }
 
-        return EvaluateRecursive(context.Expression.Substring(2, context.Expression.Length - 3), context)
-            .TryCastAllowNull<object?>();
+        return await EvaluateRecursiveAsync(context.Expression.Substring(2, context.Expression.Length - 3), context, token).ConfigureAwait(false);
     }
 
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -45,28 +47,28 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
                 .WithErrorMessage("FormattableString is not closed correctly");
         }
 
-        return ParseRecursive(result, context.Expression.Substring(2, context.Expression.Length - 3), context);
+        return await ParseRecursiveAsync(result, context.Expression.Substring(2, context.Expression.Length - 3), context, token).ConfigureAwait(false);
     }
 
-    private static Result<GenericFormattableString> EvaluateRecursive(string format, ExpressionEvaluatorContext context)
+    private static async Task<Result<GenericFormattableString>> EvaluateRecursiveAsync(string format, ExpressionEvaluatorContext context, CancellationToken token)
     {
-        var results = ProcessRecursive(format, context, false, out var remainder);
+        var results = await ProcessRecursiveAsync(format, context, false, token).ConfigureAwait(false);
 
-        if (!results.IsSuccessful())
+        if (!results.EnsureValue().IsSuccessful())
         {
             return Result.FromExistingResult<GenericFormattableString>(results);
         }
 
-        return Result.Success(new GenericFormattableString(remainder, [.. results.Value.Select(x => x.Value?.ToString(context.Settings.FormatProvider))!]));
+        return Result.Success(new GenericFormattableString(results.Value!.Remainder, [.. results.Value.Results.Select(x => x.Value?.ToString(context.Settings.FormatProvider))!]));
     }
 
-    private static ExpressionParseResult ParseRecursive(ExpressionParseResultBuilder result, string format, ExpressionEvaluatorContext context)
+    private static async Task<ExpressionParseResult> ParseRecursiveAsync(ExpressionParseResultBuilder result, string format, ExpressionEvaluatorContext context, CancellationToken token)
     {
-        var results = ProcessRecursive(format, context, true, out _);
-        var hasFailure = !results.IsSuccessful() || results.Value?.Any(x => !x.IsSuccessful()) == true;
+        var results = await ProcessRecursiveAsync(format, context, true, token).ConfigureAwait(false);
+        var hasFailure = !results.EnsureValue().IsSuccessful() || results.Value!.Results.Any(x => !x.IsSuccessful());
 
         return result
-            .AddPartResults(results.Value?.Select((x, index) => new ExpressionParsePartResultBuilder().FillFromResult(x).WithPartName(index.ToString(context.Settings.FormatProvider))) ?? [new ExpressionParsePartResultBuilder().WithPartName("Validation").FillFromResult(results)])
+            .AddPartResults(results.Value?.Results.Select((x, index) => new ExpressionParsePartResultBuilder().FillFromResult(x).WithPartName(index.ToString(context.Settings.FormatProvider))) ?? [new ExpressionParsePartResultBuilder().WithPartName("Validation").FillFromResult(results)])
             .WithStatus(hasFailure
                 ? ResultStatus.Invalid
                 : ResultStatus.Ok)
@@ -75,14 +77,14 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
                 : null);
     }
 
-    private static Result<List<Result<GenericFormattableString>>> ProcessRecursive(string format, ExpressionEvaluatorContext context, bool validateOnly, out string remainder)
+    private static async Task<Result<ProcessResult>> ProcessRecursiveAsync(string format, ExpressionEvaluatorContext context, bool validateOnly, CancellationToken token)
     {
         // Handle escaped markers (e.g., {{ -> {)
         var escapedStart = context.Settings.PlaceholderStart + context.Settings.PlaceholderStart;
         var escapedEnd = context.Settings.PlaceholderEnd + context.Settings.PlaceholderEnd;
 
-        remainder = format.Replace(escapedStart, "\uE000")  // Temporarily replace escaped start marker
-                          .Replace(escapedEnd, "\uE001");
+        var remainder = format.Replace(escapedStart, "\uE000")  // Temporarily replace escaped start marker
+                              .Replace(escapedEnd, "\uE001");
 
         var results = new List<Result<GenericFormattableString>>();
         do
@@ -90,7 +92,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
             var placeholderSignsResult = GetPlaceholderSignsResult(context, remainder);
             if (!placeholderSignsResult.IsSuccessful())
             {
-                return Result.FromExistingResult<List<Result<GenericFormattableString>>>(placeholderSignsResult);
+                return Result.FromExistingResult<ProcessResult>(placeholderSignsResult);
             }
 
             if (placeholderSignsResult.Value.openIndex == -1)
@@ -103,7 +105,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
             {
                 if (!validateOnly)
                 {
-                    return Result.Invalid<List<Result<GenericFormattableString>>>("Missing expression");
+                    return Result.Invalid<ProcessResult>("Missing expression");
                 }
 
                 results.Add(Result.Invalid<GenericFormattableString>("Missing expression"));
@@ -117,13 +119,13 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
                 + $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"
                 + remainder.Substring(placeholderSignsResult.Value.closeIndex + context.Settings.PlaceholderEnd.Length);
 
-            var placeholderResult = ProcessPlaceholder(context, validateOnly, placeholder);
+            var placeholderResult = await ProcessPlaceholder(context, validateOnly, placeholder, token).ConfigureAwait(false);
 
             if (!placeholderResult.IsSuccessful())
             {
                 if (!validateOnly)
                 {
-                    return Result.FromExistingResult<List<Result<GenericFormattableString>>>(placeholderResult);
+                    return Result.FromExistingResult<ProcessResult>(placeholderResult);
                 }
 
                 results.Add(Result.FromExistingResult<GenericFormattableString>(placeholderResult));
@@ -133,7 +135,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
                 continue;
             }
 
-            placeholderResult = HandleRecursion(context, placeholderResult);
+            placeholderResult = await HandleRecursion(context, placeholderResult, token).ConfigureAwait(false);
 
             results.Add(placeholderResult);
         } while (true);
@@ -148,9 +150,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
         remainder = remainder.Replace("\uE000", start)
                              .Replace("\uE001", end);
 
-        remainder = ReplaceTemporaryDelimiters(remainder, results);
-
-        return Result.Success(results);
+        return Result.Success(new ProcessResult(ReplaceTemporaryDelimiters(remainder, results), results));
     }
 
     private static string EscapeBraces(ExpressionEvaluatorContext context, string remainder)
@@ -165,22 +165,22 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
         return remainder;
     }
 
-    private static Result<GenericFormattableString> HandleRecursion(ExpressionEvaluatorContext context, Result<GenericFormattableString> placeholderResult)
+    private static async Task<Result<GenericFormattableString>> HandleRecursion(ExpressionEvaluatorContext context, Result<GenericFormattableString> placeholderResult, CancellationToken token)
     {
         string? s = placeholderResult.Value!;
         if (s?.StartsWith(context.Settings.PlaceholderStart) == true && s.EndsWith(context.Settings.PlaceholderEnd))
         {
-            placeholderResult = EvaluateRecursive(s, context);
+            placeholderResult = await EvaluateRecursiveAsync(s, context, token).ConfigureAwait(false);
         }
 
         return placeholderResult;
     }
 
     // Replace placeholder with placeholder expression result
-    private static Result<GenericFormattableString> ProcessPlaceholder(ExpressionEvaluatorContext context, bool validateOnly, string placeholder)
+    private static async Task<Result<GenericFormattableString>> ProcessPlaceholder(ExpressionEvaluatorContext context, bool validateOnly, string placeholder, CancellationToken token)
         => !validateOnly
-            ? Result.FromExistingResult(context.Evaluate(placeholder), value => new GenericFormattableString(value))
-            : Result.FromExistingResult<GenericFormattableString>(context.Parse(placeholder));
+            ? Result.FromExistingResult(await context.EvaluateAsync(placeholder, token).ConfigureAwait(false), value => new GenericFormattableString(value))
+            : Result.FromExistingResult<GenericFormattableString>(await context.ParseAsync(placeholder, token).ConfigureAwait(false));
 
     private static Result<(int openIndex, int closeIndex)> GetPlaceholderSignsResult(ExpressionEvaluatorContext context, string remainder)
     {
@@ -212,5 +212,17 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent
         }
 
         return remainder;
+    }
+
+    private sealed class ProcessResult
+    {
+        public ProcessResult(string remainder, List<Result<GenericFormattableString>> results)
+        {
+            Remainder = remainder;
+            Results = results;
+        }
+
+        public string Remainder { get; }
+        public List<Result<GenericFormattableString>> Results { get; }
     }
 }

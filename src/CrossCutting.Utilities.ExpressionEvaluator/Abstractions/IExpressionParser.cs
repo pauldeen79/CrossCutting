@@ -2,5 +2,5 @@
 
 public interface IExpressionParser
 {
-    Result<IExpression> Parse(ICollection<ExpressionToken> tokens);
+    Result<IExpression> Parse(ExpressionEvaluatorContext context, ICollection<ExpressionToken> tokens);
 }

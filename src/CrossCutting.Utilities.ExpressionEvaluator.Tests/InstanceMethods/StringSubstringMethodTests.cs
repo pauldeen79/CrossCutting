@@ -2,10 +2,10 @@
 
 public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
 {
-    public class Evaluate : StringSubstringMethodTests
+    public class EvaluateAsync : StringSubstringMethodTests
     {
         [Fact]
-        public void Returns_Ok_On_Valid_Arguments_Without_Length()
+        public async Task Returns_Ok_On_Valid_Arguments_Without_Length()
         {
             // Arrange
             var sut = CreateSut();
@@ -13,7 +13,7 @@ public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
             var context = new FunctionCallContext(state);
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -21,7 +21,7 @@ public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
         }
 
         [Fact]
-        public void Returns_Ok_On_Valid_Arguments_With_Length()
+        public async Task Returns_Ok_On_Valid_Arguments_With_Length()
         {
             // Arrange
             var sut = CreateSut();
@@ -29,7 +29,7 @@ public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
             var context = new FunctionCallContext(state);
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -37,7 +37,7 @@ public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
         }
 
         [Fact]
-        public void Returns_Invalid_On_Invalid_Arguments_Without_Length()
+        public async Task Returns_Invalid_On_Invalid_Arguments_Without_Length()
         {
             // Arrange
             var sut = CreateSut();
@@ -45,7 +45,7 @@ public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
             var context = new FunctionCallContext(state);
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -53,7 +53,7 @@ public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
         }
 
         [Fact]
-        public void Returns_Invalid_On_Invalid_Arguments_With_Length()
+        public async Task Returns_Invalid_On_Invalid_Arguments_With_Length()
         {
             // Arrange
             var sut = CreateSut();
@@ -61,7 +61,7 @@ public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
             var context = new FunctionCallContext(state);
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

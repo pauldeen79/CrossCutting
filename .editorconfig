@@ -149,21 +149,6 @@ dotnet_diagnostic.CA1834.severity = silent
 # Do not use CA1062 (validate public arguments) on extension methods
 dotnet_code_quality.CA1062.exclude_extension_method_this_parameter = true
 
-[*Test*.cs]
-# Warning CA1034 Do not nest type SplitCsv. Alternatively, change its accessibility so that it is not externally visible. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1034) CrossCutting.Common.Tests 
-dotnet_diagnostic.CA1034.severity = silent
-# Warning CA1052 Type 'StringExtensionsTests' is a static holder type but is neither static nor NotInheritable (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1052) CrossCutting.Common.Tests 
-dotnet_diagnostic.CA1052.severity = silent
-# Warning CA1822 Member 'Error' does not access instance data and can be marked as static (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1822) CrossCutting.Utilities.ObjectDumper.Tests 
-dotnet_diagnostic.CA1822.severity = silent
-dotnet_diagnostic.CA1861.severity = none # CA1861 Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array
-dotnet_diagnostic.CA1862.severity = none # CA1862 Prefer using 'string.Equals(string, StringComparison)' to perform a case-insensitive comparison, but keep in mind that this might cause subtle changes in behavior, so make sure to conduct thorough testing after applying the suggestion, or if culturally sensitive comparison is not required, consider using 'StringComparison.OrdinalIgnoreCase'
-dotnet_diagnostic.CA1062.severity = silent # CA1062 In externally visible method 'x', validate parameter 'y' is non-null before using it. If appropriate, throw an 'ArgumentNullException' when the argument is 'null'.
-csharp_style_unused_value_expression_statement_preference = true:silent
-dotnet_diagnostic.S3776.severity = none # cognitive complexity
-dotnet_diagnostic.CA1308.severity = none # Normalize strings to uppercase
-dotnet_diagnostic.S2325.severity = none # Methods and properties that don't access instance data should be static
-
 # Set specific code analysis rules to warning (none by default)
 # Do not hide base class methods
 dotnet_diagnostic.CA1061.severity = warning
@@ -185,6 +170,22 @@ dotnet_diagnostic.CA1822.severity = none
 
 # CA1515: Because an application's API isn't typically referenced from outside the assembly, types can be made internal (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1515)
 dotnet_diagnostic.CA1515.severity = none
+
+[*Test*.cs]
+# Warning CA1034 Do not nest type SplitCsv. Alternatively, change its accessibility so that it is not externally visible. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1034) CrossCutting.Common.Tests 
+dotnet_diagnostic.CA1034.severity = silent
+# Warning CA1052 Type 'StringExtensionsTests' is a static holder type but is neither static nor NotInheritable (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1052) CrossCutting.Common.Tests 
+dotnet_diagnostic.CA1052.severity = silent
+# Warning CA1822 Member 'Error' does not access instance data and can be marked as static (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1822) CrossCutting.Utilities.ObjectDumper.Tests 
+dotnet_diagnostic.CA1822.severity = silent
+dotnet_diagnostic.CA1861.severity = none # CA1861 Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array
+dotnet_diagnostic.CA1862.severity = none # CA1862 Prefer using 'string.Equals(string, StringComparison)' to perform a case-insensitive comparison, but keep in mind that this might cause subtle changes in behavior, so make sure to conduct thorough testing after applying the suggestion, or if culturally sensitive comparison is not required, consider using 'StringComparison.OrdinalIgnoreCase'
+dotnet_diagnostic.CA1062.severity = silent # CA1062 In externally visible method 'x', validate parameter 'y' is non-null before using it. If appropriate, throw an 'ArgumentNullException' when the argument is 'null'.
+csharp_style_unused_value_expression_statement_preference = true:silent
+dotnet_diagnostic.S3776.severity = none # cognitive complexity
+dotnet_diagnostic.CA1308.severity = none # Normalize strings to uppercase
+dotnet_diagnostic.S2325.severity = none # Methods and properties that don't access instance data should be static
+dotnet_diagnostic.CA1502.severity = none # Cognitive complexity
 
 ###############################
 # VB Coding Conventions       #

@@ -3,13 +3,13 @@
 [MemberArgument("Expression", typeof(object))]
 public class CoalesceFunction : IFunction
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         foreach (var argument in context.FunctionCall.Arguments)
         {
-            var result = context.Context.Evaluate(argument);
+            var result = await context.Context.EvaluateAsync(argument, token).ConfigureAwait(false);
             if (!result.IsSuccessful())
             {
                 return result;

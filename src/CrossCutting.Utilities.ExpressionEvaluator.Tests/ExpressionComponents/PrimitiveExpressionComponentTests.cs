@@ -2,19 +2,19 @@
 
 public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionComponent>
 {
-    public class Evaluate : PrimitiveExpressionComponentTests
+    public class EvaluateAsync : PrimitiveExpressionComponentTests
     {
         [Theory]
         [InlineData("true", true)]
         [InlineData("false", false)]
-        public void Returns_Correct_Result_For_Booleans(string expression, bool expectedValue)
+        public async Task Returns_Correct_Result_For_Booleans(string expression, bool expectedValue)
         {
             // Arrange
             var context = CreateContext(expression);
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -22,14 +22,14 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
         }
 
         [Fact]
-        public void Returns_Correct_Result_For_Null()
+        public async Task Returns_Correct_Result_For_Null()
         {
             // Arrange
             var context = CreateContext("null");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -37,14 +37,14 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
         }
 
         [Fact]
-        public void Returns_Correct_Result_For_DateTime_Now()
+        public async Task Returns_Correct_Result_For_DateTime_Now()
         {
             // Arrange
             var context = CreateContext("DateTime.Now");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -52,14 +52,14 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
         }
 
         [Fact]
-        public void Returns_Correct_Result_For_DateTime_Today()
+        public async Task Returns_Correct_Result_For_DateTime_Today()
         {
             // Arrange
             var context = CreateContext("DateTime.Today");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -67,33 +67,33 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
         }
 
         [Fact]
-        public void Returns_Continue_On_Non_Primitive_Expression()
+        public async Task Returns_Continue_On_Non_Primitive_Expression()
         {
             // Arrange
             var context = CreateContext("some non primitive expression");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
         }
     }
 
-    public class Parse : PrimitiveExpressionComponentTests
+    public class ParseAsync : PrimitiveExpressionComponentTests
     {
         [Theory]
         [InlineData("true")]
         [InlineData("false")]
-        public void Returns_Correct_Result_For_Booleans(string expression)
+        public async Task Returns_Correct_Result_For_Booleans(string expression)
         {
             // Arrange
             var context = CreateContext(expression);
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -101,14 +101,14 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
         }
 
         [Fact]
-        public void Returns_Correct_Result_For_Null()
+        public async Task Returns_Correct_Result_For_Null()
         {
             // Arrange
             var context = CreateContext("null");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -116,14 +116,14 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
         }
 
         [Fact]
-        public void Returns_Correct_Result_For_DateTime_Now()
+        public async Task Returns_Correct_Result_For_DateTime_Now()
         {
             // Arrange
             var context = CreateContext("DateTime.Now");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -131,14 +131,14 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
         }
 
         [Fact]
-        public void Returns_Correct_Result_For_DateTime_Today()
+        public async Task Returns_Correct_Result_For_DateTime_Today()
         {
             // Arrange
             var context = CreateContext("DateTime.Today");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -146,14 +146,14 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
         }
 
         [Fact]
-        public void Returns_Continue_On_Non_Primitive_Expression()
+        public async Task Returns_Continue_On_Non_Primitive_Expression()
         {
             // Arrange
             var context = CreateContext("some non primitive expression");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);

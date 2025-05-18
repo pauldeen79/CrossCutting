@@ -14,26 +14,35 @@ public class FunctionExpressionComponent : IExpressionComponent
         _memberResolver = memberResolver;
     }
 
-    public int Order => 20;
+    public int Order => 30;
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return _functionParser
-            .Parse(context)
-            .IgnoreNotFound()
-            .Transform(functionCall =>
-            {
-                var functionCallContext = new FunctionCallContext(functionCall, context);
+        var parseResult = _functionParser.Parse(context);
 
-                return _memberResolver
-                    .Resolve(functionCallContext)
-                    .Transform(result => EvaluateFunction(result, functionCallContext));
-            });
+        if (parseResult.Status == ResultStatus.NotFound)
+        {
+            return Result.Continue<object?>();
+        }
+
+        if (!parseResult.IsSuccessful())
+        {
+            return parseResult;
+        }
+
+        var functionCallContext = new FunctionCallContext(parseResult.Value!, context);
+        var resolveResult = (await _memberResolver.ResolveAsync(functionCallContext, token).ConfigureAwait(false));
+        if (!resolveResult.IsSuccessful())
+        {
+            return resolveResult;
+        }
+
+        return await EvaluateFunction(resolveResult.Value!, functionCallContext, token).ConfigureAwait(false);
     }
 
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -45,7 +54,7 @@ public class FunctionExpressionComponent : IExpressionComponent
                 .WithExpressionComponentType(typeof(FunctionExpressionComponent))
                 .WithSourceExpression(context.Expression);
         }
-        else if (!functionCallResult.IsSuccessful())
+        else if (!functionCallResult.EnsureValue().IsSuccessful())
         {
             return new ExpressionParseResultBuilder()
                 .FillFromResult(functionCallResult)
@@ -53,8 +62,8 @@ public class FunctionExpressionComponent : IExpressionComponent
                 .WithSourceExpression(context.Expression);
         }
 
-        var functionCallContext = new FunctionCallContext(functionCallResult.GetValueOrThrow(), context);
-        var resolveResult = _memberResolver.Resolve(functionCallContext);
+        var functionCallContext = new FunctionCallContext(functionCallResult.Value!, context);
+        var resolveResult = await _memberResolver.ResolveAsync(functionCallContext, token).ConfigureAwait(false);
 
         if (!resolveResult.IsSuccessful())
         {
@@ -76,12 +85,12 @@ public class FunctionExpressionComponent : IExpressionComponent
             .WithResultType(resolveResult.GetValueOrThrow().ReturnValueType);
     }
 
-    private static Result<object?> EvaluateFunction(MemberAndTypeDescriptor result, FunctionCallContext functionCallContext)
+    private static async Task<Result<object?>> EvaluateFunction(MemberAndTypeDescriptor result, FunctionCallContext functionCallContext, CancellationToken token)
         => result.Member switch
         {
             null => Result.Invalid<object?>("Member is null"),
-            IGenericFunction genericFunction => functionCallContext.Evaluate(genericFunction),
-            INonGenericMember nonGenericMember => nonGenericMember.Evaluate(functionCallContext),
+            IGenericFunction genericFunction => await functionCallContext.EvaluateAsync(genericFunction, token).ConfigureAwait(false),
+            INonGenericMember nonGenericMember => await nonGenericMember.EvaluateAsync(functionCallContext, token).ConfigureAwait(false),
             _ => Result.NotSupported<object?>($"Unsupported member type: {result.Member.GetType().FullName}")
         };
 }

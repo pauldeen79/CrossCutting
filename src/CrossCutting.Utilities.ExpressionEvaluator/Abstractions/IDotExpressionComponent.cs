@@ -3,6 +3,6 @@
 public interface IDotExpressionComponent
 {
     int Order { get; }
-    Result<object?> Evaluate(DotExpressionComponentState state);
-    Result<Type> Validate(DotExpressionComponentState state);
+    Task<Result<object?>> EvaluateAsync(DotExpressionComponentState state, CancellationToken token);
+    Task<Result<Type>> ValidateAsync(DotExpressionComponentState state, CancellationToken token);
 }

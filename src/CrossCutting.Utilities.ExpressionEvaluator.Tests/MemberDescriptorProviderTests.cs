@@ -122,8 +122,8 @@ public class MemberDescriptorProviderTests
 
         private sealed class MyFunction1 : IFunction
         {
-            public Result<object?> Evaluate(FunctionCallContext context)
-                => throw new NotImplementedException();
+            public Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
+                => Task.FromResult(Result.NotImplemented<object?>());
         }
 
         [MemberName("MyCustomFunctionName")]
@@ -132,30 +132,29 @@ public class MemberDescriptorProviderTests
         [Description("This is a very cool function")]
         private sealed class MyFunction2 : IFunction
         {
-            public Result<object?> Evaluate(FunctionCallContext context)
-                => throw new NotImplementedException();
+            public Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
+                => Task.FromResult(Result.NotImplemented<object?>());
         }
 
         [MemberResultType(typeof(string))]
         private sealed class MyTypedFunction : IFunction
         {
-            public Result<object?> Evaluate(FunctionCallContext context)
-            {
-                throw new NotImplementedException();
-            }
+            public Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
+                => Task.FromResult(Result.NotImplemented<object?>());
         }
 
         private sealed class PassThroughFunction : IFunction, IDynamicDescriptorsProvider
         {
-            public Result<object?> Evaluate(FunctionCallContext context)
-            {
-                if (context.FunctionCall.Name != "PassThrough")
+            public Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
+                => Task.Run(() =>
                 {
-                    return Result.Continue<object?>();
-                }
+                    if (context.FunctionCall.Name != "PassThrough")
+                    {
+                        return Result.Continue<object?>();
+                    }
 
-                return Result.Success<object?>("Custom value");
-            }
+                    return Result.Success<object?>("Custom value");
+                }, token);
 
             public Result<IReadOnlyCollection<MemberDescriptor>> GetDescriptors()
             {
@@ -172,8 +171,8 @@ public class MemberDescriptorProviderTests
         [MemberResultType(typeof(string))]
         private sealed class MyGenericFunction : IGenericFunction
         {
-            public Result<object?> EvaluateGeneric<T>(FunctionCallContext context)
-                => throw new NotImplementedException();
+            public Task<Result<object?>> EvaluateGenericAsync<T>(FunctionCallContext context, CancellationToken token)
+                => Task.FromResult(Result.NotImplemented<object?>());
         }
     }
 }

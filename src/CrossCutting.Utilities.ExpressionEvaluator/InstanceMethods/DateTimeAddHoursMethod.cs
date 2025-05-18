@@ -8,14 +8,14 @@ public class DateTimeAddHoursMethod : IMethod
 {
     private const string HoursToAdd = nameof(HoursToAdd);
 
-    public Result<object?> Evaluate(FunctionCallContext context)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return new ResultDictionaryBuilder()
-            .Add(Constants.Instance, () => context.GetInstanceValueResult<DateTime>())
-            .Add(HoursToAdd, () => context.GetArgumentValueResult<int>(0, "HoursToAdd"))
-            .Build()
+        return (await new AsyncResultDictionaryBuilder()
+            .Add(Constants.Instance, context.GetInstanceValueResultAsync<DateTime>(token))
+            .Add(HoursToAdd, context.GetArgumentValueResultAsync<int>(0, "HoursToAdd", token))
+            .Build().ConfigureAwait(false))
             .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.Instance).AddHours(results.GetValue<int>(HoursToAdd))));
     }
 }

@@ -6,7 +6,7 @@ public sealed class FunctionCallTests : TestBase
     {
         var function = Substitute.For<IFunction>();
         function
-            .Evaluate(Arg.Any<FunctionCallContext>())
+            .EvaluateAsync(Arg.Any<FunctionCallContext>(), Arg.Any<CancellationToken>())
             .Returns(x => x.ArgAt<FunctionCallContext>(0).FunctionCall.Name switch
             {
                 "MyNestedFunction" => Result.Success<object?>("Evaluated result"),
@@ -24,19 +24,16 @@ public sealed class FunctionCallTests : TestBase
                 _ => Result.NotSupported<object?>("Only Parsed result function is supported")
             });
         Expression
-            .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
+            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
             .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression.EndsWith("()")
-                ? function.Evaluate(new FunctionCallContext(new FunctionCallBuilder()
+                ? function.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder()
                     .WithName(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.ReplaceSuffix("()", string.Empty, StringComparison.Ordinal))
-                    .WithMemberType(MemberType.Function), x.ArgAt<ExpressionEvaluatorContext>(0)))
-                : EvaluateExpression(x));
-        Evaluator
-            .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
-            .Returns(x => Expression.Evaluate(x.ArgAt<ExpressionEvaluatorContext>(0)));
+                    .WithMemberType(MemberType.Function), x.ArgAt<ExpressionEvaluatorContext>(0)), x.ArgAt<CancellationToken>(1))
+                : new ExpressionEvaluatorMock(Expression).EvaluateAsync(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)));
     }
 
     [Fact]
-    public void GetArgumentValueResult_Returns_Invalid_When_Argument_Is_Not_Present()
+    public async Task GetArgumentValueResult_Returns_Invalid_When_Argument_Is_Not_Present()
     {
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
@@ -44,7 +41,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = argument.GetArgumentValueResult(1, "SomeName", context);
+        var result = await argument.GetArgumentValueResultAsync(1, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -52,7 +49,7 @@ public sealed class FunctionCallTests : TestBase
     }
 
     [Fact]
-    public void GetArgumentValueResult_Returns_Success_When_Argument_Is_Present_And_Constant()
+    public async Task GetArgumentValueResult_Returns_Success_When_Argument_Is_Present_And_Constant()
     {
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
@@ -60,7 +57,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", context);
+        var result = await argument.GetArgumentValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -68,7 +65,7 @@ public sealed class FunctionCallTests : TestBase
     }
 
     [Fact]
-    public void GetArgumentValueResult_Returns_Success_When_Argument_Is_Present_And_Constant_And_Ignores_DefaultValue()
+    public async Task GetArgumentValueResult_Returns_Success_When_Argument_Is_Present_And_Constant_And_Ignores_DefaultValue()
     {
         // Arrange
         var argument = CreateFunctionCallWithConstantArgument();
@@ -76,7 +73,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", context, (object)"ignored");
+        var result = await argument.GetArgumentValueResultAsync(0, "SomeName", context, (object)"ignored", CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -84,7 +81,7 @@ public sealed class FunctionCallTests : TestBase
     }
 
     [Fact]
-    public void GetArgumentValueResult_Returns_Success_When_Argument_Is_Present_And_Function()
+    public async Task GetArgumentValueResult_Returns_Success_When_Argument_Is_Present_And_Function()
     {
         // Arrange
         var argument = CreateFunctionCallWithFunctionArgument("MyNestedFunction");
@@ -92,7 +89,7 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", context);
+        var result = await argument.GetArgumentValueResultAsync(0, "SomeName", context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -100,7 +97,7 @@ public sealed class FunctionCallTests : TestBase
     }
 
     [Fact]
-    public void GetArgumentValueResult_Returns_Success_With_DefaultValue_When_Argument_Is_Not_Present_But_DefaultValue_Is_Supplied()
+    public async Task GetArgumentValueResult_Returns_Success_With_DefaultValue_When_Argument_Is_Not_Present_But_DefaultValue_Is_Supplied()
     {
         // Arrange
         var argument = CreateFunctionCallWithoutArguments();
@@ -108,636 +105,11 @@ public sealed class FunctionCallTests : TestBase
         var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
 
         // Act
-        var result = argument.GetArgumentValueResult(0, "SomeName", context, (object)"some value");
+        var result = await argument.GetArgumentValueResultAsync(0, "SomeName", context, (object)"some value", CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldBe("some value");
-    }
-
-    [Fact]
-    public void GetArgumentStringValueResult_Returns_Invalid_When_ArgumentValue_Is_Invalid()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithConstantArgument();
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentStringValueResult(1, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
-    }
-
-    [Fact]
-    public void GetArgumentStringValueResult_Returns_Invalid_When_ArgumentValue_Is_Not_Of_Type_String()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("NumericFunction");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentStringValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type string");
-    }
-
-    [Fact]
-    public void GetArgumentStringValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_String()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithConstantArgument();
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentStringValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe("some value");
-    }
-
-    [Fact]
-    public void GetArgumentStringValueResult_Returns_Success_With_DefaultValue_When_ArgumentValue_Is_Not_Found_And_DefaultValue_Is_Supplied()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithoutArguments();
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentStringValueResult(0, "SomeName", context, "default value");
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe("default value");
-    }
-
-    [Fact]
-    public void GetArgumentInt32ValueResult_Returns_Invalid_When_ArgumentValue_Is_Invalid()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithConstantArgument();
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt32ValueResult(1, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
-    }
-
-    [Fact]
-    public void GetArgumentInt32ValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_Int32()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("NumericFunction");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(1);
-    }
-
-    [Fact]
-    public void GetArgumentInt32ValueResult_Returns_Invalid_When_ArgumentValue_Is_Not_Of_Type_String()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunction");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type integer");
-    }
-
-    [Fact]
-    public void GetArgumentInt32ValueResult_Returns_Parse_Result_Status_When_ArgumentValue_Is_String_But_Could_Not_Be_Parsed_As_Expression()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("UnknownExpressionString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type integer");
-    }
-
-    [Fact]
-    public void GetArgumentInt32ValueResult_Returns_Invalid_When_ArgumentValue_Is_String_But_Is_Parsed_To_Something_Else_Than_Int32()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunctionAsString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type integer");
-    }
-
-    [Fact]
-    public void GetArgumentInt32ValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_String_And_Is_Parsed_To_Int32()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("NumericFunctionAsString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(13);
-    }
-
-    [Fact]
-    public void GetArgumentInt32ValueResult_Returns_Success_With_DefaultValue_When_ArgumentValue_Is_Not_Found_And_DefaultValue_Is_Supplied()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithoutArguments();
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt32ValueResult(0, "SomeName", context, 13);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(13);
-    }
-
-    [Fact]
-    public void GetArgumentInt64ValueResult_Returns_Invalid_When_ArgumentValue_Is_Invalid()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithConstantArgument();
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt64ValueResult(1, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
-    }
-
-    [Fact]
-    public void GetArgumentInt64ValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_Int64()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("LongFunction");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(1L);
-    }
-
-    [Fact]
-    public void GetArgumentInt64ValueResult_Returns_Invalid_When_ArgumentValue_Is_Not_Of_Type_String()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunction");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type long integer");
-    }
-
-    [Fact]
-    public void GetArgumentInt64ValueResult_Returns_Parse_Result_Status_When_ArgumentValue_Is_String_But_Could_Not_Be_Parsed_As_Expression()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("UnknownExpressionString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type long integer");
-    }
-
-    [Fact]
-    public void GetArgumentInt64ValueResult_Returns_Invalid_When_ArgumentValue_Is_String_But_Is_Parsed_To_Something_Else_Than_Int64()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunctionAsString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type long integer");
-    }
-
-    [Fact]
-    public void GetArgumentInt64ValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_String_And_Is_Parsed_To_Int64()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("LongFunctionAsString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(13L);
-    }
-
-    [Fact]
-    public void GetArgumentInt64ValueResult_Returns_Success_With_DefaultValue_When_ArgumentValue_Is_Not_Found_And_DefaultValue_Is_Supplied()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithoutArguments();
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentInt64ValueResult(0, "SomeName", context, 13L);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(13L);
-    }
-
-    [Fact]
-    public void GetArgumentDecimalValueResult_Returns_Invalid_When_ArgumentValue_Is_Invalid()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithConstantArgument();
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDecimalValueResult(1, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
-    }
-
-    [Fact]
-    public void GetArgumentDecimalValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_Decimal()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("DecimalFunction");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(1L);
-    }
-
-    [Fact]
-    public void GetArgumentDecimalValueResult_Returns_Invalid_When_ArgumentValue_Is_Not_Of_Type_String()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunction");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type decimal");
-    }
-
-    [Fact]
-    public void GetArgumentDecimalValueResult_Returns_Parse_Result_Status_When_ArgumentValue_Is_String_But_Could_Not_Be_Parsed_As_Expression()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("UnknownExpressionString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type decimal");
-    }
-
-    [Fact]
-    public void GetArgumentDecimalValueResult_Returns_Invalid_When_ArgumentValue_Is_String_But_Is_Parsed_To_Something_Else_Than_Decimal()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunctionAsString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type decimal");
-    }
-
-    [Fact]
-    public void GetArgumentDecimalValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_String_And_Is_Parsed_To_Decimal()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("DecimalFunctionAsString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(13M);
-    }
-
-    [Fact]
-    public void GetArgumentDecimalValueResult_Returns_Success_With_DefaultValue_When_ArgumentValue_Is_Not_Found_And_DefaultValue_Is_Supplied()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithoutArguments();
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDecimalValueResult(0, "SomeName", context, 13.5M);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(13.5M);
-    }
-
-    [Fact]
-    public void GetArgumentBooleanValueResult_Returns_Invalid_When_ArgumentValue_Is_Invalid()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithConstantArgument();
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentBooleanValueResult(1, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
-    }
-
-    [Fact]
-    public void GetArgumentBooleanValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_Boolean()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("BooleanFunction");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(true);
-    }
-
-    [Fact]
-    public void GetArgumentBooleanValueResult_Returns_Invalid_When_ArgumentValue_Is_Not_Of_Type_String()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunction");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type boolean");
-    }
-
-    [Fact]
-    public void GetArgumentBooleanValueResult_Returns_Parse_Result_Status_When_ArgumentValue_Is_String_But_Could_Not_Be_Parsed_As_Expression()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("UnknownExpressionString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type boolean");
-    }
-
-    [Fact]
-    public void GetArgumentBooleanValueResult_Returns_Invalid_When_ArgumentValue_Is_String_But_Is_Parsed_To_Something_Else_Than_Boolean()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunctionAsString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type boolean");
-    }
-
-    [Fact]
-    public void GetArgumentBooleanValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_String_And_Is_Parsed_To_Boolean()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("BooleanFunctionAsString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(true);
-    }
-
-    [Fact]
-    public void GetArgumentBooleanValueResult_Returns_Success_With_DefaultValue_When_ArgumentValue_Is_Not_Found_And_DefaultValue_Is_Supplied()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithoutArguments();
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentBooleanValueResult(0, "SomeName", context, true);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBeTrue();
-    }
-
-    [Fact]
-    public void GetArgumentDateTimeValueResult_Returns_Invalid_When_ArgumentValue_Is_Invalid()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithConstantArgument();
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDateTimeValueResult(1, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("Missing argument: SomeName");
-    }
-
-    [Fact]
-    public void GetArgumentDateTimeValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_DateTime()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunction");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(DateTime.Today);
-    }
-
-    [Fact]
-    public void GetArgumentDateTimeValueResult_Returns_Invalid_When_ArgumentValue_Is_Not_Of_Type_String()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("NumericFunction");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type datetime");
-    }
-
-    [Fact]
-    public void GetArgumentDateTimeValueResult_Returns_Parse_Result_Status_When_ArgumentValue_Is_String_But_Could_Not_Be_Parsed_As_Expression()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("UnknownExpressionString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type datetime");
-    }
-
-    [Fact]
-    public void GetArgumentDateTimeValueResult_Returns_Invalid_When_ArgumentValue_Is_String_But_Is_Parsed_To_Something_Else_Than_DateTime()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("NumericFunctionAsString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ErrorMessage.ShouldBe("SomeName is not of type datetime");
-    }
-
-    [Fact]
-    public void GetArgumentDateTimeValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_String_And_Is_Parsed_To_DateTime()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithFunctionArgument("DateTimeFunctionAsString");
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(DateTime.Today);
-    }
-
-    [Fact]
-    public void GetArgumentDateTimeValueResult_Returns_Success_With_DefaultValue_When_ArgumentValue_Is_Not_Found_And_DefaultValue_Is_Supplied()
-    {
-        // Arrange
-        var argument = CreateFunctionCallWithoutArguments();
-        var dt = DateTime.Now;
-        var expressionEvaluatorContext = CreateContext("Dummy");
-        var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build(), expressionEvaluatorContext);
-
-        // Act
-        var result = argument.GetArgumentDateTimeValueResult(0, "SomeName", context, dt);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(dt);
     }
 
     private static FunctionCall CreateFunctionCallWithoutArguments()

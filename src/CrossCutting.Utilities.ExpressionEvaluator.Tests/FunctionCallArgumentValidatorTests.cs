@@ -5,7 +5,7 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
     public class Validate : FunctionCallArgumentValidatorTests
     {
         [Fact]
-        public void Returns_Non_Successful_Result_From_CallArgument_Parse()
+        public async Task Returns_Non_Successful_Result_From_CallArgument_Parse()
         {
             // Arrange
             var functionCall = new FunctionCallBuilder().WithName("MyFunction").WithMemberType(MemberType.Function);
@@ -15,7 +15,7 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
             var sut = CreateSut();
 
             // Act
-            var result = sut.Validate(descriptorArgument, "error", context);
+            var result = await sut.ValidateAsync(descriptorArgument, "error", context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -23,7 +23,7 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
         }
 
         [Fact]
-        public void Returns_Invalid_When_Type_Is_Not_Assignable()
+        public async Task Returns_Invalid_When_Type_Is_Not_Assignable()
         {
             // Arrange
             var functionCall = new FunctionCallBuilder().WithName("MyFunction").WithMemberType(MemberType.Function);
@@ -33,7 +33,7 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
             var sut = CreateSut();
 
             // Act
-            var result = sut.Validate(descriptorArgument, "1", context);
+            var result = await sut.ValidateAsync(descriptorArgument, "1", context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -41,7 +41,7 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
         }
 
         [Fact]
-        public void Returns_Ok_When_ValidateArgumentTypes_Is_False()
+        public async Task Returns_Ok_When_ValidateArgumentTypes_Is_False()
         {
             // Arrange
             var functionCall = new FunctionCallBuilder().WithName("MyFunction").WithMemberType(MemberType.Function);
@@ -51,14 +51,14 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
             var sut = CreateSut();
 
             // Act
-            var result = sut.Validate(descriptorArgument, "1", context);
+            var result = await sut.ValidateAsync(descriptorArgument, "1", context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
-        public void Returns_Ok_When_DescriptorArgument_Type_Is_Object()
+        public async Task Returns_Ok_When_DescriptorArgument_Type_Is_Object()
         {
             // Arrange
             var functionCall = new FunctionCallBuilder().WithName("MyFunction").WithMemberType(MemberType.Function);
@@ -68,14 +68,14 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
             var sut = CreateSut();
 
             // Act
-            var result = sut.Validate(descriptorArgument, "1", context);
+            var result = await sut.ValidateAsync(descriptorArgument, "1", context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
-        public void Returns_Ok_When_CallArgument_ResultType_Is_Null()
+        public async Task Returns_Ok_When_CallArgument_ResultType_Is_Null()
         {
             // Arrange
             var functionCall = new FunctionCallBuilder().WithName("MyFunction").WithMemberType(MemberType.Function);
@@ -85,14 +85,14 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
             var sut = CreateSut();
 
             // Act
-            var result = sut.Validate(descriptorArgument, "unknown", context);
+            var result = await sut.ValidateAsync(descriptorArgument, "unknown", context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
-        public void Returns_Ok_When_CallArgument_ResultType_Is_Object_And_StrictTypeChecking_Is_False()
+        public async Task Returns_Ok_When_CallArgument_ResultType_Is_Object_And_StrictTypeChecking_Is_False()
         {
             // Arrange
             var functionCall = new FunctionCallBuilder().WithName("MyFunction").WithMemberType(MemberType.Function);
@@ -102,7 +102,7 @@ public class FunctionCallArgumentValidatorTests : TestBase<MemberCallArgumentVal
             var sut = CreateSut();
 
             // Act
-            var result = sut.Validate(descriptorArgument, "object", context);
+            var result = await sut.ValidateAsync(descriptorArgument, "object", context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

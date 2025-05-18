@@ -2,10 +2,10 @@
 
 public class DateTimeConstructorTests : TestBase<DateTimeConstructor>
 {
-    public class Evaluate : DateTimeConstructorTests
+    public class EvaluateAsync : DateTimeConstructorTests
     {
         [Fact]
-        public void Returns_Success_On_Correct_Arguments()
+        public async Task Returns_Success_On_Correct_Arguments()
         {
             // Arrange
             var sut = CreateSut();
@@ -13,7 +13,7 @@ public class DateTimeConstructorTests : TestBase<DateTimeConstructor>
             var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -21,7 +21,7 @@ public class DateTimeConstructorTests : TestBase<DateTimeConstructor>
         }
 
         [Fact]
-        public void Returns_Error_When_Date_Could_Not_Be_Created_Due_To_Argument_Values()
+        public async Task Returns_Error_When_Date_Could_Not_Be_Created_Due_To_Argument_Values()
         {
             // Arrange
             var sut = CreateSut();
@@ -29,7 +29,7 @@ public class DateTimeConstructorTests : TestBase<DateTimeConstructor>
             var context = new FunctionCallContext(functionCall, CreateContext("Dummy"));
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

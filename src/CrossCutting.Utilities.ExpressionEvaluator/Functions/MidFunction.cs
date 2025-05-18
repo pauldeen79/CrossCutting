@@ -6,15 +6,15 @@
 [MemberArgument("Length", typeof(int))]
 public class MidFunction : IFunction
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return new ResultDictionaryBuilder()
-            .Add<string>(context, 0, "StringExpression")
-            .Add<int>(context, 1, "Index")
-            .Add<int>(context, 2, "Length")
-            .Build()
+        return (await new AsyncResultDictionaryBuilder()
+            .Add<string>(context, 0, "StringExpression", token)
+            .Add<int>(context, 1, "Index", token)
+            .Add<int>(context, 2, "Length", token)
+            .Build().ConfigureAwait(false))
             .OnSuccess(results =>
             {
                 var stringExpression = results.GetValue<string>("StringExpression");

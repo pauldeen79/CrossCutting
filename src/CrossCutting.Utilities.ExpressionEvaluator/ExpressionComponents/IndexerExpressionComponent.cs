@@ -4,11 +4,10 @@ public class IndexerExpressionComponent : IExpressionComponent
 {
     private static readonly Regex _indexerRegex = new Regex(@"(?<Expression>[^\[\]]+)\[(?<Index>\d+)\]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(250));
     private const string Index = nameof(Index);
-    private const string Expression = nameof(Expression);
 
-    public int Order => 31;
+    public int Order => 60;
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -18,14 +17,16 @@ public class IndexerExpressionComponent : IExpressionComponent
             return Result.Continue<object?>();
         }
 
-        return new ResultDictionaryBuilder<object?>()
-            .Add(Expression, () => context.EvaluateTyped<IEnumerable>(match.Groups[Expression].Value))
-            .Add(Index, () => context.EvaluateTyped<int>(match.Groups[Index].Value))
+        var results = await new AsyncResultDictionaryBuilder()
+            .Add(Constants.Expression, context.EvaluateTypedAsync<IEnumerable>(match.Groups[Constants.Expression].Value, token))
+            .Add(Index, context.EvaluateTypedAsync<int>(match.Groups[Index].Value, token))
             .Build()
-            .OnSuccess(results => Result.Success(results[Expression].CastValueAs<IEnumerable>().OfType<object?>().ElementAtOrDefault(results[Index].CastValueAs<int>())));
+            .ConfigureAwait(false);
+
+        return Result.Success(results.GetValue<IEnumerable>(Constants.Expression).OfType<object?>().ElementAtOrDefault(results.GetValue<int>(Index)));
     }
 
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -40,13 +41,24 @@ public class IndexerExpressionComponent : IExpressionComponent
             return result.WithStatus(ResultStatus.Continue);
         }
 
-        var parseResult = new ResultDictionaryBuilder<Type>()
-            .Add(Expression, () => context.Parse(match.Groups[Expression].Value))
-            .Add(Index, () => context.Parse(match.Groups[Index].Value))
-            .Build()
-            .OnFailure(innerResult => result.FillFromResult(innerResult))
-            .OnSuccess(results => results[Expression]);
+        var expressionResult = await context.ParseAsync(match.Groups[Constants.Expression].Value, token).ConfigureAwait(false);
+        var indexResult = await context.ParseAsync(match.Groups[Index].Value, token).ConfigureAwait(false);
 
-        return result.WithResultType(parseResult.Value?.GetElementType());
+        var parseResult = new ResultDictionaryBuilder()
+            .Add(Constants.Expression, () => expressionResult)
+            .Add(Index, () => indexResult)
+            .Build();
+
+        var error = parseResult.GetError();
+        if (error is not null)
+        {
+            result.FillFromResult(error);
+        }
+        else
+        {
+            result.WithResultType(expressionResult.ResultType!.GetElementType());
+        }
+
+        return result;
     }
 }

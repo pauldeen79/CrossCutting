@@ -6,56 +6,58 @@ public class TypeOfExpressionComponent : IExpressionComponent
 
     public int Order => 13;
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        var match = _typeOfRegEx.Match(context.Expression);
-        if (!match.Success)
+    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => Task.Run(() =>
         {
-            return Result.Continue<object?>();
-        }
+            context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var typename = match.Groups["typename"].Value;
+            var match = _typeOfRegEx.Match(context.Expression);
+            if (!match.Success)
+            {
+                return Result.Continue<object?>();
+            }
 
-        var type = Type.GetType(typename, false);
-        if (type is null)
+            var typename = match.Groups["typename"].Value;
+
+            var type = Type.GetType(typename, false);
+            if (type is null)
+            {
+                return Result.Invalid<object?>($"Unknown type: {typename}");
+            }
+
+            return Result.Success<object?>(type!);
+        }, token);
+
+    public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => Task.Run<ExpressionParseResult>(() =>
         {
-            return Result.Invalid<object?>($"Unknown type: {typename}");
-        }
+            context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return Result.Success<object?>(type!);
-    }
+            var match = _typeOfRegEx.Match(context.Expression);
+            if (!match.Success)
+            {
+                return new ExpressionParseResultBuilder()
+                    .WithStatus(ResultStatus.Continue)
+                    .WithExpressionComponentType(typeof(TypeOfExpressionComponent))
+                    .WithSourceExpression(context.Expression);
+            }
 
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
+            var typename = match.Groups["typename"].Value;
 
-        var match = _typeOfRegEx.Match(context.Expression);
-        if (!match.Success)
-        {
+            var type = Type.GetType(typename, false);
+            if (type is null)
+            {
+                return new ExpressionParseResultBuilder()
+                    .WithStatus(ResultStatus.Invalid)
+                    .WithErrorMessage($"Unknown type: {typename}")
+                    .WithExpressionComponentType(typeof(TypeOfExpressionComponent))
+                    .WithSourceExpression(context.Expression);
+            }
+
             return new ExpressionParseResultBuilder()
-                .WithStatus(ResultStatus.Continue)
+                .WithStatus(ResultStatus.Ok)
                 .WithExpressionComponentType(typeof(TypeOfExpressionComponent))
-                .WithSourceExpression(context.Expression);
-        }
-
-        var typename = match.Groups["typename"].Value;
-
-        var type = Type.GetType(typename, false);
-        if (type is null)
-        {
-            return new ExpressionParseResultBuilder()
-                .WithStatus(ResultStatus.Invalid)
-                .WithErrorMessage($"Unknown type: {typename}")
-                .WithExpressionComponentType(typeof(TypeOfExpressionComponent))
-                .WithSourceExpression(context.Expression);
-        }
-
-        return new ExpressionParseResultBuilder()
-            .WithStatus(ResultStatus.Ok)
-            .WithExpressionComponentType(typeof(TypeOfExpressionComponent))
-            .WithSourceExpression(context.Expression)
-            .WithResultType(typeof(Type));
-    }
+                .WithSourceExpression(context.Expression)
+                .WithResultType(typeof(Type));
+        }, token);
 }

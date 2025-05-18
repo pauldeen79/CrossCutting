@@ -6,7 +6,7 @@ public class FunctionCallContextTests : TestBase
     {
         var function = Substitute.For<IFunction>();
         function
-            .Evaluate(Arg.Any<FunctionCallContext>())
+            .EvaluateAsync(Arg.Any<FunctionCallContext>(), Arg.Any<CancellationToken>())
             .Returns(x => x.ArgAt<FunctionCallContext>(0).FunctionCall.Name switch
             {
                 "MyNestedFunction" => Result.Success<object?>("Evaluated result"),
@@ -24,15 +24,12 @@ public class FunctionCallContextTests : TestBase
                 _ => Result.NotSupported<object?>("Only Parsed result function is supported")
             });
         Expression
-            .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
+            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
             .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression.EndsWith("()")
-                ? function.Evaluate(new FunctionCallContext(new FunctionCallBuilder()
+                ? function.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder()
                     .WithName(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.ReplaceSuffix("()", string.Empty, StringComparison.Ordinal))
-                    .WithMemberType(MemberType.Function), x.ArgAt<ExpressionEvaluatorContext>(0)))
-                : EvaluateExpression(x));
-        Evaluator
-            .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
-            .Returns(x => Expression.Evaluate(x.ArgAt<ExpressionEvaluatorContext>(0)));
+                    .WithMemberType(MemberType.Function), x.ArgAt<ExpressionEvaluatorContext>(0)), x.ArgAt<CancellationToken>(1))
+                : new ExpressionEvaluatorMock(Expression).EvaluateAsync(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)));
     }
 
     public class Constructor : FunctionCallContextTests
@@ -73,13 +70,13 @@ public class FunctionCallContextTests : TestBase
     public class GetArgumentValueResultNoDefaultValue : FunctionCallContextTests
     {
         [Fact]
-        public void Returns_Success_When_Argument_Is_Present_And_Constant()
+        public async Task Returns_Success_When_Argument_Is_Present_And_Constant()
         {
             // Arrange
             var sut = CreateFunctionCallContextWithConstantArgument();
 
             // Act
-            var result = sut.GetArgumentValueResult(0, "SomeName");
+            var result = await sut.GetArgumentValueResultAsync(0, "SomeName", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -90,13 +87,13 @@ public class FunctionCallContextTests : TestBase
     public class GetArgumentValueResultDefaultValue : FunctionCallContextTests
     {
         [Fact]
-        public void Returns_Success_When_Argument_Is_Present_And_Constant()
+        public async Task Returns_Success_When_Argument_Is_Present_And_Constant()
         {
             // Arrange
             var sut = CreateFunctionCallContextWithConstantArgument();
 
             // Act
-            var result = sut.GetArgumentValueResult(0, "SomeName", (object?)"ignored default value");
+            var result = await sut.GetArgumentValueResultAsync(0, "SomeName", (object?)"ignored default value", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -107,13 +104,13 @@ public class FunctionCallContextTests : TestBase
     public class GetArgumentValueResultGenericNoDefaultValue : FunctionCallContextTests
     {
         [Fact]
-        public void Returns_Success_When_Argument_Is_Present_And_Constant()
+        public async Task Returns_Success_When_Argument_Is_Present_And_Constant()
         {
             // Arrange
             var sut = CreateFunctionCallContextWithConstantArgument();
 
             // Act
-            var result = sut.GetArgumentValueResult<string>(0, "SomeName");
+            var result = await sut.GetArgumentValueResultAsync<string>(0, "SomeName", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -124,220 +121,31 @@ public class FunctionCallContextTests : TestBase
     public class GetArgumentValueResultGenericDefaultValue : FunctionCallContextTests
     {
         [Fact]
-        public void Returns_Success_When_Argument_Is_Present_And_Constant()
+        public async Task Returns_Success_When_Argument_Is_Present_And_Constant()
         {
             // Arrange
             var sut = CreateFunctionCallContextWithConstantArgument();
 
             // Act
-            var result = sut.GetArgumentValueResult(0, "SomeName", "ignored default value");
+            var result = await sut.GetArgumentValueResultAsync(0, "SomeName", "ignored default value", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldBe("some value");
-        }
-    }
-
-    public class GetArgumentStringValueResultNoDefaultValue : FunctionCallContextTests
-    {
-        [Fact]
-        public void Returns_Success_When_Argument_Is_Present_And_Constant()
-        {
-            // Arrange
-            var sut = CreateFunctionCallContextWithConstantArgument();
-
-            // Act
-            var result = sut.GetArgumentStringValueResult(0, "SomeName");
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe("some value");
-        }
-    }
-
-    public class GetArgumentStringValueResultDefaultValue : FunctionCallContextTests
-    {
-        [Fact]
-        public void Returns_Success_When_Argument_Is_Present_And_Constant()
-        {
-            // Arrange
-            var sut = CreateFunctionCallContextWithConstantArgument();
-
-            // Act
-            var result = sut.GetArgumentStringValueResult(0, "SomeName", "ignored default value");
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe("some value");
-        }
-    }
-
-    public class GetArgumentInt32ValueResult : FunctionCallContextTests
-    {
-        [Fact]
-        public void Returns_Success_When_ArgumentValue_Is_Of_Type_Int32()
-        {
-            // Arrange
-            var sut = CreateFunctionCallContextWithFunctionArgument("NumericFunction");
-
-            // Act
-            var result = sut.GetArgumentInt32ValueResult(0, "SomeName");
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(1);
-        }
-
-        [Fact]
-        public void Returns_Success_When_ArgumentValue_Is_Of_Type_Int32_Ignored_DefaultValue()
-        {
-            // Arrange
-            var sut = CreateFunctionCallContextWithFunctionArgument("NumericFunction");
-
-            // Act
-            var result = sut.GetArgumentInt32ValueResult(0, "SomeName", 13);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(1);
-        }
-    }
-
-    public class GetArgumentInt64ValueResult : FunctionCallContextTests
-    {
-        [Fact]
-        public void Returns_Success_When_ArgumentValue_Is_Of_Type_Int64()
-        {
-            // Arrange
-            var sut = CreateFunctionCallContextWithFunctionArgument("LongFunction");
-
-            // Act
-            var result = sut.GetArgumentInt64ValueResult(0, "SomeName");
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(1L);
-        }
-
-        [Fact]
-        public void Returns_Success_When_ArgumentValue_Is_Of_Type_Int64_Ignored_DefaultValue()
-        {
-            // Arrange
-            var sut = CreateFunctionCallContextWithFunctionArgument("LongFunction");
-
-            // Act
-            var result = sut.GetArgumentInt64ValueResult(0, "SomeName", 13);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(1L);
-        }
-    }
-
-    public class GetArgumentDecimalValueResult : FunctionCallContextTests
-    {
-        [Fact]
-        public void Returns_Success_When_ArgumentValue_Is_Of_Type_Decimal()
-        {
-            // Arrange
-            var sut = CreateFunctionCallContextWithFunctionArgument("DecimalFunction");
-
-            // Act
-            var result = sut.GetArgumentDecimalValueResult(0, "SomeName");
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(1L);
-        }
-
-        [Fact]
-        public void Returns_Success_When_ArgumentValue_Is_Of_Type_Decimal_Ignored_DefaultValue()
-        {
-            // Arrange
-            var sut = CreateFunctionCallContextWithFunctionArgument("DecimalFunction");
-
-            // Act
-            var result = sut.GetArgumentDecimalValueResult(0, "SomeName", 3.4M);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(1L);
-        }
-    }
-
-    public class GetArgumentBooleanValueResult : FunctionCallContextTests
-    {
-        [Fact]
-        public void GetArgumentBooleanValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_Boolean()
-        {
-            // Arrange
-            var sut = CreateFunctionCallContextWithFunctionArgument("BooleanFunction");
-
-            // Act
-            var result = sut.GetArgumentBooleanValueResult(0, "SomeName");
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(true);
-        }
-
-        [Fact]
-        public void GetArgumentBooleanValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_Boolean_Ignored_DefaultValue()
-        {
-            // Arrange
-            var sut = CreateFunctionCallContextWithFunctionArgument("BooleanFunction");
-
-            // Act
-            var result = sut.GetArgumentBooleanValueResult(0, "SomeName", false);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(true);
-        }
-    }
-
-    public class GetArgumentDateTimeValueResult : FunctionCallContextTests
-    {
-        [Fact]
-        public void GetArgumentDateTimeValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_DateTime()
-        {
-            // Arrange
-            var sut = CreateFunctionCallContextWithFunctionArgument("DateTimeFunction");
-
-            // Act
-            var result = sut.GetArgumentDateTimeValueResult(0, "SomeName");
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(DateTime.Today);
-        }
-
-        [Fact]
-        public void GetArgumentDateTimeValueResult_Returns_Success_When_ArgumentValue_Is_Of_Type_DateTime_Ignored_DefautValue()
-        {
-            // Arrange
-            var sut = CreateFunctionCallContextWithFunctionArgument("DateTimeFunction");
-
-            // Act
-            var result = sut.GetArgumentDateTimeValueResult(0, "SomeName", DateTime.Today.AddDays(-1));
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(DateTime.Today);
         }
     }
 
     public class GetInstanceValueResult : FunctionCallContextTests
     {
         [Fact]
-        public void Returns_Error_When_InstanceValue_Is_Of_Wrong_Type()
+        public async Task Returns_Error_When_InstanceValue_Is_Of_Wrong_Type()
         {
             // Arrange
             var state = CreateDotExpressionComponentState("\"string value\".Dummy()", "string value", "Dummy()");
             var sut = new FunctionCallContext(state);
 
             // Act
-            var result = sut.GetInstanceValueResult<int>();
+            var result = await sut.GetInstanceValueResultAsync<int>(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -345,14 +153,14 @@ public class FunctionCallContextTests : TestBase
         }
 
         [Fact]
-        public void Returns_Error_When_InstanceValue_Is_Null()
+        public async Task Returns_Error_When_InstanceValue_Is_Null()
         {
             // Arrange
             var state = CreateDotExpressionComponentState("null.Dummy()", null, "Dummy()");
             var sut = new FunctionCallContext(state);
 
             // Act
-            var result = sut.GetInstanceValueResult<int>();
+            var result = await sut.GetInstanceValueResultAsync<int>(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -360,14 +168,14 @@ public class FunctionCallContextTests : TestBase
         }
 
         [Fact]
-        public void Returns_Ok_When_InstanceValue_Is_Of_Correct_Type()
+        public async Task Returns_Ok_When_InstanceValue_Is_Of_Correct_Type()
         {
             // Arrange
             var state = CreateDotExpressionComponentState("\"string value\".Dummy()", "string value", "Dummy()");
             var sut = new FunctionCallContext(state);
 
             // Act
-            var result = sut.GetInstanceValueResult<string>();
+            var result = await sut.GetInstanceValueResultAsync<string>(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

@@ -2,13 +2,13 @@
 
 public class MemberCallArgumentValidator : IMemberCallArgumentValidator
 {
-    public ExpressionParseResult Validate(MemberDescriptorArgument descriptorArgument, string callArgument, FunctionCallContext context)
+    public async Task<ExpressionParseResult> ValidateAsync(MemberDescriptorArgument descriptorArgument, string callArgument, FunctionCallContext context, CancellationToken token)
     {
         descriptorArgument = ArgumentGuard.IsNotNull(descriptorArgument, nameof(descriptorArgument));
         callArgument = ArgumentGuard.IsNotNull(callArgument, nameof(callArgument));
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var callArgumentResult = context.Context.Parse(callArgument);
+        var callArgumentResult = await context.Context.ParseAsync(callArgument, token).ConfigureAwait(false);
         if (!callArgumentResult.IsSuccessful())
         {
             return callArgumentResult;
@@ -25,7 +25,7 @@ public class MemberCallArgumentValidator : IMemberCallArgumentValidator
         return callArgumentResult;
     }
 
-    public Result<MemberAndTypeDescriptor> Validate(MemberDescriptor functionDescriptor, IMember member, FunctionCallContext context)
+    public async Task<Result<MemberAndTypeDescriptor>> ValidateAsync(MemberDescriptor functionDescriptor, IMember member, FunctionCallContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         functionDescriptor = ArgumentGuard.IsNotNull(functionDescriptor, nameof(functionDescriptor));
@@ -35,7 +35,7 @@ public class MemberCallArgumentValidator : IMemberCallArgumentValidator
         var errors = new List<ValidationError>();
         foreach (var argument in arguments)
         {
-            var validationResult = Validate(argument.DescriptorArgument, argument.CallArgument, context);
+            var validationResult = await ValidateAsync(argument.DescriptorArgument, argument.CallArgument, context, token).ConfigureAwait(false);
             if (!validationResult.IsSuccessful() && validationResult.ErrorMessage is not null)
             {
                 errors.Add(new ValidationError(validationResult.ErrorMessage, [argument.DescriptorArgument.Name]));

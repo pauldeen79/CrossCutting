@@ -1,8 +1,10 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-public interface IExpression
+public interface IExpression : IEvaluatable
 {
-    Result<object?> Evaluate(ExpressionEvaluatorContext context);
-    Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context);
-    ExpressionParseResult Parse(ExpressionEvaluatorContext context);
+    Task<ExpressionParseResult> ParseAsync(CancellationToken token);
+}
+
+public interface IExpression<T> : IExpression, IEvaluatable<T>
+{
 }

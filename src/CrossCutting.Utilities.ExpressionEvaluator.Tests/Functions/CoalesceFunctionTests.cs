@@ -2,17 +2,17 @@
 
 public class CoalesceFunctionTests : TestBase<CoalesceFunction>
 {
-    public class Evaluate : CoalesceFunctionTests
+    public class EvaluateAsync : CoalesceFunctionTests
     {
         [Fact]
-        public void Returns_NoContent_When_All_Expressions_Are_Null()
+        public async Task Returns_NoContent_When_All_Expressions_Are_Null()
         {
             // Arrange
             var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Coalesce").WithMemberType(MemberType.Function).AddArguments("null", "null", "null"), CreateContext("Dummy"));
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NoContent);
@@ -20,14 +20,14 @@ public class CoalesceFunctionTests : TestBase<CoalesceFunction>
         }
 
         [Fact]
-        public void Returns_Non_Succesful_Result_From_Expressions_When_Present()
+        public async Task Returns_Non_Succesful_Result_From_Expressions_When_Present()
         {
             // Arrange
             var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Coalesce").WithMemberType(MemberType.Function).AddArguments("null", "null", "error"), CreateContext("Dummy"));
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -35,14 +35,14 @@ public class CoalesceFunctionTests : TestBase<CoalesceFunction>
         }
 
         [Fact]
-        public void Returns_Succesful_Result_From_Expressions_When_Value_Is_Not_Null()
+        public async Task Returns_Succesful_Result_From_Expressions_When_Value_Is_Not_Null()
         {
             // Arrange
             var context = new FunctionCallContext(new FunctionCallBuilder().WithName("Coalesce").WithMemberType(MemberType.Function).AddArguments("null", "null", "1"), CreateContext("Dummy"));
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

@@ -86,8 +86,8 @@ public class ToLowerCaseFunction : IValidatableFunction
             .OnFailure(error => Result.Error<object?>([error], "ToLowerCase evaluation failed, see inner results for details"))
             .OnSuccess(results => 
                 Result.Success<object?>(results["Culture"].GetValue() is null
-                    ? results["Expression"].CastValueAs<string>().ToLowerInvariant()
-                    : results["Expression"].CastValueAs<string>().ToLower(results["Culture"].CastValueAs<CultureInfo>())));
+                    ? results.GetValue<string>("Expression").ToLowerInvariant()
+                    : results.GetValue<string>("Expression").ToLower(results.GetValue<CultureInfo>("Culture"))));
 #pragma warning restore CA1308 // Normalize strings to uppercase
     }
 

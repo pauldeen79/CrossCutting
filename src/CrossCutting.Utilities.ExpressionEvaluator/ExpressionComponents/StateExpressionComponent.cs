@@ -2,22 +2,22 @@
 
 public class StateExpressionComponent : IExpressionComponent
 {
-    public int Order => 25;
+    public int Order => 40;
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         var success = context.State.TryGetValue(context.Expression, out var dlg);
         if (success)
         {
-            return dlg!();
+            return await dlg.ConfigureAwait(false);
         }
 
         return Result.Continue<object?>();
     }
 
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
@@ -28,7 +28,8 @@ public class StateExpressionComponent : IExpressionComponent
         var success = context.State.TryGetValue(context.Expression, out var dlg);
         if (success)
         {
-            return result.WithResultType(dlg!()?.Value?.GetType());
+            var stateResult = await dlg.ConfigureAwait(false);
+            return result.WithResultType(stateResult.Value?.GetType());
         }
 
         return result.WithStatus(ResultStatus.Continue);

@@ -7,6 +7,11 @@ public class ResultDictionaryExtensionsTests
     protected static Result NonGenericErrorDelegate() => Result.Error("Kaboom");
     protected static Result<string> GenericErrorDelegate() => Result.Error<string>("Kaboom");
 
+    protected static Task<Result> NonGenericTask => Task.FromResult(Result.Success());
+    protected static Task<Result<string>> GenericTask => Task.FromResult(Result.Success("My value"));
+    protected static Task<Result> NonGenericErrorTask => Task.FromResult(Result.Error("Kaboom"));
+    protected static Task<Result<string>> GenericErrorTask => Task.FromResult(Result.Error<string>("Kaboom"));
+
     protected static IEnumerable<Result> NonGenericRangeDelegate() => [Result.Success(), Result.Success()];
     protected static IEnumerable<Result<string>> GenericRangeDelegate() => [Result.Success(string.Empty), Result.Success(string.Empty)];
     protected static IEnumerable<Result> NonGenericErrorRangeDelegate() => [Result.Success(), Result.Error("Kaboom"), Result.Success()];
@@ -247,6 +252,45 @@ public class ResultDictionaryExtensionsTests
         }
     }
 
+    public class OnSuccessNonGenericToGeneric_Task : ResultDictionaryExtensionsTests
+    {
+        [Fact]
+        public async Task Returns_First_Non_Successful_Result_When_Present()
+        {
+            // Arrange
+            var sut = await new AsyncResultDictionaryBuilder()
+                .Add("Step1", GenericTask)
+                .Add("Step2", GenericErrorTask)
+                .Add("Step3", NonGenericTask)
+                .Build();
+
+            // Act
+            var result = await sut.OnSuccess(results => Task.FromResult(Result.Continue<string>()));
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+
+        [Fact]
+        public async Task Returns_Result_From_Delegate_When_All_Results_Are_Successful()
+        {
+            // Arrange
+            var sut = await new AsyncResultDictionaryBuilder()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+
+            // Act
+            var result = await sut.OnSuccess(results => Task.FromResult(Result.Continue<string>()));
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+    }
     public class OnSuccessGenericAction : ResultDictionaryExtensionsTests
     {
         [Fact]

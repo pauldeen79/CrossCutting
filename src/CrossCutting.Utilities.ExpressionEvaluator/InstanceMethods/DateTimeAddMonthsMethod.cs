@@ -8,14 +8,14 @@ public class DateTimeAddMonthsMethod : IMethod
 {
     private const string MonthsToAdd = nameof(MonthsToAdd);
 
-    public Result<object?> Evaluate(FunctionCallContext context)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return new ResultDictionaryBuilder()
-            .Add(Constants.Instance, () => context.GetInstanceValueResult<DateTime>())
-            .Add(MonthsToAdd, () => context.GetArgumentValueResult<int>(0, "MonthsToAdd"))
-            .Build()
+        return (await new AsyncResultDictionaryBuilder()
+            .Add(Constants.Instance, context.GetInstanceValueResultAsync<DateTime>(token))
+            .Add(MonthsToAdd, context.GetArgumentValueResultAsync<int>(0, "MonthsToAdd", token))
+            .Build().ConfigureAwait(false))
             .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.Instance).AddMonths(results.GetValue<int>(MonthsToAdd))));
     }
 }

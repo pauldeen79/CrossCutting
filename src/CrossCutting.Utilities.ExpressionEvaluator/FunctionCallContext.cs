@@ -34,82 +34,45 @@ public class FunctionCallContext
     public object? InstanceValue { get; }
     public Type? ResultType { get; }
 
-    public Result<object?> GetArgumentValueResult(int index, string argumentName)
-        => FunctionCall.GetArgumentValueResult(index, argumentName, this);
+    public Task<Result<object?>> GetArgumentValueResultAsync(int index, string argumentName, CancellationToken token)
+        => FunctionCall.GetArgumentValueResultAsync(index, argumentName, this, token);
 
-    public Result<object?> GetArgumentValueResult(int index, string argumentName, object? defaultValue)
-        => FunctionCall.GetArgumentValueResult(index, argumentName, this, defaultValue);
+    public Task<Result<object?>> GetArgumentValueResultAsync(int index, string argumentName, object? defaultValue, CancellationToken token)
+        => FunctionCall.GetArgumentValueResultAsync(index, argumentName, this, defaultValue, token);
 
-    public Result<T> GetArgumentValueResult<T>(int index, string argumentName)
-        => FunctionCall.GetArgumentValueResult<T>(index, argumentName, this);
+    public Task<Result<T>> GetArgumentValueResultAsync<T>(int index, string argumentName, CancellationToken token)
+        => FunctionCall.GetArgumentValueResultAsync<T>(index, argumentName, this, token);
 
-    public Result<T?> GetArgumentValueResult<T>(int index, string argumentName, T? defaultValue)
-        => FunctionCall.GetArgumentValueResult(index, argumentName, this, defaultValue);
+    public Task<Result<T?>> GetArgumentValueResultAsync<T>(int index, string argumentName, T? defaultValue, CancellationToken token)
+        => FunctionCall.GetArgumentValueResultAsync(index, argumentName, this, defaultValue, token);
 
-    public Result<string> GetArgumentStringValueResult(int index, string argumentName)
-        => FunctionCall.GetArgumentStringValueResult(index, argumentName, this);
-
-    public Result<string> GetArgumentStringValueResult(int index, string argumentName, string defaultValue)
-        => FunctionCall.GetArgumentStringValueResult(index, argumentName, this, defaultValue);
-
-    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName)
-        => FunctionCall.GetArgumentInt32ValueResult(index, argumentName, this);
-
-    public Result<int> GetArgumentInt32ValueResult(int index, string argumentName, int defaultValue)
-        => FunctionCall.GetArgumentInt32ValueResult(index, argumentName, this, defaultValue);
-
-    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName)
-        => FunctionCall.GetArgumentInt64ValueResult(index, argumentName, this);
-
-    public Result<long> GetArgumentInt64ValueResult(int index, string argumentName, long defaultValue)
-        => FunctionCall.GetArgumentInt64ValueResult(index, argumentName, this, defaultValue);
-
-    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName)
-        => FunctionCall.GetArgumentDecimalValueResult(index, argumentName, this);
-
-    public Result<decimal> GetArgumentDecimalValueResult(int index, string argumentName, decimal defaultValue)
-        => FunctionCall.GetArgumentDecimalValueResult(index, argumentName, this, defaultValue);
-
-    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName)
-        => FunctionCall.GetArgumentBooleanValueResult(index, argumentName, this);
-
-    public Result<bool> GetArgumentBooleanValueResult(int index, string argumentName, bool defaultValue)
-        => FunctionCall.GetArgumentBooleanValueResult(index, argumentName, this, defaultValue);
-
-    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName)
-        => FunctionCall.GetArgumentDateTimeValueResult(index, argumentName, this);
-
-    public Result<DateTime> GetArgumentDateTimeValueResult(int index, string argumentName, DateTime defaultValue)
-        => FunctionCall.GetArgumentDateTimeValueResult(index, argumentName, this, defaultValue);
-
-    public Result<object?> Evaluate(IGenericFunction genericFunction)
+    public Task<Result<object?>> EvaluateAsync(IGenericFunction genericFunction, CancellationToken token)
     {
         genericFunction = ArgumentGuard.IsNotNull(genericFunction, nameof(genericFunction));
 
-        return Result.WrapException(() =>
+        try
         {
-            try
-            {
-                var method = genericFunction
-                    .GetType()
-                    .GetMethod(nameof(IGenericFunction.EvaluateGeneric))!
-                    .MakeGenericMethod(FunctionCall.TypeArguments.ToArray());
+            var method = genericFunction
+                .GetType()
+                .GetMethod(nameof(IGenericFunction.EvaluateGenericAsync))!
+                .MakeGenericMethod(FunctionCall.TypeArguments.ToArray());
 
-                return (Result<object?>)method.Invoke(genericFunction, [this])
-                    ?? Result.Error<object?>("Generic evaluation result was null");
-            }
-            catch (ArgumentException argException)
-            {
-                //The type or method has 1 generic parameter(s), but 0 generic argument(s) were provided. A generic argument must be provided for each generic parameter.
-                return Result.Invalid<object?>(argException.Message);
-            }
-        });
+            return (Task<Result<object?>>)method.Invoke(genericFunction, [this, token]);
+        }
+        catch (ArgumentException argException)
+        {
+            //The type or method has 1 generic parameter(s), but 0 generic argument(s) were provided. A generic argument must be provided for each generic parameter.
+            return Task.FromResult(Result.Invalid<object?>(argException.Message));
+        }
     }
 
     public Result<T> GetInstanceValueResult<T>()
         => InstanceValue is T typedValue
-            ? Result.Success(typedValue).EnsureValue()
+            ? Result.Success(typedValue)
             : Result.Error<T>(GetInstanceValueErrorMessage<T>());
+
+    public Task<Result<T>> GetInstanceValueResultAsync<T>(CancellationToken token)
+        => Task.Run(GetInstanceValueResult<T>, token);
 
     private string GetInstanceValueErrorMessage<T>()
         => InstanceValue is null

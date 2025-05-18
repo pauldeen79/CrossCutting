@@ -4,45 +4,47 @@ public class ReflectionPropertyDotExpressionComponent : IDotExpressionComponent
 {
     public int Order => 101;
 
-    public Result<object?> Evaluate(DotExpressionComponentState state)
-    {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
-
-        if (!state.Context.Settings.AllowReflection || state.Type != DotExpressionType.Property)
+    public Task<Result<object?>> EvaluateAsync(DotExpressionComponentState state, CancellationToken token)
+        => Task.Run(() =>
         {
-            return Result.Continue<object?>();
-        }
+            state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        var property = state.Value.GetType().GetProperty(state.Part, BindingFlags.Instance | BindingFlags.Public);
-        if (property is null)
+            if (!state.Context.Settings.AllowReflection || state.Type != DotExpressionType.Property)
+            {
+                return Result.Continue<object?>();
+            }
+
+            var property = state.Value.GetType().GetProperty(state.Part, BindingFlags.Instance | BindingFlags.Public);
+            if (property is null)
+            {
+                return Result.Invalid<object?>($"Type {state.Value.GetType().FullName} does not contain property {state.Part}");
+            }
+
+            return Result.WrapException(() =>
+            {
+                var propertyValue = property.GetValue(state.Value);
+                state.AppendPart();
+
+                return Result.Success<object?>(propertyValue);
+            });
+        }, token);
+
+    public Task<Result<Type>> ValidateAsync(DotExpressionComponentState state, CancellationToken token)
+        => Task.Run(() =>
         {
-            return Result.Invalid<object?>($"Type {state.Value.GetType().FullName} does not contain property {state.Part}");
-        }
+            state = ArgumentGuard.IsNotNull(state, nameof(state));
 
-        return Result.WrapException(() =>
-        {
-            var propertyValue = property.GetValue(state.Value);
-            state.AppendPart();
+            if (!state.Context.Settings.AllowReflection || state.Type != DotExpressionType.Property)
+            {
+                return Result.Continue<Type>();
+            }
 
-            return Result.Success<object?>(propertyValue);
-        });
-    }
+            var property = state.ResultType!.GetProperty(state.Part, BindingFlags.Instance | BindingFlags.Public);
+            if (property is null)
+            {
+                return Result.Invalid<Type>($"Type {state.ResultType.FullName} does not contain property {state.Part}");
+            }
 
-    public Result<Type> Validate(DotExpressionComponentState state)
-    {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
-
-        if (!state.Context.Settings.AllowReflection || state.Type != DotExpressionType.Property)
-        {
-            return Result.Continue<Type>();
-        }
-
-        var property = state.ResultType!.GetProperty(state.Part, BindingFlags.Instance | BindingFlags.Public);
-        if (property is null)
-        {
-            return Result.Invalid<Type>($"Type {state.ResultType.FullName} does not contain property {state.Part}");
-        }
-
-        return Result.Success(property.PropertyType);
-    }
+            return Result.Success(property.PropertyType);
+        }, token);
 }

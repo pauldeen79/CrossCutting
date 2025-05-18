@@ -9,16 +9,17 @@ public class UnaryExpressionTests : TestBase
         Operand = Substitute.For<IExpression>();
     }
 
-    public class Evaluate : UnaryExpressionTests
+    public class EvaluateAsync : UnaryExpressionTests
     {
         [Fact]
-        public void Returns_Error_From_Expression()
+        public async Task Returns_Error_From_Expression()
         {
             // Arrange
-            var sut = new UnaryExpression(Result.Error<IExpression>("Kaboom"));
+            var context = CreateContext("kaboom");
+            var sut = new UnaryExpression(context, Result.Error<IExpression>("Kaboom"));
 
             // Act
-            var result = sut.Evaluate(CreateContext("kaboom"));
+            var result = await sut.EvaluateAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -26,34 +27,54 @@ public class UnaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Error_From_Expression_Parsing()
+        public async Task Returns_Error_From_Expression_Parsing()
         {
             // Arrange
+            var context = CreateContext("!kaboom");
             Operand
-                .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
+                .EvaluateAsync(CancellationToken.None)
                 .Returns(Result.Error<object?>("Kaboom"));
 
-            var sut = new UnaryExpression(Result.Success(Operand));
+            var sut = new UnaryExpression(context, Result.Success(Operand));
 
             // Act
-            var result = sut.Evaluate(CreateContext("!kaboom"));
+            var result = await sut.EvaluateAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
             result.ErrorMessage.ShouldBe("Kaboom");
+        }
+
+        [Fact]
+        public async Task Wraps_Exception_Into_Error_Result()
+        {
+            // Arrange
+            var exceptionExpression = Substitute.For<IExpression>();
+            exceptionExpression
+                .EvaluateAsync(Arg.Any<CancellationToken>())
+                .Throws<InvalidOperationException>();
+            var sut = new UnaryExpression(CreateContext("error"), Result.Success(exceptionExpression));
+
+            // Act
+            var result = await sut.EvaluateAsync(CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
         }
     }
 
-    public class Parse : UnaryExpressionTests
+    public class ParseAsync : UnaryExpressionTests
     {
         [Fact]
-        public void Returns_Error_From_Expression()
+        public async Task Returns_Error_From_Expression()
         {
             // Arrange
-            var sut = new UnaryExpression(Result.Error<IExpression>("Kaboom"));
+            var context = CreateContext("kaboom");
+            var sut = new UnaryExpression(context, Result.Error<IExpression>("Kaboom"));
 
             // Act
-            var result = sut.Parse(CreateContext("kaboom"));
+            var result = await sut.ParseAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -63,17 +84,18 @@ public class UnaryExpressionTests : TestBase
         }
 
         [Fact]
-        public void Returns_Error_From_Expression_Parsing()
+        public async Task Returns_Error_From_Expression_Parsing()
         {
             // Arrange
+            var context = CreateContext("!kaboom");
             Operand
-                .Parse(Arg.Any<ExpressionEvaluatorContext>())
+                .ParseAsync(Arg.Any<CancellationToken>())
                 .Returns(new ExpressionParseResultBuilder().WithErrorMessage("Kaboom").WithStatus(ResultStatus.Error));
 
-            var sut = new UnaryExpression(Result.Success(Operand));
+            var sut = new UnaryExpression(context, Result.Success(Operand));
 
             // Act
-            var result = sut.Parse(CreateContext("!kaboom"));
+            var result = await sut.ParseAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

@@ -2,33 +2,22 @@
 
 public sealed class OtherExpression : IExpression
 {
+    private readonly ExpressionEvaluatorContext _context;
+
     private string Expression { get; }
 
-    public OtherExpression(string expression)
+    public OtherExpression(ExpressionEvaluatorContext context, string expression)
     {
+        ArgumentGuard.IsNotNull(context, nameof(context));
         ArgumentGuard.IsNotNull(expression, nameof(expression));
 
+        _context = context;
         Expression = expression;
     }
 
-    public Result<object?> Evaluate(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
+    public Task<Result<object?>> EvaluateAsync(CancellationToken token)
+        => _context.EvaluateAsync(Expression, token);
 
-        return context.Evaluate(Expression);
-    }
-
-    public Result<T> EvaluateTyped<T>(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        return context.EvaluateTyped<T>(Expression);
-    }
-
-    public ExpressionParseResult Parse(ExpressionEvaluatorContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        return context.Parse(Expression);
-    }
+    public Task<ExpressionParseResult> ParseAsync(CancellationToken token)
+        => _context.ParseAsync(Expression, token);
 }

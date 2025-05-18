@@ -1,18 +1,18 @@
 ﻿namespace CrossCutting.Common.Results;
 
-public  class AsyncResultDictionaryBuilder
+public class AsyncResultDictionaryBuilder
 {
-    private readonly Dictionary<string, Func<Task<Result>>> _resultset = new();
+    private readonly Dictionary<string, Task<Result>> _resultset = new();
 
-    public AsyncResultDictionaryBuilder Add<T>(string name, Func<Task<Result<T>>> value)
+    public AsyncResultDictionaryBuilder Add<T>(string name, Task<Result<T>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        _resultset.Add(name, () => value().ContinueWith(x => (Result)x.Result, TaskScheduler.Current));
+        _resultset.Add(name, value.ContinueWith(x => (Result)x.Result, TaskScheduler.Current));
         return this;
     }
 
-    public AsyncResultDictionaryBuilder Add(string name, Func<Task<Result>> value)
+    public AsyncResultDictionaryBuilder Add(string name, Task<Result> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
@@ -20,37 +20,68 @@ public  class AsyncResultDictionaryBuilder
         return this;
     }
 
-    public async Task<Dictionary<string, Result>> Build()
+    public AsyncResultDictionaryBuilder Add<T>(string name, Func<Result<T>> value)
     {
-        var results = new Dictionary<string, Result>();
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        _resultset.Add(name, Task.Run<Result>(() => value()));
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder Add(string name, Func<Result> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        _resultset.Add(name, Task.Run(() => value()));
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder Add<T>(string name, Result<T> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        _resultset.Add(name, Task.Run<Result>(() => value));
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder Add(string name, Result value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        _resultset.Add(name, Task.Run(() => value));
+        return this;
+    }
+
+    public IReadOnlyDictionary<string, Task<Result>> BuildDeferred()
+    {
+        var results = new Dictionary<string, Task<Result>>();
 
         foreach (var item in _resultset)
         {
-            var result = await item.Value().ConfigureAwait(false);
-            results.Add(item.Key, result);
-            // For now, make it fail fast just like TakeWhileWithFirstNonMatching: stop on first error (but it still gets added to the results, so you can simply check for the first error)
-            if (!result.IsSuccessful())
-            {
-                break;
-            }
+            results.Add(item.Key, item.Value);
         }
 
         return results;
     }
 
-    public async Task<Dictionary<string, Result>> BuildParallel()
+    public async Task<IReadOnlyDictionary<string, Result>> Build()
     {
         var results = new Dictionary<string, Result>();
 
-        var resultTasks = await Task.WhenAll(_resultset.Select(x => x.Value())).ConfigureAwait(false);
-        var index = 0;
-
         foreach (var item in _resultset)
         {
-            var result = resultTasks[index];
-            index++;
+            Result result;
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                result = await item.Value.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                result = Result.Error(ex, "Exception occured");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
             results.Add(item.Key, result);
-            // For now, make it fail fast just like TakeWhileWithFirstNonMatching: stop on first error (but it still gets added to the results, so you can simply check for the first error)
             if (!result.IsSuccessful())
             {
                 break;
@@ -63,9 +94,9 @@ public  class AsyncResultDictionaryBuilder
 
 public class AsyncResultDictionaryBuilder<T>
 {
-    private readonly Dictionary<string, Func<Task<Result<T>>>> _resultset = new();
+    private readonly Dictionary<string, Task<Result<T>>> _resultset = new();
 
-    public AsyncResultDictionaryBuilder<T> Add(string name, Func<Task<Result<T>>> value)
+    public AsyncResultDictionaryBuilder<T> Add(string name, Task<Result<T>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
@@ -73,36 +104,53 @@ public class AsyncResultDictionaryBuilder<T>
         return this;
     }
 
-    public async Task<Dictionary<string, Result<T>>> Build()
+    public AsyncResultDictionaryBuilder<T> Add(string name, Func<Result<T>> value)
     {
-        var results = new Dictionary<string, Result<T>>();
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        _resultset.Add(name, Task.Run(value));
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder<T> Add(string name, Result<T> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        _resultset.Add(name, Task.FromResult(value));
+        return this;
+    }
+
+    public IReadOnlyDictionary<string, Task<Result<T>>> BuildDeferred()
+    {
+        var results = new Dictionary<string, Task<Result<T>>>();
 
         foreach (var item in _resultset)
         {
-            var result = await item.Value().ConfigureAwait(false);
-            results.Add(item.Key, result);
-            // For now, make it fail fast just like TakeWhileWithFirstNonMatching: stop on first error (but it still gets added to the results, so you can simply check for the first error)
-            if (!result.IsSuccessful())
-            {
-                break;
-            }
+            results.Add(item.Key, item.Value);
         }
 
         return results;
     }
-    public async Task<Dictionary<string, Result<T>>> BuildParallel()
-    {
-        var results = new Dictionary<string, Result<T>>();
 
-        var resultTasks = await Task.WhenAll(_resultset.Select(x => x.Value())).ConfigureAwait(false);
-        var index = 0;
+    public async Task<IReadOnlyDictionary<string, Func<Result<T>>>> Build()
+    {
+        var results = new Dictionary<string, Func<Result<T>>>();
 
         foreach (var item in _resultset)
         {
-            var result = resultTasks[index];
-            index++;
-            results.Add(item.Key, result);
-            // For now, make it fail fast just like TakeWhileWithFirstNonMatching: stop on first error (but it still gets added to the results, so you can simply check for the first error)
+            Result<T> result;
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                result = await item.Value.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                result = Result.Error<T>(ex, "Exception occured");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+
+            results.Add(item.Key, () => result);
             if (!result.IsSuccessful())
             {
                 break;

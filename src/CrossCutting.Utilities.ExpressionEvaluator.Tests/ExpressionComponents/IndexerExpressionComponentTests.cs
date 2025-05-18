@@ -2,38 +2,31 @@
 
 public class IndexerExpressionComponentTests : TestBase<IndexerExpressionComponent>
 {
-    public class Evaluate : IndexerExpressionComponentTests
+    public class EvaluateAsync : IndexerExpressionComponentTests
     {
         [Fact]
-        public void Returns_Continue_On_Non_Matching_Expression()
+        public async Task Returns_Continue_On_Non_Matching_Expression()
         {
             // Arrange
             var sut = CreateSut();
             var context = CreateContext("Some expression without indexer");
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
-        public void Returns_Ok_On_Matching_Expression()
+        public async Task Returns_Ok_On_Matching_Expression()
         {
             // Arrange
             var sut = CreateSut();
-            // Need a little hack here for EvaluateTyped...
-            Evaluator
-                .EvaluateTyped<IEnumerable>(Arg.Any<ExpressionEvaluatorContext>())
-                .Returns(Result.Success<IEnumerable>(new object[] { 1, 2, 3 }));
-            Evaluator
-                .EvaluateTyped<int>(Arg.Any<ExpressionEvaluatorContext>())
-                .Returns(Result.Success(1));
             var context = CreateContext("state[1]", state: new object[] { 1, 2, 3 });
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -41,42 +34,50 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
         }
     }
 
-    public class Parse : IndexerExpressionComponentTests
+    public class ParseAsync : IndexerExpressionComponentTests
     {
         [Fact]
-        public void Returns_Continue_On_Non_Matching_Expression()
+        public async Task Returns_Continue_On_Non_Matching_Expression()
         {
             // Arrange
             var sut = CreateSut();
             var context = CreateContext("Some expression without indexer");
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
-        public void Returns_Ok_On_Matching_Expression()
+        public async Task Returns_Ok_On_Matching_Expression()
         {
             // Arrange
             var sut = CreateSut();
-            // Need a little hack here for EvaluateTyped...
-            Evaluator
-                .EvaluateTyped<IEnumerable>(Arg.Any<ExpressionEvaluatorContext>())
-                .Returns(Result.Success<IEnumerable>(new int[] { 1, 2, 3 }));
-            Evaluator
-                .EvaluateTyped<int>(Arg.Any<ExpressionEvaluatorContext>())
-                .Returns(Result.Success(1));
             var context = CreateContext("state[1]", state: new int[] { 1, 2, 3 });
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.ResultType.ShouldBe(typeof(int));
+        }
+
+        [Fact]
+        public async Task Returns_Error_On_Matching_Expression_When_Parse_Result_Is_Not_Successful()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = CreateContext("state[666]", state: new int[] { 1, 2, 3 });
+
+            // Act
+            var result = await sut.ParseAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
     }
 }

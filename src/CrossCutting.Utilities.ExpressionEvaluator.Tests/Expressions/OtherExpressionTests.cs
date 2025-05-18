@@ -2,20 +2,21 @@
 
 public class OtherExpressionTests : TestBase
 {
-    public class Evaluate : OtherExpressionTests
+    public class EvaluateAsync : OtherExpressionTests
     {
         [Fact]
-        public void Returns_Correct_Result()
+        public async Task Returns_Correct_Result()
         {
             // Arrange
-            var sut = new OtherExpression("expression");
             var evaluator = Substitute.For<IExpressionEvaluator>();
+            var context = CreateContext("dummy expression", evaluator: evaluator);
+            var sut = new OtherExpression(context, "expression");
             evaluator
-                .Evaluate(Arg.Any<ExpressionEvaluatorContext>())
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success<object?>("the result"));
 
             // Act
-            var result = sut.Evaluate(CreateContext("dummy expression", evaluator: evaluator));
+            var result = await sut.EvaluateAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -23,20 +24,21 @@ public class OtherExpressionTests : TestBase
         }
     }
 
-    public class Parse : OtherExpressionTests
+    public class ParseAsync : OtherExpressionTests
     {
         [Fact]
-        public void Returns_Correct_Result()
+        public async Task Returns_Correct_Result()
         {
             // Arrange
-            var sut = new OtherExpression("expression");
             var evaluator = Substitute.For<IExpressionEvaluator>();
+            var context = CreateContext("dummy expression", evaluator: evaluator);
+            var sut = new OtherExpression(context, "expression");
             evaluator
-                .Parse(Arg.Any<ExpressionEvaluatorContext>())
+                .ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(new ExpressionParseResultBuilder().WithSourceExpression("expression").WithExpressionComponentType(GetType()).WithResultType(typeof(string)));
 
             // Act
-            var result = sut.Parse(CreateContext("dummy expression", evaluator: evaluator));
+            var result = await sut.ParseAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

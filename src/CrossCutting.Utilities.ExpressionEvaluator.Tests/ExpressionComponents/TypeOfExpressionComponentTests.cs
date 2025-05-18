@@ -2,31 +2,31 @@
 
 public class TypeOfExpressionComponentTests  : TestBase<TypeOfExpressionComponent>
 {
-    public class Evaluate : TypeOfExpressionComponentTests
+    public class EvaluateAsync : TypeOfExpressionComponentTests
     {
         [Fact]
-        public void Returns_Continue_When_Expression_Is_Not_A_TypeOf_Expression()
+        public async Task Returns_Continue_When_Expression_Is_Not_A_TypeOf_Expression()
         {
             // Arrange
             var context = CreateContext("Some expression not being typeof");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
-        public void Returns_Invalid_When_Expression_A_TypeOf_Expression_With_Unknown_Type()
+        public async Task Returns_Invalid_When_Expression_A_TypeOf_Expression_With_Unknown_Type()
         {
             // Arrange
             var context = CreateContext("typeof(unknowntype)");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -34,14 +34,14 @@ public class TypeOfExpressionComponentTests  : TestBase<TypeOfExpressionComponen
         }
 
         [Fact]
-        public void Returns_Ok_When_Expression_A_TypeOf_Expression_With_Known_Type()
+        public async Task Returns_Ok_When_Expression_A_TypeOf_Expression_With_Known_Type()
         {
             // Arrange
             var context = CreateContext("typeof(System.String)");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate(context);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -49,31 +49,31 @@ public class TypeOfExpressionComponentTests  : TestBase<TypeOfExpressionComponen
         }
     }
 
-    public class Parse : TypeOfExpressionComponentTests
+    public class ParseAsync : TypeOfExpressionComponentTests
     {
         [Fact]
-        public void Returns_Continue_When_Expression_Is_Not_A_TypeOf_Expression()
+        public async Task Returns_Continue_When_Expression_Is_Not_A_TypeOf_Expression()
         {
             // Arrange
             var context = CreateContext("Some expression not being typeof");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
-        public void Returns_Invalid_When_Expression_A_TypeOf_Expression_With_Unknown_Type()
+        public async Task Returns_Invalid_When_Expression_A_TypeOf_Expression_With_Unknown_Type()
         {
             // Arrange
             var context = CreateContext("typeof(unknowntype)");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -81,14 +81,14 @@ public class TypeOfExpressionComponentTests  : TestBase<TypeOfExpressionComponen
         }
 
         [Fact]
-        public void Returns_Ok_When_Expression_A_TypeOf_Expression_With_Known_Type()
+        public async Task Returns_Ok_When_Expression_A_TypeOf_Expression_With_Known_Type()
         {
             // Arrange
             var context = CreateContext("typeof(System.String)");
             var sut = CreateSut();
 
             // Act
-            var result = sut.Parse(context);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

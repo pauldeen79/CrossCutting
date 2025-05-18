@@ -5,10 +5,11 @@
 [MemberResultType(typeof(int))]
 public class DateMonthProperty : IProperty
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
+    public Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
+        => Task.Run(() =>
+        {
+            context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return context.GetInstanceValueResult<DateTime>().Transform<object?>(result => result.Month);
-    }
+            return context.GetInstanceValueResult<DateTime>().Transform<object?>(result => result.Month);
+        }, token);
 }
