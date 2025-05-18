@@ -13,6 +13,7 @@ public class AsyncResultDictionaryBuilderTests
 
     protected static Task<Result> NonGenericErrorTask => Task.FromResult(Result.Error("Kaboom"));
     protected static Task<Result<string>> GenericErrorTask => Task.FromResult(Result.Error<string>("Kaboom"));
+    protected static Task<Result<string>> GenericExceptionTask => Task.Run(new Func<Result<string>>(() => throw new InvalidOperationException("Kaboom")));
 
     public class NonGeneric : AsyncResultDictionaryBuilderTests
     {
@@ -235,6 +236,23 @@ public class AsyncResultDictionaryBuilderTests
                 result.Count.ShouldBe(2);
                 result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
             }
+
+            [Fact]
+            public async Task Wraps_Exception_In_Error()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+                sut.Add("Test1", NonGenericTask);
+                sut.Add("Test2", GenericExceptionTask); // This one returns an error
+                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
+
+                // Act
+                var result = await sut.Build();
+
+                // Assert
+                result.Count.ShouldBe(2);
+                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
+            }
         }
 
         public class BuildDeferred : NonGeneric
@@ -375,6 +393,23 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder<string>();
                 sut.Add("Test1", GenericTask);
                 sut.Add("Test2", GenericErrorTask); // This one returns an error
+                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
+
+                // Act
+                var result = await sut.Build();
+
+                // Assert
+                result.Count.ShouldBe(2);
+                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
+            }
+
+            [Fact]
+            public async Task Wraps_Exception_In_Error()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+                sut.Add("Test1", GenericTask);
+                sut.Add("Test2", GenericExceptionTask); // This one returns an error
                 sut.Add("Test3", GenericTask); // This one will not get executed because of the error
 
                 // Act

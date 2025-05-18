@@ -70,7 +70,17 @@ public class AsyncResultDictionaryBuilder
 
         foreach (var item in _resultset)
         {
-            var result = await item.Value.ConfigureAwait(false);
+            Result result;
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                result = await item.Value.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                result = Result.Error(ex, "Exception occured");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
@@ -128,7 +138,18 @@ public class AsyncResultDictionaryBuilder<T>
 
         foreach (var item in _resultset)
         {
-            var result = await item.Value.ConfigureAwait(false);
+            Result<T> result;
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                result = await item.Value.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                result = Result.Error<T>(ex, "Exception occured");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+
             results.Add(item.Key, () => result);
             if (!result.IsSuccessful())
             {
