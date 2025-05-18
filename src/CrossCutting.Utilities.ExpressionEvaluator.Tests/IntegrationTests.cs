@@ -718,7 +718,6 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Observations:
         // 1. We need to 'new' an InterpolatedStringExpressionComponent (optional - see alternative test below)
         // 2. We need to wrap the string within $""
-        // 3. The result is of type object?, rather than GenericFormattableString or string
         // Otherwise, it works perfectly :)
 
         // Arrange
