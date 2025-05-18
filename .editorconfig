@@ -149,6 +149,28 @@ dotnet_diagnostic.CA1834.severity = silent
 # Do not use CA1062 (validate public arguments) on extension methods
 dotnet_code_quality.CA1062.exclude_extension_method_this_parameter = true
 
+# Set specific code analysis rules to warning (none by default)
+# Do not hide base class methods
+dotnet_diagnostic.CA1061.severity = warning
+# Implement IDisposable Correctly
+dotnet_diagnostic.CA1063.severity = warning
+#Avoid excessive complexity
+dotnet_diagnostic.CA1502.severity = warning
+#Avoid unmaintainable code
+dotnet_diagnostic.CA1505.severity = warning
+#Avoid excessive class coupling
+dotnet_diagnostic.CA1506.severity = warning
+#Use nameof to express symbol names
+dotnet_diagnostic.CA1507.severity = warning
+#Avoid dead conditional code (does not seem to work on using statement?)
+dotnet_diagnostic.CA1508.severity = none
+
+# CA1822: Mark members as static
+dotnet_diagnostic.CA1822.severity = none
+
+# CA1515: Because an application's API isn't typically referenced from outside the assembly, types can be made internal (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1515)
+dotnet_diagnostic.CA1515.severity = none
+
 [*Test*.cs]
 # Warning CA1034 Do not nest type SplitCsv. Alternatively, change its accessibility so that it is not externally visible. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1034) CrossCutting.Common.Tests 
 dotnet_diagnostic.CA1034.severity = silent
@@ -164,28 +186,6 @@ dotnet_diagnostic.S3776.severity = none # cognitive complexity
 dotnet_diagnostic.CA1308.severity = none # Normalize strings to uppercase
 dotnet_diagnostic.S2325.severity = none # Methods and properties that don't access instance data should be static
 dotnet_diagnostic.CA1502.severity = none # Cognitive complexity
-
-# Set specific code analysis rules to warning (none by default)
-# Do not hide base class methods
-dotnet_diagnostic.CA1061.severity = warning
-# Implement IDisposable Correctly
-dotnet_diagnostic.CA1063.severity = warning
-#Avoid excessive complexity
-# dotnet_diagnostic.CA1502.severity = warning
-#Avoid unmaintainable code
-dotnet_diagnostic.CA1505.severity = warning
-#Avoid excessive class coupling
-dotnet_diagnostic.CA1506.severity = warning
-#Use nameof to express symbol names
-dotnet_diagnostic.CA1507.severity = warning
-#Avoid dead conditional code (does not seem to work on using statement?)
-dotnet_diagnostic.CA1508.severity = none
-
-# CA1822: Mark members as static
-dotnet_diagnostic.CA1822.severity = none
-
-# CA1515: Because an application's API isn't typically referenced from outside the assembly, types can be made internal (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1515)
-dotnet_diagnostic.CA1515.severity = none
 
 ###############################
 # VB Coding Conventions       #
