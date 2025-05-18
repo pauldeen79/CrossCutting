@@ -7,7 +7,6 @@ public class StringToLowerMethod : IMethod
 {
     public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
     {
-        //TODO: Try adding Require or Validate method to dictionary builders, to get rid of argument guards, and make the entire code a one-liner (allowing expression body for methods)
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
