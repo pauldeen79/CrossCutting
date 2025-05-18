@@ -393,7 +393,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state[1]", evaluator: sut, state: new object[] { 1, 2, 3 }), CancellationToken.None);
+        var result = await sut.EvaluateTypedAsync<int>(CreateContext("state[1]", evaluator: sut, state: new object[] { 1, 2, 3 }), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

@@ -37,8 +37,8 @@ public class ExpressionEvaluatorContext
 
     public async Task<Result<T>> EvaluateTypedAsync<T>(string expression, CancellationToken token)
         => UseCallback
-            ? (await Evaluator.EvaluateCallbackAsync(CreateChildContext(expression), token).ConfigureAwait(false)).TryCastAllowNull<T>()
-            : (await Evaluator.EvaluateAsync(CreateChildContext(expression), token).ConfigureAwait(false)).TryCastAllowNull<T>();
+            ? await Evaluator.EvaluateTypedCallbackAsync<T>(CreateChildContext(expression), token).ConfigureAwait(false)
+            : await Evaluator.EvaluateTypedAsync<T>(CreateChildContext(expression), token).ConfigureAwait(false);
 
     public async Task<ExpressionParseResult> ParseAsync(string expression, CancellationToken token)
         => UseCallback

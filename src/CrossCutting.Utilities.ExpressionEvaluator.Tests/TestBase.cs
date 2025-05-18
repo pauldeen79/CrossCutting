@@ -47,28 +47,11 @@ public abstract class TestBase
 
     protected TestBase()
     {
-        // Initialize evaluator
-        Evaluator = Substitute.For<IExpressionEvaluator>();
-        Evaluator
-            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
-            .Returns(EvaluateExpression);
-        Evaluator
-            .ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
-            .Returns(x =>
-                x.ArgAt<ExpressionEvaluatorContext>(0).Expression switch
-                {
-                    "error" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Error).WithErrorMessage("Kaboom"),
-                    "-1" or "1" or "2" or "123" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(int)),
-                    "string" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
-                    "unknown" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok),
-                    "object" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(object)),
-                    "state" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(x.ArgAt<ExpressionEvaluatorContext>(0).State?.FirstOrDefault().Value?.Result.Value?.GetType()),
-                    _ => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok)
-                });
-
         // Initialize expression
         Expression = Substitute.For<IExpressionComponent>();
         // Note that you have to setup EvaluateAsync and ValidateAsync yourself
+
+        Evaluator = new ExpressionEvaluatorMock(Expression);
 
         MemberResolver = Substitute.For<IMemberResolver>();
         // Note that you have to setup ResolveAsync yourself
@@ -83,82 +66,131 @@ public abstract class TestBase
     }
 
     // Test stub for expression evaluation, that supports strings, integers, long integers, decimals, booleans and DeteTimes (by using TryParse), as well as the context and null keywords
-    protected static async Task<Result<object?>> EvaluateExpression(CallInfo callInfo)
+    internal sealed class ExpressionEvaluatorMock : IExpressionEvaluator
     {
-        var context = callInfo.ArgAt<ExpressionEvaluatorContext>(0);
+        private readonly IExpressionComponent _expressionComponent;
 
-        if (context.Expression == "null")
+        internal ExpressionEvaluatorMock(IExpressionComponent expressionComponent)
         {
-            return Result.Success(default(object?));
+            _expressionComponent = expressionComponent;
+
+        }
+        public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        {
+            if (context.Expression == "null")
+            {
+                return Result.Success(default(object?));
+            }
+
+            var success = context.State.TryGetValue(context.Expression, out var dlg);
+            if (success && dlg is not null)
+            {
+                return await dlg.ConfigureAwait(false);
+            }
+
+            if (context.Expression == "state.Length")
+            {
+                return Result.Success<object?>((context.State?.ToString() ?? string.Empty).Length);
+            }
+
+            if (context.Expression == "error")
+            {
+                return Result.Error<object?>("Kaboom");
+            }
+
+            if (context.Expression == "recursiveplaceholder")
+            {
+                return Result.Success<object?>("{recurse}");
+            }
+
+            if (context.Expression == "recurse")
+            {
+                return Result.Success<object?>("recursive value");
+            }
+
+            if (context.Expression.StartsWith('"') && context.Expression.StartsWith('"'))
+            {
+                return Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2));
+            }
+
+            if (int.TryParse(context.Expression, context.Settings.FormatProvider, out int number))
+            {
+                return Result.Success<object?>(number);
+            }
+
+            if (context.Expression.EndsWith('L') && long.TryParse(context.Expression[..^1], context.Settings.FormatProvider, out long longNumber))
+            {
+                return Result.Success<object?>(longNumber);
+            }
+
+            if (context.Expression.EndsWith('M') && decimal.TryParse(context.Expression[..^1], context.Settings.FormatProvider, out decimal decimalNumber))
+            {
+                return Result.Success<object?>(decimalNumber);
+            }
+
+            if (context.Expression.StartsWith("System."))
+            {
+                return Result.Success<object?>(Type.GetType(context.Expression));
+            }
+
+            if (bool.TryParse(context.Expression, out bool boolean))
+            {
+                return Result.Success<object?>(boolean);
+            }
+
+            if (context.Expression.StartsWith('"') && context.Expression.EndsWith('"'))
+            {
+                return Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2));
+            }
+
+            if (DateTime.TryParse(context.Expression, context.Settings.FormatProvider, out DateTime dateTime))
+            {
+                return Result.Success<object?>(dateTime);
+            }
+
+            var result = await _expressionComponent.ParseAsync(context, token).ConfigureAwait(false);
+            if (result?.Status == ResultStatus.Ok)
+            {
+                return await _expressionComponent.EvaluateAsync(context, token).ConfigureAwait(false);
+            }
+
+            if (context.Expression == "MyNestedFunction()")
+            {
+                return Result.Success<object?>("Evaluated result");
+            }
+
+            return Result.NotSupported<object?>($"Unsupported expression: {context.Expression}");
         }
 
-        var success = context.State.TryGetValue(context.Expression, out var dlg);
-        if (success && dlg is not null)
+        public Task<Result<object?>> EvaluateCallbackAsync(ExpressionEvaluatorContext context, CancellationToken token)
         {
-            return await dlg.ConfigureAwait(false);
+            throw new NotImplementedException();
         }
 
-        if (context.Expression == "state.Length")
+        public async Task<Result<T>> EvaluateTypedAsync<T>(ExpressionEvaluatorContext context, CancellationToken token)
+            => (await EvaluateAsync(context, token).ConfigureAwait(false)).TryCastAllowNull<T>();
+
+        public Task<Result<T>> EvaluateTypedCallbackAsync<T>(ExpressionEvaluatorContext context, CancellationToken token)
         {
-            return Result.Success<object?>((context.State?.ToString() ?? string.Empty).Length);
+            throw new NotImplementedException();
         }
 
-        if (context.Expression == "error")
-        {
-            return Result.Error<object?>("Kaboom");
-        }
+        public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
+            => Task.Run<ExpressionParseResult>(() => context.Expression switch
+            {
+                "error" or "666" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Error).WithErrorMessage("Kaboom"),
+                "-1" or "1" or "2" or "123" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(int)),
+                "string" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
+                "unknown" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok),
+                "object" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(object)),
+                "state" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(context.State?.FirstOrDefault().Value?.Result.Value?.GetType()),
+                _ => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok)
+            });
 
-        if (context.Expression == "recursiveplaceholder")
+        public Task<ExpressionParseResult> ParseCallbackAsync(ExpressionEvaluatorContext context, CancellationToken token)
         {
-            return Result.Success<object?>("{recurse}");
+            throw new NotImplementedException();
         }
-
-        if (context.Expression == "recurse")
-        {
-            return Result.Success<object?>("recursive value");
-        }
-
-        if (context.Expression.StartsWith('"') && context.Expression.StartsWith('"'))
-        {
-            return Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2));
-        }
-
-        if (int.TryParse(context.Expression, context.Settings.FormatProvider, out int number))
-        {
-            return Result.Success<object?>(number);
-        }
-
-        if (context.Expression.EndsWith('L') && long.TryParse(context.Expression[..^1], context.Settings.FormatProvider, out long longNumber))
-        {
-            return Result.Success<object?>(longNumber);
-        }
-
-        if (context.Expression.EndsWith('M') && decimal.TryParse(context.Expression[..^1], context.Settings.FormatProvider, out decimal decimalNumber))
-        {
-            return Result.Success<object?>(decimalNumber);
-        }
-
-        if (context.Expression.StartsWith("System."))
-        {
-            return Result.Success<object?>(Type.GetType(context.Expression));
-        }
-
-        if (bool.TryParse(context.Expression, out bool boolean))
-        {
-            return Result.Success<object?>(boolean);
-        }
-
-        if (context.Expression.StartsWith('"') && context.Expression.EndsWith('"'))
-        {
-            return Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2));
-        }
-
-        if (DateTime.TryParse(context.Expression, context.Settings.FormatProvider, out DateTime dateTime))
-        {
-            return Result.Success<object?>(dateTime);
-        }
-
-        return Result.NotSupported<object?>($"Unsupported expression: {context.Expression}");
     }
 }
 

@@ -2,7 +2,7 @@
 
 public class IndexerExpressionComponentTests : TestBase<IndexerExpressionComponent>
 {
-    public class Evaluate : IndexerExpressionComponentTests
+    public class EvaluateAsync : IndexerExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Continue_On_Non_Matching_Expression()
@@ -34,7 +34,7 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
         }
     }
 
-    public class Parse : IndexerExpressionComponentTests
+    public class ParseAsync : IndexerExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Continue_On_Non_Matching_Expression()
@@ -70,16 +70,7 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
         {
             // Arrange
             var sut = CreateSut();
-            Evaluator
-                .ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
-                .Returns(x =>
-                    x.ArgAt<ExpressionEvaluatorContext>(0).Expression switch
-                    {
-                        "1" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Error).WithErrorMessage("Kaboom"),
-                        "state" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(x.ArgAt<ExpressionEvaluatorContext>(0).State?.FirstOrDefault().Value?.Result.Value?.GetType()),
-                        _ => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok)
-                    });
-            var context = CreateContext("state[1]", state: new int[] { 1, 2, 3 });
+            var context = CreateContext("state[666]", state: new int[] { 1, 2, 3 });
 
             // Act
             var result = await sut.ParseAsync(context, CancellationToken.None);
