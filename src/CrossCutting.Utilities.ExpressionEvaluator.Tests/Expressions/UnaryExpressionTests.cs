@@ -44,6 +44,24 @@ public class UnaryExpressionTests : TestBase
             result.Status.ShouldBe(ResultStatus.Error);
             result.ErrorMessage.ShouldBe("Kaboom");
         }
+
+        [Fact]
+        public async Task Wraps_Exception_Into_Error_Result()
+        {
+            // Arrange
+            var exceptionExpression = Substitute.For<IExpression>();
+            exceptionExpression
+                .EvaluateAsync(Arg.Any<CancellationToken>())
+                .Throws<InvalidOperationException>();
+            var sut = new UnaryExpression(CreateContext("error"), Result.Success(exceptionExpression));
+
+            // Act
+            var result = await sut.EvaluateAsync(CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
+        }
     }
 
     public class ParseAsync : UnaryExpressionTests

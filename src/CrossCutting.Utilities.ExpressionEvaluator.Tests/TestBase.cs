@@ -159,6 +159,11 @@ public abstract class TestBase
                 return Result.Success<object?>("Evaluated result");
             }
 
+            if (context.Expression == "exception")
+            {
+                throw new InvalidOperationException("Kaboom");
+            }
+
             return Result.NotSupported<object?>($"Unsupported expression: {context.Expression}");
         }
 

@@ -95,7 +95,19 @@ public class ExpressionEvaluator : IExpressionEvaluator
             {
                 foreach (var component in _components)
                 {
-                    var result = await component.EvaluateAsync(context, token).ConfigureAwait(false);
+                    Result<object?> result;
+
+#pragma warning disable CA1031 // Do not catch general exception types
+                    try
+                    {
+                        result = await component.EvaluateAsync(context, token).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        result = Result.Error<object?>(ex, "Exception occured");
+                    }
+#pragma warning restore CA1031 // Do not catch general exception types
+
                     if (result.Status != ResultStatus.Continue)
                     {
                         return result;
@@ -115,9 +127,19 @@ public class ExpressionEvaluator : IExpressionEvaluator
             {
                 foreach (var component in _components)
                 {
-                    var result = component is IExpressionComponent<T> typedComponent
-                        ? await typedComponent.EvaluateTypedAsync(context, token).ConfigureAwait(false)
-                        : (await component.EvaluateAsync(context, token).ConfigureAwait(false)).TryCastAllowNull<T>();
+                    Result<T> result;
+#pragma warning disable CA1031 // Do not catch general exception types
+                    try
+                    {
+                        result = component is IExpressionComponent<T> typedComponent
+                            ? await typedComponent.EvaluateTypedAsync(context, token).ConfigureAwait(false)
+                            : (await component.EvaluateAsync(context, token).ConfigureAwait(false)).TryCastAllowNull<T>();
+                    }
+                    catch (Exception ex)
+                    {
+                        result = Result.Error<T>(ex, "Exception occured");
+                    }
+#pragma warning restore CA1031 // Do not catch general exception types
 
                     if (result.Status != ResultStatus.Continue)
                     {

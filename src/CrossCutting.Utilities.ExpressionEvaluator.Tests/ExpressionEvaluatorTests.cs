@@ -54,7 +54,9 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         public async Task Returns_Invalid_When_Maximum_Recursion_Has_Been_Reached()
         {
             // Arrange
-            Expression.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success<object?>("result value"));
+            Expression
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(Result.Success<object?>("result value"));
             var sut = CreateSut();
 
             // Act
@@ -63,6 +65,23 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Maximum recursion level has been reached");
+        }
+
+        [Fact]
+        public async Task Wraps_Exception_Into_Error_Result()
+        {
+            // Arrange
+            Expression
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Throws<InvalidOperationException>();
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.EvaluateAsync(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut), CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
         }
     }
 
@@ -160,6 +179,23 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Maximum recursion level has been reached");
         }
+
+        [Fact]
+        public async Task Wraps_Exception_Into_Error_Result()
+        {
+            // Arrange
+            Expression
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Throws<InvalidOperationException>();
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.EvaluateTypedAsync<string>(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut), CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
+        }
     }
 
     public class EvaluateTypedCallbackAsync : ExpressionEvaluatorTests
@@ -240,6 +276,23 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Maximum recursion level has been reached");
+        }
+
+        [Fact]
+        public async Task Wraps_Exception_Into_Error_Result()
+        {
+            // Arrange
+            Expression
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Throws<InvalidOperationException>();
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.EvaluateTypedCallbackAsync<string>(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut), CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
         }
     }
 

@@ -42,7 +42,7 @@ public sealed class BinaryExpression : IExpression
             return Result.FromExistingResult<object?>(error);
         }
 
-        return Operator switch
+        return Result.WrapException<object?>(() => Operator switch
         {
             ExpressionTokenType.Plus => Add.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
             ExpressionTokenType.Minus => Subtract.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
@@ -59,7 +59,7 @@ public sealed class BinaryExpression : IExpression
             ExpressionTokenType.Modulo => Modulus.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
             ExpressionTokenType.Exponentiation => Power.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
             _ => Result.Invalid<object?>($"Unsupported operator: {Operator}")
-        };
+        });
     }
 
     public async Task<ExpressionParseResult> ParseAsync(CancellationToken token)

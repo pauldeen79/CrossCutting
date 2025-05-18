@@ -20,9 +20,23 @@ public sealed class UnaryExpression : IExpression<bool>
 
     public async Task<Result<bool>> EvaluateTypedAsync(CancellationToken token)
         => (Operand.Value is not null
-            ? (await Operand.Value.EvaluateAsync(token).ConfigureAwait(false)).TryCastAllowNull<bool>()
+            ? await Wrap(token).ConfigureAwait(false)
             : Result.FromExistingResult<bool>(Operand))
         .OnSuccess(result => Result.Success(!result.Value.IsTruthy()));
+
+    private async Task<Result<bool>> Wrap(CancellationToken token)
+    {
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return (await Operand.Value!.EvaluateAsync(token).ConfigureAwait(false)).TryCastAllowNull<bool>();
+        }
+        catch (Exception ex)
+        {
+            return Result.Error<bool>(ex, "Exception occured");
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+    }
 
     public async Task<ExpressionParseResult> ParseAsync(CancellationToken token)
     {
