@@ -2,7 +2,7 @@
 
 public class RightFunctionTests : TestBase<RightFunction>
 {
-    public class Evaluate : RightFunctionTests
+    public class EvaluateAsync : RightFunctionTests
     {
         [Fact]
         public async Task Returns_Ok_When_String_Expression_Is_Long_Enough()

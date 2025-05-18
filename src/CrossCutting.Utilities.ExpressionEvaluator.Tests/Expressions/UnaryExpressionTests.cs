@@ -9,7 +9,7 @@ public class UnaryExpressionTests : TestBase
         Operand = Substitute.For<IExpression>();
     }
 
-    public class Evaluate : UnaryExpressionTests
+    public class EvaluateAsync : UnaryExpressionTests
     {
         [Fact]
         public async Task Returns_Error_From_Expression()
@@ -46,7 +46,7 @@ public class UnaryExpressionTests : TestBase
         }
     }
 
-    public class Parse : UnaryExpressionTests
+    public class ParseAsync : UnaryExpressionTests
     {
         [Fact]
         public async Task Returns_Error_From_Expression()

@@ -2,7 +2,7 @@
 
 public class TypeOfExpressionComponentTests  : TestBase<TypeOfExpressionComponent>
 {
-    public class Evaluate : TypeOfExpressionComponentTests
+    public class EvaluateAsync : TypeOfExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Continue_When_Expression_Is_Not_A_TypeOf_Expression()
@@ -49,7 +49,7 @@ public class TypeOfExpressionComponentTests  : TestBase<TypeOfExpressionComponen
         }
     }
 
-    public class Parse : TypeOfExpressionComponentTests
+    public class ParseAsync : TypeOfExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Continue_When_Expression_Is_Not_A_TypeOf_Expression()

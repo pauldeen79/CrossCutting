@@ -2,7 +2,7 @@
 
 public class ConvertFunctionTests : TestBase<ConvertFunction>
 {
-    public class Evaluate : ConvertFunctionTests
+    public class EvaluateAsync : ConvertFunctionTests
     {
         [Fact]
         public async Task Returns_Success_On_Correct_Arguments()

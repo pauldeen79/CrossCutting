@@ -2,7 +2,7 @@
 
 public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionComponent>
 {
-    public class Evaluate : PrimitiveExpressionComponentTests
+    public class EvaluateAsync : PrimitiveExpressionComponentTests
     {
         [Theory]
         [InlineData("true", true)]
@@ -81,7 +81,7 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
         }
     }
 
-    public class Parse : PrimitiveExpressionComponentTests
+    public class ParseAsync : PrimitiveExpressionComponentTests
     {
         [Theory]
         [InlineData("true")]

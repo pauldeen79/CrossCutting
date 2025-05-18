@@ -2,7 +2,7 @@
 
 public class MidFunctionTests : TestBase<MidFunction>
 {
-    public class Evaluate : MidFunctionTests
+    public class EvaluateAsync : MidFunctionTests
     {
         [Fact]
         public async Task Returns_Ok_When_String_Expression_Is_Long_Enough()

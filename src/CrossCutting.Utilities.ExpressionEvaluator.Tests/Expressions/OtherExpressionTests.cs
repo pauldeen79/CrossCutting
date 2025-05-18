@@ -2,7 +2,7 @@
 
 public class OtherExpressionTests : TestBase
 {
-    public class Evaluate : OtherExpressionTests
+    public class EvaluateAsync : OtherExpressionTests
     {
         [Fact]
         public async Task Returns_Correct_Result()
@@ -24,7 +24,7 @@ public class OtherExpressionTests : TestBase
         }
     }
 
-    public class Parse : OtherExpressionTests
+    public class ParseAsync : OtherExpressionTests
     {
         [Fact]
         public async Task Returns_Correct_Result()

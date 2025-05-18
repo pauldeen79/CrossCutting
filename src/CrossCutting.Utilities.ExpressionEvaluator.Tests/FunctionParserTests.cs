@@ -2,7 +2,7 @@
 
 public class FunctionParserTests : TestBase<FunctionParser>
 {
-    public class Parse : FunctionParserTests
+    public class ParseAsync : FunctionParserTests
     {
         [Theory]
         [InlineData("")]

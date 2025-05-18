@@ -17,7 +17,7 @@ public class FunctionExpressionComponentTests : TestBase
         MemberCallArgumentValidator = Substitute.For<IMemberCallArgumentValidator>();
     }
 
-    public class Evaluate : FunctionExpressionComponentTests
+    public class EvaluateAsync : FunctionExpressionComponentTests
     {
         // Manually mocked this because I can't get NSubstitute working with generic method...
         private sealed class MyGenericFunction : IGenericFunction
@@ -173,7 +173,7 @@ public class FunctionExpressionComponentTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotFound);
-            result.ErrorMessage.ShouldBe("Could not find member with type name CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.FunctionExpressionComponentTests+Evaluate");
+            result.ErrorMessage.ShouldBe("Could not find member with type name CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.FunctionExpressionComponentTests+EvaluateAsync");
         }
 
         [Fact]
@@ -251,7 +251,7 @@ public class FunctionExpressionComponentTests : TestBase
         }
     }
 
-    public class Parse : FunctionExpressionComponentTests
+    public class ParseAsync : FunctionExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Continue_When_Expression_Is_Not_A_FunctionCall()

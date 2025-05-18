@@ -2,7 +2,7 @@
 
 public class StringSubstringMethodTests : TestBase<StringSubstringMethod>
 {
-    public class Evaluate : StringSubstringMethodTests
+    public class EvaluateAsync : StringSubstringMethodTests
     {
         [Fact]
         public async Task Returns_Ok_On_Valid_Arguments_Without_Length()

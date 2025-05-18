@@ -2,7 +2,7 @@
 
 public class CastFunctionTests : TestBase<CastFunction>
 {
-    public class Evaluate : CastFunctionTests
+    public class EvaluateAsync : CastFunctionTests
     {
         [Fact]
         public async Task Returns_Success_On_Correct_Arguments()

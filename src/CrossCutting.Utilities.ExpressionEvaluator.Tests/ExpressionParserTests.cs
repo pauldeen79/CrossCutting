@@ -2,7 +2,7 @@
 
 public class ExpressionParserTests : TestBase<ExpressionParser>
 {
-    public class Parse : ExpressionParserTests
+    public class ParseAsync : ExpressionParserTests
     {
         [Fact]
         public async Task Returns_Correct_Result_On_Logical_Or()

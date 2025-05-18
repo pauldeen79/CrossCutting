@@ -2,7 +2,7 @@
 
 public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedStringExpressionComponent>
 {
-    public class Evaluate : InterpolatedStringExpressionComponentTests
+    public class EvaluateAsync : InterpolatedStringExpressionComponentTests
     {
         [Theory]
         [InlineData("")]
@@ -131,7 +131,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
         }
     }
 
-    public class Parse : InterpolatedStringExpressionComponentTests
+    public class ParseAsync : InterpolatedStringExpressionComponentTests
     {
         [Theory]
         [InlineData("")]

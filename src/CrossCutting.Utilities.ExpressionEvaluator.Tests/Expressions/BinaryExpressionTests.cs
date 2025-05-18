@@ -12,7 +12,7 @@ public class BinaryExpressionTests : TestBase
             .Returns(Result.NoContent<object?>());
     }
 
-    public class Evaluate : BinaryExpressionTests
+    public class EvaluateAsync : BinaryExpressionTests
     {
         [Fact]
         public async Task Returns_Error_From_Left_Expression()
@@ -487,7 +487,7 @@ public class BinaryExpressionTests : TestBase
         }
     }
 
-    public class Parse : BinaryExpressionTests
+    public class ParseAsync : BinaryExpressionTests
     {
         [Fact]
         public async Task Returns_Error_From_Left_Expression()

@@ -2,7 +2,7 @@
 
 public class LeftFunctionTests : TestBase<LeftFunction>
 {
-    public class Evaluate : LeftFunctionTests
+    public class EvaluateAsync : LeftFunctionTests
     {
         [Fact]
         public async Task Returns_Ok_When_String_Expression_Is_Long_Enough()

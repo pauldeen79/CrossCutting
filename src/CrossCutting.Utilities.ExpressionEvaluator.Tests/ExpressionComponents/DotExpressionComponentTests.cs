@@ -2,7 +2,7 @@
 
 public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
 {
-    public class Evaluate : DotExpressionComponentTests
+    public class EvaluateAsync : DotExpressionComponentTests
     {
         [Theory]
         [InlineData("")]
@@ -199,7 +199,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Method Overload on type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+Evaluate has multiple overloads with 1 arguments, this is not supported");
+            result.ErrorMessage.ShouldBe("Method Overload on type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+EvaluateAsync has multiple overloads with 1 arguments, this is not supported");
         }
 
         [Fact]
@@ -236,7 +236,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
 
         public int MyProperty => 13;
         public int MyErrorProperty => throw new InvalidOperationException("Kaboom");
-        public Evaluate MyComplexProperty => this;
+        public EvaluateAsync MyComplexProperty => this;
 #pragma warning disable xUnit1013 // Public method should be marked as test
         public void DoSomething(string argument) => System.Diagnostics.Debug.WriteLine(argument);
         public void Overload(string argument) => System.Diagnostics.Debug.WriteLine(argument);
@@ -245,7 +245,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
 #pragma warning restore xUnit1013 // Public method should be marked as test
     }
 
-    public class Parse : DotExpressionComponentTests
+    public class ParseAsync : DotExpressionComponentTests
     {
         [Theory]
         [InlineData("")]
@@ -370,7 +370,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Method Overload on type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+Parse has multiple overloads with 1 arguments, this is not supported");
+            result.ErrorMessage.ShouldBe("Method Overload on type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+ParseAsync has multiple overloads with 1 arguments, this is not supported");
         }
 
         [Fact]

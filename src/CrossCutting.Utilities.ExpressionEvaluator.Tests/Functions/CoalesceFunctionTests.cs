@@ -2,7 +2,7 @@
 
 public class CoalesceFunctionTests : TestBase<CoalesceFunction>
 {
-    public class Evaluate : CoalesceFunctionTests
+    public class EvaluateAsync : CoalesceFunctionTests
     {
         [Fact]
         public async Task Returns_NoContent_When_All_Expressions_Are_Null()

@@ -2,7 +2,7 @@
 
 public class Int64ExpressionComponentTests : TestBase<Int64ExpressionComponent>
 {
-    public class Evaluate : Int64ExpressionComponentTests
+    public class EvaluateAsync : Int64ExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Correct_Result_For_Int64()
@@ -35,7 +35,7 @@ public class Int64ExpressionComponentTests : TestBase<Int64ExpressionComponent>
         }
     }
 
-    public class Parse : Int64ExpressionComponentTests
+    public class ParseAsync : Int64ExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Correct_Result_For_Int64()

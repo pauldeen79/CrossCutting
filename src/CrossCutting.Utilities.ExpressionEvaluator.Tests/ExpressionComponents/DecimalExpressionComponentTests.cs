@@ -2,7 +2,7 @@
 
 public class DecimalExpressionComponentTests : TestBase<DecimalExpressionComponent>
 {
-    public class Evaluate : DecimalExpressionComponentTests
+    public class EvaluateAsync : DecimalExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Correct_Result_For_Decimal()
@@ -35,7 +35,7 @@ public class DecimalExpressionComponentTests : TestBase<DecimalExpressionCompone
         }
     }
 
-    public class Parse : DecimalExpressionComponentTests
+    public class ParseAsync : DecimalExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Correct_Result_For_Decimal()

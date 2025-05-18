@@ -2,7 +2,7 @@
 
 public class StringExpressionComponentTests : TestBase<StringExpressionComponent>
 {
-    public class Evaluate : StringExpressionComponentTests
+    public class EvaluateAsync : StringExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Success_On_String_Expression()
@@ -34,7 +34,7 @@ public class StringExpressionComponentTests : TestBase<StringExpressionComponent
         }
     }
 
-    public class Parse : StringExpressionComponentTests
+    public class ParseAsync : StringExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Success_On_String_Expression()

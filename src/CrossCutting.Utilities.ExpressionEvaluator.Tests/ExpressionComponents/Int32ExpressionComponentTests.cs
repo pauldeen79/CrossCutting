@@ -2,7 +2,7 @@
 
 public class Int32ExpressionComponentTests : TestBase<Int32ExpressionComponent>
 {
-    public class Evaluate : Int32ExpressionComponentTests
+    public class EvaluateAsync : Int32ExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Correct_Result_For_Int32()
@@ -50,7 +50,7 @@ public class Int32ExpressionComponentTests : TestBase<Int32ExpressionComponent>
         }
     }
 
-    public class Parse : Int32ExpressionComponentTests
+    public class ParseAsync : Int32ExpressionComponentTests
     {
         [Fact]
         public async Task Returns_Correct_Result_For_Int32()

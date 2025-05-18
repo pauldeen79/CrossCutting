@@ -2,7 +2,7 @@
 
 public class DateTimeConstructorTests : TestBase<DateTimeConstructor>
 {
-    public class Evaluate : DateTimeConstructorTests
+    public class EvaluateAsync : DateTimeConstructorTests
     {
         [Fact]
         public async Task Returns_Success_On_Correct_Arguments()
