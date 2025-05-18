@@ -2,7 +2,7 @@
 
 public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
 {
-    public class Evaluate : ExpressionEvaluatorTests
+    public class EvaluateAsync : ExpressionEvaluatorTests
     {
         [Fact]
         public async Task Returns_Invalid_When_Expression_Is_Null_Or_Empty()
@@ -66,7 +66,7 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         }
     }
 
-    public class EvaluateTyped : ExpressionEvaluatorTests
+    public class EvaluateTypedAsync : ExpressionEvaluatorTests
     {
         [Fact]
         public async Task Returns_Invalid_When_Expression_Is_Null_Or_Empty()
@@ -75,7 +75,7 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(string.Empty, new ExpressionEvaluatorSettingsBuilder());
+            var result = await sut.EvaluateTypedAsync<string>(string.Empty, new ExpressionEvaluatorSettingsBuilder());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -91,7 +91,7 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync("expression", new ExpressionEvaluatorSettingsBuilder(), null);
+            var result = await sut.EvaluateTypedAsync<string>("expression", new ExpressionEvaluatorSettingsBuilder(), null);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -107,7 +107,7 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync("expression", new ExpressionEvaluatorSettingsBuilder());
+            var result = await sut.EvaluateTypedAsync<string>("expression", new ExpressionEvaluatorSettingsBuilder());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -123,7 +123,7 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync("expression", new ExpressionEvaluatorSettingsBuilder());
+            var result = await sut.EvaluateTypedAsync<string>("expression", new ExpressionEvaluatorSettingsBuilder());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -139,7 +139,7 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync("expression", new ExpressionEvaluatorSettingsBuilder());
+            var result = await sut.EvaluateTypedAsync<string>("expression", new ExpressionEvaluatorSettingsBuilder());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -154,7 +154,7 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut, null, int.MaxValue), CancellationToken.None);
+            var result = await sut.EvaluateTypedAsync<string>(new ExpressionEvaluatorContext("expression", new ExpressionEvaluatorSettingsBuilder(), sut, null, int.MaxValue), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -162,7 +162,7 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
         }
     }
 
-    public class Parse : ExpressionEvaluatorTests
+    public class ParseAsync : ExpressionEvaluatorTests
     {
         [Fact]
         public async Task Returns_Invalid_When_Expression_Is_Null_Or_Empty()

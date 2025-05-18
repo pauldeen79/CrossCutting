@@ -25,4 +25,17 @@ public static class ExpressionEvaluatorExtensions
 
     public static Task<Result<object?>> EvaluateAsync(this IExpressionEvaluator instance, string expression, ExpressionEvaluatorSettings settings, IReadOnlyDictionary<string, Task<Result<object?>>>? state)
         => instance.EvaluateAsync(expression, settings, state, CancellationToken.None);
+
+    public static Task<Result<T>> EvaluateTypedAsync<T>(this IExpressionEvaluator instance, string expression, ExpressionEvaluatorSettings settings, CancellationToken token)
+        => instance.EvaluateTypedAsync<T>(new ExpressionEvaluatorContext(expression, settings, instance, null), token);
+
+    public static Task<Result<T>> EvaluateTypedAsync<T>(this IExpressionEvaluator instance, string expression, ExpressionEvaluatorSettings settings)
+        => instance.EvaluateTypedAsync<T>(expression, settings, CancellationToken.None);
+
+    public static Task<Result<T>> EvaluateTypedAsync<T>(this IExpressionEvaluator instance, string expression, ExpressionEvaluatorSettings settings, IReadOnlyDictionary<string, Task<Result<object?>>>? state, CancellationToken token)
+        => instance.EvaluateTypedAsync<T>(new ExpressionEvaluatorContext(expression, settings, instance, state), token);
+
+    public static Task<Result<T>> EvaluateTypedAsync<T>(this IExpressionEvaluator instance, string expression, ExpressionEvaluatorSettings settings, IReadOnlyDictionary<string, Task<Result<object?>>>? state)
+        => instance.EvaluateTypedAsync<T>(expression, settings, state, CancellationToken.None);
+
 }

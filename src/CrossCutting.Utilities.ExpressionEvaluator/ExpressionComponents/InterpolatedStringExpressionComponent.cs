@@ -1,23 +1,26 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.ExpressionComponents;
 
-public class InterpolatedStringExpressionComponent : IExpressionComponent
+public class InterpolatedStringExpressionComponent : IExpressionComponent<GenericFormattableString>
 {
     private const string TemporaryDelimiter = "\uE002";
 
     public int Order => 12;
 
     public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
+
+    public async Task<Result<GenericFormattableString>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         if (context.Expression.Length < 3 || !context.Expression.StartsWith("$\""))
         {
-            return Result.Continue<object?>();
+            return Result.Continue<GenericFormattableString>();
         }
 
         if (!context.Expression.EndsWith("\""))
         {
-            return Result.Invalid<object?>("FormattableString is not closed correctly");
+            return Result.Invalid<GenericFormattableString>("FormattableString is not closed correctly");
         }
 
         return await EvaluateRecursiveAsync(context.Expression.Substring(2, context.Expression.Length - 3), context, token).ConfigureAwait(false);

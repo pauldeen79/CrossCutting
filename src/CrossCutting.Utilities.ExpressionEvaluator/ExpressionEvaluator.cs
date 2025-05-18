@@ -38,6 +38,31 @@ public class ExpressionEvaluator : IExpressionEvaluator
         return await results.GetValue<IExpression>(nameof(IExpressionParser.Parse)).EvaluateAsync(token).ConfigureAwait(false);
     }
 
+    public async Task<Result<T>> EvaluateTypedAsync<T>(ExpressionEvaluatorContext context, CancellationToken token)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        context = context.FromRoot();
+
+        var results = new ResultDictionaryBuilder()
+            .Add("Validate", () => context.Validate<object?>())
+            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context))
+            .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
+            .Build();
+
+        var error = results.GetError();
+        if (error is not null)
+        {
+            return Result.FromExistingResult<T>(error);
+        }
+
+        var expression = results.GetValue<IExpression>(nameof(IExpressionParser.Parse));
+
+        return expression is IExpression<T> typedExpression
+            ? await typedExpression.EvaluateTypedAsync(token).ConfigureAwait(false)
+            : (await expression.EvaluateAsync(token).ConfigureAwait(false)).TryCastAllowNull<T>();
+    }
+
     public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
@@ -78,6 +103,29 @@ public class ExpressionEvaluator : IExpressionEvaluator
                 }
 
                 return Result.Invalid<object?>($"Unknown expression type found in fragment: {context.Expression}");
+            });
+    }
+
+    public Task<Result<T>> EvaluateTypedCallbackAsync<T>(ExpressionEvaluatorContext context, CancellationToken token)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        return context.Validate<T>()
+            .OnSuccess(async () =>
+            {
+                foreach (var component in _components)
+                {
+                    var result = component is IExpressionComponent<T> typedComponent
+                        ? await typedComponent.EvaluateTypedAsync(context, token).ConfigureAwait(false)
+                        : (await component.EvaluateAsync(context, token).ConfigureAwait(false)).TryCastAllowNull<T>();
+
+                    if (result.Status != ResultStatus.Continue)
+                    {
+                        return result;
+                    }
+                }
+
+                return Result.Invalid<T>($"Unknown expression type found in fragment: {context.Expression}");
             });
     }
 

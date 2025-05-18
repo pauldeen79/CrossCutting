@@ -6,3 +6,8 @@ public interface IExpressionComponent
     Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token);
     Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token);
 }
+
+public interface IExpressionComponent<T> : IExpressionComponent
+{
+    Task<Result<T>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token);
+}

@@ -729,7 +729,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var context = new ExpressionEvaluatorContext("$\"public class {class.Name}\"", new ExpressionEvaluatorSettingsBuilder(), CreateSut(), state);
 
         // Act
-        var result = await sut.EvaluateAsync(context, CancellationToken.None);
+        var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -748,7 +748,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var context = new ExpressionEvaluatorContext("$\"public class {class.Name}\"", new ExpressionEvaluatorSettingsBuilder(), CreateSut(), state);
 
         // Act
-        var result = await sut.EvaluateAsync(context, CancellationToken.None);
+        var result = await sut.EvaluateTypedAsync<GenericFormattableString>(context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
