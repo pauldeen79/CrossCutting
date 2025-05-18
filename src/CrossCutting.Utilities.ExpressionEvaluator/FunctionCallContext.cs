@@ -46,43 +46,6 @@ public class FunctionCallContext
     public Task<Result<T?>> GetArgumentValueResultAsync<T>(int index, string argumentName, T? defaultValue, CancellationToken token)
         => FunctionCall.GetArgumentValueResultAsync(index, argumentName, this, defaultValue, token);
 
-    //TODO: Remove custom methods for string, int32 etc. below
-    public Task<Result<string>> GetArgumentStringValueResultAsync(int index, string argumentName, CancellationToken token)
-        => FunctionCall.GetArgumentStringValueResultAsync(index, argumentName, this, token);
-
-    public Task<Result<string>> GetArgumentStringValueResultAsync(int index, string argumentName, string defaultValue, CancellationToken token)
-        => FunctionCall.GetArgumentStringValueResultAsync(index, argumentName, this, defaultValue, token);
-
-    public Task<Result<int>> GetArgumentInt32ValueResultAsync(int index, string argumentName, CancellationToken token)
-        => FunctionCall.GetArgumentInt32ValueResultAsync(index, argumentName, this, token);
-
-    public Task<Result<int>> GetArgumentInt32ValueResultAsync(int index, string argumentName, int defaultValue, CancellationToken token)
-        => FunctionCall.GetArgumentInt32ValueResultAsync(index, argumentName, this, defaultValue, token);
-
-    public Task<Result<long>> GetArgumentInt64ValueResultAsync(int index, string argumentName, CancellationToken token)
-        => FunctionCall.GetArgumentInt64ValueResultAsync(index, argumentName, this, token);
-
-    public Task<Result<long>> GetArgumentInt64ValueResultAsync(int index, string argumentName, long defaultValue, CancellationToken token)
-        => FunctionCall.GetArgumentInt64ValueResultAsync(index, argumentName, this, defaultValue, token);
-
-    public Task<Result<decimal>> GetArgumentDecimalValueResultAsync(int index, string argumentName, CancellationToken token)
-        => FunctionCall.GetArgumentDecimalValueResultAsync(index, argumentName, this, token);
-
-    public Task<Result<decimal>> GetArgumentDecimalValueResultAsync(int index, string argumentName, decimal defaultValue, CancellationToken token)
-        => FunctionCall.GetArgumentDecimalValueResultAsync(index, argumentName, this, defaultValue, token);
-
-    public Task<Result<bool>> GetArgumentBooleanValueResultAsync(int index, string argumentName, CancellationToken token)
-        => FunctionCall.GetArgumentBooleanValueResultAsync(index, argumentName, this, token);
-
-    public Task<Result<bool>> GetArgumentBooleanValueResultAsync(int index, string argumentName, bool defaultValue, CancellationToken token)
-        => FunctionCall.GetArgumentBooleanValueResultAsync(index, argumentName, this, defaultValue, token);
-
-    public Task<Result<DateTime>> GetArgumentDateTimeValueResultAsync(int index, string argumentName, CancellationToken token)
-        => FunctionCall.GetArgumentDateTimeValueResultAsync(index, argumentName, this, token);
-
-    public Task<Result<DateTime>> GetArgumentDateTimeValueResultAsync(int index, string argumentName, DateTime defaultValue, CancellationToken token)
-        => FunctionCall.GetArgumentDateTimeValueResultAsync(index, argumentName, this, defaultValue, token);
-
     public Task<Result<object?>> EvaluateAsync(IGenericFunction genericFunction, CancellationToken token)
     {
         genericFunction = ArgumentGuard.IsNotNull(genericFunction, nameof(genericFunction));
