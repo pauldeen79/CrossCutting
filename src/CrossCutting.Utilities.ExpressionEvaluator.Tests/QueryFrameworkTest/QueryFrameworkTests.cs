@@ -10,6 +10,7 @@ internal interface IQuery
 {
     int? Limit { get; set; }
     int? Offset { get; set; }
+    [ValidGroups]
     IReadOnlyCollection<ICondition> Conditions { get; set; }
     IReadOnlyCollection<IQuerySortOrder> OrderByFields { get; set; }
 }
@@ -45,31 +46,50 @@ internal enum Combination
     Or
 }
 
-internal sealed class MyQuery : IQuery, IValidatableObject
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+internal sealed class ValidGroupsAttribute : ValidationAttribute
 {
-    public int? Limit { get; set; }
-    public int? Offset { get; set; }
-    public IReadOnlyCollection<ICondition> Conditions { get; set; }
-    public IReadOnlyCollection<IQuerySortOrder> OrderByFields { get; set; }
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
+        if (value is not IEnumerable collection)
+        {
+            return ValidationResult.Success;
+        }
+
         var groupCounter = 0;
         var index = 0;
-        foreach (var evaluatable in Conditions)
+
+        foreach (var item in collection)
         {
-            if (evaluatable.StartGroup)
+            if (item == null) continue;
+
+            var type = item.GetType();
+            var prop1 = type.GetProperty(nameof(ICondition.StartGroup), BindingFlags.Public | BindingFlags.Instance);
+            var prop2 = type.GetProperty(nameof(ICondition.EndGroup), BindingFlags.Public | BindingFlags.Instance);
+
+            if (prop1 is null || prop2 is null)
+            {
+                return new ValidationResult($"Properties '{nameof(ICondition.StartGroup)}' or '{nameof(ICondition.EndGroup)}' not found on {type.Name}");
+            }
+
+#pragma warning disable CS8605 // Unboxing a possibly null value.
+            var startGroup = (bool)prop1.GetValue(item);
+            var endGroup = (bool)prop2.GetValue(item);
+#pragma warning restore CS8605 // Unboxing a possibly null value.
+
+            if (startGroup)
             {
                 groupCounter++;
             }
-            if (evaluatable.EndGroup)
+
+            if (endGroup)
             {
                 groupCounter--;
             }
+
             if (groupCounter < 0)
             {
-                yield return new ValidationResult($"EndGroup not valid at index {index}, because there is no corresponding StartGroup", [nameof(Conditions)]);
-                break;
+                return new ValidationResult($"EndGroup not valid at index {index}, because there is no corresponding StartGroup");
             }
 
             index++;
@@ -77,15 +97,26 @@ internal sealed class MyQuery : IQuery, IValidatableObject
 
         if (groupCounter == 1)
         {
-            yield return new ValidationResult("Missing EndGroup", [nameof(Conditions)]);
+            return new ValidationResult("Missing EndGroup");
         }
 #pragma warning disable S2583 // false positive!
         else if (groupCounter > 1)
 #pragma warning restore S2583 // false positive!
         {
-            yield return new ValidationResult($"{groupCounter} missing EndGroups", [nameof(Conditions)]);
+            return new ValidationResult($"{groupCounter} missing EndGroups");
         }
+
+        return ValidationResult.Success;
     }
+}
+
+internal sealed class MyQuery : IQuery
+{
+    public int? Limit { get; set; }
+    public int? Offset { get; set; }
+    [ValidGroups]
+    public IReadOnlyCollection<ICondition> Conditions { get; set; }
+    public IReadOnlyCollection<IQuerySortOrder> OrderByFields { get; set; }
 }
 
 internal sealed class QuerySortOrder : IQuerySortOrder
@@ -315,5 +346,29 @@ public class QueryFrameworkTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldBe(true);
+    }
+
+    [Fact]
+    public void Can_Validate_Query()
+    {
+        // Arrange
+        var query = new MyQuery
+        {
+            Limit = 10,
+            Offset = 100,
+            Conditions =
+            [
+                new ComposableEvaluatable { LeftExpression = new ConstantEvaluatable<string>("A"), Operator = new EqualsOperator(), RightExpression = new ConstantEvaluatable<string>("A"), StartGroup = true }
+            ]
+        };
+        var validationContext = new ValidationContext(query);
+        var validationResults = new List<ValidationResult>();
+
+        // Act
+        var success = Validator.TryValidateObject(query, validationContext, validationResults, true);
+
+        // Assert
+        success.ShouldBe(false);
+        validationResults.Count.ShouldBe(1);
     }
 }

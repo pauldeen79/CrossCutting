@@ -1,4 +1,5 @@
 ﻿global using System;
+global using System.Collections;
 global using System.Collections.Generic;
 global using System.ComponentModel;
 global using System.ComponentModel.DataAnnotations;
@@ -27,7 +28,6 @@ global using CrossCutting.Utilities.ExpressionEvaluator.InstanceMethods;
 global using CrossCutting.Utilities.Operators;
 global using Microsoft.Extensions.DependencyInjection;
 global using NSubstitute;
-global using NSubstitute.Core;
 global using NSubstitute.ExceptionExtensions;
 global using Shouldly;
 global using Xunit;
