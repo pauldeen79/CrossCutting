@@ -64,6 +64,33 @@ public class AsyncResultDictionaryBuilder
         return results;
     }
 
+    public async Task<IReadOnlyDictionary<string, Func<Result>>> BuildLazy()
+    {
+        var results = new Dictionary<string, Func<Result>>();
+
+        foreach (var item in _resultset)
+        {
+            Result result;
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                result = await item.Value.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                result = Result.Error(ex, "Exception occured");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+            results.Add(item.Key, () => result);
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        return results;
+    }
+
     public async Task<IReadOnlyDictionary<string, Result>> Build()
     {
         var results = new Dictionary<string, Result>();
@@ -132,7 +159,7 @@ public class AsyncResultDictionaryBuilder<T>
         return results;
     }
 
-    public async Task<IReadOnlyDictionary<string, Func<Result<T>>>> Build()
+    public async Task<IReadOnlyDictionary<string, Func<Result<T>>>> BuildLazy()
     {
         var results = new Dictionary<string, Func<Result<T>>>();
 
@@ -151,6 +178,34 @@ public class AsyncResultDictionaryBuilder<T>
 #pragma warning restore CA1031 // Do not catch general exception types
 
             results.Add(item.Key, () => result);
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        return results;
+    }
+
+    public async Task<IReadOnlyDictionary<string, Result<T>>> Build()
+    {
+        var results = new Dictionary<string, Result<T>>();
+
+        foreach (var item in _resultset)
+        {
+            Result<T> result;
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                result = await item.Value.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                result = Result.Error<T>(ex, "Exception occured");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+
+            results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
                 break;
