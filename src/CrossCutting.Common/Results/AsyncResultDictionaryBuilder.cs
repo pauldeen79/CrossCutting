@@ -52,6 +52,90 @@ public class AsyncResultDictionaryBuilder
         return this;
     }
 
+    public AsyncResultDictionaryBuilder AddRange(string nameFormatString, IEnumerable<Task<Result>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Task<Result<T>>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder AddRange(string nameFormatString, IEnumerable<Func<Result>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Func<Result<T>>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder AddRange(string nameFormatString, IEnumerable<Result> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Result<T>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
     public IReadOnlyDictionary<string, Task<Result>> BuildDeferred()
     {
         var results = new Dictionary<string, Task<Result>>();
@@ -144,6 +228,48 @@ public class AsyncResultDictionaryBuilder<T>
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
         _resultset.Add(name, Task.FromResult(value));
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Task<Result<T>>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Func<Result<T>>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Result<T>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
         return this;
     }
 
