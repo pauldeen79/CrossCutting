@@ -203,6 +203,192 @@ public class AsyncResultDictionaryBuilderTests
             }
         }
 
+        public class AddRange_Untyped_Task : NonGeneric
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+
+                // Act
+                sut.AddRange("Test", [NonGenericTask]);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+                sut.Add("Test0", NonGenericTask);
+
+                // Act & Assert
+                Action a = () => sut.AddRange("Test{0}", [NonGenericTask]);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test0");
+            }
+        }
+
+        public class AddRange_Typed_Task : NonGeneric
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+
+                // Act
+                sut.AddRange("Test", [GenericTask]);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+                sut.Add("Test0", GenericTask);
+
+                // Act & Assert
+                Action a = () => sut.AddRange("Test{0}", [GenericTask]);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test0");
+            }
+        }
+
+        public class AddRange_Untyped_Func : NonGeneric
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+
+                // Act
+                sut.AddRange("Test", [NonGenericFunc]);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+                sut.Add("Test0", NonGenericFunc);
+
+                // Act & Assert
+                Action a = () => sut.AddRange("Test{0}", [NonGenericFunc]);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test0");
+            }
+        }
+
+        public class AddRange_Typed_Func : NonGeneric
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+
+                // Act
+                sut.AddRange("Test", [GenericFunc]);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+                sut.Add("Test0", GenericFunc);
+
+                // Act & Assert
+                Action a = () => sut.AddRange("Test{0}", [GenericFunc]);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test0");
+            }
+        }
+
+        public class AddRange_Untyped_Result : NonGeneric
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+
+                // Act
+                sut.AddRange("Test", [NonGenericResult]);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+                sut.Add("Test0", NonGenericResult);
+
+                // Act & Assert
+                Action a = () => sut.AddRange("Test{0}", [NonGenericResult]);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test0");
+            }
+        }
+
+        public class AddRange_Typed_Result : NonGeneric
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+
+                // Act
+                sut.AddRange("Test", [GenericResult]);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+                sut.Add("Test0", GenericResult);
+
+                // Act & Assert
+                Action a = () => sut.AddRange("Test{0}", [GenericResult]);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test0");
+            }
+        }
+
         public class Build : NonGeneric
         {
             [Fact]
@@ -270,6 +456,58 @@ public class AsyncResultDictionaryBuilderTests
 
                 // Assert
                 result.Count.ShouldBe(2);
+            }
+        }
+
+        public class BuildLazy : NonGeneric
+        {
+            [Fact]
+            public async Task Builds_Results_Correctly()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+                sut.Add("Test1", NonGenericTask);
+                sut.Add("Test2", GenericTask);
+
+                // Act
+                var result = await sut.BuildLazy();
+
+                // Assert
+                result.Count.ShouldBe(2);
+            }
+
+            [Fact]
+            public async Task Stops_On_First_NonSuccessful_Result()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+                sut.Add("Test1", NonGenericTask);
+                sut.Add("Test2", GenericErrorTask); // This one returns an error
+                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
+
+                // Act
+                var result = await sut.BuildLazy();
+
+                // Assert
+                result.Count.ShouldBe(2);
+                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
+            }
+
+            [Fact]
+            public async Task Wraps_Exception_In_Error()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+                sut.Add("Test1", NonGenericTask);
+                sut.Add("Test2", GenericExceptionTask); // This one returns an error
+                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
+
+                // Act
+                var result = await sut.BuildLazy();
+
+                // Assert
+                result.Count.ShouldBe(2);
+                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
             }
         }
     }
@@ -369,6 +607,99 @@ public class AsyncResultDictionaryBuilderTests
             }
         }
 
+        public class AddRange_Task : Generic
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+
+                // Act
+                sut.AddRange("Test", [GenericTask]);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+                sut.Add("Test0", GenericTask);
+
+                // Act & Assert
+                Action a = () => sut.AddRange("Test{0}", [GenericTask]);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test0");
+            }
+        }
+
+        public class AddRange_Func : Generic
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+
+                // Act
+                sut.AddRange("Test", [GenericFunc]);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+                sut.Add("Test0", GenericFunc);
+
+                // Act & Assert
+                Action a = () => sut.AddRange("Test{0}", [GenericFunc]);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test0");
+            }
+        }
+
+        public class AddRange_Result : Generic
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+
+                // Act
+                sut.AddRange("Test", [GenericResult]);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Throws_On_Duplicate_Key()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+                sut.Add("Test0", GenericResult);
+
+                // Act & Assert
+                Action a = () => sut.AddRange("Test{0}", [GenericResult]);
+                a.ShouldThrow<ArgumentException>()
+                 .Message.ShouldBe("An item with the same key has already been added. Key: Test0");
+            }
+        }
+
         public class Build : Generic
         {
             [Fact]
@@ -436,6 +767,58 @@ public class AsyncResultDictionaryBuilderTests
 
                 // Assert
                 result.Count.ShouldBe(2);
+            }
+        }
+
+        public class BuildLazy : Generic
+        {
+            [Fact]
+            public async Task Builds_Results_Correctly()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+                sut.Add("Test1", GenericTask);
+                sut.Add("Test2", GenericTask);
+
+                // Act
+                var result = await sut.BuildLazy();
+
+                // Assert
+                result.Count.ShouldBe(2);
+            }
+
+            [Fact]
+            public async Task Stops_On_First_NonSuccessful_Result()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+                sut.Add("Test1", GenericTask);
+                sut.Add("Test2", GenericErrorTask); // This one returns an error
+                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
+
+                // Act
+                var result = await sut.BuildLazy();
+
+                // Assert
+                result.Count.ShouldBe(2);
+                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
+            }
+
+            [Fact]
+            public async Task Wraps_Exception_In_Error()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+                sut.Add("Test1", GenericTask);
+                sut.Add("Test2", GenericExceptionTask); // This one returns an error
+                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
+
+                // Act
+                var result = await sut.BuildLazy();
+
+                // Assert
+                result.Count.ShouldBe(2);
+                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
             }
         }
     }

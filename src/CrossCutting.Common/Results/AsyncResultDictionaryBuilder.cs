@@ -52,6 +52,90 @@ public class AsyncResultDictionaryBuilder
         return this;
     }
 
+    public AsyncResultDictionaryBuilder AddRange(string nameFormatString, IEnumerable<Task<Result>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Task<Result<T>>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder AddRange(string nameFormatString, IEnumerable<Func<Result>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Func<Result<T>>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder AddRange(string nameFormatString, IEnumerable<Result> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Result<T>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
     public IReadOnlyDictionary<string, Task<Result>> BuildDeferred()
     {
         var results = new Dictionary<string, Task<Result>>();
@@ -59,6 +143,33 @@ public class AsyncResultDictionaryBuilder
         foreach (var item in _resultset)
         {
             results.Add(item.Key, item.Value);
+        }
+
+        return results;
+    }
+
+    public async Task<IReadOnlyDictionary<string, Func<Result>>> BuildLazy()
+    {
+        var results = new Dictionary<string, Func<Result>>();
+
+        foreach (var item in _resultset)
+        {
+            Result result;
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                result = await item.Value.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                result = Result.Error(ex, "Exception occured");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+            results.Add(item.Key, () => result);
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
         }
 
         return results;
@@ -120,6 +231,48 @@ public class AsyncResultDictionaryBuilder<T>
         return this;
     }
 
+    public AsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Task<Result<T>>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Func<Result<T>>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Result<T>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
     public IReadOnlyDictionary<string, Task<Result<T>>> BuildDeferred()
     {
         var results = new Dictionary<string, Task<Result<T>>>();
@@ -132,7 +285,7 @@ public class AsyncResultDictionaryBuilder<T>
         return results;
     }
 
-    public async Task<IReadOnlyDictionary<string, Func<Result<T>>>> Build()
+    public async Task<IReadOnlyDictionary<string, Func<Result<T>>>> BuildLazy()
     {
         var results = new Dictionary<string, Func<Result<T>>>();
 
@@ -151,6 +304,34 @@ public class AsyncResultDictionaryBuilder<T>
 #pragma warning restore CA1031 // Do not catch general exception types
 
             results.Add(item.Key, () => result);
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        return results;
+    }
+
+    public async Task<IReadOnlyDictionary<string, Result<T>>> Build()
+    {
+        var results = new Dictionary<string, Result<T>>();
+
+        foreach (var item in _resultset)
+        {
+            Result<T> result;
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                result = await item.Value.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                result = Result.Error<T>(ex, "Exception occured");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+
+            results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
                 break;

@@ -57,7 +57,7 @@ public class AsyncResultDictionaryBuilderExtensionsTests : TestBase
         var dict = await result.Build();
         dict.Count.ShouldBe(1);
         dict.First().Key.ShouldBe("MyName");
-        var value = dict.First().Value();
+        var value = dict.First().Value;
         value.Status.ShouldBe(ResultStatus.Ok);
         value.GetValue().ShouldBe(1);
     }
