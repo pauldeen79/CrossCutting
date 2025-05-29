@@ -9,7 +9,9 @@ public class AsyncResultDictionaryBuilderTests
     protected static Func<Result<string>> GenericFunc => new Func<Result<string>>(() => Result.Success(string.Empty));
 
     protected static Result NonGenericResult => Result.Success();
+    protected static Result NonGenericNotSuccesfulResult => Result.Error("Kaboom");
     protected static Result<string> GenericResult => Result.Success(string.Empty);
+    protected static Result<string> GenericNotSuccesfulResult => Result.Error<string>("Kaboom");
 
     protected static Task<Result> NonGenericErrorTask => Task.FromResult(Result.Error("Kaboom"));
     protected static Task<Result<string>> GenericErrorTask => Task.FromResult(Result.Error<string>("Kaboom"));
@@ -380,6 +382,22 @@ public class AsyncResultDictionaryBuilderTests
             }
 
             [Fact]
+            public async Task Stops_On_First_Non_Successful_Result()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+
+                // Act
+                sut.AddRange("Test{0}", [NonGenericResult, NonGenericNotSuccesfulResult, NonGenericResult]);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
+            }
+
+            [Fact]
             public void Throws_On_Duplicate_Key()
             {
                 // Arrange
@@ -403,6 +421,22 @@ public class AsyncResultDictionaryBuilderTests
 
                 // Act
                 sut.AddRange("Test{0}", [GenericResult, GenericResult]);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
+            }
+
+            [Fact]
+            public async Task Stops_On_First_Non_Successful_Result()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+
+                // Act
+                sut.AddRange("Test{0}", [GenericResult, GenericNotSuccesfulResult, GenericResult]);
 
                 // Assert
                 var dictionary = await sut.Build();
@@ -780,6 +814,22 @@ public class AsyncResultDictionaryBuilderTests
 
                 // Act
                 sut.AddRange("Test{0}", [GenericResult, GenericResult]);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
+            }
+
+            [Fact]
+            public async Task Stops_On_First_Non_Successful_Result()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+
+                // Act
+                sut.AddRange("Test{0}", [GenericResult, GenericNotSuccesfulResult,  GenericResult]);
 
                 // Assert
                 var dictionary = await sut.Build();
