@@ -242,12 +242,13 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder();
 
                 // Act
-                sut.AddRange("Test", [NonGenericTask]);
+                sut.AddRange("Test{0}", [NonGenericTask, NonGenericTask]);
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
             }
 
             [Fact]
@@ -273,12 +274,13 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder();
 
                 // Act
-                sut.AddRange("Test", [GenericTask]);
+                sut.AddRange("Test{0}", [GenericTask, GenericTask]);
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
             }
 
             [Fact]
@@ -304,12 +306,13 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder();
 
                 // Act
-                sut.AddRange("Test", [NonGenericFunc]);
+                sut.AddRange("Test{0}", [NonGenericFunc, NonGenericFunc]);
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
             }
 
             [Fact]
@@ -335,12 +338,13 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder();
 
                 // Act
-                sut.AddRange("Test", [GenericFunc]);
+                sut.AddRange("Test{0}", [GenericFunc, GenericFunc]);
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
             }
 
             [Fact]
@@ -366,12 +370,13 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder();
 
                 // Act
-                sut.AddRange("Test", [NonGenericResult]);
+                sut.AddRange("Test{0}", [NonGenericResult, NonGenericResult]);
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
             }
 
             [Fact]
@@ -397,12 +402,13 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder();
 
                 // Act
-                sut.AddRange("Test", [GenericResult]);
+                sut.AddRange("Test{0}", [GenericResult, GenericResult]);
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
             }
 
             [Fact]
@@ -428,12 +434,13 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder();
 
                 // Act
-                sut.AddRange("Test", ["some value"]);
+                sut.AddRange("Test{0}", ["some value", "some value"]);
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
             }
 
             [Fact]
@@ -708,12 +715,13 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder<string>();
 
                 // Act
-                sut.AddRange("Test", [GenericTask]);
+                sut.AddRange("Test{0}", [GenericTask, GenericTask]);
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
             }
 
             [Fact]
@@ -739,12 +747,13 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder<string>();
 
                 // Act
-                sut.AddRange("Test", [GenericFunc]);
+                sut.AddRange("Test{0}", [GenericFunc, GenericFunc]);
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
             }
 
             [Fact]
@@ -770,12 +779,13 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder<string>();
 
                 // Act
-                sut.AddRange("Test", [GenericResult]);
+                sut.AddRange("Test{0}", [GenericResult, GenericResult]);
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
             }
 
             [Fact]
@@ -801,12 +811,13 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder<string>();
 
                 // Act
-                sut.AddRange("Test", ["some value"]);
+                sut.AddRange("Test{0}", ["some value", "some value"]);
 
                 // Assert
                 var dictionary = await sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.Count.ShouldBe(2);
+                dictionary.First().Key.ShouldBe("Test0");
+                dictionary.Last().Key.ShouldBe("Test1");
             }
 
             [Fact]

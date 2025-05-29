@@ -69,6 +69,7 @@ public class AsyncResultDictionaryBuilder
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, item);
+            counter++;
         }
 
         return this;
@@ -83,6 +84,7 @@ public class AsyncResultDictionaryBuilder
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, item);
+            counter++;
         }
 
         return this;
@@ -97,6 +99,7 @@ public class AsyncResultDictionaryBuilder
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, item);
+            counter++;
         }
 
         return this;
@@ -111,6 +114,7 @@ public class AsyncResultDictionaryBuilder
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, item);
+            counter++;
         }
 
         return this;
@@ -125,6 +129,12 @@ public class AsyncResultDictionaryBuilder
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, item);
+            // For now, make it fail fast just like TakeWhileWithFirstNonMatching: stop on first error (but it still gets added to the results, so you can simply check for the first error)
+            if (!item.IsSuccessful())
+            {
+                break;
+            }
+            counter++;
         }
 
         return this;
@@ -139,6 +149,12 @@ public class AsyncResultDictionaryBuilder
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, item);
+            // For now, make it fail fast just like TakeWhileWithFirstNonMatching: stop on first error (but it still gets added to the results, so you can simply check for the first error)
+            if (!item.IsSuccessful())
+            {
+                break;
+            }
+            counter++;
         }
 
         return this;
@@ -153,6 +169,7 @@ public class AsyncResultDictionaryBuilder
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, item);
+            counter++;
         }
 
         return this;
@@ -270,6 +287,7 @@ public class AsyncResultDictionaryBuilder<T>
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, item);
+            counter++;
         }
 
         return this;
@@ -284,6 +302,7 @@ public class AsyncResultDictionaryBuilder<T>
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, item);
+            counter++;
         }
 
         return this;
@@ -298,6 +317,12 @@ public class AsyncResultDictionaryBuilder<T>
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, item);
+            // For now, make it fail fast just like TakeWhileWithFirstNonMatching: stop on first error (but it still gets added to the results, so you can simply check for the first error)
+            if (!item.IsSuccessful())
+            {
+                break;
+            }
+            counter++;
         }
 
         return this;
@@ -312,6 +337,7 @@ public class AsyncResultDictionaryBuilder<T>
         {
             var name = string.Format(nameFormatString, counter);
             Add(name, item);
+            counter++;
         }
 
         return this;
