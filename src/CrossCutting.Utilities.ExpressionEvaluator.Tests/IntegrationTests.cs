@@ -756,6 +756,100 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public async Task Can_Perform_Logic_In_Property_Like_We_Do_In_ClassFramework_Untyped()
+    {
+        // Arrange
+        var state = new AsyncResultDictionaryBuilder();
+        var functionParser = Substitute.For<IFunctionParser>();
+        functionParser
+            .Parse(Arg.Any<ExpressionEvaluatorContext>())
+            .Returns(Result.Success(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build()));
+
+        var context = new FunctionCallContext(new DotExpressionComponentState(CreateContext("Dummy()", state), functionParser, Result.Success<object?>("Dummy"), "Dummy", typeof(string)) { Value = "hello" });
+
+        // Act
+        var result = (await new AsyncResultDictionaryBuilder()
+            .Add("instance", context.GetInstanceValueResult<string>())
+            .Build())
+            .OnSuccess(results => results.GetValue<string>("instance"));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("hello");
+    }
+
+    [Fact]
+    public async Task Can_Perform_Logic_In_Property_Like_We_Do_In_ClassFramework_Untyped_On_Error()
+    {
+        // Arrange
+        var state = new AsyncResultDictionaryBuilder();
+        var functionParser = Substitute.For<IFunctionParser>();
+        functionParser
+            .Parse(Arg.Any<ExpressionEvaluatorContext>())
+            .Returns(Result.Success(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build()));
+
+        var context = new FunctionCallContext(new DotExpressionComponentState(CreateContext("Dummy()", state), functionParser, Result.Success<object?>("Dummy"), "Dummy", typeof(string)) { Value = "hello" });
+
+        // Act
+        var result = (await new AsyncResultDictionaryBuilder()
+            .Add("instance", context.GetInstanceValueResult<string>())
+            .Add("error", Result.Error("Kaboom"))
+            .Build())
+            .OnSuccess(results => results.GetValue<string>("instance"));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom");
+    }
+
+    [Fact]
+    public async Task Can_Perform_Logic_In_Property_Like_We_Do_In_ClassFramework_Typed()
+    {
+        // Arrange
+        var state = new AsyncResultDictionaryBuilder();
+        var functionParser = Substitute.For<IFunctionParser>();
+        functionParser
+            .Parse(Arg.Any<ExpressionEvaluatorContext>())
+            .Returns(Result.Success(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build()));
+
+        var context = new FunctionCallContext(new DotExpressionComponentState(CreateContext("Dummy()", state), functionParser, Result.Success<object?>("Dummy"), "Dummy", typeof(string)) { Value = "hello" });
+
+        // Act
+        var result = (await new AsyncResultDictionaryBuilder<object?>()
+            .Add("instance", context.GetInstanceValueResult<string>())
+            .Build())
+            .OnSuccess(results => results.GetValue("instance"));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("hello");
+    }
+
+    [Fact]
+    public async Task Can_Perform_Logic_In_Property_Like_We_Do_In_ClassFramework_Typed_On_Error()
+    {
+        // Arrange
+        var state = new AsyncResultDictionaryBuilder();
+        var functionParser = Substitute.For<IFunctionParser>();
+        functionParser
+            .Parse(Arg.Any<ExpressionEvaluatorContext>())
+            .Returns(Result.Success(new FunctionCallBuilder().WithName("Dummy").WithMemberType(MemberType.Function).Build()));
+
+        var context = new FunctionCallContext(new DotExpressionComponentState(CreateContext("Dummy()", state), functionParser, Result.Success<object?>("Dummy"), "Dummy", typeof(string)) { Value = "hello" });
+
+        // Act
+        var result = (await new AsyncResultDictionaryBuilder<object?>()
+            .Add("instance", context.GetInstanceValueResult<string>())
+            .Add("error", Result.Error<object?>("Kaboom"))
+            .Build())
+            .OnSuccess(results => results.GetValue("instance"));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom");
+    }
+
+    [Fact]
     public async Task Can_Parse_Binary_Operator_Expression()
     {
         // Arrange

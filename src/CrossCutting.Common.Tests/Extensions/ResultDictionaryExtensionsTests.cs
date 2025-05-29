@@ -557,7 +557,7 @@ public class ResultDictionaryExtensionsTests
                 .Build();
 
             // Act
-            var result = sut.GetValue<string>("Step1");
+            var result = sut.GetValue("Step1");
 
             // Assert
             result.ShouldBe("My value");
@@ -678,7 +678,7 @@ public class ResultDictionaryExtensionsTests
                 .Build();
 
             // Act
-            var result = sut.TryGetValue<string>("Step1");
+            var result = sut.TryGetValue("Step1");
 
             // Assert
             result.ShouldBe("My value");
