@@ -52,6 +52,14 @@ public class AsyncResultDictionaryBuilder
         return this;
     }
 
+    public AsyncResultDictionaryBuilder Add<T>(string name, T value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        _resultset.Add(name, Task.Run<Result>(() => Result.Success(value)));
+        return this;
+    }
+
     public AsyncResultDictionaryBuilder AddRange(string nameFormatString, IEnumerable<Task<Result>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
@@ -123,6 +131,20 @@ public class AsyncResultDictionaryBuilder
     }
 
     public AsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Result<T>> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        var counter = 0;
+        foreach (var item in value)
+        {
+            var name = string.Format(nameFormatString, counter);
+            Add(name, item);
+        }
+
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<T> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 

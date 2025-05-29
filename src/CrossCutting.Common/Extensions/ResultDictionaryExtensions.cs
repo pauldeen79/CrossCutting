@@ -34,6 +34,19 @@ public static class ResultDictionaryExtensions
         };
     }
 
+    public static Result<T> OnSuccess<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, Func<IReadOnlyDictionary<string, Result<T>>, T> successDelegate)
+    {
+        successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        var error = resultDictionary.GetError();
+
+        return error switch
+        {
+            not null => error,
+            _ => Result.Success(successDelegate(resultDictionary))
+        };
+    }
+
     public static Result OnSuccess(this IReadOnlyDictionary<string, Result> resultDictionary, Func<IReadOnlyDictionary<string, Result>, Result> successDelegate)
     {
         successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
@@ -57,6 +70,19 @@ public static class ResultDictionaryExtensions
         {
             not null => Result.FromExistingResult<T>(error),
             _ => successDelegate(resultDictionary)
+        };
+    }
+
+    public static Result<T> OnSuccess<T>(this IReadOnlyDictionary<string, Result> resultDictionary, Func<IReadOnlyDictionary<string, Result>, T> successDelegate)
+    {
+        successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        var error = resultDictionary.GetError();
+
+        return error switch
+        {
+            not null => Result.FromExistingResult<T>(error),
+            _ => Result.Success(successDelegate(resultDictionary))
         };
     }
 
