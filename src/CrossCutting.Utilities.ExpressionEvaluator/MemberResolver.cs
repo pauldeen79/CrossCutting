@@ -92,11 +92,11 @@ public class MemberResolver : IMemberResolver
         if (resultType is not null)
         {
             // Validate
-            return instanceType!.IsAssignableFrom(resultType);
+            return instanceType.IsAssignableFrom(resultType);
         }
 
         // Evaluate
-        return instanceType!.IsInstanceOfType(instanceValue);
+        return instanceType.IsInstanceOfType(instanceValue);
     }
 
     private async Task<Result<MemberAndTypeDescriptor>> GetFunctionByDescriptor(FunctionCallContext functionCallContext, MemberDescriptor memberDescriptor, CancellationToken token)
