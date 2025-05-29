@@ -24,7 +24,7 @@ public class ResultStatusExtensionsTests
         var status = ResultStatus.BadGateway;
 
         // Act
-        var result = status.ToTypedResult<string>("Value", "there is a very bad gateway here", exception: new InvalidOperationException("error"));
+        var result = status.ToTypedResult("Value", "there is a very bad gateway here", exception: new InvalidOperationException("error"));
 
         // Assert
         result.Status.ShouldBe(status);
