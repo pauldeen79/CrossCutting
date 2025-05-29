@@ -119,9 +119,7 @@ public class ResultDictionaryBuilder<T>
     }
 
     public ResultDictionaryBuilder<T> AddRange(string nameFormatString, Func<IEnumerable<Result>> value)
-    {
-        return AddRange(nameFormatString, () => value().Select(x => Result.FromExistingResult<T>(x)));
-    }
+        => AddRange(nameFormatString, () => value().Select(x => Result.FromExistingResult<T>(x)));
 
     public IReadOnlyDictionary<string, Result<T>> Build()
     {

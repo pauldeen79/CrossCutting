@@ -7,8 +7,8 @@
     <AnalysisLevel>latest-All</AnalysisLevel>
     <PackageId>pauldeen79.CrossCutting.ProcessingPipeline</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>9.0.10</Version>
-    <PackageVersion>9.0.10</PackageVersion>
+    <Version>9.0.11</Version>
+    <PackageVersion>9.0.11</PackageVersion>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
