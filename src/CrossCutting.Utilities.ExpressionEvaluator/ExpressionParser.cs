@@ -182,11 +182,25 @@ public sealed class ExpressionParser : IExpressionParser
         builder.Append(Previous(state).Value);
         builder.Append(peek.Value);
 
-        while (peek.Type != ExpressionTokenType.RightParenthesis && peek.Type != ExpressionTokenType.EOF)
+        var counter = 1;
+        while (peek.Type != ExpressionTokenType.EOF)
         {
             Advance(state);
             peek = Peek(state);
             builder.Append(peek.Value);
+
+            if (peek.Type == ExpressionTokenType.LeftParenthesis)
+            {
+                counter++;
+            }
+            else if (peek.Type == ExpressionTokenType.RightParenthesis)
+            {
+                counter--;
+                if (counter == 0)
+                {
+                    break;
+                }
+            }
         }
 
         // Also consume the last right parenthesis

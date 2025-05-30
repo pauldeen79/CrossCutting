@@ -4,7 +4,7 @@ public sealed class OtherExpression : IExpression
 {
     private readonly ExpressionEvaluatorContext _context;
 
-    private string Expression { get; }
+    internal string Expression { get; }
 
     public OtherExpression(ExpressionEvaluatorContext context, string expression)
     {

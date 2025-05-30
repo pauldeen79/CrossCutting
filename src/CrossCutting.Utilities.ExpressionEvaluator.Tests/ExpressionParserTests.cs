@@ -555,6 +555,33 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         }
 
         [Fact]
+        public void Returns_Correct_Result_On_Nested_Function()
+        {
+            // Arrange
+            var context = CreateContext("MyFunction(arguments)");
+            var tokens = new List<ExpressionToken>
+            {
+                new ExpressionToken(ExpressionTokenType.Other, "MyFunction"),
+                new ExpressionToken(ExpressionTokenType.LeftParenthesis, "("),
+                new ExpressionToken(ExpressionTokenType.Other, "MyNestedFunction"),
+                new ExpressionToken(ExpressionTokenType.LeftParenthesis, "("),
+                new ExpressionToken(ExpressionTokenType.Other, "arguments"),
+                new ExpressionToken(ExpressionTokenType.RightParenthesis, ")"),
+                new ExpressionToken(ExpressionTokenType.RightParenthesis, ")"),
+                new ExpressionToken(ExpressionTokenType.EOF),
+            };
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Parse(context, tokens);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeOfType<OtherExpression>();
+            ((OtherExpression)result.Value).Expression.ShouldBe("MyFunction(MyNestedFunction(arguments))");
+        }
+
+        [Fact]
         public void Returns_Correct_Result_On_Generic_Function_Without_Arguments()
         {
             // Arrange
