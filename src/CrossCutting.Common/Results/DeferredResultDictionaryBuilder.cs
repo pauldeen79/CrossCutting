@@ -18,6 +18,9 @@ public class DeferredResultDictionaryBuilder
     public DeferredResultDictionaryBuilder Add(string name, object? value)
         => Add(name, () => Result.Success(value));
 
+    public DeferredResultDictionaryBuilder Add(string name, Func<object?> value)
+        => Add(name, () => Result.Success(value()));
+
     public IReadOnlyDictionary<string, Func<Result>> Build()
         => _resultset;
 }
@@ -39,6 +42,9 @@ public class DeferredResultDictionaryBuilder<T>
 
     public DeferredResultDictionaryBuilder<T> Add(string name, T value)
         => Add(name, () => Result.Success(value));
+
+    public DeferredResultDictionaryBuilder<T> Add(string name, Func<T> value)
+        => Add(name, () => Result.Success(value()));
 
     public IReadOnlyDictionary<string, Func<Result<T>>> Build()
         => _resultset;
