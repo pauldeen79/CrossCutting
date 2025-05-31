@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <PackageId>pauldeen79.CrossCutting.Data.Sql</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>6.0.21</Version>
-    <PackageVersion>6.0.21</PackageVersion>
+    <Version>6.0.22</Version>
+    <PackageVersion>6.0.22</PackageVersion>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>

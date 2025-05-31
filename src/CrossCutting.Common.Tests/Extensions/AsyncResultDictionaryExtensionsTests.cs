@@ -2,7 +2,7 @@
 
 public class AsyncResultDictionaryExtensionsTests
 {
-    public class TryGetValueAsync : AsyncResultDictionaryExtensionsTests
+    public class TryCastValueAsync : AsyncResultDictionaryExtensionsTests
     {
         [Fact]
         public async Task Returns_Success_When_Key_Is_Found_And_Type_Is_Correct()
@@ -13,7 +13,7 @@ public class AsyncResultDictionaryExtensionsTests
                 .BuildDeferred();
 
             // Act
-            var result = await sut.TryGetValueAsync<string>("Key");
+            var result = await sut.TryCastValueAsync<string>("Key");
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -29,7 +29,7 @@ public class AsyncResultDictionaryExtensionsTests
                 .BuildDeferred();
 
             // Act
-            var result = await sut.TryGetValueAsync<int>("Key");
+            var result = await sut.TryCastValueAsync<int>("Key");
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -44,7 +44,7 @@ public class AsyncResultDictionaryExtensionsTests
                 .BuildDeferred();
 
             // Act
-            var result = await sut.TryGetValueAsync<int>("WrongKey");
+            var result = await sut.TryCastValueAsync<int>("WrongKey");
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotFound);

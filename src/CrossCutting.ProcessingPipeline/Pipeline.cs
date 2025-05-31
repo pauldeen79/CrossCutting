@@ -13,7 +13,16 @@ public class Pipeline<TRequest> : PipelineBase<TRequest>, IPipeline<TRequest>
 
         var pipelineContext = new PipelineContext<TRequest>(request);
 
-        var results = await Task.WhenAll(Components.Select(x => x.ProcessAsync(pipelineContext, token))).ConfigureAwait(false);
+        var results = new List<Result>();
+        foreach (var component in Components)
+        {
+            var result = await component.ProcessAsync(pipelineContext, token).ConfigureAwait(false);
+            results.Add(result);
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
 
         return Result.Aggregate
         (
@@ -37,7 +46,16 @@ public class Pipeline<TRequest, TResponse> : PipelineBase<TRequest, TResponse>, 
 
         var pipelineContext = new PipelineContext<TRequest, TResponse>(request, seed);
 
-        var results = await Task.WhenAll(Components.Select(x => x.ProcessAsync(pipelineContext, token))).ConfigureAwait(false);
+        var results = new List<Result>();
+        foreach (var component in Components)
+        {
+            var result = await component.ProcessAsync(pipelineContext, token).ConfigureAwait(false);
+            results.Add(result);
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
 
         return Result.Aggregate
         (

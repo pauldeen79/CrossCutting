@@ -71,6 +71,21 @@ public class DeferredResultDictionaryBuilderTests
             }
 
             [Fact]
+            public void Adds_Delegate_Successfully()
+            {
+                // Arrange
+                var sut = new DeferredResultDictionaryBuilder();
+
+                // Act
+                sut.Add("Test", () => new object());
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
             public void Throws_On_Duplicate_Key()
             {
                 // Arrange
@@ -162,6 +177,21 @@ public class DeferredResultDictionaryBuilderTests
 
                 // Act
                 sut.Add("Test", "my content");
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Adds_Delegate_Successfully()
+            {
+                // Arrange
+                var sut = new DeferredResultDictionaryBuilder<string>();
+
+                // Act
+                sut.Add("Test", () => "my content");
 
                 // Assert
                 var dictionary = sut.Build();
