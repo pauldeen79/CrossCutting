@@ -290,7 +290,7 @@ public class AsyncResultDictionaryBuilder<T>
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        _resultset.Add(name, Task.FromResult(Result.Success(value())));
+        _resultset.Add(name, Task.Run(() => Result.Success(value())));
         return this;
     }
 
