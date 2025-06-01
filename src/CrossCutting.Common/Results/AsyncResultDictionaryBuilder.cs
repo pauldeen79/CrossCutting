@@ -60,6 +60,14 @@ public class AsyncResultDictionaryBuilder
         return this;
     }
 
+    public AsyncResultDictionaryBuilder Add<T>(string name, Func<T> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        _resultset.Add(name, Task.Run<Result>(() => Result.Success(value())));
+        return this;
+    }
+
     public AsyncResultDictionaryBuilder AddRange(string nameFormatString, IEnumerable<Task<Result>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
@@ -275,6 +283,14 @@ public class AsyncResultDictionaryBuilder<T>
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
         _resultset.Add(name, Task.FromResult(Result.Success(value)));
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder<T> Add(string name, Func<T> value)
+    {
+        value = ArgumentGuard.IsNotNull(value, nameof(value));
+
+        _resultset.Add(name, Task.FromResult(Result.Success(value())));
         return this;
     }
 

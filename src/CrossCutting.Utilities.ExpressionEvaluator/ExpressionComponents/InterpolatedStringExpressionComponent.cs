@@ -168,7 +168,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent<Generi
     private static async Task<Result<GenericFormattableString>> HandleRecursion(ExpressionEvaluatorContext context, Result<GenericFormattableString> placeholderResult, CancellationToken token)
     {
         string? s = placeholderResult.Value!;
-        if (s?.StartsWith(context.Settings.PlaceholderStart) == true && s.EndsWith(context.Settings.PlaceholderEnd))
+        if (s?.Contains(context.Settings.PlaceholderStart) == true && s.Contains(context.Settings.PlaceholderEnd))
         {
             placeholderResult = await EvaluateRecursiveAsync(s, context, token).ConfigureAwait(false);
         }
