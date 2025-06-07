@@ -174,14 +174,11 @@ public static class TypeExtensions
                     return classFactory(t);
                 }
 
-                if (parameterReplaceDelegate is not null)
+                var replacement = parameterReplaceDelegate?.Invoke(p);
+                if (replacement is not null)
                 {
-                    var returnValue = parameterReplaceDelegate.Invoke(p);
-                    if (returnValue is not null)
-                    {
-                        mocks[p.ParameterType] = returnValue;
-                        return returnValue;
-                    }
+                    mocks[p.ParameterType] = replacement;
+                    return replacement;
                 }
 
                 if (p.ParameterType == typeof(string))
@@ -195,7 +192,7 @@ public static class TypeExtensions
                     mocks[typeof(StringBuilder)] = builder;
                     return builder;
                 }
-                else if (typeof(IEnumerable).IsAssignableFrom(p.ParameterType) || p.ParameterType.IsArray)
+                else if (IsEnumerable(p))
                 {
                     var containedType = GetContainedType(p.ParameterType);
                     var returnValue = CreateGenericList(containedType, classFactory.Invoke(containedType));
@@ -216,6 +213,10 @@ public static class TypeExtensions
                 }
             }
         ).ToArray();
+
+    private static bool IsEnumerable(ParameterInfo p)
+        => typeof(IEnumerable).IsAssignableFrom(p.ParameterType)
+        || p.ParameterType.IsArray;
 
     private static Type GetContainedType(Type type)
     {
