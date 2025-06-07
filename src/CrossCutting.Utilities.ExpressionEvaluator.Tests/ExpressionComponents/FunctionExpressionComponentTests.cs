@@ -2,20 +2,14 @@
 
 public class FunctionExpressionComponentTests : TestBase
 {
-    protected IFunction Function { get; }
-    protected IMemberCallArgumentValidator MemberCallArgumentValidator { get; }
+    protected IFunction Function => Mocks.GetOrCreate<IFunction>(ClassFactory);
+    protected IMemberCallArgumentValidator MemberCallArgumentValidator => Mocks.GetOrCreate<IMemberCallArgumentValidator>(ClassFactory);
 
     protected FunctionExpressionComponent CreateSut(IFunction? function = null)
         => new FunctionExpressionComponent(new FunctionParser(), new MemberResolver(MemberDescriptorProvider, MemberCallArgumentValidator, [function ?? Function]));
 
     protected FunctionExpressionComponent CreateSut(IGenericFunction genericFunction)
         => new FunctionExpressionComponent(new FunctionParser(), new MemberResolver(MemberDescriptorProvider, MemberCallArgumentValidator, [genericFunction]));
-
-    public FunctionExpressionComponentTests()
-    {
-        Function = Substitute.For<IFunction>();
-        MemberCallArgumentValidator = Substitute.For<IMemberCallArgumentValidator>();
-    }
 
     public class EvaluateAsync : FunctionExpressionComponentTests
     {

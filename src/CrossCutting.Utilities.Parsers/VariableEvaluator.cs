@@ -21,7 +21,7 @@ public class VariableEvaluator : IVariableEvaluator
         return _variables
             .Select(x => x.Evaluate(expression, context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid<object?>($"Unknown variable found: {expression}");
+            .WhenNull(ResultStatus.Invalid, $"Unknown variable found: {expression}");
     }
 
     public Result<Type> Validate(string expression, object? context)
@@ -34,6 +34,6 @@ public class VariableEvaluator : IVariableEvaluator
         return _variables
             .Select(x => x.Validate(expression, context))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Invalid<Type>($"Unknown variable found: {expression}");
+            .WhenNull(ResultStatus.Invalid, $"Unknown variable found: {expression}");
     }
 }

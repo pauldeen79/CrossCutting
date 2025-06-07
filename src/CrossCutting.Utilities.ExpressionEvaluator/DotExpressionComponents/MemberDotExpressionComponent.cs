@@ -18,7 +18,10 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
         state = ArgumentGuard.IsNotNull(state, nameof(state));
 
         var context = new FunctionCallContext(state);
-        var result = (await _memberResolver.ResolveAsync(context, token).ConfigureAwait(false)).IgnoreNotFound();
+        var result = (await _memberResolver.ResolveAsync(context, token).ConfigureAwait(false))
+            .EnsureNotNull("MemberResolver.ResolveAsync returned null")
+            .IgnoreNotFound();
+
         if (!result.IsSuccessful() || result.Value is null)
         {
             return result;

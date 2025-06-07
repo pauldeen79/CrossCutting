@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -31,7 +32,7 @@ public static class TypeExtensions
         foreach (var constructor in constructors.Where(c => ShouldProcessConstructor(constructorPredicate, c)))
         {
             var parameters = constructor.GetParameters().ToArray();
-            var mocks = GetMocks(parameters, parameterReplaceDelegate, classFactory);
+            var mocks = GetMocks(new Dictionary<Type, object?>(), parameters, parameterReplaceDelegate, classFactory);
 
             for (var i = 0; i < parameters.Length; i++)
             {
@@ -85,13 +86,40 @@ public static class TypeExtensions
         Func<Type, object?> classFactory,
         Func<ParameterInfo, object?>? parameterReplaceDelegate = null,
         Func<ConstructorInfo, bool>? constructorPredicate = null)
+        => CreateInstance(type, classFactory, new Dictionary<Type, object?>(), parameterReplaceDelegate, constructorPredicate);
+
+    public static object? CreateInstance(
+        this Type type,
+        Func<Type, object?> classFactory,
+        IDictionary<Type, object?> mocks,
+        Func<ParameterInfo, object?>? parameterReplaceDelegate = null,
+        Func<ConstructorInfo, bool>? constructorPredicate = null)
     {
-        if (type.IsInterface)
+        if (mocks.ContainsKey(type))
         {
-            return classFactory.Invoke(type);
+            // Ensure only one instance per type is created, and we don't call the class factory for a second time.
+            var returnValue = mocks[type];
+            if (returnValue is not Type t)
+            {
+                return returnValue;
+            }
+
+            // Mocks dictionary has defined a type mapping, let's use this
+            type = t;
         }
 
-        var constructors = type.GetConstructors().Where(c => ShouldProcessConstructor(constructorPredicate, c)).ToArray();
+        if (type.IsInterface)
+        {
+            var returnValue = classFactory.Invoke(type);
+            mocks[type] = returnValue;
+            return returnValue;
+        }
+
+        var constructors = type
+            .GetConstructors()
+            .Where(c => ShouldProcessConstructor(constructorPredicate, c))
+            .ToArray();
+
         if (constructors.Length == 0)
         {
             // If there are no public constructors, let the DI framework (or manual class factory, whatever) handle this.
@@ -102,11 +130,11 @@ public static class TypeExtensions
         // You can use a constructor predicate to narrow down the available constructors, so you can filter it down to exactly one.
         var constructor = constructors[0];
         var parameters = constructor.GetParameters().ToArray();
-        var mocks = GetMocks(parameters, parameterReplaceDelegate, classFactory);
-        var mocksCopy = mocks.ToArray();
+        var mockInstances = GetMocks(mocks, parameters, parameterReplaceDelegate, classFactory);
+        var mocksCopy = mockInstances.ToArray();
         for (var i = 0; i < parameters.Length; i++)
         {
-            if (parameters[i].ParameterType.IsValueType)
+            if (parameters[i].ParameterType.IsValueType || parameters[i].ParameterType.IsEnum)
             {
                 mocksCopy[i] = Activator.CreateInstance(parameters[i].ParameterType);
             }
@@ -130,38 +158,89 @@ public static class TypeExtensions
         => parameterPredicate is not null
         && !parameterPredicate.Invoke(parameters[i]);
 
-    private static object?[] GetMocks(ParameterInfo[] parameters, Func<ParameterInfo, object?>? parameterReplaceDelegate, Func<Type, object?> classFactory)
+    private static object?[] GetMocks(IDictionary<Type, object?> mocks, ParameterInfo[] parameters, Func<ParameterInfo, object?>? parameterReplaceDelegate, Func<Type, object?> classFactory)
         => parameters.Select
         (
             p =>
             {
-                if (parameterReplaceDelegate is not null)
+                if (mocks.ContainsKey(p.ParameterType))
                 {
-                    var returnValue = parameterReplaceDelegate.Invoke(p);
-                    if (returnValue is not null)
+                    var returnValue = mocks[p.ParameterType];
+                    if (returnValue is not Type t)
                     {
                         return returnValue;
                     }
+
+                    return classFactory(t);
+                }
+
+                var replacement = parameterReplaceDelegate?.Invoke(p);
+                if (replacement is not null)
+                {
+                    mocks[p.ParameterType] = replacement;
+                    return replacement;
                 }
 
                 if (p.ParameterType == typeof(string))
                 {
+                    mocks[typeof(string)] = string.Empty;
                     return string.Empty; // use string.Empty for string arguments, in case they require a null check
                 }
                 else if (p.ParameterType == typeof(StringBuilder))
                 {
-                    return new StringBuilder();
+                    var builder = new StringBuilder();
+                    mocks[typeof(StringBuilder)] = builder;
+                    return builder;
                 }
-                else if (p.ParameterType.IsValueType || p.ParameterType.IsArray)
+                else if (IsEnumerable(p))
                 {
-                    return null; //skip value types and arrays
+                    var containedType = GetContainedType(p.ParameterType);
+                    var returnValue = CreateGenericList(containedType, classFactory.Invoke(containedType));
+                    mocks[containedType] = returnValue;
+                    return returnValue;
+                }
+                else if (p.ParameterType.IsValueType || p.ParameterType.IsEnum)
+                {
+                    var returnValue = default(object?);
+                    mocks[p.ParameterType] = returnValue;
+                    return returnValue; // skip value types and enums, these are not mocked
                 }
                 else
                 {
-                    return classFactory.Invoke(p.ParameterType);
+                    var returnValue = classFactory.Invoke(p.ParameterType);
+                    mocks[p.ParameterType] = returnValue;
+                    return returnValue;
                 }
             }
         ).ToArray();
+
+    private static bool IsEnumerable(ParameterInfo p)
+        => typeof(IEnumerable).IsAssignableFrom(p.ParameterType)
+        || p.ParameterType.IsArray;
+
+    private static Type GetContainedType(Type type)
+    {
+        if (type.IsArray)
+        {
+            return type.GetElementType();
+        }
+
+        return type.GetGenericArguments().FirstOrDefault()
+            ?? throw new InvalidOperationException("Could not determine contained type");
+    }
+
+    private static object CreateGenericList(Type t, object? itemToAdd)
+    {
+        Type listType = typeof(List<>).MakeGenericType(t);
+        var returnValue = Activator.CreateInstance(listType);
+
+        if (itemToAdd is not null)
+        {
+            listType.GetMethod("Add")!.Invoke(returnValue, [itemToAdd]);
+        }
+
+        return returnValue;
+    }
 
     private static void FixStringsAndArrays(ParameterInfo[] parameters, int i, object?[] mocksCopy)
     {

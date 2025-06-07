@@ -2,11 +2,12 @@
 
 public abstract class TestBase
 {
+    protected IDictionary<Type, object?> Mocks { get; }
     protected IExpressionEvaluator Evaluator { get; }
-    protected IExpressionComponent Expression { get; }
-    protected IMemberResolver MemberResolver { get; }
-    protected IMemberDescriptorProvider MemberDescriptorProvider { get; }
-    protected IDateTimeProvider DateTimeProvider { get; }
+    protected IExpressionComponent Expression => Mocks.GetOrCreate<IExpressionComponent>(ClassFactory);
+    protected IMemberResolver MemberResolver => Mocks.GetOrCreate<IMemberResolver>(ClassFactory);
+    protected IMemberDescriptorProvider MemberDescriptorProvider => Mocks.GetOrCreate<IMemberDescriptorProvider>(ClassFactory);
+    protected IDateTimeProvider DateTimeProvider => Mocks.GetOrCreate<IDateTimeProvider>(ClassFactory);
     protected DateTime CurrentDateTime { get; }
 
     protected ExpressionEvaluatorContext CreateContext(
@@ -47,23 +48,30 @@ public abstract class TestBase
 
     protected TestBase()
     {
-        // Initialize expression
-        Expression = Substitute.For<IExpressionComponent>();
-        // Note that you have to setup EvaluateAsync and ValidateAsync yourself
+        Mocks = new Dictionary<Type, object?>
+        {
+            { typeof(IExpressionEvaluator), typeof(ExpressionEvaluator) },
+            { typeof(IExpressionTokenizer), typeof(ExpressionTokenizer) },
+            { typeof(IExpressionParser), typeof(ExpressionParser) },
+            { typeof(IFunctionParser), typeof(FunctionParser) },
+        };
 
         Evaluator = new ExpressionEvaluatorMock(Expression);
 
-        MemberResolver = Substitute.For<IMemberResolver>();
-        // Note that you have to setup ResolveAsync yourself
-
-        MemberDescriptorProvider = Substitute.For<IMemberDescriptorProvider>();
-        // Note that you have to setup GetAll yourself
+        // Note that you have to setup EvaluateAsync and ValidateAsync on Expression yourself
+        // Note that you have to setup ResolveAsync om MemberResolver yourself
+        // Note that you have to setup GetAll on MemberDescriptorProvider yourself
 
         // Freeze DateTime.Now to a predicatable value
-        DateTimeProvider = Substitute.For<IDateTimeProvider>();
-        CurrentDateTime =  new DateTime(2025, 2, 1, 5, 30, 0, DateTimeKind.Utc);
-        DateTimeProvider.GetCurrentDateTime().Returns(CurrentDateTime);
+        CurrentDateTime = new DateTime(2025, 2, 1, 5, 30, 0, DateTimeKind.Utc);
+        DateTimeProvider
+            .GetCurrentDateTime()
+            .Returns(CurrentDateTime);
     }
+
+    // Class factory for NSubstitute, see Readme.md
+    protected object? ClassFactory(Type t)
+        => t.CreateInstance(parameterType => Substitute.For([parameterType], []), Mocks, null, null);
 
     // Test stub for expression evaluation, that supports strings, integers, long integers, decimals, booleans and DeteTimes (by using TryParse), as well as the context and null keywords
     internal sealed class ExpressionEvaluatorMock : IExpressionEvaluator
@@ -201,22 +209,18 @@ public abstract class TestBase
 
 public abstract class TestBase<T> : TestBase
 {
-    protected T CreateSut() => Testing.CreateInstance<T>(ClassFactory, p =>
+    protected T CreateSut() => Testing.CreateInstance<T>(ClassFactory, Mocks, p =>
     {
-        if (p.ParameterType == typeof(IExpressionEvaluator)) return new ExpressionEvaluator(new ExpressionTokenizer(), new ExpressionParser(), [Expression]);
-        if (p.ParameterType == typeof(IExpressionTokenizer)) return new ExpressionTokenizer();
-        if (p.ParameterType == typeof(IExpressionParser)) return new ExpressionParser();
-        if (p.ParameterType == typeof(IFunctionParser)) return new FunctionParser();
-        if (p.ParameterType == typeof(IDateTimeProvider)) return DateTimeProvider;
-        if (p.ParameterType == typeof(IExpressionComponent)) return Expression;
-        if (p.ParameterType == typeof(IMemberResolver)) return MemberResolver;
-        if (p.ParameterType == typeof(IMemberDescriptorProvider)) return MemberDescriptorProvider;
-        if (p.ParameterType == typeof(IEnumerable<IExpressionComponent>)) return new IExpressionComponent[] { Expression };
-        if (p.ParameterType == typeof(IEnumerable<IDotExpressionComponent>)) return new IDotExpressionComponent[] { new ReflectionMethodDotExpressionComponent(), new ReflectionPropertyDotExpressionComponent() };
+        // Use real implementations for internal types
+        if (p.ParameterType == typeof(IEnumerable<IDotExpressionComponent>))
+        {
+            return new IDotExpressionComponent[]
+            {
+                new ReflectionMethodDotExpressionComponent(),
+                new ReflectionPropertyDotExpressionComponent()
+            };
+        }
+
         return null;
     })!;
-
-    // Class factory for NSubstitute, see Readme.md
-    private static object? ClassFactory(Type t)
-        => t.CreateInstance(parameterType => Substitute.For([parameterType], []), null, null);
 }
