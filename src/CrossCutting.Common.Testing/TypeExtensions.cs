@@ -95,12 +95,24 @@ public static class TypeExtensions
         Func<ParameterInfo, object?>? parameterReplaceDelegate = null,
         Func<ConstructorInfo, bool>? constructorPredicate = null)
     {
-        if (type.IsInterface)
+        if (mocks.ContainsKey(type))
         {
-            return classFactory.Invoke(type);
+            // Ensure only one instance per type is created, and we don't call the class factory for a second time.
+            return mocks[type];
         }
 
-        var constructors = type.GetConstructors().Where(c => ShouldProcessConstructor(constructorPredicate, c)).ToArray();
+        if (type.IsInterface)
+        {
+            var returnValue = classFactory.Invoke(type);
+            mocks[type] = returnValue;
+            return returnValue;
+        }
+
+        var constructors = type
+            .GetConstructors()
+            .Where(c => ShouldProcessConstructor(constructorPredicate, c))
+            .ToArray();
+
         if (constructors.Length == 0)
         {
             // If there are no public constructors, let the DI framework (or manual class factory, whatever) handle this.
@@ -115,7 +127,7 @@ public static class TypeExtensions
         var mocksCopy = mockInstances.ToArray();
         for (var i = 0; i < parameters.Length; i++)
         {
-            if (parameters[i].ParameterType.IsValueType)
+            if (parameters[i].ParameterType.IsValueType || parameters[i].ParameterType.IsEnum)
             {
                 mocksCopy[i] = Activator.CreateInstance(parameters[i].ParameterType);
             }
@@ -144,6 +156,11 @@ public static class TypeExtensions
         (
             p =>
             {
+                if (mocks.ContainsKey(p.ParameterType))
+                {
+                    return mocks[p.ParameterType];
+                }
+
                 if (parameterReplaceDelegate is not null)
                 {
                     var returnValue = parameterReplaceDelegate.Invoke(p);
@@ -174,9 +191,9 @@ public static class TypeExtensions
                 }
                 else if (p.ParameterType.IsValueType || p.ParameterType.IsEnum)
                 {
-                    var returnValue = Activator.CreateInstance(p.ParameterType);
+                    var returnValue = default(object?);
                     mocks[p.ParameterType] = returnValue;
-                    return returnValue; //set default value for value types and enums, i.e. 0 for integer
+                    return returnValue; // skip value types and enums, these are not mocked
                 }
                 else
                 {
@@ -194,15 +211,6 @@ public static class TypeExtensions
             return type.GetElementType();
         }
 
-        // Find IEnumerable<T>
-        //var enumerableInterface = type
-        //    .GetInterfaces()
-        //    .FirstOrDefault(i =>
-        //        i.IsGenericType &&
-        //        i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
-
-        //return enumerableInterface?.GetGenericArguments().FirstOrDefault()
-        //    ?? throw new InvalidOperationException("Could not determine contained type");
         return type.GetGenericArguments().FirstOrDefault()
             ?? throw new InvalidOperationException("Could not determine contained type");
     }
