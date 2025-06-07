@@ -177,13 +177,11 @@ public static class TypeExtensions
                 var replacement = parameterReplaceDelegate?.Invoke(p);
                 if (replacement is not null)
                 {
-                    mocks[p.ParameterType] = replacement;
                     return replacement;
                 }
 
                 if (p.ParameterType == typeof(string))
                 {
-                    mocks[typeof(string)] = string.Empty;
                     return string.Empty; // use string.Empty for string arguments, in case they require a null check
                 }
                 else if (p.ParameterType == typeof(StringBuilder))
@@ -215,7 +213,7 @@ public static class TypeExtensions
         ).ToArray();
 
     private static bool IsEnumerable(ParameterInfo p)
-        => typeof(IEnumerable).IsAssignableFrom(p.ParameterType)
+        => (p.ParameterType != typeof(string) && typeof(IEnumerable).IsAssignableFrom(p.ParameterType))
         || p.ParameterType.IsArray;
 
     private static Type GetContainedType(Type type)
