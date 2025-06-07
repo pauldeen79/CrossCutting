@@ -186,6 +186,7 @@ dotnet_diagnostic.S3776.severity = none # cognitive complexity
 dotnet_diagnostic.CA1308.severity = none # Normalize strings to uppercase
 dotnet_diagnostic.S2325.severity = none # Methods and properties that don't access instance data should be static
 dotnet_diagnostic.CA1502.severity = none # Cognitive complexity
+dotnet_diagnostic.CA1711.severity = none # Members should not end with 'Exception'
 
 ###############################
 # VB Coding Conventions       #

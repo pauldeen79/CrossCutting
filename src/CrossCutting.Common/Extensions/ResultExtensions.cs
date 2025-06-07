@@ -313,4 +313,14 @@ public static class ResultExtensions
 
         return instance;
     }
+
+    public static Result Wrap(this Result instance, string errorMessage)
+        => instance.IsSuccessful()
+            ? instance
+            : new Result(instance.Status, errorMessage, [], [instance], null);
+
+    public static Result<T> Wrap<T>(this Result<T> instance, string errorMessage)
+        => instance.IsSuccessful()
+            ? instance
+            : new Result<T>(instance.Value, instance.Status, errorMessage, [], [instance], null);
 }
