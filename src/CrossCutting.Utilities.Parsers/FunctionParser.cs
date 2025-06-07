@@ -118,7 +118,7 @@ public class FunctionParser : IFunctionParser
         => _nameProcessors
             .Select(x => x.Process(input))
             .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.NotFound<FunctionNameAndTypeArguments>("No function name found");
+            .WhenNull(ResultStatus.NotFound, "No function name found");
 
     private static string RemoveStringQualifiers(string value)
     {

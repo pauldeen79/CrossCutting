@@ -13,7 +13,13 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
             return Result.Continue<object?>();
         }
 
-        var functionCall = state.FunctionParseResult.GetValueOrThrow();
+        var result = state.FunctionParseResult.EnsureValue();
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
+
+        var functionCall = state.FunctionParseResult.Value!;
         var methods = state.Value.GetType()
             .GetMethods(BindingFlags.Instance | BindingFlags.Public)
             .Where(x => x.Name == functionCall.Name && x.GetParameters().Length == functionCall.Arguments.Count)

@@ -68,7 +68,9 @@ public sealed class DotExpressionComponentState
         {
             if (_functionParseResult is null)
             {
-                _functionParseResult = _functionParser.Parse(Context.CreateChildContext(_part.IndexOf('(') == -1 ? $"{_part}()" : _part));
+                _functionParseResult = _functionParser
+                    .Parse(Context.CreateChildContext(_part.IndexOf('(') == -1 ? $"{_part}()" : _part))
+                    .EnsureNotNull("FunctionParser.Parse returned null");
             }
 
             return _functionParseResult;
