@@ -15,7 +15,7 @@ internal static class Program
             _ => Path.Combine(currentDirectory, @"../../../../")
         };
         var services = new ServiceCollection()
-            .AddParsers()
+            .AddExpressionEvaluator()
             .AddClassFrameworkPipelines()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()

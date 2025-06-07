@@ -17,7 +17,7 @@ public class MyAssemblyInfoContextService : IAssemblyInfoContextService
         "CrossCutting.ProcessingPipeline",
         "CrossCutting.Utilities.Aggregators",
         "CrossCutting.Utilities.Operators",
-        "CrossCutting.Utilities.Parsers",
+        "CrossCutting.Utilities.ExpressionEvaluator",
         "Microsoft.Extensions.DependencyInjection",
         "Microsoft.Extensions.DependencyInjection.Abstractions",
         "ClassFramework.CsharpExpressionCreator",
@@ -27,7 +27,5 @@ public class MyAssemblyInfoContextService : IAssemblyInfoContextService
         "CsharpExpressionDumper.Abstractions",
         "CsharpExpressionDumper.Core",
         "CrossCutting.CodeGeneration",
-        "ExpressionFramework.Domain",
-        "ExpressionFramework.Domain.Specialized",
     ];
 }
