@@ -878,4 +878,188 @@ public class ResultExtensionTests
             result.InnerResults.First().Status.ShouldBe(ResultStatus.Error);
         }
     }
+
+    public class EnsureNotNull_Untyped : ResultExtensionTests
+    {
+        [Fact]
+        public void Returns_New_Result_When_Result_Is_Null_Default_ErrorMessage()
+        {
+            // Arrange
+            var sut = default(Result)!;
+
+            // Act
+            var result = sut.EnsureNotNull();
+
+            // Arrange
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Result is null");
+        }
+
+        [Fact]
+        public void Returns_New_Result_When_Result_Is_Null_Custom_ErrorMessage()
+        {
+            // Arrange
+            var sut = default(Result)!;
+
+            // Act
+            var result = sut.EnsureNotNull("custom");
+
+            // Arrange
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("custom");
+        }
+
+        [Fact]
+        public void Returns_Same_Result_When_Result_Is_Not_Null()
+        {
+            // Arrange
+            var sut = Result.Continue();
+
+            // Act
+            var result = sut.EnsureNotNull();
+
+            // Arrange
+            result.ShouldBeSameAs(sut);
+        }
+    }
+
+    public class EnsureNotNull_Typed : ResultExtensionTests
+    {
+        [Fact]
+        public void Returns_New_Result_When_Result_Is_Null_Default_ErrorMessage()
+        {
+            // Arrange
+            var sut = default(Result<string>)!;
+
+            // Act
+            var result = sut.EnsureNotNull();
+
+            // Arrange
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Result is null");
+        }
+
+        [Fact]
+        public void Returns_New_Result_When_Result_Is_Null_Custom_ErrorMessage()
+        {
+            // Arrange
+            var sut = default(Result<string>)!;
+
+            // Act
+            var result = sut.EnsureNotNull("custom");
+
+            // Arrange
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("custom");
+        }
+
+        [Fact]
+        public void Returns_Same_Result_When_Result_Is_Not_Null()
+        {
+            // Arrange
+            var sut = Result.Continue<string>();
+
+            // Act
+            var result = sut.EnsureNotNull();
+
+            // Arrange
+            result.ShouldBeSameAs(sut);
+        }
+    }
+
+    public class WhenNull_Untyped : ResultExtensionTests
+    {
+        [Fact]
+        public void Returns_New_Result_When_Result_Is_Null_Default_ErrorMessage()
+        {
+            // Arrange
+            var sut = default(Result)!;
+
+            // Act
+            var result = sut.WhenNull(ResultStatus.Invalid);
+
+            // Arrange
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Result is null");
+        }
+
+        [Fact]
+        public void Returns_New_Result_When_Result_Is_Null_Custom_ErrorMessage()
+        {
+            // Arrange
+            var sut = default(Result)!;
+
+            // Act
+            var result = sut.WhenNull(ResultStatus.Invalid, "custom");
+
+            // Arrange
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("custom");
+        }
+
+        [Fact]
+        public void Returns_Same_Result_When_Result_Is_Not_Null()
+        {
+            // Arrange
+            var sut = Result.Continue();
+
+            // Act
+            var result = sut.WhenNull(ResultStatus.Invalid);
+
+            // Arrange
+            result.ShouldBeSameAs(sut);
+        }
+    }
+
+    public class WhenNull_Typed : ResultExtensionTests
+    {
+        [Fact]
+        public void Returns_New_Result_When_Result_Is_Null_Default_ErrorMessage()
+        {
+            // Arrange
+            var sut = default(Result<string>)!;
+
+            // Act
+            var result = sut.WhenNull(ResultStatus.Invalid);
+
+            // Arrange
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Result is null");
+        }
+
+        [Fact]
+        public void Returns_New_Result_When_Result_Is_Null_Custom_ErrorMessage()
+        {
+            // Arrange
+            var sut = default(Result<string>)!;
+
+            // Act
+            var result = sut.WhenNull(ResultStatus.Invalid, "custom");
+
+            // Arrange
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("custom");
+        }
+
+        [Fact]
+        public void Returns_Same_Result_When_Result_Is_Not_Null()
+        {
+            // Arrange
+            var sut = Result.Continue<string>();
+
+            // Act
+            var result = sut.WhenNull(ResultStatus.Invalid);
+
+            // Arrange
+            result.ShouldBeSameAs(sut);
+        }
+    }
 }

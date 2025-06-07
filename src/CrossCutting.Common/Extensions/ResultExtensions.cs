@@ -2,6 +2,8 @@
 
 public static class ResultExtensions
 {
+    private const string NullResultErrorMessage = "Result is null";
+
     public static void Either<T>(this T instance, Action<T> errorDelegate, Action<T> successDelegate)
         where T : Result
     {
@@ -323,4 +325,44 @@ public static class ResultExtensions
         => instance.IsSuccessful()
             ? instance
             : new Result<T>(instance.Value, instance.Status, errorMessage, [], [instance], null);
+
+    public static Result EnsureNotNull(this Result instance, string? errorMessage = null)
+    {
+        if (instance is null)
+        {
+            return Result.Error(errorMessage ?? NullResultErrorMessage);
+        }
+
+        return instance;
+    }
+
+    public static Result<T> EnsureNotNull<T>(this Result<T> instance, string? errorMessage = null)
+    {
+        if (instance is null)
+        {
+            return Result.Error<T>(errorMessage ?? NullResultErrorMessage);
+        }
+
+        return instance;
+    }
+
+    public static Result WhenNull(this Result instance, ResultStatus status, string? errorMessage = null)
+    {
+        if (instance is null)
+        {
+            return status.ToResult(errorMessage ?? NullResultErrorMessage);
+        }
+
+        return instance;
+    }
+
+    public static Result<T> WhenNull<T>(this Result<T> instance, ResultStatus status, string? errorMessage = null)
+    {
+        if (instance is null)
+        {
+            return status.ToTypedResult(default(T), errorMessage ?? NullResultErrorMessage);
+        }
+
+        return instance;
+    }
 }

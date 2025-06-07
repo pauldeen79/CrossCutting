@@ -51,7 +51,8 @@ public class ResultDictionaryBuilder
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                result = item.Value(results);
+                result = item.Value(results)
+                    .EnsureNotNull($"Result instance for item with key {item.Key} is null");
             }
             catch (Exception ex)
             {
@@ -131,7 +132,8 @@ public class ResultDictionaryBuilder<T>
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                result = item.Value(results);
+                result = item.Value(results)
+                    .EnsureNotNull($"Result instance for item with key {item.Key} is null");
             }
             catch (Exception ex)
             {
