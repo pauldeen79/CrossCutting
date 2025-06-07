@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace CrossCutting.Common.Testing;
 
+[ExcludeFromCodeCoverage]
 public static class Testing
 {
     public static T CreateInstance<T>(
