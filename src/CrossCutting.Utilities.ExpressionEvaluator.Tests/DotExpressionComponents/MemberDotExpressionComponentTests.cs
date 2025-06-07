@@ -2,12 +2,7 @@
 
 public class MemberDotExpressionComponentTests : TestBase<MemberDotExpressionComponent>
 {
-    protected IFunctionParser FunctionParser { get; }
-
-    public MemberDotExpressionComponentTests()
-    {
-        FunctionParser = Substitute.For<IFunctionParser>();
-    }
+    protected IFunctionParser FunctionParser => Mocks.GetOrCreate<IFunctionParser>(ClassFactory);
 
     public class EvaluateAsync : MemberDotExpressionComponentTests
     {

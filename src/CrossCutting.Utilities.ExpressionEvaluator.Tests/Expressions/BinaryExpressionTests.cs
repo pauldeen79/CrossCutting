@@ -2,11 +2,10 @@
 
 public class BinaryExpressionTests : TestBase
 {
-    protected IExpression Operator { get; }
+    protected IExpression Operator => Mocks.GetOrCreate<IExpression>(ClassFactory);
 
     public BinaryExpressionTests()
     {
-        Operator = Substitute.For<IExpression>();
         Operator
             .EvaluateAsync(CancellationToken.None)
             .Returns(Result.NoContent<object?>());

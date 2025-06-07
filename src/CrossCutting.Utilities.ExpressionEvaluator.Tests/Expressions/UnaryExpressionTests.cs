@@ -2,12 +2,7 @@
 
 public class UnaryExpressionTests : TestBase
 {
-    protected IExpression Operand { get; }
-
-    public UnaryExpressionTests()
-    {
-        Operand = Substitute.For<IExpression>();
-    }
+    protected IExpression Operand => Mocks.GetOrCreate<IExpression>(ClassFactory);
 
     public class EvaluateAsync : UnaryExpressionTests
     {
