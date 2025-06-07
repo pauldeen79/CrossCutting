@@ -98,7 +98,14 @@ public static class TypeExtensions
         if (mocks.ContainsKey(type))
         {
             // Ensure only one instance per type is created, and we don't call the class factory for a second time.
-            return mocks[type];
+            var returnValue = mocks[type];
+            if (returnValue is not Type t)
+            {
+                return returnValue;
+            }
+
+            // Mocks dictionary has defined a type mapping, let's use this
+            type = t;
         }
 
         if (type.IsInterface)
@@ -158,7 +165,13 @@ public static class TypeExtensions
             {
                 if (mocks.ContainsKey(p.ParameterType))
                 {
-                    return mocks[p.ParameterType];
+                    var returnValue = mocks[p.ParameterType];
+                    if (returnValue is not Type t)
+                    {
+                        return returnValue;
+                    }
+
+                    return classFactory(t);
                 }
 
                 if (parameterReplaceDelegate is not null)

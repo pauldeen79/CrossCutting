@@ -48,7 +48,13 @@ public abstract class TestBase
 
     protected TestBase()
     {
-        Mocks = new Dictionary<Type, object?>();
+        Mocks = new Dictionary<Type, object?>
+        {
+            { typeof(IExpressionEvaluator), typeof(ExpressionEvaluator) },
+            { typeof(IExpressionTokenizer), typeof(ExpressionTokenizer) },
+            { typeof(IExpressionParser), typeof(ExpressionParser) },
+            { typeof(IFunctionParser), typeof(FunctionParser) },
+        };
 
         Evaluator = new ExpressionEvaluatorMock(Expression);
 
@@ -206,23 +212,7 @@ public abstract class TestBase<T> : TestBase
     protected T CreateSut() => Testing.CreateInstance<T>(ClassFactory, Mocks, p =>
     {
         // Use real implementations for internal types
-        if (p.ParameterType == typeof(IExpressionEvaluator))
-        {
-            return ClassFactory(typeof(ExpressionEvaluator));
-        }
-        else if (p.ParameterType == typeof(IExpressionTokenizer))
-        {
-            return ClassFactory(typeof(ExpressionTokenizer));
-        }
-        else if (p.ParameterType == typeof(IExpressionParser))
-        {
-            return ClassFactory(typeof(ExpressionParser));
-        }
-        else if (p.ParameterType == typeof(IFunctionParser))
-        {
-            return ClassFactory(typeof(FunctionParser));
-        }
-        else if (p.ParameterType == typeof(IEnumerable<IDotExpressionComponent>))
+        if (p.ParameterType == typeof(IEnumerable<IDotExpressionComponent>))
         {
             return new IDotExpressionComponent[]
             {

@@ -4,6 +4,12 @@ public class ReflectionMethodDotExpressionComponentTests : TestBase<ReflectionMe
 {
     protected IFunctionParser FunctionParser => Mocks.GetOrCreate<IFunctionParser>(ClassFactory);
 
+    public ReflectionMethodDotExpressionComponentTests() : base()
+    {
+        // replace the real functionparser, so we can control its behavior
+        Mocks[typeof(IFunctionParser)] = Substitute.For<IFunctionParser>();
+    }
+
     public class EvaluateAsync : ReflectionMethodDotExpressionComponentTests
     {
         [Fact]

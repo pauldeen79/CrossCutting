@@ -11,7 +11,14 @@ public static class DictionaryExtensions
     {
         if (instance.ContainsKey(typeof(T)))
         {
-            return (T)instance[typeof(T)]!;
+            var returnValue = instance[typeof(T)]!;
+            if (returnValue is not Type t)
+            {
+                return (T)returnValue;
+            }
+
+            return (T?)classFactory(t)
+                ?? throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
         }
 
         var newInstance = Testing.CreateInstance<T>(classFactory, instance)
