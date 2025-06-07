@@ -58,11 +58,14 @@ public abstract class TestBase
 
         // Freeze DateTime.Now to a predicatable value
         CurrentDateTime = new DateTime(2025, 2, 1, 5, 30, 0, DateTimeKind.Utc);
+        DateTimeProvider
+            .GetCurrentDateTime()
+            .Returns(CurrentDateTime);
     }
 
     // Class factory for NSubstitute, see Readme.md
-    protected static object? ClassFactory(Type t)
-        => t.CreateInstance(parameterType => Substitute.For([parameterType], []), null, null);
+    protected object? ClassFactory(Type t)
+        => t.CreateInstance(parameterType => Substitute.For([parameterType], []), Mocks, null, null);
 
     // Test stub for expression evaluation, that supports strings, integers, long integers, decimals, booleans and DeteTimes (by using TryParse), as well as the context and null keywords
     internal sealed class ExpressionEvaluatorMock : IExpressionEvaluator
@@ -205,23 +208,19 @@ public abstract class TestBase<T> : TestBase
         // Use real implementations for internal types
         if (p.ParameterType == typeof(IExpressionEvaluator))
         {
-            return new ExpressionEvaluator(new ExpressionTokenizer(), new ExpressionParser(), [Expression]);
+            return ClassFactory(typeof(ExpressionEvaluator));
         }
         else if (p.ParameterType == typeof(IExpressionTokenizer))
         {
-            return new ExpressionTokenizer();
+            return ClassFactory(typeof(ExpressionTokenizer));
         }
         else if (p.ParameterType == typeof(IExpressionParser))
         {
-            return new ExpressionParser();
+            return ClassFactory(typeof(ExpressionParser));
         }
         else if (p.ParameterType == typeof(IFunctionParser))
         {
-            return new FunctionParser();
-        }
-        else if (p.ParameterType == typeof(IEnumerable<IExpressionComponent>))
-        {
-            return new IExpressionComponent[] { Expression };
+            return ClassFactory(typeof(FunctionParser));
         }
         else if (p.ParameterType == typeof(IEnumerable<IDotExpressionComponent>))
         {
@@ -230,14 +229,6 @@ public abstract class TestBase<T> : TestBase
                 new ReflectionMethodDotExpressionComponent(),
                 new ReflectionPropertyDotExpressionComponent()
             };
-        }
-
-        // Mock system datetime
-        if (p.ParameterType == typeof(IDateTimeProvider))
-        {
-            var provider = Substitute.For<IDateTimeProvider>();
-            provider.GetCurrentDateTime().Returns(CurrentDateTime);
-            return provider;
         }
 
         return null;
