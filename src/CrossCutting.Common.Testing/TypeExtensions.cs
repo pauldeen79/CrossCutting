@@ -108,6 +108,12 @@ public static class TypeExtensions
             type = t;
         }
 
+        if (type == typeof(string))
+        {
+            // Special case for string: don't try construction with char array, just supply an empty string
+            return string.Empty;
+        }
+
         if (type.IsInterface)
         {
             var returnValue = classFactory.Invoke(type);
