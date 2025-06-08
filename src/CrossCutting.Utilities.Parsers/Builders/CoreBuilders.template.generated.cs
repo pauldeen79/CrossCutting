@@ -136,7 +136,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
         public ExpressionStringEvaluatorSettingsBuilder()
         {
             _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
-            _validateArgumentTypes = ;
+            _validateArgumentTypes = true;
             SetDefaultValues();
         }
 
@@ -293,7 +293,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
             _placeholderStart = string.Empty;
             _placeholderEnd = string.Empty;
             _escapeBraces = true;
-            _maximumRecursion = ;
+            _maximumRecursion = 10;
             SetDefaultValues();
         }
 
@@ -1102,7 +1102,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
         public FunctionEvaluatorSettingsBuilder()
         {
             _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
-            _validateArgumentTypes = ;
+            _validateArgumentTypes = true;
             SetDefaultValues();
         }
 
@@ -1183,7 +1183,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
         public PlaceholderSettingsBuilder()
         {
             _formatProvider = System.Globalization.CultureInfo.InvariantCulture!;
-            _validateArgumentTypes = ;
+            _validateArgumentTypes = true;
             SetDefaultValues();
         }
 
