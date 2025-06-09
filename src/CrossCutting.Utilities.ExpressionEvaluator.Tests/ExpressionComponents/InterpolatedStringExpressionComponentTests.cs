@@ -202,7 +202,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
         }
 
         [Fact]
-        public async Task Returns_All_Errors_On_Non_Successful_Expressions()
+        public async Task Breaks_On_First_Error_On_Non_Successful_Expression()
         {
             // Arrange
             var sut = CreateSut();
@@ -213,7 +213,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Validation failed, see part results for more details");
-            result.PartResults.Count.ShouldBe(3);
+            result.PartResults.Count.ShouldBe(1);
         }
 
         [Fact]

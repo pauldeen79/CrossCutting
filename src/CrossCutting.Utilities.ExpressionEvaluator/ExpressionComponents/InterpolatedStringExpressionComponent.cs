@@ -129,10 +129,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent<Generi
                 }
 
                 results.Add(Result.FromExistingResult<GenericFormattableString>(placeholderResult));
-                remainder = remainder.Substring(0, placeholderSignsResult.Value.openIndex)
-                    + $"{TemporaryDelimiter}{results.Count}{TemporaryDelimiter}"
-                    + remainder.Substring(placeholderSignsResult.Value.closeIndex + context.Settings.PlaceholderEnd.Length);
-                continue;
+                break;
             }
 
             placeholderResult = await HandleRecursion(context, placeholderResult, token).ConfigureAwait(false);
