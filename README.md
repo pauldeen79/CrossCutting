@@ -6,7 +6,7 @@ This repository consists of the following packages:
 | Package name                               | Description                                                                                                                                                                              |
 | :----------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | CrossCutting.Common                        | Provider for system date and user name, some useful extension methods on System.Object and System.String, and the Result class                                                           |
-| CrossCutting.Common.Testing                | Helps you test constructors on null checks                                                                                                                                               |
+| CrossCutting.Common.Testing                | Helps you test constructors on null checks, and construct instances with mocks                                                                                                           |
 | CrossCutting.Data.Abstractions             | Abstraction for executing database commands using System.Data namespace (IDbConnection and IDbCommand)                                                                                   |
 | CrossCutting.Data.Core                     | Default implementation of database commands                                                                                                                                              |
 | CrossCutting.Data.Sql                      | Extension methods for working with database commands in System.Data namespace (IDbConnection)                                                                                            |
@@ -69,7 +69,7 @@ There have been some breaking changes.
 
 The ExpressionEvaluator is a complete rewrite of the Parsers project, where and Expression is the entry type for everything. An expression can contain the following things:
 * Strings, like "hello world"
-* Interpolated strings, like "hello {name}"
+* Interpolated strings, like $"hello {name}"
 * Booleans "true" and "false"
 * Constructors like "new DateTime(2025, 1 ,1)"
 * DateTime.Now and DateTime.Today, as well as the Date and DateTime functions to create a custom DateTime value
