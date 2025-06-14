@@ -3,16 +3,16 @@
 [ExcludeFromCodeCoverage]
 public class OverrideBuilders(IPipelineService pipelineService) : CrossCuttingCSharpClassBase(pipelineService)
 {
-    public override string Path => CrossCutting.CodeGeneration.Constants.Paths.FunctionCallArgumentBuilders;
+    public override string Path => Constants.Paths.FunctionCallArgumentBuilders;
 
     protected override bool EnableEntityInheritance => true;
     protected override bool CreateAsObservable => true;
-    protected override Task<Result<TypeBase>> GetBaseClass() => CreateBaseClass(typeof(IFunctionCallArgumentBase), CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsers);
-    protected override string BaseClassBuilderNamespace => CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsersBuilders;
+    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IFunctionCallArgumentBase), Constants.Namespaces.UtilitiesParsers);
+    protected override string BaseClassBuilderNamespace => Constants.Namespaces.UtilitiesParsersBuilders;
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
-        => GetBuilders(
-            GetOverrideModels(typeof(IFunctionCallArgumentBase)),
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+        => GetBuildersAsync(
+            GetOverrideModelsAsync(typeof(IFunctionCallArgumentBase)),
             CurrentNamespace,
-            CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsersFunctionCallArguments);
+            Constants.Namespaces.UtilitiesParsersFunctionCallArguments);
 }

@@ -3,11 +3,11 @@
 [ExcludeFromCodeCoverage]
 public class OverrideEntities(IPipelineService pipelineService) : CrossCuttingCSharpClassBase(pipelineService)
 {
-    public override string Path => CrossCutting.CodeGeneration.Constants.Paths.FunctionCallTypeArguments;
+    public override string Path => Constants.Paths.FunctionCallTypeArguments;
 
     protected override bool EnableEntityInheritance => true;
-    protected override Task<Result<TypeBase>> GetBaseClass() => CreateBaseClass(typeof(IFunctionCallTypeArgumentBase), CrossCutting.CodeGeneration.Constants.Namespaces.UtilitiesParsers);
+    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IFunctionCallTypeArgumentBase), Constants.Namespaces.UtilitiesParsers);
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
-        => GetEntities(GetOverrideModels(typeof(IFunctionCallTypeArgumentBase)), CurrentNamespace);
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+        => GetEntitiesAsync(GetOverrideModelsAsync(typeof(IFunctionCallTypeArgumentBase)), CurrentNamespace);
 }

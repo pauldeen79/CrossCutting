@@ -18,6 +18,6 @@ public class AbstractNonGenericBuilders(IPipelineService pipelineService) : Cros
     protected override string SetMethodNameFormatString => string.Empty;
     protected override string AddMethodNameFormatString => string.Empty;
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
-        => GetNonGenericBuilders(GetAbstractModels(), CurrentNamespace, Constants.Namespaces.UtilitiesParsers);
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+        => GetNonGenericBuildersAsync(GetAbstractModelsAsync(), CurrentNamespace, Constants.Namespaces.UtilitiesParsers);
 }
