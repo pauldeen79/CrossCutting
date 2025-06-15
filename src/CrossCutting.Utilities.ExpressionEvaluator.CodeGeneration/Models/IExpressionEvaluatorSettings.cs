@@ -9,6 +9,6 @@ internal interface IExpressionEvaluatorSettings
     [DefaultValue(true)] bool ValidateArgumentTypes { get; }
     [DefaultValue(false)] bool StrictTypeChecking { get; }
     [DefaultValue(false)] bool AllowReflection { get; }
-    [Required] /*[DefaultValue("{")]*/ string PlaceholderStart { get; }
-    [Required] /*[DefaultValue("}")]*/ string PlaceholderEnd { get; }
+    [Required] [DefaultValue("{")] string PlaceholderStart { get; }
+    [Required] [DefaultValue("}")] string PlaceholderEnd { get; }
 }

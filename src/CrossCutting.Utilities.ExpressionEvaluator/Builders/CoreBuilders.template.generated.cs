@@ -136,6 +136,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [System.ComponentModel.DefaultValueAttribute(@"{")]
         public string PlaceholderStart
         {
             get
@@ -151,6 +152,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [System.ComponentModel.DefaultValueAttribute(@"}")]
         public string PlaceholderEnd
         {
             get
@@ -187,8 +189,8 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _validateArgumentTypes = true;
             _strictTypeChecking = false;
             _allowReflection = false;
-            _placeholderStart = string.Empty;
-            _placeholderEnd = string.Empty;
+            _placeholderStart = @"{"!;
+            _placeholderEnd = @"}"!;
             SetDefaultValues();
         }
 

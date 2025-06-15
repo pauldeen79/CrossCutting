@@ -53,12 +53,14 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [System.ComponentModel.DefaultValueAttribute(@"{")]
         public string PlaceholderStart
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [System.ComponentModel.DefaultValueAttribute(@"}")]
         public string PlaceholderEnd
         {
             get;
