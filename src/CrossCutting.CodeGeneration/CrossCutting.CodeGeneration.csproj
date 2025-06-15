@@ -11,8 +11,8 @@
   <ItemGroup>
     <PackageReference Include="CsharpExpressionDumper.Core" Version="1.5.10" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
-    <PackageReference Include="pauldeen79.ClassFramework.TemplateFramework" Version="0.23.4" />
-    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="3.0.3" />
+    <PackageReference Include="pauldeen79.ClassFramework.TemplateFramework" Version="0.23.5" />
+    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="3.0.4" />
   </ItemGroup>
 
 </Project>
