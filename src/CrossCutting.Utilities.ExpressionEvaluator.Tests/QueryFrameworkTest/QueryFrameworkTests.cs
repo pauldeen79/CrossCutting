@@ -3,7 +3,7 @@
 
 internal interface IOperator
 {
-    Task<Result<bool>> EvaluateAsync(object? leftValue, object? rightValue, StringComparison stringComparison);
+    Task<Result<bool>> EvaluateAsync(object? leftValue, object? rightValue, StringComparison stringComparison, CancellationToken token);
 }
 
 internal interface IQuery
@@ -125,7 +125,7 @@ internal sealed class QuerySortOrder : IQuerySortOrder
     public QuerySortOrderDirection Order { get; set; }
 }
 
-internal sealed class ComposableEvaluatable : ICondition
+internal sealed class ComposableCondition : ICondition
 {
     public StringComparison StringComparison { get; set; }
 
@@ -215,7 +215,7 @@ internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(async results => await condition.Operator
-                .EvaluateAsync(results.GetValue<object?>(Constants.LeftExpression), results.GetValue<object?>(Constants.RightExpression), condition.StringComparison)
+                .EvaluateAsync(results.GetValue<object?>(Constants.LeftExpression), results.GetValue<object?>(Constants.RightExpression), condition.StringComparison, token)
                 .ConfigureAwait(false))
             .ConfigureAwait(false);
 
@@ -289,8 +289,8 @@ internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
 
 internal sealed class EqualsOperator : IOperator
 {
-    public Task<Result<bool>> EvaluateAsync(object? leftValue, object? rightValue, StringComparison stringComparison)
-        => Task.FromResult(Equal.Evaluate(leftValue, rightValue, stringComparison));
+    public Task<Result<bool>> EvaluateAsync(object? leftValue, object? rightValue, StringComparison stringComparison, CancellationToken token)
+        => Task.Run(() => Equal.Evaluate(leftValue, rightValue, stringComparison), token);
 }
 
 internal sealed class ConstantEvaluatable : IEvaluatable
@@ -335,7 +335,7 @@ public class QueryFrameworkTests : TestBase
             Offset = 100,
             Conditions = 
             [
-                new ComposableEvaluatable { LeftExpression = new ConstantEvaluatable<string>("A"), Operator = new EqualsOperator(), RightExpression = new ConstantEvaluatable<string>("A") }
+                new ComposableCondition { LeftExpression = new ConstantEvaluatable<string>("A"), Operator = new EqualsOperator(), RightExpression = new ConstantEvaluatable<string>("A") }
             ]
         };
         var processor = new InMemoryQueryProcessor { Query = query };
@@ -358,7 +358,7 @@ public class QueryFrameworkTests : TestBase
             Offset = 100,
             Conditions =
             [
-                new ComposableEvaluatable { LeftExpression = new ConstantEvaluatable<string>("A"), Operator = new EqualsOperator(), RightExpression = new ConstantEvaluatable<string>("A"), StartGroup = true }
+                new ComposableCondition { LeftExpression = new ConstantEvaluatable<string>("A"), Operator = new EqualsOperator(), RightExpression = new ConstantEvaluatable<string>("A"), StartGroup = true }
             ]
         };
         var validationContext = new ValidationContext(query);
