@@ -125,7 +125,7 @@ internal sealed class QuerySortOrder : IQuerySortOrder
     public QuerySortOrderDirection Order { get; set; }
 }
 
-internal sealed class ComposableCondition : ICondition
+internal sealed class Condition : ICondition
 {
     public StringComparison StringComparison { get; set; }
 
@@ -335,7 +335,12 @@ public class QueryFrameworkTests : TestBase
             Offset = 100,
             Conditions = 
             [
-                new ComposableCondition { LeftExpression = new ConstantEvaluatable<string>("A"), Operator = new EqualsOperator(), RightExpression = new ConstantEvaluatable<string>("A") }
+                new Condition
+                {
+                    LeftExpression = new ConstantEvaluatable<string>("A"),
+                    Operator = new EqualsOperator(),
+                    RightExpression = new ConstantEvaluatable<string>("A")
+                }
             ]
         };
         var processor = new InMemoryQueryProcessor { Query = query };
@@ -358,7 +363,13 @@ public class QueryFrameworkTests : TestBase
             Offset = 100,
             Conditions =
             [
-                new ComposableCondition { LeftExpression = new ConstantEvaluatable<string>("A"), Operator = new EqualsOperator(), RightExpression = new ConstantEvaluatable<string>("A"), StartGroup = true }
+                new Condition
+                {
+                    LeftExpression = new ConstantEvaluatable<string>("A"),
+                    Operator = new EqualsOperator(),
+                    RightExpression = new ConstantEvaluatable<string>("A"),
+                    StartGroup = true
+                }
             ]
         };
         var validationContext = new ValidationContext(query);
@@ -370,5 +381,6 @@ public class QueryFrameworkTests : TestBase
         // Assert
         success.ShouldBe(false);
         validationResults.Count.ShouldBe(1);
+        validationResults[0].ErrorMessage.ShouldBe("Missing EndGroup");
     }
 }
