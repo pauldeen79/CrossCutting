@@ -66,5 +66,5 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
     }
 
     // Skip builder pattern on abstractions (Most importantly, IOperator, because we generate them manually. But also on IParseResult, which is only used for removing code duplication on parse results)
-    //protected override bool UseBuilderAbstractionsTypeConversion => false;
+    protected override bool UseBuilderAbstractionsTypeConversion => false;
 }

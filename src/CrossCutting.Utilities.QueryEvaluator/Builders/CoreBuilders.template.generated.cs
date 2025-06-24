@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Builders
 {
-    public partial class ConditionBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class ConditionBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable<bool>, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable, System.ComponentModel.INotifyPropertyChanged
     {
         private System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> _combination;
 
@@ -80,11 +80,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             return new CrossCutting.Utilities.QueryEvaluator.Condition(Combination, StartGroup, EndGroup);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder.Build()
-        {
-            return Build();
-        }
-
         partial void SetDefaultValues();
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Condition(ConditionBuilder entity)
@@ -116,11 +111,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             return new CrossCutting.Utilities.QueryEvaluator.Expression();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder.Build()
-        {
-            return Build();
-        }
-
         partial void SetDefaultValues();
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Expression(ExpressionBuilder entity)
@@ -139,9 +129,9 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         private System.Nullable<int> _offset;
 
-        private System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder> _filter;
+        private System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> _filter;
 
-        private System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQuerySortOrderBuilder> _orderByFields;
+        private System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> _orderByFields;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -176,7 +166,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
-        public System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder> Filter
+        public System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> Filter
         {
             get
             {
@@ -184,7 +174,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder>>.Default.Equals(_filter!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition>>.Default.Equals(_filter!, value!);
                 _filter = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Filter));
             }
@@ -192,7 +182,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQuerySortOrderBuilder> OrderByFields
+        public System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> OrderByFields
         {
             get
             {
@@ -200,7 +190,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQuerySortOrderBuilder>>.Default.Equals(_orderByFields!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder>>.Default.Equals(_orderByFields!, value!);
                 _orderByFields = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(OrderByFields));
             }
@@ -209,29 +199,24 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
         public QueryBuilder(CrossCutting.Utilities.QueryEvaluator.Query source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _filter = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder>();
-            _orderByFields = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQuerySortOrderBuilder>();
+            _filter = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition>();
+            _orderByFields = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder>();
             _limit = source.Limit;
             _offset = source.Offset;
-            if (source.Filter is not null) foreach (var item in source.Filter.Select(x => x.ToBuilder())) _filter.Add(item);
-            if (source.OrderByFields is not null) foreach (var item in source.OrderByFields.Select(x => x.ToBuilder())) _orderByFields.Add(item);
+            if (source.Filter is not null) foreach (var item in source.Filter) _filter.Add(item);
+            if (source.OrderByFields is not null) foreach (var item in source.OrderByFields) _orderByFields.Add(item);
         }
 
         public QueryBuilder()
         {
-            _filter = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder>();
-            _orderByFields = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQuerySortOrderBuilder>();
+            _filter = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition>();
+            _orderByFields = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder>();
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.QueryEvaluator.Query Build()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Query(Limit, Offset, Filter.Select(x => x.Build()!).ToList().AsReadOnly(), OrderByFields.Select(x => x.Build()!).ToList().AsReadOnly());
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder.Build()
-        {
-            return Build();
+            return new CrossCutting.Utilities.QueryEvaluator.Query(Limit, Offset, Filter, OrderByFields);
         }
 
         partial void SetDefaultValues();
@@ -301,11 +286,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             return new CrossCutting.Utilities.QueryEvaluator.QueryParameter(Name, Value);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryParameterBuilder.Build()
-        {
-            return Build();
-        }
-
         partial void SetDefaultValues();
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.QueryParameter(QueryParameterBuilder entity)
@@ -354,11 +334,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
         public CrossCutting.Utilities.QueryEvaluator.QueryParameterValue Build()
         {
             return new CrossCutting.Utilities.QueryEvaluator.QueryParameterValue(Name);
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameterValue CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryParameterValueBuilder.Build()
-        {
-            return Build();
         }
 
         partial void SetDefaultValues();
@@ -427,11 +402,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
         public CrossCutting.Utilities.QueryEvaluator.QuerySortOrder Build()
         {
             return new CrossCutting.Utilities.QueryEvaluator.QuerySortOrder(FieldNameExpression, Order);
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQuerySortOrderBuilder.Build()
-        {
-            return Build();
         }
 
         partial void SetDefaultValues();

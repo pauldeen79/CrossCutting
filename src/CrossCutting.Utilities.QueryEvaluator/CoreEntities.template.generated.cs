@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator
 {
-    public partial record Condition : CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition
+    public partial record Condition : CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable<bool>, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable
     {
         public System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> Combination
         {
@@ -39,11 +39,6 @@ namespace CrossCutting.Utilities.QueryEvaluator
         {
             return new CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder(this);
         }
-
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
-        {
-            return ToBuilder();
-        }
     }
     public partial record Expression : CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
     {
@@ -55,11 +50,6 @@ namespace CrossCutting.Utilities.QueryEvaluator
         public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder ToBuilder()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder(this);
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
-        {
-            return ToBuilder();
         }
     }
     public partial record Query : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
@@ -102,11 +92,6 @@ namespace CrossCutting.Utilities.QueryEvaluator
         {
             return new CrossCutting.Utilities.QueryEvaluator.Builders.QueryBuilder(this);
         }
-
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery.ToBuilder()
-        {
-            return ToBuilder();
-        }
     }
     public partial record QueryParameter : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter
     {
@@ -132,11 +117,6 @@ namespace CrossCutting.Utilities.QueryEvaluator
         {
             return new CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder(this);
         }
-
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryParameterBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter.ToBuilder()
-        {
-            return ToBuilder();
-        }
     }
     public partial record QueryParameterValue : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameterValue
     {
@@ -155,11 +135,6 @@ namespace CrossCutting.Utilities.QueryEvaluator
         public CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterValueBuilder ToBuilder()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterValueBuilder(this);
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryParameterValueBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameterValue.ToBuilder()
-        {
-            return ToBuilder();
         }
     }
     public partial record QuerySortOrder : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder
@@ -186,11 +161,6 @@ namespace CrossCutting.Utilities.QueryEvaluator
         public CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder ToBuilder()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder(this);
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQuerySortOrderBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder.ToBuilder()
-        {
-            return ToBuilder();
         }
     }
 }

@@ -8,7 +8,7 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
+namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
 {
     public partial interface IConditionBuilder : CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable<bool>, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable
     {
@@ -29,28 +29,22 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
             get;
             set;
         }
-
-        new CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition Build();
     }
     public partial interface IExpressionBuilder
     {
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression Build();
     }
     public partial interface IOperatorBuilder
     {
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IOperator Build();
     }
     public partial interface IParameterizedQueryBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryParameterBuilder> Parameters
+        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter> Parameters
         {
             get;
             set;
         }
-
-        new CrossCutting.Utilities.QueryEvaluator.Abstractions.IParameterizedQuery Build();
     }
     public partial interface IQueryBuilder
     {
@@ -69,7 +63,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
-        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder> Filter
+        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> Filter
         {
             get;
             set;
@@ -77,13 +71,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQuerySortOrderBuilder> OrderByFields
+        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> OrderByFields
         {
             get;
             set;
         }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery Build();
     }
     public partial interface IQueryParameterBuilder
     {
@@ -99,8 +91,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
             get;
             set;
         }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter Build();
     }
     public partial interface IQueryParameterValueBuilder
     {
@@ -110,8 +100,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
             get;
             set;
         }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameterValue Build();
     }
     public partial interface IQuerySortOrderBuilder
     {
@@ -128,12 +116,9 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
             get;
             set;
         }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder Build();
     }
     public partial interface ISingleEntityQueryBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
     {
-        new CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleEntityQuery Build();
     }
 }
 #nullable disable

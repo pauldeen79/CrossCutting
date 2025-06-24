@@ -8,7 +8,6 @@ public static class Constants
     public static class Namespaces
     {
         public const string UtilitiesQueryEvaluator = "CrossCutting.Utilities.QueryEvaluator";
-        public const string UtilitiesQueryEvaluatorBuilders = "CrossCutting.Utilities.QueryEvaluator.Builders";
     }
 
     public static class Paths

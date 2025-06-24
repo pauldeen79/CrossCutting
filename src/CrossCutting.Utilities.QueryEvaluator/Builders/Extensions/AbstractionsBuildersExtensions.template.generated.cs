@@ -13,21 +13,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
     public static partial class ConditionBuilderExtensions
     {
         public static T WithCombination<T>(this T instance, System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder
         {
             instance.Combination = combination;
             return instance;
         }
 
         public static T WithStartGroup<T>(this T instance, bool startGroup = true)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder
         {
             instance.StartGroup = startGroup;
             return instance;
         }
 
         public static T WithEndGroup<T>(this T instance, bool endGroup = true)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder
         {
             instance.EndGroup = endGroup;
             return instance;
@@ -41,15 +41,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
     }
     public static partial class ParameterizedQueryBuilderExtensions
     {
-        public static T AddParameters<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryParameterBuilder> parameters)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IParameterizedQueryBuilder
+        public static T AddParameters<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter> parameters)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IParameterizedQueryBuilder
         {
             if (parameters is null) throw new System.ArgumentNullException(nameof(parameters));
             return instance.AddParameters<T>(parameters.ToArray());
         }
 
-        public static T AddParameters<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryParameterBuilder[] parameters)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IParameterizedQueryBuilder
+        public static T AddParameters<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter[] parameters)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IParameterizedQueryBuilder
         {
             if (parameters is null) throw new System.ArgumentNullException(nameof(parameters));
             foreach (var item in parameters) instance.Parameters.Add(item);
@@ -58,30 +58,30 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
     }
     public static partial class QueryBuilderExtensions
     {
-        public static T AddFilter<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder> filter)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+        public static T AddFilter<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> filter)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             if (filter is null) throw new System.ArgumentNullException(nameof(filter));
             return instance.AddFilter<T>(filter.ToArray());
         }
 
-        public static T AddFilter<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder[] filter)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+        public static T AddFilter<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition[] filter)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             if (filter is null) throw new System.ArgumentNullException(nameof(filter));
             foreach (var item in filter) instance.Filter.Add(item);
             return instance;
         }
 
-        public static T AddOrderByFields<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQuerySortOrderBuilder> orderByFields)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+        public static T AddOrderByFields<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> orderByFields)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
             return instance.AddOrderByFields<T>(orderByFields.ToArray());
         }
 
-        public static T AddOrderByFields<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQuerySortOrderBuilder[] orderByFields)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+        public static T AddOrderByFields<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder[] orderByFields)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
             foreach (var item in orderByFields) instance.OrderByFields.Add(item);
@@ -89,14 +89,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
         }
 
         public static T WithLimit<T>(this T instance, System.Nullable<int> limit)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             instance.Limit = limit;
             return instance;
         }
 
         public static T WithOffset<T>(this T instance, System.Nullable<int> offset)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             instance.Offset = offset;
             return instance;
@@ -105,7 +105,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
     public static partial class QueryParameterBuilderExtensions
     {
         public static T WithName<T>(this T instance, string name)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryParameterBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder
         {
             if (name is null) throw new System.ArgumentNullException(nameof(name));
             instance.Name = name;
@@ -113,7 +113,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
         }
 
         public static T WithValue<T>(this T instance, object? value)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryParameterBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder
         {
             instance.Value = value;
             return instance;
@@ -122,7 +122,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
     public static partial class QueryParameterValueBuilderExtensions
     {
         public static T WithName<T>(this T instance, string name)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryParameterValueBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterValueBuilder
         {
             if (name is null) throw new System.ArgumentNullException(nameof(name));
             instance.Name = name;
@@ -132,7 +132,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
     public static partial class QuerySortOrderBuilderExtensions
     {
         public static T WithFieldNameExpression<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.IExpression<string> fieldNameExpression)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQuerySortOrderBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder
         {
             if (fieldNameExpression is null) throw new System.ArgumentNullException(nameof(fieldNameExpression));
             instance.FieldNameExpression = fieldNameExpression;
@@ -140,7 +140,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
         }
 
         public static T WithOrder<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection order)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQuerySortOrderBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder
         {
             instance.Order = order;
             return instance;
