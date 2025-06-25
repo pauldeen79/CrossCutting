@@ -36,31 +36,21 @@ namespace CrossCutting.Utilities.QueryEvaluator
 
         public abstract CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder ToBuilder();
     }
-    public abstract partial record Expression : CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
+    public abstract partial record Expression
     {
         protected Expression()
         {
         }
 
         public abstract CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder ToBuilder();
-
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
-        {
-            return ToBuilder();
-        }
     }
-    public abstract partial record Operator : CrossCutting.Utilities.QueryEvaluator.Abstractions.IOperator
+    public abstract partial record Operator
     {
         protected Operator()
         {
         }
 
         public abstract CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder ToBuilder();
-
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IOperatorBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IOperator.ToBuilder()
-        {
-            return ToBuilder();
-        }
     }
     public abstract partial record Query
     {

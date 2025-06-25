@@ -1,5 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models;
 
-internal interface IExpression : Abstractions.IExpression
+internal interface IExpression
 {
 }

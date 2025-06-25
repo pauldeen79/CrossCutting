@@ -34,7 +34,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             return entity.BuildTyped();
         }
     }
-    public abstract partial class ExpressionBuilder<TBuilder, TEntity> : ExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder
+    public abstract partial class ExpressionBuilder<TBuilder, TEntity> : ExpressionBuilder
         where TEntity : CrossCutting.Utilities.QueryEvaluator.Expression
         where TBuilder : ExpressionBuilder<TBuilder, TEntity>
     {
@@ -53,17 +53,12 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         public abstract TEntity BuildTyped();
 
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder.Build()
-        {
-            return BuildTyped();
-        }
-
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Expression(ExpressionBuilder<TBuilder, TEntity> entity)
         {
             return entity.BuildTyped();
         }
     }
-    public abstract partial class OperatorBuilder<TBuilder, TEntity> : OperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IOperatorBuilder
+    public abstract partial class OperatorBuilder<TBuilder, TEntity> : OperatorBuilder
         where TEntity : CrossCutting.Utilities.QueryEvaluator.Operator
         where TBuilder : OperatorBuilder<TBuilder, TEntity>
     {
@@ -81,11 +76,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
         }
 
         public abstract TEntity BuildTyped();
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IOperator CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IOperatorBuilder.Build()
-        {
-            return BuildTyped();
-        }
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operator(OperatorBuilder<TBuilder, TEntity> entity)
         {

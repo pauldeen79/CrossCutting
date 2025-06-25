@@ -8,13 +8,4 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
-{
-    public static partial class ExpressionBuilderExtensions
-    {
-    }
-    public static partial class OperatorBuilderExtensions
-    {
-    }
-}
 #nullable disable

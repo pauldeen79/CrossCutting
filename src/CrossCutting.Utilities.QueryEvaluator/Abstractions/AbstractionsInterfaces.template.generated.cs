@@ -8,15 +8,4 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
-{
-    public partial interface IExpression
-    {
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder ToBuilder();
-    }
-    public partial interface IOperator
-    {
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IOperatorBuilder ToBuilder();
-    }
-}
 #nullable disable

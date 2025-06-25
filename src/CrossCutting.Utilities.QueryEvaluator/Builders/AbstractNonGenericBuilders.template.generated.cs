@@ -88,7 +88,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public abstract partial class ExpressionBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder, System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class ExpressionBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -103,11 +103,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         public abstract CrossCutting.Utilities.QueryEvaluator.Expression Build();
 
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder.Build()
-        {
-            return Build();
-        }
-
         partial void SetDefaultValues();
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Expression(ExpressionBuilder entity)
@@ -120,7 +115,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public abstract partial class OperatorBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IOperatorBuilder, System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class OperatorBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -134,11 +129,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
         }
 
         public abstract CrossCutting.Utilities.QueryEvaluator.Operator Build();
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IOperator CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IOperatorBuilder.Build()
-        {
-            return Build();
-        }
 
         partial void SetDefaultValues();
 
