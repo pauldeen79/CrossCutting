@@ -10,90 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator
 {
-    public partial record Condition : CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable<bool>, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable
-    {
-        public System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> Combination
-        {
-            get;
-        }
-
-        public bool StartGroup
-        {
-            get;
-        }
-
-        public bool EndGroup
-        {
-            get;
-        }
-
-        public Condition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup)
-        {
-            this.Combination = combination;
-            this.StartGroup = startGroup;
-            this.EndGroup = endGroup;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder ToBuilder()
-        {
-            return new CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder(this);
-        }
-    }
-    public partial record Expression : CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
-    {
-        public Expression()
-        {
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder ToBuilder()
-        {
-            return new CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder(this);
-        }
-    }
-    public partial record Query : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
-    {
-        public System.Nullable<int> Limit
-        {
-            get;
-        }
-
-        public System.Nullable<int> Offset
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> Filter
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> OrderByFields
-        {
-            get;
-        }
-
-        public Query(System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> filter, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> orderByFields)
-        {
-            this.Limit = limit;
-            this.Offset = offset;
-            this.Filter = filter is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition>(filter);
-            this.OrderByFields = orderByFields is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder>(orderByFields);
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public CrossCutting.Utilities.QueryEvaluator.Builders.QueryBuilder ToBuilder()
-        {
-            return new CrossCutting.Utilities.QueryEvaluator.Builders.QueryBuilder(this);
-        }
-    }
-    public partial record QueryParameter : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter
+    public partial record QueryParameter
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name
@@ -118,7 +35,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
             return new CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder(this);
         }
     }
-    public partial record QueryParameterValue : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameterValue
+    public partial record QueryParameterValue
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name
@@ -137,7 +54,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
             return new CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterValueBuilder(this);
         }
     }
-    public partial record QuerySortOrder : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder
+    public partial record QuerySortOrder
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]

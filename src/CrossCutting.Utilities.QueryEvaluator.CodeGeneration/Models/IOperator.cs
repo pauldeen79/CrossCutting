@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models;
 
-internal interface IQueryParameterValue
+internal interface IOperator : Abstractions.IOperator
 {
-    [Required] string Name { get; }
 }

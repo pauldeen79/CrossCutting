@@ -3,6 +3,8 @@
 [ExcludeFromCodeCoverage]
 public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
 {
+    private static readonly Type[] baseTypes = [typeof(Models.IQuery), typeof(Models.ICondition), typeof(Models.IExpression), typeof(Models.IOperator)];
+
     //private const string TypeNameDotClassNameBuilder = "{NoGenerics(ClassName(property.TypeName))}Builder";
 
     public override bool RecurseOnDeleteGeneratedFiles => false;
@@ -19,6 +21,8 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
     protected override bool CreateRecord => true;
     protected override bool GenerateMultipleFiles => false;
     protected override bool EnableGlobalUsings => true;
+
+    protected override bool IsAbstractType(Type type) => base.IsAbstractType(type) || baseTypes.Contains(type);
 
     protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
     {
@@ -66,5 +70,5 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
     }
 
     // Skip builder pattern on abstractions (Most importantly, IOperator, because we generate them manually. But also on IParseResult, which is only used for removing code duplication on parse results)
-    protected override bool UseBuilderAbstractionsTypeConversion => false;
+    // protected override bool UseBuilderAbstractionsTypeConversion => false;
 }

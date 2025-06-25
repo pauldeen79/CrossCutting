@@ -10,115 +10,13 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
 {
-    public partial interface IConditionBuilder : CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable<bool>, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable
-    {
-        System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> Combination
-        {
-            get;
-            set;
-        }
-
-        bool StartGroup
-        {
-            get;
-            set;
-        }
-
-        bool EndGroup
-        {
-            get;
-            set;
-        }
-    }
     public partial interface IExpressionBuilder
     {
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression Build();
     }
     public partial interface IOperatorBuilder
     {
-    }
-    public partial interface IParameterizedQueryBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter> Parameters
-        {
-            get;
-            set;
-        }
-    }
-    public partial interface IQueryBuilder
-    {
-        System.Nullable<int> Limit
-        {
-            get;
-            set;
-        }
-
-        System.Nullable<int> Offset
-        {
-            get;
-            set;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
-        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> Filter
-        {
-            get;
-            set;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> OrderByFields
-        {
-            get;
-            set;
-        }
-    }
-    public partial interface IQueryParameterBuilder
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        string Name
-        {
-            get;
-            set;
-        }
-
-        object? Value
-        {
-            get;
-            set;
-        }
-    }
-    public partial interface IQueryParameterValueBuilder
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        string Name
-        {
-            get;
-            set;
-        }
-    }
-    public partial interface IQuerySortOrderBuilder
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.ExpressionEvaluator.IExpression<string> FieldNameExpression
-        {
-            get;
-            set;
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection Order
-        {
-            get;
-            set;
-        }
-    }
-    public partial interface ISingleEntityQueryBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
-    {
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IOperator Build();
     }
 }
 #nullable disable

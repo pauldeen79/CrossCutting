@@ -18,12 +18,12 @@ public sealed class ValidGroupsAttribute : ValidationAttribute
             if (item == null) continue;
 
             var type = item.GetType();
-            var startGroupProperty = type.GetProperty(nameof(ICondition.StartGroup), BindingFlags.Public | BindingFlags.Instance);
-            var endGroupProperty = type.GetProperty(nameof(ICondition.EndGroup), BindingFlags.Public | BindingFlags.Instance);
+            var startGroupProperty = type.GetProperty(nameof(Condition.StartGroup), BindingFlags.Public | BindingFlags.Instance);
+            var endGroupProperty = type.GetProperty(nameof(Condition.EndGroup), BindingFlags.Public | BindingFlags.Instance);
 
             if (startGroupProperty is null || endGroupProperty is null)
             {
-                return new ValidationResult($"Properties '{nameof(ICondition.StartGroup)}' or '{nameof(ICondition.EndGroup)}' not found on {type.Name}");
+                return new ValidationResult($"Properties '{nameof(Condition.StartGroup)}' or '{nameof(Condition.EndGroup)}' not found on {type.Name}");
             }
 
 #pragma warning disable CS8605 // Unboxing a possibly null value.

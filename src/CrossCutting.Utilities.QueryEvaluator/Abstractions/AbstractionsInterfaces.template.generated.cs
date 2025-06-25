@@ -10,102 +10,13 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
 {
-    public partial interface ICondition : CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable<bool>, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable
-    {
-        System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> Combination
-        {
-            get;
-        }
-
-        bool StartGroup
-        {
-            get;
-        }
-
-        bool EndGroup
-        {
-            get;
-        }
-    }
     public partial interface IExpression
     {
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder ToBuilder();
     }
     public partial interface IOperator
     {
-    }
-    public partial interface IParameterizedQuery : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter> Parameters
-        {
-            get;
-        }
-    }
-    public partial interface IQuery
-    {
-        System.Nullable<int> Limit
-        {
-            get;
-        }
-
-        System.Nullable<int> Offset
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
-        System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> Filter
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> OrderByFields
-        {
-            get;
-        }
-    }
-    public partial interface IQueryParameter
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        string Name
-        {
-            get;
-        }
-
-        object? Value
-        {
-            get;
-        }
-    }
-    public partial interface IQueryParameterValue
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        string Name
-        {
-            get;
-        }
-    }
-    public partial interface IQuerySortOrder
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.ExpressionEvaluator.IExpression<string> FieldNameExpression
-        {
-            get;
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection Order
-        {
-            get;
-        }
-    }
-    public partial interface ISingleEntityQuery : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
-    {
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IOperatorBuilder ToBuilder();
     }
 }
 #nullable disable

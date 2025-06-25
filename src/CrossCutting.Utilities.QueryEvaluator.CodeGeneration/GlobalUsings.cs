@@ -7,6 +7,7 @@ global using ClassFramework.Domain;
 global using ClassFramework.Domain.Builders.Extensions;
 global using ClassFramework.Pipelines.Abstractions;
 global using ClassFramework.Pipelines.Builders;
+global using ClassFramework.Pipelines.Domains;
 global using ClassFramework.Pipelines.Extensions;
 global using ClassFramework.TemplateFramework.CodeGenerationProviders;
 global using ClassFramework.TemplateFramework.Extensions;

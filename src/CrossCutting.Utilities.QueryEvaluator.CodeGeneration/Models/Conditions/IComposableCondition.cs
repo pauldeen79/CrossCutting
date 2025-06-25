@@ -4,7 +4,7 @@ internal interface IComposableCondition : ICondition
 {
     StringComparison StringComparison { get; set; }
 
-    Abstractions.IExpression LeftExpression { get; set; }
+    IExpression LeftExpression { get; set; }
     IOperator Operator { get; set; }
-    Abstractions.IExpression RightExpression { get; set; }
+    IExpression RightExpression { get; set; }
 }
