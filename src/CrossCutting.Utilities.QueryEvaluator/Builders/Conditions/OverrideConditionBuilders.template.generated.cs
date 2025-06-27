@@ -12,27 +12,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Conditions
 {
     public partial class ComposableConditionBuilder : ConditionBuilder<ComposableConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.ComposableCondition>
     {
-        private System.StringComparison _stringComparison;
-
         private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _leftExpression;
 
         private CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder _operator;
 
         private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _rightExpression;
-
-        public System.StringComparison StringComparison
-        {
-            get
-            {
-                return _stringComparison;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
-                _stringComparison = value;
-                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
-            }
-        }
 
         public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder LeftExpression
         {
@@ -79,7 +63,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Conditions
         public ComposableConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.ComposableCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _stringComparison = source.StringComparison;
             _leftExpression = source.LeftExpression?.ToBuilder()!;
             _operator = source.Operator?.ToBuilder()!;
             _rightExpression = source.RightExpression?.ToBuilder()!;
@@ -95,16 +78,10 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Conditions
 
         public override CrossCutting.Utilities.QueryEvaluator.Conditions.ComposableCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Conditions.ComposableCondition(StringComparison, LeftExpression?.Build()!, Operator?.Build()!, RightExpression?.Build()!, Combination, StartGroup, EndGroup);
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.ComposableCondition(LeftExpression?.Build()!, Operator?.Build()!, RightExpression?.Build()!, Combination, StartGroup, EndGroup);
         }
 
         partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.ComposableConditionBuilder WithStringComparison(System.StringComparison stringComparison)
-        {
-            StringComparison = stringComparison;
-            return this;
-        }
 
         public CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.ComposableConditionBuilder WithLeftExpression(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder leftExpression)
         {

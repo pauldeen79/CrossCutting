@@ -12,9 +12,26 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Operators
 {
     public partial class EqualsOperatorBuilder : OperatorBuilder<EqualsOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.EqualsOperator>
     {
+        private System.StringComparison _stringComparison;
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
         public EqualsOperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operators.EqualsOperator source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _stringComparison = source.StringComparison;
         }
 
         public EqualsOperatorBuilder() : base()
@@ -24,10 +41,16 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Operators
 
         public override CrossCutting.Utilities.QueryEvaluator.Operators.EqualsOperator BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Operators.EqualsOperator();
+            return new CrossCutting.Utilities.QueryEvaluator.Operators.EqualsOperator(StringComparison);
         }
 
         partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.QueryEvaluator.Builders.Operators.EqualsOperatorBuilder WithStringComparison(System.StringComparison stringComparison)
+        {
+            StringComparison = stringComparison;
+            return this;
+        }
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operators.EqualsOperator(EqualsOperatorBuilder entity)
         {

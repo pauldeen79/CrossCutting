@@ -12,11 +12,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
 {
     public partial record ComposableCondition : CrossCutting.Utilities.QueryEvaluator.Condition
     {
-        public System.StringComparison StringComparison
-        {
-            get;
-        }
-
         public CrossCutting.Utilities.QueryEvaluator.Expression LeftExpression
         {
             get;
@@ -32,9 +27,8 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public ComposableCondition(System.StringComparison stringComparison, CrossCutting.Utilities.QueryEvaluator.Expression leftExpression, CrossCutting.Utilities.QueryEvaluator.Operator @operator, CrossCutting.Utilities.QueryEvaluator.Expression rightExpression, System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup) : base(combination, startGroup, endGroup)
+        public ComposableCondition(CrossCutting.Utilities.QueryEvaluator.Expression leftExpression, CrossCutting.Utilities.QueryEvaluator.Operator @operator, CrossCutting.Utilities.QueryEvaluator.Expression rightExpression, System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup) : base(combination, startGroup, endGroup)
         {
-            this.StringComparison = stringComparison;
             this.LeftExpression = leftExpression;
             this.Operator = @operator;
             this.RightExpression = rightExpression;

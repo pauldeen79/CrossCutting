@@ -2,5 +2,5 @@
 
 public partial record Operator
 {
-    public abstract Result<bool> Evaluate(object? leftValue, object? rightValue, StringComparison stringComparison);
+    public abstract Result<bool> Evaluate(object? leftValue, object? rightValue);
 }

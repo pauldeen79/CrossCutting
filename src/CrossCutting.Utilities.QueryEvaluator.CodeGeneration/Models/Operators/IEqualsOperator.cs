@@ -2,4 +2,5 @@
 
 internal interface IEqualsOperator : IOperator
 {
+    StringComparison StringComparison { get; }
 }

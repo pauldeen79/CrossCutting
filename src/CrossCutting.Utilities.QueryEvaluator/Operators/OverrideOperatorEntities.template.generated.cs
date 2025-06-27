@@ -12,8 +12,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Operators
 {
     public partial record EqualsOperator : CrossCutting.Utilities.QueryEvaluator.Operator
     {
-        public EqualsOperator() : base()
+        public System.StringComparison StringComparison
         {
+            get;
+        }
+
+        public EqualsOperator(System.StringComparison stringComparison) : base()
+        {
+            this.StringComparison = stringComparison;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 

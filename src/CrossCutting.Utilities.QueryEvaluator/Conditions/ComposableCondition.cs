@@ -6,5 +6,5 @@ public partial record ComposableCondition : IEvaluatable<bool>
         => await EvaluateTypedAsync(token).ConfigureAwait(false);
 
     public Task<Result<bool>> EvaluateTypedAsync(CancellationToken token)
-        => Task.Run(() => Operator.Evaluate(LeftExpression, RightExpression, StringComparison), token);
+        => Task.Run(() => Operator.Evaluate(LeftExpression, RightExpression), token);
 }

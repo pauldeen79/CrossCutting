@@ -9,7 +9,7 @@ public class Tests
         var query = new SingleEntityQueryBuilder()
             .With(x => x.Filter.Add(new ComposableConditionBuilder()
                 .WithLeftExpression(new FieldNameExpressionBuilder().WithFieldName("MyField"))
-                .WithOperator(new EqualsOperatorBuilder())
+                .WithOperator(new EqualsOperatorBuilder().WithStringComparison(StringComparison.InvariantCulture))
                 .WithRightExpression(new LiteralExpressionBuilder().WithValue("A"))))
             .With(x => x.Limit = 50)
             .With(x => x.Offset = 0)
