@@ -33,5 +33,96 @@ namespace CrossCutting.Utilities.QueryEvaluator.Operators
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Operators.EqualsOperatorBuilder(this);
         }
     }
+    public partial record GreaterThanOperator : CrossCutting.Utilities.QueryEvaluator.Operator
+    {
+        public GreaterThanOperator() : base()
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Builders.Operators.GreaterThanOperatorBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Builders.Operators.GreaterThanOperatorBuilder(this);
+        }
+    }
+    public partial record GreaterThanOrEqualOperator : CrossCutting.Utilities.QueryEvaluator.Operator
+    {
+        public GreaterThanOrEqualOperator() : base()
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Builders.Operators.GreaterThanOrEqualOperatorBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Builders.Operators.GreaterThanOrEqualOperatorBuilder(this);
+        }
+    }
+    public partial record NotEqualsOperator : CrossCutting.Utilities.QueryEvaluator.Operator
+    {
+        public System.StringComparison StringComparison
+        {
+            get;
+        }
+
+        public NotEqualsOperator(System.StringComparison stringComparison) : base()
+        {
+            this.StringComparison = stringComparison;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Builders.Operators.NotEqualsOperatorBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Builders.Operators.NotEqualsOperatorBuilder(this);
+        }
+    }
+    public partial record SmallerThanOperator : CrossCutting.Utilities.QueryEvaluator.Operator
+    {
+        public SmallerThanOperator() : base()
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Builders.Operators.SmallerThanOperatorBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Builders.Operators.SmallerThanOperatorBuilder(this);
+        }
+    }
+    public partial record SmallerThanOrEqualOperator : CrossCutting.Utilities.QueryEvaluator.Operator
+    {
+        public SmallerThanOrEqualOperator() : base()
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Builders.Operators.SmallerThanOrEqualOperatorBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Builders.Operators.SmallerThanOrEqualOperatorBuilder(this);
+        }
+    }
 }
 #nullable disable

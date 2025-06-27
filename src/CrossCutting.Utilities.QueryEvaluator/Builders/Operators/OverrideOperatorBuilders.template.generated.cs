@@ -57,5 +57,148 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Operators
             return entity.BuildTyped();
         }
     }
+    public partial class GreaterThanOperatorBuilder : OperatorBuilder<GreaterThanOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOperator>
+    {
+        public GreaterThanOperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOperator source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+        }
+
+        public GreaterThanOperatorBuilder() : base()
+        {
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOperator BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOperator();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOperator(GreaterThanOperatorBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class GreaterThanOrEqualOperatorBuilder : OperatorBuilder<GreaterThanOrEqualOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOrEqualOperator>
+    {
+        public GreaterThanOrEqualOperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOrEqualOperator source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+        }
+
+        public GreaterThanOrEqualOperatorBuilder() : base()
+        {
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOrEqualOperator BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOrEqualOperator();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOrEqualOperator(GreaterThanOrEqualOperatorBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class NotEqualsOperatorBuilder : OperatorBuilder<NotEqualsOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.NotEqualsOperator>
+    {
+        private System.StringComparison _stringComparison;
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
+        public NotEqualsOperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operators.NotEqualsOperator source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _stringComparison = source.StringComparison;
+        }
+
+        public NotEqualsOperatorBuilder() : base()
+        {
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Operators.NotEqualsOperator BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Operators.NotEqualsOperator(StringComparison);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.QueryEvaluator.Builders.Operators.NotEqualsOperatorBuilder WithStringComparison(System.StringComparison stringComparison)
+        {
+            StringComparison = stringComparison;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operators.NotEqualsOperator(NotEqualsOperatorBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class SmallerThanOperatorBuilder : OperatorBuilder<SmallerThanOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOperator>
+    {
+        public SmallerThanOperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOperator source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+        }
+
+        public SmallerThanOperatorBuilder() : base()
+        {
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOperator BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOperator();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOperator(SmallerThanOperatorBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class SmallerThanOrEqualOperatorBuilder : OperatorBuilder<SmallerThanOrEqualOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOrEqualOperator>
+    {
+        public SmallerThanOrEqualOperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOrEqualOperator source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+        }
+
+        public SmallerThanOrEqualOperatorBuilder() : base()
+        {
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOrEqualOperator BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOrEqualOperator();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOrEqualOperator(SmallerThanOrEqualOperatorBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
 }
 #nullable disable
