@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator
 {
-    public abstract partial record Condition : CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable<bool>, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable
+    public abstract partial record Condition
     {
         public System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> Combination
         {

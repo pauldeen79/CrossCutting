@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Builders
 {
-    public abstract partial class ConditionBuilder : CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable<bool>, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable, System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class ConditionBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         private System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> _combination;
 

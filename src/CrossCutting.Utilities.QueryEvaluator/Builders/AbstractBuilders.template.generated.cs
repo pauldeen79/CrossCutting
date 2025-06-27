@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Builders
 {
-    public abstract partial class ConditionBuilder<TBuilder, TEntity> : ConditionBuilder, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable<bool>, CrossCutting.Utilities.ExpressionEvaluator.IEvaluatable
+    public abstract partial class ConditionBuilder<TBuilder, TEntity> : ConditionBuilder
         where TEntity : CrossCutting.Utilities.QueryEvaluator.Condition
         where TBuilder : ConditionBuilder<TBuilder, TEntity>
     {

@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models;
 
-internal interface ICondition : IEvaluatable<bool>
+internal interface ICondition
 {
     Combination? Combination { get; set; }
     bool StartGroup { get; set; }

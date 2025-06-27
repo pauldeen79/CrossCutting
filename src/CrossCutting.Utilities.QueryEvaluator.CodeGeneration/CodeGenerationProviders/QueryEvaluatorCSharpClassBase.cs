@@ -5,8 +5,6 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
 {
     private static readonly Type[] baseTypes = [typeof(Models.IQuery), typeof(Models.ICondition), typeof(Models.IExpression), typeof(Models.IOperator)];
 
-    //private const string TypeNameDotClassNameBuilder = "{NoGenerics(ClassName(property.TypeName))}Builder";
-
     public override bool RecurseOnDeleteGeneratedFiles => false;
     public override string LastGeneratedFilesFilename => string.Empty;
     public override Encoding Encoding => Encoding.UTF8;
@@ -39,36 +37,5 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
                     .WithValue(new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}", null))
                     .WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue)
             );
-
-        //var abstractionTypes = GetType().Assembly.GetTypes()
-        //        .Where(x => x.IsInterface
-        //            && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions"
-        //            && !SkipNamespaceOnTypenameMappings(x.Namespace)
-        //            && x.FullName is not null)
-        //        .SelectMany(x =>
-        //            new[]
-        //            {
-        //                new TypenameMappingBuilder().WithSourceTypeName(x.FullName!).WithTargetTypeName($"{ProjectName}.{x.Name}"),
-        //                new TypenameMappingBuilder().WithSourceTypeName($"{ProjectName}.{x.Name.Substring(1)}").WithTargetTypeName($"{ProjectName}.{x.Name}"), // hacking
-        //                new TypenameMappingBuilder().WithSourceTypeName($"{ProjectName}.{x.Name}").WithTargetTypeName($"{ProjectName}.{x.Name}")
-        //                    .AddMetadata
-        //                    (
-        //                        new MetadataBuilder().WithValue($"{ProjectName}.Builders").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderNamespace),
-        //                        new MetadataBuilder().WithValue(TypeNameDotClassNameBuilder).WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderName),
-        //                        new MetadataBuilder().WithValue($"{ProjectName}.Builders").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderInterfaceNamespace),
-        //                        new MetadataBuilder().WithValue(TypeNameDotClassNameBuilder).WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderInterfaceName),
-        //                        new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderSourceExpression),
-        //                        new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderMethodParameterExpression),
-        //                        new MetadataBuilder().WithName(ClassFramework.Pipelines.MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{ProjectName}.I{x.GetEntityClassName()}")
-        //                    )
-        //            });
-
-        //foreach (var type in abstractionTypes)
-        //{
-        //    yield return type;
-        //}
     }
-
-    // Skip builder pattern on abstractions (Most importantly, IOperator, because we generate them manually. But also on IParseResult, which is only used for removing code duplication on parse results)
-    // protected override bool UseBuilderAbstractionsTypeConversion => false;
 }
