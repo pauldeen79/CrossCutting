@@ -1,5 +1,4 @@
-﻿global using System.ComponentModel;
-global using System.ComponentModel.DataAnnotations;
+﻿global using System.ComponentModel.DataAnnotations;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
 global using System.Text;
@@ -17,6 +16,7 @@ global using CrossCutting.Common.Results;
 global using CrossCutting.Utilities.ExpressionEvaluator;
 global using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 global using CrossCutting.Utilities.QueryEvaluator.CodeGeneration.CodeGenerationProviders;
+global using CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models;
 global using CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Domains;
 global using CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Validation;
 global using CsharpExpressionDumper.Core.Extensions;
