@@ -149,7 +149,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
     }
     public partial class QuerySortOrderBuilder : System.ComponentModel.INotifyPropertyChanged
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.IExpression<string> _fieldNameExpression;
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _expression;
 
         private CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection _order;
 
@@ -157,17 +157,17 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.IExpression<string> FieldNameExpression
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder Expression
         {
             get
             {
-                return _fieldNameExpression;
+                return _expression;
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.IExpression<System.String>>.Default.Equals(_fieldNameExpression!, value!);
-                _fieldNameExpression = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(FieldNameExpression));
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_expression!, value!);
+                _expression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Expression));
             }
         }
 
@@ -188,27 +188,27 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
         public QuerySortOrderBuilder(CrossCutting.Utilities.QueryEvaluator.QuerySortOrder source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _fieldNameExpression = source.FieldNameExpression;
+            _expression = source.Expression?.ToBuilder()!;
             _order = source.Order;
         }
 
         public QuerySortOrderBuilder()
         {
-            _fieldNameExpression = default(CrossCutting.Utilities.ExpressionEvaluator.IExpression<System.String>)!;
+            _expression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.QueryEvaluator.QuerySortOrder Build()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.QuerySortOrder(FieldNameExpression, Order);
+            return new CrossCutting.Utilities.QueryEvaluator.QuerySortOrder(Expression?.Build()!, Order);
         }
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder WithFieldNameExpression(CrossCutting.Utilities.ExpressionEvaluator.IExpression<string> fieldNameExpression)
+        public CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder WithExpression(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder expression)
         {
-            if (fieldNameExpression is null) throw new System.ArgumentNullException(nameof(fieldNameExpression));
-            FieldNameExpression = fieldNameExpression;
+            if (expression is null) throw new System.ArgumentNullException(nameof(expression));
+            Expression = expression;
             return this;
         }
 

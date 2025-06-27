@@ -58,7 +58,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.IExpression<string> FieldNameExpression
+        public CrossCutting.Utilities.QueryEvaluator.Expression Expression
         {
             get;
         }
@@ -68,9 +68,9 @@ namespace CrossCutting.Utilities.QueryEvaluator
             get;
         }
 
-        public QuerySortOrder(CrossCutting.Utilities.ExpressionEvaluator.IExpression<string> fieldNameExpression, CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection order)
+        public QuerySortOrder(CrossCutting.Utilities.QueryEvaluator.Expression expression, CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection order)
         {
-            this.FieldNameExpression = fieldNameExpression;
+            this.Expression = expression;
             this.Order = order;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
