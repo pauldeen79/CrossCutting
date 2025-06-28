@@ -2,24 +2,25 @@
 
 public partial record FieldNameExpression
 {
-    public override Result<object?> Evaluate(object? context)
+    public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
-        if (context is null)
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
+        var contextValueResult = (await context.State
+            .TryCastValueAsync<object?>(Constants.State)
+            .ConfigureAwait(false)).EnsureValue();
+
+        if (!contextValueResult.IsSuccessful())
         {
-            return Result.NoContent<object?>();
+            return contextValueResult;
         }
 
-        var property = context.GetType().GetProperty(FieldName, BindingFlags.Instance | BindingFlags.Public);
+        var property = contextValueResult.Value!.GetType().GetProperty(FieldName, BindingFlags.Instance | BindingFlags.Public);
         if (property is null)
         {
-            return Result.Invalid<object?>($"Type {context.GetType().FullName} does not contain property {FieldName}");
+            return Result.Invalid<object?>($"Type {contextValueResult.Value.GetType().FullName} does not contain property {FieldName}");
         }
 
-        return Result.WrapException(() =>
-        {
-            var propertyValue = property.GetValue(context);
-
-            return Result.Success<object?>(propertyValue);
-        });
+        return Result.WrapException(() => Result.Success<object?>(property.GetValue(contextValueResult.Value)));
     }
 }

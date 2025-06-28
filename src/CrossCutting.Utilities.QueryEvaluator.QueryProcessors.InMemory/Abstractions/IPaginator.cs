@@ -2,6 +2,6 @@
 
 public interface IPaginator
 {
-    IEnumerable<T> GetPagedData<T>(Query query, IEnumerable<T> filteredRecords)
+    Task<IEnumerable<T>> GetPagedDataAsync<T>(Query query, IEnumerable<T> filteredRecords, CancellationToken token)
         where T : class;
 }

@@ -22,14 +22,16 @@ public class QueryProcessor : IQueryProcessor
             return Result.FromExistingResult<IReadOnlyCollection<TResult>>(result);
         }
 
-        return Result.Success<IReadOnlyCollection<TResult>>(_paginator.GetPagedData
+        return Result.Success<IReadOnlyCollection<TResult>>((await _paginator.GetPagedDataAsync
         (
             new SingleEntityQuery(null, null, query.Filter, query.OrderByFields),
-            result.Value!
+            result.Value!,
+            cancellationToken).ConfigureAwait(false)
         ).ToList());
     }
 
-    public async Task<Result<TResult>> FindOneAsync<TResult>(Query query, CancellationToken cancellationToken) where TResult : class
+    public async Task<Result<TResult>> FindOneAsync<TResult>(Query query, CancellationToken cancellationToken)
+        where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
@@ -39,11 +41,12 @@ public class QueryProcessor : IQueryProcessor
             return Result.FromExistingResult<TResult>(result);
         }
 
-        var firstItem = _paginator.GetPagedData
+        var firstItem = (await _paginator.GetPagedDataAsync
         (
             new SingleEntityQuery(null, null, query.Filter, query.OrderByFields),
-            result.Value!
-        ).FirstOrDefault();
+            result.Value!,
+            cancellationToken
+        ).ConfigureAwait(false)).FirstOrDefault();
 
         return firstItem is null
             ? Result.NotFound<TResult>()
@@ -64,7 +67,7 @@ public class QueryProcessor : IQueryProcessor
 
         return Result.Success<IPagedResult<TResult>>(new PagedResult<TResult>
         (
-            _paginator.GetPagedData(query, filteredRecords),
+            await _paginator.GetPagedDataAsync(query, filteredRecords, cancellationToken).ConfigureAwait(false),
             filteredRecords.Length,
             query.Offset.GetValueOrDefault(),
             query.Limit.GetValueOrDefault()

@@ -2,6 +2,6 @@
 
 public partial record LiteralExpression
 {
-    public override Result<object?> Evaluate(object? context)
-        => Result.Success(Value);
+    public override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => Task.FromResult(Result.Success(Value));
 }

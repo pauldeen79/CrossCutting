@@ -2,5 +2,5 @@
 
 public partial record Expression
 {
-    public abstract Result<object?> Evaluate(object? context);
+    public abstract Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token);
 }

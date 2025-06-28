@@ -2,15 +2,13 @@
 
 public sealed class IntegrationTests : TestBase, IDisposable
 {
-    private readonly DataProviderMock _dataProvider;
     private readonly ServiceProvider _serviceProvider;
 
     public IntegrationTests()
     {
-        _dataProvider = new DataProviderMock();
         _serviceProvider = new ServiceCollection()
             .AddQueryEvaluatorInMemory()
-            .AddSingleton<IDataProvider>(_dataProvider)
+            .AddSingleton(DataProvider)
             .BuildServiceProvider();
     }
 
@@ -24,14 +22,21 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var query = new SingleEntityQueryBuilder()
             .With(x => x.Filter.Add(new ComposableConditionBuilder()
                 .WithLeftExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property1)))
-                .WithOperator(new NotEqualsOperatorBuilder().WithStringComparison(StringComparison.InvariantCulture))
+                .WithOperator(new EqualsOperatorBuilder().WithStringComparison(StringComparison.InvariantCulture))
                 .WithRightExpression(new LiteralExpressionBuilder().WithValue("A"))))
             .With(x => x.OrderByFields.Add(new QuerySortOrderBuilder()
                 .WithExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property2)))
-                .WithOrder(Domains.QuerySortOrderDirection.Ascending)))
+                .WithOrder(QuerySortOrderDirection.Ascending)))
             .Build();
 
-        InitializeMock([new MyEntity { Property1 = "B" }, new MyEntity { Property1 = "A", Property2 = "Z" }, new MyEntity { Property1 = "A", Property2 = "A" }]);
+        InitializeMock(
+            [
+                new MyEntity("B", "C"),
+                new MyEntity("A", "Z"),
+                new MyEntity("B", "D"),
+                new MyEntity("A", "A"),
+                new MyEntity("B", "E"),
+            ]);
 
         var queryProcessor = _serviceProvider.GetRequiredService<IQueryProcessor>();
 
@@ -41,39 +46,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        result.Value.Count.ShouldBe(1);
-        result.Value.First().Property1.ShouldBe("A");
-    }
-
-    private void InitializeMock(MyEntity[] items)
-    {
-        _dataProvider.ResultDelegate = new Func<Query, Task<Result<IEnumerable>>>
-        (
-            async query =>
-            {
-                return Result.Success<IEnumerable>(Enumerable.Empty<object?>());
-            }
-            //items.Where
-            //(
-            //    item =>
-            //    {
-            //        var satisfied = true;
-            //        foreach (var condition in query.Filter)
-            //        {
-            //            var result = condition.EvaluateTypedAsync(CreateContext("Dummy", item), CancellationToken.None).Result;
-            //            if (!result.EnsureValue().IsSuccessful())
-            //            {
-            //                return satisfied = false;
-            //            }
-            //            else if (!result.Value)
-            //            {
-            //                satisfied = false;
-            //                break;
-            //            }
-            //        }
-            //        return satisfied;
-            //    }
-            //)
-        );
+        result.Value.Count.ShouldBe(2);
+        result.Value.First().Property2.ShouldBe("A");
+        result.Value.Last().Property2.ShouldBe("Z");
     }
 }
