@@ -39,6 +39,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             ]);
 
         var queryProcessor = _serviceProvider.GetRequiredService<IQueryProcessor>();
+        var test = Testing.CreateInstance<IExpressionEvaluator>(ClassFactory, ClassFactories);
 
         // Act
         var result = await queryProcessor.FindManyAsync<MyEntity>(query, CancellationToken.None);

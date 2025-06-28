@@ -4,16 +4,21 @@ public abstract class TestBase
 {
     private readonly DataProviderMock _dataProviderMock;
 
-    protected IDictionary<Type, object?> Mocks { get; }
-    protected IExpressionEvaluator Evaluator { get; }
-    protected IDateTimeProvider DateTimeProvider => Mocks.GetOrCreate<IDateTimeProvider>(ClassFactory);
+    protected IDictionary<Type, object?> ClassFactories { get; }
+    protected IExpressionEvaluator Evaluator => ClassFactories.GetOrCreate<IExpressionEvaluator>(ClassFactory);
+    protected IDateTimeProvider DateTimeProvider => ClassFactories.GetOrCreate<IDateTimeProvider>(ClassFactory);
     protected DateTime CurrentDateTime { get; }
     protected IDataProvider DataProvider => _dataProviderMock;
 
     protected TestBase()
     {
-        Mocks = new Dictionary<Type, object?>();
-        Evaluator = Testing.CreateInstance<IExpressionEvaluator>(ClassFactory, Mocks);
+        ClassFactories = new Dictionary<Type, object?>
+        {
+            { typeof(IExpressionEvaluator), typeof(ExpressionEvaluator.ExpressionEvaluator) },
+            { typeof(IExpressionTokenizer), typeof(ExpressionTokenizer) },
+            { typeof(IExpressionParser), typeof(ExpressionParser) },
+            { typeof(IFunctionParser), typeof(FunctionParser) },
+        };
 
         // Freeze DateTime.Now to a predicatable value
         CurrentDateTime = new DateTime(2025, 2, 1, 5, 30, 0, DateTimeKind.Utc);
@@ -54,7 +59,9 @@ public abstract class TestBase
 
     // Class factory for NSubstitute, see Readme.md
     protected object? ClassFactory(Type t)
-        => t.CreateInstance(parameterType => Substitute.For([parameterType], []), Mocks, null, null);
+        => t.CreateInstance(parameterType => parameterType.IsInterface
+            ? Substitute.For([parameterType], [])
+            : parameterType, ClassFactories, null, null);
 
     protected void InitializeMock<T>(T[] items)
     {

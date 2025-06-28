@@ -2,7 +2,7 @@
 
 public class BinaryExpressionTests : TestBase
 {
-    protected IExpression Operator => Mocks.GetOrCreate<IExpression>(ClassFactory);
+    protected IExpression Operator => ClassFactories.GetOrCreate<IExpression>(ClassFactory);
 
     public BinaryExpressionTests()
     {

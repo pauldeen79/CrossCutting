@@ -2,12 +2,12 @@
 
 public abstract class TestBase
 {
-    protected IDictionary<Type, object?> Mocks { get; }
+    protected IDictionary<Type, object?> ClassFactories { get; }
     protected IExpressionEvaluator Evaluator { get; }
-    protected IExpressionComponent Expression => Mocks.GetOrCreate<IExpressionComponent>(ClassFactory);
-    protected IMemberResolver MemberResolver => Mocks.GetOrCreate<IMemberResolver>(ClassFactory);
-    protected IMemberDescriptorProvider MemberDescriptorProvider => Mocks.GetOrCreate<IMemberDescriptorProvider>(ClassFactory);
-    protected IDateTimeProvider DateTimeProvider => Mocks.GetOrCreate<IDateTimeProvider>(ClassFactory);
+    protected IExpressionComponent Expression => ClassFactories.GetOrCreate<IExpressionComponent>(ClassFactory);
+    protected IMemberResolver MemberResolver => ClassFactories.GetOrCreate<IMemberResolver>(ClassFactory);
+    protected IMemberDescriptorProvider MemberDescriptorProvider => ClassFactories.GetOrCreate<IMemberDescriptorProvider>(ClassFactory);
+    protected IDateTimeProvider DateTimeProvider => ClassFactories.GetOrCreate<IDateTimeProvider>(ClassFactory);
     protected DateTime CurrentDateTime { get; }
 
     protected ExpressionEvaluatorContext CreateContext(
@@ -47,7 +47,7 @@ public abstract class TestBase
 
     protected TestBase()
     {
-        Mocks = new Dictionary<Type, object?>
+        ClassFactories = new Dictionary<Type, object?>
         {
             { typeof(IExpressionEvaluator), typeof(ExpressionEvaluator) },
             { typeof(IExpressionTokenizer), typeof(ExpressionTokenizer) },
@@ -70,7 +70,7 @@ public abstract class TestBase
 
     // Class factory for NSubstitute, see Readme.md
     protected object? ClassFactory(Type t)
-        => t.CreateInstance(parameterType => Substitute.For([parameterType], []), Mocks, null, null);
+        => t.CreateInstance(parameterType => Substitute.For([parameterType], []), ClassFactories, null, null);
 
     // Test stub for expression evaluation, that supports strings, integers, long integers, decimals, booleans and DeteTimes (by using TryParse), as well as the context and null keywords
     internal sealed class ExpressionEvaluatorMock : IExpressionEvaluator
@@ -208,7 +208,7 @@ public abstract class TestBase
 
 public abstract class TestBase<T> : TestBase
 {
-    protected T CreateSut() => Testing.CreateInstance<T>(ClassFactory, Mocks, p =>
+    protected T CreateSut() => Testing.CreateInstance<T>(ClassFactory, ClassFactories, p =>
     {
         // Use real implementations for internal types
         if (p.ParameterType == typeof(IEnumerable<IDotExpressionComponent>))
