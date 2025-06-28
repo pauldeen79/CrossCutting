@@ -51,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Aggr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Operators", "src\CrossCutting.Utilities.Operators\CrossCutting.Utilities.Operators.csproj", "{CEDC360E-4DF9-49F1-B100-701ED854F192}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.CodeGeneration", "src\CrossCutting.CodeGeneration\CrossCutting.CodeGeneration.csproj", "{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Parsers.CodeGeneration", "src\CrossCutting.Utilities.Parsers.CodeGeneration\CrossCutting.Utilities.Parsers.CodeGeneration.csproj", "{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.ProcessingPipeline", "src\CrossCutting.ProcessingPipeline\CrossCutting.ProcessingPipeline.csproj", "{CAC749E5-3235-4331-9808-9061022EDE18}"
 EndProject

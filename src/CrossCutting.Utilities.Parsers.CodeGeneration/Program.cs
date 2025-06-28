@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration;
+﻿namespace CrossCutting.Utilities.Parsers.CodeGeneration;
 
 [ExcludeFromCodeCoverage]
 internal static class Program
@@ -25,7 +25,7 @@ internal static class Program
             .AddScoped<IAssemblyInfoContextService, MyAssemblyInfoContextService>();
 
         var generators = typeof(Program).Assembly.GetExportedTypes()
-            .Where(x => !x.IsAbstract && x.BaseType == typeof(QueryEvaluatorCSharpClassBase))
+            .Where(x => !x.IsAbstract && x.BaseType == typeof(CrossCuttingCSharpClassBase))
             .ToArray();
 
         foreach (var type in generators)

@@ -10,7 +10,6 @@ internal static class Program
         var basePath = currentDirectory switch
         {
             var x when x.EndsWith(Constants.ProjectName) => Path.Combine(currentDirectory, @"src/"),
-            var x when x.EndsWith(Constants.Namespaces.UtilitiesExpressionEvaluator) => Path.Combine(currentDirectory, @"../"),
             var x when x.EndsWith($"{Constants.ProjectName}.CodeGeneration") => Path.Combine(currentDirectory, @"../"),
             _ => Path.Combine(currentDirectory, @"../../../../")
         };
