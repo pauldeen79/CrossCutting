@@ -52,7 +52,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "MyFunction(state)";
+        var expression = $"MyFunction({Constants.State})";
 
         // Act
         var result = await sut.EvaluateAsync(CreateContext(expression, state: "hello world", evaluator: sut), CancellationToken.None);
@@ -67,7 +67,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "MyTypedFunction(state)";
+        var expression = $"MyTypedFunction({Constants.State})";
 
         // Act
         var result = await sut.EvaluateAsync(CreateContext(expression, state: "hello world", evaluator: sut), CancellationToken.None);
@@ -82,7 +82,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "state.Length";
+        var expression = $"{Constants.State}.Length";
         var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
 
         // Act
@@ -98,7 +98,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "state.ToString()";
+        var expression = $"{Constants.State}.ToString()";
         var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
 
         // Act
@@ -204,7 +204,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "$\"my value with {state} items\"";
+        var expression = "$\"my value with {State} items\"";
 
         // Act
         var result = await sut.EvaluateAsync(CreateContext(expression, state: "replaced", evaluator: sut), CancellationToken.None);
@@ -393,7 +393,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateTypedAsync<int>(CreateContext("state[1]", evaluator: sut, state: new object[] { 1, 2, 3 }), CancellationToken.None);
+        var result = await sut.EvaluateTypedAsync<int>(CreateContext($"{Constants.State}[1]", evaluator: sut, state: new object[] { 1, 2, 3 }), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -408,7 +408,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state[1].ToString()", evaluator: sut, state: new object[] { 1, 2, 3 }, settings: settings), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}[1].ToString()", evaluator: sut, state: new object[] { 1, 2, 3 }, settings: settings), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -423,7 +423,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.Date", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.Date", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -438,7 +438,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.Year", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.Year", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -453,7 +453,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.Month", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.Month", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -468,7 +468,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.Day", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.Day", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -483,7 +483,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.Hour", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.Hour", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -498,7 +498,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.Minute", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.Minute", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -513,7 +513,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.Second", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.Second", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -528,7 +528,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.AddYears(1)", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.AddYears(1)", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -543,7 +543,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.AddMonths(1)", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.AddMonths(1)", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -558,7 +558,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.AddDays(1)", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.AddDays(1)", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -573,7 +573,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.AddHours(1)", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.AddHours(1)", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -588,7 +588,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.AddMinutes(1)", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.AddMinutes(1)", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -603,7 +603,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.AddSeconds(1)", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.AddSeconds(1)", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -618,7 +618,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.Length", evaluator: sut, state: stringValue), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.Length", evaluator: sut, state: stringValue), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -633,7 +633,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.Length", evaluator: sut, state: arrayValue), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.Length", evaluator: sut, state: arrayValue), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -648,7 +648,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("Count(state)", evaluator: sut, state: enumerableValue), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"Count({Constants.State})", evaluator: sut, state: enumerableValue), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -663,7 +663,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("state.Count", evaluator: sut, state: collectionValue), CancellationToken.None);
+        var result = await sut.EvaluateAsync(CreateContext($"{Constants.State}.Count", evaluator: sut, state: collectionValue), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -916,7 +916,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.ParseAsync(CreateContext("state.Date", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.ParseAsync(CreateContext($"{Constants.State}.Date", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -931,7 +931,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.ParseAsync(CreateContext("state.Year", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.ParseAsync(CreateContext($"{Constants.State}.Year", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -946,7 +946,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.ParseAsync(CreateContext("state.Month", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.ParseAsync(CreateContext($"{Constants.State}.Month", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -961,7 +961,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.ParseAsync(CreateContext("state.Day", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.ParseAsync(CreateContext($"{Constants.State}.Day", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -976,7 +976,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.ParseAsync(CreateContext("state.Hour", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.ParseAsync(CreateContext($"{Constants.State}.Hour", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -991,7 +991,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.ParseAsync(CreateContext("state.Minute", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.ParseAsync(CreateContext($"{Constants.State}.Minute", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -1006,7 +1006,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.ParseAsync(CreateContext("state.Second", evaluator: sut, state: dateTime), CancellationToken.None);
+        var result = await sut.ParseAsync(CreateContext($"{Constants.State}.Second", evaluator: sut, state: dateTime), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -1021,7 +1021,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.ParseAsync(CreateContext("state.Length", evaluator: sut, state: stringValue), CancellationToken.None);
+        var result = await sut.ParseAsync(CreateContext($"{Constants.State}.Length", evaluator: sut, state: stringValue), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -1036,7 +1036,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.ParseAsync(CreateContext("state.Length", evaluator: sut, state: arrayValue), CancellationToken.None);
+        var result = await sut.ParseAsync(CreateContext($"{Constants.State}.Length", evaluator: sut, state: arrayValue), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -1051,7 +1051,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.ParseAsync(CreateContext("Count(state)", evaluator: sut, state: enumerableValue), CancellationToken.None);
+        var result = await sut.ParseAsync(CreateContext($"Count({Constants.State})", evaluator: sut, state: enumerableValue), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -1066,7 +1066,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var sut = CreateSut();
 
         // Act
-        var result = await sut.ParseAsync(CreateContext("state.Count", evaluator: sut, state: collectionValue), CancellationToken.None);
+        var result = await sut.ParseAsync(CreateContext($"{Constants.State}.Count", evaluator: sut, state: collectionValue), CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -1150,9 +1150,9 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "MyFunction(state)";
+        var expression = $"MyFunction({Constants.State})";
         var state = new AsyncResultDictionaryBuilder<object?>()
-            .Add("state", Result.NoContent<object?>)
+            .Add(Constants.State, Result.NoContent<object?>)
             .BuildDeferred();
 
         // Act

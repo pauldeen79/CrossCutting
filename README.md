@@ -14,6 +14,7 @@ This repository consists of the following packages:
 | CrossCutting.Utilities.ObjectDumper        | Produces readable flat-text representation from objects, for use in logging                                                                                                              |
 | CrossCutting.Utilities.Parsers             | Parsers for pipe-delmited data table strings, TSQL INSERT INTO statements, expression strings, function strings, math expressions and formattable strings (dynamic interpolated strings) |
 | CrossCutting.Utilities.ExpressionEvaluator | Expression evaluator to dynamically evaluate strings, with support for all kinds of stuff, like: operators, functions, mathematic expressions, and so on                                 |
+| CrossCutting.Utilities.QueryEvaluator      | Query evaluator to dynamically evaluate queries, similar to dynamic LINQ                                                                                                                 |
 | System.Data.Stub                           | Stubs for System.Data interfaces like IDbConnection, IDbCommand and IDataReader                                                                                                          |
 
 # Using NSubstitute or Moq as mock factory for CrossCutting.Common.Testing
@@ -100,3 +101,8 @@ Design decisions:
 * Allow duck-typing for properties and methods, with or without reflection
 * Without reflection, you have to write DotExpressionComponents to implement the members
 * Basic support for discoverability and validation, using a Parse method. This will return the status (Ok/Invalid) and the return type of the expression, as well as some details like the inner results, and the type that handles this expression
+
+# QueryEvaluator
+
+Queries are data transfer objects (C# classes) which you can fill with filters, paging information and sorting information.
+These queries can then be processed by a query processor, which can use any source like an in-memory one, RDBMS or external API.

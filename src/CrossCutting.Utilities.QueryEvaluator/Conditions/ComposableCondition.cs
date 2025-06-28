@@ -1,10 +1,10 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Conditions;
 
-public partial record ComposableCondition : IEvaluatable<bool>
+public partial record ComposableCondition
 {
-    public async Task<Result<object?>> EvaluateAsync(CancellationToken token)
-        => await EvaluateTypedAsync(token).ConfigureAwait(false);
+    public async override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
-    public Task<Result<bool>> EvaluateTypedAsync(CancellationToken token)
-        => Task.Run(() => Operator.Evaluate(LeftExpression, RightExpression), token);
+    public override Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => Task.Run(() => Operator.Evaluate(LeftExpression.Evaluate(context).Value, RightExpression.Evaluate(context).Value), token);
 }

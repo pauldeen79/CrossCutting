@@ -4,16 +4,22 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>13.0</LangVersion>
     <Nullable>enable</Nullable>
-    <PackageId>pauldeen79.CrossCutting.DataTableDumper</PackageId>
+    <AnalysisLevel>latest-All</AnalysisLevel>
+    <PackageId>pauldeen79.CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>3.30.0</Version>
-    <PackageVersion>3.30.0</PackageVersion>
+    <Version>1.0.0</Version>
+    <PackageVersion>1.0.0</PackageVersion>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CrossCutting.Common\CrossCutting.Common.csproj" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrossCutting.Data.Core\CrossCutting.Data.Core.csproj" />
+    <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator\CrossCutting.Utilities.QueryEvaluator.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -37,7 +37,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             return Result.FromExistingResult<object?>(error);
         }
 
-        return await results.GetValue<IExpression>(nameof(IExpressionParser.Parse)).EvaluateAsync(token).ConfigureAwait(false);
+        return await results.GetValue<IExpression>(nameof(IExpressionParser.Parse)).EvaluateAsync(context, token).ConfigureAwait(false);
     }
 
     public async Task<Result<T>> EvaluateTypedAsync<T>(ExpressionEvaluatorContext context, CancellationToken token)
@@ -61,9 +61,9 @@ public class ExpressionEvaluator : IExpressionEvaluator
         var expression = results.GetValue<IExpression>(nameof(IExpressionParser.Parse));
 
         return expression is IExpression<T> typedExpression
-            ? (await typedExpression.EvaluateTypedAsync(token).ConfigureAwait(false))
+            ? (await typedExpression.EvaluateTypedAsync(context, token).ConfigureAwait(false))
                 .EnsureNotNull("EvaluateTypedAsync returned null")
-            : (await expression.EvaluateAsync(token).ConfigureAwait(false))
+            : (await expression.EvaluateAsync(context, token).ConfigureAwait(false))
                 .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage)
                 .TryCastAllowNull<T>();
     }

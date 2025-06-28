@@ -93,7 +93,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(CreateContext("$\"some {state}\"", "value"), CancellationToken.None);
+            var result = await sut.EvaluateAsync(CreateContext("$\"some {State}\"", "value"), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -120,7 +120,7 @@ public class InterpolatedStringExpressionComponentTests : TestBase<InterpolatedS
             // Arrange
             var sut = CreateSut();
             // just for fun, let's use classic ASP expression syntax ;-)
-            var context = CreateContext("$\"<#= state #>\"", state: "Hello world!", settings: new ExpressionEvaluatorSettingsBuilder().WithPlaceholderStart("<#=").WithPlaceholderEnd("#>"));
+            var context = CreateContext("$\"<#= State #>\"", state: "Hello world!", settings: new ExpressionEvaluatorSettingsBuilder().WithPlaceholderStart("<#=").WithPlaceholderEnd("#>"));
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);

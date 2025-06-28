@@ -21,10 +21,9 @@ public abstract class TestBase
         IReadOnlyDictionary<string, Task<Result<object?>>>? dict = null;
         if (state is not null)
         {
-            dict = new Dictionary<string, Task<Result<object?>>>
-            {
-                { "state", Task.FromResult(Result.Success<object?>(state)) }
-            };
+            dict = new AsyncResultDictionaryBuilder<object?>()
+                .Add(Constants.State, state)
+                .BuildDeferred();
         }
 
         return CreateContext(expression, dict, currentRecursionLevel, parentContext, evaluator, settings);
@@ -96,7 +95,7 @@ public abstract class TestBase
                 return await dlg.ConfigureAwait(false);
             }
 
-            if (context.Expression == "state.Length")
+            if (context.Expression == $"{Constants.State}.Length")
             {
                 return Result.Success<object?>((context.State?.ToString() ?? string.Empty).Length);
             }
@@ -196,7 +195,7 @@ public abstract class TestBase
                 "string" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
                 "unknown" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok),
                 "object" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(object)),
-                "state" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(context.State?.FirstOrDefault().Value?.Result.Value?.GetType()),
+                Constants.State => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(context.State?.FirstOrDefault().Value?.Result.Value?.GetType()),
                 _ => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok)
             });
 

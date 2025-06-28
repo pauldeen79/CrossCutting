@@ -28,11 +28,15 @@ public sealed class BinaryExpression : IExpression
         SourceExpression = sourceExpression;
     }
 
-    public async Task<Result<object?>> EvaluateAsync(CancellationToken token)
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         var results = await new AsyncResultDictionaryBuilder()
-            .Add(nameof(Constants.LeftExpression), Left.Value is not null ? Left.Value.EvaluateAsync(token) : Task.FromResult(Result.FromExistingResult<object?>(Left)))
-            .Add(nameof(Constants.RightExpression), Right.Value is not null ? Right.Value.EvaluateAsync(token) : Task.FromResult(Result.FromExistingResult<object?>(Right)))
+            .Add(nameof(Constants.LeftExpression), Left.Value is not null
+                ? Left.Value.EvaluateAsync(context, token)
+                : Task.FromResult(Result.FromExistingResult<object?>(Left)))
+            .Add(nameof(Constants.RightExpression), Right.Value is not null
+                ? Right.Value.EvaluateAsync(context, token)
+                : Task.FromResult(Result.FromExistingResult<object?>(Right)))
             .Build()
             .ConfigureAwait(false);
 
