@@ -9,8 +9,4 @@ public static class Constants
     {
         public const string UtilitiesQueryEvaluator = "CrossCutting.Utilities.QueryEvaluator";
     }
-
-    public static class Paths
-    {
-    }
 }
