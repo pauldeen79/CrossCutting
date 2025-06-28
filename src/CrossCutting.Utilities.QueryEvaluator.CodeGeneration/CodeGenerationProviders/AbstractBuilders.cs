@@ -9,10 +9,6 @@ public class AbstractBuilders(IPipelineService pipelineService) : QueryEvaluator
     protected override bool EnableEntityInheritance => true;
     protected override bool IsAbstract => true;
 
-    // Do not generate 'With' methods. Do this on the interfaces instead.
-    protected override string SetMethodNameFormatString => string.Empty;
-    protected override string AddMethodNameFormatString => string.Empty;
-
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
         => GetBuildersAsync(GetAbstractModelsAsync(), CurrentNamespace, Constants.Namespaces.UtilitiesQueryEvaluator);
 }

@@ -20,13 +20,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var query = new SingleEntityQueryBuilder()
-            .With(x => x.Filter.Add(new ComposableConditionBuilder()
+            .AddFilter(new ComposableConditionBuilder()
                 .WithLeftExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property1)))
                 .WithOperator(new EqualsOperatorBuilder().WithStringComparison(StringComparison.InvariantCulture))
-                .WithRightExpression(new LiteralExpressionBuilder().WithValue("A"))))
-            .With(x => x.OrderByFields.Add(new QuerySortOrderBuilder()
+                .WithRightExpression(new LiteralExpressionBuilder().WithValue("A")))
+            .AddOrderByFields(new QuerySortOrderBuilder()
                 .WithExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property2)))
-                .WithOrder(QuerySortOrderDirection.Ascending)))
+                .WithOrder(QuerySortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(

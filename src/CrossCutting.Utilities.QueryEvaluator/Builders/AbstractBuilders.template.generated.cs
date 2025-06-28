@@ -29,6 +29,24 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         public abstract TEntity BuildTyped();
 
+        public TBuilder WithCombination(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination)
+        {
+            Combination = combination;
+            return (TBuilder)this;
+        }
+
+        public TBuilder WithStartGroup(bool startGroup = true)
+        {
+            StartGroup = startGroup;
+            return (TBuilder)this;
+        }
+
+        public TBuilder WithEndGroup(bool endGroup = true)
+        {
+            EndGroup = endGroup;
+            return (TBuilder)this;
+        }
+
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Condition(ConditionBuilder<TBuilder, TEntity> entity)
         {
             return entity.BuildTyped();
@@ -100,6 +118,44 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
         }
 
         public abstract TEntity BuildTyped();
+
+        public TBuilder AddFilter(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder> filter)
+        {
+            if (filter is null) throw new System.ArgumentNullException(nameof(filter));
+            return AddFilter(filter.ToArray());
+        }
+
+        public TBuilder AddFilter(params CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder[] filter)
+        {
+            if (filter is null) throw new System.ArgumentNullException(nameof(filter));
+            foreach (var item in filter) Filter.Add(item);
+            return (TBuilder)this;
+        }
+
+        public TBuilder AddOrderByFields(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder> orderByFields)
+        {
+            if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
+            return AddOrderByFields(orderByFields.ToArray());
+        }
+
+        public TBuilder AddOrderByFields(params CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder[] orderByFields)
+        {
+            if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
+            foreach (var item in orderByFields) OrderByFields.Add(item);
+            return (TBuilder)this;
+        }
+
+        public TBuilder WithLimit(System.Nullable<int> limit)
+        {
+            Limit = limit;
+            return (TBuilder)this;
+        }
+
+        public TBuilder WithOffset(System.Nullable<int> offset)
+        {
+            Offset = offset;
+            return (TBuilder)this;
+        }
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Query(QueryBuilder<TBuilder, TEntity> entity)
         {

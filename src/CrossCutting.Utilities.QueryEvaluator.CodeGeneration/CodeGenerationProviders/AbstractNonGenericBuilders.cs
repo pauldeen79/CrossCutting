@@ -14,7 +14,7 @@ public class AbstractNonGenericBuilders(IPipelineService pipelineService) : Quer
     protected override bool IsAbstract => true;
     protected override string FilenameSuffix => ".nongeneric.template.generated";
 
-    // Do not generate 'With' methods. Do this on the interfaces instead.
+    // Do not generate 'With' methods. This conflicts with the Abstract builders.
     protected override string SetMethodNameFormatString => string.Empty;
     protected override string AddMethodNameFormatString => string.Empty;
 
