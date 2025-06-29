@@ -142,7 +142,7 @@ public static class TypeExtensions
         var argumentInstancesCopy = argumentInstances.ToArray();
         for (var i = 0; i < parameters.Length; i++)
         {
-            if (parameters[i].ParameterType.IsValueType || parameters[i].ParameterType.IsEnum)
+            if ((parameters[i].ParameterType.IsValueType || parameters[i].ParameterType.IsEnum) && argumentInstancesCopy[i] is null)
             {
                 argumentInstancesCopy[i] = Activator.CreateInstance(parameters[i].ParameterType);
             }

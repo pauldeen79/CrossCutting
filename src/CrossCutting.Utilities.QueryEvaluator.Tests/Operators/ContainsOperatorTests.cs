@@ -9,7 +9,8 @@ public class ContainsOperatorTests : TestBase<ContainsOperator>
         {
             // Arrange
             var leftValue = "this";
-            var rightValue = "this";
+            var rightValue = "I";
+            StringComparison = StringComparison.OrdinalIgnoreCase;
             var sut = CreateSut();
 
             // Act

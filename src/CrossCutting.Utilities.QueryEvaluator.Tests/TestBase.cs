@@ -1,6 +1,4 @@
-﻿using CrossCutting.Utilities.ExpressionEvaluator.DotExpressionComponents;
-
-namespace CrossCutting.Utilities.QueryEvaluator.Tests;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests;
 
 public abstract class TestBase
 {
@@ -231,5 +229,15 @@ public abstract class TestBase
 
 public abstract class TestBase<T> : TestBase
 {
-    protected T CreateSut() => Testing.CreateInstance<T>(ClassFactory, ClassFactories);
+    protected StringComparison StringComparison { get; set; }
+
+    protected T CreateSut() => Testing.CreateInstance<T>(ClassFactory, ClassFactories, p =>
+    {
+        if (p.ParameterType == typeof(StringComparison))
+        {
+            return StringComparison;
+        }
+
+        return null;
+    });
 }
