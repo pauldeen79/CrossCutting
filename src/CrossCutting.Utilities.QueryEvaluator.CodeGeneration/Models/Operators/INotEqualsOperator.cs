@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Operators;
 
-internal interface INotEqualsOperator : IOperator
+internal interface INotEqualsOperator : IOperator, IStringComparisonContainer
 {
-    StringComparison StringComparison { get; }
 }
