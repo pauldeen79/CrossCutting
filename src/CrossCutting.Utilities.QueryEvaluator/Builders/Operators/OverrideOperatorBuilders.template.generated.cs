@@ -10,11 +10,28 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Builders.Operators
 {
-    public partial class ContainsOperatorBuilder : OperatorBuilder<ContainsOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.ContainsOperator>
+    public partial class ContainsOperatorBuilder : OperatorBuilder<ContainsOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.ContainsOperator>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder
     {
+        private System.StringComparison _stringComparison;
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
         public ContainsOperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operators.ContainsOperator source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _stringComparison = source.StringComparison;
         }
 
         public ContainsOperatorBuilder() : base()
@@ -24,7 +41,12 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Operators
 
         public override CrossCutting.Utilities.QueryEvaluator.Operators.ContainsOperator BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Operators.ContainsOperator();
+            return new CrossCutting.Utilities.QueryEvaluator.Operators.ContainsOperator(StringComparison);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder.Build()
+        {
+            return BuildTyped();
         }
 
         partial void SetDefaultValues();
@@ -222,11 +244,28 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Operators
             return entity.BuildTyped();
         }
     }
-    public partial class NotContainsOperatorBuilder : OperatorBuilder<NotContainsOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.NotContainsOperator>
+    public partial class NotContainsOperatorBuilder : OperatorBuilder<NotContainsOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.NotContainsOperator>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder
     {
+        private System.StringComparison _stringComparison;
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
         public NotContainsOperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operators.NotContainsOperator source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _stringComparison = source.StringComparison;
         }
 
         public NotContainsOperatorBuilder() : base()
@@ -236,7 +275,12 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Operators
 
         public override CrossCutting.Utilities.QueryEvaluator.Operators.NotContainsOperator BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Operators.NotContainsOperator();
+            return new CrossCutting.Utilities.QueryEvaluator.Operators.NotContainsOperator(StringComparison);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder.Build()
+        {
+            return BuildTyped();
         }
 
         partial void SetDefaultValues();

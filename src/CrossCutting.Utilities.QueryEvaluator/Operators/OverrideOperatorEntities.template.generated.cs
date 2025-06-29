@@ -10,10 +10,16 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Operators
 {
-    public partial record ContainsOperator : CrossCutting.Utilities.QueryEvaluator.Operator
+    public partial record ContainsOperator : CrossCutting.Utilities.QueryEvaluator.Operator, CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer
     {
-        public ContainsOperator() : base()
+        public System.StringComparison StringComparison
         {
+            get;
+        }
+
+        public ContainsOperator(System.StringComparison stringComparison) : base()
+        {
+            this.StringComparison = stringComparison;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -25,6 +31,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Operators
         public CrossCutting.Utilities.QueryEvaluator.Builders.Operators.ContainsOperatorBuilder ToTypedBuilder()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Operators.ContainsOperatorBuilder(this);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
         }
     }
     public partial record EndsWithOperator : CrossCutting.Utilities.QueryEvaluator.Operator, CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer
@@ -151,10 +162,16 @@ namespace CrossCutting.Utilities.QueryEvaluator.Operators
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Operators.IsNullOperatorBuilder(this);
         }
     }
-    public partial record NotContainsOperator : CrossCutting.Utilities.QueryEvaluator.Operator
+    public partial record NotContainsOperator : CrossCutting.Utilities.QueryEvaluator.Operator, CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer
     {
-        public NotContainsOperator() : base()
+        public System.StringComparison StringComparison
         {
+            get;
+        }
+
+        public NotContainsOperator(System.StringComparison stringComparison) : base()
+        {
+            this.StringComparison = stringComparison;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -166,6 +183,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Operators
         public CrossCutting.Utilities.QueryEvaluator.Builders.Operators.NotContainsOperatorBuilder ToTypedBuilder()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Operators.NotContainsOperatorBuilder(this);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
         }
     }
     public partial record NotEndsWithOperator : CrossCutting.Utilities.QueryEvaluator.Operator, CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer

@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests;
+﻿using CrossCutting.Utilities.ExpressionEvaluator.DotExpressionComponents;
+
+namespace CrossCutting.Utilities.QueryEvaluator.Tests;
 
 public abstract class TestBase
 {
@@ -94,7 +96,8 @@ public abstract class TestBase
             }
         );
     }
-    protected async Task<Result<bool>> IsItemValid(Query query, object item)
+
+    private async Task<Result<bool>> IsItemValid(Query query, object item)
     {
         var context = CreateContext("Dummy", item);
         if (CanEvaluateSimpleConditions(query.Filter))
@@ -224,4 +227,9 @@ public abstract class TestBase
         => closeIndex == expression.Length
             ? string.Empty
             : expression.Substring(closeIndex + 1);
+}
+
+public abstract class TestBase<T> : TestBase
+{
+    protected T CreateSut() => Testing.CreateInstance<T>(ClassFactory, ClassFactories);
 }
