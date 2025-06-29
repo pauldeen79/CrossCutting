@@ -172,9 +172,9 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Operators
             return entity.BuildTyped();
         }
     }
-    public partial class GreaterThanOrEqualOperatorBuilder : OperatorBuilder<GreaterThanOrEqualOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOrEqualOperator>
+    public partial class GreaterThanOrEqualOperatorBuilder : OperatorBuilder<GreaterThanOrEqualOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.GreaterOrEqualThanOperator>
     {
-        public GreaterThanOrEqualOperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOrEqualOperator source) : base(source)
+        public GreaterThanOrEqualOperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operators.GreaterOrEqualThanOperator source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
         }
@@ -184,14 +184,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Operators
             SetDefaultValues();
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOrEqualOperator BuildTyped()
+        public override CrossCutting.Utilities.QueryEvaluator.Operators.GreaterOrEqualThanOperator BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOrEqualOperator();
+            return new CrossCutting.Utilities.QueryEvaluator.Operators.GreaterOrEqualThanOperator();
         }
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operators.GreaterThanOrEqualOperator(GreaterThanOrEqualOperatorBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operators.GreaterOrEqualThanOperator(GreaterThanOrEqualOperatorBuilder entity)
         {
             return entity.BuildTyped();
         }
@@ -452,9 +452,9 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Operators
             return entity.BuildTyped();
         }
     }
-    public partial class SmallerThanOrEqualOperatorBuilder : OperatorBuilder<SmallerThanOrEqualOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOrEqualOperator>
+    public partial class SmallerThanOrEqualOperatorBuilder : OperatorBuilder<SmallerThanOrEqualOperatorBuilder, CrossCutting.Utilities.QueryEvaluator.Operators.SmallerOrEqualThanOperator>
     {
-        public SmallerThanOrEqualOperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOrEqualOperator source) : base(source)
+        public SmallerThanOrEqualOperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operators.SmallerOrEqualThanOperator source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
         }
@@ -464,14 +464,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Operators
             SetDefaultValues();
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOrEqualOperator BuildTyped()
+        public override CrossCutting.Utilities.QueryEvaluator.Operators.SmallerOrEqualThanOperator BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOrEqualOperator();
+            return new CrossCutting.Utilities.QueryEvaluator.Operators.SmallerOrEqualThanOperator();
         }
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operators.SmallerThanOrEqualOperator(SmallerThanOrEqualOperatorBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operators.SmallerOrEqualThanOperator(SmallerThanOrEqualOperatorBuilder entity)
         {
             return entity.BuildTyped();
         }

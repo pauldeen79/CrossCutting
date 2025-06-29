@@ -26,7 +26,7 @@ public sealed class IntegrationTests : TestBase
             ]);
 
         // Act
-        var result = await QueryProcessor.FindManyAsync<MyEntity>(query, CancellationToken.None);
+        var result = await QueryProcessor.FindManyAsync<MyEntity>(query);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -40,7 +40,7 @@ public sealed class IntegrationTests : TestBase
     public async Task Can_Create_ExpressionEvaluator_And_Evaluate_Expression()
     {
         // Act
-        var now = await Evaluator.EvaluateAsync(CreateContext("DateTime.Now"), CancellationToken.None);
+        var now = await Evaluator.EvaluateAsync(CreateContext("DateTime.Now"));
 
         // Assert
         now.Status.ShouldBe(ResultStatus.Ok);

@@ -20,6 +20,7 @@ global using CrossCutting.Utilities.QueryEvaluator.Builders.Extensions;
 global using CrossCutting.Utilities.QueryEvaluator.Builders.Operators;
 global using CrossCutting.Utilities.QueryEvaluator.Builders.Queries;
 global using CrossCutting.Utilities.QueryEvaluator.Domains;
+global using CrossCutting.Utilities.QueryEvaluator.Extensions;
 global using CrossCutting.Utilities.QueryEvaluator.Operators;
 global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory.Abstractions;
 global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory.Extensions;

@@ -111,9 +111,9 @@ namespace CrossCutting.Utilities.QueryEvaluator.Operators
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Operators.GreaterThanOperatorBuilder(this);
         }
     }
-    public partial record GreaterThanOrEqualOperator : CrossCutting.Utilities.QueryEvaluator.Operator
+    public partial record GreaterOrEqualThanOperator : CrossCutting.Utilities.QueryEvaluator.Operator
     {
-        public GreaterThanOrEqualOperator() : base()
+        public GreaterOrEqualThanOperator() : base()
         {
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
@@ -291,9 +291,9 @@ namespace CrossCutting.Utilities.QueryEvaluator.Operators
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Operators.SmallerThanOperatorBuilder(this);
         }
     }
-    public partial record SmallerThanOrEqualOperator : CrossCutting.Utilities.QueryEvaluator.Operator
+    public partial record SmallerOrEqualThanOperator : CrossCutting.Utilities.QueryEvaluator.Operator
     {
-        public SmallerThanOrEqualOperator() : base()
+        public SmallerOrEqualThanOperator() : base()
         {
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
