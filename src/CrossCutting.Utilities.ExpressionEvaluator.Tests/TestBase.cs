@@ -3,7 +3,7 @@
 public abstract class TestBase
 {
     protected IDictionary<Type, object?> ClassFactories { get; }
-    protected IExpressionEvaluator Evaluator { get; }
+    protected IExpressionEvaluator Evaluator => ClassFactories.GetOrCreate<IExpressionEvaluator>(ClassFactory);
     protected IExpressionComponent Expression => ClassFactories.GetOrCreate<IExpressionComponent>(ClassFactory);
     protected IMemberResolver MemberResolver => ClassFactories.GetOrCreate<IMemberResolver>(ClassFactory);
     protected IMemberDescriptorProvider MemberDescriptorProvider => ClassFactories.GetOrCreate<IMemberDescriptorProvider>(ClassFactory);
@@ -45,17 +45,34 @@ public abstract class TestBase
             Part = right
         };
 
+    protected virtual Type[] GetExcludedTypes()
+        => [
+            typeof(IExpressionComponent),
+            typeof(IMemberResolver),
+            typeof(IMemberDescriptorProvider),
+            typeof(IDateTimeProvider)
+           ];
+
     protected TestBase()
     {
-        ClassFactories = new Dictionary<Type, object?>
-        {
-            { typeof(IExpressionEvaluator), typeof(ExpressionEvaluator) },
-            { typeof(IExpressionTokenizer), typeof(ExpressionTokenizer) },
-            { typeof(IExpressionParser), typeof(ExpressionParser) },
-            { typeof(IFunctionParser), typeof(FunctionParser) },
-        };
+#pragma warning disable CA2214 // Do not call overridable methods in constructors
+        var excludedTypes = GetExcludedTypes();
+#pragma warning restore CA2214 // Do not call overridable methods in constructors
+        ClassFactories = new ServiceCollection()
+            .AddExpressionEvaluator()
+            .GroupBy(sd => sd.ServiceType)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Count() == 1
+                    ? g.First().ImplementationInstance ?? g.First().ImplementationType
+                    : g.Select(t => t.ImplementationInstance ?? t.ImplementationType).ToArray());
 
-        Evaluator = new ExpressionEvaluatorMock(Expression);
+        ClassFactories
+            .Where(x => excludedTypes.Contains(x.Key))
+            .ToList()
+            .ForEach(x => ClassFactories.Remove(x.Key));
+
+        ClassFactories[typeof(IExpressionEvaluator)] = new ExpressionEvaluatorMock(Expression);
 
         // Note that you have to setup EvaluateAsync and ValidateAsync on Expression yourself
         // Note that you have to setup ResolveAsync om MemberResolver yourself

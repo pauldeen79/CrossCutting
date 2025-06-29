@@ -5,28 +5,33 @@ public abstract class TestBase
     private readonly DataProviderMock _dataProviderMock;
 
     protected IDictionary<Type, object?> ClassFactories { get; }
+    protected IQueryProcessor QueryProcessor => ClassFactories.GetOrCreate<IQueryProcessor>(ClassFactory);
     protected IExpressionEvaluator Evaluator => ClassFactories.GetOrCreate<IExpressionEvaluator>(ClassFactory);
     protected IDateTimeProvider DateTimeProvider => ClassFactories.GetOrCreate<IDateTimeProvider>(ClassFactory);
+    protected IDataProvider DataProvider => ClassFactories.GetOrCreate<IDataProvider>(ClassFactory);
     protected DateTime CurrentDateTime { get; }
-    protected IDataProvider DataProvider => _dataProviderMock;
 
     protected TestBase()
     {
-        ClassFactories = new Dictionary<Type, object?>
-        {
-            { typeof(IExpressionEvaluator), typeof(ExpressionEvaluator.ExpressionEvaluator) },
-            { typeof(IExpressionTokenizer), typeof(ExpressionTokenizer) },
-            { typeof(IExpressionParser), typeof(ExpressionParser) },
-            { typeof(IFunctionParser), typeof(FunctionParser) },
-        };
+        _dataProviderMock = new DataProviderMock();
+        var excludedTypes = new Type[] { typeof(IDateTimeProvider) };
+        ClassFactories = new ServiceCollection()
+            .AddExpressionEvaluator()
+            .AddQueryEvaluatorInMemory()
+            .AddSingleton<IDataProvider>(_dataProviderMock)
+            .Where(sd => !excludedTypes.Contains(sd.ServiceType))
+            .GroupBy(sd => sd.ServiceType)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Count() == 1
+                    ? g.First().ImplementationInstance ?? g.First().ImplementationType
+                    : g.Select(t => t.ImplementationInstance ?? t.ImplementationType).ToArray());
 
         // Freeze DateTime.Now to a predicatable value
         CurrentDateTime = new DateTime(2025, 2, 1, 5, 30, 0, DateTimeKind.Utc);
         DateTimeProvider
             .GetCurrentDateTime()
             .Returns(CurrentDateTime);
-
-        _dataProviderMock = new DataProviderMock();
     }
 
     protected ExpressionEvaluatorContext CreateContext(

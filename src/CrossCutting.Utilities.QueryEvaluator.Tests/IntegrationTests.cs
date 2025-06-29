@@ -1,20 +1,7 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests;
 
-public sealed class IntegrationTests : TestBase, IDisposable
+public sealed class IntegrationTests : TestBase
 {
-    private readonly ServiceProvider _serviceProvider;
-
-    public IntegrationTests()
-    {
-        _serviceProvider = new ServiceCollection()
-            .AddQueryEvaluatorInMemory()
-            .AddSingleton(DataProvider)
-            .BuildServiceProvider();
-    }
-
-    public void Dispose()
-        => _serviceProvider.Dispose();
-
     [Fact]
     public async Task Can_Query_Entity()
     {
@@ -38,11 +25,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
                 new MyEntity("B", "E"),
             ]);
 
-        var queryProcessor = _serviceProvider.GetRequiredService<IQueryProcessor>();
-        var test = Testing.CreateInstance<IExpressionEvaluator>(ClassFactory, ClassFactories);
-
         // Act
-        var result = await queryProcessor.FindManyAsync<MyEntity>(query, CancellationToken.None);
+        var result = await QueryProcessor.FindManyAsync<MyEntity>(query, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -50,5 +34,16 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.Value.Count.ShouldBe(2);
         result.Value.First().Property2.ShouldBe("A");
         result.Value.Last().Property2.ShouldBe("Z");
+    }
+
+    [Fact]
+    public async Task Can_Create_ExpressionEvaluator_And_Evaluate_Expression()
+    {
+        // Act
+        var now = await Evaluator.EvaluateAsync(CreateContext("DateTime.Now"), CancellationToken.None);
+
+        // Assert
+        now.Status.ShouldBe(ResultStatus.Ok);
+        now.Value.ShouldBe(CurrentDateTime);
     }
 }

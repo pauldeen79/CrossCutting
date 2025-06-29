@@ -53,6 +53,41 @@ With this:
 Result.$2<$1>(
 ```
 
+# Using actual ServiceCollection with CrossCutting.Common.Testing
+
+You can use your real ServiceCollection extension method to fill the class factories, and then replace some types for testability.
+
+Example:
+```
+_dataProviderMock = new DataProviderMock();
+var excludedTypes = new Type[] { typeof(IDateTimeProvider) };
+var classFactories = new ServiceCollection()
+    .AddExpressionEvaluator()                       // Dependency
+    .AddQueryEvaluatorInMemory()                    // System Under Test
+    .AddSingleton<IDataProvider>(_dataProviderMock) // Test stub
+    .Where(sd => !excludedTypes.Contains(sd.ServiceType))
+    .GroupBy(sd => sd.ServiceType)
+    .ToDictionary(
+        g => g.Key,
+        g => g.Count() == 1
+            ? g.First().ImplementationInstance ?? g.First().ImplementationType
+            : g.Select(t => t.ImplementationInstance ?? t.ImplementationType).ToArray());
+```
+
+If you want to, you can also remove items you want to mock afterwards:
+```
+classFactories
+    .Where(x => excludedTypes.Contains(x.Key))
+    .ToList()
+    .ForEach(x => classFactories.Remove(x.Key));
+```
+
+Or, you can replace a specific type with a custom mock instance:
+```
+classFactories[typeof(IExpressionEvaluator)] = new ExpressionEvaluatorMock(Expression);
+
+```
+
 # Upgrade Parsers from 6.x to 7.0
 There have been some breaking changes.
 

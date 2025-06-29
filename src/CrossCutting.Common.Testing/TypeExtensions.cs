@@ -11,6 +11,8 @@ namespace CrossCutting.Common.Testing;
 [ExcludeFromCodeCoverage]
 public static class TypeExtensions
 {
+    private const string Add = nameof(List<object>.Add);
+
     /// <summary>
     /// Asserts that the specified type performs argument null checks on all arguments in all (public) constructors, with a factory delegate to create reference types.
     /// </summary>
@@ -144,6 +146,10 @@ public static class TypeExtensions
             {
                 argumentInstancesCopy[i] = Activator.CreateInstance(parameters[i].ParameterType);
             }
+            else if (parameters[i].ParameterType != typeof(Type) && argumentInstancesCopy[i] is Type t)
+            {
+                argumentInstancesCopy[i] = CreateInstanceInternal(classFactories, t);
+            }
         }
 
         FixStringsAndArrays(parameters, -1, argumentInstancesCopy);
@@ -196,10 +202,10 @@ public static class TypeExtensions
                     classFactories[typeof(StringBuilder)] = builder;
                     return builder;
                 }
-                else if (IsEnumerable(p))
+                else if (IsEnumerable(p.ParameterType))
                 {
                     var containedType = GetContainedType(p.ParameterType);
-                    var returnValue = CreateGenericList(containedType, classFactory.Invoke(containedType));
+                    var returnValue = CreateGenericList(containedType, classFactory, classFactories);
                     classFactories[containedType] = returnValue;
                     return returnValue;
                 }
@@ -218,9 +224,9 @@ public static class TypeExtensions
             }
         ).ToArray();
 
-    private static bool IsEnumerable(ParameterInfo p)
-        => (p.ParameterType != typeof(string) && typeof(IEnumerable).IsAssignableFrom(p.ParameterType))
-        || p.ParameterType.IsArray;
+    private static bool IsEnumerable(Type t)
+        => (t != typeof(string) && typeof(IEnumerable).IsAssignableFrom(t))
+        || t.IsArray;
 
     private static Type GetContainedType(Type type)
     {
@@ -233,18 +239,71 @@ public static class TypeExtensions
             ?? throw new InvalidOperationException("Could not determine contained type");
     }
 
-    private static object CreateGenericList(Type t, object? itemToAdd)
+    private static object CreateGenericList(Type containedType, Func<Type, object?> classFactory, IDictionary<Type, object?> classFactories)
     {
-        Type listType = typeof(List<>).MakeGenericType(t);
+        Type listType = typeof(List<>).MakeGenericType(containedType);
+        var addMethod = listType.GetMethod(Add);
         var returnValue = Activator.CreateInstance(listType);
 
-        if (itemToAdd is not null)
+        if (classFactories.ContainsKey(containedType))
         {
-            listType.GetMethod("Add")!.Invoke(returnValue, [itemToAdd]);
+            var classFactoryItem = classFactories[containedType];
+            Process(classFactories, addMethod, returnValue, classFactoryItem);
+
+            classFactories[containedType] = returnValue;
+            return returnValue;
         }
+
+        var itemToAdd = CreateInstance(containedType, classFactory);
+        Process(classFactories, addMethod, returnValue, itemToAdd);
 
         return returnValue;
     }
+
+    private static void Process(IDictionary<Type, object?> classFactories, MethodInfo addMethod, object returnValue, object? classFactoryItem)
+    {
+        if (classFactoryItem is null)
+        {
+            return;
+        }
+
+        if (IsEnumerable(classFactoryItem.GetType()))
+        {
+            foreach (var item in (IEnumerable)classFactoryItem)
+            {
+                if (item is Type t)
+                {
+                    addMethod.Invoke(returnValue, [CreateInstanceInternal(classFactories, t)]);
+                }
+                else
+                {
+                    addMethod.Invoke(returnValue, [item]);
+                }
+            }
+
+        }
+        else if (classFactoryItem is Type t)
+        {
+            addMethod.Invoke(returnValue, [CreateInstanceInternal(classFactories, t)]);
+        }
+        else
+        {
+            addMethod.Invoke(returnValue, [classFactoryItem]);
+        }
+    }
+
+    private static object? CreateInstanceInternal(IDictionary<Type, object?> classFactories, Type t)
+        // Note that for now, we only support object creation 10 levels deep
+        => CreateInstance(t,
+            t2 => CreateInstance(t2,
+            t3 => CreateInstance(t3,
+            t4 => CreateInstance(t4,
+            t5 => CreateInstance(t5,
+            t6 => CreateInstance(t6,
+            t7 => CreateInstance(t7,
+            t8 => CreateInstance(t8,
+            t9 => CreateInstance(t9,
+            t10 => CreateInstance(t10, _ => null, classFactories), classFactories), classFactories), classFactories), classFactories), classFactories), classFactories), classFactories), classFactories), classFactories);
 
     private static void FixStringsAndArrays(ParameterInfo[] parameters, int i, object?[] argumentInstances)
     {
@@ -267,15 +326,6 @@ public static class TypeExtensions
             else if (parameters[j].ParameterType == typeof(string))
             {
                 argumentInstances[j] = string.Empty;
-            }
-            else if (parameters[j].ParameterType != typeof(Type) && argumentInstances[j] is Type t)
-            {
-                //TODO: Add support for nested types more than 5 levels deep
-                argumentInstances[j] = CreateInstance(t,
-                    t2 => CreateInstance(t2,
-                    t3 => CreateInstance(t3,
-                    t4 => CreateInstance(t4,
-                    t5 => CreateInstance(t5, _ => null)))));
             }
         }
     }

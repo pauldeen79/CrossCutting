@@ -2,6 +2,9 @@
 
 public class FunctionExpressionComponentTests : TestBase
 {
+    protected override Type[] GetExcludedTypes()
+        => base.GetExcludedTypes().Concat([typeof(IFunction), typeof(IMemberCallArgumentValidator)]).ToArray();
+
     protected IFunction Function => ClassFactories.GetOrCreate<IFunction>(ClassFactory);
     protected IMemberCallArgumentValidator MemberCallArgumentValidator => ClassFactories.GetOrCreate<IMemberCallArgumentValidator>(ClassFactory);
 
