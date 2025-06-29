@@ -77,7 +77,7 @@ public abstract class TestBase
                 var results = new List<T>();
                 foreach (var item in items)
                 {
-                    var result = await IsItemValid(query, item!).ConfigureAwait(false);
+                    var result = await IsItemValid(query, CreateContext("Dummy", item)!).ConfigureAwait(false);
 
                     if (!result.IsSuccessful())
                     {
@@ -95,9 +95,8 @@ public abstract class TestBase
         );
     }
 
-    private async Task<Result<bool>> IsItemValid(Query query, object item)
+    private static async Task<Result<bool>> IsItemValid(Query query, ExpressionEvaluatorContext context)
     {
-        var context = CreateContext("Dummy", item);
         if (CanEvaluateSimpleConditions(query.Filter))
         {
             return await EvaluateSimpleConditions(query.Filter, context, CancellationToken.None).ConfigureAwait(false);
