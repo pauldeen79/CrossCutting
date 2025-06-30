@@ -44,14 +44,6 @@ namespace CrossCutting.Utilities.QueryEvaluator
 
         public abstract CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder ToBuilder();
     }
-    public abstract partial record Operator
-    {
-        protected Operator()
-        {
-        }
-
-        public abstract CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder ToBuilder();
-    }
     public abstract partial record Query
     {
         public System.Nullable<int> Limit

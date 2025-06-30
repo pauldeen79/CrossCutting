@@ -7,10 +7,9 @@ public sealed class IntegrationTests : TestBase
     {
         // Arrange
         var query = new SingleEntityQueryBuilder()
-            .AddFilter(new ComposableConditionBuilder()
-                .WithLeftExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property1)))
-                .WithOperator(new EqualsOperatorBuilder().WithStringComparison(StringComparison.InvariantCulture))
-                .WithRightExpression(new LiteralExpressionBuilder().WithValue("A")))
+            .AddFilter(new EqualsConditionBuilder()
+                .WithFirstExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property1)))
+                .WithSecondExpression(new LiteralExpressionBuilder().WithValue("A")))
             .AddOrderByFields(new QuerySortOrderBuilder()
                 .WithExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property2)))
                 .WithOrder(QuerySortOrderDirection.Ascending))

@@ -1,0 +1,55 @@
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Operators;
+
+public class StringEqualsConditionTests : TestBase<StringEqualsCondition>
+{
+    public class Evaluate : StringEqualsConditionTests
+    {
+        [Fact]
+        public async Task Returns_Ok_On_Two_Strings()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "THIS";
+            StringComparison = StringComparison.OrdinalIgnoreCase;
+            var parameters = new Dictionary<string, object?>
+            {
+                { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder().WithValue(leftValue).Build() },
+                { nameof(IDoubleExpressionContainer.SecondExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder().WithValue(rightValue).Build() },
+                { nameof(IStringComparisonContainer.StringComparison).ToCamelCase(CultureInfo.CurrentCulture), StringComparison },
+            };
+            var sut = CreateSut(parameters);
+            var context = CreateContext("Dummy");
+
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(true);
+        }
+
+        [Fact]
+        public async Task Returns_Invalid_On_Different_Types()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = 13;
+            var parameters = new Dictionary<string, object?>
+            {
+                { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder().WithValue(leftValue).Build() },
+                { nameof(IDoubleExpressionContainer.SecondExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder().WithValue(rightValue).Build() },
+            };
+            var sut = CreateSut(parameters);
+            var context = CreateContext("Dummy");
+
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
+        }
+    }
+}

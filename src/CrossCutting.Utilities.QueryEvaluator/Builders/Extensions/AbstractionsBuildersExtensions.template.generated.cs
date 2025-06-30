@@ -10,6 +10,26 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
 {
+    public static partial class DoubleExpressionContainerBuilderExtensions
+    {
+        public static T WithSecondExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder secondExpression)
+            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder
+        {
+            if (secondExpression is null) throw new System.ArgumentNullException(nameof(secondExpression));
+            instance.SecondExpression = secondExpression;
+            return instance;
+        }
+    }
+    public static partial class SingleExpressionContainerBuilderExtensions
+    {
+        public static T WithFirstExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder firstExpression)
+            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder
+        {
+            if (firstExpression is null) throw new System.ArgumentNullException(nameof(firstExpression));
+            instance.FirstExpression = firstExpression;
+            return instance;
+        }
+    }
     public static partial class StringComparisonContainerBuilderExtensions
     {
         public static T WithStringComparison<T>(this T instance, System.StringComparison stringComparison)

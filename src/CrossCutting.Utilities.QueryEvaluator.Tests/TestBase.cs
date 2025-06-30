@@ -79,11 +79,18 @@ public abstract class TestBase<T> : TestBase
 {
     protected StringComparison StringComparison { get; set; }
 
-    protected T CreateSut() => Testing.CreateInstance<T>(ClassFactory, ClassFactories, p =>
+    protected T CreateSut(IDictionary<string, object?>? parameters = null) => Testing.CreateInstance<T>(ClassFactory, ClassFactories, p =>
     {
         if (p.ParameterType == typeof(StringComparison))
         {
             return StringComparison;
+        }
+
+        if (parameters is not null
+            && p.Name is not null
+            && parameters.TryGetValue(p.Name, out var value))
+        {
+            return value;
         }
 
         return null;

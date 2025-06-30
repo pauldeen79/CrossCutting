@@ -10,6 +10,28 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
 {
+    public partial interface IDoubleExpressionContainer : CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.QueryEvaluator.Expression SecondExpression
+        {
+            get;
+        }
+
+        new CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder ToBuilder();
+    }
+    public partial interface ISingleExpressionContainer
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.QueryEvaluator.Expression FirstExpression
+        {
+            get;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder ToBuilder();
+    }
     public partial interface IStringComparisonContainer
     {
         System.StringComparison StringComparison

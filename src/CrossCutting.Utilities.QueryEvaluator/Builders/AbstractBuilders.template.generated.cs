@@ -76,30 +76,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             return entity.BuildTyped();
         }
     }
-    public abstract partial class OperatorBuilder<TBuilder, TEntity> : OperatorBuilder
-        where TEntity : CrossCutting.Utilities.QueryEvaluator.Operator
-        where TBuilder : OperatorBuilder<TBuilder, TEntity>
-    {
-        protected OperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operator source) : base(source)
-        {
-        }
-
-        protected OperatorBuilder() : base()
-        {
-        }
-
-        public override CrossCutting.Utilities.QueryEvaluator.Operator Build()
-        {
-            return BuildTyped();
-        }
-
-        public abstract TEntity BuildTyped();
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operator(OperatorBuilder<TBuilder, TEntity> entity)
-        {
-            return entity.BuildTyped();
-        }
-    }
     public abstract partial class QueryBuilder<TBuilder, TEntity> : QueryBuilder
         where TEntity : CrossCutting.Utilities.QueryEvaluator.Query
         where TBuilder : QueryBuilder<TBuilder, TEntity>

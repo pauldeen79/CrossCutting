@@ -10,101 +10,1312 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Builders.Conditions
 {
-    public partial class ComposableConditionBuilder : ConditionBuilder<ComposableConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.ComposableCondition>
+    public partial class EqualsConditionBuilder : ConditionBuilder<EqualsConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.EqualsCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder
     {
-        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _leftExpression;
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
 
-        private CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder _operator;
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
 
-        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _rightExpression;
-
-        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder LeftExpression
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
         {
             get
             {
-                return _leftExpression;
+                return _secondExpression;
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_leftExpression!, value!);
-                _leftExpression = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(LeftExpression));
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
             }
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder Operator
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
         {
             get
             {
-                return _operator;
+                return _firstExpression;
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder>.Default.Equals(_operator!, value!);
-                _operator = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Operator));
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
             }
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder RightExpression
-        {
-            get
-            {
-                return _rightExpression;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_rightExpression!, value!);
-                _rightExpression = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(RightExpression));
-            }
-        }
-
-        public ComposableConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.ComposableCondition source) : base(source)
+        public EqualsConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.EqualsCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _leftExpression = source.LeftExpression?.ToBuilder()!;
-            _operator = source.Operator?.ToBuilder()!;
-            _rightExpression = source.RightExpression?.ToBuilder()!;
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
         }
 
-        public ComposableConditionBuilder() : base()
+        public EqualsConditionBuilder() : base()
         {
-            _leftExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
-            _operator = default(CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder)!;
-            _rightExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
             SetDefaultValues();
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Conditions.ComposableCondition BuildTyped()
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.EqualsCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Conditions.ComposableCondition(LeftExpression?.Build()!, Operator?.Build()!, RightExpression?.Build()!, Combination, StartGroup, EndGroup);
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.EqualsCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
         }
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.ComposableConditionBuilder WithLeftExpression(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder leftExpression)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.EqualsCondition(EqualsConditionBuilder entity)
         {
-            if (leftExpression is null) throw new System.ArgumentNullException(nameof(leftExpression));
-            LeftExpression = leftExpression;
-            return this;
+            return entity.BuildTyped();
+        }
+    }
+    public partial class GreaterThanConditionBuilder : ConditionBuilder<GreaterThanConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.GreaterThanCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.ComposableConditionBuilder WithOperator(CrossCutting.Utilities.QueryEvaluator.Builders.OperatorBuilder @operator)
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
         {
-            if (@operator is null) throw new System.ArgumentNullException(nameof(@operator));
-            Operator = @operator;
-            return this;
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.ComposableConditionBuilder WithRightExpression(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder rightExpression)
+        public GreaterThanConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.GreaterThanCondition source) : base(source)
         {
-            if (rightExpression is null) throw new System.ArgumentNullException(nameof(rightExpression));
-            RightExpression = rightExpression;
-            return this;
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
         }
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.ComposableCondition(ComposableConditionBuilder entity)
+        public GreaterThanConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.GreaterThanCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.GreaterThanCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.GreaterThanCondition(GreaterThanConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class GreaterThanOrEqualConditionBuilder : ConditionBuilder<GreaterThanOrEqualConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.GreaterThanOrEqualCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public GreaterThanOrEqualConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.GreaterThanOrEqualCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+        }
+
+        public GreaterThanOrEqualConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.GreaterThanOrEqualCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.GreaterThanOrEqualCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.GreaterThanOrEqualCondition(GreaterThanOrEqualConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class IsNotNullConditionBuilder : ConditionBuilder<IsNotNullConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.IsNotNullCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public IsNotNullConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.IsNotNullCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+        }
+
+        public IsNotNullConditionBuilder() : base()
+        {
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.IsNotNullCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.IsNotNullCondition(Combination, StartGroup, EndGroup, FirstExpression?.Build()!);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.IsNotNullCondition(IsNotNullConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class IsNullConditionBuilder : ConditionBuilder<IsNullConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.IsNullCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public IsNullConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.IsNullCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+        }
+
+        public IsNullConditionBuilder() : base()
+        {
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.IsNullCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.IsNullCondition(Combination, StartGroup, EndGroup, FirstExpression?.Build()!);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.IsNullCondition(IsNullConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class NotEqualsConditionBuilder : ConditionBuilder<NotEqualsConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.NotEqualsCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public NotEqualsConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.NotEqualsCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+        }
+
+        public NotEqualsConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.NotEqualsCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.NotEqualsCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.NotEqualsCondition(NotEqualsConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class SmallerThanConditionBuilder : ConditionBuilder<SmallerThanConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.SmallerThanCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public SmallerThanConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.SmallerThanCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+        }
+
+        public SmallerThanConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.SmallerThanCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.SmallerThanCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.SmallerThanCondition(SmallerThanConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class SmallerThanOrEqualConditionBuilder : ConditionBuilder<SmallerThanOrEqualConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.SmallerThanOrEqualCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public SmallerThanOrEqualConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.SmallerThanOrEqualCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+        }
+
+        public SmallerThanOrEqualConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.SmallerThanOrEqualCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.SmallerThanOrEqualCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.SmallerThanOrEqualCondition(SmallerThanOrEqualConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class StringContainsConditionBuilder : ConditionBuilder<StringContainsConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.StringContainsCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        private System.StringComparison _stringComparison;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
+        public StringContainsConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.StringContainsCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+            _stringComparison = source.StringComparison;
+        }
+
+        public StringContainsConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.StringContainsCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.StringContainsCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!, StringComparison);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.StringContainsCondition(StringContainsConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class StringEndsWithConditionBuilder : ConditionBuilder<StringEndsWithConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.StringEndsWithCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        private System.StringComparison _stringComparison;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
+        public StringEndsWithConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.StringEndsWithCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+            _stringComparison = source.StringComparison;
+        }
+
+        public StringEndsWithConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.StringEndsWithCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.StringEndsWithCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!, StringComparison);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.StringEndsWithCondition(StringEndsWithConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class StringEqualsConditionBuilder : ConditionBuilder<StringEqualsConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.StringEqualsCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        private System.StringComparison _stringComparison;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
+        public StringEqualsConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.StringEqualsCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+            _stringComparison = source.StringComparison;
+        }
+
+        public StringEqualsConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.StringEqualsCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.StringEqualsCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!, StringComparison);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.StringEqualsCondition(StringEqualsConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class StringNotContainsConditionBuilder : ConditionBuilder<StringNotContainsConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotContainsCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        private System.StringComparison _stringComparison;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
+        public StringNotContainsConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotContainsCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+            _stringComparison = source.StringComparison;
+        }
+
+        public StringNotContainsConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotContainsCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotContainsCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!, StringComparison);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotContainsCondition(StringNotContainsConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class StringNotEndsWithConditionBuilder : ConditionBuilder<StringNotEndsWithConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotEndsWithCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        private System.StringComparison _stringComparison;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
+        public StringNotEndsWithConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotEndsWithCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+            _stringComparison = source.StringComparison;
+        }
+
+        public StringNotEndsWithConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotEndsWithCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotEndsWithCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!, StringComparison);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotEndsWithCondition(StringNotEndsWithConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class StringNotEqualsConditionBuilder : ConditionBuilder<StringNotEqualsConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotEqualsCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        private System.StringComparison _stringComparison;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
+        public StringNotEqualsConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotEqualsCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+            _stringComparison = source.StringComparison;
+        }
+
+        public StringNotEqualsConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotEqualsCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotEqualsCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!, StringComparison);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotEqualsCondition(StringNotEqualsConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class StringNotStartsWithConditionBuilder : ConditionBuilder<StringNotStartsWithConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotStartsWithCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        private System.StringComparison _stringComparison;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
+        public StringNotStartsWithConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotStartsWithCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+            _stringComparison = source.StringComparison;
+        }
+
+        public StringNotStartsWithConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotStartsWithCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotStartsWithCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!, StringComparison);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.StringNotStartsWithCondition(StringNotStartsWithConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class StringStartsWithConditionBuilder : ConditionBuilder<StringStartsWithConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Conditions.StringStartsWithCondition>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _secondExpression;
+
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _firstExpression;
+
+        private System.StringComparison _stringComparison;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        {
+            get
+            {
+                return _secondExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_secondExpression!, value!);
+                _secondExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SecondExpression));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
+        public StringStartsWithConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Conditions.StringStartsWithCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _secondExpression = source.SecondExpression?.ToBuilder()!;
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+            _stringComparison = source.StringComparison;
+        }
+
+        public StringStartsWithConditionBuilder() : base()
+        {
+            _secondExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Conditions.StringStartsWithCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Conditions.StringStartsWithCondition(Combination, StartGroup, EndGroup, SecondExpression?.Build()!, FirstExpression?.Build()!, StringComparison);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Conditions.StringStartsWithCondition(StringStartsWithConditionBuilder entity)
         {
             return entity.BuildTyped();
         }

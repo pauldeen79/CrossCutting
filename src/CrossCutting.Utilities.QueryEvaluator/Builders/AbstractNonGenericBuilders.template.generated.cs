@@ -115,33 +115,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public abstract partial class OperatorBuilder : System.ComponentModel.INotifyPropertyChanged
-    {
-        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
-
-        protected OperatorBuilder(CrossCutting.Utilities.QueryEvaluator.Operator source)
-        {
-        }
-
-        protected OperatorBuilder()
-        {
-            SetDefaultValues();
-        }
-
-        public abstract CrossCutting.Utilities.QueryEvaluator.Operator Build();
-
-        partial void SetDefaultValues();
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Operator(OperatorBuilder entity)
-        {
-            return entity.Build();
-        }
-
-        protected void HandlePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    }
     public abstract partial class QueryBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         private System.Nullable<int> _limit;
