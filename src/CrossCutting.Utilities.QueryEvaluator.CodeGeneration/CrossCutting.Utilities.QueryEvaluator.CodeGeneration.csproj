@@ -15,8 +15,4 @@
     <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="3.0.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Operators\" />
-  </ItemGroup>
-
 </Project>
