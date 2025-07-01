@@ -6,8 +6,8 @@ public class OverrideExpressionEntities(IPipelineService pipelineService) : Quer
     public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}/Expressions";
 
     protected override bool EnableEntityInheritance => true;
-    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(Models.IExpression), Constants.Namespaces.UtilitiesQueryEvaluator);
+    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IExpression), Constants.Namespaces.UtilitiesQueryEvaluator);
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetEntitiesAsync(GetOverrideModelsAsync(typeof(Models.IExpression)), CurrentNamespace);
+        => GetEntitiesAsync(GetOverrideModelsAsync(typeof(IExpression)), CurrentNamespace);
 }

@@ -46,7 +46,7 @@ public sealed class BinaryExpression : IExpression
             return Result.FromExistingResult<object?>(error);
         }
 
-        return Result.WrapException<object?>(() => Operator switch
+        return Result.WrapException(() => Operator switch
         {
             ExpressionTokenType.Plus => Add.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
             ExpressionTokenType.Minus => Subtract.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
