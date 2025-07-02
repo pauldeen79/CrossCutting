@@ -5,7 +5,7 @@ public class AbstractionsBuildersInterfaces(IPipelineService pipelineService) : 
 {
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuilderInterfacesAsync(GetAbstractionsInterfacesAsync(), CurrentNamespace, $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Abstractions", CurrentNamespace);
 
-    public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}/Builders/Abstractions";
+    public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}/Abstractions/Builders";
     
     protected override bool EnableEntityInheritance => true;
 }

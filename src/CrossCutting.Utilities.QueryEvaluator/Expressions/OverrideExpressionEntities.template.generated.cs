@@ -34,7 +34,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Expressions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Expressions.FieldNameExpressionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -62,7 +62,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Expressions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Expressions.LiteralExpressionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
         {
             return ToTypedBuilder();
         }

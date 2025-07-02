@@ -43,17 +43,17 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.EqualsConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -91,17 +91,17 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.GreaterThanConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -139,17 +139,17 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.GreaterThanOrEqualConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -179,12 +179,12 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.IsNotNullConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -214,12 +214,12 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.IsNullConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -257,17 +257,17 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.NotEqualsConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -305,17 +305,17 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.SmallerThanConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -353,17 +353,17 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.SmallerThanOrEqualConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -407,22 +407,22 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.StringContainsConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -466,22 +466,22 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.StringEndsWithConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -525,22 +525,22 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.StringEqualsConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -584,22 +584,22 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.StringNotContainsConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -643,22 +643,22 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.StringNotEndsWithConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -702,22 +702,22 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.StringNotEqualsConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -761,22 +761,22 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.StringNotStartsWithConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -820,22 +820,22 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Conditions.StringStartsWithConditionBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IStringComparisonContainer.ToBuilder()
         {
             return ToTypedBuilder();
         }

@@ -27,7 +27,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
             get;
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder ToBuilder();
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder ToBuilder();
     }
     public partial interface IDoubleExpressionContainer : CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer
     {
@@ -38,11 +38,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
             get;
         }
 
-        new CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder ToBuilder();
+        new CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder ToBuilder();
     }
     public partial interface IExpression
     {
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder ToBuilder();
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder ToBuilder();
     }
     public partial interface IQuery
     {
@@ -71,7 +71,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
             get;
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder ToBuilder();
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder ToBuilder();
     }
     public partial interface ISingleExpressionContainer
     {
@@ -82,7 +82,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
             get;
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder ToBuilder();
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder ToBuilder();
     }
     public partial interface IStringComparisonContainer
     {
@@ -91,7 +91,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
             get;
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder ToBuilder();
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder ToBuilder();
     }
 }
 #nullable disable

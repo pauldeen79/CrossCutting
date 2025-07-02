@@ -8,26 +8,26 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
+namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
 {
     public static partial class ConditionBuilderExtensions
     {
         public static T WithCombination<T>(this T instance, System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder
         {
             instance.Combination = combination;
             return instance;
         }
 
         public static T WithStartGroup<T>(this T instance, bool startGroup = true)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder
         {
             instance.StartGroup = startGroup;
             return instance;
         }
 
         public static T WithEndGroup<T>(this T instance, bool endGroup = true)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder
         {
             instance.EndGroup = endGroup;
             return instance;
@@ -35,8 +35,8 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
     }
     public static partial class DoubleExpressionContainerBuilderExtensions
     {
-        public static T WithSecondExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder secondExpression)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder
+        public static T WithSecondExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder secondExpression)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder
         {
             if (secondExpression is null) throw new System.ArgumentNullException(nameof(secondExpression));
             instance.SecondExpression = secondExpression;
@@ -48,15 +48,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
     }
     public static partial class QueryBuilderExtensions
     {
-        public static T AddFilter<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder> filter)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+        public static T AddFilter<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder> filter)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             if (filter is null) throw new System.ArgumentNullException(nameof(filter));
             return instance.AddFilter<T>(filter.ToArray());
         }
 
-        public static T AddFilter<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder[] filter)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+        public static T AddFilter<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder[] filter)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             if (filter is null) throw new System.ArgumentNullException(nameof(filter));
             foreach (var item in filter) instance.Filter.Add(item);
@@ -64,14 +64,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
         }
 
         public static T AddOrderByFields<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder> orderByFields)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
             return instance.AddOrderByFields<T>(orderByFields.ToArray());
         }
 
         public static T AddOrderByFields<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder[] orderByFields)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
             foreach (var item in orderByFields) instance.OrderByFields.Add(item);
@@ -79,14 +79,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
         }
 
         public static T WithLimit<T>(this T instance, System.Nullable<int> limit)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             instance.Limit = limit;
             return instance;
         }
 
         public static T WithOffset<T>(this T instance, System.Nullable<int> offset)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             instance.Offset = offset;
             return instance;
@@ -94,8 +94,8 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
     }
     public static partial class SingleExpressionContainerBuilderExtensions
     {
-        public static T WithFirstExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder firstExpression)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder
+        public static T WithFirstExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder firstExpression)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
         {
             if (firstExpression is null) throw new System.ArgumentNullException(nameof(firstExpression));
             instance.FirstExpression = firstExpression;
@@ -105,7 +105,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Extensions
     public static partial class StringComparisonContainerBuilderExtensions
     {
         public static T WithStringComparison<T>(this T instance, System.StringComparison stringComparison)
-            where T : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IStringComparisonContainerBuilder
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder
         {
             instance.StringComparison = stringComparison;
             return instance;

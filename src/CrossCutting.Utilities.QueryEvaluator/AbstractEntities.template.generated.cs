@@ -36,7 +36,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
 
         public abstract CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBaseBuilder ToBuilder();
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToBuilder();
         }
@@ -49,7 +49,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
 
         public abstract CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder ToBuilder();
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
         {
             return ToBuilder();
         }
@@ -93,7 +93,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
 
         public abstract CrossCutting.Utilities.QueryEvaluator.Builders.QueryBaseBuilder ToBuilder();
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery.ToBuilder()
         {
             return ToBuilder();
         }

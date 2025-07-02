@@ -35,7 +35,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Queries
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Queries.ParameterizedQueryBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -57,7 +57,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Queries
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Queries.SingleEntityQueryBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery.ToBuilder()
         {
             return ToTypedBuilder();
         }

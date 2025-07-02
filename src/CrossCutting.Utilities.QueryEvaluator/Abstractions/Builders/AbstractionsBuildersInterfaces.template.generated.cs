@@ -8,7 +8,7 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
+namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
 {
     public partial interface IConditionBuilder
     {
@@ -32,11 +32,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition Build();
     }
-    public partial interface IDoubleExpressionContainerBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder
+    public partial interface IDoubleExpressionContainerBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder SecondExpression
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder SecondExpression
         {
             get;
             set;
@@ -65,7 +65,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
-        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder> Filter
+        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder> Filter
         {
             get;
             set;
@@ -85,7 +85,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder FirstExpression
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder FirstExpression
         {
             get;
             set;

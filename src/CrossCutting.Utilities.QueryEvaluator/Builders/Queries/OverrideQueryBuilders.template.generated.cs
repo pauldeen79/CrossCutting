@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Builders.Queries
 {
-    public partial class ParameterizedQueryBuilder : QueryBaseBuilder<ParameterizedQueryBuilder, CrossCutting.Utilities.QueryEvaluator.Queries.ParameterizedQuery>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+    public partial class ParameterizedQueryBuilder : QueryBaseBuilder<ParameterizedQueryBuilder, CrossCutting.Utilities.QueryEvaluator.Queries.ParameterizedQuery>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
     {
         private System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder> _parameters;
 
@@ -48,7 +48,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Queries
             return new CrossCutting.Utilities.QueryEvaluator.Queries.ParameterizedQuery(Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), Limit, Offset, Filter.Select(x => x.Build()!).ToList().AsReadOnly(), OrderByFields.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder.Build()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder.Build()
         {
             return BuildTyped();
         }
@@ -73,7 +73,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Queries
             return entity.BuildTyped();
         }
     }
-    public partial class SingleEntityQueryBuilder : QueryBaseBuilder<SingleEntityQueryBuilder, CrossCutting.Utilities.QueryEvaluator.Queries.SingleEntityQuery>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+    public partial class SingleEntityQueryBuilder : QueryBaseBuilder<SingleEntityQueryBuilder, CrossCutting.Utilities.QueryEvaluator.Queries.SingleEntityQuery>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
     {
         public SingleEntityQueryBuilder(CrossCutting.Utilities.QueryEvaluator.Queries.SingleEntityQuery source) : base(source)
         {
@@ -90,7 +90,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Queries
             return new CrossCutting.Utilities.QueryEvaluator.Queries.SingleEntityQuery(Limit, Offset, Filter.Select(x => x.Build()!).ToList().AsReadOnly(), OrderByFields.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder.Build()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder.Build()
         {
             return BuildTyped();
         }
