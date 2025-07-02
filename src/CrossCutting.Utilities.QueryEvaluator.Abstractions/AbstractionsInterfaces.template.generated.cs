@@ -66,12 +66,28 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.QuerySortOrder> OrderByFields
+        System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> OrderByFields
         {
             get;
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder ToBuilder();
+    }
+    public partial interface IQuerySortOrder
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression Expression
+        {
+            get;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection Order
+        {
+            get;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder ToBuilder();
     }
     public partial interface ISingleExpressionContainer
     {

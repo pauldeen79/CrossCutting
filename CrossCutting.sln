@@ -75,6 +75,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.Quer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory", "src\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory.csproj", "{388AEB6B-B5A1-427B-A495-025C3E593E3A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.Abstractions", "src\CrossCutting.Utilities.QueryEvaluator.Abstractions\CrossCutting.Utilities.QueryEvaluator.Abstractions.csproj", "{35263B9C-0935-406B-81FA-6C765FF85B37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -205,6 +207,10 @@ Global
 		{388AEB6B-B5A1-427B-A495-025C3E593E3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{388AEB6B-B5A1-427B-A495-025C3E593E3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{388AEB6B-B5A1-427B-A495-025C3E593E3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35263B9C-0935-406B-81FA-6C765FF85B37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35263B9C-0935-406B-81FA-6C765FF85B37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35263B9C-0935-406B-81FA-6C765FF85B37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35263B9C-0935-406B-81FA-6C765FF85B37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

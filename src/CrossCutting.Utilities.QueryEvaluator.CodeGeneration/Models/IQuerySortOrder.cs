@@ -1,7 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models;
 
-internal interface IQuerySortOrder
+internal interface IQuerySortOrder : Abstractions.IQuerySortOrder
 {
-    [Required][ValidateObject] IExpressionBase Expression { get; }
-    QuerySortOrderDirection Order { get; }
 }

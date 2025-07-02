@@ -63,14 +63,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
             return instance;
         }
 
-        public static T AddOrderByFields<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder> orderByFields)
+        public static T AddOrderByFields<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder> orderByFields)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
             return instance.AddOrderByFields<T>(orderByFields.ToArray());
         }
 
-        public static T AddOrderByFields<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder[] orderByFields)
+        public static T AddOrderByFields<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder[] orderByFields)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
@@ -89,6 +89,23 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
             instance.Offset = offset;
+            return instance;
+        }
+    }
+    public static partial class QuerySortOrderBuilderExtensions
+    {
+        public static T WithExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder expression)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder
+        {
+            if (expression is null) throw new System.ArgumentNullException(nameof(expression));
+            instance.Expression = expression;
+            return instance;
+        }
+
+        public static T WithOrder<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection order)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder
+        {
+            instance.Order = order;
             return instance;
         }
     }

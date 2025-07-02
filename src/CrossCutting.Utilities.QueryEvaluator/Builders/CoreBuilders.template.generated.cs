@@ -147,9 +147,9 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class QuerySortOrderBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class QuerySortOrderBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder, System.ComponentModel.INotifyPropertyChanged
     {
-        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder _expression;
+        private CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder _expression;
 
         private CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection _order;
 
@@ -157,7 +157,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder Expression
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder Expression
         {
             get
             {
@@ -165,7 +165,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder>.Default.Equals(_expression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder>.Default.Equals(_expression!, value!);
                 _expression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Expression));
             }
@@ -194,7 +194,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         public QuerySortOrderBuilder()
         {
-            _expression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder)!;
+            _expression = default(CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
@@ -203,20 +203,12 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             return new CrossCutting.Utilities.QueryEvaluator.QuerySortOrder(Expression?.Build()!, Order);
         }
 
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder.Build()
+        {
+            return Build();
+        }
+
         partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder WithExpression(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder expression)
-        {
-            if (expression is null) throw new System.ArgumentNullException(nameof(expression));
-            Expression = expression;
-            return this;
-        }
-
-        public CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder WithOrder(CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection order)
-        {
-            Order = order;
-            return this;
-        }
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.QuerySortOrder(QuerySortOrderBuilder entity)
         {

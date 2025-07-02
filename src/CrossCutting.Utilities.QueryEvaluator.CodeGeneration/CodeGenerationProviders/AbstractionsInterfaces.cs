@@ -5,7 +5,7 @@ public class AbstractionsInterfaces(IPipelineService pipelineService) : QueryEva
 {
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetEntityInterfacesAsync(GetAbstractionsInterfacesAsync(), Constants.Namespaces.UtilitiesQueryEvaluator, CurrentNamespace);
 
-    public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}/Abstractions";
+    public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Abstractions";
 
     protected override bool EnableEntityInheritance => true;
 }
