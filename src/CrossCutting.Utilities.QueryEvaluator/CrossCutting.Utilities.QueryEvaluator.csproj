@@ -26,8 +26,4 @@
     <ProjectReference Include="..\CrossCutting.Data.Abstractions\CrossCutting.Data.Abstractions.csproj" />
     <ProjectReference Include="..\CrossCutting.Utilities.ExpressionEvaluator\CrossCutting.Utilities.ExpressionEvaluator.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Operators\" />
-  </ItemGroup>
 </Project>
