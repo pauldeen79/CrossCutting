@@ -7,12 +7,11 @@ public class OverrideQueryBuilders(IPipelineService pipelineService) : QueryEval
 
     protected override bool EnableEntityInheritance => true;
     protected override bool CreateAsObservable => true;
-    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IQuery), Constants.Namespaces.UtilitiesQueryEvaluator);
-    protected override string BaseClassBuilderNamespace => $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Builders";
+    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IQueryBase), Constants.Namespaces.UtilitiesQueryEvaluator);
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
         => GetBuildersAsync(
-            GetOverrideModelsAsync(typeof(IQuery)),
+            GetOverrideModelsAsync(typeof(IQueryBase)),
             CurrentNamespace,
             $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Queries");
 }

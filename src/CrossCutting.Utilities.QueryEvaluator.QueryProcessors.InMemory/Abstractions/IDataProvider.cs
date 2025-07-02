@@ -2,6 +2,6 @@
 
 public interface IDataProvider
 {
-    Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(Query query)
+    Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query)
         where TResult : class;
 }

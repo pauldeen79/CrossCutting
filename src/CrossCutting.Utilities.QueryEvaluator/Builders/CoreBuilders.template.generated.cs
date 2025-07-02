@@ -149,7 +149,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
     }
     public partial class QuerySortOrderBuilder : System.ComponentModel.INotifyPropertyChanged
     {
-        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder _expression;
+        private CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder _expression;
 
         private CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection _order;
 
@@ -157,7 +157,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder Expression
+        public CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder Expression
         {
             get
             {
@@ -165,7 +165,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder>.Default.Equals(_expression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder>.Default.Equals(_expression!, value!);
                 _expression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Expression));
             }
@@ -194,7 +194,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         public QuerySortOrderBuilder()
         {
-            _expression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder)!;
+            _expression = default(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder)!;
             SetDefaultValues();
         }
 
@@ -205,7 +205,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder WithExpression(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder expression)
+        public CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder WithExpression(CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder expression)
         {
             if (expression is null) throw new System.ArgumentNullException(nameof(expression));
             Expression = expression;

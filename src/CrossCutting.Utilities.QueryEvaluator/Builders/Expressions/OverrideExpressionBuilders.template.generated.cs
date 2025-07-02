@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Builders.Expressions
 {
-    public partial class FieldNameExpressionBuilder : ExpressionBuilder<FieldNameExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Expressions.FieldNameExpression>
+    public partial class FieldNameExpressionBuilder : ExpressionBaseBuilder<FieldNameExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Expressions.FieldNameExpression>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder
     {
         private string _fieldName;
 
@@ -46,6 +46,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Expressions
             return new CrossCutting.Utilities.QueryEvaluator.Expressions.FieldNameExpression(FieldName);
         }
 
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
         partial void SetDefaultValues();
 
         public CrossCutting.Utilities.QueryEvaluator.Builders.Expressions.FieldNameExpressionBuilder WithFieldName(string fieldName)
@@ -60,7 +65,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Expressions
             return entity.BuildTyped();
         }
     }
-    public partial class LiteralExpressionBuilder : ExpressionBuilder<LiteralExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Expressions.LiteralExpression>
+    public partial class LiteralExpressionBuilder : ExpressionBaseBuilder<LiteralExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Expressions.LiteralExpression>, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder
     {
         private object? _value;
 
@@ -92,6 +97,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Expressions
         public override CrossCutting.Utilities.QueryEvaluator.Expressions.LiteralExpression BuildTyped()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Expressions.LiteralExpression(Value);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder.Build()
+        {
+            return BuildTyped();
         }
 
         partial void SetDefaultValues();

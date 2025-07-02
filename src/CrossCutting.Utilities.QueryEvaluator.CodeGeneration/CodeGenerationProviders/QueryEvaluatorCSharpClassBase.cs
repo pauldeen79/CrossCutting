@@ -3,8 +3,6 @@
 [ExcludeFromCodeCoverage]
 public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
 {
-    private static readonly Type[] baseTypes = [typeof(IQuery), typeof(ICondition), typeof(IExpression)];
-
     public override bool RecurseOnDeleteGeneratedFiles => false;
     public override string LastGeneratedFilesFilename => string.Empty;
     public override Encoding Encoding => Encoding.UTF8;
@@ -19,8 +17,6 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
     protected override bool CreateRecord => true;
     protected override bool GenerateMultipleFiles => false;
     protected override bool EnableGlobalUsings => true;
-
-    protected override bool IsAbstractType(Type type) => base.IsAbstractType(type) || baseTypes.Contains(type);
 
     protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
     {

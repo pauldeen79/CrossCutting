@@ -10,130 +10,89 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Builders
 {
-    public abstract partial class ConditionBuilder<TBuilder, TEntity> : ConditionBuilder
-        where TEntity : CrossCutting.Utilities.QueryEvaluator.Condition
-        where TBuilder : ConditionBuilder<TBuilder, TEntity>
+    public abstract partial class ConditionBaseBuilder<TBuilder, TEntity> : ConditionBaseBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder
+        where TEntity : CrossCutting.Utilities.QueryEvaluator.ConditionBase
+        where TBuilder : ConditionBaseBuilder<TBuilder, TEntity>
     {
-        protected ConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Condition source) : base(source)
+        protected ConditionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.ConditionBase source) : base(source)
         {
         }
 
-        protected ConditionBuilder() : base()
+        protected ConditionBaseBuilder() : base()
         {
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Condition Build()
+        public override CrossCutting.Utilities.QueryEvaluator.ConditionBase Build()
         {
             return BuildTyped();
         }
 
         public abstract TEntity BuildTyped();
 
-        public TBuilder WithCombination(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination)
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder.Build()
         {
-            Combination = combination;
-            return (TBuilder)this;
+            return BuildTyped();
         }
 
-        public TBuilder WithStartGroup(bool startGroup = true)
-        {
-            StartGroup = startGroup;
-            return (TBuilder)this;
-        }
-
-        public TBuilder WithEndGroup(bool endGroup = true)
-        {
-            EndGroup = endGroup;
-            return (TBuilder)this;
-        }
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Condition(ConditionBuilder<TBuilder, TEntity> entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.ConditionBase(ConditionBaseBuilder<TBuilder, TEntity> entity)
         {
             return entity.BuildTyped();
         }
     }
-    public abstract partial class ExpressionBuilder<TBuilder, TEntity> : ExpressionBuilder
-        where TEntity : CrossCutting.Utilities.QueryEvaluator.Expression
-        where TBuilder : ExpressionBuilder<TBuilder, TEntity>
+    public abstract partial class ExpressionBaseBuilder<TBuilder, TEntity> : ExpressionBaseBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder
+        where TEntity : CrossCutting.Utilities.QueryEvaluator.ExpressionBase
+        where TBuilder : ExpressionBaseBuilder<TBuilder, TEntity>
     {
-        protected ExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Expression source) : base(source)
+        protected ExpressionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.ExpressionBase source) : base(source)
         {
         }
 
-        protected ExpressionBuilder() : base()
+        protected ExpressionBaseBuilder() : base()
         {
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Expression Build()
+        public override CrossCutting.Utilities.QueryEvaluator.ExpressionBase Build()
         {
             return BuildTyped();
         }
 
         public abstract TEntity BuildTyped();
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Expression(ExpressionBuilder<TBuilder, TEntity> entity)
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.ExpressionBase(ExpressionBaseBuilder<TBuilder, TEntity> entity)
         {
             return entity.BuildTyped();
         }
     }
-    public abstract partial class QueryBuilder<TBuilder, TEntity> : QueryBuilder
-        where TEntity : CrossCutting.Utilities.QueryEvaluator.Query
-        where TBuilder : QueryBuilder<TBuilder, TEntity>
+    public abstract partial class QueryBaseBuilder<TBuilder, TEntity> : QueryBaseBuilder, CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder
+        where TEntity : CrossCutting.Utilities.QueryEvaluator.QueryBase
+        where TBuilder : QueryBaseBuilder<TBuilder, TEntity>
     {
-        protected QueryBuilder(CrossCutting.Utilities.QueryEvaluator.Query source) : base(source)
+        protected QueryBaseBuilder(CrossCutting.Utilities.QueryEvaluator.QueryBase source) : base(source)
         {
         }
 
-        protected QueryBuilder() : base()
+        protected QueryBaseBuilder() : base()
         {
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Query Build()
+        public override CrossCutting.Utilities.QueryEvaluator.QueryBase Build()
         {
             return BuildTyped();
         }
 
         public abstract TEntity BuildTyped();
 
-        public TBuilder AddFilter(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder> filter)
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder.Build()
         {
-            if (filter is null) throw new System.ArgumentNullException(nameof(filter));
-            return AddFilter(filter.ToArray());
+            return BuildTyped();
         }
 
-        public TBuilder AddFilter(params CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder[] filter)
-        {
-            if (filter is null) throw new System.ArgumentNullException(nameof(filter));
-            foreach (var item in filter) Filter.Add(item);
-            return (TBuilder)this;
-        }
-
-        public TBuilder AddOrderByFields(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder> orderByFields)
-        {
-            if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
-            return AddOrderByFields(orderByFields.ToArray());
-        }
-
-        public TBuilder AddOrderByFields(params CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder[] orderByFields)
-        {
-            if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
-            foreach (var item in orderByFields) OrderByFields.Add(item);
-            return (TBuilder)this;
-        }
-
-        public TBuilder WithLimit(System.Nullable<int> limit)
-        {
-            Limit = limit;
-            return (TBuilder)this;
-        }
-
-        public TBuilder WithOffset(System.Nullable<int> offset)
-        {
-            Offset = offset;
-            return (TBuilder)this;
-        }
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Query(QueryBuilder<TBuilder, TEntity> entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.QueryBase(QueryBaseBuilder<TBuilder, TEntity> entity)
         {
             return entity.BuildTyped();
         }

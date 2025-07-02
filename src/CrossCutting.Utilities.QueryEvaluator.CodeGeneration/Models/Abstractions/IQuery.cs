@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Abstractions;
 
 internal interface IQuery
 {

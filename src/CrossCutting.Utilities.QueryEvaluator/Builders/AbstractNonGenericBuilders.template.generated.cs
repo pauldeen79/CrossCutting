@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Builders
 {
-    public abstract partial class ConditionBuilder : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class ConditionBaseBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> _combination;
 
@@ -62,23 +62,28 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
         }
 
-        protected ConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Condition source)
+        protected ConditionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.ConditionBase source)
         {
             _combination = source.Combination;
             _startGroup = source.StartGroup;
             _endGroup = source.EndGroup;
         }
 
-        protected ConditionBuilder()
+        protected ConditionBaseBuilder()
         {
             SetDefaultValues();
         }
 
-        public abstract CrossCutting.Utilities.QueryEvaluator.Condition Build();
+        public abstract CrossCutting.Utilities.QueryEvaluator.ConditionBase Build();
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder.Build()
+        {
+            return Build();
+        }
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Condition(ConditionBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.ConditionBase(ConditionBaseBuilder entity)
         {
             return entity.Build();
         }
@@ -88,24 +93,29 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public abstract partial class ExpressionBuilder : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class ExpressionBaseBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
-        protected ExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Expression source)
+        protected ExpressionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.ExpressionBase source)
         {
         }
 
-        protected ExpressionBuilder()
+        protected ExpressionBaseBuilder()
         {
             SetDefaultValues();
         }
 
-        public abstract CrossCutting.Utilities.QueryEvaluator.Expression Build();
+        public abstract CrossCutting.Utilities.QueryEvaluator.ExpressionBase Build();
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder.Build()
+        {
+            return Build();
+        }
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Expression(ExpressionBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.ExpressionBase(ExpressionBaseBuilder entity)
         {
             return entity.Build();
         }
@@ -115,13 +125,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public abstract partial class QueryBuilder : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class QueryBaseBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private System.Nullable<int> _limit;
 
         private System.Nullable<int> _offset;
 
-        private System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder> _filter;
+        private System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder> _filter;
 
         private System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder> _orderByFields;
 
@@ -158,7 +168,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
-        public System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder> Filter
+        public System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder> Filter
         {
             get
             {
@@ -166,7 +176,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder>>.Default.Equals(_filter!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder>>.Default.Equals(_filter!, value!);
                 _filter = value;
                 if (hasChanged) HandlePropertyChanged(nameof(Filter));
             }
@@ -188,9 +198,9 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
         }
 
-        protected QueryBuilder(CrossCutting.Utilities.QueryEvaluator.Query source)
+        protected QueryBaseBuilder(CrossCutting.Utilities.QueryEvaluator.QueryBase source)
         {
-            _filter = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder>();
+            _filter = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder>();
             _orderByFields = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder>();
             _limit = source.Limit;
             _offset = source.Offset;
@@ -198,18 +208,23 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             foreach (var item in source.OrderByFields.Select(x => x.ToBuilder())) _orderByFields.Add(item);
         }
 
-        protected QueryBuilder()
+        protected QueryBaseBuilder()
         {
-            _filter = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder>();
+            _filter = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder>();
             _orderByFields = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder>();
             SetDefaultValues();
         }
 
-        public abstract CrossCutting.Utilities.QueryEvaluator.Query Build();
+        public abstract CrossCutting.Utilities.QueryEvaluator.QueryBase Build();
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder.Build()
+        {
+            return Build();
+        }
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Query(QueryBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.QueryBase(QueryBaseBuilder entity)
         {
             return entity.Build();
         }

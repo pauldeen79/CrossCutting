@@ -1,5 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Conditions;
 
-internal interface IIsNotNullCondition : ICondition, ISingleExpressionContainer
+internal interface IIsNotNullCondition : IConditionBase, ISingleExpressionContainer
 {
 }

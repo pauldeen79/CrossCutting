@@ -11,11 +11,11 @@ public class DefaultDataFactory : IContextDataFactory
         _contextProviders = contextProviders;
     }
 
-    public Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(Query query)
+    public Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query)
         where TResult : class
         => GetDataAsync<TResult>(query, default);
 
-    public async Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(Query query, object? context)
+    public async Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query, object? context)
         where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));

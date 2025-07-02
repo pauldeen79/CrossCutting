@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator
 {
-    public abstract partial record Condition
+    public abstract partial record ConditionBase : CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition
     {
         public System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> Combination
         {
@@ -27,24 +27,34 @@ namespace CrossCutting.Utilities.QueryEvaluator
             get;
         }
 
-        protected Condition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup)
+        protected ConditionBase(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup)
         {
             this.Combination = combination;
             this.StartGroup = startGroup;
             this.EndGroup = endGroup;
         }
 
-        public abstract CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBuilder ToBuilder();
+        public abstract CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBaseBuilder ToBuilder();
+
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        {
+            return ToBuilder();
+        }
     }
-    public abstract partial record Expression
+    public abstract partial record ExpressionBase : CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
     {
-        protected Expression()
+        protected ExpressionBase()
         {
         }
 
-        public abstract CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder ToBuilder();
+        public abstract CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder ToBuilder();
+
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
+        {
+            return ToBuilder();
+        }
     }
-    public abstract partial record Query
+    public abstract partial record QueryBase : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
     {
         public System.Nullable<int> Limit
         {
@@ -59,7 +69,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Condition> Filter
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> Filter
         {
             get;
         }
@@ -71,17 +81,22 @@ namespace CrossCutting.Utilities.QueryEvaluator
             get;
         }
 
-        protected Query(System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Condition> filter, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.QuerySortOrder> orderByFields)
+        protected QueryBase(System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> filter, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.QuerySortOrder> orderByFields)
         {
             if (filter is null) throw new System.ArgumentNullException(nameof(filter));
             if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
             this.Limit = limit;
             this.Offset = offset;
-            this.Filter = new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Condition>(filter);
+            this.Filter = new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition>(filter);
             this.OrderByFields = new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.QuerySortOrder>(orderByFields);
         }
 
-        public abstract CrossCutting.Utilities.QueryEvaluator.Builders.QueryBuilder ToBuilder();
+        public abstract CrossCutting.Utilities.QueryEvaluator.Builders.QueryBaseBuilder ToBuilder();
+
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery.ToBuilder()
+        {
+            return ToBuilder();
+        }
     }
 }
 #nullable disable

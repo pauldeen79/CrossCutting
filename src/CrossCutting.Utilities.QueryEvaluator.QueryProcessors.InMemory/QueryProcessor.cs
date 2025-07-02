@@ -11,7 +11,7 @@ public class QueryProcessor : IQueryProcessor
         _dataFactory = dataFactory;
     }
 
-    public async Task<Result<IReadOnlyCollection<TResult>>> FindManyAsync<TResult>(Query query, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<TResult>>> FindManyAsync<TResult>(IQuery query, CancellationToken cancellationToken)
         where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
@@ -30,7 +30,7 @@ public class QueryProcessor : IQueryProcessor
         ).ToList());
     }
 
-    public async Task<Result<TResult>> FindOneAsync<TResult>(Query query, CancellationToken cancellationToken)
+    public async Task<Result<TResult>> FindOneAsync<TResult>(IQuery query, CancellationToken cancellationToken)
         where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
@@ -53,7 +53,7 @@ public class QueryProcessor : IQueryProcessor
             : Result.Success(firstItem);
     }
 
-    public async Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(Query query, CancellationToken cancellationToken)
+    public async Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(IQuery query, CancellationToken cancellationToken)
         where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
@@ -74,7 +74,7 @@ public class QueryProcessor : IQueryProcessor
         ));
     }
 
-    private Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(Query query)
+    private Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query)
         where TResult : class
         => _dataFactory is IContextDataFactory c
             ? c.GetDataAsync<TResult>(query)

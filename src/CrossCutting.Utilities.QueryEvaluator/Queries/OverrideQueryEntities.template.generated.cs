@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Queries
 {
-    public partial record ParameterizedQuery : CrossCutting.Utilities.QueryEvaluator.Query
+    public partial record ParameterizedQuery : CrossCutting.Utilities.QueryEvaluator.QueryBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -19,13 +19,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Queries
             get;
         }
 
-        public ParameterizedQuery(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.QueryParameter> parameters, System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Condition> filter, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.QuerySortOrder> orderByFields) : base(limit, offset, filter, orderByFields)
+        public ParameterizedQuery(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.QueryParameter> parameters, System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> filter, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.QuerySortOrder> orderByFields) : base(limit, offset, filter, orderByFields)
         {
             this.Parameters = parameters is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.QueryParameter>(parameters);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Builders.QueryBuilder ToBuilder()
+        public override CrossCutting.Utilities.QueryEvaluator.Builders.QueryBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -34,15 +34,20 @@ namespace CrossCutting.Utilities.QueryEvaluator.Queries
         {
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Queries.ParameterizedQueryBuilder(this);
         }
+
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
     }
-    public partial record SingleEntityQuery : CrossCutting.Utilities.QueryEvaluator.Query
+    public partial record SingleEntityQuery : CrossCutting.Utilities.QueryEvaluator.QueryBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
     {
-        public SingleEntityQuery(System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Condition> filter, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.QuerySortOrder> orderByFields) : base(limit, offset, filter, orderByFields)
+        public SingleEntityQuery(System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> filter, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.QuerySortOrder> orderByFields) : base(limit, offset, filter, orderByFields)
         {
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Builders.QueryBuilder ToBuilder()
+        public override CrossCutting.Utilities.QueryEvaluator.Builders.QueryBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -50,6 +55,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Queries
         public CrossCutting.Utilities.QueryEvaluator.Builders.Queries.SingleEntityQueryBuilder ToTypedBuilder()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Builders.Queries.SingleEntityQueryBuilder(this);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery.ToBuilder()
+        {
+            return ToTypedBuilder();
         }
     }
 }

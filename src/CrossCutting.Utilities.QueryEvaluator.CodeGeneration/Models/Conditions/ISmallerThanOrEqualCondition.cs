@@ -1,5 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Conditions;
 
-internal interface ISmallerThanOrEqualCondition : ICondition, IDoubleExpressionContainer
+internal interface ISmallerThanOrEqualCondition : IConditionBase, IDoubleExpressionContainer
 {
 }

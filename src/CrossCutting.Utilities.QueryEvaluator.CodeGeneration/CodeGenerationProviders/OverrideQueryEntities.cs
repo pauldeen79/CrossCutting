@@ -6,8 +6,8 @@ public class OverrideQueryEntities(IPipelineService pipelineService) : QueryEval
     public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}/Queries";
 
     protected override bool EnableEntityInheritance => true;
-    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IQuery), Constants.Namespaces.UtilitiesQueryEvaluator);
+    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IQueryBase), Constants.Namespaces.UtilitiesQueryEvaluator);
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetEntitiesAsync(GetOverrideModelsAsync(typeof(IQuery)), CurrentNamespace);
+        => GetEntitiesAsync(GetOverrideModelsAsync(typeof(IQueryBase)), CurrentNamespace);
 }

@@ -2,7 +2,7 @@
 
 public class DefaultPaginator : IPaginator
 {
-    public async Task<IEnumerable<T>> GetPagedDataAsync<T>(Query query, IEnumerable<T> filteredRecords, CancellationToken token)
+    public async Task<IEnumerable<T>> GetPagedDataAsync<T>(IQuery query, IEnumerable<T> filteredRecords, CancellationToken token)
         where T : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
@@ -27,7 +27,7 @@ public class DefaultPaginator : IPaginator
         return result;
     }
 
-    private static async Task<IEnumerable<T>> GetOrderedItems<T>(Query query, IEnumerable<T> result, CancellationToken token) where T : class
+    private static async Task<IEnumerable<T>> GetOrderedItems<T>(IQuery query, IEnumerable<T> result, CancellationToken token) where T : class
     {
         var orderByResults = await Task.WhenAll(result.Select(async x =>
         {

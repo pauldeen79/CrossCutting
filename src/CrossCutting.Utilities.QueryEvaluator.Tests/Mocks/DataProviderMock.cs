@@ -4,7 +4,7 @@ internal sealed class DataProviderMock : IDataProvider
 {
     public DataProviderMock()
     {
-        ResultDelegate = new Func<Query, Task<Result<IEnumerable>>>
+        ResultDelegate = new Func<IQuery, Task<Result<IEnumerable>>>
         (
             async query =>
             {
@@ -35,14 +35,14 @@ internal sealed class DataProviderMock : IDataProvider
     public object[] SourceData { get; set; } = default!;
     public Func<object, ExpressionEvaluatorContext> CreateContextDelegate { get; set; } = default!;
 
-    private Func<Query, Task<Result<IEnumerable>>> ResultDelegate { get; set; }
+    private Func<IQuery, Task<Result<IEnumerable>>> ResultDelegate { get; set; }
 
-    public async Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(Query query)
+    public async Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query)
         where TResult : class
         => (await ResultDelegate.Invoke(query).ConfigureAwait(false))
             .Transform(x => x.Cast<TResult>());
 
-    private static async Task<Result<bool>> IsItemValid(Query query, ExpressionEvaluatorContext context)
+    private static async Task<Result<bool>> IsItemValid(IQuery query, ExpressionEvaluatorContext context)
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
@@ -54,14 +54,14 @@ internal sealed class DataProviderMock : IDataProvider
         return await EvaluateComplexConditions(query.Filter, context, CancellationToken.None).ConfigureAwait(false);
     }
 
-    private static bool CanEvaluateSimpleConditions(IEnumerable<Condition> conditions)
+    private static bool CanEvaluateSimpleConditions(IEnumerable<ICondition> conditions)
         => !conditions.Any(x =>
             (x.Combination ?? Combination.And) == Combination.Or
             || x.StartGroup
             || x.EndGroup
         );
 
-    private static async Task<Result<bool>> EvaluateSimpleConditions(IEnumerable<Condition> conditions, ExpressionEvaluatorContext context, CancellationToken token)
+    private static async Task<Result<bool>> EvaluateSimpleConditions(IEnumerable<ICondition> conditions, ExpressionEvaluatorContext context, CancellationToken token)
     {
         foreach (var condition in conditions)
         {
@@ -80,7 +80,7 @@ internal sealed class DataProviderMock : IDataProvider
         return Result.Success(true);
     }
 
-    private static async Task<Result<bool>> EvaluateComplexConditions(IEnumerable<Condition> conditions, ExpressionEvaluatorContext context, CancellationToken token)
+    private static async Task<Result<bool>> EvaluateComplexConditions(IEnumerable<ICondition> conditions, ExpressionEvaluatorContext context, CancellationToken token)
     {
         var builder = new StringBuilder();
         foreach (var condition in conditions)

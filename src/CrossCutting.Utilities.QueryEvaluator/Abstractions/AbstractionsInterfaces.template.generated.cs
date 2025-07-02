@@ -10,22 +10,74 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
 {
+    public partial interface ICondition
+    {
+        System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> Combination
+        {
+            get;
+        }
+
+        bool StartGroup
+        {
+            get;
+        }
+
+        bool EndGroup
+        {
+            get;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder ToBuilder();
+    }
     public partial interface IDoubleExpressionContainer : CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Expression SecondExpression
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression SecondExpression
         {
             get;
         }
 
         new CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IDoubleExpressionContainerBuilder ToBuilder();
     }
+    public partial interface IExpression
+    {
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder ToBuilder();
+    }
+    public partial interface IQuery
+    {
+        System.Nullable<int> Limit
+        {
+            get;
+        }
+
+        System.Nullable<int> Offset
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
+        System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> Filter
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.QuerySortOrder> OrderByFields
+        {
+            get;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IQueryBuilder ToBuilder();
+    }
     public partial interface ISingleExpressionContainer
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Expression FirstExpression
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression FirstExpression
         {
             get;
         }

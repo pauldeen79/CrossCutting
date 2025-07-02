@@ -10,11 +10,33 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
 {
+    public partial interface IConditionBuilder
+    {
+        System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> Combination
+        {
+            get;
+            set;
+        }
+
+        bool StartGroup
+        {
+            get;
+            set;
+        }
+
+        bool EndGroup
+        {
+            get;
+            set;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition Build();
+    }
     public partial interface IDoubleExpressionContainerBuilder : CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.ISingleExpressionContainerBuilder
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder SecondExpression
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder SecondExpression
         {
             get;
             set;
@@ -22,11 +44,48 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions
 
         new CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer Build();
     }
+    public partial interface IExpressionBuilder
+    {
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression Build();
+    }
+    public partial interface IQueryBuilder
+    {
+        System.Nullable<int> Limit
+        {
+            get;
+            set;
+        }
+
+        System.Nullable<int> Offset
+        {
+            get;
+            set;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
+        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IConditionBuilder> Filter
+        {
+            get;
+            set;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder> OrderByFields
+        {
+            get;
+            set;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery Build();
+    }
     public partial interface ISingleExpressionContainerBuilder
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBuilder FirstExpression
+        CrossCutting.Utilities.QueryEvaluator.Builders.Abstractions.IExpressionBuilder FirstExpression
         {
             get;
             set;

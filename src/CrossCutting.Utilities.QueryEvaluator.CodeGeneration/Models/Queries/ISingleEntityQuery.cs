@@ -1,5 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Queries;
 
-internal interface ISingleEntityQuery : IQuery
+internal interface ISingleEntityQuery : IQueryBase
 {
 }
