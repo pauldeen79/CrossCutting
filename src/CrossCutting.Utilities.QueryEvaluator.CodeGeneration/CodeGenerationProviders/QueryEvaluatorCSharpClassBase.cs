@@ -11,7 +11,7 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
     protected override Type EntityConcreteCollectionType => typeof(ReadOnlyValueCollection<>);
     protected override Type BuilderCollectionType => typeof(List<>);
     protected override string ProjectName => Constants.ProjectName;
-    protected override string CoreNamespace => Constants.Namespaces.UtilitiesQueryEvaluator; // standard implementation thinks we're using the project name concatenated with '.Domain'
+    protected override string CoreNamespace => Constants.Namespaces.UtilitiesQueryEvaluator; // standard implementation thinks we're using the project name concatenated with '.Core'
     protected override string BuilderAbstractionsNamespace => $"{RootNamespace}.Abstractions.Builders";
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
