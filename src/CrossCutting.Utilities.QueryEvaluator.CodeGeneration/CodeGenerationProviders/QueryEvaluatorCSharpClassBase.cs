@@ -21,9 +21,21 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
 
     protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
     {
-        yield return new TypenameMappingBuilder()
-            .WithSourceType(typeof(ValidGroupsAttribute))
-            .WithTargetTypeName(typeof(ValidGroupsAttribute).FullName!.Replace(CodeGenerationRootNamespace, ProjectName));
+        // Map validation attributes to Abstractions instead of main assembly
+        foreach (var validationType in GetType().Assembly.GetTypes().Where(x => x.Namespace == $"{CodeGenerationRootNamespace}.Validation"))
+        {
+            yield return new TypenameMappingBuilder()
+                .WithSourceType(validationType)
+                .WithTargetTypeName(validationType.FullName!.Replace(CodeGenerationRootNamespace, $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Abstractions"));
+        }
+
+        // Map domains (enumerations and value type) to Abstractions instead of main assembly
+        foreach (var domainsType in GetType().Assembly.GetTypes().Where(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models.Domains"))
+        {
+            yield return new TypenameMappingBuilder()
+                .WithSourceType(domainsType)
+                .WithTargetTypeName(domainsType.FullName!.Replace($"{CodeGenerationRootNamespace}.Models", $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Abstractions"));
+        }
 
         yield return new TypenameMappingBuilder()
             .WithSourceType(typeof(IFormatProvider))

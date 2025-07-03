@@ -26,7 +26,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public EqualsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
+        public EqualsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -74,7 +74,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public GreaterThanCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
+        public GreaterThanCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -122,7 +122,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public GreaterThanOrEqualCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
+        public GreaterThanOrEqualCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -163,7 +163,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public IsNotNullCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
+        public IsNotNullCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
         {
             this.FirstExpression = firstExpression;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
@@ -198,7 +198,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public IsNullCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
+        public IsNullCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
         {
             this.FirstExpression = firstExpression;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
@@ -240,7 +240,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public NotEqualsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
+        public NotEqualsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -288,7 +288,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public SmallerThanCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
+        public SmallerThanCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -336,7 +336,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public SmallerThanOrEqualCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
+        public SmallerThanOrEqualCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -389,7 +389,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public StringContainsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringContainsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -448,7 +448,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public StringEndsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringEndsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -507,7 +507,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public StringEqualsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringEqualsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -566,7 +566,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public StringNotContainsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringNotContainsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -625,7 +625,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public StringNotEndsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringNotEndsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -684,7 +684,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public StringNotEqualsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringNotEqualsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -743,7 +743,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public StringNotStartsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringNotStartsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;
@@ -802,7 +802,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Conditions
             get;
         }
 
-        public StringStartsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringStartsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression secondExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.SecondExpression = secondExpression;
             this.FirstExpression = firstExpression;

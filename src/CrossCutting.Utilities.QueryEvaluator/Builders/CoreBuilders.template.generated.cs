@@ -151,7 +151,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
     {
         private CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder _expression;
 
-        private CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection _order;
+        private CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.QuerySortOrderDirection _order;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -171,7 +171,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection Order
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.QuerySortOrderDirection Order
         {
             get
             {
@@ -179,7 +179,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection>.Default.Equals(_order, value);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.QuerySortOrderDirection>.Default.Equals(_order, value);
                 _order = value;
                 if (hasChanged) HandlePropertyChanged(nameof(Order));
             }

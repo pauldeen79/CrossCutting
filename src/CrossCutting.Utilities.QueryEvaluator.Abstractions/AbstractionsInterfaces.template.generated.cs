@@ -12,7 +12,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
 {
     public partial interface ICondition
     {
-        System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> Combination
+        System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> Combination
         {
             get;
         }
@@ -58,7 +58,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
+        [CrossCutting.Utilities.QueryEvaluator.Abstractions.Validation.ValidGroupsAttribute]
         System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> Filter
         {
             get;
@@ -82,7 +82,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
             get;
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection Order
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.QuerySortOrderDirection Order
         {
             get;
         }

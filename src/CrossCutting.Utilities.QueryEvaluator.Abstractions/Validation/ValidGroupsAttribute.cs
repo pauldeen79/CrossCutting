@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Validation; // TODO: Move to Abstractions.Domains
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Validation;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 public sealed class ValidGroupsAttribute : ValidationAttribute

@@ -12,7 +12,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 {
     public abstract partial class ConditionBaseBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, System.ComponentModel.INotifyPropertyChanged
     {
-        private System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> _combination;
+        private System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> _combination;
 
         private bool _startGroup;
 
@@ -20,7 +20,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
-        public System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> Combination
+        public System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> Combination
         {
             get
             {
@@ -28,7 +28,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination>>.Default.Equals(_combination, value);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination>>.Default.Equals(_combination, value);
                 _combination = value;
                 if (hasChanged) HandlePropertyChanged(nameof(Combination));
             }
@@ -167,7 +167,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
+        [CrossCutting.Utilities.QueryEvaluator.Abstractions.Validation.ValidGroupsAttribute]
         public System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder> Filter
         {
             get

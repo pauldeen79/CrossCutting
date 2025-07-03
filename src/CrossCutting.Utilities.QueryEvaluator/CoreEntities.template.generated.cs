@@ -63,12 +63,12 @@ namespace CrossCutting.Utilities.QueryEvaluator
             get;
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection Order
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.QuerySortOrderDirection Order
         {
             get;
         }
 
-        public QuerySortOrder(CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression expression, CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection order)
+        public QuerySortOrder(CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression expression, CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.QuerySortOrderDirection order)
         {
             this.Expression = expression;
             this.Order = order;

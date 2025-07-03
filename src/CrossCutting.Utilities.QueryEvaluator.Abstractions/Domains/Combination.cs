@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Domains; // TODO: Move to Abstractions.Domains
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains;
 
 public enum Combination
 {

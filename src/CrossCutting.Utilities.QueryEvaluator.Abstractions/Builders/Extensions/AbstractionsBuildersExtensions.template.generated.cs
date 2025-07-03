@@ -12,7 +12,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
 {
     public static partial class ConditionBuilderExtensions
     {
-        public static T WithCombination<T>(this T instance, System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination)
+        public static T WithCombination<T>(this T instance, System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder
         {
             instance.Combination = combination;
@@ -102,7 +102,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
             return instance;
         }
 
-        public static T WithOrder<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Domains.QuerySortOrderDirection order)
+        public static T WithOrder<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.QuerySortOrderDirection order)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder
         {
             instance.Order = order;

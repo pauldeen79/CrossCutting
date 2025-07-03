@@ -12,7 +12,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
 {
     public abstract partial record ConditionBase : CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition
     {
-        public System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> Combination
+        public System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> Combination
         {
             get;
         }
@@ -27,7 +27,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
             get;
         }
 
-        protected ConditionBase(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Domains.Combination> combination, bool startGroup, bool endGroup)
+        protected ConditionBase(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup)
         {
             this.Combination = combination;
             this.StartGroup = startGroup;
@@ -68,7 +68,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        [CrossCutting.Utilities.QueryEvaluator.Validation.ValidGroupsAttribute]
+        [CrossCutting.Utilities.QueryEvaluator.Abstractions.Validation.ValidGroupsAttribute]
         public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> Filter
         {
             get;
