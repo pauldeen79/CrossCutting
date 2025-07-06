@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Extensions;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Extensions;
 
 public static class QueryProcessorExtensions
 {
