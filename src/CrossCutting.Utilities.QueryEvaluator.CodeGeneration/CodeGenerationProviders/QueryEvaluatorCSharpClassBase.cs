@@ -18,7 +18,7 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
     protected override Type BuilderCollectionType => typeof(List<>);
     protected override string ProjectName => Constants.ProjectName;
     protected override string BuilderAbstractionsNamespace => $"{ProjectName}.Abstractions.Builders";
-    //protected override string AbstractionsParentNamespace => ProjectName;
+    protected override string AbstractionsParentNamespace => ProjectName;
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
     protected override bool CreateRecord => true;
