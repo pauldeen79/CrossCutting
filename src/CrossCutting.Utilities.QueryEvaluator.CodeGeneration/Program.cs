@@ -1,4 +1,7 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration;
+﻿using ClassFramework.Domain.Extensions;
+using CrossCutting.Common.Extensions;
+
+namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration;
 
 [ExcludeFromCodeCoverage]
 internal static class Program
@@ -36,11 +39,34 @@ internal static class Program
         using var serviceProvider = services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();
         var engine = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var processed = false;
 
         // Generate code
         foreach (var generatorType in generators)
         {
-            var generator = (CsharpClassGeneratorCodeGenerationProviderBase)scope.ServiceProvider.GetRequiredService(generatorType);
+            var generator = (QueryEvaluatorCSharpClassBase)scope.ServiceProvider.GetRequiredService(generatorType);
+
+            if (!processed)
+            {
+                processed = true;
+                foreach (var mapping in generator.GetTypenameMappings().Where(m => m.SourceTypeName.GetClassName().In(nameof(ICondition), nameof(ICondition).Substring(1), nameof(ISingleExpressionContainer), nameof(ISingleExpressionContainer).Substring(1))))
+                {
+                    Console.WriteLine($"{mapping.SourceTypeName} -> {mapping.TargetTypeName}");
+                    foreach (var md in mapping.Metadata)
+                    {
+                        Console.WriteLine($"    {md.Name}: {md.Value}");
+                    }
+                }
+                foreach (var mapping in generator.GetNamespaceMappings())
+                {
+                    Console.WriteLine($"{mapping.SourceNamespace} -> {mapping.TargetNamespace}");
+                    foreach (var md in mapping.Metadata)
+                    {
+                        Console.WriteLine($"    {md.Name}: {md.Value}");
+                    }
+                }
+            }
+
             var result = await engine.GenerateAsync(generator, new MultipleStringContentBuilderEnvironment(), new CodeGenerationSettings(basePath, Path.Combine(generator.Path, $"{generatorType.Name}.template.generated.cs"))).ConfigureAwait(false);
             if (!result.IsSuccessful())
             {

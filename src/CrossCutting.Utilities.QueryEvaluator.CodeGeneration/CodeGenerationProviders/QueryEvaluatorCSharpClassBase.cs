@@ -3,6 +3,12 @@
 [ExcludeFromCodeCoverage]
 public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
 {
+    public IEnumerable<TypenameMappingBuilder> GetTypenameMappings()
+        => CreateTypenameMappings();
+
+    public IEnumerable<NamespaceMappingBuilder> GetNamespaceMappings()
+        => CreateNamespaceMappings();
+
     public override bool RecurseOnDeleteGeneratedFiles => false;
     public override string LastGeneratedFilesFilename => string.Empty;
     public override Encoding Encoding => Encoding.UTF8;
@@ -12,7 +18,9 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
     protected override Type BuilderCollectionType => typeof(List<>);
     protected override string ProjectName => Constants.ProjectName;
     protected override string CoreNamespace => Constants.Namespaces.UtilitiesQueryEvaluator; // standard implementation thinks we're using the project name concatenated with '.Core'
-    protected override string BuilderAbstractionsNamespace => $"{RootNamespace}.Abstractions.Builders";
+    protected override string BuilderAbstractionsNamespace => $"{ProjectName}.Abstractions.Builders";
+    //protected override string AbstractionsParentNamespace => ProjectName;
+    //protected override bool InheritFromInterfaces => true;
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
     protected override bool CreateRecord => true;
