@@ -69,7 +69,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Common.Testing
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.CodeGeneration", "src\CrossCutting.Utilities.QueryEvaluator.CodeGeneration\CrossCutting.Utilities.QueryEvaluator.CodeGeneration.csproj", "{6B7CEB98-4295-47F1-A53D-F831D40D0C67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator", "src\CrossCutting.Utilities.QueryEvaluator\CrossCutting.Utilities.QueryEvaluator.csproj", "{69E8C7B2-CE50-4AFC-8E5C-1986567BD66A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.Core", "src\CrossCutting.Utilities.QueryEvaluator\CrossCutting.Utilities.QueryEvaluator.Core.csproj", "{69E8C7B2-CE50-4AFC-8E5C-1986567BD66A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.Tests", "src\CrossCutting.Utilities.QueryEvaluator.Tests\CrossCutting.Utilities.QueryEvaluator.Tests.csproj", "{E679FB94-BAE5-4C26-AFE5-0DC8B6E09735}"
 EndProject

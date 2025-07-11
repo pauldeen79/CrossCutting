@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CrossCutting.Data.Core\CrossCutting.Data.Core.csproj" />
-    <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator\CrossCutting.Utilities.QueryEvaluator.csproj" />
+    <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator\CrossCutting.Utilities.QueryEvaluator.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

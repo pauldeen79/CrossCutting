@@ -29,7 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CrossCutting.Common.Testing\CrossCutting.Common.Testing.csproj" />
     <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory.csproj" />
-    <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator\CrossCutting.Utilities.QueryEvaluator.csproj" />
+    <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator\CrossCutting.Utilities.QueryEvaluator.Core.csproj" />
   </ItemGroup>
 
 </Project>
