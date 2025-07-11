@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CrossCutting.Common.Testing;
 
-//[ExcludeFromCodeCoverage]
+[ExcludeFromCodeCoverage]
 public static class DictionaryExtensions
 {
     public static T GetOrCreate<T>(this IDictionary<Type, object?> instance, Func<Type, object?> classFactory)
