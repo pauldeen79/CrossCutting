@@ -66,7 +66,7 @@ internal static class Program
                     }
                 }
             }
-
+            if (generator is OverrideConditionEntities) System.Diagnostics.Debugger.Break();
             var result = await engine.GenerateAsync(generator, new MultipleStringContentBuilderEnvironment(), new CodeGenerationSettings(basePath, Path.Combine(generator.Path, $"{generatorType.Name}.template.generated.cs"))).ConfigureAwait(false);
             if (!result.IsSuccessful())
             {

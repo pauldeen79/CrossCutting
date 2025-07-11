@@ -8,13 +8,13 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Builders
+namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
 {
     public abstract partial class ConditionBaseBuilder<TBuilder, TEntity> : ConditionBaseBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder
-        where TEntity : CrossCutting.Utilities.QueryEvaluator.ConditionBase
+        where TEntity : CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase
         where TBuilder : ConditionBaseBuilder<TBuilder, TEntity>
     {
-        protected ConditionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.ConditionBase source) : base(source)
+        protected ConditionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase source) : base(source)
         {
         }
 
@@ -22,7 +22,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
         {
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.ConditionBase Build()
+        public override CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase Build()
         {
             return BuildTyped();
         }
@@ -34,16 +34,16 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             return BuildTyped();
         }
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.ConditionBase(ConditionBaseBuilder<TBuilder, TEntity> entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase(ConditionBaseBuilder<TBuilder, TEntity> entity)
         {
             return entity.BuildTyped();
         }
     }
     public abstract partial class ExpressionBaseBuilder<TBuilder, TEntity> : ExpressionBaseBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
-        where TEntity : CrossCutting.Utilities.QueryEvaluator.ExpressionBase
+        where TEntity : CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase
         where TBuilder : ExpressionBaseBuilder<TBuilder, TEntity>
     {
-        protected ExpressionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.ExpressionBase source) : base(source)
+        protected ExpressionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase source) : base(source)
         {
         }
 
@@ -51,7 +51,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
         {
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.ExpressionBase Build()
+        public override CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase Build()
         {
             return BuildTyped();
         }
@@ -63,16 +63,16 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             return BuildTyped();
         }
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.ExpressionBase(ExpressionBaseBuilder<TBuilder, TEntity> entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase(ExpressionBaseBuilder<TBuilder, TEntity> entity)
         {
             return entity.BuildTyped();
         }
     }
     public abstract partial class QueryBaseBuilder<TBuilder, TEntity> : QueryBaseBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
-        where TEntity : CrossCutting.Utilities.QueryEvaluator.QueryBase
+        where TEntity : CrossCutting.Utilities.QueryEvaluator.Core.QueryBase
         where TBuilder : QueryBaseBuilder<TBuilder, TEntity>
     {
-        protected QueryBaseBuilder(CrossCutting.Utilities.QueryEvaluator.QueryBase source) : base(source)
+        protected QueryBaseBuilder(CrossCutting.Utilities.QueryEvaluator.Core.QueryBase source) : base(source)
         {
         }
 
@@ -80,7 +80,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
         {
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.QueryBase Build()
+        public override CrossCutting.Utilities.QueryEvaluator.Core.QueryBase Build()
         {
             return BuildTyped();
         }
@@ -92,7 +92,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             return BuildTyped();
         }
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.QueryBase(QueryBaseBuilder<TBuilder, TEntity> entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.QueryBase(QueryBaseBuilder<TBuilder, TEntity> entity)
         {
             return entity.BuildTyped();
         }

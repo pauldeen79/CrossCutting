@@ -10,5 +10,5 @@ public class AbstractBuilders(IPipelineService pipelineService) : QueryEvaluator
     protected override bool IsAbstract => true;
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetBuildersAsync(GetAbstractModelsAsync(), CurrentNamespace, Constants.Namespaces.UtilitiesQueryEvaluator);
+        => GetBuildersAsync(GetAbstractModelsAsync(), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Builders", $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core");
 }

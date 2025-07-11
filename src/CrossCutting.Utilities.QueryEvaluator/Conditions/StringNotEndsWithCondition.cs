@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Conditions;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions;
 
 public partial record StringNotEndsWithCondition
 {

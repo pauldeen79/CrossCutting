@@ -6,7 +6,7 @@ public class CoreBuilders(IPipelineService pipelineService) : QueryEvaluatorCSha
     public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}/Builders";
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetBuildersAsync(GetCoreModelsAsync(), CurrentNamespace, Constants.Namespaces.UtilitiesQueryEvaluator);
+        => GetBuildersAsync(GetCoreModelsAsync(), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Builders", $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core");
 
     protected override bool CreateAsObservable => true;
 }

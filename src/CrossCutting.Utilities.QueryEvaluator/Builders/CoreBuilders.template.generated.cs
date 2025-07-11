@@ -8,7 +8,7 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Builders
+namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
 {
     public partial class QueryParameterBuilder : System.ComponentModel.INotifyPropertyChanged
     {
@@ -47,7 +47,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
         }
 
-        public QueryParameterBuilder(CrossCutting.Utilities.QueryEvaluator.QueryParameter source)
+        public QueryParameterBuilder(CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _name = source.Name;
@@ -60,27 +60,27 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             SetDefaultValues();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.QueryParameter Build()
+        public CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter Build()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.QueryParameter(Name, Value);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter(Name, Value);
         }
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder WithName(string name)
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder WithName(string name)
         {
             if (name is null) throw new System.ArgumentNullException(nameof(name));
             Name = name;
             return this;
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder WithValue(object? value)
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder WithValue(object? value)
         {
             Value = value;
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.QueryParameter(QueryParameterBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter(QueryParameterBuilder entity)
         {
             return entity.Build();
         }
@@ -111,7 +111,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
         }
 
-        public QueryParameterValueBuilder(CrossCutting.Utilities.QueryEvaluator.QueryParameterValue source)
+        public QueryParameterValueBuilder(CrossCutting.Utilities.QueryEvaluator.Core.QueryParameterValue source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _name = source.Name;
@@ -123,21 +123,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             SetDefaultValues();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.QueryParameterValue Build()
+        public CrossCutting.Utilities.QueryEvaluator.Core.QueryParameterValue Build()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.QueryParameterValue(Name);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.QueryParameterValue(Name);
         }
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterValueBuilder WithName(string name)
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterValueBuilder WithName(string name)
         {
             if (name is null) throw new System.ArgumentNullException(nameof(name));
             Name = name;
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.QueryParameterValue(QueryParameterValueBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.QueryParameterValue(QueryParameterValueBuilder entity)
         {
             return entity.Build();
         }
@@ -185,7 +185,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
         }
 
-        public QuerySortOrderBuilder(CrossCutting.Utilities.QueryEvaluator.QuerySortOrder source)
+        public QuerySortOrderBuilder(CrossCutting.Utilities.QueryEvaluator.Core.QuerySortOrder source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _expression = source.Expression?.ToBuilder()!;
@@ -198,9 +198,9 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             SetDefaultValues();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.QuerySortOrder Build()
+        public CrossCutting.Utilities.QueryEvaluator.Core.QuerySortOrder Build()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.QuerySortOrder(Expression?.Build()!, Order);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.QuerySortOrder(Expression?.Build()!, Order);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder.Build()
@@ -210,7 +210,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.QuerySortOrder(QuerySortOrderBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.QuerySortOrder(QuerySortOrderBuilder entity)
         {
             return entity.Build();
         }

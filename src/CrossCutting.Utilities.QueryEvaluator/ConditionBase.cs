@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Core;
 
 public partial record ConditionBase
 {

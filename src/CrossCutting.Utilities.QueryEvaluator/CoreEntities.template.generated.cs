@@ -8,7 +8,7 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator
+namespace CrossCutting.Utilities.QueryEvaluator.Core
 {
     public partial record QueryParameter
     {
@@ -30,9 +30,9 @@ namespace CrossCutting.Utilities.QueryEvaluator
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder ToBuilder()
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder(this);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder(this);
         }
     }
     public partial record QueryParameterValue
@@ -49,9 +49,9 @@ namespace CrossCutting.Utilities.QueryEvaluator
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterValueBuilder ToBuilder()
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterValueBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterValueBuilder(this);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterValueBuilder(this);
         }
     }
     public partial record QuerySortOrder : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder
@@ -75,9 +75,9 @@ namespace CrossCutting.Utilities.QueryEvaluator
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder ToBuilder()
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.QuerySortOrderBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Builders.QuerySortOrderBuilder(this);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.QuerySortOrderBuilder(this);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder.ToBuilder()

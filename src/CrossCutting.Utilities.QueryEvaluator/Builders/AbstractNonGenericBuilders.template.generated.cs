@@ -8,7 +8,7 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Builders
+namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
 {
     public abstract partial class ConditionBaseBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, System.ComponentModel.INotifyPropertyChanged
     {
@@ -62,7 +62,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
         }
 
-        protected ConditionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.ConditionBase source)
+        protected ConditionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase source)
         {
             _combination = source.Combination;
             _startGroup = source.StartGroup;
@@ -74,7 +74,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             SetDefaultValues();
         }
 
-        public abstract CrossCutting.Utilities.QueryEvaluator.ConditionBase Build();
+        public abstract CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase Build();
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
         {
@@ -83,7 +83,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.ConditionBase(ConditionBaseBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase(ConditionBaseBuilder entity)
         {
             return entity.Build();
         }
@@ -97,7 +97,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
     {
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
-        protected ExpressionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.ExpressionBase source)
+        protected ExpressionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase source)
         {
         }
 
@@ -106,7 +106,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             SetDefaultValues();
         }
 
-        public abstract CrossCutting.Utilities.QueryEvaluator.ExpressionBase Build();
+        public abstract CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase Build();
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder.Build()
         {
@@ -115,7 +115,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.ExpressionBase(ExpressionBaseBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase(ExpressionBaseBuilder entity)
         {
             return entity.Build();
         }
@@ -198,7 +198,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             }
         }
 
-        protected QueryBaseBuilder(CrossCutting.Utilities.QueryEvaluator.QueryBase source)
+        protected QueryBaseBuilder(CrossCutting.Utilities.QueryEvaluator.Core.QueryBase source)
         {
             _filter = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder>();
             _orderByFields = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder>();
@@ -215,7 +215,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
             SetDefaultValues();
         }
 
-        public abstract CrossCutting.Utilities.QueryEvaluator.QueryBase Build();
+        public abstract CrossCutting.Utilities.QueryEvaluator.Core.QueryBase Build();
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder.Build()
         {
@@ -224,7 +224,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.QueryBase(QueryBaseBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.QueryBase(QueryBaseBuilder entity)
         {
             return entity.Build();
         }

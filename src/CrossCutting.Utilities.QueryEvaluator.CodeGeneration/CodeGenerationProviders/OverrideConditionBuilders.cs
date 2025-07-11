@@ -7,11 +7,11 @@ public class OverrideConditionBuilders(IPipelineService pipelineService) : Query
 
     protected override bool EnableEntityInheritance => true;
     protected override bool CreateAsObservable => true;
-    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IConditionBase), Constants.Namespaces.UtilitiesQueryEvaluator);
+    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IConditionBase), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core");
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
         => GetBuildersAsync(
             GetOverrideModelsAsync(typeof(IConditionBase)),
-            CurrentNamespace,
-            $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Conditions");
+            $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Builders.Conditions",
+            $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Conditions");
 }

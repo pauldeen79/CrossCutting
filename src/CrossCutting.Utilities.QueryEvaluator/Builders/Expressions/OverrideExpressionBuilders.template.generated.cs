@@ -8,9 +8,9 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Builders.Expressions
+namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
 {
-    public partial class FieldNameExpressionBuilder : ExpressionBaseBuilder<FieldNameExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Expressions.FieldNameExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
+    public partial class FieldNameExpressionBuilder : ExpressionBaseBuilder<FieldNameExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Expressions.FieldNameExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
     {
         private string _fieldName;
 
@@ -29,7 +29,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Expressions
             }
         }
 
-        public FieldNameExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Expressions.FieldNameExpression source) : base(source)
+        public FieldNameExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.FieldNameExpression source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _fieldName = source.FieldName;
@@ -41,9 +41,9 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Expressions
             SetDefaultValues();
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Expressions.FieldNameExpression BuildTyped()
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Expressions.FieldNameExpression BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Expressions.FieldNameExpression(FieldName);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Expressions.FieldNameExpression(FieldName);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder.Build()
@@ -53,19 +53,19 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Expressions
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.Expressions.FieldNameExpressionBuilder WithFieldName(string fieldName)
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.FieldNameExpressionBuilder WithFieldName(string fieldName)
         {
             if (fieldName is null) throw new System.ArgumentNullException(nameof(fieldName));
             FieldName = fieldName;
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Expressions.FieldNameExpression(FieldNameExpressionBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Expressions.FieldNameExpression(FieldNameExpressionBuilder entity)
         {
             return entity.BuildTyped();
         }
     }
-    public partial class LiteralExpressionBuilder : ExpressionBaseBuilder<LiteralExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Expressions.LiteralExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
+    public partial class LiteralExpressionBuilder : ExpressionBaseBuilder<LiteralExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Expressions.LiteralExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
     {
         private object? _value;
 
@@ -83,7 +83,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Expressions
             }
         }
 
-        public LiteralExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Expressions.LiteralExpression source) : base(source)
+        public LiteralExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.LiteralExpression source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _value = source.Value;
@@ -94,9 +94,9 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Expressions
             SetDefaultValues();
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Expressions.LiteralExpression BuildTyped()
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Expressions.LiteralExpression BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Expressions.LiteralExpression(Value);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Expressions.LiteralExpression(Value);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder.Build()
@@ -106,13 +106,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Expressions
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.Expressions.LiteralExpressionBuilder WithValue(object? value)
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.LiteralExpressionBuilder WithValue(object? value)
         {
             Value = value;
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Expressions.LiteralExpression(LiteralExpressionBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Expressions.LiteralExpression(LiteralExpressionBuilder entity)
         {
             return entity.BuildTyped();
         }

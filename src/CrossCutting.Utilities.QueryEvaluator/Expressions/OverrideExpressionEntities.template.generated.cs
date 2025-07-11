@@ -8,9 +8,9 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Expressions
+namespace CrossCutting.Utilities.QueryEvaluator.Core.Expressions
 {
-    public partial record FieldNameExpression : CrossCutting.Utilities.QueryEvaluator.ExpressionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
+    public partial record FieldNameExpression : CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string FieldName
@@ -24,14 +24,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Expressions
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder ToBuilder()
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Builders.ExpressionBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.Expressions.FieldNameExpressionBuilder ToTypedBuilder()
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.FieldNameExpressionBuilder ToTypedBuilder()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Builders.Expressions.FieldNameExpressionBuilder(this);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.FieldNameExpressionBuilder(this);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
@@ -39,7 +39,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Expressions
             return ToTypedBuilder();
         }
     }
-    public partial record LiteralExpression : CrossCutting.Utilities.QueryEvaluator.ExpressionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
+    public partial record LiteralExpression : CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
     {
         public object? Value
         {
@@ -52,14 +52,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Expressions
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder ToBuilder()
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Builders.ExpressionBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.Expressions.LiteralExpressionBuilder ToTypedBuilder()
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.LiteralExpressionBuilder ToTypedBuilder()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Builders.Expressions.LiteralExpressionBuilder(this);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.LiteralExpressionBuilder(this);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()

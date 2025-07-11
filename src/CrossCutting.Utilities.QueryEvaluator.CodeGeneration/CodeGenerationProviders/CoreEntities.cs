@@ -6,5 +6,5 @@ public class CoreEntities(IPipelineService pipelineService) : QueryEvaluatorCSha
     public override string Path => Constants.Namespaces.UtilitiesQueryEvaluator;
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetEntitiesAsync(GetCoreModelsAsync(), CurrentNamespace);
+        => GetEntitiesAsync(GetCoreModelsAsync(), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core");
 }

@@ -8,7 +8,7 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator
+namespace CrossCutting.Utilities.QueryEvaluator.Core
 {
     public abstract partial record ConditionBase : CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition
     {
@@ -34,7 +34,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
             this.EndGroup = endGroup;
         }
 
-        public abstract CrossCutting.Utilities.QueryEvaluator.Builders.ConditionBaseBuilder ToBuilder();
+        public abstract CrossCutting.Utilities.QueryEvaluator.Core.Builders.ConditionBaseBuilder ToBuilder();
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
@@ -47,7 +47,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
         {
         }
 
-        public abstract CrossCutting.Utilities.QueryEvaluator.Builders.ExpressionBaseBuilder ToBuilder();
+        public abstract CrossCutting.Utilities.QueryEvaluator.Core.Builders.ExpressionBaseBuilder ToBuilder();
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
         {
@@ -91,7 +91,7 @@ namespace CrossCutting.Utilities.QueryEvaluator
             this.OrderByFields = new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder>(orderByFields);
         }
 
-        public abstract CrossCutting.Utilities.QueryEvaluator.Builders.QueryBaseBuilder ToBuilder();
+        public abstract CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryBaseBuilder ToBuilder();
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery.ToBuilder()
         {

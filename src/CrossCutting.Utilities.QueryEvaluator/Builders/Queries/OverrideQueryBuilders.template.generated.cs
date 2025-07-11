@@ -8,15 +8,15 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Builders.Queries
+namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Queries
 {
-    public partial class ParameterizedQueryBuilder : QueryBaseBuilder<ParameterizedQueryBuilder, CrossCutting.Utilities.QueryEvaluator.Queries.ParameterizedQuery>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
+    public partial class ParameterizedQueryBuilder : QueryBaseBuilder<ParameterizedQueryBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Queries.ParameterizedQuery>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
     {
-        private System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder> _parameters;
+        private System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder> _parameters;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder> Parameters
+        public System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder> Parameters
         {
             get
             {
@@ -24,28 +24,28 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Queries
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder>>.Default.Equals(_parameters!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder>>.Default.Equals(_parameters!, value!);
                 _parameters = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Parameters));
             }
         }
 
-        public ParameterizedQueryBuilder(CrossCutting.Utilities.QueryEvaluator.Queries.ParameterizedQuery source) : base(source)
+        public ParameterizedQueryBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Queries.ParameterizedQuery source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _parameters = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder>();
+            _parameters = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder>();
             if (source.Parameters is not null) foreach (var item in source.Parameters.Select(x => x.ToBuilder())) _parameters.Add(item);
         }
 
         public ParameterizedQueryBuilder() : base()
         {
-            _parameters = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder>();
+            _parameters = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder>();
             SetDefaultValues();
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Queries.ParameterizedQuery BuildTyped()
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Queries.ParameterizedQuery BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Queries.ParameterizedQuery(Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), Limit, Offset, Filter.Select(x => x.Build()!).ToList().AsReadOnly(), OrderByFields.Select(x => x.Build()!).ToList().AsReadOnly());
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Queries.ParameterizedQuery(Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), Limit, Offset, Filter.Select(x => x.Build()!).ToList().AsReadOnly(), OrderByFields.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder.Build()
@@ -55,27 +55,27 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Queries
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.Queries.ParameterizedQueryBuilder AddParameters(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder> parameters)
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Queries.ParameterizedQueryBuilder AddParameters(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder> parameters)
         {
             if (parameters is null) throw new System.ArgumentNullException(nameof(parameters));
             return AddParameters(parameters.ToArray());
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Builders.Queries.ParameterizedQueryBuilder AddParameters(params CrossCutting.Utilities.QueryEvaluator.Builders.QueryParameterBuilder[] parameters)
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Queries.ParameterizedQueryBuilder AddParameters(params CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder[] parameters)
         {
             if (parameters is null) throw new System.ArgumentNullException(nameof(parameters));
             foreach (var item in parameters) Parameters.Add(item);
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Queries.ParameterizedQuery(ParameterizedQueryBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Queries.ParameterizedQuery(ParameterizedQueryBuilder entity)
         {
             return entity.BuildTyped();
         }
     }
-    public partial class SingleEntityQueryBuilder : QueryBaseBuilder<SingleEntityQueryBuilder, CrossCutting.Utilities.QueryEvaluator.Queries.SingleEntityQuery>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
+    public partial class SingleEntityQueryBuilder : QueryBaseBuilder<SingleEntityQueryBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Queries.SingleEntityQuery>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
     {
-        public SingleEntityQueryBuilder(CrossCutting.Utilities.QueryEvaluator.Queries.SingleEntityQuery source) : base(source)
+        public SingleEntityQueryBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Queries.SingleEntityQuery source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
         }
@@ -85,9 +85,9 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Queries
             SetDefaultValues();
         }
 
-        public override CrossCutting.Utilities.QueryEvaluator.Queries.SingleEntityQuery BuildTyped()
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Queries.SingleEntityQuery BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Queries.SingleEntityQuery(Limit, Offset, Filter.Select(x => x.Build()!).ToList().AsReadOnly(), OrderByFields.Select(x => x.Build()!).ToList().AsReadOnly());
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Queries.SingleEntityQuery(Limit, Offset, Filter.Select(x => x.Build()!).ToList().AsReadOnly(), OrderByFields.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder.Build()
@@ -97,7 +97,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Builders.Queries
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Queries.SingleEntityQuery(SingleEntityQueryBuilder entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Queries.SingleEntityQuery(SingleEntityQueryBuilder entity)
         {
             return entity.BuildTyped();
         }

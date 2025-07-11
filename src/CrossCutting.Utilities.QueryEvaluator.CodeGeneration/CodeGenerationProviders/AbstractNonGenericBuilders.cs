@@ -19,5 +19,5 @@ public class AbstractNonGenericBuilders(IPipelineService pipelineService) : Quer
     protected override string AddMethodNameFormatString => string.Empty;
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetNonGenericBuildersAsync(GetAbstractModelsAsync(), CurrentNamespace, Constants.Namespaces.UtilitiesQueryEvaluator);
+        => GetNonGenericBuildersAsync(GetAbstractModelsAsync(), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Builders", $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core");
 }

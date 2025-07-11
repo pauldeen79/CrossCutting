@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Expressions;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Core.Expressions;
 
 public partial record FieldNameExpression
 {
