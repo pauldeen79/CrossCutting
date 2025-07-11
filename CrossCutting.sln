@@ -77,10 +77,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.Quer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.Abstractions", "src\CrossCutting.Utilities.QueryEvaluator.Abstractions\CrossCutting.Utilities.QueryEvaluator.Abstractions.csproj", "{35263B9C-0935-406B-81FA-6C765FF85B37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassFramework.TemplateFramework", "..\ClassFramework\src\ClassFramework.TemplateFramework\ClassFramework.TemplateFramework.csproj", "{758BCC84-E406-EB06-D8F5-A96095F8D5AA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassFramework.Pipelines", "..\ClassFramework\src\ClassFramework.Pipelines\ClassFramework.Pipelines.csproj", "{0297D383-3D33-F0AF-4493-9C0D7B8CAEFA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -215,14 +211,6 @@ Global
 		{35263B9C-0935-406B-81FA-6C765FF85B37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35263B9C-0935-406B-81FA-6C765FF85B37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35263B9C-0935-406B-81FA-6C765FF85B37}.Release|Any CPU.Build.0 = Release|Any CPU
-		{758BCC84-E406-EB06-D8F5-A96095F8D5AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{758BCC84-E406-EB06-D8F5-A96095F8D5AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{758BCC84-E406-EB06-D8F5-A96095F8D5AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{758BCC84-E406-EB06-D8F5-A96095F8D5AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0297D383-3D33-F0AF-4493-9C0D7B8CAEFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0297D383-3D33-F0AF-4493-9C0D7B8CAEFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0297D383-3D33-F0AF-4493-9C0D7B8CAEFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0297D383-3D33-F0AF-4493-9C0D7B8CAEFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
