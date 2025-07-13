@@ -22,7 +22,7 @@ public abstract class TestBase
         if (state is not null)
         {
             dict = new AsyncResultDictionaryBuilder<object?>()
-                .Add(Constants.State, state)
+                .Add(Constants.Context, state)
                 .BuildDeferred();
         }
 
@@ -112,7 +112,7 @@ public abstract class TestBase
                 return await dlg.ConfigureAwait(false);
             }
 
-            if (context.Expression == $"{Constants.State}.Length")
+            if (context.Expression == $"{Constants.Context}.Length")
             {
                 return Result.Success<object?>((context.State?.ToString() ?? string.Empty).Length);
             }
@@ -212,7 +212,7 @@ public abstract class TestBase
                 "string" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
                 "unknown" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok),
                 "object" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(object)),
-                Constants.State => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(context.State?.FirstOrDefault().Value?.Result.Value?.GetType()),
+                Constants.Context => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(context.State?.FirstOrDefault().Value?.Result.Value?.GetType()),
                 _ => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok)
             });
 

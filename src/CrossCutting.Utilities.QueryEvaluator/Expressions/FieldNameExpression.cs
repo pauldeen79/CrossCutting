@@ -7,7 +7,7 @@ public partial record FieldNameExpression
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         var contextValueResult = (await context.State
-            .TryCastValueAsync<object?>(Constants.State)
+            .TryGetValueAsync(Constants.Context)
             .ConfigureAwait(false)).EnsureValue();
 
         if (!contextValueResult.IsSuccessful())

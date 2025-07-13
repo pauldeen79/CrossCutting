@@ -93,7 +93,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext($"{Constants.State}.MyErrorProperty", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.MyErrorProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -110,7 +110,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext($"{Constants.State}.ErrorMethod()", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.ErrorMethod()", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -127,7 +127,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext($"{Constants.State}.MyProperty", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.MyProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -143,7 +143,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext($"{Constants.State}.MyComplexProperty.MyComplexProperty.MyProperty", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.MyComplexProperty.MyComplexProperty.MyProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -159,7 +159,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext($"{Constants.State}.ToString()", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.ToString()", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -191,7 +191,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext($"{Constants.State}.Overload(\"hello\")", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.Overload(\"hello\")", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -207,7 +207,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext($"{Constants.State}.DoSomething(error)", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.DoSomething(error)", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -285,7 +285,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext($"{Constants.State}.MyProperty", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.MyProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -300,7 +300,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext($"{Constants.State}.DoSomething(\"hello\")", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.DoSomething(\"hello\")", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -362,7 +362,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext($"{Constants.State}.Overload(\"hello\")", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.Overload(\"hello\")", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act

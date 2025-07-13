@@ -8,5 +8,5 @@ public static class Constants
     public const string Expression = nameof(Expression);
     public const string Operand = nameof(Operand);
     public const string Instance = nameof(Instance);
-    public const string State = nameof(State);
+    public const string Context = nameof(Context);
 }

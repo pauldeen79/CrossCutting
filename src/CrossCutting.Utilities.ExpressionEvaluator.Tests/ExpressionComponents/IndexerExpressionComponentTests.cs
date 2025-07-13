@@ -23,7 +23,7 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext($"{Constants.State}[1]", state: new object[] { 1, 2, 3 });
+            var context = CreateContext($"{Constants.Context}[1]", state: new object[] { 1, 2, 3 });
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -55,7 +55,7 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext($"{Constants.State}[1]", state: new int[] { 1, 2, 3 });
+            var context = CreateContext($"{Constants.Context}[1]", state: new int[] { 1, 2, 3 });
 
             // Act
             var result = await sut.ParseAsync(context, CancellationToken.None);
@@ -70,7 +70,7 @@ public class IndexerExpressionComponentTests : TestBase<IndexerExpressionCompone
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext($"{Constants.State}[666]", state: new int[] { 1, 2, 3 });
+            var context = CreateContext($"{Constants.Context}[666]", state: new int[] { 1, 2, 3 });
 
             // Act
             var result = await sut.ParseAsync(context, CancellationToken.None);
