@@ -11,7 +11,7 @@ public class IsNullConditionTests : TestBase<IsNullCondition>
             var leftValue = "non null value";
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder().WithValue(leftValue).Build() },
+                { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -31,7 +31,7 @@ public class IsNullConditionTests : TestBase<IsNullCondition>
             var leftValue = default(object?);
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder().WithValue(leftValue).Build() },
+                { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");

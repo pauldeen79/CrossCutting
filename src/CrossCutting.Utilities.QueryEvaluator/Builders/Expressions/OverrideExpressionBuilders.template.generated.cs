@@ -10,61 +10,6 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
 {
-    public partial class FieldNameExpressionBuilder : ExpressionBaseBuilder<FieldNameExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Expressions.FieldNameExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
-    {
-        private string _fieldName;
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string FieldName
-        {
-            get
-            {
-                return _fieldName;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_fieldName!, value!);
-                _fieldName = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(FieldName));
-            }
-        }
-
-        public FieldNameExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.FieldNameExpression source) : base(source)
-        {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _fieldName = source.FieldName;
-        }
-
-        public FieldNameExpressionBuilder() : base()
-        {
-            _fieldName = string.Empty;
-            SetDefaultValues();
-        }
-
-        public override CrossCutting.Utilities.QueryEvaluator.Core.Expressions.FieldNameExpression BuildTyped()
-        {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Expressions.FieldNameExpression(FieldName);
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder.Build()
-        {
-            return BuildTyped();
-        }
-
-        partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.FieldNameExpressionBuilder WithFieldName(string fieldName)
-        {
-            if (fieldName is null) throw new System.ArgumentNullException(nameof(fieldName));
-            FieldName = fieldName;
-            return this;
-        }
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Expressions.FieldNameExpression(FieldNameExpressionBuilder entity)
-        {
-            return entity.BuildTyped();
-        }
-    }
     public partial class LiteralExpressionBuilder : ExpressionBaseBuilder<LiteralExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Expressions.LiteralExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
     {
         private object? _value;
@@ -113,6 +58,61 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
         }
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Expressions.LiteralExpression(LiteralExpressionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class PropertyNameExpressionBuilder : ExpressionBaseBuilder<PropertyNameExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
+    {
+        private string _propertyName;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string PropertyName
+        {
+            get
+            {
+                return _propertyName;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_propertyName!, value!);
+                _propertyName = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(PropertyName));
+            }
+        }
+
+        public PropertyNameExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _propertyName = source.PropertyName;
+        }
+
+        public PropertyNameExpressionBuilder() : base()
+        {
+            _propertyName = string.Empty;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression(PropertyName);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.PropertyNameExpressionBuilder WithPropertyName(string propertyName)
+        {
+            if (propertyName is null) throw new System.ArgumentNullException(nameof(propertyName));
+            PropertyName = propertyName;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression(PropertyNameExpressionBuilder entity)
         {
             return entity.BuildTyped();
         }
