@@ -46,12 +46,12 @@ internal sealed class DataProviderMock : IDataProvider
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
-        if (CanEvaluateSimpleConditions(query.Filter))
+        if (CanEvaluateSimpleConditions(query.Conditions))
         {
-            return await EvaluateSimpleConditions(query.Filter, context, CancellationToken.None).ConfigureAwait(false);
+            return await EvaluateSimpleConditions(query.Conditions, context, CancellationToken.None).ConfigureAwait(false);
         }
 
-        return await EvaluateComplexConditions(query.Filter, context, CancellationToken.None).ConfigureAwait(false);
+        return await EvaluateComplexConditions(query.Conditions, context, CancellationToken.None).ConfigureAwait(false);
     }
 
     private static bool CanEvaluateSimpleConditions(IEnumerable<ICondition> conditions)

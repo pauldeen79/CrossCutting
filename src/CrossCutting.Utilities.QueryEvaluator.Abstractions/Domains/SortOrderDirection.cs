@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains;
 
-public enum QuerySortOrderDirection
+public enum SortOrderDirection
 {
     Ascending,
     Descending

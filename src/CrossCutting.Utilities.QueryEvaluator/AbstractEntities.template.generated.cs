@@ -69,26 +69,26 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         [CrossCutting.Utilities.QueryEvaluator.Abstractions.Validation.ValidGroupsAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> Filter
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> Conditions
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> OrderByFields
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ISortOrder> SortOrders
         {
             get;
         }
 
-        protected QueryBase(System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> filter, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> orderByFields)
+        protected QueryBase(System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> conditions, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ISortOrder> sortOrders)
         {
-            if (filter is null) throw new System.ArgumentNullException(nameof(filter));
-            if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
+            if (conditions is null) throw new System.ArgumentNullException(nameof(conditions));
+            if (sortOrders is null) throw new System.ArgumentNullException(nameof(sortOrders));
             this.Limit = limit;
             this.Offset = offset;
-            this.Filter = new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition>(filter);
-            this.OrderByFields = new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder>(orderByFields);
+            this.Conditions = new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition>(conditions);
+            this.SortOrders = new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.ISortOrder>(sortOrders);
         }
 
         public abstract CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryBaseBuilder ToBuilder();

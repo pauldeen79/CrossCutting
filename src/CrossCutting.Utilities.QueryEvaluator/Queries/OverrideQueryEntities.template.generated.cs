@@ -19,7 +19,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Queries
             get;
         }
 
-        public ParameterizedQuery(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter> parameters, System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> filter, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> orderByFields) : base(limit, offset, filter, orderByFields)
+        public ParameterizedQuery(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter> parameters, System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> conditions, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ISortOrder> sortOrders) : base(limit, offset, conditions, sortOrders)
         {
             this.Parameters = parameters is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter>(parameters);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
@@ -42,7 +42,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Queries
     }
     public partial record SingleEntityQuery : CrossCutting.Utilities.QueryEvaluator.Core.QueryBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
     {
-        public SingleEntityQuery(System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> filter, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder> orderByFields) : base(limit, offset, filter, orderByFields)
+        public SingleEntityQuery(System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> conditions, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ISortOrder> sortOrders) : base(limit, offset, conditions, sortOrders)
         {
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }

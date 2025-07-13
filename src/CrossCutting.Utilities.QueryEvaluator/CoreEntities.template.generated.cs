@@ -54,7 +54,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core
             return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterValueBuilder(this);
         }
     }
-    public partial record QuerySortOrder : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder
+    public partial record SortOrder : CrossCutting.Utilities.QueryEvaluator.Abstractions.ISortOrder
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -63,24 +63,24 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core
             get;
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.QuerySortOrderDirection Order
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.SortOrderDirection Order
         {
             get;
         }
 
-        public QuerySortOrder(CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression expression, CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.QuerySortOrderDirection order)
+        public SortOrder(CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression expression, CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.SortOrderDirection order)
         {
             this.Expression = expression;
             this.Order = order;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.QuerySortOrderBuilder ToBuilder()
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.SortOrderBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.QuerySortOrderBuilder(this);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.SortOrderBuilder(this);
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder.ToBuilder()
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISortOrderBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISortOrder.ToBuilder()
         {
             return ToBuilder();
         }

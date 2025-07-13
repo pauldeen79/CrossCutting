@@ -48,33 +48,33 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
     }
     public static partial class QueryBuilderExtensions
     {
-        public static T AddFilter<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder> filter)
+        public static T AddConditions<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder> conditions)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
-            if (filter is null) throw new System.ArgumentNullException(nameof(filter));
-            return instance.AddFilter<T>(filter.ToArray());
+            if (conditions is null) throw new System.ArgumentNullException(nameof(conditions));
+            return instance.AddConditions<T>(conditions.ToArray());
         }
 
-        public static T AddFilter<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder[] filter)
+        public static T AddConditions<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder[] conditions)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
-            if (filter is null) throw new System.ArgumentNullException(nameof(filter));
-            foreach (var item in filter) instance.Filter.Add(item);
+            if (conditions is null) throw new System.ArgumentNullException(nameof(conditions));
+            foreach (var item in conditions) instance.Conditions.Add(item);
             return instance;
         }
 
-        public static T AddOrderByFields<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder> orderByFields)
+        public static T AddSortOrders<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISortOrderBuilder> sortOrders)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
-            if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
-            return instance.AddOrderByFields<T>(orderByFields.ToArray());
+            if (sortOrders is null) throw new System.ArgumentNullException(nameof(sortOrders));
+            return instance.AddSortOrders<T>(sortOrders.ToArray());
         }
 
-        public static T AddOrderByFields<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder[] orderByFields)
+        public static T AddSortOrders<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISortOrderBuilder[] sortOrders)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         {
-            if (orderByFields is null) throw new System.ArgumentNullException(nameof(orderByFields));
-            foreach (var item in orderByFields) instance.OrderByFields.Add(item);
+            if (sortOrders is null) throw new System.ArgumentNullException(nameof(sortOrders));
+            foreach (var item in sortOrders) instance.SortOrders.Add(item);
             return instance;
         }
 
@@ -92,23 +92,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
             return instance;
         }
     }
-    public static partial class QuerySortOrderBuilderExtensions
-    {
-        public static T WithExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder expression)
-            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder
-        {
-            if (expression is null) throw new System.ArgumentNullException(nameof(expression));
-            instance.Expression = expression;
-            return instance;
-        }
-
-        public static T WithOrder<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.QuerySortOrderDirection order)
-            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder
-        {
-            instance.Order = order;
-            return instance;
-        }
-    }
     public static partial class SingleExpressionContainerBuilderExtensions
     {
         public static T WithFirstExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder firstExpression)
@@ -116,6 +99,23 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
         {
             if (firstExpression is null) throw new System.ArgumentNullException(nameof(firstExpression));
             instance.FirstExpression = firstExpression;
+            return instance;
+        }
+    }
+    public static partial class SortOrderBuilderExtensions
+    {
+        public static T WithExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder expression)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISortOrderBuilder
+        {
+            if (expression is null) throw new System.ArgumentNullException(nameof(expression));
+            instance.Expression = expression;
+            return instance;
+        }
+
+        public static T WithOrder<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.SortOrderDirection order)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISortOrderBuilder
+        {
+            instance.Order = order;
             return instance;
         }
     }

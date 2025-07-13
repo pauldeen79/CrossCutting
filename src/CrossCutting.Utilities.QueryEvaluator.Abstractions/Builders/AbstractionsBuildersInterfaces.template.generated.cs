@@ -65,7 +65,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         [CrossCutting.Utilities.QueryEvaluator.Abstractions.Validation.ValidGroupsAttribute]
-        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder> Filter
+        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder> Conditions
         {
             get;
             set;
@@ -73,31 +73,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQuerySortOrderBuilder> OrderByFields
+        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISortOrderBuilder> SortOrders
         {
             get;
             set;
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery Build();
-    }
-    public partial interface IQuerySortOrderBuilder
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder Expression
-        {
-            get;
-            set;
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.QuerySortOrderDirection Order
-        {
-            get;
-            set;
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuerySortOrder Build();
     }
     public partial interface ISingleExpressionContainerBuilder
     {
@@ -110,6 +92,24 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer Build();
+    }
+    public partial interface ISortOrderBuilder
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder Expression
+        {
+            get;
+            set;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.SortOrderDirection Order
+        {
+            get;
+            set;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISortOrder Build();
     }
     public partial interface IStringComparisonContainerBuilder
     {

@@ -2,26 +2,26 @@
 
 public sealed class IntegrationTests : TestBase
 {
-    private static MyEntity[] CreateData()
-        => [
-                        new MyEntity("B", "C"),
-                new MyEntity("A", "Z"),
-                new MyEntity("B", "D"),
-                new MyEntity("A", "A"),
-                new MyEntity("B", "E"),
-           ];
+    private static MyEntity[] CreateData()=>
+    [
+        new MyEntity("B", "C"),
+        new MyEntity("A", "Z"),
+        new MyEntity("B", "D"),
+        new MyEntity("A", "A"),
+        new MyEntity("B", "E"),
+    ];
 
     [Fact]
     public async Task CanFindOneItem()
     {
         // Arrange
         var query = new SingleEntityQueryBuilder()
-            .AddFilter(new EqualsConditionBuilder()
+            .AddConditions(new EqualsConditionBuilder()
                 .WithFirstExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property1)))
                 .WithSecondExpression(new LiteralExpressionBuilder().WithValue("A")))
-            .AddOrderByFields(new QuerySortOrderBuilder()
+            .AddSortOrders(new SortOrderBuilder()
                 .WithExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property2)))
-                .WithOrder(QuerySortOrderDirection.Ascending))
+                .WithOrder(SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -40,12 +40,12 @@ public sealed class IntegrationTests : TestBase
     {
         // Arrange
         var query = new SingleEntityQueryBuilder()
-            .AddFilter(new EqualsConditionBuilder()
+            .AddConditions(new EqualsConditionBuilder()
                 .WithFirstExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property1)))
                 .WithSecondExpression(new LiteralExpressionBuilder().WithValue("A")))
-            .AddOrderByFields(new QuerySortOrderBuilder()
+            .AddSortOrders(new SortOrderBuilder()
                 .WithExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property2)))
-                .WithOrder(QuerySortOrderDirection.Ascending))
+                .WithOrder(SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -66,12 +66,12 @@ public sealed class IntegrationTests : TestBase
     {
         // Arrange
         var query = new SingleEntityQueryBuilder()
-            .AddFilter(new EqualsConditionBuilder()
+            .AddConditions(new EqualsConditionBuilder()
                 .WithFirstExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property1)))
                 .WithSecondExpression(new LiteralExpressionBuilder().WithValue("A")))
-            .AddOrderByFields(new QuerySortOrderBuilder()
+            .AddSortOrders(new SortOrderBuilder()
                 .WithExpression(new FieldNameExpressionBuilder().WithFieldName(nameof(MyEntity.Property2)))
-                .WithOrder(QuerySortOrderDirection.Ascending))
+                .WithOrder(SortOrderDirection.Ascending))
             .WithLimit(1)
             .WithOffset(1)
             .Build();

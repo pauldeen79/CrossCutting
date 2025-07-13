@@ -9,7 +9,7 @@ public class DefaultPaginator : IPaginator
 
         IEnumerable<T> result = filteredRecords;
 
-        if (query.OrderByFields.Count > 0)
+        if (query.SortOrders.Count > 0)
         {
             result = await GetOrderedItems(query, result, token).ConfigureAwait(false);
         }
@@ -34,7 +34,7 @@ public class DefaultPaginator : IPaginator
             var list = new List<object?>();
             var context = new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), new NoopEvaluator(), new AsyncResultDictionaryBuilder<object?>().Add(Constants.State, x).BuildDeferred());
 
-            foreach (var orderByField in query.OrderByFields)
+            foreach (var orderByField in query.SortOrders)
             {
                 list.Add((await orderByField.Expression.EvaluateAsync(context, token).ConfigureAwait(false)).Value);
             }
@@ -42,15 +42,15 @@ public class DefaultPaginator : IPaginator
         })).ConfigureAwait(false);
 
         var zippedItems = result.Zip(orderByResults, (item, itemOrders) => new { Item = item, ItemOrders = itemOrders });
-        var orderedItems = query.OrderByFields.First().Order == QuerySortOrderDirection.Ascending
+        var orderedItems = query.SortOrders.First().Order == SortOrderDirection.Ascending
             ? zippedItems.OrderBy(x => x.ItemOrders[0])
             : zippedItems.OrderByDescending(x => x.ItemOrders[0]);
 
         var index = 0;
-        foreach (var subsequentOrder in query.OrderByFields.Skip(1))
+        foreach (var subsequentOrder in query.SortOrders.Skip(1))
         {
             index++;
-            orderedItems = subsequentOrder.Order == QuerySortOrderDirection.Ascending
+            orderedItems = subsequentOrder.Order == SortOrderDirection.Ascending
                 ? orderedItems.ThenBy(x => x.ItemOrders[index])
                 : orderedItems.ThenByDescending(x => x.ItemOrders[index]);
         }

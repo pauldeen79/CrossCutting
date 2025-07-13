@@ -24,7 +24,7 @@ public class QueryProcessor : IQueryProcessor
 
         return Result.Success<IReadOnlyCollection<TResult>>((await _paginator.GetPagedDataAsync
         (
-            new SingleEntityQuery(null, null, query.Filter, query.OrderByFields),
+            new SingleEntityQuery(null, null, query.Conditions, query.SortOrders),
             result.Value!,
             cancellationToken).ConfigureAwait(false)
         ).ToList());
@@ -43,7 +43,7 @@ public class QueryProcessor : IQueryProcessor
 
         var firstItem = (await _paginator.GetPagedDataAsync
         (
-            new SingleEntityQuery(null, null, query.Filter, query.OrderByFields),
+            new SingleEntityQuery(null, null, query.Conditions, query.SortOrders),
             result.Value!,
             cancellationToken
         ).ConfigureAwait(false)).FirstOrDefault();
