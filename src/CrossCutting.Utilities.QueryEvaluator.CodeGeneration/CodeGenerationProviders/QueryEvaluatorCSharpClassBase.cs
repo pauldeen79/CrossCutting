@@ -18,39 +18,21 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
     protected override Type BuilderCollectionType => typeof(List<>);
     protected override string ProjectName => Constants.ProjectName;
     protected override string BuilderAbstractionsNamespace => $"{ProjectName}.Abstractions.Builders";
-    protected override string AbstractionsParentNamespace => ProjectName;
+    protected override string AbstractionsNamespace => $"{ProjectName}.Abstractions";
+    protected override string DomainsNamespace => $"{ProjectName}.Abstractions.Domains";
+    protected override string ValidationNamespace => $"{ProjectName}.Abstractions.Validation";
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
     protected override bool CreateRecord => true;
     protected override bool GenerateMultipleFiles => false;
     protected override bool EnableGlobalUsings => true;
 
-    protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
+    protected override IEnumerable<TypenameMappingBuilder> GetAdditionalTypenameMappings()
     {
-        // Map validation attributes to Abstractions instead of main assembly
-        foreach (var validationType in GetType().Assembly.GetTypes().Where(x => x.Namespace == $"{CodeGenerationRootNamespace}.Validation"))
-        {
-            yield return new TypenameMappingBuilder()
-                .WithSourceType(validationType)
-                .WithTargetTypeName(validationType.FullName!.Replace(CodeGenerationRootNamespace, $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Abstractions"));
-        }
-
-        // Map domains (enumerations and value type) to Abstractions instead of main assembly
-        foreach (var domainsType in GetType().Assembly.GetTypes().Where(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models.Domains"))
-        {
-            yield return new TypenameMappingBuilder()
-                .WithSourceType(domainsType)
-                .WithTargetTypeName(domainsType.FullName!.Replace($"{CodeGenerationRootNamespace}.Models", $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Abstractions"));
-        }
-
-        yield return new TypenameMappingBuilder()
-            .WithSourceType(typeof(IFormatProvider))
-            .WithTargetType(typeof(IFormatProvider))
+        yield return new TypenameMappingBuilder(typeof(IFormatProvider))
             .AddMetadata
             (
-                new MetadataBuilder()
-                    .WithValue(new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}", null))
-                    .WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue)
+                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
             );
     }
 }

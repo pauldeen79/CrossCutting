@@ -18,16 +18,12 @@ public abstract class CrossCuttingCSharpClassBase(IPipelineService pipelineServi
     protected override bool GenerateMultipleFiles => false;
     protected override bool EnableGlobalUsings => true;
 
-    protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
+    protected override IEnumerable<TypenameMappingBuilder> GetAdditionalTypenameMappings()
     {
-        yield return new TypenameMappingBuilder()
-            .WithSourceType(typeof(IFormatProvider))
-            .WithTargetType(typeof(IFormatProvider))
+        yield return new TypenameMappingBuilder(typeof(IFormatProvider))
             .AddMetadata
             (
-                new MetadataBuilder()
-                    .WithValue(new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}", null))
-                    .WithName(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue)
+                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
             );
     }
 }
