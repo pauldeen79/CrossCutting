@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Operators;
 
-public class NotEqualsConditionTests : TestBase<NotEqualsCondition>
+public class NotEqualsConditionTests : TestBase<NotEqualCondition>
 {
     public class Evaluate : NotEqualsConditionTests
     {

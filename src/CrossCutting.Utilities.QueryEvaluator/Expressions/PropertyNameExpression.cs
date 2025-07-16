@@ -7,7 +7,7 @@ public partial record PropertyNameExpression
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         var contextValueResult = (await context.State
-            .TryGetValueAsync(Constants.Context)
+            .GetValueAsync(Constants.Context)
             .ConfigureAwait(false)).EnsureValue();
 
         if (!contextValueResult.IsSuccessful())

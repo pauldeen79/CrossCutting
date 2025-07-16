@@ -10,6 +10,60 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
 {
+    public partial class DelegateExpressionBuilder : ExpressionBaseBuilder<DelegateExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Expressions.DelegateExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
+    {
+        private System.Func<object?> _value;
+
+        public System.Func<object?> Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<System.Object?>>.Default.Equals(_value!, value!);
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Value));
+            }
+        }
+
+        public DelegateExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.DelegateExpression source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = source.Value;
+        }
+
+        public DelegateExpressionBuilder() : base()
+        {
+            _value = default(System.Func<System.Object?>)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Expressions.DelegateExpression BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Expressions.DelegateExpression(Value);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.DelegateExpressionBuilder WithValue(System.Func<object?> value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Expressions.DelegateExpression(DelegateExpressionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
     public partial class LiteralExpressionBuilder : ExpressionBaseBuilder<LiteralExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Expressions.LiteralExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
     {
         private object? _value;

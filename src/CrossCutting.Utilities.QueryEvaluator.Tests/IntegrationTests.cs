@@ -16,7 +16,7 @@ public sealed class IntegrationTests : TestBase
     {
         // Arrange
         var query = new SingleEntityQueryBuilder()
-            .AddConditions(new EqualsConditionBuilder()
+            .AddConditions(new EqualConditionBuilder()
                 .WithFirstExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
                 .WithSecondExpression(new LiteralExpressionBuilder("A")))
             .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
@@ -38,7 +38,7 @@ public sealed class IntegrationTests : TestBase
     {
         // Arrange
         var query = new SingleEntityQueryBuilder()
-            .AddConditions(new EqualsConditionBuilder()
+            .AddConditions(new EqualConditionBuilder()
                 .WithFirstExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
                 .WithSecondExpression(new LiteralExpressionBuilder("A")))
             .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
@@ -62,9 +62,9 @@ public sealed class IntegrationTests : TestBase
     {
         // Arrange
         var query = new SingleEntityQueryBuilder()
-            .AddConditions(new EqualsConditionBuilder()
+            .AddConditions(new EqualConditionBuilder()
                 .WithFirstExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithSecondExpression(new LiteralExpressionBuilder("A")))
+                .WithSecondExpression(new DelegateExpressionBuilder(() => "A")))
             .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .WithLimit(1)
             .WithOffset(1)
