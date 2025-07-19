@@ -25,9 +25,26 @@ public class GenericFormattableString(string format, object[] arguments) : Forma
     public override string ToString()
         => string.Format(Format, _arguments);
 
-    public static GenericFormattableString FromString(string s) => new(s);
+    public static GenericFormattableString FromString(string s)
+        => new(s);
 
-    public static implicit operator string(GenericFormattableString r) => r?.ToString()!;
+    public static implicit operator string(GenericFormattableString r)
+        => r?.ToString()!;
 
-    public static implicit operator GenericFormattableString(string s) => FromString(s);
+    public static implicit operator GenericFormattableString(string s)
+        => FromString(s);
+
+#pragma warning disable S3875 // "operator==" should not be overloaded on reference types
+    public static bool operator ==(GenericFormattableString a, GenericFormattableString b)
+#pragma warning restore S3875 // "operator==" should not be overloaded on reference types
+        => a?.ToString() == b?.ToString();
+
+    public static bool operator !=(GenericFormattableString a, GenericFormattableString b)
+        => !(a == b);
+
+    public override bool Equals(object obj)
+        => obj is GenericFormattableString && this == (GenericFormattableString)obj;
+
+    public override int GetHashCode()
+        => ToString().GetHashCode();
 }
