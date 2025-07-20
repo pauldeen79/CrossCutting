@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-public class GenericFormattableString(string format, object[] arguments) : FormattableString
+public sealed class GenericFormattableString(string format, object[] arguments) : FormattableString, IEquatable<GenericFormattableString>
 {
     private readonly object[] _arguments = arguments.IsNotNull(nameof(arguments));
 
@@ -44,6 +44,9 @@ public class GenericFormattableString(string format, object[] arguments) : Forma
 
     public override bool Equals(object obj)
         => obj is GenericFormattableString && this == (GenericFormattableString)obj;
+
+    public bool Equals(GenericFormattableString other)
+        => other?.ToString() == ToString();
 
     public override int GetHashCode()
         => ToString().GetHashCode();

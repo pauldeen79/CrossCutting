@@ -134,7 +134,7 @@ public class GenericFormattableStringTests
         }
     }
 
-    public class EqualsEquals : GenericFormattableStringTests
+    public class EqualsOperator : GenericFormattableStringTests
     {
         [Fact]
         public void Can_Compare_Two_Equal_GenericFormattableStrings()
@@ -145,6 +145,23 @@ public class GenericFormattableStringTests
 
             // Act
             var result = sut1 == sut2;
+
+            // Assert
+            result.ShouldBeTrue();
+        }
+    }
+
+    public class EqualsMethod : GenericFormattableStringTests
+    {
+        [Fact]
+        public void Can_Compare_Two_Equal_GenericFormattableStrings()
+        {
+            // Arrange
+            GenericFormattableString sut1 = "hello world!";
+            GenericFormattableString sut2 = "hello world!";
+
+            // Act
+            var result = sut1.Equals(sut2);
 
             // Assert
             result.ShouldBeTrue();
