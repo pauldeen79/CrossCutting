@@ -198,7 +198,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
             SetDefaultValues();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.SortOrder Build()
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.ISortOrder Build()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Core.SortOrder(Expression?.Build()!, Order);
         }
@@ -209,11 +209,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
         }
 
         partial void SetDefaultValues();
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.SortOrder(SortOrderBuilder entity)
-        {
-            return entity.Build();
-        }
 
         protected void HandlePropertyChanged(string propertyName)
         {
