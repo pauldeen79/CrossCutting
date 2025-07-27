@@ -4,7 +4,6 @@ global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
 global using System.Text;
 global using ClassFramework.Domain;
-global using ClassFramework.Domain.Builders.Extensions;
 global using ClassFramework.Pipelines.Abstractions;
 global using ClassFramework.Pipelines.Builders;
 global using ClassFramework.Pipelines.Domains;
