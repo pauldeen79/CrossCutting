@@ -81,4 +81,24 @@ public sealed class IntegrationTests : TestBase
         result.Value.Count.ShouldBe(1);
         result.Value.First().Property2.ShouldBe("Z");
     }
+
+    [Fact]
+    public void CanParseQuery()
+    {
+        // Arrange
+        var sut = new SingleEntityQueryParser<SingleEntityQueryBuilder, PropertyNameExpressionBuilder>(() => new PropertyNameExpressionBuilder("MyProperty"));
+        var builder = new SingleEntityQueryBuilder();
+
+        // Act
+        var result = sut.Parse(builder, "Field = \"A\"");
+
+        // Assert
+        result.Conditions.Count.ShouldBe(1);
+        result.Conditions[0].ShouldBeOfType<EqualConditionBuilder>();
+        var equalConditionBuilder = (EqualConditionBuilder)result.Conditions[0];
+        equalConditionBuilder.FirstExpression.ShouldBeOfType<PropertyNameExpressionBuilder>();
+        ((PropertyNameExpressionBuilder)equalConditionBuilder.FirstExpression).PropertyName.ShouldBe("Field");
+        equalConditionBuilder.SecondExpression.ShouldBeOfType<LiteralExpressionBuilder>();
+        ((LiteralExpressionBuilder)equalConditionBuilder.SecondExpression).Value.ShouldBe("A");
+    }
 }
