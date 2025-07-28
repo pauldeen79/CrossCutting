@@ -35,9 +35,7 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
             .Replace("\t", " ")
             .SplitDelimited(' ', '\"');
 
-        builder.AddConditions(PerformQuerySearch(items) ?? PerformSimpleSearch(items));
-
-        return builder;
+        return builder.AddConditions(PerformQuerySearch(items) ?? PerformSimpleSearch(items));
     }
 
     private static List<IConditionBuilder>? PerformQuerySearch(string[] items)
@@ -70,10 +68,21 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
                 fieldValue = fieldValue.Substring(0, fieldValue.Length - 1);
             }
 
-            var condition = GetCondition(@operator, GetField(fieldName), () => new LiteralExpressionBuilder(fieldValue));
+            var condition = GetCondition(@operator);
+
             if (condition is null)
             {
                 return default;
+            }
+
+            if (condition is ISingleExpressionContainerBuilder singleExpressionContainerBuilder)
+            {
+                singleExpressionContainerBuilder.WithFirstExpression(GetField(fieldName));
+            }
+
+            if (condition is IDoubleExpressionContainerBuilder doubleExpressionContainerBuilder)
+            {
+                doubleExpressionContainerBuilder.WithSecondExpression(new LiteralExpressionBuilder(fieldValue));
             }
 
             result.Add(condition);
@@ -114,42 +123,42 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
             ? value.Substring(1)
             : value);
 
-    private static IConditionBuilder? GetCondition(string @operator, PropertyNameExpressionBuilder firstExpression, Func<IExpressionBuilder> secondExpression)
+    private static IConditionBuilder? GetCondition(string @operator)
         // False positive
 #pragma warning disable S2589 // Boolean expressions should not be gratuitous
         => @operator.ToUpper(CultureInfo.InvariantCulture) switch
         {
             var x when
                 x == "=" ||
-                x == "==" => new EqualConditionBuilder().WithFirstExpression(firstExpression).WithSecondExpression(secondExpression()),
+                x == "==" => new EqualConditionBuilder(),
             var x when
                 x == "<>" ||
                 x == "!=" ||
-                x == "#" => new NotEqualConditionBuilder().WithFirstExpression(firstExpression).WithSecondExpression(secondExpression()),
-            "<" => new SmallerThanConditionBuilder().WithFirstExpression(firstExpression).WithSecondExpression(secondExpression()),
-            ">" => new GreaterThanConditionBuilder().WithFirstExpression(firstExpression).WithSecondExpression(secondExpression()),
-            "<=" => new SmallerThanOrEqualConditionBuilder().WithFirstExpression(firstExpression).WithSecondExpression(secondExpression()),
-            ">=" => new GreaterThanOrEqualConditionBuilder().WithFirstExpression(firstExpression).WithSecondExpression(secondExpression()),
-            "CONTAINS" => new StringContainsConditionBuilder().WithFirstExpression(firstExpression).WithSecondExpression(secondExpression()),
+                x == "#" => new NotEqualConditionBuilder(),
+            "<" => new SmallerThanConditionBuilder(),
+            ">" => new GreaterThanConditionBuilder(),
+            "<=" => new SmallerThanOrEqualConditionBuilder(),
+            ">=" => new GreaterThanOrEqualConditionBuilder(),
+            "CONTAINS" => new StringContainsConditionBuilder(),
             var x when
                 x == "NOTCONTAINS" ||
-                x == "NOT CONTAINS" => new StringNotContainsConditionBuilder().WithFirstExpression(firstExpression).WithSecondExpression(secondExpression()),
-            "IS" => new IsNullConditionBuilder().WithFirstExpression(firstExpression),
+                x == "NOT CONTAINS" => new StringNotContainsConditionBuilder(),
+            "IS" => new IsNullConditionBuilder(),
             var x when
                 x == "ISNOT" ||
-                x == "IS NOT" => new IsNotNullConditionBuilder().WithFirstExpression(firstExpression),
+                x == "IS NOT" => new IsNotNullConditionBuilder(),
             var x when
                 x == "STARTS WITH" ||
-                x == "STARTSWITH" => new StringStartsWithConditionBuilder().WithFirstExpression(firstExpression).WithSecondExpression(secondExpression()),
+                x == "STARTSWITH" => new StringStartsWithConditionBuilder(),
             var x when
                 x == "ENDS WITH" ||
-                x == "ENDSWITH" => new StringEndsWithConditionBuilder().WithFirstExpression(firstExpression).WithSecondExpression(secondExpression()),
+                x == "ENDSWITH" => new StringEndsWithConditionBuilder(),
             var x when
                 x == "NOT STARTS WITH" ||
-                x == "NOTSTARTSWITH" => new StringNotStartsWithConditionBuilder().WithFirstExpression(firstExpression).WithSecondExpression(secondExpression()),
+                x == "NOTSTARTSWITH" => new StringNotStartsWithConditionBuilder(),
             var x when
                 x == "NOT ENDS WITH" ||
-                x == "NOTENDSWITH" => new StringNotEndsWithConditionBuilder().WithFirstExpression(firstExpression).WithSecondExpression(secondExpression()),
+                x == "NOTENDSWITH" => new StringNotEndsWithConditionBuilder(),
             _ => null // Unknown operator
         };
 #pragma warning restore S2589 // Boolean expressions should not be gratuitous
