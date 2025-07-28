@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using CrossCutting.Common;
 using CrossCutting.Common.Extensions;
@@ -17,6 +16,33 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
     where TQueryExpressionBuilder : IExpressionBuilder, new()
 {
     private readonly Func<TQueryExpressionBuilder> _defaultFieldExpressionBuilderFactory;
+
+    private static readonly Dictionary<string, Func<IConditionBuilder>> _operatorMap = new Dictionary<string, Func<IConditionBuilder>>(StringComparer.OrdinalIgnoreCase)
+    {
+        { "=", ()=> new EqualConditionBuilder() },
+        { "==", () => new EqualConditionBuilder() },
+        { "<>", () => new NotEqualConditionBuilder() },
+        { "!=", () => new NotEqualConditionBuilder() },
+        { "#", () => new NotEqualConditionBuilder() },
+        { "<", () => new SmallerThanConditionBuilder() },
+        { ">", () => new GreaterThanConditionBuilder() },
+        { "<=", () => new SmallerThanOrEqualConditionBuilder() },
+        { ">=", () => new GreaterThanOrEqualConditionBuilder() },
+        { "CONTAINS", () => new StringContainsConditionBuilder() },
+        { "NOTCONTAINS", () => new StringNotContainsConditionBuilder() },
+        { "NOT CONTAINS", () => new StringNotContainsConditionBuilder() },
+        { "IS", () => new IsNullConditionBuilder() },
+        { "ISNOT", () => new IsNotNullConditionBuilder() },
+        { "IS NOT", () => new IsNotNullConditionBuilder() },
+        { "STARTS WITH", () => new StringStartsWithConditionBuilder() },
+        { "STARTSWITH", () => new StringStartsWithConditionBuilder() },
+        { "ENDS WITH", () =>  new StringEndsWithConditionBuilder() },
+        { "ENDSWITH", () => new StringEndsWithConditionBuilder() },
+        { "NOT STARTS WITH", () => new StringNotStartsWithConditionBuilder() },
+        { "NOTSTARTSWITH", () => new StringNotStartsWithConditionBuilder() },
+        { "NOT ENDS WITH", () => new StringNotEndsWithConditionBuilder() },
+        { "NOTENDSWITH", () => new StringNotEndsWithConditionBuilder() },
+    };
 
     public SingleEntityQueryParser(Func<TQueryExpressionBuilder> defaultFieldExpressionBuilderFactory)
     {
@@ -124,43 +150,8 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
             : value);
 
     private static IConditionBuilder? GetCondition(string @operator)
-        // False positive
-#pragma warning disable S2589 // Boolean expressions should not be gratuitous
-        => @operator.ToUpper(CultureInfo.InvariantCulture) switch
-        {
-            var x when
-                x == "=" ||
-                x == "==" => new EqualConditionBuilder(),
-            var x when
-                x == "<>" ||
-                x == "!=" ||
-                x == "#" => new NotEqualConditionBuilder(),
-            "<" => new SmallerThanConditionBuilder(),
-            ">" => new GreaterThanConditionBuilder(),
-            "<=" => new SmallerThanOrEqualConditionBuilder(),
-            ">=" => new GreaterThanOrEqualConditionBuilder(),
-            "CONTAINS" => new StringContainsConditionBuilder(),
-            var x when
-                x == "NOTCONTAINS" ||
-                x == "NOT CONTAINS" => new StringNotContainsConditionBuilder(),
-            "IS" => new IsNullConditionBuilder(),
-            var x when
-                x == "ISNOT" ||
-                x == "IS NOT" => new IsNotNullConditionBuilder(),
-            var x when
-                x == "STARTS WITH" ||
-                x == "STARTSWITH" => new StringStartsWithConditionBuilder(),
-            var x when
-                x == "ENDS WITH" ||
-                x == "ENDSWITH" => new StringEndsWithConditionBuilder(),
-            var x when
-                x == "NOT STARTS WITH" ||
-                x == "NOTSTARTSWITH" => new StringNotStartsWithConditionBuilder(),
-            var x when
-                x == "NOT ENDS WITH" ||
-                x == "NOTENDSWITH" => new StringNotEndsWithConditionBuilder(),
-            _ => null // Unknown operator
-        };
-#pragma warning restore S2589 // Boolean expressions should not be gratuitous
+        => _operatorMap.TryGetValue(@operator, out Func<IConditionBuilder> factory)
+            ? factory()
+            : null;
 }
 
