@@ -1,15 +1,15 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Operators;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class StringEndsWithConditionTests : TestBase<StringEndsWithCondition>
+public class StringNotContainsConditionTests : TestBase<StringNotContainsCondition>
 {
-    public class Evaluate : StringEndsWithConditionTests
+    public class Evaluate : StringNotContainsConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
         {
             // Arrange
             var leftValue = "this";
-            var rightValue = "S";
+            var rightValue = "a";
             StringComparison = StringComparison.OrdinalIgnoreCase;
             var parameters = new Dictionary<string, object?>
             {

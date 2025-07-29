@@ -1,15 +1,15 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Operators;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class NotEqualsConditionTests : TestBase<NotEqualCondition>
+public class GreaterThanConditionTests : TestBase<GreaterThanCondition>
 {
-    public class Evaluate : NotEqualsConditionTests
+    public class Evaluate : GreaterThanConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
         {
             // Arrange
-            var leftValue = "this";
-            var rightValue = "this";
+            var leftValue = 15;
+            var rightValue = 13;
             var parameters = new Dictionary<string, object?>
             {
                 { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
@@ -18,17 +18,16 @@ public class NotEqualsConditionTests : TestBase<NotEqualCondition>
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
 
-
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(false);
+            result.Value.ShouldBe(true);
         }
 
         [Fact]
-        public async Task Returns_Ok_On_Different_Types()
+        public async Task Returns_Invalid_On_Different_Types()
         {
             // Arrange
             var leftValue = "this";
@@ -41,13 +40,12 @@ public class NotEqualsConditionTests : TestBase<NotEqualCondition>
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
 
-
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(true);
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Object must be of type String.");
         }
     }
 }

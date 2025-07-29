@@ -1,8 +1,8 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Operators;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class SmallerThanConditionTests : TestBase<SmallerThanCondition>
+public class SmallerOrEqualThanConditionTests : TestBase<SmallerThanOrEqualCondition>
 {
-    public class Evaluate : SmallerThanConditionTests
+    public class Evaluate : SmallerOrEqualThanConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()

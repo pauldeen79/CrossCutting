@@ -1,23 +1,20 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Operators;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class EqualsConditionTests : TestBase<EqualCondition>
+public class IsNotNullConditionTests : TestBase<IsNotNullCondition>
 {
-    public class Evaluate : EqualsConditionTests
+    public class Evaluate : IsNotNullConditionTests
     {
         [Fact]
-        public async Task Returns_Ok_On_Two_Strings()
+        public async Task Returns_Ok_On_Non_Null_Value()
         {
             // Arrange
-            var leftValue = "this";
-            var rightValue = "this";
+            var leftValue = "non null value";
             var parameters = new Dictionary<string, object?>
             {
                 { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(IDoubleExpressionContainer.SecondExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
-
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
@@ -28,19 +25,16 @@ public class EqualsConditionTests : TestBase<EqualCondition>
         }
 
         [Fact]
-        public async Task Returns_Ok_On_Different_Types()
+        public async Task Returns_Ok_On_Null_value()
         {
             // Arrange
-            var leftValue = "this";
-            var rightValue = 13;
+            var leftValue = default(object?);
             var parameters = new Dictionary<string, object?>
             {
                 { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(IDoubleExpressionContainer.SecondExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
-
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);

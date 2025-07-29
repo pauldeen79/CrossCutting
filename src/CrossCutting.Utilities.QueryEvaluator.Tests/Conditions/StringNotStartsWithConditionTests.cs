@@ -1,15 +1,15 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Operators;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class StringNotContainsConditionTests : TestBase<StringNotContainsCondition>
+public class StringNotStartsWithConditionTests : TestBase<StringNotStartsWithCondition>
 {
-    public class Evaluate : StringNotContainsConditionTests
+    public class Evaluate : StringNotStartsWithConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
         {
             // Arrange
             var leftValue = "this";
-            var rightValue = "a";
+            var rightValue = "s";
             StringComparison = StringComparison.OrdinalIgnoreCase;
             var parameters = new Dictionary<string, object?>
             {
@@ -38,7 +38,6 @@ public class StringNotContainsConditionTests : TestBase<StringNotContainsConditi
             {
                 { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
                 { nameof(IDoubleExpressionContainer.SecondExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
-                { nameof(IStringComparisonContainer.StringComparison).ToCamelCase(CultureInfo.CurrentCulture), StringComparison },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -61,7 +60,6 @@ public class StringNotContainsConditionTests : TestBase<StringNotContainsConditi
             {
                 { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
                 { nameof(IDoubleExpressionContainer.SecondExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
-                { nameof(IStringComparisonContainer.StringComparison).ToCamelCase(CultureInfo.CurrentCulture), StringComparison },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");

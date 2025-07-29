@@ -1,17 +1,19 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Operators;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class IsNotNullConditionTests : TestBase<IsNotNullCondition>
+public class GreaterOrEqualThanConditionTests : TestBase<GreaterThanOrEqualCondition>
 {
-    public class Evaluate : IsNotNullConditionTests
+    public class Evaluate : GreaterOrEqualThanConditionTests
     {
         [Fact]
-        public async Task Returns_Ok_On_Non_Null_Value()
+        public async Task Returns_Ok_On_Two_Strings()
         {
             // Arrange
-            var leftValue = "non null value";
+            var leftValue = 15;
+            var rightValue = 13;
             var parameters = new Dictionary<string, object?>
             {
                 { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
+                { nameof(IDoubleExpressionContainer.SecondExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -25,13 +27,15 @@ public class IsNotNullConditionTests : TestBase<IsNotNullCondition>
         }
 
         [Fact]
-        public async Task Returns_Ok_On_Null_value()
+        public async Task Returns_Invalid_On_Different_Types()
         {
             // Arrange
-            var leftValue = default(object?);
+            var leftValue = "this";
+            var rightValue = 13;
             var parameters = new Dictionary<string, object?>
             {
                 { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
+                { nameof(IDoubleExpressionContainer.SecondExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -40,8 +44,8 @@ public class IsNotNullConditionTests : TestBase<IsNotNullCondition>
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(false);
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Object must be of type String.");
         }
     }
 }

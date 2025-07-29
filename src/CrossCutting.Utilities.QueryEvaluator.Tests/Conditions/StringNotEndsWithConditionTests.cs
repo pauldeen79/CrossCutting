@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Operators;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
 public class StringNotEndsWithConditionTests : TestBase<StringNotEndsWithCondition>
 {

@@ -1,19 +1,21 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Operators;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class GreaterOrEqualThanConditionTests : TestBase<GreaterThanOrEqualCondition>
+public class StringNotEqualsConditionTests : TestBase<StringNotEqualsCondition>
 {
-    public class Evaluate : GreaterOrEqualThanConditionTests
+    public class Evaluate : StringNotEqualsConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
         {
             // Arrange
-            var leftValue = 15;
-            var rightValue = 13;
+            var leftValue = "this";
+            var rightValue = "something else";
+            StringComparison = StringComparison.OrdinalIgnoreCase;
             var parameters = new Dictionary<string, object?>
             {
                 { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
                 { nameof(IDoubleExpressionContainer.SecondExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
+                { nameof(IStringComparisonContainer.StringComparison).ToCamelCase(CultureInfo.CurrentCulture), StringComparison },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -45,7 +47,7 @@ public class GreaterOrEqualThanConditionTests : TestBase<GreaterThanOrEqualCondi
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Object must be of type String.");
+            result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
         }
     }
 }

@@ -1,15 +1,15 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Operators;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class GreaterThanConditionTests : TestBase<GreaterThanCondition>
+public class EqualsConditionTests : TestBase<EqualCondition>
 {
-    public class Evaluate : GreaterThanConditionTests
+    public class Evaluate : EqualsConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
         {
             // Arrange
-            var leftValue = 15;
-            var rightValue = 13;
+            var leftValue = "this";
+            var rightValue = "this";
             var parameters = new Dictionary<string, object?>
             {
                 { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
@@ -18,8 +18,9 @@ public class GreaterThanConditionTests : TestBase<GreaterThanCondition>
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
 
+
             // Act
-            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -27,7 +28,7 @@ public class GreaterThanConditionTests : TestBase<GreaterThanCondition>
         }
 
         [Fact]
-        public async Task Returns_Invalid_On_Different_Types()
+        public async Task Returns_Ok_On_Different_Types()
         {
             // Arrange
             var leftValue = "this";
@@ -40,12 +41,13 @@ public class GreaterThanConditionTests : TestBase<GreaterThanCondition>
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
 
+
             // Act
-            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Object must be of type String.");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(false);
         }
     }
 }

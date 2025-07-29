@@ -1,15 +1,15 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Operators;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class StringStartsWithConditionTests : TestBase<StringStartsWithCondition>
+public class StringEqualsConditionTests : TestBase<StringEqualsCondition>
 {
-    public class Evaluate : StringStartsWithConditionTests
+    public class Evaluate : StringEqualsConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
         {
             // Arrange
             var leftValue = "this";
-            var rightValue = "T";
+            var rightValue = "THIS";
             StringComparison = StringComparison.OrdinalIgnoreCase;
             var parameters = new Dictionary<string, object?>
             {
@@ -20,6 +20,7 @@ public class StringStartsWithConditionTests : TestBase<StringStartsWithCondition
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
 
+
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
 
@@ -29,33 +30,11 @@ public class StringStartsWithConditionTests : TestBase<StringStartsWithCondition
         }
 
         [Fact]
-        public async Task Returns_Invalid_On_Left_No_String()
-        {
-            // Arrange
-            var leftValue = 1;
-            var rightValue = "this";
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(IDoubleExpressionContainer.SecondExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
-
-            // Act
-            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
-        }
-
-        [Fact]
-        public async Task Returns_Invalid_On_Right_No_String()
+        public async Task Returns_Invalid_On_Different_Types()
         {
             // Arrange
             var leftValue = "this";
-            var rightValue = 2;
+            var rightValue = 13;
             var parameters = new Dictionary<string, object?>
             {
                 { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
@@ -63,6 +42,7 @@ public class StringStartsWithConditionTests : TestBase<StringStartsWithCondition
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
+
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
