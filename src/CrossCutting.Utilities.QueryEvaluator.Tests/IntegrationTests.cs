@@ -12,7 +12,7 @@ public sealed class IntegrationTests : TestBase
     ];
 
     [Fact]
-    public async Task CanFindOneItem()
+    public async Task Can_Find_One_Item()
     {
         // Arrange
         var query = new SingleEntityQueryBuilder()
@@ -34,7 +34,7 @@ public sealed class IntegrationTests : TestBase
     }
 
     [Fact]
-    public async Task CanFindManyItems()
+    public async Task Can_Find_Many_Items()
     {
         // Arrange
         var query = new SingleEntityQueryBuilder()
@@ -58,7 +58,7 @@ public sealed class IntegrationTests : TestBase
     }
 
     [Fact]
-    public async Task CanFindItemsPaged()
+    public async Task Can_Find_Items_Paged()
     {
         // Arrange
         var query = new SingleEntityQueryBuilder()
@@ -83,7 +83,7 @@ public sealed class IntegrationTests : TestBase
     }
 
     [Fact]
-    public void CanParseQuery()
+    public void Can_Parse_Query()
     {
         // Arrange
         var sut = new SingleEntityQueryParser<SingleEntityQueryBuilder, PropertyNameExpressionBuilder>(() => new PropertyNameExpressionBuilder("MyProperty"));
