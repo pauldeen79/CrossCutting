@@ -21,7 +21,7 @@ public class StringNotStartsWithConditionTests : TestBase<StringNotStartsWithCon
             var context = CreateContext("Dummy");
 
             // Act
-            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -43,7 +43,7 @@ public class StringNotStartsWithConditionTests : TestBase<StringNotStartsWithCon
             var context = CreateContext("Dummy");
 
             // Act
-            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -65,7 +65,7 @@ public class StringNotStartsWithConditionTests : TestBase<StringNotStartsWithCon
             var context = CreateContext("Dummy");
 
             // Act
-            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
