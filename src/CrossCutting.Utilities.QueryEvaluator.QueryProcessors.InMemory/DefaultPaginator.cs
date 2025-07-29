@@ -2,6 +2,15 @@
 
 public class DefaultPaginator : IPaginator
 {
+    private readonly IExpressionEvaluator _expressionEvaluator;
+
+    public DefaultPaginator(IExpressionEvaluator expressionEvaluator)
+    {
+        ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
+
+        _expressionEvaluator = expressionEvaluator;
+    }
+
     public async Task<IEnumerable<T>> GetPagedDataAsync<T>(IQuery query, IEnumerable<T> filteredRecords, CancellationToken token)
         where T : class
     {
@@ -27,7 +36,7 @@ public class DefaultPaginator : IPaginator
         return result;
     }
 
-    private static async Task<IEnumerable<T>> GetOrderedItems<T>(IQuery query, IEnumerable<T> result, CancellationToken token) where T : class
+    private async Task<IEnumerable<T>> GetOrderedItems<T>(IQuery query, IEnumerable<T> result, CancellationToken token) where T : class
     {
         var orderByResults = await Task.WhenAll(result.Select(async x =>
         {
@@ -35,7 +44,7 @@ public class DefaultPaginator : IPaginator
             var state = new AsyncResultDictionaryBuilder<object?>()
                 .Add(Constants.Context, x)
                 .BuildDeferred();
-            var context = new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), new NoopEvaluator(), state);
+            var context = new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, state);
 
             foreach (var orderByField in query.SortOrders)
             {
@@ -59,28 +68,5 @@ public class DefaultPaginator : IPaginator
         }
 
         return orderedItems.Select(x => x.Item);
-    }
-
-    private sealed class NoopEvaluator : IExpressionEvaluator
-    {
-        private const string ErrorMessage = "It's not supported to call an expression evaluator directly from queries";
-
-        public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-            => Task.FromResult(Result.NotSupported<object?>(ErrorMessage));
-
-        public Task<Result<object?>> EvaluateCallbackAsync(ExpressionEvaluatorContext context, CancellationToken token)
-            => Task.FromResult(Result.NotSupported<object?>(ErrorMessage));
-
-        public Task<Result<T>> EvaluateTypedAsync<T>(ExpressionEvaluatorContext context, CancellationToken token)
-            => Task.FromResult(Result.NotSupported<T>(ErrorMessage));
-
-        public Task<Result<T>> EvaluateTypedCallbackAsync<T>(ExpressionEvaluatorContext context, CancellationToken token)
-            => Task.FromResult(Result.NotSupported<T>(ErrorMessage));
-
-        public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
-            => Task.FromResult(new ExpressionParseResultBuilder().WithStatus(ResultStatus.NotSupported).WithErrorMessage(ErrorMessage).Build());
-
-        public Task<ExpressionParseResult> ParseCallbackAsync(ExpressionEvaluatorContext context, CancellationToken token)
-            => Task.FromResult(new ExpressionParseResultBuilder().WithStatus(ResultStatus.NotSupported).WithErrorMessage(ErrorMessage).Build());
     }
 }
