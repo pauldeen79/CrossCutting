@@ -4,11 +4,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddQueryEvaluatorInMemory(this IServiceCollection serviceCollection)
         => serviceCollection
-            .With(x =>
-            {
-                x.TryAddSingleton<IPaginator, DefaultPaginator>();
-                x.TryAddSingleton<IDataFactory, DefaultDataFactory>();
-                x.TryAddSingleton<IContextDataFactory, DefaultDataFactory>();
-                x.TryAddSingleton<IQueryProcessor, QueryProcessor>();
-            });
+            .AddSingleton<IPaginator, DefaultPaginator>()
+            .AddSingleton<IDataFactory, DefaultDataFactory>()
+            .AddSingleton<IContextDataFactory, DefaultDataFactory>()
+            .AddSingleton<IQueryProcessor, QueryProcessor>();
 }
