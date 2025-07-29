@@ -3,12 +3,10 @@
 public class DefaultDataFactory : IContextDataFactory
 {
     private readonly IEnumerable<IDataProvider> _providers;
-    private readonly IEnumerable<IContextDataProvider> _contextProviders;
 
-    public DefaultDataFactory(IEnumerable<IDataProvider> providers, IEnumerable<IContextDataProvider> contextProviders)
+    public DefaultDataFactory(IEnumerable<IDataProvider> providers)
     {
         _providers = providers;
-        _contextProviders = contextProviders;
     }
 
     public Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query)
@@ -19,16 +17,6 @@ public class DefaultDataFactory : IContextDataFactory
         where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
-
-        foreach (var provider in _contextProviders)
-        {
-            var result = await provider.GetDataAsync<TResult>(query, context).ConfigureAwait(false);
-
-            if (result.Status != ResultStatus.Continue)
-            {
-                return result;
-            }
-        }
 
         foreach (var provider in _providers)
         {
