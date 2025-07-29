@@ -27,6 +27,23 @@ public static class ConditionHelper
 
     public static async Task<Result<bool>> EvaluateObjectConditionAsync(
         Abstractions.IExpression firstExpression,
+        ExpressionEvaluatorContext context,
+        Func<object?, bool> resultDelegate,
+        CancellationToken token)
+    {
+        firstExpression = ArgumentGuard.IsNotNull(firstExpression, nameof(firstExpression));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+        resultDelegate = ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
+
+        return (await new AsyncResultDictionaryBuilder()
+            .Add(nameof(firstExpression), firstExpression.EvaluateAsync(context, token))
+            .Build()
+            .ConfigureAwait(false))
+            .OnSuccess(results => resultDelegate(results.GetValue(nameof(firstExpression))));
+    }
+
+    public static async Task<Result<bool>> EvaluateObjectConditionAsync(
+        Abstractions.IExpression firstExpression,
         Abstractions.IExpression secondExpression,
         ExpressionEvaluatorContext context,
         Func<object?, object?, Result<bool>> resultDelegate,
@@ -43,6 +60,5 @@ public static class ConditionHelper
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(results => resultDelegate(results.GetValue(nameof(firstExpression)), results.GetValue(nameof(secondExpression))));
-
     }
 }
