@@ -2,28 +2,17 @@
 
 public static class ConditionHelper
 {
-    public static async Task<Result<bool>> EvaluateStringConditionAsync(
+    public static Task<Result<bool>> EvaluateStringConditionAsync(
         Abstractions.IExpression firstExpression,
         Abstractions.IExpression secondExpression,
         ExpressionEvaluatorContext context,
         Func<string, string, bool> resultDelegate,
         CancellationToken token)
-    {
-        firstExpression = ArgumentGuard.IsNotNull(firstExpression, nameof(firstExpression));
-        secondExpression = ArgumentGuard.IsNotNull(secondExpression, nameof(firstExpression));
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-        resultDelegate = ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
-
-        return (await new AsyncResultDictionaryBuilder()
-                .Add(nameof(firstExpression), firstExpression.EvaluateAsync(context, token))
-                .Add(nameof(secondExpression), secondExpression.EvaluateAsync(context, token))
-                .Build()
-                .ConfigureAwait(false))
-                .OnSuccess(results => results.GetValue(nameof(firstExpression)) is string firstString
-                    && results.GetValue(nameof(secondExpression)) is string secondString
+        => EvaluateObjectConditionAsync(firstExpression, secondExpression, context,
+            (first, second) => first is string firstString
+                    && second is string secondString
                         ? Result.Success(resultDelegate(firstString, secondString))
-                        : Result.Invalid<bool>("LeftValue and RightValue both need to be of type string"));
-    }
+                        : Result.Invalid<bool>("LeftValue and RightValue both need to be of type string"), token);
 
     public static async Task<Result<bool>> EvaluateObjectConditionAsync(
         Abstractions.IExpression firstExpression,
