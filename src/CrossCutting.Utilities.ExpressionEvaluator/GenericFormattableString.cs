@@ -43,7 +43,7 @@ public sealed class GenericFormattableString(string format, object[] arguments) 
         => !(a == b);
 
     public override bool Equals(object obj)
-        => obj is GenericFormattableString && this == (GenericFormattableString)obj;
+        => obj is GenericFormattableString gfs && this == gfs;
 
     public bool Equals(GenericFormattableString other)
         => other?.ToString() == ToString();

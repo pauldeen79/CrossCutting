@@ -9,6 +9,7 @@ public class SingleEntityQueryParserTests
     [InlineData("==", "MyValue", typeof(EqualConditionBuilder))]
     [InlineData(">=", "MyValue", typeof(GreaterThanOrEqualConditionBuilder))]
     [InlineData(">", "MyValue", typeof(GreaterThanConditionBuilder))]
+    [InlineData("ISNOT", "NULL", typeof(IsNotNullConditionBuilder))]
     [InlineData("\"IS NOT\"", "NULL", typeof(IsNotNullConditionBuilder))]
     [InlineData("IS", "NULL", typeof(IsNullConditionBuilder))]
     [InlineData("<=", "MyValue", typeof(SmallerThanOrEqualConditionBuilder))]
@@ -92,6 +93,22 @@ public class SingleEntityQueryParserTests
     }
 
     [Fact]
+    public void Can_Parse_SimpleQuery_With_Plus_And_Minus()
+    {
+        // Arrange
+        var builder = new SingleEntityQueryBuilder();
+        var sut = CreateSut();
+
+        // Act
+        var actual = sut.Parse(builder, "-First +Second");
+
+        // Assert
+        actual.Conditions.Count.ShouldBe(2);
+        actual.Conditions[0].ShouldBeOfType<StringNotContainsConditionBuilder>();
+        actual.Conditions[1].ShouldBeOfType<StringContainsConditionBuilder>();
+    }
+
+    [Fact]
     public void Can_Parse_Empty_Query()
     {
         // Arrange
@@ -103,6 +120,38 @@ public class SingleEntityQueryParserTests
 
         // Assert
         actual.Conditions.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Can_Parse_Query_With_Brackets()
+    {
+        // Arrange
+        var builder = new SingleEntityQueryBuilder();
+        var sut = CreateSut();
+
+        // Act
+        var actual = sut.Parse(builder, $"(MyFieldName = \"SomeValue\")");
+
+        // Assert
+        actual.Conditions.Count.ShouldBe(1);
+        actual.Conditions[0].StartGroup.ShouldBe(true);
+        actual.Conditions[0].EndGroup.ShouldBe(true);
+    }
+
+    [Fact]
+    public void Can_Parse_Query_With_Combination()
+    {
+        // Arrange
+        var builder = new SingleEntityQueryBuilder();
+        var sut = CreateSut();
+
+        // Act
+        var actual = sut.Parse(builder, $"MyFieldName = \"SomeValue\" OR MyFieldname = \"SomeOtherValue\"");
+
+        // Assert
+        actual.Conditions.Count.ShouldBe(2);
+        actual.Conditions[0].Combination.ShouldBe(Combination.And);
+        actual.Conditions[1].Combination.ShouldBe(Combination.Or);
     }
 
     private static SingleEntityQueryParser<IQueryBuilder, PropertyNameExpressionBuilder> CreateSut()
