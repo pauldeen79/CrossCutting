@@ -7,6 +7,9 @@ public class QueryProcessor : IQueryProcessor
 
     public QueryProcessor(IPaginator paginator, IDataFactory dataFactory)
     {
+        ArgumentGuard.IsNotNull(paginator, nameof(paginator));
+        ArgumentGuard.IsNotNull(dataFactory, nameof(dataFactory));
+
         _paginator = paginator;
         _dataFactory = dataFactory;
     }
@@ -76,7 +79,5 @@ public class QueryProcessor : IQueryProcessor
 
     private Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query)
         where TResult : class
-        => _dataFactory is IContextDataFactory c
-            ? c.GetDataAsync<TResult>(query)
-            : _dataFactory.GetDataAsync<TResult>(query);
+        => _dataFactory.GetDataAsync<TResult>(query);
 }

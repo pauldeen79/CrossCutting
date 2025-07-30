@@ -6,6 +6,5 @@ public static class ServiceCollectionExtensions
         => serviceCollection
             .AddSingleton<IPaginator, DefaultPaginator>()
             .AddSingleton<IDataFactory, DefaultDataFactory>()
-            .AddSingleton<IContextDataFactory, DefaultDataFactory>()
             .AddSingleton<IQueryProcessor, QueryProcessor>();
 }
