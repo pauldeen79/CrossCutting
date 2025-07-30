@@ -1,4 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests;
+
 public class SingleEntityQueryParserTests
 {
     [Theory]
@@ -152,6 +153,60 @@ public class SingleEntityQueryParserTests
         actual.Conditions.Count.ShouldBe(2);
         actual.Conditions[0].Combination.ShouldBe(Combination.And);
         actual.Conditions[1].Combination.ShouldBe(Combination.Or);
+    }
+
+    [Fact]
+    public void Validation_Fails_With_Too_Many_Open_Bracket()
+    {
+        // Arrange
+        var builder = new SingleEntityQueryBuilder();
+        var sut = CreateSut();
+        var queryBuilder = sut.Parse(builder, $"(MyFieldName = \"SomeValue\" OR MyFieldname = \"SomeOtherValue\"");
+        var validationResults = new List<ValidationResult>();
+
+        // Act
+        var validationResult = queryBuilder.TryValidate(validationResults);
+
+        // Assert
+        validationResult.ShouldBeFalse();
+        validationResults.Count.ShouldBe(1);
+        validationResults[0].ErrorMessage.ShouldBe("Missing EndGroup");
+    }
+
+    [Fact]
+    public void Validation_Fails_With_Too_Many_Open_Brackets()
+    {
+        // Arrange
+        var builder = new SingleEntityQueryBuilder();
+        var sut = CreateSut();
+        var queryBuilder = sut.Parse(builder, $"(MyFieldName = \"SomeValue\" OR (MyFieldname = \"SomeOtherValue\"");
+        var validationResults = new List<ValidationResult>();
+
+        // Act
+        var validationResult = queryBuilder.TryValidate(validationResults);
+
+        // Assert
+        validationResult.ShouldBeFalse();
+        validationResults.Count.ShouldBe(1);
+        validationResults[0].ErrorMessage.ShouldBe("2 missing EndGroups");
+    }
+
+    [Fact]
+    public void Validation_Fails_With_Too_Many_Close_Brackets()
+    {
+        // Arrange
+        var builder = new SingleEntityQueryBuilder();
+        var sut = CreateSut();
+        var queryBuilder = sut.Parse(builder, $"MyFieldName = \"SomeValue\") OR MyFieldname = \"SomeOtherValue\")");
+        var validationResults = new List<ValidationResult>();
+
+        // Act
+        var validationResult = queryBuilder.TryValidate(validationResults);
+
+        // Assert
+        validationResult.ShouldBeFalse();
+        validationResults.Count.ShouldBe(1);
+        validationResults[0].ErrorMessage.ShouldBe("EndGroup not valid at index 0, because there is no corresponding StartGroup");
     }
 
     private static SingleEntityQueryParser<IQueryBuilder, PropertyNameExpressionBuilder> CreateSut()
