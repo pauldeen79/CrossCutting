@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using CrossCutting.Common;
-using CrossCutting.Common.Extensions;
-using CrossCutting.Utilities.QueryEvaluator.Abstractions;
-using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders;
-using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions;
-using CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains;
-using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
-using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions;
-
-namespace CrossCutting.Utilities.QueryEvaluator.QueryParsers;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryParsers;
 
 public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : IQueryParser<TQueryBuilder>
     where TQueryBuilder : IQueryBuilder
@@ -19,7 +6,7 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
 {
     private readonly Func<TQueryExpressionBuilder> _defaultFieldExpressionBuilderFactory;
 
-    private static readonly Dictionary<string, Func<IConditionBuilder>> _operatorMap = new Dictionary<string, Func<IConditionBuilder>>(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<string, Func<IConditionBuilder>> _operatorMap = new(StringComparer.OrdinalIgnoreCase)
     {
         { "=", ()=> new EqualConditionBuilder() },
         { "==", () => new EqualConditionBuilder() },
@@ -49,6 +36,7 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
     public SingleEntityQueryParser(Func<TQueryExpressionBuilder> defaultFieldExpressionBuilderFactory)
     {
         ArgumentGuard.IsNotNull(defaultFieldExpressionBuilderFactory, nameof(defaultFieldExpressionBuilderFactory));
+
         _defaultFieldExpressionBuilderFactory = defaultFieldExpressionBuilderFactory;
     }
 
@@ -63,7 +51,8 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
             .Replace("\t", " ")
             .SplitDelimited(' ', '\"');
 
-        return builder.AddConditions(PerformQuerySearch(items) ?? PerformSimpleSearch(items));
+        return builder.AddConditions(PerformQuerySearch(items)
+            ?? PerformSimpleSearch(items));
     }
 
     private static List<IConditionBuilder>? PerformQuerySearch(string[] items)
@@ -94,14 +83,16 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
             //remove brackets and set bracket property values for this query item.
             if (fieldName.StartsWith("("))
             {
+                startGroup = true;
                 fieldName = fieldName.Substring(1);
             }
             if (fieldValue.EndsWith(")"))
             {
+                endGroup = true;
                 fieldValue = fieldValue.Substring(0, fieldValue.Length - 1);
             }
 
-            var condition = GetCondition(@operator);
+            var condition = CreateCondition(@operator);
 
             if (condition is null)
             {
@@ -119,7 +110,7 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
             if (items.Length > i + 3)
             {
                 var combination = GetQueryCombination(items[i + 3]);
-                if (combination == null)
+                if (combination is null)
                 {
                     return default;
                 }
@@ -163,17 +154,17 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
         => startsWithMinus
             ? new StringNotContainsConditionBuilder()
                 .WithFirstExpression(_defaultFieldExpressionBuilderFactory())
-                .WithSecondExpression(GetSecondExpression(value, startsWithPlusOrMinus))
+                .WithSecondExpression(CreateLiteralExpression(value, startsWithPlusOrMinus))
             : new StringContainsConditionBuilder()
                 .WithFirstExpression(_defaultFieldExpressionBuilderFactory())
-                .WithSecondExpression(GetSecondExpression(value, startsWithPlusOrMinus));
+                .WithSecondExpression(CreateLiteralExpression(value, startsWithPlusOrMinus));
 
-    private static LiteralExpressionBuilder GetSecondExpression(string value, bool startsWithPlusOrMinus)
+    private static LiteralExpressionBuilder CreateLiteralExpression(string value, bool startsWithPlusOrMinus)
         => new LiteralExpressionBuilder(startsWithPlusOrMinus
             ? value.Substring(1)
             : value);
 
-    private static IConditionBuilder? GetCondition(string @operator)
+    private static IConditionBuilder? CreateCondition(string @operator)
         => _operatorMap.TryGetValue(@operator, out Func<IConditionBuilder> factory)
             ? factory()
             : null;
