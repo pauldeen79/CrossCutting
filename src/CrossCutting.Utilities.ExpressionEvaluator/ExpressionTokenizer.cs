@@ -218,7 +218,7 @@ public sealed class ExpressionTokenizer : IExpressionTokenizer
 
     private static Result ProcessPercent(ExpressionTokenizerState state)
     {
-        state.Tokens.Add(new ExpressionToken(ExpressionTokenType.Modulo, "%"));
+        state.Tokens.Add(new ExpressionToken(ExpressionTokenType.Modulus, "%"));
         state.Position++;
 
         return Result.Success();

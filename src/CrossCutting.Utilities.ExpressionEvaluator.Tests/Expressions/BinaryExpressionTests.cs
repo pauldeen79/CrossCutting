@@ -3,6 +3,7 @@
 public class BinaryExpressionTests : TestBase
 {
     protected IExpression Operator => ClassFactories.GetOrCreate<IExpression>(ClassFactory);
+    protected IEnumerable<IBinaryExpressionComponent> BinaryComponents => ClassFactories.GetOrCreateMultiple<IBinaryExpressionComponent>(ClassFactory);
 
     public BinaryExpressionTests()
     {
@@ -19,7 +20,7 @@ public class BinaryExpressionTests : TestBase
             // Arrange
             var expression = "1 + 2";
             var context = CreateContext(expression);
-            var sut = new BinaryExpression(context, Result.Error<IExpression>("Kaboom"), ExpressionTokenType.Plus, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Error<IExpression>("Kaboom"), ExpressionTokenType.Plus, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -35,7 +36,7 @@ public class BinaryExpressionTests : TestBase
             // Arrange
             var expression = "1 + 2";
             var context = CreateContext(expression);
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Error<IExpression>("Kaboom"), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Error<IExpression>("Kaboom"), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -55,7 +56,7 @@ public class BinaryExpressionTests : TestBase
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Error<object?>("Kaboom"));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -85,7 +86,7 @@ public class BinaryExpressionTests : TestBase
                      return Result.Success<object?>(counter);
                  });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -111,7 +112,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.LeftParenthesis, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.LeftParenthesis, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -137,7 +138,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -163,7 +164,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Minus, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Minus, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -189,7 +190,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Multiply, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Multiply, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -215,7 +216,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Divide, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Divide, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -241,7 +242,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Equal, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Equal, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -267,7 +268,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.NotEqual, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.NotEqual, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -293,7 +294,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Less, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Less, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -319,7 +320,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.LessOrEqual, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.LessOrEqual, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -345,7 +346,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Greater, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Greater, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -371,7 +372,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.GreaterOrEqual, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.GreaterOrEqual, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -397,7 +398,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.And, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.And, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -423,7 +424,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Or, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Or, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -449,7 +450,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Modulo, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Modulus, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -475,7 +476,7 @@ public class BinaryExpressionTests : TestBase
                     return Result.Success<object?>(counter);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Exponentiation, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Exponentiation, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -494,7 +495,7 @@ public class BinaryExpressionTests : TestBase
             // Arrange
             var expression = "1 + 2";
             var context = CreateContext(expression);
-            var sut = new BinaryExpression(context, Result.Error<IExpression>("Kaboom"), ExpressionTokenType.Plus, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Error<IExpression>("Kaboom"), ExpressionTokenType.Plus, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -512,7 +513,7 @@ public class BinaryExpressionTests : TestBase
             // Arrange
             var expression = "1 + 2";
             var context = CreateContext(expression);
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Error<IExpression>("Kaboom"), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Error<IExpression>("Kaboom"), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -534,7 +535,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithErrorMessage("Kaboom").WithStatus(ResultStatus.Error));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -566,7 +567,7 @@ public class BinaryExpressionTests : TestBase
                     return new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok);
                 });
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -588,7 +589,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.LeftParenthesis, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.LeftParenthesis, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -608,7 +609,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Plus, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -629,7 +630,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Minus, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Minus, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -650,7 +651,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Multiply, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Multiply, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -671,7 +672,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Divide, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Divide, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -692,7 +693,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Equal, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Equal, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -713,7 +714,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.NotEqual, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.NotEqual, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -734,7 +735,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Less, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Less, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -755,7 +756,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.LessOrEqual, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.LessOrEqual, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -776,7 +777,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Greater, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Greater, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -797,7 +798,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.GreaterOrEqual, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.GreaterOrEqual, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -818,7 +819,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.And, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.And, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -839,7 +840,7 @@ public class BinaryExpressionTests : TestBase
                 .ParseAsync(CancellationToken.None)
                 .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
 
-            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Or, Result.Success(Operator), expression);
+            var sut = new BinaryExpression(context, Result.Success(Operator), ExpressionTokenType.Or, Result.Success(Operator), expression, BinaryComponents);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);

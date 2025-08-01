@@ -19,6 +19,6 @@ public enum ExpressionTokenType
     Or,
     Bang,
     Exponentiation,
-    Modulo,
+    Modulus,
     EOF
 }

@@ -372,7 +372,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             var tokens = new List<ExpressionToken>
             {
                 new ExpressionToken(ExpressionTokenType.Other, "1"),
-                new ExpressionToken(ExpressionTokenType.Modulo),
+                new ExpressionToken(ExpressionTokenType.Modulus),
                 new ExpressionToken(ExpressionTokenType.Other, "2"),
                 new ExpressionToken(ExpressionTokenType.EOF),
             };

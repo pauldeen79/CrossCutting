@@ -58,7 +58,7 @@ public class ExpressionTokenizerTests : TestBase<ExpressionTokenizer>
         [InlineData("-", ExpressionTokenType.Minus)]
         [InlineData("*", ExpressionTokenType.Multiply)]
         [InlineData("/", ExpressionTokenType.Divide)]
-        [InlineData("%", ExpressionTokenType.Modulo)]
+        [InlineData("%", ExpressionTokenType.Modulus)]
         [InlineData("^", ExpressionTokenType.Exponentiation)]
         [InlineData("<", ExpressionTokenType.Less)]
         [InlineData("<=", ExpressionTokenType.LessOrEqual)]
