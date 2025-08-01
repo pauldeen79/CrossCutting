@@ -22,7 +22,7 @@ public static class DictionaryExtensions
                 return typeInstance;
             }
 
-            if (returnValue is object[] types)
+            if (returnValue is object[] types && types.All(x => x is Type))
             {
                 var typeInstances = types
                     .OfType<Type>()
@@ -32,6 +32,17 @@ public static class DictionaryExtensions
                 instance[typeof(T)] = typeInstances;
                 return typeInstances.FirstOrDefault()
                     ?? throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
+            }
+
+            if (returnValue is IEnumerable multipleItems)
+            {
+                var items = multipleItems.Cast<T>().ToArray();
+                if (items.Length == 0)
+                {
+                    throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
+                }
+
+                return items[0];
             }
 
             return (T)returnValue;
