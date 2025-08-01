@@ -2,6 +2,15 @@
 
 public sealed class IntegrationTests : TestBase, IDisposable
 {
+    // contains          -> instance method?
+    // starts with       -> instance method?
+    // ends with         -> instance method?
+    // !(contains)       -> instance method? brackets with not (inverse) boolean?
+    // !(starts with)    -> instance method? brackets with not (inverse) boolean?
+    // !(ends with)      -> instance method? brackets with not (inverse) boolean?
+    // is null           -> no change necessary
+    // is not null       -> no change necessary
+
     [Fact]
     public async Task Can_Evaluate_Binary_Operator_Expression()
     {
@@ -300,6 +309,34 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldBe(false);
+    }
+
+    [Fact]
+    public async Task Can_Evaluate_Expression_With_Negate_IsNull_Function()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = await sut.EvaluateAsync(CreateContext("!IsNull(\"some value that is not null\")", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(true);
+    }
+
+    [Fact]
+    public async Task Can_Evaluate_Expression_With_IsNotNull_Function()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = await sut.EvaluateAsync(CreateContext("IsNotNull(\"some value that is not null\")", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(true);
     }
 
     [Fact]
