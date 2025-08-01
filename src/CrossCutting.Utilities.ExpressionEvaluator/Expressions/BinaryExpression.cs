@@ -9,6 +9,8 @@ public sealed class BinaryExpression : IExpression
 
     private readonly ExpressionEvaluatorContext _context;
 
+    private readonly Dictionary<ExpressionTokenType, Func<IReadOnlyDictionary<string, Result>, Result<object?>>> _dictionary;
+
     public BinaryExpression(
         ExpressionEvaluatorContext context,
         Result<IExpression> left,
@@ -26,15 +28,33 @@ public sealed class BinaryExpression : IExpression
         Operator = @operator;
         Right = right;
         SourceExpression = sourceExpression;
+
+        _dictionary = new()
+        {
+            { ExpressionTokenType.Plus, results => Add.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider) },
+            { ExpressionTokenType.Minus, results => Subtract.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider) },
+            { ExpressionTokenType.Multiply, results => Multiply.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider) },
+            { ExpressionTokenType.Divide, results => Divide.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider) },
+            { ExpressionTokenType.Equal, results => Equal.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.StringComparison) },
+            { ExpressionTokenType.NotEqual, results => NotEqual.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.StringComparison) },
+            { ExpressionTokenType.Less, results => SmallerThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)) },
+            { ExpressionTokenType.LessOrEqual, results => SmallerOrEqualThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)) },
+            { ExpressionTokenType.Greater, results => GreaterThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)) },
+            { ExpressionTokenType.GreaterOrEqual, results => GreaterOrEqualThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)) },
+            { ExpressionTokenType.And, results => EvaluateAnd(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)) },
+            { ExpressionTokenType.Or, results => EvaluateOr(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)) },
+            { ExpressionTokenType.Modulo, results => Modulus.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider) },
+            { ExpressionTokenType.Exponentiation, results => Power.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider) },
+        };
     }
 
     public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         var results = await new AsyncResultDictionaryBuilder()
-            .Add(nameof(Constants.LeftExpression), Left.Value is not null
+            .Add(Constants.LeftExpression, Left.Value is not null
                 ? Left.Value.EvaluateAsync(context, token)
                 : Task.FromResult(Result.FromExistingResult<object?>(Left)))
-            .Add(nameof(Constants.RightExpression), Right.Value is not null
+            .Add(Constants.RightExpression, Right.Value is not null
                 ? Right.Value.EvaluateAsync(context, token)
                 : Task.FromResult(Result.FromExistingResult<object?>(Right)))
             .Build()
@@ -46,24 +66,9 @@ public sealed class BinaryExpression : IExpression
             return Result.FromExistingResult<object?>(error);
         }
 
-        return Result.WrapException(() => Operator switch
-        {
-            ExpressionTokenType.Plus => Add.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
-            ExpressionTokenType.Minus => Subtract.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
-            ExpressionTokenType.Multiply => Multiply.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
-            ExpressionTokenType.Divide => Divide.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
-            ExpressionTokenType.Equal => Equal.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.StringComparison),
-            ExpressionTokenType.NotEqual => NotEqual.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.StringComparison),
-            ExpressionTokenType.Less => SmallerThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
-            ExpressionTokenType.LessOrEqual => SmallerOrEqualThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
-            ExpressionTokenType.Greater => GreaterThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
-            ExpressionTokenType.GreaterOrEqual => GreaterOrEqualThan.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
-            ExpressionTokenType.And => EvaluateAnd(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
-            ExpressionTokenType.Or => EvaluateOr(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression)),
-            ExpressionTokenType.Modulo => Modulus.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
-            ExpressionTokenType.Exponentiation => Power.Evaluate(results.GetValue(Constants.LeftExpression), results.GetValue(Constants.RightExpression), _context.Settings.FormatProvider),
-            _ => Result.Invalid<object?>($"Unsupported operator: {Operator}")
-        });
+        return Result.WrapException(() => _dictionary.TryGetValue(Operator, out var action)
+            ? action(results)
+            : Result.Invalid<object?>($"Unsupported operator: {Operator}"));
     }
 
     public async Task<ExpressionParseResult> ParseAsync(CancellationToken token)
@@ -96,24 +101,9 @@ public sealed class BinaryExpression : IExpression
             return result;
         }
 
-        return Operator switch
-        {
-            ExpressionTokenType.Plus or
-            ExpressionTokenType.Minus or
-            ExpressionTokenType.Multiply or
-            ExpressionTokenType.Divide or
-            ExpressionTokenType.Equal or
-            ExpressionTokenType.NotEqual or
-            ExpressionTokenType.Less or
-            ExpressionTokenType.LessOrEqual or
-            ExpressionTokenType.Greater or
-            ExpressionTokenType.GreaterOrEqual or
-            ExpressionTokenType.And or
-            ExpressionTokenType.Or or
-            ExpressionTokenType.Modulo or
-            ExpressionTokenType.Exponentiation => result,
-            _ => result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Unsupported operator: {Operator}")
-        };
+        return _dictionary.ContainsKey(Operator)
+            ? result
+            : result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Unsupported operator: {Operator}");
     }
 
     private static Result<object?> EvaluateAnd(object? left, object? right)

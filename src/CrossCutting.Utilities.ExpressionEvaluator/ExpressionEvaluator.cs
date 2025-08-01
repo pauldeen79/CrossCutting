@@ -26,7 +26,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         context = context.FromRoot();
 
         var results = new ResultDictionaryBuilder()
-            .Add("Validate", () => context.Validate<object?>())
+            .Add(nameof(context.Validate), () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
             .Build();
@@ -47,7 +47,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         context = context.FromRoot();
 
         var results = new ResultDictionaryBuilder()
-            .Add("Validate", () => context.Validate<object?>())
+            .Add(nameof(context.Validate), () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
             .Build();
@@ -77,7 +77,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         var result = new ExpressionParseResultBuilder().WithSourceExpression(context.Expression);
 
         var results = new ResultDictionaryBuilder()
-            .Add("Validate", () => context.Validate<object?>())
+            .Add(nameof(context.Validate), () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Add(nameof(ParseAsync), results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
             .Build();
