@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.Quer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.QueryParsers", "src\CrossCutting.Utilities.QueryEvaluator.QueryParsers\CrossCutting.Utilities.QueryEvaluator.QueryParsers.csproj", "{99CF55DF-E6DD-436B-8F4A-992E34D8BD97}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.Operators.Tests", "src\CrossCutting.Utilities.Operators.Tests\CrossCutting.Utilities.Operators.Tests.csproj", "{7F76C3B1-F07A-4E08-AD26-9582E3270882}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -217,6 +219,10 @@ Global
 		{99CF55DF-E6DD-436B-8F4A-992E34D8BD97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99CF55DF-E6DD-436B-8F4A-992E34D8BD97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99CF55DF-E6DD-436B-8F4A-992E34D8BD97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F76C3B1-F07A-4E08-AD26-9582E3270882}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F76C3B1-F07A-4E08-AD26-9582E3270882}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F76C3B1-F07A-4E08-AD26-9582E3270882}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F76C3B1-F07A-4E08-AD26-9582E3270882}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
