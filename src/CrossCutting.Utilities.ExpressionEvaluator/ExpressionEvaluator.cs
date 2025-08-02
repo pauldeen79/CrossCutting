@@ -105,19 +105,8 @@ public class ExpressionEvaluator : IExpressionEvaluator
             {
                 foreach (var component in _components)
                 {
-                    Result<object?> result;
-
-#pragma warning disable CA1031 // Do not catch general exception types
-                    try
-                    {
-                        result = (await component.EvaluateAsync(context, token).ConfigureAwait(false))
+                    var result = (await Result.WrapException(() => component.EvaluateAsync(context, token)).ConfigureAwait(false))
                             .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage);
-                    }
-                    catch (Exception ex)
-                    {
-                        result = Result.Error<object?>(ex, "Exception occured");
-                    }
-#pragma warning restore CA1031 // Do not catch general exception types
 
                     if (result.Status != ResultStatus.Continue)
                     {
@@ -138,22 +127,13 @@ public class ExpressionEvaluator : IExpressionEvaluator
             {
                 foreach (var component in _components)
                 {
-                    Result<T> result;
-#pragma warning disable CA1031 // Do not catch general exception types
-                    try
-                    {
-                        result = component is IExpressionComponent<T> typedComponent
+                    var result = await Result.WrapException(async () => 
+                        component is IExpressionComponent<T> typedComponent
                             ? (await typedComponent.EvaluateTypedAsync(context, token).ConfigureAwait(false))
                                 .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage)
                             : (await component.EvaluateAsync(context, token).ConfigureAwait(false))
                                 .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage)
-                                .TryCastAllowNull<T>();
-                    }
-                    catch (Exception ex)
-                    {
-                        result = Result.Error<T>(ex, "Exception occured");
-                    }
-#pragma warning restore CA1031 // Do not catch general exception types
+                                .TryCastAllowNull<T>()).ConfigureAwait(false);
 
                     if (result.Status != ResultStatus.Continue)
                     {

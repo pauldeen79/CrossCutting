@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Common.Tests.Results;
+﻿using CrossCutting.Common.Tests.Extensions;
+
+namespace CrossCutting.Common.Tests.Results;
 
 public class ResultTests
 {
@@ -2735,5 +2737,133 @@ public class ResultTests
         a.ShouldThrow<InvalidOperationException>();
 
         // Note that if you don't know if the value is null, you can simply use TryCastAllowNull<string>
+    }
+
+    public class WrapException_Func : ResultExtensionTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var resultDelegate = new Func<Result>(Result.Success);
+
+            // Act
+            var result = Result.WrapException(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Exception.ShouldBeNull();
+        }
+
+        [Fact]
+        public void Returns_Error_When_Exception_Occurs()
+        {
+            // Arrange
+            var resultDelegate = new Func<Result>(() => throw new InvalidOperationException("Kaboom"));
+
+            // Act
+            var result = Result.WrapException(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
+            result.Exception.ShouldNotBeNull();
+        }
+    }
+
+    public class WrapException_Func_Task : ResultExtensionTests
+    {
+        [Fact]
+        public async Task Returns_Correct_Result()
+        {
+            // Arrange
+            var resultDelegate = new Func<Task<Result>>(() => Task.FromResult(Result.Success()));
+
+            // Act
+            var result = await Result.WrapException(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Exception.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task Returns_Error_When_Exception_Occurs()
+        {
+            // Arrange
+            var resultDelegate = new Func<Task<Result>>(() => Task.FromException<Result>(new InvalidOperationException("Kaboom")));
+
+            // Act
+            var result = await Result.WrapException(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
+            result.Exception.ShouldNotBeNull();
+        }
+    }
+
+    public class WrapException_Typed_Func : ResultExtensionTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var resultDelegate = new Func<Result<string>>(Result.NoContent<string>);
+
+            // Act
+            var result = Result.WrapException(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.NoContent);
+            result.Exception.ShouldBeNull();
+        }
+
+        [Fact]
+        public void Returns_Error_When_Exception_Occurs()
+        {
+            // Arrange
+            var resultDelegate = new Func<Result<string>>(() => throw new InvalidOperationException("Kaboom"));
+
+            // Act
+            var result = Result.WrapException(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
+            result.Exception.ShouldNotBeNull();
+        }
+    }
+
+    public class WrapException_Typed_Func_Task : ResultExtensionTests
+    {
+        [Fact]
+        public async Task Returns_Correct_Result()
+        {
+            // Arrange
+            var resultDelegate = new Func<Task<Result<string>>>(() => Task.FromResult(Result.NoContent<string>()));
+
+            // Act
+            var result = await Result.WrapException(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.NoContent);
+            result.Exception.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task Returns_Error_When_Exception_Occurs()
+        {
+            // Arrange
+            var resultDelegate = new Func<Task<Result<string>>>(() => Task.FromException<Result<string>>(new InvalidOperationException("Kaboom")));
+
+            // Act
+            var result = await Result.WrapException(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
+            result.Exception.ShouldNotBeNull();
+        }
     }
 }
