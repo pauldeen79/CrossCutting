@@ -247,114 +247,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             return entity.BuildTyped();
         }
     }
-    public partial class IsNotNullConditionBuilder : ConditionBaseBuilder<IsNotNullConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.IsNotNullCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
-    {
-        private CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder _firstExpression;
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder FirstExpression
-        {
-            get
-            {
-                return _firstExpression;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder>.Default.Equals(_firstExpression!, value!);
-                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
-            }
-        }
-
-        public IsNotNullConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.IsNotNullCondition source) : base(source)
-        {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _firstExpression = source.FirstExpression?.ToBuilder()!;
-        }
-
-        public IsNotNullConditionBuilder() : base()
-        {
-            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder)!;
-            SetDefaultValues();
-        }
-
-        public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.IsNotNullCondition BuildTyped()
-        {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.IsNotNullCondition(Combination, StartGroup, EndGroup, FirstExpression?.Build()!);
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
-        {
-            return BuildTyped();
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder.Build()
-        {
-            return BuildTyped();
-        }
-
-        partial void SetDefaultValues();
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Conditions.IsNotNullCondition(IsNotNullConditionBuilder entity)
-        {
-            return entity.BuildTyped();
-        }
-    }
-    public partial class IsNullConditionBuilder : ConditionBaseBuilder<IsNullConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.IsNullCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
-    {
-        private CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder _firstExpression;
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder FirstExpression
-        {
-            get
-            {
-                return _firstExpression;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder>.Default.Equals(_firstExpression!, value!);
-                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
-            }
-        }
-
-        public IsNullConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.IsNullCondition source) : base(source)
-        {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _firstExpression = source.FirstExpression?.ToBuilder()!;
-        }
-
-        public IsNullConditionBuilder() : base()
-        {
-            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder)!;
-            SetDefaultValues();
-        }
-
-        public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.IsNullCondition BuildTyped()
-        {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.IsNullCondition(Combination, StartGroup, EndGroup, FirstExpression?.Build()!);
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
-        {
-            return BuildTyped();
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder.Build()
-        {
-            return BuildTyped();
-        }
-
-        partial void SetDefaultValues();
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Conditions.IsNullCondition(IsNullConditionBuilder entity)
-        {
-            return entity.BuildTyped();
-        }
-    }
     public partial class NotEqualConditionBuilder : ConditionBaseBuilder<NotEqualConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotEqualCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
     {
         private CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder _secondExpression;
@@ -430,6 +322,114 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         partial void SetDefaultValues();
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotEqualCondition(NotEqualConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class NotNullConditionBuilder : ConditionBaseBuilder<NotNullConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotNullCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder _firstExpression;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public NotNullConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotNullCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+        }
+
+        public NotNullConditionBuilder() : base()
+        {
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotNullCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotNullCondition(Combination, StartGroup, EndGroup, FirstExpression?.Build()!);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotNullCondition(NotNullConditionBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+    public partial class NullConditionBuilder : ConditionBaseBuilder<NullConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NullCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder _firstExpression;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder FirstExpression
+        {
+            get
+            {
+                return _firstExpression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder>.Default.Equals(_firstExpression!, value!);
+                _firstExpression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(FirstExpression));
+            }
+        }
+
+        public NullConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NullCondition source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _firstExpression = source.FirstExpression?.ToBuilder()!;
+        }
+
+        public NullConditionBuilder() : base()
+        {
+            _firstExpression = default(CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NullCondition BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NullCondition(Combination, StartGroup, EndGroup, FirstExpression?.Build()!);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NullCondition(NullConditionBuilder entity)
         {
             return entity.BuildTyped();
         }

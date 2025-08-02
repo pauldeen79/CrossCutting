@@ -154,76 +154,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             return ToTypedBuilder();
         }
     }
-    public partial record IsNotNullCondition : CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition, CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression FirstExpression
-        {
-            get;
-        }
-
-        public IsNotNullCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
-        {
-            this.FirstExpression = firstExpression;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public override CrossCutting.Utilities.QueryEvaluator.Core.Builders.ConditionBaseBuilder ToBuilder()
-        {
-            return ToTypedBuilder();
-        }
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.IsNotNullConditionBuilder ToTypedBuilder()
-        {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.IsNotNullConditionBuilder(this);
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
-        {
-            return ToTypedBuilder();
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
-        {
-            return ToTypedBuilder();
-        }
-    }
-    public partial record IsNullCondition : CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition, CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression FirstExpression
-        {
-            get;
-        }
-
-        public IsNullCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
-        {
-            this.FirstExpression = firstExpression;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public override CrossCutting.Utilities.QueryEvaluator.Core.Builders.ConditionBaseBuilder ToBuilder()
-        {
-            return ToTypedBuilder();
-        }
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.IsNullConditionBuilder ToTypedBuilder()
-        {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.IsNullConditionBuilder(this);
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
-        {
-            return ToTypedBuilder();
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
-        {
-            return ToTypedBuilder();
-        }
-    }
     public partial record NotEqualCondition : CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition, CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer, CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
@@ -263,6 +193,76 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+    public partial record NotNullCondition : CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition, CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression FirstExpression
+        {
+            get;
+        }
+
+        public NotNullCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
+        {
+            this.FirstExpression = firstExpression;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Builders.ConditionBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.NotNullConditionBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.NotNullConditionBuilder(this);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+    public partial record NullCondition : CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition, CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression FirstExpression
+        {
+            get;
+        }
+
+        public NullCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression firstExpression) : base(combination, startGroup, endGroup)
+        {
+            this.FirstExpression = firstExpression;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Builders.ConditionBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.NullConditionBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.NullConditionBuilder(this);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
         {
             return ToTypedBuilder();
         }

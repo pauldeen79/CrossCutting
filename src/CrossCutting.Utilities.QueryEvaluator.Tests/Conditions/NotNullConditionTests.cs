@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class IsNullConditionTests : TestBase<IsNullCondition>
+public class NotNullConditionTests : TestBase<NotNullCondition>
 {
-    public class Evaluate : IsNullConditionTests
+    public class Evaluate : NotNullConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Non_Null_Value()
@@ -21,7 +21,7 @@ public class IsNullConditionTests : TestBase<IsNullCondition>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(false);
+            result.Value.ShouldBe(true);
         }
 
         [Fact]
@@ -41,7 +41,7 @@ public class IsNullConditionTests : TestBase<IsNullCondition>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(true);
+            result.Value.ShouldBe(false);
         }
     }
 }
