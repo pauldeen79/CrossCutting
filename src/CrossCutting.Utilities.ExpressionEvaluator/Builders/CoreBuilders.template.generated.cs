@@ -965,6 +965,8 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         private string _description;
 
+        private bool _allowAllArguments;
+
         private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorArgumentBuilder> _arguments;
 
         private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorTypeArgumentBuilder> _typeArguments;
@@ -1060,6 +1062,20 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             }
         }
 
+        public bool AllowAllArguments
+        {
+            get
+            {
+                return _allowAllArguments;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_allowAllArguments, value);
+                _allowAllArguments = value;
+                if (hasChanged) HandlePropertyChanged(nameof(AllowAllArguments));
+            }
+        }
+
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorArgumentBuilder> Arguments
@@ -1120,6 +1136,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             _returnValueType = source.ReturnValueType;
             _instanceType = source.InstanceType;
             _description = source.Description;
+            _allowAllArguments = source.AllowAllArguments;
             if (source.Arguments is not null) foreach (var item in source.Arguments.Select(x => x.ToBuilder())) _arguments.Add(item);
             if (source.TypeArguments is not null) foreach (var item in source.TypeArguments.Select(x => x.ToBuilder())) _typeArguments.Add(item);
             if (source.Results is not null) foreach (var item in source.Results.Select(x => x.ToBuilder())) _results.Add(item);
@@ -1138,7 +1155,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 
         public CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptor Build()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptor(Name, ImplementationType, MemberType, ReturnValueType, InstanceType, Description, Arguments.Select(x => x.Build()!).ToList().AsReadOnly(), TypeArguments.Select(x => x.Build()!).ToList().AsReadOnly(), Results.Select(x => x.Build()!).ToList().AsReadOnly());
+            return new CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptor(Name, ImplementationType, MemberType, ReturnValueType, InstanceType, Description, AllowAllArguments, Arguments.Select(x => x.Build()!).ToList().AsReadOnly(), TypeArguments.Select(x => x.Build()!).ToList().AsReadOnly(), Results.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         partial void SetDefaultValues();
@@ -1218,6 +1235,12 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         {
             if (description is null) throw new System.ArgumentNullException(nameof(description));
             Description = description;
+            return this;
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorBuilder WithAllowAllArguments(bool allowAllArguments = true)
+        {
+            AllowAllArguments = allowAllArguments;
             return this;
         }
 

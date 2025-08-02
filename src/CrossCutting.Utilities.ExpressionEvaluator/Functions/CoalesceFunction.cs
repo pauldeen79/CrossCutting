@@ -1,6 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
 [MemberArgument("Expression", typeof(object))]
+[MemberAllowAllArguments]
 public class CoalesceFunction : IFunction
 {
     public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)

@@ -295,6 +295,11 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
+        public bool AllowAllArguments
+        {
+            get;
+        }
+
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorArgument> Arguments
@@ -316,7 +321,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             get;
         }
 
-        public MemberDescriptor(string name, System.Type implementationType, CrossCutting.Utilities.ExpressionEvaluator.Domains.MemberType memberType, System.Type? returnValueType, System.Type? instanceType, string description, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorArgument> arguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorTypeArgument> typeArguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorResult> results)
+        public MemberDescriptor(string name, System.Type implementationType, CrossCutting.Utilities.ExpressionEvaluator.Domains.MemberType memberType, System.Type? returnValueType, System.Type? instanceType, string description, bool allowAllArguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorArgument> arguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorTypeArgument> typeArguments, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorResult> results)
         {
             this.Name = name;
             this.ImplementationType = implementationType;
@@ -324,6 +329,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             this.ReturnValueType = returnValueType;
             this.InstanceType = instanceType;
             this.Description = description;
+            this.AllowAllArguments = allowAllArguments;
             this.Arguments = arguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorArgument>(arguments);
             this.TypeArguments = typeArguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorTypeArgument>(typeArguments);
             this.Results = results is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorResult>(results);

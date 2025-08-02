@@ -171,6 +171,22 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         }
 
         [Fact]
+        public async Task Returns_Invalid_When_Method_Exists_But_ArgumentCount_Is_Incorrect()
+        {
+            // Arrange
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext($"{Constants.Context}.ToString(1)", state: this, settings: settings);
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+EvaluateAsync does not contain method ToString with 1 arguments");
+        }
+
+        [Fact]
         public async Task Returns_Invalid_When_Method_Does_Not_Exist()
         {
             // Arrange
@@ -308,6 +324,22 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public async Task Returns_Invalid_When_Parsing_First_Expression_Method_Fails_On_Argument_Count()
+        {
+            // Arrange
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext($"{Constants.Context}.DoSomething(\"hello\", 1)", state: this, settings: settings);
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.ParseAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+ParseAsync does not contain method DoSomething with 2 arguments");
         }
 
         [Fact]

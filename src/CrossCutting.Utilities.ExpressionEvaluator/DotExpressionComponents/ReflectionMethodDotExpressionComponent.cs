@@ -27,7 +27,13 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
 
         if (methods.Length == 0)
         {
-            return Result.Invalid<object?>($"Type {state.Value.GetType().FullName} does not contain method {functionCall.Name}");
+            var methodsByName = state.Value.GetType()
+                .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .Where(x => x.Name == functionCall.Name)
+                .ToArray();
+            return Result.Invalid<object?>(methodsByName.Length == 0
+                ? $"Type {state.Value.GetType().FullName} does not contain method {functionCall.Name}"
+                : $"Type {state.Value.GetType().FullName} does not contain method {functionCall.Name} with {functionCall.Arguments.Count} arguments");
         }
         else if (methods.Length > 1)
         {
@@ -73,7 +79,13 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
 
             if (methods.Length == 0)
             {
-                return Result.Invalid<Type>($"Type {state.ResultType!.FullName} does not contain method {functionCall.Name}");
+                var methodsByName = state.ResultType!
+                    .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                    .Where(x => x.Name == functionCall.Name)
+                    .ToArray();
+                return Result.Invalid<Type>(methodsByName.Length == 0
+                    ? $"Type {state.ResultType!.FullName} does not contain method {functionCall.Name}"
+                    : $"Type {state.ResultType!.FullName} does not contain method {functionCall.Name} with {functionCall.Arguments.Count} arguments");
             }
             else if (methods.Length > 1)
             {

@@ -33,6 +33,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
                         ? type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type
                         : type.GetCustomAttribute<MemberInstanceTypeAttribute>()?.Type)
                     .WithReturnValueType(type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type ?? TryGetReturnValueType(type))
+                    .WithAllowAllArguments(type.GetCustomAttribute<MemberAllowAllArgumentsAttribute>() is not null)
                     .AddArguments(type.GetCustomAttributes<MemberArgumentAttribute>().Select(CreateFunctionArgument))
                     .AddTypeArguments(type.GetCustomAttributes<MemberTypeArgumentAttribute>().Select(CreateFunctionTypeArgument))
                     .AddResults(type.GetCustomAttributes<MemberResultAttribute>().Select(CreateFunctionResult)));
