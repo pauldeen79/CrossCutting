@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class NotEqualsConditionTests : TestBase<NotEqualCondition>
+public class EqualConditionTests : TestBase<EqualCondition>
 {
-    public class Evaluate : NotEqualsConditionTests
+    public class Evaluate : EqualConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
@@ -24,7 +24,7 @@ public class NotEqualsConditionTests : TestBase<NotEqualCondition>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(false);
+            result.Value.ShouldBe(true);
         }
 
         [Fact]
@@ -47,7 +47,7 @@ public class NotEqualsConditionTests : TestBase<NotEqualCondition>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(true);
+            result.Value.ShouldBe(false);
         }
     }
 }
