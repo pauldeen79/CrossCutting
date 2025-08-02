@@ -37,7 +37,8 @@ public class ExpressionEvaluator : IExpressionEvaluator
             return Result.FromExistingResult<object?>(error);
         }
 
-        return await results.GetValue<IExpression>(nameof(IExpressionParser.Parse)).EvaluateAsync(context, token).ConfigureAwait(false);
+        return await results.GetValue<IExpression>(nameof(IExpressionParser.Parse))
+            .EvaluateAsync(context, token).ConfigureAwait(false);
     }
 
     public async Task<Result<T>> EvaluateTypedAsync<T>(ExpressionEvaluatorContext context, CancellationToken token)

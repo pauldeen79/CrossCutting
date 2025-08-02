@@ -9,4 +9,5 @@ global using System.Threading.Tasks;
 global using CrossCutting.Common.Results;
 global using CrossCutting.Data.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator;
+global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders;
