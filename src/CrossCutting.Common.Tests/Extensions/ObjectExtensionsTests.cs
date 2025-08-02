@@ -632,6 +632,19 @@ public class ObjectExtensionsTests
     }
 
     [Fact]
+    public void In_Returns_True_When_Array_Of_Arguments_Contains_Correct_Value_With_Custom_StirngComparison()
+    {
+        // Arrange
+        var input = "a";
+
+        // Act
+        var actual = input.In(StringComparison.OrdinalIgnoreCase, "A", "B", "C");
+
+        // Assert
+        actual.ShouldBeTrue();
+    }
+
+    [Fact]
     public void In_Returns_False_When_Array_Of_Arguments_Does_Not_Contain_Correct_Value()
     {
         // Arrange
@@ -652,6 +665,19 @@ public class ObjectExtensionsTests
 
         // Act
         var actual = input.In(new List<string> { "A", "B", "C" });
+
+        // Assert
+        actual.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void In_Returns_True_When_Enumerable_Of_Arguments_Contains_Correct_Value_With_Custom_StirngComparison()
+    {
+        // Arrange
+        var input = "a";
+
+        // Act
+        var actual = input.In(StringComparison.OrdinalIgnoreCase, new List<string> { "A", "B", "C" });
 
         // Assert
         actual.ShouldBeTrue();
