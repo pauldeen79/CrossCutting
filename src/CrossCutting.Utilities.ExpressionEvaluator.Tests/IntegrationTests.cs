@@ -298,6 +298,34 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public async Task Can_Evaluate_Expressoin_With_In_Function()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = await sut.EvaluateAsync(CreateContext("In(\"A\", \"A\",\"B\",\"C\")", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(true);
+    }
+
+    [Fact]
+    public async Task Can_Evaluate_Expressoin_With_Negate_In_Function()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = await sut.EvaluateAsync(CreateContext("!In(\"A\", \"A\",\"B\",\"C\")", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(false);
+    }
+
+    [Fact]
     public async Task Can_Evaluate_Expression_With_IsNull_Function()
     {
         // Arrange

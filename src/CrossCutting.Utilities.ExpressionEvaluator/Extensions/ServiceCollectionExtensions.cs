@@ -47,6 +47,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IMember, CoalesceFunction>()
             .AddSingleton<IMember, ConvertFunction>()
             .AddSingleton<IMember, CountFunction>()
+            .AddSingleton<IMember, InFunction>()
             .AddSingleton<IMember, IsNotNullFunction>()
             .AddSingleton<IMember, IsNullFunction>()
             .AddSingleton<IMember, LeftFunction>()
