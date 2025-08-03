@@ -778,6 +778,48 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public async Task Can_Evaluate_String_Contains()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = await sut.EvaluateAsync(CreateContext("\"hello world\".Contains(\"hello\")", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("hello world".Contains("hello", StringComparison.CurrentCulture));
+    }
+
+    [Fact]
+    public async Task Can_Evaluate_String_EndsWith()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = await sut.EvaluateAsync(CreateContext("\"hello world\".Endswith(\"world\")", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("hello world".EndsWith("world", StringComparison.CurrentCulture));
+    }
+
+    [Fact]
+    public async Task Can_Evaluate_String_StartsWith()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = await sut.EvaluateAsync(CreateContext("\"hello world\".StartsWith(\"hello\")", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("hello world".StartsWith("hello", StringComparison.CurrentCulture));
+    }
+
+    [Fact]
     public async Task Can_Get_Some_Stuff_From_InterpolatedString_Like_How_We_Want_To_In_ClassFramework_Using_ExpressionComponent()
     {
         // Observations:
@@ -937,6 +979,26 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
         // Act
         var result = await sut.ParseAsync(CreateContext(expression, evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+    }
+
+    [Fact]
+    public async Task Can_Parse_Query_Expression()
+    {
+        // Arrange
+        var sut = CreateSut();
+        var state = new AsyncResultDictionaryBuilder<object?>()
+            // observation: you need to 'register' all properties/fields you want to use in your query expression
+            .Add("field1", Result.Success<object?>("field1"))
+            .Add("field2", Result.Success<object?>("field2"))
+            .Add("field3", Result.Success<object?>("field3"))
+            .BuildDeferred();
+        var expression = "field1 == \"A\" && field2 IN (\"A\", \"B\", \"C\") && field3.StartsWith(\"A\")";
+
+        // Act
+        var result = await sut.ParseAsync(CreateContext(expression, evaluator: sut, state: state));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
