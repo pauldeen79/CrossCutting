@@ -1,6 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Functions;
 
 [MemberResultType(typeof(bool))]
+[LanguageFunctionAttribute]
 [MemberAllowAllArguments]
 public class InFunction : IFunction
 {

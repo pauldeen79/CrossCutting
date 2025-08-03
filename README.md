@@ -120,6 +120,7 @@ The ExpressionEvaluator is a complete rewrite of the Parsers project, where and 
 * Built-in methods for String values: ToCamelCase, ToLower, ToPascalCase and ToUpper
 * Cast and Convert functions to cast and convert values to other types
 * Coalesce function, to get the first value that is not null
+* In language function: "A" in ("A", "B", "C")
 * ToString method to convert objects to string
 * IsNull function to check for null values
 * Optional support for reflection to get property values or invoke methods

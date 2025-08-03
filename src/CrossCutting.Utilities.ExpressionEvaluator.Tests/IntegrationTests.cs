@@ -8,8 +8,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
     // !(contains)       -> instance method? brackets with not (inverse) boolean?
     // !(starts with)    -> instance method? brackets with not (inverse) boolean?
     // !(ends with)      -> instance method? brackets with not (inverse) boolean?
-    // is null           -> no change necessary
-    // is not null       -> no change necessary
+    // is null           -> no change necessary (use IsNull function or == null)
+    // is not null       -> no change necessary (use !IsNull function or != null)
 
     [Fact]
     public async Task Can_Evaluate_Binary_Operator_Expression()
@@ -298,13 +298,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public async Task Can_Evaluate_Expressoin_With_In_Function()
+    public async Task Can_Evaluate_Expression_With_In_Language_Function()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("In(\"A\", \"A\",\"B\",\"C\")", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("\"A\" in(\"A\",\"B\",\"C\")", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -312,13 +312,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public async Task Can_Evaluate_Expressoin_With_Negate_In_Function()
+    public async Task Can_Evaluate_Expression_With_Negate_In_Language_Function()
     {
         // Arrange
         var sut = CreateSut();
 
         // Act
-        var result = await sut.EvaluateAsync(CreateContext("!In(\"A\", \"A\",\"B\",\"C\")", evaluator: sut));
+        var result = await sut.EvaluateAsync(CreateContext("!(\"A\" In(\"A\",\"B\",\"C\"))", evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
