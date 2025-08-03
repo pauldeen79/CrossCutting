@@ -19,7 +19,6 @@ internal sealed class FunctionParserState
     public bool ArgumentsComplete { get; set; }
     public bool InQuotes { get; set; }
     public bool IsLanguageFunction { get; set; }
-    public bool ProcessedAppendLanguageFunctionArgument { get; set; }
     public int Index { get; set; }
     public char CurrentCharacter { get; set; }
     public int BracketCount { get; set; }
