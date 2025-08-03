@@ -54,7 +54,7 @@ public sealed class ExpressionParser : IExpressionParser
     {
         var expr = ParseComparison(context, state);
 
-        while (expr.IsSuccessful() && Match(state, ExpressionTokenType.Equal, ExpressionTokenType.NotEqual))
+        while (expr.IsSuccessful() && Match(state, ExpressionTokenType.Equal, ExpressionTokenType.NotEqual, ExpressionTokenType.In, ExpressionTokenType.NotIn))
         {
             var op = Previous(state);
             var right = ParseAdditive(context, state);

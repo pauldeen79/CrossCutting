@@ -20,5 +20,7 @@ public enum ExpressionTokenType
     Bang,
     Exponentiation,
     Modulus,
+    In,
+    NotIn,
     EOF
 }
