@@ -143,7 +143,7 @@ public class FunctionParserTests : TestBase<FunctionParser>
         }
 
         [Fact]
-        public void Returns_Invalid_On_FunctionName_With_WhiteSpace()
+        public void Returns_Correct_Result_On_FunctionCall_With_Language_Function()
         {
             // Arrange
             var context = CreateContext("My Function()");
@@ -153,8 +153,12 @@ public class FunctionParserTests : TestBase<FunctionParser>
             var result = sut.Parse(context);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Function name may not contain whitespace");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
+            result.Value.Name.ShouldBe("Function");
+            result.Value.MemberType.ShouldBe(MemberType.LanguageFunction);
+            result.Value.Arguments.Count.ShouldBe(1);
+            result.Value.Arguments.First().ShouldBe("My");
         }
 
         [Fact]

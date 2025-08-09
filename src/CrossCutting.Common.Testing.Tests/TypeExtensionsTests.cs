@@ -16,14 +16,14 @@ public class TypeExtensionsTests : TestBase
     {
 
         [Fact]
-        public void Can_Get_Mocks()
+        public void Can_Get_ClassFactories()
         {
             // Act
             var sut = CreateSut<MyClass>();
 
             // Assert
             sut.ShouldNotBeNull();
-            Mocks.Count.ShouldBe(2);
+            ClassFactories.Count.ShouldBe(2);
         }
 
         [Fact]
@@ -34,7 +34,7 @@ public class TypeExtensionsTests : TestBase
 
             // Assert
             sut.ShouldNotBeNull();
-            Mocks.ShouldBeEmpty();
+            ClassFactories.ShouldBeEmpty();
         }
 
         [Fact]
@@ -70,12 +70,12 @@ public class TypeExtensionsTests : TestBase
 
 public abstract class TestBase
 {
-    protected Dictionary<Type, object?> Mocks { get; } = new Dictionary<Type, object?>();
+    protected Dictionary<Type, object?> ClassFactories { get; } = new Dictionary<Type, object?>();
 
     protected T CreateSut<T>()
-        => Testing.CreateInstance<T>(ClassFactory, Mocks, p => null)!;
+        => Testing.CreateInstance<T>(ClassFactory, ClassFactories, p => null)!;
 
     // Class factory for NSubstitute, see Readme.md
     protected object? ClassFactory(Type t)
-        => t.CreateInstance(parameterType => Substitute.For([parameterType], []), Mocks, null, null);
+        => t.CreateInstance(parameterType => Substitute.For([parameterType], []), ClassFactories, null, null);
 }

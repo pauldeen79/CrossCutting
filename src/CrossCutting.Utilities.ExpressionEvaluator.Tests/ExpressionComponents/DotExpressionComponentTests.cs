@@ -93,7 +93,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext("state.MyErrorProperty", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.MyErrorProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -110,7 +110,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext("state.ErrorMethod()", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.ErrorMethod()", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -127,7 +127,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext("state.MyProperty", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.MyProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -143,7 +143,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext("state.MyComplexProperty.MyComplexProperty.MyProperty", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.MyComplexProperty.MyComplexProperty.MyProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -159,7 +159,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext("state.ToString()", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.ToString()", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -168,6 +168,22 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldBe(ToString());
+        }
+
+        [Fact]
+        public async Task Returns_Invalid_When_Method_Exists_But_ArgumentCount_Is_Incorrect()
+        {
+            // Arrange
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext($"{Constants.Context}.ToString(1)", state: this, settings: settings);
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+EvaluateAsync does not contain method ToString with 1 arguments");
         }
 
         [Fact]
@@ -191,7 +207,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext("state.Overload(\"hello\")", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.Overload(\"hello\")", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -207,7 +223,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext("state.DoSomething(error)", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.DoSomething(error)", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -285,7 +301,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext("state.MyProperty", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.MyProperty", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -300,7 +316,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext("state.DoSomething(\"hello\")", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.DoSomething(\"hello\")", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act
@@ -308,6 +324,22 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public async Task Returns_Invalid_When_Parsing_First_Expression_Method_Fails_On_Argument_Count()
+        {
+            // Arrange
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
+            var context = CreateContext($"{Constants.Context}.DoSomething(\"hello\", 1)", state: this, settings: settings);
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.ParseAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Type CrossCutting.Utilities.ExpressionEvaluator.Tests.ExpressionComponents.DotExpressionComponentTests+ParseAsync does not contain method DoSomething with 2 arguments");
         }
 
         [Fact]
@@ -362,7 +394,7 @@ public class DotExpressionComponentTests : TestBase<DotExpressionComponent>
         {
             // Arrange
             var settings = new ExpressionEvaluatorSettingsBuilder().WithAllowReflection();
-            var context = CreateContext("state.Overload(\"hello\")", state: this, settings: settings);
+            var context = CreateContext($"{Constants.Context}.Overload(\"hello\")", state: this, settings: settings);
             var sut = CreateSut();
 
             // Act

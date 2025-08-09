@@ -8,6 +8,7 @@ internal interface IMemberDescriptor
     Type? ReturnValueType { get; }
     Type? InstanceType { get; }
     [Required(AllowEmptyStrings = true)] string Description { get; }
+    bool AllowAllArguments { get; }
     [Required][ValidateObject] IReadOnlyCollection<IMemberDescriptorArgument> Arguments { get; }
     [Required][ValidateObject] IReadOnlyCollection<IMemberDescriptorTypeArgument> TypeArguments { get; }
     [Required][ValidateObject] IReadOnlyCollection<IMemberDescriptorResult> Results { get; }

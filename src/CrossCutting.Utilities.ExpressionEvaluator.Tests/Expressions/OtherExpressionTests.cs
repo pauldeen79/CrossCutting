@@ -16,7 +16,7 @@ public class OtherExpressionTests : TestBase
                 .Returns(Result.Success<object?>("the result"));
 
             // Act
-            var result = await sut.EvaluateAsync(CancellationToken.None);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

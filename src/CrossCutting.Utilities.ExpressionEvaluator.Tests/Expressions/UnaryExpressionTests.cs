@@ -2,7 +2,7 @@
 
 public class UnaryExpressionTests : TestBase
 {
-    protected IExpression Operand => Mocks.GetOrCreate<IExpression>(ClassFactory);
+    protected IExpression Operand => ClassFactories.GetOrCreate<IExpression>(ClassFactory);
 
     public class EvaluateAsync : UnaryExpressionTests
     {
@@ -14,7 +14,7 @@ public class UnaryExpressionTests : TestBase
             var sut = new UnaryExpression(context, Result.Error<IExpression>("Kaboom"));
 
             // Act
-            var result = await sut.EvaluateAsync(CancellationToken.None);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -27,13 +27,13 @@ public class UnaryExpressionTests : TestBase
             // Arrange
             var context = CreateContext("!kaboom");
             Operand
-                .EvaluateAsync(CancellationToken.None)
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Error<object?>("Kaboom"));
 
             var sut = new UnaryExpression(context, Result.Success(Operand));
 
             // Act
-            var result = await sut.EvaluateAsync(CancellationToken.None);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -46,12 +46,13 @@ public class UnaryExpressionTests : TestBase
             // Arrange
             var exceptionExpression = Substitute.For<IExpression>();
             exceptionExpression
-                .EvaluateAsync(Arg.Any<CancellationToken>())
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Throws<InvalidOperationException>();
-            var sut = new UnaryExpression(CreateContext("error"), Result.Success(exceptionExpression));
+            var context = CreateContext("error");
+            var sut = new UnaryExpression(context, Result.Success(exceptionExpression));
 
             // Act
-            var result = await sut.EvaluateAsync(CancellationToken.None);
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

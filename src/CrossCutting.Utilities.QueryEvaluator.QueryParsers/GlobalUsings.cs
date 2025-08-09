@@ -1,0 +1,12 @@
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Globalization;
+global using System.Linq;
+global using CrossCutting.Common;
+global using CrossCutting.Common.Extensions;
+global using CrossCutting.Utilities.QueryEvaluator.Abstractions;
+global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders;
+global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions;
+global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains;
+global using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
+global using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions;

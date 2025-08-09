@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace CrossCutting.Common.Testing;
 
@@ -12,13 +14,38 @@ public static class DictionaryExtensions
         if (instance.ContainsKey(typeof(T)))
         {
             var returnValue = instance[typeof(T)]!;
-            if (returnValue is not Type t)
+            if (returnValue is Type t)
             {
-                return (T)returnValue;
+                var typeInstance =  (T?)classFactory(t)
+                    ?? throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
+                instance[typeof(T)] = typeInstance;
+                return typeInstance;
             }
 
-            return (T?)classFactory(t)
-                ?? throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
+            if (returnValue is object[] types && types.All(x => x is Type))
+            {
+                var typeInstances = types
+                    .OfType<Type>()
+                    .Select(x => classFactory(x))
+                    .Cast<T>()
+                    .ToArray();
+                instance[typeof(T)] = typeInstances;
+                return typeInstances.FirstOrDefault()
+                    ?? throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
+            }
+
+            if (returnValue is IEnumerable multipleItems)
+            {
+                var items = multipleItems.Cast<T>().ToArray();
+                if (items.Length == 0)
+                {
+                    throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
+                }
+
+                return items[0];
+            }
+
+            return (T)returnValue;
         }
 
         var newInstance = Testing.CreateInstance<T>(classFactory, instance)
@@ -27,5 +54,45 @@ public static class DictionaryExtensions
         instance[typeof(T)] = newInstance;
 
         return newInstance;
+    }
+
+    public static IEnumerable<T> GetOrCreateMultiple<T>(this IDictionary<Type, object?> instance, Func<Type, object?> classFactory)
+    {
+        if (instance.ContainsKey(typeof(T)))
+        {
+            var returnValue = instance[typeof(T)]!;
+            if (returnValue is Type t)
+            {
+                var typeInstance = (T?)classFactory(t)
+                    ?? throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
+                instance[typeof(T)] = typeInstance;
+                return [typeInstance];
+            }
+
+            if (returnValue is object[] types && types.All(x => x is Type))
+            {
+                var typeInstances = types
+                    .OfType<Type>()
+                    .Select(x => classFactory(x))
+                    .Cast<T>()
+                    .ToArray();
+                instance[typeof(T)] = typeInstances;
+                return typeInstances;
+            }
+
+            if (returnValue is IEnumerable multipleItems)
+            {
+                return multipleItems.Cast<T>().ToArray();
+            }
+            
+            return [(T)returnValue];
+        }
+
+        var newInstance = Testing.CreateInstance<T>(classFactory, instance)
+            ?? throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
+
+        instance[typeof(T)] = newInstance;
+
+        return [newInstance];
     }
 }

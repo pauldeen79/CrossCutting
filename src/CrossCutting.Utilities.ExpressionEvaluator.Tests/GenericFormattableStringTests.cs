@@ -133,4 +133,85 @@ public class GenericFormattableStringTests
             result.ShouldBe("Hello world!");
         }
     }
+
+    public class EqualsOperator : GenericFormattableStringTests
+    {
+        [Fact]
+        public void Can_Compare_Two_Equal_GenericFormattableStrings()
+        {
+            // Arrange
+            GenericFormattableString sut1 = "hello world!";
+            GenericFormattableString sut2 = "hello world!";
+
+            // Act
+            var result = sut1 == sut2;
+
+            // Assert
+            result.ShouldBeTrue();
+        }
+    }
+
+    public class NotEqualsOperator : GenericFormattableStringTests
+    {
+        [Fact]
+        public void Can_Compare_Two_Equal_GenericFormattableStrings()
+        {
+            // Arrange
+            GenericFormattableString sut1 = "hello world!";
+            GenericFormattableString sut2 = "hello world!";
+
+            // Act
+            var result = sut1 != sut2;
+
+            // Assert
+            result.ShouldBeFalse();
+        }
+    }
+
+    public class EqualsMethod : GenericFormattableStringTests
+    {
+        [Fact]
+        public void Can_Compare_Two_Equal_GenericFormattableStrings()
+        {
+            // Arrange
+            GenericFormattableString sut1 = "hello world!";
+            GenericFormattableString sut2 = "hello world!";
+
+            // Act
+            var result = sut1.Equals(sut2);
+
+            // Assert
+            result.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void Can_Compare_GenericFormattableString_With_Other_Type()
+        {
+            // Arrange
+            GenericFormattableString sut1 = "hello world!";
+            int sut2 = 13;
+
+            // Act
+            var result = sut1.Equals(sut2);
+
+            // Assert
+            result.ShouldBeFalse();
+        }
+    }
+
+    public new class GetHashCode : GenericFormattableStringTests
+    {
+        [Fact]
+        public void Can_Get_HashCode()
+        {
+            // Arrange
+            GenericFormattableString sut = "hello world!";
+
+            // Act
+            var hashCode = sut.GetHashCode();
+
+            // Assert
+            hashCode.ShouldBe(sut.ToString().GetHashCode());
+        }
+    }
 }

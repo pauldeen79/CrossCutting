@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Common.Extensions;
+﻿using System;
+
+namespace CrossCutting.Common.Extensions;
 
 public static class ObjectExtensions
 {
@@ -156,6 +158,25 @@ public static class ObjectExtensions
     /// <typeparam name="T"></typeparam>
     /// <param name="value">The value to search for.</param>
     /// <param name="values">The sequence to search in.</param>
+    /// <param name="stringComparison">String comparison to use when value is string</param>
+    /// <returns>
+    /// true when found, otherwise false.
+    /// </returns>
+    public static bool In<T>(this T value, StringComparison stringComparison, IEnumerable<T> values)
+    {
+        ArgumentGuard.IsNotNull(values, nameof(values));
+
+        return values.Any(i => value is string s1 && i is string s2
+            ? s2.Equals(s1, stringComparison)
+            : i?.Equals(value) == true);
+    }
+
+    /// <summary>
+    /// Determines whether the specified value is contained within the specified sequence.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value">The value to search for.</param>
+    /// <param name="values">The sequence to search in.</param>
     /// <returns>
     /// true when found, otherwise false.
     /// </returns>
@@ -164,6 +185,25 @@ public static class ObjectExtensions
         ArgumentGuard.IsNotNull(values, nameof(values));
 
         return Array.Exists(values, i => i?.Equals(value) == true);
+    }
+
+    /// <summary>
+    /// Determines whether the specified value is contained within the specified sequence.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value">The value to search for.</param>
+    /// <param name="values">The sequence to search in.</param>
+    /// <param name="stringComparison">String comparison to use when value is string</param>
+    /// <returns>
+    /// true when found, otherwise false.
+    /// </returns>
+    public static bool In<T>(this T value, StringComparison stringComparison, params T[] values)
+    {
+        ArgumentGuard.IsNotNull(values, nameof(values));
+
+        return values.Any(i => value is string s1 && i is string s2
+            ? s2.Equals(s1, stringComparison)
+            : i?.Equals(value) == true);
     }
 
     public static ExpandoObject ToExpandoObject(this object? instance)

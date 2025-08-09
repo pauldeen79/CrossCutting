@@ -45,18 +45,18 @@ public class MemberResolver : IMemberResolver
 
             if (functionsByName.Length == 0)
             {
-                return Result.NotFound<MemberAndTypeDescriptor>($"Unknown function: {functionCallContext.FunctionCall.Name}");
+                return Result.NotFound<MemberAndTypeDescriptor>($"Unknown {functionCallContext.FunctionCall.MemberType.ToString().ToLower(functionCallContext.Context.Settings.FormatProvider.ToCultureInfo())}: {functionCallContext.FunctionCall.Name}");
             }
 
             var functionsWithRightArgumentCount = functionsByName.Length == 1
-                ? functionsByName.Where(x => functionCallContext.FunctionCall.Arguments.Count >= x.Arguments.Count(x => x.IsRequired)).ToArray()
+                ? functionsByName.Where(x => functionCallContext.FunctionCall.Arguments.Count >= x.Arguments.Count(x => x.IsRequired) && (functionCallContext.FunctionCall.Arguments.Count <= x.Arguments.Count || x.AllowAllArguments)).ToArray()
                 : functionsByName.Where(x => functionCallContext.FunctionCall.Arguments.Count == x.Arguments.Count).ToArray();
 
             return functionsWithRightArgumentCount.Length switch
             {
-                0 => Result.NotFound<MemberAndTypeDescriptor>($"No overload of the {functionCallContext.FunctionCall.Name} function takes {functionCallContext.FunctionCall.Arguments.Count} arguments"),
+                0 => Result.NotFound<MemberAndTypeDescriptor>($"No overload of the {functionCallContext.FunctionCall.Name} {functionCallContext.FunctionCall.MemberType.ToString().ToLower(functionCallContext.Context.Settings.FormatProvider.ToCultureInfo())} takes {functionCallContext.FunctionCall.Arguments.Count} arguments"),
                 1 => await GetFunctionByDescriptor(functionCallContext, functionsWithRightArgumentCount[0], token).ConfigureAwait(false),
-                _ => Result.NotFound<MemberAndTypeDescriptor>($"Function {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely"),
+                _ => Result.NotFound<MemberAndTypeDescriptor>($"{functionCallContext.FunctionCall.MemberType} {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely"),
             };
         }
         catch (Exception ex)

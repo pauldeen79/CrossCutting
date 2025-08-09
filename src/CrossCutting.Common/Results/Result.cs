@@ -92,6 +92,8 @@ public record Result<T> : Result
 
 public record Result
 {
+    private const string ExceptionOccured = "Exception occured";
+
     internal Result(ResultStatus status,
                     string? errorMessage,
                     IEnumerable<ValidationError> validationErrors,
@@ -426,7 +428,7 @@ public record Result
         }
         catch (Exception ex)
         {
-            return Error(ex, "Exception occured");
+            return Error(ex, ExceptionOccured);
         }
 #pragma warning restore CA1031 // Do not catch general exception types
     }
@@ -443,7 +445,41 @@ public record Result
         }
         catch (Exception ex)
         {
-            return Error<T>(ex, "Exception occured");
+            return Error<T>(ex, ExceptionOccured);
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static async Task<Result> WrapExceptionAsync(Func<Task<Result>> resultDelegate)
+    {
+        ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return await resultDelegate().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            return Error(ex, ExceptionOccured);
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static async Task<Result<T>> WrapExceptionAsync<T>(Func<Task<Result<T>>> resultDelegate)
+    {
+        ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return await resultDelegate().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            return Error<T>(ex, ExceptionOccured);
         }
 #pragma warning restore CA1031 // Do not catch general exception types
     }

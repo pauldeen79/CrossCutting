@@ -19,6 +19,7 @@ global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
 global using CrossCutting.Utilities.Aggregators;
 global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
+global using CrossCutting.Utilities.ExpressionEvaluator.BinaryExpressionComponents;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Domains;

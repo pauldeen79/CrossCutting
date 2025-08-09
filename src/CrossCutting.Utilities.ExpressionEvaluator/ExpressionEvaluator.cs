@@ -26,7 +26,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         context = context.FromRoot();
 
         var results = new ResultDictionaryBuilder()
-            .Add("Validate", () => context.Validate<object?>())
+            .Add(nameof(context.Validate), () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
             .Build();
@@ -37,7 +37,8 @@ public class ExpressionEvaluator : IExpressionEvaluator
             return Result.FromExistingResult<object?>(error);
         }
 
-        return await results.GetValue<IExpression>(nameof(IExpressionParser.Parse)).EvaluateAsync(token).ConfigureAwait(false);
+        return await results.GetValue<IExpression>(nameof(IExpressionParser.Parse))
+            .EvaluateAsync(context, token).ConfigureAwait(false);
     }
 
     public async Task<Result<T>> EvaluateTypedAsync<T>(ExpressionEvaluatorContext context, CancellationToken token)
@@ -47,7 +48,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         context = context.FromRoot();
 
         var results = new ResultDictionaryBuilder()
-            .Add("Validate", () => context.Validate<object?>())
+            .Add(nameof(context.Validate), () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
             .Build();
@@ -61,9 +62,9 @@ public class ExpressionEvaluator : IExpressionEvaluator
         var expression = results.GetValue<IExpression>(nameof(IExpressionParser.Parse));
 
         return expression is IExpression<T> typedExpression
-            ? (await typedExpression.EvaluateTypedAsync(token).ConfigureAwait(false))
+            ? (await typedExpression.EvaluateTypedAsync(context, token).ConfigureAwait(false))
                 .EnsureNotNull("EvaluateTypedAsync returned null")
-            : (await expression.EvaluateAsync(token).ConfigureAwait(false))
+            : (await expression.EvaluateAsync(context, token).ConfigureAwait(false))
                 .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage)
                 .TryCastAllowNull<T>();
     }
@@ -77,7 +78,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         var result = new ExpressionParseResultBuilder().WithSourceExpression(context.Expression);
 
         var results = new ResultDictionaryBuilder()
-            .Add("Validate", () => context.Validate<object?>())
+            .Add(nameof(context.Validate), () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Add(nameof(ParseAsync), results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
             .Build();
@@ -104,19 +105,8 @@ public class ExpressionEvaluator : IExpressionEvaluator
             {
                 foreach (var component in _components)
                 {
-                    Result<object?> result;
-
-#pragma warning disable CA1031 // Do not catch general exception types
-                    try
-                    {
-                        result = (await component.EvaluateAsync(context, token).ConfigureAwait(false))
+                    var result = (await Result.WrapExceptionAsync(() => component.EvaluateAsync(context, token)).ConfigureAwait(false))
                             .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage);
-                    }
-                    catch (Exception ex)
-                    {
-                        result = Result.Error<object?>(ex, "Exception occured");
-                    }
-#pragma warning restore CA1031 // Do not catch general exception types
 
                     if (result.Status != ResultStatus.Continue)
                     {
@@ -137,22 +127,13 @@ public class ExpressionEvaluator : IExpressionEvaluator
             {
                 foreach (var component in _components)
                 {
-                    Result<T> result;
-#pragma warning disable CA1031 // Do not catch general exception types
-                    try
-                    {
-                        result = component is IExpressionComponent<T> typedComponent
+                    var result = await Result.WrapExceptionAsync(async () => 
+                        component is IExpressionComponent<T> typedComponent
                             ? (await typedComponent.EvaluateTypedAsync(context, token).ConfigureAwait(false))
                                 .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage)
                             : (await component.EvaluateAsync(context, token).ConfigureAwait(false))
                                 .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage)
-                                .TryCastAllowNull<T>();
-                    }
-                    catch (Exception ex)
-                    {
-                        result = Result.Error<T>(ex, "Exception occured");
-                    }
-#pragma warning restore CA1031 // Do not catch general exception types
+                                .TryCastAllowNull<T>()).ConfigureAwait(false);
 
                     if (result.Status != ResultStatus.Continue)
                     {

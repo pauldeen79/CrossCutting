@@ -1,6 +1,6 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 
-public interface IExpression : IEvaluatable
+public partial interface IExpression : IEvaluatable
 {
     Task<ExpressionParseResult> ParseAsync(CancellationToken token);
 }

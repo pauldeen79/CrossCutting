@@ -2,7 +2,7 @@
 
 public static class Equal
 {
-    public static Result<bool> Evaluate(object? leftValue, object? rightValue, StringComparison stringComparison)
+    public static Result<bool> Evaluate(object? leftValue, object? rightValue, StringComparison? stringComparison)
     {
         if (leftValue is null && rightValue is null)
         {
@@ -14,9 +14,9 @@ public static class Equal
             return Result.Success(false);
         }
 
-        if (leftValue is string leftString && rightValue is string rightString)
+        if (stringComparison is not null && leftValue is string leftString && rightValue is string rightString)
         {
-            return Result.Success(leftString.Equals(rightString, stringComparison));
+            return Result.Success(leftString.Equals(rightString, stringComparison.Value));
         }
 
         return Result.Success(leftValue.Equals(rightValue));

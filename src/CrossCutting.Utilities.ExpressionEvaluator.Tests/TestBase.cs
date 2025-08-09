@@ -2,12 +2,12 @@
 
 public abstract class TestBase
 {
-    protected IDictionary<Type, object?> Mocks { get; }
-    protected IExpressionEvaluator Evaluator { get; }
-    protected IExpressionComponent Expression => Mocks.GetOrCreate<IExpressionComponent>(ClassFactory);
-    protected IMemberResolver MemberResolver => Mocks.GetOrCreate<IMemberResolver>(ClassFactory);
-    protected IMemberDescriptorProvider MemberDescriptorProvider => Mocks.GetOrCreate<IMemberDescriptorProvider>(ClassFactory);
-    protected IDateTimeProvider DateTimeProvider => Mocks.GetOrCreate<IDateTimeProvider>(ClassFactory);
+    protected IDictionary<Type, object?> ClassFactories { get; }
+    protected IExpressionEvaluator Evaluator => ClassFactories.GetOrCreate<IExpressionEvaluator>(ClassFactory);
+    protected IExpressionComponent Expression => ClassFactories.GetOrCreate<IExpressionComponent>(ClassFactory);
+    protected IMemberResolver MemberResolver => ClassFactories.GetOrCreate<IMemberResolver>(ClassFactory);
+    protected IMemberDescriptorProvider MemberDescriptorProvider => ClassFactories.GetOrCreate<IMemberDescriptorProvider>(ClassFactory);
+    protected IDateTimeProvider DateTimeProvider => ClassFactories.GetOrCreate<IDateTimeProvider>(ClassFactory);
     protected DateTime CurrentDateTime { get; }
 
     protected ExpressionEvaluatorContext CreateContext(
@@ -21,10 +21,9 @@ public abstract class TestBase
         IReadOnlyDictionary<string, Task<Result<object?>>>? dict = null;
         if (state is not null)
         {
-            dict = new Dictionary<string, Task<Result<object?>>>
-            {
-                { "state", Task.FromResult(Result.Success<object?>(state)) }
-            };
+            dict = new AsyncResultDictionaryBuilder<object?>()
+                .Add(Constants.Context, state)
+                .BuildDeferred();
         }
 
         return CreateContext(expression, dict, currentRecursionLevel, parentContext, evaluator, settings);
@@ -46,17 +45,34 @@ public abstract class TestBase
             Part = right
         };
 
+    protected virtual Type[] GetExcludedTypes()
+        => [
+            typeof(IExpressionComponent),
+            typeof(IMemberResolver),
+            typeof(IMemberDescriptorProvider),
+            typeof(IDateTimeProvider)
+           ];
+
     protected TestBase()
     {
-        Mocks = new Dictionary<Type, object?>
-        {
-            { typeof(IExpressionEvaluator), typeof(ExpressionEvaluator) },
-            { typeof(IExpressionTokenizer), typeof(ExpressionTokenizer) },
-            { typeof(IExpressionParser), typeof(ExpressionParser) },
-            { typeof(IFunctionParser), typeof(FunctionParser) },
-        };
+#pragma warning disable CA2214 // Do not call overridable methods in constructors
+        var excludedTypes = GetExcludedTypes();
+#pragma warning restore CA2214 // Do not call overridable methods in constructors
+        ClassFactories = new ServiceCollection()
+            .AddExpressionEvaluator()
+            .GroupBy(sd => sd.ServiceType)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Count() == 1
+                    ? g.First().ImplementationInstance ?? g.First().ImplementationType
+                    : g.Select(t => t.ImplementationInstance ?? t.ImplementationType).ToArray());
 
-        Evaluator = new ExpressionEvaluatorMock(Expression);
+        ClassFactories
+            .Where(x => excludedTypes.Contains(x.Key))
+            .ToList()
+            .ForEach(x => ClassFactories.Remove(x.Key));
+
+        ClassFactories[typeof(IExpressionEvaluator)] = new ExpressionEvaluatorMock(Expression);
 
         // Note that you have to setup EvaluateAsync and ValidateAsync on Expression yourself
         // Note that you have to setup ResolveAsync om MemberResolver yourself
@@ -71,7 +87,7 @@ public abstract class TestBase
 
     // Class factory for NSubstitute, see Readme.md
     protected object? ClassFactory(Type t)
-        => t.CreateInstance(parameterType => Substitute.For([parameterType], []), Mocks, null, null);
+        => t.CreateInstance(parameterType => Substitute.For([parameterType], []), ClassFactories, null, null);
 
     // Test stub for expression evaluation, that supports strings, integers, long integers, decimals, booleans and DeteTimes (by using TryParse), as well as the context and null keywords
     internal sealed class ExpressionEvaluatorMock : IExpressionEvaluator
@@ -96,7 +112,7 @@ public abstract class TestBase
                 return await dlg.ConfigureAwait(false);
             }
 
-            if (context.Expression == "state.Length")
+            if (context.Expression == $"{Constants.Context}.Length")
             {
                 return Result.Success<object?>((context.State?.ToString() ?? string.Empty).Length);
             }
@@ -196,7 +212,7 @@ public abstract class TestBase
                 "string" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
                 "unknown" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok),
                 "object" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(object)),
-                "state" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(context.State?.FirstOrDefault().Value?.Result.Value?.GetType()),
+                Constants.Context => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(context.State?.FirstOrDefault().Value?.Result.Value?.GetType()),
                 _ => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok)
             });
 
@@ -209,7 +225,7 @@ public abstract class TestBase
 
 public abstract class TestBase<T> : TestBase
 {
-    protected T CreateSut() => Testing.CreateInstance<T>(ClassFactory, Mocks, p =>
+    protected T CreateSut() => Testing.CreateInstance<T>(ClassFactory, ClassFactories, p =>
     {
         // Use real implementations for internal types
         if (p.ParameterType == typeof(IEnumerable<IDotExpressionComponent>))

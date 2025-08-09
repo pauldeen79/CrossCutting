@@ -2,10 +2,19 @@
 
 public sealed class ExpressionParser : IExpressionParser
 {
+    private readonly IEnumerable<IBinaryExpressionComponent> _components;
+
+    public ExpressionParser(IEnumerable<IBinaryExpressionComponent> components)
+    {
+        ArgumentGuard.IsNotNull(components, nameof(components));
+
+        _components = components;
+    }
+
     public Result<IExpression> Parse(ExpressionEvaluatorContext context, ICollection<ExpressionToken> tokens)
         => ParseLogicalOr(context, new ExpressionParserState(tokens));
 
-    private static Result<IExpression> ParseLogicalOr(ExpressionEvaluatorContext context, ExpressionParserState state)
+    private Result<IExpression> ParseLogicalOr(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
         var expr = ParseLogicalAnd(context, state);
 
@@ -17,13 +26,13 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value));
+            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value, _components));
         }
 
         return expr;
     }
 
-    private static Result<IExpression> ParseLogicalAnd(ExpressionEvaluatorContext context, ExpressionParserState state)
+    private Result<IExpression> ParseLogicalAnd(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
         var expr = ParseEquality(context, state);
 
@@ -35,13 +44,13 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value));
+            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value, _components));
         }
 
         return expr;
     }
 
-    private static Result<IExpression> ParseEquality(ExpressionEvaluatorContext context, ExpressionParserState state)
+    private Result<IExpression> ParseEquality(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
         var expr = ParseComparison(context, state);
 
@@ -53,13 +62,13 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value));
+            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value, _components));
         }
 
         return expr;
     }
 
-    private static Result<IExpression> ParseComparison(ExpressionEvaluatorContext context, ExpressionParserState state)
+    private Result<IExpression> ParseComparison(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
         var expr = ParseAdditive(context, state);
 
@@ -71,13 +80,13 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value));
+            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value, _components));
         }
 
         return expr;
     }
 
-    private static Result<IExpression> ParseAdditive(ExpressionEvaluatorContext context, ExpressionParserState state)
+    private Result<IExpression> ParseAdditive(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
         var expr = ParseMultiplicative(context, state);
 
@@ -89,17 +98,17 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value));
+            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value, _components));
         }
 
         return expr;
     }
 
-    private static Result<IExpression> ParseMultiplicative(ExpressionEvaluatorContext context, ExpressionParserState state)
+    private Result<IExpression> ParseMultiplicative(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
         var expr = ParseUnary(context, state);
 
-        while (expr.IsSuccessful() && Match(state, ExpressionTokenType.Multiply, ExpressionTokenType.Divide, ExpressionTokenType.Modulo))
+        while (expr.IsSuccessful() && Match(state, ExpressionTokenType.Multiply, ExpressionTokenType.Divide, ExpressionTokenType.Modulus))
         {
             var op = Previous(state);
             var right = ParseUnary(context, state);
@@ -107,13 +116,13 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value));
+            expr = Result.Success<IExpression>(new BinaryExpression(context, expr, op.Type, right, op.Value, _components));
         }
 
         return expr;
     }
 
-    private static Result<IExpression> ParseUnary(ExpressionEvaluatorContext context, ExpressionParserState state)
+    private Result<IExpression> ParseUnary(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
         if (Match(state, ExpressionTokenType.Bang))
         {
@@ -129,7 +138,7 @@ public sealed class ExpressionParser : IExpressionParser
         return ParsePrimary(context, state);
     }
 
-    private static Result<IExpression> ParsePrimary(ExpressionEvaluatorContext context, ExpressionParserState state)
+    private Result<IExpression> ParsePrimary(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
         if (Match(state, ExpressionTokenType.Other))
         {

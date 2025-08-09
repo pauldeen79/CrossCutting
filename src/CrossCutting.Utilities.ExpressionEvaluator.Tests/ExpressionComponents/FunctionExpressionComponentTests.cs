@@ -2,8 +2,11 @@
 
 public class FunctionExpressionComponentTests : TestBase
 {
-    protected IFunction Function => Mocks.GetOrCreate<IFunction>(ClassFactory);
-    protected IMemberCallArgumentValidator MemberCallArgumentValidator => Mocks.GetOrCreate<IMemberCallArgumentValidator>(ClassFactory);
+    protected override Type[] GetExcludedTypes()
+        => base.GetExcludedTypes().Concat([typeof(IFunction), typeof(IMemberCallArgumentValidator)]).ToArray();
+
+    protected IFunction Function => ClassFactories.GetOrCreate<IFunction>(ClassFactory);
+    protected IMemberCallArgumentValidator MemberCallArgumentValidator => ClassFactories.GetOrCreate<IMemberCallArgumentValidator>(ClassFactory);
 
     protected FunctionExpressionComponent CreateSut(IFunction? function = null)
         => new FunctionExpressionComponent(new FunctionParser(), new MemberResolver(MemberDescriptorProvider, MemberCallArgumentValidator, [function ?? Function]));

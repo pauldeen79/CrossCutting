@@ -51,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Aggr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Operators", "src\CrossCutting.Utilities.Operators\CrossCutting.Utilities.Operators.csproj", "{CEDC360E-4DF9-49F1-B100-701ED854F192}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.CodeGeneration", "src\CrossCutting.CodeGeneration\CrossCutting.CodeGeneration.csproj", "{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utilities.Parsers.CodeGeneration", "src\CrossCutting.Utilities.Parsers.CodeGeneration\CrossCutting.Utilities.Parsers.CodeGeneration.csproj", "{74D196D2-8DB3-456B-8F04-55CFF28E9AC7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.ProcessingPipeline", "src\CrossCutting.ProcessingPipeline\CrossCutting.ProcessingPipeline.csproj", "{CAC749E5-3235-4331-9808-9061022EDE18}"
 EndProject
@@ -66,6 +66,20 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.Aggregators.Tests", "src\CrossCutting.Utilities.Aggregators.Tests\CrossCutting.Utilities.Aggregators.Tests.csproj", "{CFA45499-5AA7-4A84-889C-CEB93E85B863}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Common.Testing.Tests", "src\CrossCutting.Common.Testing.Tests\CrossCutting.Common.Testing.Tests.csproj", "{93E9B100-A5B5-4446-A978-5E2C303F0338}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.CodeGeneration", "src\CrossCutting.Utilities.QueryEvaluator.CodeGeneration\CrossCutting.Utilities.QueryEvaluator.CodeGeneration.csproj", "{6B7CEB98-4295-47F1-A53D-F831D40D0C67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.Core", "src\CrossCutting.Utilities.QueryEvaluator\CrossCutting.Utilities.QueryEvaluator.Core.csproj", "{69E8C7B2-CE50-4AFC-8E5C-1986567BD66A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.Tests", "src\CrossCutting.Utilities.QueryEvaluator.Tests\CrossCutting.Utilities.QueryEvaluator.Tests.csproj", "{E679FB94-BAE5-4C26-AFE5-0DC8B6E09735}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory", "src\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory.csproj", "{388AEB6B-B5A1-427B-A495-025C3E593E3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.Abstractions", "src\CrossCutting.Utilities.QueryEvaluator.Abstractions\CrossCutting.Utilities.QueryEvaluator.Abstractions.csproj", "{35263B9C-0935-406B-81FA-6C765FF85B37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.QueryParsers", "src\CrossCutting.Utilities.QueryEvaluator.QueryParsers\CrossCutting.Utilities.QueryEvaluator.QueryParsers.csproj", "{99CF55DF-E6DD-436B-8F4A-992E34D8BD97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.Operators.Tests", "src\CrossCutting.Utilities.Operators.Tests\CrossCutting.Utilities.Operators.Tests.csproj", "{7F76C3B1-F07A-4E08-AD26-9582E3270882}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -181,6 +195,34 @@ Global
 		{93E9B100-A5B5-4446-A978-5E2C303F0338}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93E9B100-A5B5-4446-A978-5E2C303F0338}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93E9B100-A5B5-4446-A978-5E2C303F0338}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B7CEB98-4295-47F1-A53D-F831D40D0C67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B7CEB98-4295-47F1-A53D-F831D40D0C67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B7CEB98-4295-47F1-A53D-F831D40D0C67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B7CEB98-4295-47F1-A53D-F831D40D0C67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69E8C7B2-CE50-4AFC-8E5C-1986567BD66A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69E8C7B2-CE50-4AFC-8E5C-1986567BD66A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69E8C7B2-CE50-4AFC-8E5C-1986567BD66A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69E8C7B2-CE50-4AFC-8E5C-1986567BD66A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E679FB94-BAE5-4C26-AFE5-0DC8B6E09735}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E679FB94-BAE5-4C26-AFE5-0DC8B6E09735}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E679FB94-BAE5-4C26-AFE5-0DC8B6E09735}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E679FB94-BAE5-4C26-AFE5-0DC8B6E09735}.Release|Any CPU.Build.0 = Release|Any CPU
+		{388AEB6B-B5A1-427B-A495-025C3E593E3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{388AEB6B-B5A1-427B-A495-025C3E593E3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{388AEB6B-B5A1-427B-A495-025C3E593E3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{388AEB6B-B5A1-427B-A495-025C3E593E3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35263B9C-0935-406B-81FA-6C765FF85B37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35263B9C-0935-406B-81FA-6C765FF85B37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35263B9C-0935-406B-81FA-6C765FF85B37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35263B9C-0935-406B-81FA-6C765FF85B37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99CF55DF-E6DD-436B-8F4A-992E34D8BD97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99CF55DF-E6DD-436B-8F4A-992E34D8BD97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99CF55DF-E6DD-436B-8F4A-992E34D8BD97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99CF55DF-E6DD-436B-8F4A-992E34D8BD97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F76C3B1-F07A-4E08-AD26-9582E3270882}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F76C3B1-F07A-4E08-AD26-9582E3270882}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F76C3B1-F07A-4E08-AD26-9582E3270882}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F76C3B1-F07A-4E08-AD26-9582E3270882}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

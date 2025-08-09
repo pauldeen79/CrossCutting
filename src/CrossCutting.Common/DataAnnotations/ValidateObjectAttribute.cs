@@ -17,14 +17,7 @@ public sealed class ValidateObjectAttribute : ValidationAttribute
 
         if (value is not string and IEnumerable e)
         {
-            foreach (var item in e.OfType<object?>().Where(x => x is not null))
-            {
-                if (!item!.TryValidate(validationResults))
-                {
-                    return false;
-                }
-            }
-            return true;
+            return e.OfType<object>().All(item => item.TryValidate(validationResults));
         }
         else
         {
@@ -48,7 +41,7 @@ public sealed class ValidateObjectAttribute : ValidationAttribute
         var validationResults = new List<ValidationResult>();
         if (value is not string and IEnumerable e)
         {
-            foreach (var item in e.OfType<object?>().Where(x => x is not null))
+            foreach (var item in e.OfType<object?>())
             {
                 _ = item!.TryValidate(validationResults);
             }

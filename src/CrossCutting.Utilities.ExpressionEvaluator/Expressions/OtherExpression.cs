@@ -15,7 +15,7 @@ public sealed class OtherExpression : IExpression
         Expression = expression;
     }
 
-    public Task<Result<object?>> EvaluateAsync(CancellationToken token)
+    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => _context.EvaluateAsync(Expression, token);
 
     public Task<ExpressionParseResult> ParseAsync(CancellationToken token)

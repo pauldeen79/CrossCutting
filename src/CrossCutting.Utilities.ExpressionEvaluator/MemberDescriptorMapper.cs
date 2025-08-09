@@ -23,7 +23,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
             }
             else
             {
-                var memberType = GetMemberType(source);
+                var memberType = GetMemberType(source, type.GetCustomAttribute<LanguageFunctionAttribute>());
                 descriptors.Add(new MemberDescriptorBuilder()
                     .WithMemberType(memberType)
                     .WithName(type.GetCustomAttribute<MemberNameAttribute>()?.Name ?? type.Name.ReplaceSuffix("Function", string.Empty, StringComparison.Ordinal))
@@ -33,6 +33,7 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
                         ? type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type
                         : type.GetCustomAttribute<MemberInstanceTypeAttribute>()?.Type)
                     .WithReturnValueType(type.GetCustomAttribute<MemberResultTypeAttribute>()?.Type ?? TryGetReturnValueType(type))
+                    .WithAllowAllArguments(type.GetCustomAttribute<MemberAllowAllArgumentsAttribute>() is not null)
                     .AddArguments(type.GetCustomAttributes<MemberArgumentAttribute>().Select(CreateFunctionArgument))
                     .AddTypeArguments(type.GetCustomAttributes<MemberTypeArgumentAttribute>().Select(CreateFunctionTypeArgument))
                     .AddResults(type.GetCustomAttributes<MemberResultAttribute>().Select(CreateFunctionResult)));
@@ -53,11 +54,15 @@ public class MemberDescriptorMapper : IMemberDescriptorMapper
         return null;
     }
 
-    private static MemberType GetMemberType(object? source)
+    private static MemberType GetMemberType(object? source, LanguageFunctionAttribute languageFunctionAttribute)
         => source switch
         {
-            IGenericFunction => MemberType.GenericFunction,
-            IFunction => MemberType.Function,
+            IGenericFunction => languageFunctionAttribute is not null
+                ? MemberType.GenericLanguageFunction
+                : MemberType.GenericFunction,
+            IFunction => languageFunctionAttribute is not null
+                ? MemberType.LanguageFunction
+                : MemberType.Function,
             IMethod => MemberType.Method,
             IProperty => MemberType.Property,
             IConstructor => MemberType.Constructor,

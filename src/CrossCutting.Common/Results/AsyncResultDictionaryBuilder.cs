@@ -232,7 +232,8 @@ public class AsyncResultDictionaryBuilder
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                result = await item.Value.ConfigureAwait(false);
+                result = (await item.Value.ConfigureAwait(false))
+                    .EnsureNotNull($"Result with key {item.Key} returned a null result");
             }
             catch (Exception ex)
             {

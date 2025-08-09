@@ -142,17 +142,17 @@ internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
 {
     public IQuery Query { get; set; }
 
-    public async Task<Result<object?>> EvaluateAsync(CancellationToken token)
-        => await EvaluateTypedAsync(token).ConfigureAwait(false);
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
-    public async Task<Result<bool>> EvaluateTypedAsync(CancellationToken token)
+    public async Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         if (CanEvaluateSimpleConditions(Query.Conditions))
         {
-            return await EvaluateSimpleConditions(Query.Conditions, token).ConfigureAwait(false);
+            return await EvaluateSimpleConditions(Query.Conditions, context, token).ConfigureAwait(false);
         }
 
-        return await EvaluateComplexConditions(Query.Conditions, token).ConfigureAwait(false);
+        return await EvaluateComplexConditions(Query.Conditions, context, token).ConfigureAwait(false);
     }
 
     private static bool CanEvaluateSimpleConditions(IEnumerable<ICondition> conditions)
@@ -162,11 +162,11 @@ internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
             || x.EndGroup
         );
 
-    private static async Task<Result<bool>> EvaluateSimpleConditions(IEnumerable<ICondition> conditions, CancellationToken token)
+    private static async Task<Result<bool>> EvaluateSimpleConditions(IEnumerable<ICondition> conditions, ExpressionEvaluatorContext context, CancellationToken token)
     {
         foreach (var evaluatable in conditions)
         {
-            var itemResult = await IsItemValid(evaluatable, token).ConfigureAwait(false);
+            var itemResult = await IsItemValid(evaluatable, context, token).ConfigureAwait(false);
             if (!itemResult.IsSuccessful())
             {
                 return itemResult;
@@ -181,7 +181,7 @@ internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
         return Result.Success(true);
     }
 
-    private static async Task<Result<bool>> EvaluateComplexConditions(IEnumerable<ICondition> conditions, CancellationToken token)
+    private static async Task<Result<bool>> EvaluateComplexConditions(IEnumerable<ICondition> conditions, ExpressionEvaluatorContext context, CancellationToken token)
     {
         var builder = new StringBuilder();
         foreach (var evaluatable in conditions)
@@ -195,7 +195,7 @@ internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
 
             var prefix = evaluatable.StartGroup ? "(" : string.Empty;
             var suffix = evaluatable.EndGroup ? ")" : string.Empty;
-            var itemResult = await IsItemValid(evaluatable, token).ConfigureAwait(false);
+            var itemResult = await IsItemValid(evaluatable, context, token).ConfigureAwait(false);
             if (!itemResult.IsSuccessful())
             {
                 return itemResult;
@@ -208,10 +208,10 @@ internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
         return Result.Success(EvaluateBooleanExpression(builder.ToString()));
     }
 
-    private static async Task<Result<bool>> IsItemValid(ICondition condition, CancellationToken token)
+    private static async Task<Result<bool>> IsItemValid(ICondition condition, ExpressionEvaluatorContext context, CancellationToken token)
         => await(await new AsyncResultDictionaryBuilder()
-            .Add(Constants.LeftExpression, condition.LeftExpression.EvaluateAsync(token))
-            .Add(Constants.RightExpression, condition.RightExpression.EvaluateAsync(token))
+            .Add(Constants.LeftExpression, condition.LeftExpression.EvaluateAsync(context, token))
+            .Add(Constants.RightExpression, condition.RightExpression.EvaluateAsync(context, token))
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(async results => await condition.Operator
@@ -302,7 +302,7 @@ internal sealed class ConstantEvaluatable : IEvaluatable
 
     public object? Value { get; }
 
-    public Task<Result<object?>> EvaluateAsync(CancellationToken token)
+    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => Task.FromResult(Result.Success(Value));
 }
 
@@ -315,10 +315,10 @@ internal sealed class ConstantEvaluatable<T> : IEvaluatable<T>
 
     public T Value { get; }
 
-    public Task<Result<object?>> EvaluateAsync(CancellationToken token)
+    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => Task.FromResult(Result.Success<object?>(Value));
 
-    public Task<Result<T>> EvaluateTypedAsync(CancellationToken token)
+    public Task<Result<T>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => Task.FromResult(Result.Success(Value));
 }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
@@ -344,9 +344,10 @@ public class QueryFrameworkTests : TestBase
             ]
         };
         var processor = new InMemoryQueryProcessor { Query = query };
+        var context = CreateContext("Dummy");
 
         // Act
-        var result = await processor.EvaluateTypedAsync(CancellationToken.None);
+        var result = await processor.EvaluateTypedAsync(context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

@@ -18,7 +18,7 @@ public class FunctionParser : IFunctionParser
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         // First, do a RegEx probe. If this does not match, then don't bother.
-        var match = _functionRegEx.Match(context.Expression);
+        var match = _functionRegEx.Match(context.Expression.Trim());
         if (!match.Success)
         {
             return Result.NotFound<FunctionCall>();
@@ -57,16 +57,23 @@ public class FunctionParser : IFunctionParser
         var genericTypeArguments = genericTypeArgumentsResult.GetValueOrThrow();
         return Result.Success<FunctionCall>(new FunctionCallBuilder()
             .WithName(state.NameBuilder.ToString().Trim())
-            .WithMemberType(GetMemberType(context.Expression, genericTypeArguments.Count))
+            .WithMemberType(GetMemberType(context.Expression, genericTypeArguments.Count, state.IsLanguageFunction))
             .AddArguments(state.Arguments)
             .AddTypeArguments(genericTypeArguments));
     }
 
-    private static MemberType GetMemberType(string expression, int genericArgumentCount)
+    private static MemberType GetMemberType(string expression, int genericArgumentCount, bool isLanguageFunction)
     {
         if (expression.StartsWith("new "))
         {
             return MemberType.Constructor;
+        }
+
+        if (isLanguageFunction)
+        {
+            return genericArgumentCount > 0
+                ? MemberType.GenericLanguageFunction
+                : MemberType.LanguageFunction;
         }
 
         if (genericArgumentCount > 0)
@@ -112,7 +119,9 @@ public class FunctionParser : IFunctionParser
         }
         else
         {
-            return Result.Invalid<FunctionCall>("Function name may not contain whitespace");
+            state.IsLanguageFunction = true;
+            state.Arguments.Add(state.Expression.Substring(0, state.Index));
+            state.NameBuilder.Clear();
         }
 
         return Result.Success();

@@ -14,6 +14,7 @@ This repository consists of the following packages:
 | CrossCutting.Utilities.ObjectDumper        | Produces readable flat-text representation from objects, for use in logging                                                                                                              |
 | CrossCutting.Utilities.Parsers             | Parsers for pipe-delmited data table strings, TSQL INSERT INTO statements, expression strings, function strings, math expressions and formattable strings (dynamic interpolated strings) |
 | CrossCutting.Utilities.ExpressionEvaluator | Expression evaluator to dynamically evaluate strings, with support for all kinds of stuff, like: operators, functions, mathematic expressions, and so on                                 |
+| CrossCutting.Utilities.QueryEvaluator      | Query evaluator to dynamically evaluate queries, similar to dynamic LINQ                                                                                                                 |
 | System.Data.Stub                           | Stubs for System.Data interfaces like IDbConnection, IDbCommand and IDataReader                                                                                                          |
 
 # Using NSubstitute or Moq as mock factory for CrossCutting.Common.Testing
@@ -52,6 +53,41 @@ With this:
 Result.$2<$1>(
 ```
 
+# Using actual ServiceCollection with CrossCutting.Common.Testing
+
+You can use your real ServiceCollection extension method to fill the class factories, and then replace some types for testability.
+
+Example:
+```
+_dataProviderMock = new DataProviderMock();
+var excludedTypes = new Type[] { typeof(IDateTimeProvider) };
+var classFactories = new ServiceCollection()
+    .AddExpressionEvaluator()                       // Dependency
+    .AddQueryEvaluatorInMemory()                    // System Under Test
+    .AddSingleton<IDataProvider>(_dataProviderMock) // Test stub
+    .Where(sd => !excludedTypes.Contains(sd.ServiceType))
+    .GroupBy(sd => sd.ServiceType)
+    .ToDictionary(
+        g => g.Key,
+        g => g.Count() == 1
+            ? g.First().ImplementationInstance ?? g.First().ImplementationType
+            : g.Select(t => t.ImplementationInstance ?? t.ImplementationType).ToArray());
+```
+
+If you want to, you can also remove items you want to mock afterwards:
+```
+classFactories
+    .Where(x => excludedTypes.Contains(x.Key))
+    .ToList()
+    .ForEach(x => classFactories.Remove(x.Key));
+```
+
+Or, you can replace a specific type with a custom mock instance:
+```
+classFactories[typeof(IExpressionEvaluator)] = new ExpressionEvaluatorMock(Expression);
+
+```
+
 # Upgrade Parsers from 6.x to 7.0
 There have been some breaking changes.
 
@@ -84,6 +120,7 @@ The ExpressionEvaluator is a complete rewrite of the Parsers project, where and 
 * Built-in methods for String values: ToCamelCase, ToLower, ToPascalCase and ToUpper
 * Cast and Convert functions to cast and convert values to other types
 * Coalesce function, to get the first value that is not null
+* In language function: "A" in ("A", "B", "C")
 * ToString method to convert objects to string
 * IsNull function to check for null values
 * Optional support for reflection to get property values or invoke methods
@@ -100,3 +137,8 @@ Design decisions:
 * Allow duck-typing for properties and methods, with or without reflection
 * Without reflection, you have to write DotExpressionComponents to implement the members
 * Basic support for discoverability and validation, using a Parse method. This will return the status (Ok/Invalid) and the return type of the expression, as well as some details like the inner results, and the type that handles this expression
+
+# QueryEvaluator
+
+Queries are data transfer objects (C# classes) which you can fill with filters, paging information and sorting information.
+These queries can then be processed by a query processor, which can use any source like an in-memory one, RDBMS or external API.
