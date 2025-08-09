@@ -105,7 +105,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             {
                 foreach (var component in _components)
                 {
-                    var result = (await Result.WrapException(() => component.EvaluateAsync(context, token)).ConfigureAwait(false))
+                    var result = (await Result.WrapExceptionAsync(() => component.EvaluateAsync(context, token)).ConfigureAwait(false))
                             .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage);
 
                     if (result.Status != ResultStatus.Continue)
@@ -127,7 +127,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             {
                 foreach (var component in _components)
                 {
-                    var result = await Result.WrapException(async () => 
+                    var result = await Result.WrapExceptionAsync(async () => 
                         component is IExpressionComponent<T> typedComponent
                             ? (await typedComponent.EvaluateTypedAsync(context, token).ConfigureAwait(false))
                                 .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage)

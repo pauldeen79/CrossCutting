@@ -2771,7 +2771,7 @@ public class ResultTests
         }
     }
 
-    public class WrapException_Func_Task : ResultExtensionTests
+    public class WrapExceptionAsync_Func : ResultExtensionTests
     {
         [Fact]
         public async Task Returns_Correct_Result()
@@ -2780,7 +2780,7 @@ public class ResultTests
             var resultDelegate = new Func<Task<Result>>(() => Task.FromResult(Result.Success()));
 
             // Act
-            var result = await Result.WrapException(resultDelegate);
+            var result = await Result.WrapExceptionAsync(resultDelegate);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -2794,7 +2794,7 @@ public class ResultTests
             var resultDelegate = new Func<Task<Result>>(() => Task.FromException<Result>(new InvalidOperationException("Kaboom")));
 
             // Act
-            var result = await Result.WrapException(resultDelegate);
+            var result = await Result.WrapExceptionAsync(resultDelegate);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -2835,7 +2835,7 @@ public class ResultTests
         }
     }
 
-    public class WrapException_Typed_Func_Task : ResultExtensionTests
+    public class WrapExceptionAsync_Typed_Func : ResultExtensionTests
     {
         [Fact]
         public async Task Returns_Correct_Result()
@@ -2844,7 +2844,7 @@ public class ResultTests
             var resultDelegate = new Func<Task<Result<string>>>(() => Task.FromResult(Result.NoContent<string>()));
 
             // Act
-            var result = await Result.WrapException(resultDelegate);
+            var result = await Result.WrapExceptionAsync(resultDelegate);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NoContent);
@@ -2858,7 +2858,7 @@ public class ResultTests
             var resultDelegate = new Func<Task<Result<string>>>(() => Task.FromException<Result<string>>(new InvalidOperationException("Kaboom")));
 
             // Act
-            var result = await Result.WrapException(resultDelegate);
+            var result = await Result.WrapExceptionAsync(resultDelegate);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
