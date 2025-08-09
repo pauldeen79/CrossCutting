@@ -125,66 +125,6 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
         }
 
         [Fact]
-        public async Task Returns_Correct_Result_On_In()
-        {
-            // Arrange
-            var context = CreateContext("false == true");
-            var tokens = new List<ExpressionToken>
-            {
-                new ExpressionToken(ExpressionTokenType.Other, "false"),
-                new ExpressionToken(ExpressionTokenType.In),
-                new ExpressionToken(ExpressionTokenType.Other, "true"),
-                new ExpressionToken(ExpressionTokenType.EOF),
-            };
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context, tokens);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
-            evaluationResult.Status.ShouldBe(ResultStatus.Ok);
-            evaluationResult.Value.ShouldBe(false == true);
-        }
-
-        [Fact]
-        public async Task Returns_Correct_Result_On_NotIn()
-        {
-            // Arrange
-            var context = CreateContext("false != true");
-            var tokens = new List<ExpressionToken>
-            {
-                new ExpressionToken(ExpressionTokenType.Other, "false"),
-                new ExpressionToken(ExpressionTokenType.NotIn),
-                new ExpressionToken(ExpressionTokenType.Other, "true"),
-                new ExpressionToken(ExpressionTokenType.EOF),
-            };
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context, tokens);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
-            evaluationResult.Status.ShouldBe(ResultStatus.Ok);
-            evaluationResult.Value.ShouldBe(false != true);
-        }
-
-        [Fact]
         public async Task Returns_Correct_Result_On_Less()
         {
             // Arrange
