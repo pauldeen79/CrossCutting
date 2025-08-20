@@ -380,13 +380,13 @@ public class ResultDictionaryExtensionsTests
         }
     }
 
-    public class OnSuccessAsync_Task_SuccessDelegate_NonGeneric
+    public class OnSuccessAsync_SuccessDelegate_NonGeneric
     {
         [Fact]
         public async Task Returns_First_Non_Successful_Result_When_Present()
         {
             // Arrange
-            var sut = new ResultDictionaryBuilder<string>()
+            var sut = new ResultDictionaryBuilder()
                 .Add("Step1", GenericDelegate)
                 .Add("Step2", GenericErrorDelegate)
                 .Add("Step3", NonGenericDelegate)
@@ -424,7 +424,7 @@ public class ResultDictionaryExtensionsTests
         }
     }
 
-    public class OnSuccessAsync_Task_SuccessDelegate_Generic
+    public class OnSuccessAsync_SuccessDelegate_Generic
     {
         [Fact]
         public async Task Returns_First_Non_Successful_Result_When_Present()
@@ -451,7 +451,7 @@ public class ResultDictionaryExtensionsTests
         public async Task Returns_Result_From_Delegate_When_All_Results_Are_Successful()
         {
             // Arrange
-            var sut = new ResultDictionaryBuilder()
+            var sut = new ResultDictionaryBuilder<string>()
                 .Add("Step1", GenericDelegate)
                 .Add("Step2", GenericDelegate)
                 .Add("Step3", NonGenericDelegate)
