@@ -214,7 +214,7 @@ internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
             .Add(Constants.RightExpression, condition.RightExpression.EvaluateAsync(context, token))
             .Build()
             .ConfigureAwait(false))
-            .OnSuccess(async results => await condition.Operator
+            .OnSuccessAsync(async results => await condition.Operator
                 .EvaluateAsync(results.GetValue<object?>(Constants.LeftExpression), results.GetValue<object?>(Constants.RightExpression), condition.StringComparison, token)
                 .ConfigureAwait(false))
             .ConfigureAwait(false);

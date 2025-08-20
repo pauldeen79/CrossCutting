@@ -86,7 +86,13 @@ public static class ResultDictionaryExtensions
         };
     }
 
-    public static Task<Result> OnSuccess(this IReadOnlyDictionary<string, Result> resultDictionary, Func<IReadOnlyDictionary<string, Result>, Task<Result>> successDelegate)
+    public static Result OnSuccess<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, Action<IReadOnlyDictionary<string, Result<T>>> successDelegate)
+        => resultDictionary.OnSuccess(_ => { successDelegate(resultDictionary); return Result.Success(); });
+
+    public static Result OnSuccess(this IReadOnlyDictionary<string, Result> resultDictionary, Action<IReadOnlyDictionary<string, Result>> successDelegate)
+        => resultDictionary.OnSuccess(_ => { successDelegate(resultDictionary); return Result.Success(); });
+
+    public static Task<Result> OnSuccessAsync(this IReadOnlyDictionary<string, Result> resultDictionary, Func<IReadOnlyDictionary<string, Result>, Task<Result>> successDelegate)
     {
         successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
@@ -99,7 +105,7 @@ public static class ResultDictionaryExtensions
         };
     }
 
-    public static Task<Result<T>> OnSuccess<T>(this IReadOnlyDictionary<string, Result> resultDictionary, Func<IReadOnlyDictionary<string, Result>, Task<Result<T>>> successDelegate)
+    public static Task<Result<T>> OnSuccessAsync<T>(this IReadOnlyDictionary<string, Result> resultDictionary, Func<IReadOnlyDictionary<string, Result>, Task<Result<T>>> successDelegate)
     {
         successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
@@ -112,11 +118,31 @@ public static class ResultDictionaryExtensions
         };
     }
 
-    public static Result OnSuccess<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, Action<IReadOnlyDictionary<string, Result<T>>> successDelegate)
-        => resultDictionary.OnSuccess(_ => { successDelegate(resultDictionary); return Result.Success(); });
+    public static async Task<Result> OnSuccessAsync<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, Func<IReadOnlyDictionary<string, Result<T>>, Task<Result>> successDelegate)
+    {
+        successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
-    public static Result OnSuccess(this IReadOnlyDictionary<string, Result> resultDictionary, Action<IReadOnlyDictionary<string, Result>> successDelegate)
-        => resultDictionary.OnSuccess(_ => { successDelegate(resultDictionary); return Result.Success(); });
+        var error = resultDictionary.GetError();
+
+        return error switch
+        {
+            not null => error,
+            _ => await successDelegate(resultDictionary).ConfigureAwait(false)
+        };
+    }
+
+    public static async Task<Result<T>> OnSuccessAsync<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, Func<IReadOnlyDictionary<string, Result<T>>, Task<Result<T>>> successDelegate)
+    {
+        successDelegate = ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        var error = resultDictionary.GetError();
+
+        return error switch
+        {
+            not null => error,
+            _ => await successDelegate(resultDictionary).ConfigureAwait(false)
+        };
+    }
 
     public static IReadOnlyDictionary<string, Result<T>> OnFailure<T>(this IReadOnlyDictionary<string, Result<T>> resultDictionary, Action<Result<T>> errorDelegate)
     {

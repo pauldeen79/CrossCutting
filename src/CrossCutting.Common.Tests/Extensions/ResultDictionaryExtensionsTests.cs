@@ -252,7 +252,7 @@ public class ResultDictionaryExtensionsTests
         }
     }
 
-    public class OnSuccessNonGenericToGeneric_Task : ResultDictionaryExtensionsTests
+    public class OnSuccessAsync_NonGenericToGeneric : ResultDictionaryExtensionsTests
     {
         [Fact]
         public async Task Returns_First_Non_Successful_Result_When_Present()
@@ -265,7 +265,7 @@ public class ResultDictionaryExtensionsTests
                 .Build();
 
             // Act
-            var result = await sut.OnSuccess(results => Task.FromResult(Result.Continue<string>()));
+            var result = await sut.OnSuccessAsync(results => Task.FromResult(Result.Continue<string>()));
 
             // Assert
             result.ShouldNotBeNull();
@@ -284,13 +284,14 @@ public class ResultDictionaryExtensionsTests
                 .Build();
 
             // Act
-            var result = await sut.OnSuccess(results => Task.FromResult(Result.Continue<string>()));
+            var result = await sut.OnSuccessAsync(results => Task.FromResult(Result.Continue<string>()));
 
             // Assert
             result.ShouldNotBeNull();
             result.Status.ShouldBe(ResultStatus.Continue);
         }
     }
+
     public class OnSuccessGenericAction : ResultDictionaryExtensionsTests
     {
         [Fact]
@@ -371,6 +372,94 @@ public class ResultDictionaryExtensionsTests
 
             // Act
             var result = sut.OnSuccess(results => { counter++; });
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            counter.ShouldBe(1);
+        }
+    }
+
+    public class OnSuccessAsync_SuccessDelegate_NonGeneric
+    {
+        [Fact]
+        public async Task Returns_First_Non_Successful_Result_When_Present()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder<string>()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericErrorDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+            var counter = 0;
+
+            // Act
+            var result = await sut.OnSuccessAsync(async results => { return await Task.Run(() => { counter++; return Result.Success(); }).ConfigureAwait(false); });
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+            counter.ShouldBe(0);
+        }
+
+        [Fact]
+        public async Task Returns_Result_From_Delegate_When_All_Results_Are_Successful()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder<string>()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+            var counter = 0;
+
+            // Act
+            var result = await sut.OnSuccessAsync(async results => { return await Task.Run(() => { counter++; return Result.Success(); }).ConfigureAwait(false); });
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            counter.ShouldBe(1);
+        }
+    }
+
+    public class OnSuccessAsync_SuccessDelegate_Generic
+    {
+        [Fact]
+        public async Task Returns_First_Non_Successful_Result_When_Present()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder<string>()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericErrorDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+            var counter = 0;
+
+            // Act
+            var result = await sut.OnSuccessAsync(async results => { return await Task.Run(() => { counter++; return Result.Success(string.Empty); }).ConfigureAwait(false); });
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+            counter.ShouldBe(0);
+        }
+
+        [Fact]
+        public async Task Returns_Result_From_Delegate_When_All_Results_Are_Successful()
+        {
+            // Arrange
+            var sut = new ResultDictionaryBuilder<string>()
+                .Add("Step1", GenericDelegate)
+                .Add("Step2", GenericDelegate)
+                .Add("Step3", NonGenericDelegate)
+                .Build();
+            var counter = 0;
+
+            // Act
+            var result = await sut.OnSuccessAsync(async results => { return await Task.Run(() => { counter++; return Result.Success(string.Empty); }).ConfigureAwait(false); });
 
             // Assert
             result.ShouldNotBeNull();

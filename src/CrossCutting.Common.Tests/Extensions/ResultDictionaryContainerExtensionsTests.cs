@@ -119,7 +119,7 @@ public class ResultDictionaryContainerExtensionsTests
         }
     }
 
-    public class OnSuccessNonGeneric_Task : ResultDictionaryContainerExtensionsTests
+    public class OnSuccessNonGenericAsync : ResultDictionaryContainerExtensionsTests
     {
         [Fact]
         public async Task Returns_First_Non_Successful_Result_When_Present()
@@ -132,7 +132,7 @@ public class ResultDictionaryContainerExtensionsTests
                 .Build());
 
             // Act
-            var result = await sut.OnSuccess(results => Task.FromResult(Result.Success()));
+            var result = await sut.OnSuccessAsync(results => Task.FromResult(Result.Success()));
 
             // Assert
             result.ShouldNotBeNull();
@@ -163,7 +163,7 @@ public class ResultDictionaryContainerExtensionsTests
         }
     }
 
-    public class OnSuccessNonGenericToGeneric_Task : ResultDictionaryContainerExtensionsTests
+    public class OnSuccessNonGenericToGenericAsync : ResultDictionaryContainerExtensionsTests
     {
         [Fact]
         public async Task Returns_First_Non_Successful_Result_When_Present()
@@ -176,7 +176,7 @@ public class ResultDictionaryContainerExtensionsTests
                 .Build());
 
             // Act
-            var result = await sut.OnSuccess(results => Task.FromResult(Result.Continue<string>()));
+            var result = await sut.OnSuccessAsync(results => Task.FromResult(Result.Continue<string>()));
 
             // Assert
             result.ShouldNotBeNull();
