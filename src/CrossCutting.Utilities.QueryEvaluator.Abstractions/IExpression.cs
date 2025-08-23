@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Abstractions;
 
-public partial interface IExpression
+public partial interface IExpression : IEvaluatable
 {
-    Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token);
 }
