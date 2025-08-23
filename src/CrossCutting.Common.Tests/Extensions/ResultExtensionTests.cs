@@ -719,6 +719,66 @@ public class ResultExtensionTests
             result.Status.ShouldBe(ResultStatus.Error);
             success.ShouldBeFalse();
         }
+
+        [Fact]
+        public void Func_With_Arguments_To_Different_Type_Runs_Success_Action_On_Successful_Result()
+        {
+            // Arrange
+            var sut = Result.Continue();
+            var success = false;
+
+            // Act
+            var result = sut.OnSuccess(_ => Result.Continue<int>().Then(() => success = true));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+            success.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void Func_With_Arguments_To_Different_Type_Does_Nothing_On_Non_Successful_Result()
+        {
+            // Arrange
+            var sut = Result.Error("Kaboom");
+            var success = false;
+
+            // Act
+            var result = sut.OnSuccess(_ => Result.Continue<int>().Then(() => success = true));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            success.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void Func_With_Arguments_Different_Type_Runs_Success_Action_On_Successful_Result()
+        {
+            // Arrange
+            var sut = Result.Continue<string>();
+            var success = false;
+
+            // Act
+            var result = sut.OnSuccess(_ => Result.Continue<int>().Then(() => success = true));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+            success.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void Func_With_Arguments_Different_Type_Does_Nothing_On_Non_Successful_Result()
+        {
+            // Arrange
+            var sut = Result.Error<string>("Kaboom");
+            var success = false;
+
+            // Act
+            var result = sut.OnSuccess(_ => Result.Continue<int>().Then(() => success = true));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            success.ShouldBeFalse();
+        }
     }
 
     public class OnSuccessAsync : ResultExtensionTests

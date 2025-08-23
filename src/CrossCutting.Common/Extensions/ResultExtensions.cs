@@ -250,6 +250,30 @@ public static class ResultExtensions
         return instance;
     }
 
+    public static Result<TTarget> OnSuccess<TTarget>(this Result instance, Func<Result, Result<TTarget>> successDelegate)
+    {
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        if (instance.IsSuccessful())
+        {
+            return successDelegate(instance);
+        }
+
+        return Result.FromExistingResult<TTarget>(instance);
+    }
+
+    public static Result<TTarget> OnSuccess<TSource, TTarget>(this Result<TSource> instance, Func<Result<TSource>, Result<TTarget>> successDelegate)
+    {
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        if (instance.IsSuccessful())
+        {
+            return successDelegate(instance);
+        }
+
+        return Result.FromExistingResult<TTarget>(instance);
+    }
+
     public static Task<T> OnSuccessAsync<T>(this T instance, Func<Task<T>> successDelegate)
         where T : Result
     {
