@@ -26,9 +26,9 @@ public partial record PropertyNameExpression
         var property = valueResult.Value!.GetType().GetProperty(PropertyName, BindingFlags.Instance | BindingFlags.Public);
         if (property is null)
         {
-            return Result.Invalid<object?>($"Type {valueResult.GetType().FullName} does not contain property {PropertyName}");
+            return Result.Invalid<object?>($"Type {valueResult.Value.GetType().FullName} does not contain property {PropertyName}");
         }
 
-        return Result.WrapException(() => Result.Success<object?>(property.GetValue(contextValueResult.Value)));
+        return Result.WrapException(() => Result.Success<object?>(property.GetValue(valueResult.Value)));
     }
 }

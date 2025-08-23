@@ -32,7 +32,8 @@ public abstract class TestBase
             .GetCurrentDateTime()
             .Returns(CurrentDateTime);
 
-        // Initialize the expression evaluator on the DataProvider. (needs to be done after initializing class factories, because we need the expression evaluator)
+        // Initialize the expression evaluator on the DataProvider
+        // This nneeds to be done after initializing class factories, because we need the expression evaluator
         _dataProviderMock = new DataProviderMock(Evaluator, () => _sourceData);
         ClassFactories.Add(typeof(IDataProvider), _dataProviderMock);
     }

@@ -11,3 +11,13 @@ internal sealed class MyEntity
     public string Property1 { get; }
     public string Property2 { get; }
 }
+
+internal sealed class MyNestedEntity
+{
+    public MyNestedEntity(MyEntity property)
+    {
+        Property = property;
+    }
+
+    public MyEntity Property { get; }
+}

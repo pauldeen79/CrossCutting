@@ -83,6 +83,27 @@ public sealed class IntegrationTests : TestBase
     }
 
     [Fact]
+    public async Task Can_Use_Nested_Property_In_Query()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new EqualConditionBuilder()
+                .WithFirstExpression(new PropertyNameExpressionBuilder(new PropertyNameExpressionBuilder(nameof(MyNestedEntity.Property)), nameof(MyEntity.Property1)))
+                .WithSecondExpression(new LiteralExpressionBuilder("A")))
+            .Build();
+
+        InitializeMock([new MyNestedEntity(new MyEntity("A", "B"))]);
+
+        // Act
+        var result = await QueryProcessor.FindOneAsync<MyNestedEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        result.Value.Property.Property2.ShouldBe("B");
+    }
+
+    [Fact]
     public void Can_Parse_Query()
     {
         // Arrange
