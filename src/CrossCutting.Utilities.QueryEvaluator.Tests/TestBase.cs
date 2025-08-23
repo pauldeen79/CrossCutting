@@ -3,6 +3,7 @@
 public abstract class TestBase
 {
     private readonly DataProviderMock _dataProviderMock;
+    private IEnumerable<object> _sourceData = Enumerable.Empty<object>();
 
     protected IDictionary<Type, object?> ClassFactories { get; }
     protected IQueryProcessor QueryProcessor => ClassFactories.GetOrCreate<IQueryProcessor>(ClassFactory);
@@ -13,12 +14,10 @@ public abstract class TestBase
 
     protected TestBase()
     {
-        _dataProviderMock = new DataProviderMock();
         var excludedTypes = new Type[] { typeof(IDateTimeProvider) };
         ClassFactories = new ServiceCollection()
             .AddExpressionEvaluator()
             .AddQueryEvaluatorInMemory()
-            .AddSingleton<IDataProvider>(_dataProviderMock)
             .Where(sd => !excludedTypes.Contains(sd.ServiceType))
             .GroupBy(sd => sd.ServiceType)
             .ToDictionary(
@@ -32,6 +31,10 @@ public abstract class TestBase
         DateTimeProvider
             .GetCurrentDateTime()
             .Returns(CurrentDateTime);
+
+        // Initialize the expression evaluator on the DataProvider. (needs to be done after initializing class factories, because we need the expression evaluator)
+        _dataProviderMock = new DataProviderMock(Evaluator, () => _sourceData);
+        ClassFactories.Add(typeof(IDataProvider), _dataProviderMock);
     }
 
     protected ExpressionEvaluatorContext CreateContext(
@@ -70,8 +73,7 @@ public abstract class TestBase
 
     protected void InitializeMock<T>(T[] items)
     {
-        _dataProviderMock.SourceData = items.Cast<object>().ToArray();
-        _dataProviderMock.CreateContextDelegate = item => CreateContext("Dummy", item);
+        _sourceData = items.Cast<object>().ToArray();
     }
 }
 
