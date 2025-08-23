@@ -15,10 +15,18 @@ public partial record PropertyNameExpression
             return contextValueResult;
         }
 
-        var property = contextValueResult.Value!.GetType().GetProperty(PropertyName, BindingFlags.Instance | BindingFlags.Public);
+        var valueResult = (await Expression.EvaluateAsync(context, token)
+            .ConfigureAwait(false))
+            .EnsureNotNull("Expression evaluation resulted in null");
+        if (!valueResult.IsSuccessful())
+        {
+            return valueResult;
+        }
+
+        var property = valueResult.Value!.GetType().GetProperty(PropertyName, BindingFlags.Instance | BindingFlags.Public);
         if (property is null)
         {
-            return Result.Invalid<object?>($"Type {contextValueResult.Value.GetType().FullName} does not contain property {PropertyName}");
+            return Result.Invalid<object?>($"Type {valueResult.GetType().FullName} does not contain property {PropertyName}");
         }
 
         return Result.WrapException(() => Result.Success<object?>(property.GetValue(contextValueResult.Value)));

@@ -8,5 +8,6 @@ global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
 global using CrossCutting.Utilities.ExpressionEvaluator;
 global using CrossCutting.Utilities.Operators;
+global using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains;

@@ -10,6 +10,33 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Core.Expressions
 {
+    public partial record ContextExpression : CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
+    {
+        public ContextExpression() : base()
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.ContextExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.ContextExpression entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Builders.ExpressionBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.ContextExpressionBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.ContextExpressionBuilder(this);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
     public partial record DelegateExpression : CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
     {
         public System.Func<object?> Value
@@ -84,9 +111,16 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Expressions
             get;
         }
 
-        public PropertyNameExpression(string propertyName) : base()
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression Expression
+        {
+            get;
+        }
+
+        public PropertyNameExpression(string propertyName, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression expression) : base()
         {
             this.PropertyName = propertyName;
+            this.Expression = expression;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
