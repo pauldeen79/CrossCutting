@@ -101,7 +101,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return context.Validate<object?>()
-            .OnSuccess(async () =>
+            .OnSuccessAsync(async () =>
             {
                 foreach (var component in _components)
                 {
@@ -123,7 +123,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return context.Validate<T>()
-            .OnSuccess(async () =>
+            .OnSuccessAsync(async () =>
             {
                 foreach (var component in _components)
                 {

@@ -237,19 +237,6 @@ public static class ResultExtensions
         return instance;
     }
 
-    public static Task<T> OnSuccess<T>(this T instance, Func<Task<T>> successDelegate)
-        where T : Result
-    {
-        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
-
-        if (instance.IsSuccessful())
-        {
-            return successDelegate();
-        }
-
-        return Task.FromResult(instance);
-    }
-
     public static T OnSuccess<T>(this T instance, Func<T, T> successDelegate)
         where T : Result
     {
@@ -263,7 +250,20 @@ public static class ResultExtensions
         return instance;
     }
 
-    public static Task<T> OnSuccess<T>(this T instance, Func<T, Task<T>> successDelegate)
+    public static Task<T> OnSuccessAsync<T>(this T instance, Func<Task<T>> successDelegate)
+        where T : Result
+    {
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        if (instance.IsSuccessful())
+        {
+            return successDelegate();
+        }
+
+        return Task.FromResult(instance);
+    }
+
+    public static Task<T> OnSuccessAsync<T>(this T instance, Func<T, Task<T>> successDelegate)
         where T : Result
     {
         ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
@@ -274,6 +274,30 @@ public static class ResultExtensions
         }
 
         return Task.FromResult(instance);
+    }
+
+    public static Task<Result<TTarget>> OnSuccessAsync<TTarget>(this Result instance, Func<Result, Task<Result<TTarget>>> successDelegate)
+    {
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        if (instance.IsSuccessful())
+        {
+            return successDelegate(instance);
+        }
+
+        return Task.FromResult(Result.FromExistingResult<TTarget>(instance));
+    }
+
+    public static Task<Result<TTarget>> OnSuccessAsync<TSource, TTarget>(this Result<TSource> instance, Func<Result<TSource>, Task<Result<TTarget>>> successDelegate)
+    {
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        if (instance.IsSuccessful())
+        {
+            return successDelegate(instance);
+        }
+
+        return Task.FromResult(Result.FromExistingResult<TTarget>(instance));
     }
 
     public static Result IgnoreNotFound(this Result instance)

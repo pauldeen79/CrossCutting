@@ -719,16 +719,19 @@ public class ResultExtensionTests
             result.Status.ShouldBe(ResultStatus.Error);
             success.ShouldBeFalse();
         }
+    }
 
+    public class OnSuccessAsync : ResultExtensionTests
+    {
         [Fact]
-        public async Task Func_No_Arguments_Async_Runs_Success_Action_On_Successful_Result_No_Success_Delegate()
+        public async Task Func_No_Arguments_Runs_Success_Action_On_Successful_Resul()
         {
             // Arrange
             var sut = Result.Success();
             var success = false;
 
             // Act
-            var result = await sut.OnSuccess(() => Task.FromResult(Result.Continue().Then(() => success = true)));
+            var result = await sut.OnSuccessAsync(() => Task.FromResult(Result.Continue().Then(() => success = true)));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -736,14 +739,14 @@ public class ResultExtensionTests
         }
 
         [Fact]
-        public async Task Func_No_Arguments_Async_Does_Nothing_On_Non_Successful_Result_No_Success_Delegate()
+        public async Task Func_No_Arguments_Does_Nothing_On_Non_Successful_Result()
         {
             // Arrange
             var sut = Result.Error("Kaboom");
             var success = false;
 
             // Act
-            var result = await sut.OnSuccess(() => Task.FromResult(Result.Continue().Then(() => success = true)));
+            var result = await sut.OnSuccessAsync(() => Task.FromResult(Result.Continue().Then(() => success = true)));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -751,14 +754,14 @@ public class ResultExtensionTests
         }
 
         [Fact]
-        public async Task Func_With_Arguments_Async_Runs_Success_Action_On_Successful_Result_No_Success_Delegate()
+        public async Task Func_With_Arguments_Runs_Success_Action_On_Successful_Result()
         {
             // Arrange
             var sut = Result.Success();
             var success = false;
 
             // Act
-            var result = await sut.OnSuccess(_ => Task.FromResult(Result.Continue().Then(() => success = true)));
+            var result = await sut.OnSuccessAsync(_ => Task.FromResult(Result.Continue().Then(() => success = true)));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -766,14 +769,74 @@ public class ResultExtensionTests
         }
 
         [Fact]
-        public async Task Func_With_Arguments_Async_Does_Nothing_On_Non_Successful_Result_No_Success_Delegate()
+        public async Task Func_With_Arguments_Does_Nothing_On_Non_Successful_Result()
         {
             // Arrange
             var sut = Result.Error("Kaboom");
             var success = false;
 
             // Act
-            var result = await sut.OnSuccess(_ => Task.FromResult(Result.Continue().Then(() => success = true)));
+            var result = await sut.OnSuccessAsync(_ => Task.FromResult(Result.Continue().Then(() => success = true)));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            success.ShouldBeFalse();
+        }
+
+        [Fact]
+        public async Task Func_With_Arguments_To_Different_Type_Runs_Success_Action_On_Successful_Result()
+        {
+            // Arrange
+            var sut = Result.Continue();
+            var success = false;
+
+            // Act
+            var result = await sut.OnSuccessAsync(_ => Task.FromResult(Result.Continue<int>().Then(() => success = true)));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+            success.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task Func_With_Arguments_To_Different_Type_Does_Nothing_On_Non_Successful_Result()
+        {
+            // Arrange
+            var sut = Result.Error("Kaboom");
+            var success = false;
+
+            // Act
+            var result = await sut.OnSuccessAsync(_ => Task.FromResult(Result.Continue<int>().Then(() => success = true)));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            success.ShouldBeFalse();
+        }
+
+        [Fact]
+        public async Task Func_With_Arguments_Different_Type_Runs_Success_Action_On_Successful_Result()
+        {
+            // Arrange
+            var sut = Result.Continue<string>();
+            var success = false;
+
+            // Act
+            var result = await sut.OnSuccessAsync(_ => Task.FromResult(Result.Continue<int>().Then(() => success = true)));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+            success.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task Func_With_Arguments_Different_Type_Does_Nothing_On_Non_Successful_Result()
+        {
+            // Arrange
+            var sut = Result.Error<string>("Kaboom");
+            var success = false;
+
+            // Act
+            var result = await sut.OnSuccessAsync(_ => Task.FromResult(Result.Continue<int>().Then(() => success = true)));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
