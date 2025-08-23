@@ -6,15 +6,6 @@ public partial record PropertyNameExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var contextValueResult = (await context.State
-            .GetValueAsync(Constants.Context)
-            .ConfigureAwait(false)).EnsureValue();
-
-        if (!contextValueResult.IsSuccessful())
-        {
-            return contextValueResult;
-        }
-
         var valueResult = (await Expression.EvaluateAsync(context, token)
             .ConfigureAwait(false))
             .EnsureNotNull("Expression evaluation resulted in null");
