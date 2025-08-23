@@ -20,7 +20,6 @@ public class MyAssemblyInfoContextService : IAssemblyInfoContextService
         "CrossCutting.Utilities.Operators",
         "Microsoft.Extensions.DependencyInjection",
         "Microsoft.Extensions.DependencyInjection.Abstractions",
-        "ClassFramework.CsharpExpressionCreator",
         "ClassFramework.Domain",
         "ClassFramework.Pipelines",
         "ClassFramework.TemplateFramework",

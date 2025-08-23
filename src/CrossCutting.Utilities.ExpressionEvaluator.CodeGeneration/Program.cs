@@ -13,6 +13,7 @@ internal static class Program
             var x when x.EndsWith($"{Constants.ProjectName}.CodeGeneration") => Path.Combine(currentDirectory, @"../"),
             _ => Path.Combine(currentDirectory, @"../../../../")
         };
+        var generators = typeof(Program).GetAssemblyGeneratorTypes<ExpressionEvaluatorCSharpClassBase>();
         var services = new ServiceCollection()
             .AddExpressionEvaluator()
             .AddClassFrameworkPipelines()
@@ -22,16 +23,8 @@ internal static class Program
             .AddTemplateFrameworkRuntime()
             .AddCsharpExpressionDumper()
             .AddClassFrameworkTemplates()
+            .AddClassFrameworkCodeGenerators(generators)
             .AddScoped<IAssemblyInfoContextService, MyAssemblyInfoContextService>();
-
-        var generators = typeof(Program).Assembly.GetExportedTypes()
-            .Where(x => !x.IsAbstract && x.BaseType == typeof(ExpressionEvaluatorCSharpClassBase))
-            .ToArray();
-
-        foreach (var type in generators)
-        {
-            services.AddScoped(type);
-        }
 
         using var serviceProvider = services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();
