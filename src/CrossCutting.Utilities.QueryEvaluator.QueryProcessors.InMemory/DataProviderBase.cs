@@ -35,11 +35,7 @@ public abstract class DataProviderBase : IDataProvider
         return Result.Success<IEnumerable<TResult>>(results);
     }
 
-    private ExpressionEvaluatorContext CreateContext(
-        object? state,
-        int currentRecursionLevel = 1,
-        ExpressionEvaluatorContext? parentContext = null,
-        ExpressionEvaluatorSettingsBuilder? settings = null)
+    private ExpressionEvaluatorContext CreateContext(object? state)
     {
         IReadOnlyDictionary<string, Task<Result<object?>>>? dict = null;
         if (state is not null)
@@ -49,16 +45,8 @@ public abstract class DataProviderBase : IDataProvider
                 .BuildDeferred();
         }
 
-        return CreateContext("Dummy", dict, currentRecursionLevel, parentContext, settings);
+        return new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, dict);
     }
-
-    private ExpressionEvaluatorContext CreateContext(
-        string? expression,
-        IReadOnlyDictionary<string, Task<Result<object?>>>? state = null,
-        int currentRecursionLevel = 1,
-        ExpressionEvaluatorContext? parentContext = null,
-        ExpressionEvaluatorSettingsBuilder? settings = null)
-            => new ExpressionEvaluatorContext(expression, settings ?? new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, state, currentRecursionLevel, parentContext);
 
     private static async Task<Result<bool>> IsItemValid(IQuery query, ExpressionEvaluatorContext context)
     {
