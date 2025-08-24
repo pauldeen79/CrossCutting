@@ -139,7 +139,7 @@ public class DbCommandExtensionsTests
 
         // Assert
         result.ShouldNotBeNull();
-        result?.Property.ShouldBe("test");
+        result.Property.ShouldBe("test");
     }
 
     [Fact]
@@ -158,7 +158,7 @@ public class DbCommandExtensionsTests
 
         // Assert
         result.ShouldNotBeNull();
-        result?.Property.ShouldBe("test");
+        result.Property.ShouldBe("test");
     }
 
     [Fact]

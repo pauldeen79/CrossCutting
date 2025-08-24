@@ -26,7 +26,7 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
 
         // Assert
         actual.ShouldNotBeNull();
-        actual?.Property.ShouldBe("test");
+        actual.Property.ShouldBe("test");
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
 
         // Assert
         actual.ShouldNotBeNull();
-        actual?.Property.ShouldBe("test");
+        actual.Property.ShouldBe("test");
     }
 
     [Fact]
