@@ -17,7 +17,7 @@ public partial record PropertyNameExpression
                     return Result.Invalid<object?>($"Type {valueResult.Value.GetType().FullName} does not contain property {PropertyName}");
                 }
 
-                return Result.WrapException(() => Result.Success<object?>(property.GetValue(valueResult.Value)));
+                return Result.WrapException<object?>(() => property.GetValue(valueResult.Value));
             });
     }
 }

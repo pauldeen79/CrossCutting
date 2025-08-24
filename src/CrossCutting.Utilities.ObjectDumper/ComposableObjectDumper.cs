@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ObjectDumper;
 
-public class ComposableObjectDumper : IObjectDumperCallback
+public sealed class ComposableObjectDumper : IObjectDumperCallback
 {
     private readonly IObjectDumperPart[] _parts;
 
@@ -11,6 +11,9 @@ public class ComposableObjectDumper : IObjectDumperCallback
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
+        builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
+
+#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
             foreach (var part in _parts)
@@ -35,6 +38,7 @@ public class ComposableObjectDumper : IObjectDumperCallback
 
             return true;
         }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     IEnumerable<PropertyDescriptor> IObjectDumperCallback.GetProperties(object instance)

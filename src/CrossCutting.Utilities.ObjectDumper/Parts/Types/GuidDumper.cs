@@ -6,6 +6,8 @@ public class GuidDumper : IObjectDumperPart
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
+        builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
+
         if (instance is Guid guid)
         {
             builder.AddSingleValue(guid.ToString(null, CultureInfo.InvariantCulture), typeof(Guid));

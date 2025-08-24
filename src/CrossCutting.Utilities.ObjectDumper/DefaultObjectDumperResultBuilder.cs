@@ -26,9 +26,13 @@ public class DefaultObjectDumperResultBuilder : IObjectDumperResultBuilder
     }
 
     public void AddException(Exception exception)
-        => _builder
+    {
+        exception = ArgumentGuard.IsNotNull(exception, nameof(exception));
+
+        _builder
             .Append(exception.ToString().JsonQuote())
             .Append(exception.GetType().FullName.DumpTypeName());
+    }
 
     public void AddName(int indent, string name)
         => _builder
@@ -80,6 +84,8 @@ public class DefaultObjectDumperResultBuilder : IObjectDumperResultBuilder
 
     public void EndComplexType(bool first, int indent, Type instanceType)
     {
+        instanceType = ArgumentGuard.IsNotNull(instanceType, nameof(instanceType));
+
         if (!first)
         {
             _builder.AppendLine();
@@ -97,6 +103,8 @@ public class DefaultObjectDumperResultBuilder : IObjectDumperResultBuilder
 
     public void EndEnumerable(int indent, Type instanceType)
     {
+        instanceType = ArgumentGuard.IsNotNull(instanceType, nameof(instanceType));
+
         _builder.AppendLine();
 
         if (indent > 4)
