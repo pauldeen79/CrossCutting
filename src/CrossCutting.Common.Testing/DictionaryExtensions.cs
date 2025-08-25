@@ -34,17 +34,6 @@ public static class DictionaryExtensions
                     ?? throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
             }
 
-            if (returnValue is IEnumerable multipleItems)
-            {
-                var items = multipleItems.Cast<T>().ToArray();
-                if (items.Length == 0)
-                {
-                    throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
-                }
-
-                return items[0];
-            }
-
             return (T)returnValue;
         }
 
@@ -80,11 +69,6 @@ public static class DictionaryExtensions
                 return typeInstances;
             }
 
-            if (returnValue is IEnumerable multipleItems)
-            {
-                return multipleItems.Cast<T>().ToArray();
-            }
-            
             return [(T)returnValue];
         }
 
