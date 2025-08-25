@@ -1344,7 +1344,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             => (await new AsyncResultDictionaryBuilder()
                 .Add("Input", context.GetArgumentValueResultAsync<string>(0, "Input", token))
                 .Build().ConfigureAwait(false))
-                .OnSuccess(results => Result.Success<object?>(results.GetValue<string>("Input").ToUpperInvariant()));
+                .OnSuccess<object?>(results => results.GetValue<string>("Input").ToUpperInvariant());
     }
 
     [MemberName("MyTypedFunction")]
@@ -1358,7 +1358,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             => (await new AsyncResultDictionaryBuilder()
                 .Add("Input", context.GetArgumentValueResultAsync<string>(0, "Input", token))
                 .Build().ConfigureAwait(false))
-                .OnSuccess(results => Result.Success(results.GetValue<string>("Input").ToUpperInvariant()));
+                .OnSuccess(results => results.GetValue<string>("Input").ToUpperInvariant());
     }
 
     [MemberName("MyGenericFunction")]

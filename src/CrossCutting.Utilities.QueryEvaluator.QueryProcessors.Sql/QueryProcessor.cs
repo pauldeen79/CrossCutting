@@ -21,7 +21,7 @@ public class QueryProcessor : IQueryProcessor
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
         return await GetDatabaseCommandProvider<TResult>(query)
-            .OnSuccessAsync(async provider => Result.Success(await provider.FindManyAsync(CreateCommand(query, query.Limit.GetValueOrDefault()).DataCommand, cancellationToken).ConfigureAwait(false)))
+            .OnSuccessAsync(async provider => await provider.FindManyAsync(CreateCommand(query, query.Limit.GetValueOrDefault()).DataCommand, cancellationToken).ConfigureAwait(false))
             .ConfigureAwait(false);
     }
 

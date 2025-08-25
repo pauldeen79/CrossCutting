@@ -14,6 +14,6 @@ public class StringEndsWithMethod : IMethod
             .Add(Constants.Instance, context.GetInstanceValueResultAsync<string>(token))
             .Add(Constants.Expression, context.GetArgumentValueResultAsync<string>(0, Constants.Expression, token))
             .Build().ConfigureAwait(false))
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<string>(Constants.Instance).EndsWith(results.GetValue<string>(Constants.Expression), context.Context.Settings.StringComparison)));
+            .OnSuccess<object?>(results => results.GetValue<string>(Constants.Instance).EndsWith(results.GetValue<string>(Constants.Expression), context.Context.Settings.StringComparison));
     }
 }
