@@ -12,8 +12,7 @@ public abstract class TestBase
     protected IQueryProcessor SqlQueryProcessor => ClassFactoryDictionary.GetOrCreateMultiple<IQueryProcessor>(ClassFactory).OfType<QueryProcessors.Sql.QueryProcessor>().First();
     protected IDatabaseEntityRetrieverProvider DatabaseEntityRetrieverProvider => ClassFactoryDictionary.GetOrCreate<IDatabaseEntityRetrieverProvider>(ClassFactory);
     protected IDatabaseEntityRetriever<MyEntity> DatabaseEntityRetriever => ClassFactoryDictionary.GetOrCreate<IDatabaseEntityRetriever<MyEntity>>(ClassFactory);
-    protected IPagedResult<MyEntity> PagedResult { get; } = Substitute.For<IPagedResult<MyEntity>>(); //TODO: Find out why we cna't use ClassFactories.GetOrCreate
-    //protected IPagedResult<MyEntity> PagedResult => ClassFactoryDictionary.GetOrCreate<IPagedResult<MyEntity>>(ClassFactory);
+    protected IPagedResult<MyEntity> PagedResult => ClassFactoryDictionary.GetOrCreate<IPagedResult<MyEntity>>(ClassFactory);
     protected IPagedDatabaseCommandProvider<IQuery> PagedDatabaseCommandProvider => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseCommandProvider<IQuery>>(ClassFactory);
     protected IPagedDatabaseCommand PagedDatabaseCommand => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseCommand>(ClassFactory);
     protected IExpressionEvaluator Evaluator => ClassFactoryDictionary.GetOrCreate<IExpressionEvaluator>(ClassFactory);
