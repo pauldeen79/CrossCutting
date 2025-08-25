@@ -104,22 +104,20 @@ public sealed class InMemoryQueryProcessorTests : TestBase
     }
 
     [Fact]
-    public void Can_Parse_Query()
+    public async Task Can_Use_Brackets_And_Multiple_Operators_In_Query()
     {
         // Arrange
-        var sut = new SingleEntityQueryParser<SingleEntityQueryBuilder, PropertyNameExpressionBuilder>(() => new PropertyNameExpressionBuilder("MyProperty"));
+        var parser = new SingleEntityQueryParser<SingleEntityQueryBuilder, PropertyNameExpressionBuilder>(() => new PropertyNameExpressionBuilder("MyProperty"));
         var builder = new SingleEntityQueryBuilder();
+        var query = parser.Parse(builder, "(Property1 = \"A\" AND Property1 <> \"B\") OR Property1 = \"Z\"").Build();
+        InitializeMock(CreateData());
 
         // Act
-        var result = sut.Parse(builder, "Field = \"A\"");
+        var result = await InMemoryQueryProcessor.FindOneAsync<MyEntity>(query);
 
         // Assert
-        result.Conditions.Count.ShouldBe(1);
-        result.Conditions[0].ShouldBeOfType<EqualConditionBuilder>();
-        var equalConditionBuilder = (EqualConditionBuilder)result.Conditions[0];
-        equalConditionBuilder.FirstExpression.ShouldBeOfType<PropertyNameExpressionBuilder>();
-        ((PropertyNameExpressionBuilder)equalConditionBuilder.FirstExpression).PropertyName.ShouldBe("Field");
-        equalConditionBuilder.SecondExpression.ShouldBeOfType<LiteralExpressionBuilder>();
-        ((LiteralExpressionBuilder)equalConditionBuilder.SecondExpression).Value.ShouldBe("A");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        result.Value.Property1.ShouldBe("A");
     }
 }
