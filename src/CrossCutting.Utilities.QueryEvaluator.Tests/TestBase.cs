@@ -1,6 +1,4 @@
-﻿using NSubstitute;
-
-namespace CrossCutting.Utilities.QueryEvaluator.Tests;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests;
 
 public abstract class TestBase
 {
