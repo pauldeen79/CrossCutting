@@ -451,6 +451,23 @@ public record Result
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Result<T> WrapException<T>(Func<T> resultDelegate)
+    {
+        ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return Success(resultDelegate());
+        }
+        catch (Exception ex)
+        {
+            return Error<T>(ex, ExceptionOccured);
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static async Task<Result> WrapExceptionAsync(Func<Task<Result>> resultDelegate)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
@@ -476,6 +493,23 @@ public record Result
         try
         {
             return await resultDelegate().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            return Error<T>(ex, ExceptionOccured);
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static async Task<Result<T>> WrapExceptionAsync<T>(Func<Task<T>> resultDelegate)
+    {
+        ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return Success(await resultDelegate().ConfigureAwait(false));
         }
         catch (Exception ex)
         {

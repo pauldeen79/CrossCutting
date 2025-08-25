@@ -2803,7 +2803,7 @@ public class ResultTests
         }
     }
 
-    public class WrapException_Typed_Func : ResultExtensionTests
+    public class WrapException_Typed_Func_Result : ResultExtensionTests
     {
         [Fact]
         public void Returns_Correct_Result()
@@ -2835,7 +2835,39 @@ public class ResultTests
         }
     }
 
-    public class WrapExceptionAsync_Typed_Func : ResultExtensionTests
+    public class WrapException_Typed_Func : ResultExtensionTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var resultDelegate = new Func<string>(() => string.Empty);
+
+            // Act
+            var result = Result.WrapException(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Exception.ShouldBeNull();
+        }
+
+        [Fact]
+        public void Returns_Error_When_Exception_Occurs()
+        {
+            // Arrange
+            var resultDelegate = new Func<string>(() => throw new InvalidOperationException("Kaboom"));
+
+            // Act
+            var result = Result.WrapException(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
+            result.Exception.ShouldNotBeNull();
+        }
+    }
+
+    public class WrapExceptionAsync_Typed_Func_Result : ResultExtensionTests
     {
         [Fact]
         public async Task Returns_Correct_Result()
@@ -2856,6 +2888,38 @@ public class ResultTests
         {
             // Arrange
             var resultDelegate = new Func<Task<Result<string>>>(() => Task.FromException<Result<string>>(new InvalidOperationException("Kaboom")));
+
+            // Act
+            var result = await Result.WrapExceptionAsync(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
+            result.Exception.ShouldNotBeNull();
+        }
+    }
+
+    public class WrapExceptionAsync_Typed_Func : ResultExtensionTests
+    {
+        [Fact]
+        public async Task Returns_Correct_Result()
+        {
+            // Arrange
+            var resultDelegate = new Func<Task<string>>(() => Task.FromResult(string.Empty));
+
+            // Act
+            var result = await Result.WrapExceptionAsync(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Exception.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task Returns_Error_When_Exception_Occurs()
+        {
+            // Arrange
+            var resultDelegate = new Func<Task<string>>(() => Task.FromException<string>(new InvalidOperationException("Kaboom")));
 
             // Act
             var result = await Result.WrapExceptionAsync(resultDelegate);

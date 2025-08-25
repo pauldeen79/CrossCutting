@@ -30,6 +30,7 @@
     <ProjectReference Include="..\CrossCutting.Common.Testing\CrossCutting.Common.Testing.csproj" />
     <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator.QueryParsers\CrossCutting.Utilities.QueryEvaluator.QueryParsers.csproj" />
     <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory.csproj" />
+    <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.csproj" />
     <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator\CrossCutting.Utilities.QueryEvaluator.Core.csproj" />
   </ItemGroup>
 

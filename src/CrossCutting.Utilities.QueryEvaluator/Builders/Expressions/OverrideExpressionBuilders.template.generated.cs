@@ -10,6 +10,35 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
 {
+    public partial class ContextExpressionBuilder : ExpressionBaseBuilder<ContextExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Expressions.ContextExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
+    {
+        public ContextExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.ContextExpression source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+        }
+
+        public ContextExpressionBuilder() : base()
+        {
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Expressions.ContextExpression BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Expressions.ContextExpression();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Expressions.ContextExpression(ContextExpressionBuilder builder)
+        {
+            return builder.BuildTyped();
+        }
+    }
     public partial class DelegateExpressionBuilder : ExpressionBaseBuilder<DelegateExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Expressions.DelegateExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
     {
         private System.Func<object?> _value;
@@ -120,6 +149,8 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
     {
         private string _propertyName;
 
+        private CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder _expression;
+
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string PropertyName
         {
@@ -135,21 +166,38 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
             }
         }
 
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder Expression
+        {
+            get
+            {
+                return _expression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder>.Default.Equals(_expression!, value!);
+                _expression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Expression));
+            }
+        }
+
         public PropertyNameExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _propertyName = source.PropertyName;
+            _expression = source.Expression?.ToBuilder()!;
         }
 
         public PropertyNameExpressionBuilder() : base()
         {
             _propertyName = string.Empty;
+            _expression = default(CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression(PropertyName);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression(PropertyName, Expression?.Build()!);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder.Build()
@@ -163,6 +211,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
         {
             if (propertyName is null) throw new System.ArgumentNullException(nameof(propertyName));
             PropertyName = propertyName;
+            return this;
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.PropertyNameExpressionBuilder WithExpression(CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder expression)
+        {
+            if (expression is null) throw new System.ArgumentNullException(nameof(expression));
+            Expression = expression;
             return this;
         }
 

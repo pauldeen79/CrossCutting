@@ -137,14 +137,11 @@ Value 1|Value 2|Value 3";
         var firstRow = actual.FirstOrDefault();
 
         firstRow.ShouldNotBeNull();
-        if (firstRow is not null)
-        {
-            firstRow.IsSuccessful.ShouldBeTrue();
-            firstRow.ErrorMessages.ShouldBeEmpty();
+        firstRow.IsSuccessful.ShouldBeTrue();
+        firstRow.ErrorMessages.ShouldBeEmpty();
 
-            var contents = string.Join("|", firstRow.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
+        var contents = string.Join("|", firstRow.Values.Select(kvp => string.Format("{0};{1}", kvp.Key, kvp.Value)));
 
-            contents.ShouldBe($"{columnNames[0]};Value 1|{columnNames[1]};Value 2|{columnNames[2]};Value 3");
-        }
+        contents.ShouldBe($"{columnNames[0]};Value 1|{columnNames[1]};Value 2|{columnNames[2]};Value 3");
     }
 }

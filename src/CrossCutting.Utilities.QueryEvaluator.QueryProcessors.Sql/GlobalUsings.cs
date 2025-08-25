@@ -1,0 +1,10 @@
+﻿global using System.Collections.Generic;
+global using System.Threading;
+global using System.Threading.Tasks;
+global using CrossCutting.Common;
+global using CrossCutting.Common.Extensions;
+global using CrossCutting.Common.Results;
+global using CrossCutting.Data.Abstractions;
+global using CrossCutting.Utilities.QueryEvaluator.Abstractions;
+global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Abstractions;
+global using Microsoft.Extensions.DependencyInjection;

@@ -6,6 +6,8 @@ public class TypeDumper : IObjectDumperPart
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
+        builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
+
         if (instance is Type t)
         {
             builder.AddSingleValue(t.FullName.FixTypeName().ToString(), instance.GetType());

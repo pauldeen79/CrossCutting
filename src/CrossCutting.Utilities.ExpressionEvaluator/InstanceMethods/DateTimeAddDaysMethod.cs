@@ -16,6 +16,6 @@ public class DateTimeAddDaysMethod : IMethod
             .Add(Constants.Instance, context.GetInstanceValueResultAsync<DateTime>(token))
             .Add(DaysToAdd, context.GetArgumentValueResultAsync<int>(0, "DaysToAdd", token))
             .Build().ConfigureAwait(false))
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.Instance).AddDays(results.GetValue<int>(DaysToAdd))));
+            .OnSuccess<object?>(results => results.GetValue<DateTime>(Constants.Instance).AddDays(results.GetValue<int>(DaysToAdd)));
     }
 }

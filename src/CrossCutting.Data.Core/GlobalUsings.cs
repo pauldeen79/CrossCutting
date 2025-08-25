@@ -14,4 +14,3 @@ global using CrossCutting.Data.Core.CommandProviders;
 global using CrossCutting.Data.Core.Commands;
 global using CrossCutting.Data.Core.Extensions;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.DependencyInjection.Extensions;

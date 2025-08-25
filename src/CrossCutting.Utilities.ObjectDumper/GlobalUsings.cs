@@ -6,6 +6,7 @@ global using System.Globalization;
 global using System.Linq;
 global using System.Reflection;
 global using System.Text;
+global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Utilities.ObjectDumper.Contracts;
 global using CrossCutting.Utilities.ObjectDumper.Extensions;

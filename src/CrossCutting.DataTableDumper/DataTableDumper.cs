@@ -10,7 +10,7 @@ public class DataTableDumper<T>(IColumnNameProvider columnNameProvider, IColumnD
     {
         var builder = new StringBuilder();
         var columnNames = _columnNameProvider.Get<T>();
-        var columnLengths = GetColumnLengths(columnNames, data, escapeValue);
+        var columnLengths = GetColumnLengths(columnNames, data ?? Enumerable.Empty<T>(), escapeValue);
 
         builder.Append("|");
         foreach (var column in columnNames.Select((x, index) => new { Length = columnLengths[index], Name = x }))
@@ -21,7 +21,7 @@ public class DataTableDumper<T>(IColumnNameProvider columnNameProvider, IColumnD
         }
         builder.AppendLine();
 
-        foreach (var item in data)
+        foreach (var item in data ?? Enumerable.Empty<T>())
         {
             builder.Append("|");
             var columnData = _columnDataProvider.Get(item, escapeValue);

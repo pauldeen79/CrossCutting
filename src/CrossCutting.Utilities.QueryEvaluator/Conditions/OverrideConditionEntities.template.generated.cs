@@ -10,6 +10,57 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
 {
+    public partial record BetweenCondition : CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression SourceExpression
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression LowerBoundExpression
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression UpperBoundExpression
+        {
+            get;
+        }
+
+        public BetweenCondition(CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression sourceExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression lowerBoundExpression, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression upperBoundExpression, System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup) : base(combination, startGroup, endGroup)
+        {
+            this.SourceExpression = sourceExpression;
+            this.LowerBoundExpression = lowerBoundExpression;
+            this.UpperBoundExpression = upperBoundExpression;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.BetweenConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.BetweenCondition entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Builders.ConditionBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.BetweenConditionBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.BetweenConditionBuilder(this);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
     public partial record EqualCondition : CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition, CrossCutting.Utilities.QueryEvaluator.Abstractions.IDoubleExpressionContainer, CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]

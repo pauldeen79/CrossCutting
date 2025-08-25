@@ -34,8 +34,8 @@ public static class Parser
     }
 }
 
-public class ParseResult(DataTableDumper<ExpandoObject> dataTableDumper, List<ExpandoObject> list)
+public class ParseResult(DataTableDumper<ExpandoObject> dataTableDumper, IReadOnlyCollection<ExpandoObject> list)
 {
     public DataTableDumper<ExpandoObject> DataTableDumper { get; } = dataTableDumper;
-    public List<ExpandoObject> List { get; } = list;
+    public IReadOnlyCollection<ExpandoObject> List { get; } = list;
 }
