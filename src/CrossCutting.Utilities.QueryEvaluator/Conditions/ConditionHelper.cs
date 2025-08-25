@@ -3,8 +3,8 @@
 public static class ConditionHelper
 {
     public static Task<Result<bool>> EvaluateStringConditionAsync(
-        Abstractions.IExpression firstExpression,
-        Abstractions.IExpression secondExpression,
+        IExpression firstExpression,
+        IExpression secondExpression,
         ExpressionEvaluatorContext context,
         Func<string, string, bool> resultDelegate,
         CancellationToken token)
@@ -15,7 +15,7 @@ public static class ConditionHelper
                         : Result.Invalid<bool>("LeftValue and RightValue both need to be of type string"), token);
 
     public static async Task<Result<bool>> EvaluateObjectConditionAsync(
-        Abstractions.IExpression firstExpression,
+        IExpression firstExpression,
         ExpressionEvaluatorContext context,
         Func<object?, bool> resultDelegate,
         CancellationToken token)
@@ -32,8 +32,8 @@ public static class ConditionHelper
     }
 
     public static async Task<Result<bool>> EvaluateObjectConditionAsync(
-        Abstractions.IExpression firstExpression,
-        Abstractions.IExpression secondExpression,
+        IExpression firstExpression,
+        IExpression secondExpression,
         ExpressionEvaluatorContext context,
         Func<object?, object?, Result<bool>> resultDelegate,
         CancellationToken token)
