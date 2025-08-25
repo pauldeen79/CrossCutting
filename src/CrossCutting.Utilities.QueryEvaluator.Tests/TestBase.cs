@@ -9,7 +9,6 @@ public abstract class TestBase
     protected IQueryProcessor QueryProcessor => ClassFactories.GetOrCreate<IQueryProcessor>(ClassFactory);
     protected IExpressionEvaluator Evaluator => ClassFactories.GetOrCreate<IExpressionEvaluator>(ClassFactory);
     protected IDateTimeProvider DateTimeProvider => ClassFactories.GetOrCreate<IDateTimeProvider>(ClassFactory);
-    protected IDataProvider DataProvider => ClassFactories.GetOrCreate<IDataProvider>(ClassFactory);
     protected DateTime CurrentDateTime { get; }
 
     protected TestBase()
@@ -36,25 +35,6 @@ public abstract class TestBase
         // This nneeds to be done after initializing class factories, because we need the expression evaluator
         _dataProviderMock = new DataProviderMock(Evaluator, () => _sourceData);
         ClassFactories.Add(typeof(IDataProvider), _dataProviderMock);
-    }
-
-    protected ExpressionEvaluatorContext CreateContext(
-        string? expression,
-        object? state,
-        int currentRecursionLevel = 1,
-        ExpressionEvaluatorContext? parentContext = null,
-        IExpressionEvaluator? evaluator = null,
-        ExpressionEvaluatorSettingsBuilder? settings = null)
-    {
-        IReadOnlyDictionary<string, Task<Result<object?>>>? dict = null;
-        if (state is not null)
-        {
-            dict = new AsyncResultDictionaryBuilder<object?>()
-                .Add(Constants.Context, state)
-                .BuildDeferred();
-        }
-
-        return CreateContext(expression, dict, currentRecursionLevel, parentContext, evaluator, settings);
     }
 
     protected ExpressionEvaluatorContext CreateContext(
