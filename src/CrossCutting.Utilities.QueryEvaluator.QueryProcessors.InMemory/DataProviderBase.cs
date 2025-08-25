@@ -17,7 +17,13 @@ public abstract class DataProviderBase : IDataProvider
         where TResult : class
     {
         var results = new List<TResult>();
-        foreach (var item in GetSourceData().OfType<TResult>())
+        var sourceData = GetSourceData().OfType<TResult>().ToArray();
+        if (sourceData.Length == 0)
+        {
+            return Result.Continue<IEnumerable<TResult>>();
+        }
+
+        foreach (var item in sourceData)
         {
             var result = await IsItemValid(query, CreateContext(item)!).ConfigureAwait(false);
 
