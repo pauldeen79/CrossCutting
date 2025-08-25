@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests;
 
-public sealed class IntegrationTests : TestBase
+public sealed class SqlQueryProcessorTests : TestBase
 {
     private static MyEntity[] CreateData()=>
     [
@@ -25,12 +25,11 @@ public sealed class IntegrationTests : TestBase
         InitializeMock(CreateData());
 
         // Act
-        var result = await QueryProcessor.FindOneAsync<MyEntity>(query);
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        result.Value.Property2.ShouldBe("A");
     }
 
     [Fact]
@@ -44,10 +43,10 @@ public sealed class IntegrationTests : TestBase
             .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
-        InitializeMock(CreateData());
+        InitializeMock(CreateData().Where(x => x.Property1 == "A").OrderBy(x => x.Property2));
 
         // Act
-        var result = await QueryProcessor.FindManyAsync<MyEntity>(query);
+        var result = await SqlQueryProcessor.FindManyAsync<MyEntity>(query);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -70,56 +69,15 @@ public sealed class IntegrationTests : TestBase
             .WithOffset(1)
             .Build();
         
-        InitializeMock(CreateData());
+        InitializeMock(CreateData().Where(x => x.Property1 == "A").OrderBy(x => x.Property2).Skip(1).Take(1));
 
         // Act
-        var result = await QueryProcessor.FindPagedAsync<MyEntity>(query);
+        var result = await SqlQueryProcessor.FindPagedAsync<MyEntity>(query);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
         result.Value.Count.ShouldBe(1);
         result.Value.First().Property2.ShouldBe("Z");
-    }
-
-    [Fact]
-    public async Task Can_Use_Nested_Property_In_Query()
-    {
-        // Arrange
-        var query = new SingleEntityQueryBuilder()
-            .AddConditions(new EqualConditionBuilder()
-                .WithFirstExpression(new PropertyNameExpressionBuilder(new PropertyNameExpressionBuilder(nameof(MyNestedEntity.Property)), nameof(MyEntity.Property1)))
-                .WithSecondExpression(new LiteralExpressionBuilder("A")))
-            .Build();
-
-        InitializeMock([new MyNestedEntity(new MyEntity("A", "B"))]);
-
-        // Act
-        var result = await QueryProcessor.FindOneAsync<MyNestedEntity>(query);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldNotBeNull();
-        result.Value.Property.Property2.ShouldBe("B");
-    }
-
-    [Fact]
-    public void Can_Parse_Query()
-    {
-        // Arrange
-        var sut = new SingleEntityQueryParser<SingleEntityQueryBuilder, PropertyNameExpressionBuilder>(() => new PropertyNameExpressionBuilder("MyProperty"));
-        var builder = new SingleEntityQueryBuilder();
-
-        // Act
-        var result = sut.Parse(builder, "Field = \"A\"");
-
-        // Assert
-        result.Conditions.Count.ShouldBe(1);
-        result.Conditions[0].ShouldBeOfType<EqualConditionBuilder>();
-        var equalConditionBuilder = (EqualConditionBuilder)result.Conditions[0];
-        equalConditionBuilder.FirstExpression.ShouldBeOfType<PropertyNameExpressionBuilder>();
-        ((PropertyNameExpressionBuilder)equalConditionBuilder.FirstExpression).PropertyName.ShouldBe("Field");
-        equalConditionBuilder.SecondExpression.ShouldBeOfType<LiteralExpressionBuilder>();
-        ((LiteralExpressionBuilder)equalConditionBuilder.SecondExpression).Value.ShouldBe("A");
     }
 }

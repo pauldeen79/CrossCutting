@@ -1,22 +1,32 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests;
+﻿using NSubstitute;
+
+namespace CrossCutting.Utilities.QueryEvaluator.Tests;
 
 public abstract class TestBase
 {
     private readonly DataProviderMock _dataProviderMock;
     private IEnumerable<object> _sourceData = Enumerable.Empty<object>();
 
-    protected IDictionary<Type, object?> ClassFactories { get; }
-    protected IQueryProcessor QueryProcessor => ClassFactories.GetOrCreate<IQueryProcessor>(ClassFactory);
-    protected IExpressionEvaluator Evaluator => ClassFactories.GetOrCreate<IExpressionEvaluator>(ClassFactory);
-    protected IDateTimeProvider DateTimeProvider => ClassFactories.GetOrCreate<IDateTimeProvider>(ClassFactory);
+    protected IDictionary<Type, object?> ClassFactoryDictionary { get; }
+    protected IQueryProcessor InMemoryQueryProcessor => ClassFactoryDictionary.GetOrCreateMultiple<IQueryProcessor>(ClassFactory).OfType<QueryProcessor>().First();
+    protected IQueryProcessor SqlQueryProcessor => ClassFactoryDictionary.GetOrCreateMultiple<IQueryProcessor>(ClassFactory).OfType<QueryProcessors.Sql.QueryProcessor>().First();
+    protected IDatabaseEntityRetrieverProvider DatabaseEntityRetrieverProvider => ClassFactoryDictionary.GetOrCreate<IDatabaseEntityRetrieverProvider>(ClassFactory);
+    protected IDatabaseEntityRetriever<MyEntity> DatabaseEntityRetriever => ClassFactoryDictionary.GetOrCreate<IDatabaseEntityRetriever<MyEntity>>(ClassFactory);
+    protected IPagedResult<MyEntity> PagedResult { get; } = Substitute.For<IPagedResult<MyEntity>>(); //TODO: Find out why we cna't use ClassFactories.GetOrCreate
+    //protected IPagedResult<MyEntity> PagedResult => ClassFactoryDictionary.GetOrCreate<IPagedResult<MyEntity>>(ClassFactory);
+    protected IPagedDatabaseCommandProvider<IQuery> PagedDatabaseCommandProvider => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseCommandProvider<IQuery>>(ClassFactory);
+    protected IPagedDatabaseCommand PagedDatabaseCommand => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseCommand>(ClassFactory);
+    protected IExpressionEvaluator Evaluator => ClassFactoryDictionary.GetOrCreate<IExpressionEvaluator>(ClassFactory);
+    protected IDateTimeProvider DateTimeProvider => ClassFactoryDictionary.GetOrCreate<IDateTimeProvider>(ClassFactory);
     protected DateTime CurrentDateTime { get; }
 
     protected TestBase()
     {
         var excludedTypes = new Type[] { typeof(IDateTimeProvider) };
-        ClassFactories = new ServiceCollection()
+        ClassFactoryDictionary = new ServiceCollection()
             .AddExpressionEvaluator()
             .AddQueryEvaluatorInMemory()
+            .AddQueryEvaluatorSql()
             .Where(sd => !excludedTypes.Contains(sd.ServiceType))
             .GroupBy(sd => sd.ServiceType)
             .ToDictionary(
@@ -34,7 +44,11 @@ public abstract class TestBase
         // Initialize the expression evaluator on the DataProvider
         // This nneeds to be done after initializing class factories, because we need the expression evaluator
         _dataProviderMock = new DataProviderMock(Evaluator, () => _sourceData);
-        ClassFactories.Add(typeof(IDataProvider), _dataProviderMock);
+        ClassFactoryDictionary.Add(typeof(IDataProvider), _dataProviderMock);
+
+        // Initialize entity retriever
+        DatabaseEntityRetrieverProvider.Create<MyEntity>(Arg.Any<IQuery>()).Returns(Result.Success(DatabaseEntityRetriever));
+        PagedDatabaseCommandProvider.CreatePaged(Arg.Any<IQuery>(), DatabaseOperation.Select, Arg.Any<int>(), Arg.Any<int>()).Returns(PagedDatabaseCommand);
     }
 
     protected ExpressionEvaluatorContext CreateContext(
@@ -50,11 +64,18 @@ public abstract class TestBase
     protected object? ClassFactory(Type t)
         => t.CreateInstance(parameterType => parameterType.IsInterface
             ? Substitute.For([parameterType], [])
-            : parameterType, ClassFactories, null, null);
+            : parameterType, ClassFactoryDictionary, null, null);
 
-    protected void InitializeMock<T>(T[] items)
+    protected void InitializeMock<T>(IEnumerable<T> items)
     {
         _sourceData = items.Cast<object>().ToArray();
+        DatabaseEntityRetriever.FindOneAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(Task.FromResult(_sourceData.OfType<MyEntity>().FirstOrDefault()));
+        DatabaseEntityRetriever.FindManyAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(Task.FromResult<IReadOnlyCollection<MyEntity>>(_sourceData.OfType<MyEntity>().ToList()));
+        DatabaseEntityRetriever.FindPagedAsync(Arg.Any<IPagedDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(Task.FromResult(PagedResult));
+        PagedResult.Count.Returns(_sourceData.OfType<T>().Count());
+        PagedResult.TotalRecordCount.Returns(_sourceData.OfType<T>().Count());
+        PagedResult.PageSize.Returns(_sourceData.OfType<T>().Count());
+        PagedResult.GetEnumerator().Returns(_sourceData.OfType<MyEntity>().GetEnumerator());
     }
 }
 
@@ -63,7 +84,7 @@ public abstract class TestBase<T> : TestBase
     protected StringComparison StringComparison { get; set; }
 
     protected T CreateSut(IDictionary<string, object?>? parameters = null)
-        => Testing.CreateInstance<T>(ClassFactory, ClassFactories, p =>
+        => Testing.CreateInstance<T>(ClassFactory, ClassFactoryDictionary, p =>
         {
             if (p.ParameterType == typeof(StringComparison))
             {

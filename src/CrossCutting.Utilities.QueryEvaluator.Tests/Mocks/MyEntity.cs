@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Mocks;
 
-internal sealed class MyEntity
+public sealed class MyEntity
 {
     public MyEntity(string property1, string property2)
     {
@@ -12,7 +12,7 @@ internal sealed class MyEntity
     public string Property2 { get; }
 }
 
-internal sealed class MyNestedEntity
+public sealed class MyNestedEntity
 {
     public MyNestedEntity(MyEntity property)
     {
