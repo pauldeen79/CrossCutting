@@ -12,7 +12,7 @@ public abstract class TestBase
     protected IDatabaseEntityRetriever<MyEntity> DatabaseEntityRetriever => ClassFactoryDictionary.GetOrCreate<IDatabaseEntityRetriever<MyEntity>>(ClassFactory);
     protected IPagedResult<MyEntity> PagedResult => ClassFactoryDictionary.GetOrCreate<IPagedResult<MyEntity>>(ClassFactory);
     protected IPagedDatabaseCommandProvider<IQuery> PagedDatabaseCommandProvider => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseCommandProvider<IQuery>>(ClassFactory);
-    protected IPagedDatabaseCommand PagedDatabaseCommand => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseCommand>(ClassFactory);
+    //protected IPagedDatabaseCommand PagedDatabaseCommand => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseCommand>(ClassFactory);
     protected IExpressionEvaluator Evaluator => ClassFactoryDictionary.GetOrCreate<IExpressionEvaluator>(ClassFactory);
     protected IDateTimeProvider DateTimeProvider => ClassFactoryDictionary.GetOrCreate<IDateTimeProvider>(ClassFactory);
     protected DateTime CurrentDateTime { get; }
@@ -44,8 +44,10 @@ public abstract class TestBase
         ClassFactoryDictionary.Add(typeof(IDataProvider), _dataProviderMock);
 
         // Initialize entity retriever
-        DatabaseEntityRetrieverProvider.Create<MyEntity>(Arg.Any<IQuery>()).Returns(Result.Success(DatabaseEntityRetriever));
-        PagedDatabaseCommandProvider.CreatePaged(Arg.Any<IQuery>(), DatabaseOperation.Select, Arg.Any<int>(), Arg.Any<int>()).Returns(PagedDatabaseCommand);
+        DatabaseEntityRetrieverProvider
+            .Create<MyEntity>(Arg.Any<IQuery>())
+            .Returns(Result.Success(DatabaseEntityRetriever));
+        //PagedDatabaseCommandProvider.CreatePaged(Arg.Any<IQuery>(), Arg.Any<DatabaseOperation>(), Arg.Any<int>(), Arg.Any<int>()).Returns(PagedDatabaseCommand);
     }
 
     protected ExpressionEvaluatorContext CreateContext(

@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Core
 {
-    public partial record QueryParameter
+    public partial record QueryParameter : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name
@@ -39,8 +39,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core
         {
             return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder(this);
         }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter.ToBuilder()
+        {
+            return ToBuilder();
+        }
     }
-    public partial record QueryParameterValue
+    public partial record QueryParameterValue : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameterValue
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name
@@ -62,6 +67,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core
         public CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterValueBuilder ToBuilder()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterValueBuilder(this);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterValueBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameterValue.ToBuilder()
+        {
+            return ToBuilder();
         }
     }
     public partial record SortOrder : CrossCutting.Utilities.QueryEvaluator.Abstractions.ISortOrder

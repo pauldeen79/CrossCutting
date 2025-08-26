@@ -29,6 +29,16 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder ToBuilder();
     }
+    public partial interface IDataObjectNameQuery : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        string DataObjectName
+        {
+            get;
+        }
+
+        new CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDataObjectNameQueryBuilder ToBuilder();
+    }
     public partial interface IDoubleExpressionContainer : CrossCutting.Utilities.QueryEvaluator.Abstractions.ISingleExpressionContainer
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
@@ -43,6 +53,37 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
     public partial interface IExpression
     {
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder ToBuilder();
+    }
+    public partial interface IFieldSelectionQuery : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
+    {
+        bool Distinct
+        {
+            get;
+        }
+
+        bool GetAllFields
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        System.Collections.Generic.IReadOnlyCollection<string> FieldNames
+        {
+            get;
+        }
+
+        new CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IFieldSelectionQueryBuilder ToBuilder();
+    }
+    public partial interface IParameterizedQuery : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter> Parameters
+        {
+            get;
+        }
+
+        new CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IParameterizedQueryBuilder ToBuilder();
     }
     public partial interface IQuery
     {
@@ -72,6 +113,31 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder ToBuilder();
+    }
+    public partial interface IQueryParameter
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        string Name
+        {
+            get;
+        }
+
+        object? Value
+        {
+            get;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder ToBuilder();
+    }
+    public partial interface IQueryParameterValue
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        string Name
+        {
+            get;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterValueBuilder ToBuilder();
     }
     public partial interface ISingleExpressionContainer
     {

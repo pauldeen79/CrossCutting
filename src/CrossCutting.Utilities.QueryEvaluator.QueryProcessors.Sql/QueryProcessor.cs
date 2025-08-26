@@ -50,7 +50,7 @@ public class QueryProcessor : IQueryProcessor
     }
 
     private IPagedDatabaseCommand CreateCommand(IQuery query, int pageSize)
-        => _pagedDatabaseCommandProvider.CreatePaged(query, DatabaseOperation.Select, query.Offset ?? 0, pageSize);
+        => _pagedDatabaseCommandProvider.CreatePaged(query.ThrowOnInvalid(), DatabaseOperation.Select, query.Offset ?? 0, pageSize);
 
     private Result<IDatabaseEntityRetriever<TResult>> GetDatabaseEntityRetriever<TResult>(IQuery query) where TResult : class
     {
