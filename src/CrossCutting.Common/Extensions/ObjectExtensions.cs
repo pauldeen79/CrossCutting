@@ -21,6 +21,20 @@ public static class ObjectExtensions
     public static bool TryValidate(this object instance, ICollection<ValidationResult> validationResults)
         => Validator.TryValidateObject(instance, new ValidationContext(instance, null, null), validationResults, true);
 
+    public static T ThrowOnInvalid<T>(this T instance)
+    {
+        if (instance is IValidatableObject validatableObject)
+        {
+            var validationResult = validatableObject.Validate();
+            if (!string.IsNullOrEmpty(validationResult))
+            {
+                throw new ValidationException(validationResult);
+            }
+        }
+
+        return instance;
+    }
+
     /// <summary>
     /// Disposes this object, when it implements IDisposable.
     /// </summary>
