@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Abstractions;
 
-public interface IQueryFieldInfoFactory
+public interface IQueryFieldInfoProviderHandler : IQueryFieldInfoProvider
 {
-    IQueryFieldInfo Create(IQuery query);
 }

@@ -18,7 +18,9 @@ internal static class PagedSelectCommandBuilderExtensions
     {
         var allFields = fieldInfo.GetAllFields();
         return allFields.Any()
-            ? instance.Select(string.Join(", ", allFields.Select(fieldInfo.GetDatabaseFieldName).Where(x => !string.IsNullOrEmpty(x))))
+            ? instance.Select(string.Join(", ", allFields
+                .Select(fieldInfo.GetDatabaseFieldName)
+                .Where(x => !string.IsNullOrEmpty(x))))
             : instance.Select(settings.Fields.WhenNullOrWhitespace("*"));
     }
 
@@ -35,7 +37,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.Select(", ");
             }
 
-            instance.Select(sqlExpressionProvider.GetSqlExpression(fieldSelectionQuery, new PropertyNameExpressionBuilder(expression.Item).Build(), fieldInfo, parameterBag));
+            instance.Select(sqlExpressionProvider.GetSqlExpression(fieldSelectionQuery, new PropertyNameExpressionBuilder(expression.Item).Build(), fieldInfo, parameterBag).GetValueOrThrow());
         }
 
         return instance;

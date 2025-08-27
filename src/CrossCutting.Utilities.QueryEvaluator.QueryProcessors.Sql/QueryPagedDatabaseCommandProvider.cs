@@ -2,19 +2,19 @@
 
 public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<IQuery>
 {
-    private readonly IQueryFieldInfoFactory _fieldInfoFactory;
+    private readonly IQueryFieldInfoProvider _fieldInfoProvider;
     private readonly ISqlExpressionProvider _sqlExpressionProvider;
     private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders;
 
-    public QueryPagedDatabaseCommandProvider(IQueryFieldInfoFactory fieldInfoFactory,
+    public QueryPagedDatabaseCommandProvider(IQueryFieldInfoProvider fieldInfoProvider,
                                              ISqlExpressionProvider sqlExpressionProvider,
                                              IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders)
     {
-        ArgumentGuard.IsNotNull(fieldInfoFactory, nameof(fieldInfoFactory));
+        ArgumentGuard.IsNotNull(fieldInfoProvider, nameof(fieldInfoProvider));
         ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
         ArgumentGuard.IsNotNull(settingsProviders, nameof(settingsProviders));
 
-        _fieldInfoFactory = fieldInfoFactory;
+        _fieldInfoProvider = fieldInfoProvider;
         _sqlExpressionProvider = sqlExpressionProvider;
         _settingsProviders = settingsProviders;
     }
@@ -42,7 +42,7 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
         {
             throw ex.InnerException;
         }
-        var fieldInfo = _fieldInfoFactory.Create(source);
+        var fieldInfo = _fieldInfoProvider.Create(source).GetValueOrThrow();
         var parameterBag = new ParameterBag();
         return new PagedSelectCommandBuilder()
             .Select(settings, fieldInfo, fieldSelectionQuery, _sqlExpressionProvider, parameterBag)

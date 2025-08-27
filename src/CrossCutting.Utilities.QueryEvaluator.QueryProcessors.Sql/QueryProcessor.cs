@@ -53,16 +53,7 @@ public class QueryProcessor : IQueryProcessor
         => _pagedDatabaseCommandProvider.CreatePaged(query.ThrowOnInvalid(), DatabaseOperation.Select, query.Offset ?? 0, pageSize);
 
     private Result<IDatabaseEntityRetriever<TResult>> GetDatabaseEntityRetriever<TResult>(IQuery query) where TResult : class
-    {
-        foreach (var databaseEntityRetrieverProvider in _databaseEntityRetrieverProviders)
-        {
-            var result = databaseEntityRetrieverProvider.Create<TResult>(query);
-            if (result.Status != ResultStatus.Continue)
-            {
-                return result;
-            }
-        }
-
-        return Result.NotFound<IDatabaseEntityRetriever<TResult>>($"Could not find entity retriever for query of type {typeof(TResult).FullName}");
-    }
+        => _databaseEntityRetrieverProviders
+            .Select(x => x.Create<TResult>(query))
+            .WhenNotContinue(() => Result.NotFound<IDatabaseEntityRetriever<TResult>>($"Could not find entity retriever for query of type {typeof(TResult).FullName}"));
 }
