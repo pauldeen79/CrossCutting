@@ -21,7 +21,10 @@ public class QueryProcessor : IQueryProcessor
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
         return await GetDatabaseEntityRetriever<TResult>(query)
-            .OnSuccessAsync(async provider => await provider.FindManyAsync(CreateCommand(query, query.Limit.GetValueOrDefault()).DataCommand, cancellationToken).ConfigureAwait(false))
+            .OnSuccessAsync(async provider =>
+                await Result.WrapExceptionAsync(async () =>
+                    await provider.FindManyAsync(CreateCommand(query, query.Limit.GetValueOrDefault()).DataCommand, cancellationToken).ConfigureAwait(false)
+                ).ConfigureAwait(false))
             .ConfigureAwait(false);
     }
 
@@ -31,13 +34,14 @@ public class QueryProcessor : IQueryProcessor
 
         return await GetDatabaseEntityRetriever<TResult>(query)
             .OnSuccessAsync(async provider =>
-            {
-                var item = await provider.FindOneAsync(CreateCommand(query, 1).DataCommand, cancellationToken).ConfigureAwait(false);
-                return item is null
-                    ? Result.NotFound<TResult>()
-                    : Result.Success(item!);
-            })
-            .ConfigureAwait(false);
+                await Result.WrapExceptionAsync(async () =>
+                {
+                    var item = await provider.FindOneAsync(CreateCommand(query, 1).DataCommand, cancellationToken).ConfigureAwait(false);
+                    return item is null
+                        ? Result.NotFound<TResult>()
+                        : Result.Success(item!);
+                }).ConfigureAwait(false)
+            ).ConfigureAwait(false);
     }
 
     public async Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(IQuery query, CancellationToken cancellationToken) where TResult : class
@@ -45,7 +49,10 @@ public class QueryProcessor : IQueryProcessor
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
         return await GetDatabaseEntityRetriever<TResult>(query)
-            .OnSuccessAsync(async provider => await provider.FindPagedAsync(CreateCommand(query, query.Limit.GetValueOrDefault()), cancellationToken).ConfigureAwait(false))
+            .OnSuccessAsync(async provider =>
+                await Result.WrapExceptionAsync(async () =>
+                    await provider.FindPagedAsync(CreateCommand(query, query.Limit.GetValueOrDefault()), cancellationToken).ConfigureAwait(false)
+                ).ConfigureAwait(false))
             .ConfigureAwait(false);
     }
 
