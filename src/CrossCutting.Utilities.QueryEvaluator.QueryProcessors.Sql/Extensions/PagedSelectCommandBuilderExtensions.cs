@@ -48,10 +48,11 @@ internal static class PagedSelectCommandBuilderExtensions
         => instance.DistinctValues(fieldSelectionQuery?.Distinct == true);
 
     internal static PagedSelectCommandBuilder Top(this PagedSelectCommandBuilder instance,
-                                              IQuery query,
-                                              IPagedDatabaseEntityRetrieverSettings settings)
+                                                  IQuery query,
+                                                  IPagedDatabaseEntityRetrieverSettings settings,
+                                                  int? customLimit)
     {
-        var limit = query.Limit.IfNotGreaterThan(settings.OverridePageSize);
+        var limit = query.Limit.IfNotGreaterThan(settings.OverridePageSize, customLimit);
 
         return limit > 0
             ? instance.WithTop(limit)
@@ -59,10 +60,15 @@ internal static class PagedSelectCommandBuilderExtensions
     }
 
     internal static PagedSelectCommandBuilder Offset(this PagedSelectCommandBuilder instance,
-                                                 IQuery query)
-    => query.Offset.GetValueOrDefault() > 0
-        ? instance.Skip(query.Offset.GetValueOrDefault())
-        : instance;
+                                                     IQuery query,
+                                                     int? customPageSize)
+    {
+        var offset = query.Offset.GetValueOrDefault(customPageSize.GetValueOrDefault());
+
+        return offset > 0
+            ? instance.Skip(offset)
+            : instance;
+    }
 
     internal static PagedSelectCommandBuilder From(this PagedSelectCommandBuilder instance,
                                                    IQuery query,
