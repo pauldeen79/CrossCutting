@@ -417,6 +417,7 @@ public record Result
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static Result WrapException(Func<Result> resultDelegate)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
@@ -434,6 +435,7 @@ public record Result
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static Result<T> WrapException<T>(Func<Result<T>> resultDelegate)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
@@ -451,6 +453,7 @@ public record Result
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static Result<T> WrapException<T>(Func<T> resultDelegate)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
@@ -468,6 +471,7 @@ public record Result
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static async Task<Result> WrapExceptionAsync(Func<Task<Result>> resultDelegate)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
@@ -485,6 +489,7 @@ public record Result
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static async Task<Result<T>> WrapExceptionAsync<T>(Func<Task<Result<T>>> resultDelegate)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
@@ -502,6 +507,7 @@ public record Result
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static async Task<Result<T>> WrapExceptionAsync<T>(Func<Task<T>> resultDelegate)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
@@ -522,6 +528,8 @@ public record Result
         ? t
         : default;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public void ThrowIfInvalid(string errorMessage)
     {
         if (!IsSuccessful())
@@ -530,6 +538,8 @@ public record Result
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public void ThrowIfInvalid()
         => ThrowIfInvalid(string.IsNullOrEmpty(ErrorMessage)
             ? $"Result: {Status}"
