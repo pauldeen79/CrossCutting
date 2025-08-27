@@ -21,7 +21,7 @@ public class SmallerThanConditionTests : TestBase<SmallerThanCondition>
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
+            result.ThrowIfInvalid();
             result.Value.ShouldBe(true);
         }
 

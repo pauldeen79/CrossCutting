@@ -28,7 +28,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         var result = await InMemoryQueryProcessor.FindOneAsync<MyEntity>(query);
 
         // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ThrowIfInvalid();
         result.Value.ShouldNotBeNull();
         result.Value.Property2.ShouldBe("A");
     }
@@ -50,7 +50,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         var result = await InMemoryQueryProcessor.FindManyAsync<MyEntity>(query);
 
         // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ThrowIfInvalid();
         result.Value.ShouldNotBeNull();
         result.Value.Count.ShouldBe(2);
         result.Value.First().Property2.ShouldBe("A");
@@ -76,7 +76,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         var result = await InMemoryQueryProcessor.FindPagedAsync<MyEntity>(query);
 
         // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ThrowIfInvalid();
         result.Value.ShouldNotBeNull();
         result.Value.Count.ShouldBe(1);
         result.Value.First().Property2.ShouldBe("Z");
@@ -98,7 +98,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         var result = await InMemoryQueryProcessor.FindOneAsync<MyNestedEntity>(query);
 
         // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ThrowIfInvalid();
         result.Value.ShouldNotBeNull();
         result.Value.Property.Property2.ShouldBe("B");
     }
@@ -116,7 +116,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         var result = await InMemoryQueryProcessor.FindOneAsync<MyEntity>(query);
 
         // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
+        result.ThrowIfInvalid();
         result.Value.ShouldNotBeNull();
         result.Value.Property1.ShouldBe("A");
     }

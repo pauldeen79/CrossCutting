@@ -20,7 +20,7 @@ public class NullConditionTests : TestBase<NullCondition>
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
+            result.ThrowIfInvalid();
             result.Value.ShouldBe(false);
         }
 
@@ -40,7 +40,7 @@ public class NullConditionTests : TestBase<NullCondition>
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
+            result.ThrowIfInvalid();
             result.Value.ShouldBe(true);
         }
     }

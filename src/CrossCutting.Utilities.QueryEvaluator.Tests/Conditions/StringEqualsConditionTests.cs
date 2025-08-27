@@ -25,7 +25,7 @@ public class StringEqualsConditionTests : TestBase<StringEqualsCondition>
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
+            result.ThrowIfInvalid();
             result.Value.ShouldBe(true);
         }
 
