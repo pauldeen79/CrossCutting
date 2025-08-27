@@ -2739,7 +2739,7 @@ public class ResultTests
         // Note that if you don't know if the value is null, you can simply use TryCastAllowNull<string>
     }
 
-    public class WrapException_Func : ResultExtensionTests
+    public class WrapException_Func : ResultTests
     {
         [Fact]
         public void Returns_Correct_Result()
@@ -2771,7 +2771,7 @@ public class ResultTests
         }
     }
 
-    public class WrapExceptionAsync_Func : ResultExtensionTests
+    public class WrapExceptionAsync_Func : ResultTests
     {
         [Fact]
         public async Task Returns_Correct_Result()
@@ -2803,7 +2803,7 @@ public class ResultTests
         }
     }
 
-    public class WrapException_Typed_Func_Result : ResultExtensionTests
+    public class WrapException_Typed_Func_Result : ResultTests
     {
         [Fact]
         public void Returns_Correct_Result()
@@ -2835,7 +2835,7 @@ public class ResultTests
         }
     }
 
-    public class WrapException_Typed_Func : ResultExtensionTests
+    public class WrapException_Typed_Func : ResultTests
     {
         [Fact]
         public void Returns_Correct_Result()
@@ -2867,7 +2867,7 @@ public class ResultTests
         }
     }
 
-    public class WrapExceptionAsync_Typed_Func_Result : ResultExtensionTests
+    public class WrapExceptionAsync_Typed_Func_Result : ResultTests
     {
         [Fact]
         public async Task Returns_Correct_Result()
@@ -2899,7 +2899,7 @@ public class ResultTests
         }
     }
 
-    public class WrapExceptionAsync_Typed_Func : ResultExtensionTests
+    public class WrapExceptionAsync_Typed_Func : ResultTests
     {
         [Fact]
         public async Task Returns_Correct_Result()

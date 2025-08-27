@@ -441,4 +441,20 @@ public static class ResultExtensions
 
         return instance;
     }
+
+    public static T WhenNotContinue<T>(this IEnumerable<T> innerResults, Func<T> errorDelegate) where T : Result
+    {
+        ArgumentGuard.IsNotNull(innerResults, nameof(innerResults));
+        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+
+        foreach (var result in innerResults)
+        {
+            if (result.Status != ResultStatus.Continue)
+            {
+                return result;
+            }
+        }
+
+        return errorDelegate();
+    }
 }
