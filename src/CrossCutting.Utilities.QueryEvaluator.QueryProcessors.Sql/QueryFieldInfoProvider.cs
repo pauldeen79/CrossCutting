@@ -14,7 +14,8 @@ public class QueryFieldInfoProvider : IQueryFieldInfoProvider
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
-        return _handlers.Select(x => x.Create(query))
+        return _handlers
+            .Select(x => x.Create(query))
             .WhenNotContinue(() => Result.Invalid<IQueryFieldInfo>($"No query field info provider handler found for type: {query.GetType().FullName}"));
     }
 }
