@@ -68,7 +68,7 @@ public static class DictionaryExtensions
                 return typeInstances;
             }
 
-            return [(T)returnValue];
+            return (IEnumerable<T>)returnValue;
         }
 
         var newInstance = Testing.CreateInstance<T>(classFactory, instance)
