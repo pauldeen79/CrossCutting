@@ -21,11 +21,15 @@ public record Result<T> : Result
     public T? Value { get; }
     public bool HasValue => Value is not null;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public T GetValueOrThrow(string errorMessage)
         => !IsSuccessful() || Value is null
             ? throw new InvalidOperationException(errorMessage)
             : Value;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public T GetValueOrThrow()
         => GetValueOrThrow(string.IsNullOrEmpty(ErrorMessage)
             ? $"Result: {Status}"
