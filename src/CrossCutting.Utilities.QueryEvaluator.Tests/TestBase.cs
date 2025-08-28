@@ -12,9 +12,12 @@ public abstract class TestBase
     protected IDatabaseEntityRetriever<MyEntity> DatabaseEntityRetriever => ClassFactoryDictionary.GetOrCreate<IDatabaseEntityRetriever<MyEntity>>(ClassFactory);
     protected IPagedResult<MyEntity> PagedResult => ClassFactoryDictionary.GetOrCreate<IPagedResult<MyEntity>>(ClassFactory);
     protected IPagedDatabaseCommandProvider<IQuery> PagedDatabaseCommandProvider => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseCommandProvider<IQuery>>(ClassFactory);
-    //protected IPagedDatabaseCommand PagedDatabaseCommand => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseCommand>(ClassFactory);
     protected IExpressionEvaluator Evaluator => ClassFactoryDictionary.GetOrCreate<IExpressionEvaluator>(ClassFactory);
     protected IDateTimeProvider DateTimeProvider => ClassFactoryDictionary.GetOrCreate<IDateTimeProvider>(ClassFactory);
+    protected IPagedDatabaseEntityRetrieverSettingsProvider DatabaseEntityRetrieverSettingsProvider => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseEntityRetrieverSettingsProvider>(ClassFactory);
+    protected IPagedDatabaseEntityRetrieverSettings DatabaseEntityRetrieverSettings => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseEntityRetrieverSettings>(ClassFactory);
+    protected IQueryFieldInfoProviderHandler QueryFieldInfoProviderHandler => ClassFactoryDictionary.GetOrCreate<IQueryFieldInfoProviderHandler>(ClassFactory);
+    protected IQueryFieldInfo QueryFieldInfo => ClassFactoryDictionary.GetOrCreate<IQueryFieldInfo>(ClassFactory);
     protected DateTime CurrentDateTime { get; }
 
     protected TestBase()
@@ -39,7 +42,7 @@ public abstract class TestBase
             .Returns(CurrentDateTime);
 
         // Initialize the expression evaluator on the DataProvider
-        // This nneeds to be done after initializing class factories, because we need the expression evaluator
+        // This needs to be done after initializing class factories, because we need the expression evaluator
         _dataProviderMock = new DataProviderMock(Evaluator, () => _sourceData);
         ClassFactoryDictionary.Add(typeof(IDataProvider), _dataProviderMock);
 
@@ -47,8 +50,35 @@ public abstract class TestBase
         DatabaseEntityRetrieverProvider
             .Create<MyEntity>(Arg.Any<IQuery>())
             .Returns(Result.Success(DatabaseEntityRetriever));
-        //PagedDatabaseCommandProvider.CreatePaged(Arg.Any<IQuery>(), Arg.Any<DatabaseOperation>(), Arg.Any<int>(), Arg.Any<int>()).Returns(PagedDatabaseCommand);
+
+        // Initialize entity retriever settings provider
+#pragma warning disable CS8601 // Possible null reference assignment.
+        DatabaseEntityRetrieverSettingsProvider
+            .TryGet<IQuery>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings>())
+            .Returns(x =>
+            {
+                x[0] = DatabaseEntityRetrieverSettings;
+                return true;
+            });
+#pragma warning restore CS8601 // Possible null reference assignment.
+        DatabaseEntityRetrieverSettings
+            .TableName
+            .Returns("MyEntity");
+
+        // Initialize query field info provider
+        QueryFieldInfoProviderHandler
+            .Create(Arg.Any<IQuery>())
+            .Returns(_ => Result.Success(QueryFieldInfo));
     }
+
+    protected static MyEntity[] CreateData() =>
+    [
+        new MyEntity("B", "C"),
+            new MyEntity("A", "Z"),
+            new MyEntity("B", "D"),
+            new MyEntity("A", "A"),
+            new MyEntity("B", "E"),
+    ];
 
     protected ExpressionEvaluatorContext CreateContext(
         string? expression,

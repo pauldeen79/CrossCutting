@@ -2,15 +2,6 @@
 
 public sealed class InMemoryQueryProcessorTests : TestBase
 {
-    private static MyEntity[] CreateData()=>
-    [
-        new MyEntity("B", "C"),
-        new MyEntity("A", "Z"),
-        new MyEntity("B", "D"),
-        new MyEntity("A", "A"),
-        new MyEntity("B", "E"),
-    ];
-
     [Fact]
     public async Task Can_Find_One_Item()
     {
