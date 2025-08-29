@@ -16,19 +16,19 @@ public class QueryProcessor : IQueryProcessor
         _databaseEntityRetrieverProviders = databaseEntityRetrieverProviders;
     }
 
-    public async Task<Result<IReadOnlyCollection<TResult>>> FindManyAsync<TResult>(IQuery query, CancellationToken cancellationToken) where TResult : class
+    public async Task<Result<IReadOnlyCollection<TResult>>> FindManyAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken) where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
         return await GetDatabaseEntityRetriever<TResult>(query)
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
-                    await provider.FindManyAsync(CreateCommand(query, query.Limit.GetValueOrDefault()).DataCommand, cancellationToken).ConfigureAwait(false)
+                    await provider.FindManyAsync(CreateCommand(query, context, query.Limit.GetValueOrDefault()).DataCommand, cancellationToken).ConfigureAwait(false)
                 ).ConfigureAwait(false))
             .ConfigureAwait(false);
     }
 
-    public async Task<Result<TResult>> FindOneAsync<TResult>(IQuery query, CancellationToken cancellationToken) where TResult : class
+    public async Task<Result<TResult>> FindOneAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken) where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
@@ -36,7 +36,7 @@ public class QueryProcessor : IQueryProcessor
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
                 {
-                    var item = await provider.FindOneAsync(CreateCommand(query, 1).DataCommand, cancellationToken).ConfigureAwait(false);
+                    var item = await provider.FindOneAsync(CreateCommand(query, context, 1).DataCommand, cancellationToken).ConfigureAwait(false);
                     return item is null
                         ? Result.NotFound<TResult>()
                         : Result.Success(item!);
@@ -44,20 +44,20 @@ public class QueryProcessor : IQueryProcessor
             ).ConfigureAwait(false);
     }
 
-    public async Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(IQuery query, CancellationToken cancellationToken) where TResult : class
+    public async Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken) where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
         return await GetDatabaseEntityRetriever<TResult>(query)
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
-                    await provider.FindPagedAsync(CreateCommand(query, query.Limit.GetValueOrDefault()), cancellationToken).ConfigureAwait(false)
+                    await provider.FindPagedAsync(CreateCommand(query, context, query.Limit.GetValueOrDefault()), cancellationToken).ConfigureAwait(false)
                 ).ConfigureAwait(false))
             .ConfigureAwait(false);
     }
 
-    private IPagedDatabaseCommand CreateCommand(IQuery query, int pageSize)
-        => _pagedDatabaseCommandProvider.CreatePaged(query.EnsureValid(), DatabaseOperation.Select, query.Offset ?? 0, pageSize);
+    private IPagedDatabaseCommand CreateCommand(IQuery query, object? context, int pageSize)
+        => _pagedDatabaseCommandProvider.CreatePaged(query.EnsureValid().WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize);
 
     private Result<IDatabaseEntityRetriever<TResult>> GetDatabaseEntityRetriever<TResult>(IQuery query) where TResult : class
         => _databaseEntityRetrieverProviders

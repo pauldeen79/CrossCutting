@@ -21,6 +21,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -45,6 +48,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         result.Value.Count.ShouldBe(2);
         result.Value.First().Property2.ShouldBe("A");
         result.Value.Last().Property2.ShouldBe("Z");
+        await DatabaseEntityRetriever
+            .Received()
+            .FindManyAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT * FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -70,5 +76,10 @@ public sealed class SqlQueryProcessorTests : TestBase
         result.Value.ShouldNotBeNull();
         result.Value.Count.ShouldBe(1);
         result.Value.First().Property2.ShouldBe("Z");
+        await DatabaseEntityRetriever
+            .Received()
+            .FindPagedAsync(Arg.Is<IPagedDatabaseCommand>(x =>
+                x.DataCommand.CommandText == "SELECT * FROM (SELECT TOP 1 *, ROW_NUMBER() OVER (ORDER BY (SELECT 0)) as sq_row_number FROM MyEntity WHERE Property1 = @p0) sq WHERE sq.sq_row_number BETWEEN 2 and 2;"
+                && x.RecordCountCommand.CommandText == "SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0"), Arg.Any<CancellationToken>());
     }
 }

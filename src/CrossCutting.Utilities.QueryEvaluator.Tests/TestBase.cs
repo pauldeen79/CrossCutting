@@ -69,6 +69,9 @@ public abstract class TestBase
         QueryFieldInfoProviderHandler
             .Create(Arg.Any<IQuery>())
             .Returns(_ => Result.Success(QueryFieldInfo));
+        QueryFieldInfo
+            .GetDatabaseFieldName(Arg.Any<string>())
+            .Returns(x => x.ArgAt<string>(0));
     }
 
     protected static MyEntity[] CreateData() =>

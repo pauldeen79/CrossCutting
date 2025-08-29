@@ -9,5 +9,11 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IQueryFieldInfoProvider, QueryFieldInfoProvider>()
             .AddSingleton<IQueryProcessor, QueryProcessor>()
             .AddSingleton<ISqlConditionExpressionProvider, SqlConditionExpressionProvider>()
-            .AddSingleton<ISqlExpressionProvider, SqlExpressionProvider>();
+            .AddSingleton<ISqlExpressionProvider, SqlExpressionProvider>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, BetweenConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, EqualConditionHandler>()
+            .AddSingleton<ISqlExpressionProviderHandler, ContextExpressionHandler>()
+            .AddSingleton<ISqlExpressionProviderHandler, DelegateExpressionHandler>()
+            .AddSingleton<ISqlExpressionProviderHandler, LiteralExpressionHandler>()
+            .AddSingleton<ISqlExpressionProviderHandler, PropertyNameExpressionHandler>();
 }

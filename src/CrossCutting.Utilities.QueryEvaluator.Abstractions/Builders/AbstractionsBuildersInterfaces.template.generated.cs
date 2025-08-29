@@ -32,6 +32,16 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition Build();
     }
+    public partial interface IContextualQueryBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
+    {
+        object? Context
+        {
+            get;
+            set;
+        }
+
+        new CrossCutting.Utilities.QueryEvaluator.Abstractions.IContextualQuery Build();
+    }
     public partial interface IDataObjectNameQueryBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]

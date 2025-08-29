@@ -33,6 +33,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
             return instance;
         }
     }
+    public static partial class ContextualQueryBuilderExtensions
+    {
+        public static T WithContext<T>(this T instance, object? context)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IContextualQueryBuilder
+        {
+            instance.Context = context;
+            return instance;
+        }
+    }
     public static partial class DataObjectNameQueryBuilderExtensions
     {
         public static T WithDataObjectName<T>(this T instance, string dataObjectName)

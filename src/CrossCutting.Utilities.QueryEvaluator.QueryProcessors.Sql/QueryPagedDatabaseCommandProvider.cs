@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql;
 
 public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<IQuery>
 {

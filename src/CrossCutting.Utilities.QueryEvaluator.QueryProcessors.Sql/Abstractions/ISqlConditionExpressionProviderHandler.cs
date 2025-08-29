@@ -7,6 +7,5 @@ public interface ISqlConditionExpressionProviderHandler
                                   ICondition condition,
                                   IQueryFieldInfo fieldInfo,
                                   ISqlExpressionProvider sqlExpressionProvider,
-                                  ParameterBag parameterBag,
-                                  Func<string, PagedSelectCommandBuilder> actionDelegate);
+                                  ParameterBag parameterBag);
 }
