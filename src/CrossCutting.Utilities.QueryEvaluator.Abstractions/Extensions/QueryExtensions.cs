@@ -66,8 +66,8 @@ public static class QueryExtensions
         public object? Context { get; set; }
         public int? Limit { get; set; }
         public int? Offset { get; set; }
-        public List<IConditionBuilder> Conditions { get; set; } = new();
-        public List<ISortOrderBuilder> SortOrders { get; set; } = new();
+        public List<IConditionBuilder> Conditions { get; set; }
+        public List<ISortOrderBuilder> SortOrders { get; set; }
 
         public IContextualQuery Build() => CreateEntity();
 
