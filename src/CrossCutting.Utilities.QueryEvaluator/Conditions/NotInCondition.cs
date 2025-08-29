@@ -6,5 +6,5 @@ public partial record NotInCondition
         => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
     public override Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => ConditionHelper.EvaluateObjectConditionAsync(FirstExpression, SecondExpression, context, (first, second) => NotIn.Evaluate(first, second, context.Settings.StringComparison), token);
+        => ConditionHelper.EvaluateObjectConditionAsync(SourceExpression, CompareExpression, context, (first, second) => NotIn.Evaluate(first, second, context.Settings.StringComparison), token);
 }

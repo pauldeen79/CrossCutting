@@ -8,8 +8,8 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithFirstExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithSecondExpression(new LiteralExpressionBuilder("A")))
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
             .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
@@ -30,8 +30,8 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithFirstExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithSecondExpression(new LiteralExpressionBuilder("A")))
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
             .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
@@ -54,8 +54,8 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithFirstExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithSecondExpression(new DelegateExpressionBuilder(() => "A")))
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new DelegateExpressionBuilder(() => "A")))
             .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .WithLimit(1)
             .WithOffset(1)
@@ -79,8 +79,8 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithFirstExpression(new PropertyNameExpressionBuilder(new PropertyNameExpressionBuilder(nameof(MyNestedEntity.Property)), nameof(MyEntity.Property1)))
-                .WithSecondExpression(new LiteralExpressionBuilder("A")))
+                .WithSourceExpression(new PropertyNameExpressionBuilder(new PropertyNameExpressionBuilder(nameof(MyNestedEntity.Property)), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
             .Build();
 
         InitializeMock([new MyNestedEntity(new MyEntity("A", "B"))]);

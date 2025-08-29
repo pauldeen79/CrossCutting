@@ -54,11 +54,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
     }
     public static partial class DoubleExpressionContainerBuilderExtensions
     {
-        public static T WithSecondExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder secondExpression)
+        public static T WithCompareExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder compareExpression)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder
         {
-            if (secondExpression is null) throw new System.ArgumentNullException(nameof(secondExpression));
-            instance.SecondExpression = secondExpression;
+            if (compareExpression is null) throw new System.ArgumentNullException(nameof(compareExpression));
+            instance.CompareExpression = compareExpression;
             return instance;
         }
     }
@@ -188,11 +188,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
     }
     public static partial class SingleExpressionContainerBuilderExtensions
     {
-        public static T WithFirstExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder firstExpression)
+        public static T WithSourceExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder sourceExpression)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
         {
-            if (firstExpression is null) throw new System.ArgumentNullException(nameof(firstExpression));
-            instance.FirstExpression = firstExpression;
+            if (sourceExpression is null) throw new System.ArgumentNullException(nameof(sourceExpression));
+            instance.SourceExpression = sourceExpression;
             return instance;
         }
     }

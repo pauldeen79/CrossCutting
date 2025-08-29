@@ -2,5 +2,5 @@
 
 internal interface ISingleExpressionContainer
 {
-    [Required][ValidateObject] IExpression FirstExpression { get; set; }
+    [Required][ValidateObject] IExpression SourceExpression { get; set; }
 }

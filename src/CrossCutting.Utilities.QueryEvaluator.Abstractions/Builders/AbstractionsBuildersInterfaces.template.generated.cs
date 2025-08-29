@@ -57,7 +57,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder SecondExpression
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder CompareExpression
         {
             get;
             set;
@@ -169,7 +169,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder FirstExpression
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder SourceExpression
         {
             get;
             set;

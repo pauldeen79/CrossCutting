@@ -6,5 +6,5 @@ public partial record StringNotContainsCondition
         => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
     public override Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => ConditionHelper.EvaluateStringConditionAsync(FirstExpression, SecondExpression, context, (firstString, secondString) => firstString.IndexOf(secondString, StringComparison) == -1, token);
+        => ConditionHelper.EvaluateStringConditionAsync(SourceExpression, CompareExpression, context, (firstString, secondString) => firstString.IndexOf(secondString, StringComparison) == -1, token);
 }
