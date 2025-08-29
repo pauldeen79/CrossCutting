@@ -5,7 +5,7 @@ public class AsyncResultDictionaryBuilderTests
     protected static Task<Result> NonGenericTask => Task.FromResult(Result.Success());
     protected static Task<Result<string>> GenericTask => Task.FromResult(Result.Success(string.Empty));
 
-    protected static Func<Result> NonGenericFunc => new Func<Result>(() => Result.Success());
+    protected static Func<Result> NonGenericFunc => new Func<Result>(Result.Success);
     protected static Func<Result<string>> GenericFunc => new Func<Result<string>>(() => Result.Success(string.Empty));
 
     protected static Result NonGenericResult => Result.Success();

@@ -9,7 +9,7 @@ public class ObjectExtensionsTests
         var input = new MyPocoClass();
 
         // Act & Assert
-        Action a = () => input.Validate();
+        Action a = input.Validate;
         a.ShouldThrow<ValidationException>();
     }
 
@@ -35,7 +35,7 @@ public class ObjectExtensionsTests
         var input = new MyPocoClass();
 
         // Act & assert
-        Action a = () => input.TryDispose();
+        Action a = input.TryDispose;
         a.ShouldNotThrow();
     }
 

@@ -2445,7 +2445,7 @@ public class ResultTests
         var sut = Result.Success("ok");
 
         // Act & Assert
-        Action a = () => sut.ThrowIfNotSuccessful();
+        Action a = sut.ThrowIfNotSuccessful;
         a.ShouldNotThrow();
     }
 

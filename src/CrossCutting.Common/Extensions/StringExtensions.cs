@@ -107,7 +107,7 @@ public static class StringExtensions
     /// <param name="values">The values.</param>
     /// <returns></returns>
     public static bool StartsWithAny(this string instance, IEnumerable<string> values)
-        => values.Any(v => instance.StartsWith(v));
+        => values.Any(instance.StartsWith);
 
     /// <summary>
     /// Indicates whether the string instance starts with any of the specified values.
@@ -145,7 +145,7 @@ public static class StringExtensions
     /// <param name="values">The values.</param>
     /// <returns></returns>
     public static bool EndsWithAny(this string instance, IEnumerable<string> values)
-        => values.Any(v => instance.EndsWith(v));
+        => values.Any(instance.EndsWith);
 
     /// <summary>
     /// Indicates whether the string instance ends any of the specified values.

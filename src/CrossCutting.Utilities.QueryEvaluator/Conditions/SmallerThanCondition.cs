@@ -6,5 +6,5 @@ public partial record SmallerThanCondition
         => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
     public override Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => ConditionHelper.EvaluateObjectConditionAsync(SourceExpression, CompareExpression, context, (first, second) => SmallerThan.Evaluate(first, second), token);
+        => ConditionHelper.EvaluateObjectConditionAsync(SourceExpression, CompareExpression, context, SmallerThan.Evaluate, token);
 }
