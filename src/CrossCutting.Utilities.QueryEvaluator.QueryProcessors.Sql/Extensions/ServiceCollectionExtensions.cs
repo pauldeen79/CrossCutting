@@ -8,5 +8,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IPagedDatabaseCommandProvider<IQuery>, QueryPagedDatabaseCommandProvider>()
             .AddSingleton<IQueryFieldInfoProvider, QueryFieldInfoProvider>()
             .AddSingleton<IQueryProcessor, QueryProcessor>()
+            .AddSingleton<ISqlConditionExpressionProvider, SqlConditionExpressionProvider>()
             .AddSingleton<ISqlExpressionProvider, SqlExpressionProvider>();
 }

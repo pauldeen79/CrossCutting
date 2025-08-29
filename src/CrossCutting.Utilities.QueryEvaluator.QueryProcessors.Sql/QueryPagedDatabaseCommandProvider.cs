@@ -4,18 +4,22 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
 {
     private readonly IQueryFieldInfoProvider _fieldInfoProvider;
     private readonly ISqlExpressionProvider _sqlExpressionProvider;
+    private readonly ISqlConditionExpressionProvider _sqlConditionExpressionProvider;
     private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders;
 
     public QueryPagedDatabaseCommandProvider(IQueryFieldInfoProvider fieldInfoProvider,
                                              ISqlExpressionProvider sqlExpressionProvider,
+                                             ISqlConditionExpressionProvider sqlConditionExpressionProvider,
                                              IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders)
     {
         ArgumentGuard.IsNotNull(fieldInfoProvider, nameof(fieldInfoProvider));
         ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
+        ArgumentGuard.IsNotNull(sqlConditionExpressionProvider, nameof(sqlConditionExpressionProvider));
         ArgumentGuard.IsNotNull(settingsProviders, nameof(settingsProviders));
 
         _fieldInfoProvider = fieldInfoProvider;
         _sqlExpressionProvider = sqlExpressionProvider;
+        _sqlConditionExpressionProvider = sqlConditionExpressionProvider;
         _settingsProviders = settingsProviders;
     }
 
@@ -50,7 +54,7 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
             .Top(source, settings, pageSize)
             .Offset(source, offset)
             .From(source, settings)
-            .Where(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag)
+            .Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag)
             .OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag)
             .WithParameters(parameterizedQuery, parameterBag)
             .Build();

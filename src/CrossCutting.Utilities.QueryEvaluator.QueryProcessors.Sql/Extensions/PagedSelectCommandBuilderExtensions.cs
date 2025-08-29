@@ -80,6 +80,7 @@ internal static class PagedSelectCommandBuilderExtensions
                                                     IPagedDatabaseEntityRetrieverSettings settings,
                                                     IQueryFieldInfo fieldInfo,
                                                     ISqlExpressionProvider sqlExpressionProvider,
+                                                    ISqlConditionExpressionProvider provider,
                                                     ParameterBag parameterBag)
     {
         if (query.Conditions.Count == 0 && string.IsNullOrEmpty(settings.DefaultWhere))
@@ -94,8 +95,7 @@ internal static class PagedSelectCommandBuilderExtensions
 
         foreach (var queryCondition in query.Conditions)
         {
-            instance.AppendQueryCondition
-            (
+            provider.GetConditionExpression(
                 query,
                 queryCondition,
                 fieldInfo,
@@ -104,7 +104,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 (queryCondition.Combination ?? Combination.And) == Combination.And
                     ? instance.And
                     : instance.Or
-            );
+            ).ThrowIfInvalid();
         }
 
         return instance;
@@ -177,20 +177,14 @@ internal static class PagedSelectCommandBuilderExtensions
         return instance;
     }
 
-    internal static PagedSelectCommandBuilder AppendQueryCondition(this PagedSelectCommandBuilder instance,
-                                                                   IQuery query,
-                                                                   ICondition condition,
-                                                                   IQueryFieldInfo fieldInfo,
-                                                                   ISqlExpressionProvider sqlExpressionProvider,
-                                                                   ParameterBag parameterBag,
-                                                                   Func<string, PagedSelectCommandBuilder> actionDelegate)
-    {
-        var builder = new StringBuilder();
-
-        if (condition.StartGroup)
-        {
-            builder.Append("(");
-        }
+    //internal static PagedSelectCommandBuilder AppendQueryCondition(this PagedSelectCommandBuilder instance,
+    //                                                               IQuery query,
+    //                                                               ICondition condition,
+    //                                                               IQueryFieldInfo fieldInfo,
+    //                                                               ISqlExpressionProvider sqlExpressionProvider,
+    //                                                               ParameterBag parameterBag,
+    //                                                               Func<string, PagedSelectCommandBuilder> actionDelegate)
+    //{
 
         //if (!condition.Operator.GetType().In(typeof(StringContainsOperator),
         //                                     typeof(StringNotContainsOperator),
@@ -224,15 +218,15 @@ internal static class PagedSelectCommandBuilderExtensions
 
         //AppendOperatorAndValue(condition, query, fieldInfo, builder, sqlExpressionProvider, parameterBag);
 
-        if (condition.EndGroup)
-        {
-            builder.Append(")");
-        }
+        //if (condition.EndGroup)
+        //{
+        //    builder.Append(")");
+        //}
 
-        actionDelegate.Invoke(builder.ToString());
+        //actionDelegate.Invoke(builder.ToString());
 
-        return instance;
-    }
+        //return instance;
+    //}
 
     //private static void AppendOperatorAndValue(ICondition condition,
     //                                           IQuery query,

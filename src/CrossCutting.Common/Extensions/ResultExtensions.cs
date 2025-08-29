@@ -442,10 +442,10 @@ public static class ResultExtensions
         return instance;
     }
 
-    public static T WhenNotContinue<T>(this IEnumerable<T> innerResults, Func<T> errorDelegate) where T : Result
+    public static T WhenNotContinue<T>(this IEnumerable<T> innerResults, Func<T> notFoundDelegate) where T : Result
     {
         ArgumentGuard.IsNotNull(innerResults, nameof(innerResults));
-        ArgumentGuard.IsNotNull(errorDelegate, nameof(errorDelegate));
+        ArgumentGuard.IsNotNull(notFoundDelegate, nameof(notFoundDelegate));
 
         foreach (var result in innerResults)
         {
@@ -455,6 +455,6 @@ public static class ResultExtensions
             }
         }
 
-        return errorDelegate();
+        return notFoundDelegate();
     }
 }
