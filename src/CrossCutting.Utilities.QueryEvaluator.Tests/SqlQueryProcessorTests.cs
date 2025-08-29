@@ -107,7 +107,7 @@ public sealed class SqlQueryProcessorTests : TestBase
             .AddConditions(new InConditionBuilder()
                 .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
                 .AddCompareExpressions(new LiteralExpressionBuilder("A"))
-                .AddCompareExpressions(new LiteralExpressionBuilder("B")))
+                .AddCompareExpressions(new DelegateExpressionBuilder(() => "B")))
             .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
@@ -131,14 +131,14 @@ public sealed class SqlQueryProcessorTests : TestBase
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
                 .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+                .WithCompareExpression(new ContextExpressionBuilder()))
             .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData().Where(x => x.Property1 == "A").OrderBy(x => x.Property2));
 
         // Act
-        var result = await SqlQueryProcessor.FindManyAsync<MyEntity>(query);
+        var result = await SqlQueryProcessor.FindManyAsync<MyEntity>(query, "A");
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
