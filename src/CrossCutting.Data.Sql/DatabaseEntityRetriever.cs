@@ -20,19 +20,17 @@ public class DatabaseEntityRetriever<T>(
 
         _connection.OpenIfNecessary();
         using (var cmd = _connection.CreateCommand())
+        using (var countCommand = _connection.CreateCommand())
         {
-            using (var countCommand = _connection.CreateCommand())
-            {
-                countCommand.FillCommand(command.RecordCountCommand.CommandText, command.RecordCountCommand.CommandType, command.RecordCountCommand.CommandParameters);
-                var totalRecordCount = (int)countCommand.ExecuteScalar();
-                returnValue = new PagedResult<T>
-                (
-                    [.. cmd.FindMany(command.DataCommand.CommandText, command.DataCommand.CommandType, _mapper.Map, command.DataCommand.CommandParameters)],
-                    totalRecordCount,
-                    command.Offset,
-                    command.PageSize
-                );
-            }
+            countCommand.FillCommand(command.RecordCountCommand.CommandText, command.RecordCountCommand.CommandType, command.RecordCountCommand.CommandParameters);
+            var totalRecordCount = (int)countCommand.ExecuteScalar();
+            returnValue = new PagedResult<T>
+            (
+                [.. cmd.FindMany(command.DataCommand.CommandText, command.DataCommand.CommandType, _mapper.Map, command.DataCommand.CommandParameters)],
+                totalRecordCount,
+                command.Offset,
+                command.PageSize
+            );
         }
 
         return returnValue;
@@ -76,19 +74,17 @@ public class DatabaseEntityRetriever<T>(
 
         _connection.OpenIfNecessary();
         using (var cmd = _connection.CreateCommand())
+        using (var countCommand = _connection.CreateCommand())
         {
-            using (var countCommand = _connection.CreateCommand())
-            {
-                countCommand.FillCommand(command.RecordCountCommand.CommandText, command.RecordCountCommand.CommandType, command.RecordCountCommand.CommandParameters);
-                var totalRecordCount = ((await countCommand.ExecuteScalarAsync(cancellationToken)) as int?).GetValueOrDefault();
-                returnValue = new PagedResult<T>
-                (
-                    [.. (await cmd.FindManyAsync(command.DataCommand.CommandText, command.DataCommand.CommandType, cancellationToken, _mapper.Map, command.DataCommand.CommandParameters))],
-                    totalRecordCount,
-                    command.Offset,
-                    command.PageSize
-                );
-            }
+            countCommand.FillCommand(command.RecordCountCommand.CommandText, command.RecordCountCommand.CommandType, command.RecordCountCommand.CommandParameters);
+            var totalRecordCount = ((await countCommand.ExecuteScalarAsync(cancellationToken)) as int?).GetValueOrDefault();
+            returnValue = new PagedResult<T>
+            (
+                [.. (await cmd.FindManyAsync(command.DataCommand.CommandText, command.DataCommand.CommandType, cancellationToken, _mapper.Map, command.DataCommand.CommandParameters))],
+                totalRecordCount,
+                command.Offset,
+                command.PageSize
+            );
         }
 
         return returnValue;
