@@ -177,7 +177,7 @@ public sealed class SqlQueryProcessorTests : TestBase
         await DatabaseEntityRetriever
             .Received()
             .FindPagedAsync(Arg.Is<IPagedDatabaseCommand>(x =>
-                x.DataCommand.CommandText == "SELECT * FROM (SELECT TOP 1 *, ROW_NUMBER() OVER (ORDER BY (SELECT 0)) as sq_row_number FROM MyEntity WHERE Property1 = @p0) sq WHERE sq.sq_row_number BETWEEN 2 and 2;"
+                x.DataCommand.CommandText == "SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY Property2 ASC) as sq_row_number FROM MyEntity WHERE Property1 = @p0) sq WHERE sq.sq_row_number BETWEEN 2 and 2;"
                 && x.RecordCountCommand.CommandText == "SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0"), Arg.Any<CancellationToken>());
     }
 }

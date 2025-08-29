@@ -117,12 +117,7 @@ internal static class PagedSelectCommandBuilderExtensions
                                                       ISqlExpressionProvider sqlExpressionProvider,
                                                       ParameterBag parameterBag)
     {
-        if (query.Offset.HasValue && query.Offset.Value >= 0)
-        {
-            //do not use order by (this will be taken care of by the row_number Expression)
-            return instance;
-        }
-        else if (query.SortOrders.Count > 0 || !string.IsNullOrEmpty(settings.DefaultOrderBy))
+        if (query.SortOrders.Count > 0 || !string.IsNullOrEmpty(settings.DefaultOrderBy))
         {
             return instance.AppendOrderBy(query, settings, fieldInfo, sqlExpressionProvider, parameterBag);
         }
