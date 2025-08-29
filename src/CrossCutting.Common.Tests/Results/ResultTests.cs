@@ -2439,24 +2439,24 @@ public class ResultTests
     }
 
     [Fact]
-    public void ThrowIfInvalid_Does_Not_Throw_When_Result_Is_Success()
+    public void ThrowIfNotSuccessful_Does_Not_Throw_When_Result_Is_Success()
     {
         // Arrange
         var sut = Result.Success("ok");
 
         // Act & Assert
-        Action a = () => sut.ThrowIfInvalid();
+        Action a = () => sut.ThrowIfNotSuccessful();
         a.ShouldNotThrow();
     }
 
     [Fact]
-    public void ThrowIfInvalid_Throws_When_Result_Is_Invalid()
+    public void ThrowIfNotSuccessful_Throws_When_Result_Is_Invalid()
     {
         // Arrange
         var sut = Result.Invalid<string>();
 
         // Act
-        var act = new Action(sut.ThrowIfInvalid);
+        var act = new Action(sut.ThrowIfNotSuccessful);
 
         // Assert
         act.ShouldThrow<InvalidOperationException>()
@@ -2464,13 +2464,13 @@ public class ResultTests
     }
 
     [Fact]
-    public void ThrowIfInvalid_Throws_When_Result_Is_Error_And_ErrorMessage_Is_Filled()
+    public void ThrowIfNotSuccessful_Throws_When_Result_Is_Error_And_ErrorMessage_Is_Filled()
     {
         // Arrange
         var sut = Result.Error<string>("Kaboom");
 
         // Act
-        var act = new Action(sut.ThrowIfInvalid);
+        var act = new Action(sut.ThrowIfNotSuccessful);
 
         // Assert
         act.ShouldThrow<InvalidOperationException>()

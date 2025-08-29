@@ -534,7 +534,7 @@ public record Result
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
-    public void ThrowIfInvalid(string errorMessage)
+    public void ThrowIfNotSuccessful(string errorMessage)
     {
         if (!IsSuccessful())
         {
@@ -544,8 +544,8 @@ public record Result
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
-    public void ThrowIfInvalid()
-        => ThrowIfInvalid(string.IsNullOrEmpty(ErrorMessage)
+    public void ThrowIfNotSuccessful()
+        => ThrowIfNotSuccessful(string.IsNullOrEmpty(ErrorMessage)
             ? $"Result: {Status}"
             : $"Result: {Status}, ErrorMessage: {ErrorMessage}");
 }

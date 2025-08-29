@@ -22,7 +22,7 @@ public class GreaterOrEqualThanConditionTests : TestBase<GreaterThanOrEqualCondi
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
-            result.ThrowIfInvalid();
+            result.ThrowIfNotSuccessful();
             result.Value.ShouldBe(true);
         }
 

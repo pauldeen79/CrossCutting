@@ -104,7 +104,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 (queryCondition.Combination ?? Combination.And) == Combination.And
                     ? instance.And
                     : instance.Or
-            ).ThrowIfInvalid();
+            ).ThrowIfNotSuccessful();
         }
 
         return instance;
