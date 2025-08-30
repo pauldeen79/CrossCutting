@@ -5,6 +5,13 @@ public partial record InCondition
     public async override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
-    public override Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => ConditionHelper.EvaluateObjectConditionAsync(FirstExpression, SecondExpression, context, (first, second) => In.Evaluate(first, second, context.Settings.StringComparison), token);
+    public override async Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
+    {
+        return (await new AsyncResultDictionaryBuilder()
+            .Add(nameof(SourceExpression), SourceExpression.EvaluateAsync(context, token))
+            .AddRange($"{nameof(CompareExpressions)}.{{0}}", CompareExpressions.Select(x => x.EvaluateAsync(context, token)))
+            .Build()
+            .ConfigureAwait(false))
+            .OnSuccess(results => Result.Success(results.GetValue(nameof(SourceExpression)).In(context.Settings.StringComparison, results.Where(x => x.Key.StartsWith($"{nameof(CompareExpressions)}.")).Select(x => x.Value.GetValue()))));
+    }
 }

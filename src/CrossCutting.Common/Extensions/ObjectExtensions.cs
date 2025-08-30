@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CrossCutting.Common.Extensions;
+﻿namespace CrossCutting.Common.Extensions;
 
 public static class ObjectExtensions
 {
@@ -22,6 +20,20 @@ public static class ObjectExtensions
     /// </exception>
     public static bool TryValidate(this object instance, ICollection<ValidationResult> validationResults)
         => Validator.TryValidateObject(instance, new ValidationContext(instance, null, null), validationResults, true);
+
+    public static T EnsureValid<T>(this T instance)
+    {
+        if (instance is IValidatableObject validatableObject)
+        {
+            var validationResult = validatableObject.Validate();
+            if (!string.IsNullOrEmpty(validationResult))
+            {
+                throw new ValidationException(validationResult);
+            }
+        }
+
+        return instance;
+    }
 
     /// <summary>
     /// Disposes this object, when it implements IDisposable.

@@ -9,7 +9,7 @@ public class ObjectExtensionsTests
         var input = new MyPocoClass();
 
         // Act & Assert
-        Action a = () => input.Validate();
+        Action a = input.Validate;
         a.ShouldThrow<ValidationException>();
     }
 
@@ -35,7 +35,7 @@ public class ObjectExtensionsTests
         var input = new MyPocoClass();
 
         // Act & assert
-        Action a = () => input.TryDispose();
+        Action a = input.TryDispose;
         a.ShouldNotThrow();
     }
 
@@ -746,6 +746,35 @@ public class ObjectExtensionsTests
         Action a = () => instance.In(values);
         a.ShouldThrow<ArgumentNullException>()
          .ParamName.ShouldBe("values");
+    }
+
+    [Fact]
+    public void EnsureValid_Throws_When_Intance_Is_Not_Valid()
+    {
+        // Arrange
+        var sut = Substitute.For<IValidatableObject>();
+        sut
+            .Validate(Arg.Any<ValidationContext>())
+            .Returns([new ValidationResult("Invalid")]);
+
+        // Act & Assert
+        Action a = () => sut.EnsureValid();
+
+        // Assert
+        a.ShouldThrow<ValidationException>().Message.ShouldBe("Invalid");
+    }
+
+    [Fact]
+    public void EnsureValid_Returns_Instance_When_Valid()
+    {
+        // Arrange
+        var sut = this;
+
+        // Act
+        var result = sut.EnsureValid();
+
+        // Assert
+        result.ShouldBeSameAs(sut);
     }
 
     [Fact]

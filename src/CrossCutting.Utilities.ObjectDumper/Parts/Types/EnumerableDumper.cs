@@ -8,6 +8,9 @@ public class EnumerableDumper : IObjectDumperPartWithCallback
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
+        builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
+        instanceType = ArgumentGuard.IsNotNull(instanceType, nameof(instanceType));
+
         if (instance is not string and IEnumerable enumerable)
         {
             builder.BeginNesting(indent, instanceType);
@@ -25,7 +28,7 @@ public class EnumerableDumper : IObjectDumperPartWithCallback
                 Callback?.Process(item, item?.GetType() ?? instanceType.GetGenericArguments()[0], builder, indent + 4, currentDepth + 1);
             }
 
-            builder.EndEnumerable(indent, instance.GetType());
+            builder.EndEnumerable(indent, enumerable.GetType());
 
             return true;
         }

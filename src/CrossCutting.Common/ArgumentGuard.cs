@@ -3,6 +3,7 @@
 public static class ArgumentGuard
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static T IsNotNull<T>(this T? instance, string name)
     {
         if (instance is null)
@@ -14,6 +15,7 @@ public static class ArgumentGuard
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static string IsNotNullOrEmpty(this string? instance, string name)
     {
         if (string.IsNullOrEmpty(instance))
@@ -25,6 +27,7 @@ public static class ArgumentGuard
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static string IsNotNullOrWhiteSpace(this string? instance, string name)
     {
         if (string.IsNullOrWhiteSpace(instance))

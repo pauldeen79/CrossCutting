@@ -16,6 +16,6 @@ public class DateTimeAddSecondsMethod : IMethod
             .Add(Constants.Instance, context.GetInstanceValueResultAsync<DateTime>(token))
             .Add(SecondsToAdd, context.GetArgumentValueResultAsync<int>(0, "SecondsToAdd", token))
             .Build().ConfigureAwait(false))
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<DateTime>(Constants.Instance).AddSeconds(results.GetValue<int>(SecondsToAdd))));
+            .OnSuccess<object?>(results => results.GetValue<DateTime>(Constants.Instance).AddSeconds(results.GetValue<int>(SecondsToAdd)));
     }
 }

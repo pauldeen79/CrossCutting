@@ -10,13 +10,13 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Queries
 {
-    public partial class ParameterizedQueryBuilder : QueryBaseBuilder<ParameterizedQueryBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Queries.ParameterizedQuery>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
+    public partial class ParameterizedQueryBuilder : QueryBaseBuilder<ParameterizedQueryBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Queries.ParameterizedQuery>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IParameterizedQueryBuilder
     {
-        private System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder> _parameters;
+        private System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder> _parameters;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder> Parameters
+        public System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder> Parameters
         {
             get
             {
@@ -24,7 +24,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Queries
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder>>.Default.Equals(_parameters!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder>>.Default.Equals(_parameters!, value!);
                 _parameters = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Parameters));
             }
@@ -33,19 +33,19 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Queries
         public ParameterizedQueryBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Queries.ParameterizedQuery source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _parameters = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder>();
+            _parameters = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder>();
             if (source.Parameters is not null) foreach (var item in source.Parameters.Select(x => x.ToBuilder())) _parameters.Add(item);
         }
 
         public ParameterizedQueryBuilder() : base()
         {
-            _parameters = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder>();
+            _parameters = new System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder>();
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Queries.ParameterizedQuery BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Queries.ParameterizedQuery(Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), Limit, Offset, Conditions.Select(x => x.Build()!).ToList().AsReadOnly(), SortOrders.Select(x => x.Build()!).ToList().AsReadOnly());
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Queries.ParameterizedQuery(Limit, Offset, Conditions.Select(x => x.Build()!).ToList().AsReadOnly(), SortOrders.Select(x => x.Build()!).ToList().AsReadOnly(), Parameters.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder.Build()
@@ -53,20 +53,12 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Queries
             return BuildTyped();
         }
 
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IParameterizedQuery CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IParameterizedQueryBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
         partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Queries.ParameterizedQueryBuilder AddParameters(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder> parameters)
-        {
-            if (parameters is null) throw new System.ArgumentNullException(nameof(parameters));
-            return AddParameters(parameters.ToArray());
-        }
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Queries.ParameterizedQueryBuilder AddParameters(params CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder[] parameters)
-        {
-            if (parameters is null) throw new System.ArgumentNullException(nameof(parameters));
-            foreach (var item in parameters) Parameters.Add(item);
-            return this;
-        }
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Queries.ParameterizedQuery(ParameterizedQueryBuilder builder)
         {

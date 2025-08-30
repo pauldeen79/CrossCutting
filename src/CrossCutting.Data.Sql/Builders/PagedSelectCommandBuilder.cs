@@ -155,7 +155,8 @@ public class PagedSelectCommandBuilder
             throw new InvalidOperationException("FROM clause is missing");
         }
 
-        return new StringBuilder().AppendPagingOuterQuery(SelectBuilder, Offset, countOnly)
+        return new StringBuilder()
+            .AppendPagingOuterQuery(SelectBuilder, Offset, countOnly)
             .AppendSelectAndDistinctClause(Distinct, countOnly)
             .AppendTopClause(OrderByBuilder, Offset, PageSize, countOnly)
             .AppendCountOrSelectFields(SelectBuilder, countOnly)

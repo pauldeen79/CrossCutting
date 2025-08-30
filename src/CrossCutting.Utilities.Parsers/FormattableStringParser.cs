@@ -119,8 +119,7 @@ public class FormattableStringParser : IFormattableStringParser
             .Select(placeholder => validateOnly
                 ? Result.FromExistingResult<GenericFormattableString>(placeholder.Validate(value, new PlaceholderSettings(settings.FormatProvider, settings.ValidateArgumentTypes), context, this))
                 : placeholder.Evaluate(value, new PlaceholderSettings(settings.FormatProvider, settings.ValidateArgumentTypes), context, this))
-            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-            .WhenNull(ResultStatus.Invalid, $"Unknown placeholder in value: {value}");
+            .WhenNotContinue(() => Result.Invalid<GenericFormattableString>($"Unknown placeholder in value: {value}"));
 
     private static string ReplaceTemporaryDelimiters(string remainder, List<Result<GenericFormattableString>> results)
     {

@@ -8,6 +8,8 @@ public class ComplexTypeDumper : IObjectDumperPartWithCallback
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
+        builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
+
         if (instance is null)
         {
             return false;
@@ -73,6 +75,7 @@ public class ComplexTypeDumper : IObjectDumperPartWithCallback
 
             state.Builder.AddName(state.Indent, getNameDelegate(item));
 
+#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 Callback?.Process(getValueDelegate(item), getTypeDelegate(item), state.Builder, state.Indent + 4, state.CurrentDepth + 1);
@@ -81,6 +84,7 @@ public class ComplexTypeDumper : IObjectDumperPartWithCallback
             {
                 state.Builder.AddException(ex);
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         return first;

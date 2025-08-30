@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
 {
-    public partial class QueryParameterBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class QueryParameterBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private string _name;
 
@@ -60,37 +60,24 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
             SetDefaultValues();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter Build()
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter Build()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter(Name, Value);
         }
 
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder.Build()
+        {
+            return Build();
+        }
+
         partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder WithName(string name)
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            Name = name;
-            return this;
-        }
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterBuilder WithValue(object? value)
-        {
-            Value = value;
-            return this;
-        }
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter(QueryParameterBuilder builder)
-        {
-            return builder.Build();
-        }
 
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class QueryParameterValueBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class QueryParameterValueBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterValueBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private string _name;
 
@@ -123,24 +110,17 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
             SetDefaultValues();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.QueryParameterValue Build()
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameterValue Build()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Core.QueryParameterValue(Name);
         }
 
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameterValue CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterValueBuilder.Build()
+        {
+            return Build();
+        }
+
         partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.QueryParameterValueBuilder WithName(string name)
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            Name = name;
-            return this;
-        }
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.QueryParameterValue(QueryParameterValueBuilder builder)
-        {
-            return builder.Build();
-        }
 
         protected void HandlePropertyChanged(string propertyName)
         {

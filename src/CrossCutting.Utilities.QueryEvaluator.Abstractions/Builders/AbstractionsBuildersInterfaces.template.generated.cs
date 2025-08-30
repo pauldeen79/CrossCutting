@@ -32,11 +32,32 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition Build();
     }
+    public partial interface IContextualQueryBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
+    {
+        object? Context
+        {
+            get;
+            set;
+        }
+
+        new CrossCutting.Utilities.QueryEvaluator.Abstractions.IContextualQuery Build();
+    }
+    public partial interface IDataObjectNameQueryBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        string DataObjectName
+        {
+            get;
+            set;
+        }
+
+        new CrossCutting.Utilities.QueryEvaluator.Abstractions.IDataObjectNameQuery Build();
+    }
     public partial interface IDoubleExpressionContainerBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder SecondExpression
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder CompareExpression
         {
             get;
             set;
@@ -47,6 +68,41 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
     public partial interface IExpressionBuilder
     {
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression Build();
+    }
+    public partial interface IFieldSelectionQueryBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
+    {
+        bool Distinct
+        {
+            get;
+            set;
+        }
+
+        bool GetAllFields
+        {
+            get;
+            set;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        System.Collections.Generic.List<string> FieldNames
+        {
+            get;
+            set;
+        }
+
+        new CrossCutting.Utilities.QueryEvaluator.Abstractions.IFieldSelectionQuery Build();
+    }
+    public partial interface IParameterizedQueryBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder> Parameters
+        {
+            get;
+            set;
+        }
+
+        new CrossCutting.Utilities.QueryEvaluator.Abstractions.IParameterizedQuery Build();
     }
     public partial interface IQueryBuilder
     {
@@ -81,11 +137,39 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery Build();
     }
+    public partial interface IQueryParameterBuilder
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        string Name
+        {
+            get;
+            set;
+        }
+
+        object? Value
+        {
+            get;
+            set;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter Build();
+    }
+    public partial interface IQueryParameterValueBuilder
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        string Name
+        {
+            get;
+            set;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameterValue Build();
+    }
     public partial interface ISingleExpressionContainerBuilder
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder FirstExpression
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder SourceExpression
         {
             get;
             set;

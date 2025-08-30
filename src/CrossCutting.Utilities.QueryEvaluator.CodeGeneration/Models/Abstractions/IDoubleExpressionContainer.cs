@@ -2,5 +2,5 @@
 
 internal interface IDoubleExpressionContainer : ISingleExpressionContainer
 {
-    [Required][ValidateObject] IExpression SecondExpression { get; set; }
+    [Required][ValidateObject] IExpression CompareExpression { get; set; }
 }

@@ -104,8 +104,8 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
                 .WithEndGroup(endGroup)
                 .WithCombination(nextSearchCombination);
 
-            (condition as ISingleExpressionContainerBuilder)?.WithFirstExpression(GetField(fieldName));
-            (condition as IDoubleExpressionContainerBuilder)?.WithSecondExpression(new LiteralExpressionBuilder(fieldValue));
+            (condition as ISingleExpressionContainerBuilder)?.WithSourceExpression(GetField(fieldName));
+            (condition as IDoubleExpressionContainerBuilder)?.WithCompareExpression(new LiteralExpressionBuilder(fieldValue));
 
             if (items.Length > i + 3)
             {
@@ -153,11 +153,11 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
     private IConditionBuilder CreateQueryCondition(string value, bool startsWithPlusOrMinus, bool startsWithMinus)
         => startsWithMinus
             ? new StringNotContainsConditionBuilder()
-                .WithFirstExpression(_defaultFieldExpressionBuilderFactory())
-                .WithSecondExpression(CreateLiteralExpression(value, startsWithPlusOrMinus))
+                .WithSourceExpression(_defaultFieldExpressionBuilderFactory())
+                .WithCompareExpression(CreateLiteralExpression(value, startsWithPlusOrMinus))
             : new StringContainsConditionBuilder()
-                .WithFirstExpression(_defaultFieldExpressionBuilderFactory())
-                .WithSecondExpression(CreateLiteralExpression(value, startsWithPlusOrMinus));
+                .WithSourceExpression(_defaultFieldExpressionBuilderFactory())
+                .WithCompareExpression(CreateLiteralExpression(value, startsWithPlusOrMinus));
 
     private static LiteralExpressionBuilder CreateLiteralExpression(string value, bool startsWithPlusOrMinus)
         => new LiteralExpressionBuilder(startsWithPlusOrMinus

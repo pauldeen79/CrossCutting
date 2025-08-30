@@ -52,8 +52,8 @@ public class NumericAggregatorTests
         public void Returns_Ok_On_Valid_Int_Values()
         {
             // Arrange
-            var left = (int)1;
-            var right = (int)1;
+            var left = 1;
+            var right = 1;
 
             // Act
             var result = NumericAggregator.Evaluate(left, right, CultureInfo.InvariantCulture
@@ -270,8 +270,8 @@ public class NumericAggregatorTests
         public void Returns_Ok_On_Valid_Int_Values()
         {
             // Arrange
-            var left = (int)1;
-            var right = (int)1;
+            var left = 1;
+            var right = 1;
 
             // Act
             var result = NumericAggregator.Validate(left.GetType(), right.GetType());

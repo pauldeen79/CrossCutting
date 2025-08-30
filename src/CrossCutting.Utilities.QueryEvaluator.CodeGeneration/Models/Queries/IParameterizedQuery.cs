@@ -1,6 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Queries;
 
-internal interface IParameterizedQuery : IQueryBase
+internal interface IParameterizedQuery : IQueryBase, Abstractions.IParameterizedQuery
 {
-    [Required][ValidateObject] IReadOnlyCollection<IQueryParameter> Parameters { get; }
 }

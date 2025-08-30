@@ -2,10 +2,10 @@
 
 public interface IQueryProcessor
 {
-    Task<Result<TResult>> FindOneAsync<TResult>(IQuery query, CancellationToken cancellationToken)
+    Task<Result<TResult>> FindOneAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken)
         where TResult : class;
-    Task<Result<IReadOnlyCollection<TResult>>> FindManyAsync<TResult>(IQuery query, CancellationToken cancellationToken)
+    Task<Result<IReadOnlyCollection<TResult>>> FindManyAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken)
         where TResult : class;
-    Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(IQuery query, CancellationToken cancellationToken)
+    Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken)
         where TResult : class;
 }

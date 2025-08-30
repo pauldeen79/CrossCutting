@@ -14,12 +14,12 @@ public class QueryProcessor : IQueryProcessor
         _dataFactory = dataFactory;
     }
 
-    public async Task<Result<IReadOnlyCollection<TResult>>> FindManyAsync<TResult>(IQuery query, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<TResult>>> FindManyAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken)
         where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
-        var result = (await GetDataAsync<TResult>(query).ConfigureAwait(false)).EnsureValue();
+        var result = (await GetDataAsync<TResult>(query, context).ConfigureAwait(false)).EnsureValue();
         if (!result.IsSuccessful())
         {
             return Result.FromExistingResult<IReadOnlyCollection<TResult>>(result);
@@ -33,12 +33,12 @@ public class QueryProcessor : IQueryProcessor
         ).ToList());
     }
 
-    public async Task<Result<TResult>> FindOneAsync<TResult>(IQuery query, CancellationToken cancellationToken)
+    public async Task<Result<TResult>> FindOneAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken)
         where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
-        var result = (await GetDataAsync<TResult>(query).ConfigureAwait(false)).EnsureValue();
+        var result = (await GetDataAsync<TResult>(query, context).ConfigureAwait(false)).EnsureValue();
         if (!result.IsSuccessful())
         {
             return Result.FromExistingResult<TResult>(result);
@@ -56,12 +56,12 @@ public class QueryProcessor : IQueryProcessor
             : Result.Success(firstItem);
     }
 
-    public async Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(IQuery query, CancellationToken cancellationToken)
+    public async Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken)
         where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
-        var result = (await GetDataAsync<TResult>(query).ConfigureAwait(false)).EnsureValue();
+        var result = (await GetDataAsync<TResult>(query, context).ConfigureAwait(false)).EnsureValue();
         if (!result.IsSuccessful())
         {
             return Result.FromExistingResult<IPagedResult<TResult>>(result);
@@ -77,7 +77,7 @@ public class QueryProcessor : IQueryProcessor
         ));
     }
 
-    private Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query)
+    private Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query, object? context)
         where TResult : class
-        => _dataFactory.GetDataAsync<TResult>(query);
+        => _dataFactory.GetDataAsync<TResult>(query.WithContext(context));
 }

@@ -10,18 +10,18 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Core.Queries
 {
-    public partial record ParameterizedQuery : CrossCutting.Utilities.QueryEvaluator.Core.QueryBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
+    public partial record ParameterizedQuery : CrossCutting.Utilities.QueryEvaluator.Core.QueryBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery, CrossCutting.Utilities.QueryEvaluator.Abstractions.IParameterizedQuery
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter> Parameters
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter> Parameters
         {
             get;
         }
 
-        public ParameterizedQuery(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter> parameters, System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> conditions, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ISortOrder> sortOrders) : base(limit, offset, conditions, sortOrders)
+        public ParameterizedQuery(System.Nullable<int> limit, System.Nullable<int> offset, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition> conditions, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.ISortOrder> sortOrders, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter> parameters) : base(limit, offset, conditions, sortOrders)
         {
-            this.Parameters = parameters is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Core.QueryParameter>(parameters);
+            this.Parameters = parameters is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter>(parameters);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -41,6 +41,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Queries
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IParameterizedQueryBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IParameterizedQuery.ToBuilder()
         {
             return ToTypedBuilder();
         }

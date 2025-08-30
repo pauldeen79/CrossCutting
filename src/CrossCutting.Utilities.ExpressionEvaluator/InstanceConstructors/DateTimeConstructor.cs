@@ -19,5 +19,5 @@ public class DateTimeConstructor : IConstructor
             .Add<int>(context, 4, "Minute", token)
             .Add<int>(context, 5, "Second", token)
             .Build().ConfigureAwait(false))
-            .OnSuccess(results => Result.WrapException(() => Result.Success<object?>(new DateTime(results.GetValue<int>("Year"), results.GetValue<int>("Month"), results.GetValue<int>("Day"), results.GetValue<int>("Hour"), results.GetValue<int>("Minute"), results.GetValue<int>("Second"), DateTimeKind.Unspecified))));
+            .OnSuccess(results => Result.WrapException<object?>(() => new DateTime(results.GetValue<int>("Year"), results.GetValue<int>("Month"), results.GetValue<int>("Day"), results.GetValue<int>("Hour"), results.GetValue<int>("Minute"), results.GetValue<int>("Second"), DateTimeKind.Unspecified)));
 }

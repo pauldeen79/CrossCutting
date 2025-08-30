@@ -2,7 +2,7 @@
 
 public static class IntExtensions
 {
-    public static int IfNotGreaterThan(this int? queryValue, int? overrideValue)
+    public static int IfNotGreaterThan(this int? queryValue, params int?[] overrideValues)
     {
         var result = 0;
 
@@ -11,9 +11,12 @@ public static class IntExtensions
             result = queryValue.Value;
         }
 
-        if (overrideValue.HasValue && overrideValue.Value > 0 && ((overrideValue.Value < result && overrideValue.Value >= 0) || result == 0))
+        foreach (var overrideValue in overrideValues)
         {
-            result = overrideValue.Value;
+            if (overrideValue.HasValue && overrideValue.Value > 0 && ((overrideValue.Value < result && overrideValue.Value >= 0) || result == 0))
+            {
+                result = overrideValue.Value;
+            }
         }
 
         return result;

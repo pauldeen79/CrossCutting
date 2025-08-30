@@ -6,6 +6,8 @@ public class DateTimeDumper : IObjectDumperPart
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
+        builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
+
         if (instance is DateTime dt)
         {
             builder.AddSingleValue(dt.ToString("yyyy-MM-dd HH:mm:ss"), instance.GetType());

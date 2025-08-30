@@ -21,14 +21,18 @@ public class OrderByPropertyNameTransform : IObjectDumperPartWithCallback
 
     public IEnumerable<PropertyDescriptor> ProcessProperties(IEnumerable<PropertyDescriptor> source)
     {
+        source = ArgumentGuard.IsNotNull(source, nameof(source));
+
         var shouldTransform = false;
 
-        if (_typeName is not null && source.Any() && source.First().ComponentType.FullName == _typeName)
+        var data = source.ToArray();
+
+        if (_typeName is not null && data.Length != 0 && data[0].ComponentType.FullName == _typeName)
         {
             shouldTransform = true;
         }
 
-        if (_typeFilter is not null && source.Any() && _typeFilter(source.First().ComponentType))
+        if (_typeFilter is not null && data.Length != 0 && _typeFilter(data[0].ComponentType))
         {
             shouldTransform = true;
         }

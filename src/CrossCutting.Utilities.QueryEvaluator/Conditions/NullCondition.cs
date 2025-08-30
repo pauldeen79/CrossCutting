@@ -6,5 +6,5 @@ public partial record NullCondition
         => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
     public override Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => ConditionHelper.EvaluateObjectConditionAsync(FirstExpression, context, first => first is null, token);
+        => ConditionHelper.EvaluateObjectConditionAsync(SourceExpression, context, first => first is null, token);
 }

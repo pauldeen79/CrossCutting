@@ -15,7 +15,11 @@ public class ReflectionTypeNameExclusionFilter : IObjectDumperPart
         => true;
 
     public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor)
-        => !propertyDescriptor.PropertyType.FullName.StartsWith("System.Reflection");
+    {
+        propertyDescriptor = ArgumentGuard.IsNotNull(propertyDescriptor, nameof(propertyDescriptor));
+
+        return !propertyDescriptor.PropertyType.FullName.StartsWith("System.Reflection");
+    }
 
     public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         => instance;

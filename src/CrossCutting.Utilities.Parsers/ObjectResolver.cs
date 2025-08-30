@@ -20,7 +20,6 @@ public class ObjectResolver : IObjectResolver
 
         return _objectResolverProcessors
             .Select(x => x.Resolve<T>(sourceObject))
-            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                .WhenNull(ResultStatus.NotFound, $"Could not resolve type {typeof(T).FullName} from {sourceObject.GetType().FullName}");
+            .WhenNotContinue(() => Result.NotFound<T>($"Could not resolve type {typeof(T).FullName} from {sourceObject.GetType().FullName}"));
     }
 }

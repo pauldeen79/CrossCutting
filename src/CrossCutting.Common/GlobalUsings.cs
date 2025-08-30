@@ -4,6 +4,7 @@ global using System.Collections.Generic;
 global using System.Collections.ObjectModel;
 global using System.ComponentModel;
 global using System.ComponentModel.DataAnnotations;
+global using System.Diagnostics;
 global using System.Dynamic;
 global using System.Globalization;
 global using System.IO;
