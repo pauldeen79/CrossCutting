@@ -749,6 +749,35 @@ public class ObjectExtensionsTests
     }
 
     [Fact]
+    public void EnsureValid_Throws_When_Intance_Is_Not_Valid()
+    {
+        // Arrange
+        var sut = Substitute.For<IValidatableObject>();
+        sut
+            .Validate(Arg.Any<ValidationContext>())
+            .Returns([new ValidationResult("Invalid")]);
+
+        // Act & Assert
+        Action a = () => sut.EnsureValid();
+
+        // Assert
+        a.ShouldThrow<ValidationException>().Message.ShouldBe("Invalid");
+    }
+
+    [Fact]
+    public void EnsureValid_Returns_Instance_When_Valid()
+    {
+        // Arrange
+        var sut = this;
+
+        // Act
+        var result = sut.EnsureValid();
+
+        // Assert
+        result.ShouldBeSameAs(sut);
+    }
+
+    [Fact]
     public void Can_Convert_Class_To_ExpandoObject()
     {
         // Arrange
