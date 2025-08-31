@@ -174,6 +174,52 @@ public sealed class SqlQueryProcessorTests : TestBase
     }
 
     [Fact]
+    public async Task Can_Find_One_Item_With_NotNullCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new NotNullConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1))))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData().Where(x => x.Property1 != null));
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 IS NOT NULL ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_One_Item_With_NullCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new NullConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1))))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData().Where(x => x.Property1 == null));
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        result.Value.ShouldBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 IS NULL ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public async Task Can_Find_Many_Items()
     {
         // Arrange
