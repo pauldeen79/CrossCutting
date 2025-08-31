@@ -220,6 +220,246 @@ public sealed class SqlQueryProcessorTests : TestBase
     }
 
     [Fact]
+    public async Task Can_Find_One_Item_With_SmallerThanCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new SmallerThanConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 < @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_One_Item_With_SmallerThanOrEqualCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new SmallerThanOrEqualConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 <= @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_One_Item_With_StringContainsCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new StringContainsConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_One_Item_With_StringEndsWithCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new StringEndsWithConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_One_Item_With_StringEqualsCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new StringEqualsConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_One_Item_With_StringNotContainsCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new StringNotContainsConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_One_Item_With_StringNotEndsWithCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new StringNotEndsWithConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_One_Item_With_StringNotEqualsCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new StringNotEqualsConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 <> @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_One_Item_With_StringNotStartsWithCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new StringNotStartsWithConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_One_Item_With_StringStartsWithCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new StringStartsWithConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public async Task Can_Find_Many_Items()
     {
         // Arrange

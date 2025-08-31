@@ -2,7 +2,7 @@
 
 public class DelegateExpressionHandler : SqlExpressionProviderHandlerBase<DelegateExpression>
 {
-    protected override Result<string> DoGetSqlExpression(IQuery query, DelegateExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag)
+    protected override Result<string> DoGetSqlExpression(IQuery query, DelegateExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback)
     {
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));

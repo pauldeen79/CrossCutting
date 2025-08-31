@@ -19,8 +19,19 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ISqlConditionExpressionProviderHandler, NotInConditionHandler>()
             .AddSingleton<ISqlConditionExpressionProviderHandler, NotNullConditionHandler>()
             .AddSingleton<ISqlConditionExpressionProviderHandler, NullConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, SmallerThanConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, SmallerThanOrEqualConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, StringContainsConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, StringEndsWithConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, StringEqualsConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, StringNotContainsConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, StringNotEndsWithConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, StringNotEqualsConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, StringNotStartsWithConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, StringStartsWithConditionHandler>()
             .AddSingleton<ISqlExpressionProviderHandler, ContextExpressionHandler>()
             .AddSingleton<ISqlExpressionProviderHandler, DelegateExpressionHandler>()
             .AddSingleton<ISqlExpressionProviderHandler, LiteralExpressionHandler>()
-            .AddSingleton<ISqlExpressionProviderHandler, PropertyNameExpressionHandler>();
+            .AddSingleton<ISqlExpressionProviderHandler, PropertyNameExpressionHandler>()
+            .AddSingleton<ISqlExpressionProviderHandler, SqlLikeExpressionHandler>();
 }

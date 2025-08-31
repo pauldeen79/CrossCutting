@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
 public sealed class BinaryExpression : IExpression
 {

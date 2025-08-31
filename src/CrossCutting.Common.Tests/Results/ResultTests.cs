@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Tests.Extensions;
-
-namespace CrossCutting.Common.Tests.Results;
+﻿namespace CrossCutting.Common.Tests.Results;
 
 public class ResultTests
 {

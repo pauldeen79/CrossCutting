@@ -24,6 +24,23 @@ public class ParameterBag
         return returnValue;
     }
 
+    internal Result<string> ReplaceString(string key, string formatString)
+    {
+        var found = _parameters
+            .Select(x => new { Item = x })
+            .FirstOrDefault(x => x.Item.Key == key);
+
+        if (found is null)
+        {
+            return Result.Invalid<string>("There are no parameters");
+        }
+
+        var newValue = string.Format(formatString, found.Item.Value);
+        _parameters.Remove(_parameters[_paramCounter - 1]);
+        _parameters.Add(new KeyValuePair<string, object?>(found.Item.Key, newValue));
+        return Result.Success(found.Item.Key);
+    }
+
     private string Add(string key, object? value)
     {
         _parameters.Add(new KeyValuePair<string, object?>(key, value));
