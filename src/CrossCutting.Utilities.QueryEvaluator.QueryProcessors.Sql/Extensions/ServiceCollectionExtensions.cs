@@ -15,6 +15,8 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ISqlConditionExpressionProviderHandler, GreaterThanConditionHandler>()
             .AddSingleton<ISqlConditionExpressionProviderHandler, GreaterThanOrEqualConditionHandler>()
             .AddSingleton<ISqlConditionExpressionProviderHandler, InConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, NotEqualConditionHandler>()
+            .AddSingleton<ISqlConditionExpressionProviderHandler, NotInConditionHandler>()
             .AddSingleton<ISqlExpressionProviderHandler, ContextExpressionHandler>()
             .AddSingleton<ISqlExpressionProviderHandler, DelegateExpressionHandler>()
             .AddSingleton<ISqlExpressionProviderHandler, LiteralExpressionHandler>()

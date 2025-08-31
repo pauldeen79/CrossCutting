@@ -6,12 +6,10 @@ public partial record InCondition
         => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
     public override async Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
-    {
-        return (await new AsyncResultDictionaryBuilder()
+        => (await new AsyncResultDictionaryBuilder()
             .Add(nameof(SourceExpression), SourceExpression.EvaluateAsync(context, token))
             .AddRange($"{nameof(CompareExpressions)}.{{0}}", CompareExpressions.Select(x => x.EvaluateAsync(context, token)))
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(results => Result.Success(results.GetValue(nameof(SourceExpression)).In(context.Settings.StringComparison, results.Where(x => x.Key.StartsWith($"{nameof(CompareExpressions)}.")).Select(x => x.Value.GetValue()))));
-    }
 }

@@ -125,6 +125,55 @@ public sealed class SqlQueryProcessorTests : TestBase
     }
 
     [Fact]
+    public async Task Can_Find_One_Item_With_NotEqualCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new NotEqualConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 <> @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_One_Item_With_NotInCondition()
+    {
+        // Arrange
+        var query = new SingleEntityQueryBuilder()
+            .AddConditions(new NotInConditionBuilder()
+                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                .AddCompareExpressions(new LiteralExpressionBuilder("A"))
+                .AddCompareExpressions(new DelegateExpressionBuilder(() => "B")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .Build();
+
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT IN (@p0, @p1) ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public async Task Can_Find_Many_Items()
     {
         // Arrange
