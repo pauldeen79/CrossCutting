@@ -96,6 +96,31 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
             return instance;
         }
     }
+    public static partial class InConditionBuilderExtensions
+    {
+        public static T AddCompareExpressions<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder> compareExpressions)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder
+        {
+            if (compareExpressions is null) throw new System.ArgumentNullException(nameof(compareExpressions));
+            return instance.AddCompareExpressions<T>(compareExpressions.ToArray());
+        }
+
+        public static T AddCompareExpressions<T>(this T instance, params CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder[] compareExpressions)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder
+        {
+            if (compareExpressions is null) throw new System.ArgumentNullException(nameof(compareExpressions));
+            foreach (var item in compareExpressions) instance.CompareExpressions.Add(item);
+            return instance;
+        }
+
+        public static T WithSourceExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder sourceExpression)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder
+        {
+            if (sourceExpression is null) throw new System.ArgumentNullException(nameof(sourceExpression));
+            instance.SourceExpression = sourceExpression;
+            return instance;
+        }
+    }
     public static partial class ParameterizedQueryBuilderExtensions
     {
         public static T AddParameters<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder> parameters)

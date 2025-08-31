@@ -357,7 +357,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             return builder.BuildTyped();
         }
     }
-    public partial class InConditionBuilder : ConditionBaseBuilder<InConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.InCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder
+    public partial class InConditionBuilder : ConditionBaseBuilder<InConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.InCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder
     {
         private CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder _sourceExpression;
 
@@ -412,7 +412,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.InCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.InCondition(SourceExpression?.Build()!, CompareExpressions.Select(x => x.Build()!).ToList().AsReadOnly(), Combination, StartGroup, EndGroup);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.InCondition(Combination, StartGroup, EndGroup, SourceExpression?.Build()!, CompareExpressions.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -420,27 +420,12 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             return BuildTyped();
         }
 
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IInCondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
         partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.InConditionBuilder AddCompareExpressions(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder> compareExpressions)
-        {
-            if (compareExpressions is null) throw new System.ArgumentNullException(nameof(compareExpressions));
-            return AddCompareExpressions(compareExpressions.ToArray());
-        }
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.InConditionBuilder AddCompareExpressions(params CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder[] compareExpressions)
-        {
-            if (compareExpressions is null) throw new System.ArgumentNullException(nameof(compareExpressions));
-            foreach (var item in compareExpressions) CompareExpressions.Add(item);
-            return this;
-        }
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.InConditionBuilder WithSourceExpression(CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder sourceExpression)
-        {
-            if (sourceExpression is null) throw new System.ArgumentNullException(nameof(sourceExpression));
-            SourceExpression = sourceExpression;
-            return this;
-        }
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Conditions.InCondition(InConditionBuilder builder)
         {
@@ -526,7 +511,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             return builder.BuildTyped();
         }
     }
-    public partial class NotInConditionBuilder : ConditionBaseBuilder<NotInConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotInCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder
+    public partial class NotInConditionBuilder : ConditionBaseBuilder<NotInConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotInCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder
     {
         private CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder _sourceExpression;
 
@@ -581,7 +566,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotInCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotInCondition(SourceExpression?.Build()!, CompareExpressions.Select(x => x.Build()!).ToList().AsReadOnly(), Combination, StartGroup, EndGroup);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotInCondition(Combination, StartGroup, EndGroup, SourceExpression?.Build()!, CompareExpressions.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -589,27 +574,12 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             return BuildTyped();
         }
 
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IInCondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
         partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.NotInConditionBuilder AddCompareExpressions(System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder> compareExpressions)
-        {
-            if (compareExpressions is null) throw new System.ArgumentNullException(nameof(compareExpressions));
-            return AddCompareExpressions(compareExpressions.ToArray());
-        }
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.NotInConditionBuilder AddCompareExpressions(params CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder[] compareExpressions)
-        {
-            if (compareExpressions is null) throw new System.ArgumentNullException(nameof(compareExpressions));
-            foreach (var item in compareExpressions) CompareExpressions.Add(item);
-            return this;
-        }
-
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.NotInConditionBuilder WithSourceExpression(CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder sourceExpression)
-        {
-            if (sourceExpression is null) throw new System.ArgumentNullException(nameof(sourceExpression));
-            SourceExpression = sourceExpression;
-            return this;
-        }
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotInCondition(NotInConditionBuilder builder)
         {

@@ -92,6 +92,26 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
 
         new CrossCutting.Utilities.QueryEvaluator.Abstractions.IFieldSelectionQuery Build();
     }
+    public partial interface IInConditionBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder SourceExpression
+        {
+            get;
+            set;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        System.Collections.Generic.List<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder> CompareExpressions
+        {
+            get;
+            set;
+        }
+
+        new CrossCutting.Utilities.QueryEvaluator.Abstractions.IInCondition Build();
+    }
     public partial interface IParameterizedQueryBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]

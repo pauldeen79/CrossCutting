@@ -1,7 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Conditions;
 
-internal interface IInCondition : IConditionBase
+internal interface IInCondition : IConditionBase, Abstractions.IInCondition
 {
-    [Required][ValidateObject] IExpression SourceExpression { get; set; }
-    [Required][ValidateObject] IReadOnlyCollection<IExpression> CompareExpressions { get; set; }
 }

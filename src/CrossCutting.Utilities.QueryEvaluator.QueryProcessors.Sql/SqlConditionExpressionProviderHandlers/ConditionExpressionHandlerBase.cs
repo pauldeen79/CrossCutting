@@ -32,4 +32,25 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
         IQueryFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
         ParameterBag parameterBag);
+
+    protected static Result GetSimpleConditionExpression(StringBuilder builder, IQuery query, IDoubleExpressionContainer condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, string @operator)
+        => new ResultDictionaryBuilder<string>()
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpression(query, condition.SourceExpression, fieldInfo, parameterBag))
+            .Add(nameof(condition.CompareExpression), () => sqlExpressionProvider.GetSqlExpression(query, condition.CompareExpression, fieldInfo, parameterBag))
+            .Build()
+            .OnSuccess(results => builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} {@operator} {results.GetValue(nameof(condition.CompareExpression))}"));
+
+    protected static Result GetInConditionExpression(StringBuilder builder, IQuery query, IInCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, string @operator)
+        => new ResultDictionaryBuilder<string>()
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpression(query, condition.SourceExpression, fieldInfo, parameterBag))
+            .AddRange($"{nameof(condition.CompareExpressions)}.{{0}}", () => condition.CompareExpressions.Select(x => sqlExpressionProvider.GetSqlExpression(query, x, fieldInfo, parameterBag)))
+            .Build()
+            .OnSuccess(results =>
+            {
+                var secondExpressionValues = results
+                    .Where(x => x.Key.StartsWith($"{nameof(condition.CompareExpressions)}."))
+                    .Select(x => x.Value.Value);
+
+                builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} {@operator} ({string.Join(", ", secondExpressionValues)})");
+            });
 }

@@ -220,7 +220,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             return ToTypedBuilder();
         }
     }
-    public partial record InCondition : CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition
+    public partial record InCondition : CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition, CrossCutting.Utilities.QueryEvaluator.Abstractions.IInCondition
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -236,7 +236,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             get;
         }
 
-        public InCondition(CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression sourceExpression, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression> compareExpressions, System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup) : base(combination, startGroup, endGroup)
+        public InCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression sourceExpression, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression> compareExpressions) : base(combination, startGroup, endGroup)
         {
             this.SourceExpression = sourceExpression;
             this.CompareExpressions = compareExpressions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression>(compareExpressions);
@@ -259,6 +259,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IInCondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
@@ -316,7 +321,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             return ToTypedBuilder();
         }
     }
-    public partial record NotInCondition : CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition
+    public partial record NotInCondition : CrossCutting.Utilities.QueryEvaluator.Core.ConditionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition, CrossCutting.Utilities.QueryEvaluator.Abstractions.IInCondition
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -332,7 +337,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             get;
         }
 
-        public NotInCondition(CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression sourceExpression, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression> compareExpressions, System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup) : base(combination, startGroup, endGroup)
+        public NotInCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression sourceExpression, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression> compareExpressions) : base(combination, startGroup, endGroup)
         {
             this.SourceExpression = sourceExpression;
             this.CompareExpressions = compareExpressions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression>(compareExpressions);
@@ -355,6 +360,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IInCondition.ToBuilder()
         {
             return ToTypedBuilder();
         }
