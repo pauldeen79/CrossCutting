@@ -40,6 +40,13 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
             .Build()
             .OnSuccess(results => builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} {@operator} {results.GetValue(nameof(condition.CompareExpression))}"));
 
+    protected static Result GetStringConditionExpression(StringBuilder builder, IQuery query, IDoubleExpressionContainer condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, (string @operator, string formatString) stringValues)
+        => new ResultDictionaryBuilder<string>()
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpression(query, condition.SourceExpression, fieldInfo, parameterBag))
+            .Add(nameof(condition.CompareExpression), () => sqlExpressionProvider.GetSqlExpression(query, new SqlLikeExpression(condition.CompareExpression, stringValues.formatString), fieldInfo, parameterBag))
+            .Build()
+            .OnSuccess(results => builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} {stringValues.@operator} {results.GetValue(nameof(condition.CompareExpression))}"));
+
     protected static Result GetInConditionExpression(StringBuilder builder, IQuery query, IInCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, string @operator)
         => new ResultDictionaryBuilder<string>()
             .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpression(query, condition.SourceExpression, fieldInfo, parameterBag))

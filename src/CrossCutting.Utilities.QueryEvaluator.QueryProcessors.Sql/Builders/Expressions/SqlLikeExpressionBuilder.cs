@@ -16,20 +16,14 @@ public sealed class SqlLikeExpressionBuilder : IExpressionBuilder
     public SqlLikeExpressionBuilder(IExpression sourceExpression, string formatString)
     {
         SourceExpression = sourceExpression;
-        FormatString = formatString ?? "{0}";
+        FormatString = formatString;
     }
 
     public IExpression Build() => new SqlLikeExpression(SourceExpression, FormatString);
 
     public SqlLikeExpressionBuilder WithSourceExpression(IExpression sourceExpression)
-    {
-        SourceExpression = sourceExpression;
-        return this;
-    }
+        => this.With(x => x.SourceExpression = sourceExpression);
 
     public SqlLikeExpressionBuilder WithFormatString(string formatString)
-    {
-        FormatString = formatString;
-        return this;
-    }
+        => this.With(x => x.FormatString = formatString);
 }

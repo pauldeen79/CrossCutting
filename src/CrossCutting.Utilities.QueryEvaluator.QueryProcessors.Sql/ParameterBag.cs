@@ -35,9 +35,14 @@ public class ParameterBag
             return Result.Invalid<string>("There are no parameters");
         }
 
-        var newValue = string.Format(formatString, found.Item.Value);
-        _parameters.Remove(_parameters[_paramCounter - 1]);
-        _parameters.Add(new KeyValuePair<string, object?>(found.Item.Key, newValue));
+        if (formatString != "{0}")
+        {
+            // For non-default format strings, replace the value
+            var newValue = string.Format(formatString, found.Item.Value);
+            _parameters.Remove(_parameters[_paramCounter - 1]);
+            _parameters.Add(new KeyValuePair<string, object?>(found.Item.Key, newValue));
+        }
+
         return Result.Success(found.Item.Key);
     }
 
