@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.QueryProcessors.InMemory;
 
 public sealed class InMemoryQueryProcessorTests : TestBase
 {

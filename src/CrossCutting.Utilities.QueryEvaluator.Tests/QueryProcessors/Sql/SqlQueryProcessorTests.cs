@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.QueryProcessors.Sql;
 
 public sealed class SqlQueryProcessorTests : TestBase
 {

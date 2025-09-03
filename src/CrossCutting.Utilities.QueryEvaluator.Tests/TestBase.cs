@@ -6,8 +6,8 @@ public abstract class TestBase
     private IEnumerable<object> _sourceData = Enumerable.Empty<object>();
 
     protected IDictionary<Type, object?> ClassFactoryDictionary { get; }
-    protected IQueryProcessor InMemoryQueryProcessor => ClassFactoryDictionary.GetOrCreateMultiple<IQueryProcessor>(ClassFactory).OfType<QueryProcessor>().First();
-    protected IQueryProcessor SqlQueryProcessor => ClassFactoryDictionary.GetOrCreateMultiple<IQueryProcessor>(ClassFactory).OfType<QueryProcessors.Sql.QueryProcessor>().First();
+    protected IQueryProcessor InMemoryQueryProcessor => ClassFactoryDictionary.GetOrCreateMultiple<IQueryProcessor>(ClassFactory).OfType<QueryEvaluator.QueryProcessors.InMemory.QueryProcessor>().First();
+    protected IQueryProcessor SqlQueryProcessor => ClassFactoryDictionary.GetOrCreateMultiple<IQueryProcessor>(ClassFactory).OfType<QueryEvaluator.QueryProcessors.Sql.QueryProcessor>().First();
     protected IDatabaseEntityRetrieverProvider DatabaseEntityRetrieverProvider => ClassFactoryDictionary.GetOrCreate<IDatabaseEntityRetrieverProvider>(ClassFactory);
     protected IDatabaseEntityRetriever<MyEntity> DatabaseEntityRetriever => ClassFactoryDictionary.GetOrCreate<IDatabaseEntityRetriever<MyEntity>>(ClassFactory);
     protected IPagedResult<MyEntity> PagedResult => ClassFactoryDictionary.GetOrCreate<IPagedResult<MyEntity>>(ClassFactory);
@@ -77,10 +77,10 @@ public abstract class TestBase
     protected static MyEntity[] CreateData() =>
     [
         new MyEntity("B", "C"),
-            new MyEntity("A", "Z"),
-            new MyEntity("B", "D"),
-            new MyEntity("A", "A"),
-            new MyEntity("B", "E"),
+        new MyEntity("A", "Z"),
+        new MyEntity("B", "D"),
+        new MyEntity("A", "A"),
+        new MyEntity("B", "E"),
     ];
 
     protected ExpressionEvaluatorContext CreateContext(
