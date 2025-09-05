@@ -12,7 +12,7 @@ public static class QueryExtensions
 
     public static IContextualQuery WithContext(this IQuery instance, object? context)
         => instance is IContextualQuery contextualQuery
-            ? contextualQuery
+            ? contextualQuery.ToBuilder().WithContext(context).Build()
             : new ContextualQueryWrapper(instance, context);
 
     private sealed class ContextualQueryWrapper : IContextualQuery
