@@ -12,6 +12,7 @@ public class SqlConditionExpressionProvider : ISqlConditionExpressionProvider
 
     public Result GetConditionExpression(
         IQuery query,
+        object? context,
         ICondition condition,
         IQueryFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
@@ -33,7 +34,7 @@ public class SqlConditionExpressionProvider : ISqlConditionExpressionProvider
         }
 
         var result = _handlers
-            .Select(x => x.GetConditionExpression(builder, query, condition, fieldInfo, sqlExpressionProvider, parameterBag))
+            .Select(x => x.GetConditionExpression(builder, query, context, condition, fieldInfo, sqlExpressionProvider, parameterBag))
             .WhenNotContinue(() => Result.Invalid<string>($"No sql condition expression provider handler found for condition: {condition.GetType().FullName}"));
 
         if (condition.EndGroup)

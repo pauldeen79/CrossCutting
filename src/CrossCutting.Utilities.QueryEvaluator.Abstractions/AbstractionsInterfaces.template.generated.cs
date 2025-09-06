@@ -29,15 +29,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder ToBuilder();
     }
-    public partial interface IContextualQuery : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
-    {
-        object? Context
-        {
-            get;
-        }
-
-        new CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IContextualQueryBuilder ToBuilder();
-    }
     public partial interface IDataObjectNameQuery : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]

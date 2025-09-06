@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql;
 
-public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<IQuery>
+public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<IQueryWrapper>
 {
     private readonly IQueryFieldInfoProvider _fieldInfoProvider;
     private readonly ISqlExpressionProvider _sqlExpressionProvider;
@@ -23,7 +23,7 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
         _settingsProviders = settingsProviders;
     }
 
-    public IPagedDatabaseCommand CreatePaged(IQuery source, DatabaseOperation operation, int offset, int pageSize)
+    public IPagedDatabaseCommand CreatePaged(IQueryWrapper source, DatabaseOperation operation, int offset, int pageSize)
     {
         source = ArgumentGuard.IsNotNull(source, nameof(source));
 
@@ -32,30 +32,30 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
             throw new ArgumentOutOfRangeException(nameof(operation), "Only select operation is supported");
         }
 
-        var fieldSelectionQuery = source as IFieldSelectionQuery;
-        var parameterizedQuery = source as IParameterizedQuery;
+        var fieldSelectionQuery = source.Query as IFieldSelectionQuery;
+        var parameterizedQuery = source.Query as IParameterizedQuery;
         IPagedDatabaseEntityRetrieverSettings settings;
         try
         {
             settings = (IPagedDatabaseEntityRetrieverSettings)GetType()
                 .GetMethod(nameof(Create))
-                .MakeGenericMethod(source.GetType())
+                .MakeGenericMethod(source.Query.GetType())
                 .Invoke(this, Array.Empty<object>());
         }
         catch (TargetInvocationException ex)
         {
             throw ex.InnerException;
         }
-        var fieldInfo = _fieldInfoProvider.Create(source).GetValueOrThrow();
+        var fieldInfo = _fieldInfoProvider.Create(source.Query).GetValueOrThrow();
         var parameterBag = new ParameterBag();
         return new PagedSelectCommandBuilder()
-            .Select(settings, fieldInfo, fieldSelectionQuery, _sqlExpressionProvider, parameterBag)
+            .Select(source.Context, settings, fieldInfo, fieldSelectionQuery, _sqlExpressionProvider, parameterBag)
             .Distinct(fieldSelectionQuery)
-            .Top(source, settings, pageSize)
-            .Offset(source, offset)
-            .From(source, settings)
-            .Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag)
-            .OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag)
+            .Top(source.Query, settings, pageSize)
+            .Offset(source.Query, offset)
+            .From(source.Query, settings)
+            .Where(source.Query, source.Context, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag)
+            .OrderBy(source.Query, source.Context, settings, fieldInfo, _sqlExpressionProvider, parameterBag)
             .WithParameters(parameterizedQuery, parameterBag)
             .Build();
     }

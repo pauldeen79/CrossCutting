@@ -11,14 +11,14 @@ public class DefaultDataFactory : IDataFactory
         _providers = providers;
     }
 
-    public async Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query)
+    public async Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query, object? context)
         where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
         foreach (var provider in _providers)
         {
-            var result = await provider.GetDataAsync<TResult>(query).ConfigureAwait(false);
+            var result = await provider.GetDataAsync<TResult>(query, context).ConfigureAwait(false);
 
             if (result.Status != ResultStatus.Continue)
             {

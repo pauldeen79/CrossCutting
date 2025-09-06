@@ -2,6 +2,6 @@
 
 public class InConditionHandler : ConditionExpressionHandlerBase<InCondition>
 {
-    protected override Result DoGetConditionExpression(StringBuilder builder, IQuery query, InCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag)
-        => GetInConditionExpression(builder, query, condition, fieldInfo, sqlExpressionProvider, parameterBag, "IN");
+    protected override Result DoGetConditionExpression(StringBuilder builder, IQuery query, object? context, InCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag)
+        => GetInConditionExpression(builder, query, context, condition, fieldInfo, sqlExpressionProvider, parameterBag, "IN");
 }

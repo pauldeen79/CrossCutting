@@ -2,6 +2,6 @@
 
 public class SmallerThanConditionHandler : ConditionExpressionHandlerBase<SmallerThanCondition>
 {
-    protected override Result DoGetConditionExpression(StringBuilder builder, IQuery query, SmallerThanCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag)
-        => GetSimpleConditionExpression(builder, query, condition, fieldInfo, sqlExpressionProvider, parameterBag, new ConditionParameters("<"));
+    protected override Result DoGetConditionExpression(StringBuilder builder, IQuery query, object? context, SmallerThanCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag)
+        => GetSimpleConditionExpression(builder, query, context, condition, fieldInfo, sqlExpressionProvider, parameterBag, new ConditionParameters("<"));
 }

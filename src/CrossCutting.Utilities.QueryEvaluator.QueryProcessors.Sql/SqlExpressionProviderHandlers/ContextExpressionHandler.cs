@@ -2,11 +2,10 @@
 
 public class ContextExpressionHandler : SqlExpressionProviderHandlerBase<ContextExpression>
 {
-    protected override Result<string> DoGetSqlExpression(IQuery query, ContextExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback)
+    protected override Result<string> DoGetSqlExpression(IQuery query, object? context, ContextExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback)
     {
-        query = ArgumentGuard.IsNotNull(query, nameof(query));
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
 
-        return Result.Success(parameterBag.CreateQueryParameterName(query.GetContext()));
+        return Result.Success(parameterBag.CreateQueryParameterName(context));
     }
 }

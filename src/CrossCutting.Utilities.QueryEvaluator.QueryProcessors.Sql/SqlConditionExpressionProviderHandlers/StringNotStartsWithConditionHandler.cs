@@ -2,6 +2,6 @@
 
 public class StringNotStartsWithConditionHandler : ConditionExpressionHandlerBase<StringNotStartsWithCondition>
 {
-    protected override Result DoGetConditionExpression(StringBuilder builder, IQuery query, StringNotStartsWithCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag)
-        => GetStringConditionExpression(builder, query, condition, fieldInfo, sqlExpressionProvider, parameterBag, new StringConditionParameters("NOT LIKE", "{0}%"));
+    protected override Result DoGetConditionExpression(StringBuilder builder, IQuery query, object? context, StringNotStartsWithCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag)
+        => GetStringConditionExpression(builder, query, context, condition, fieldInfo, sqlExpressionProvider, parameterBag, new StringConditionParameters("NOT LIKE", "{0}%"));
 }

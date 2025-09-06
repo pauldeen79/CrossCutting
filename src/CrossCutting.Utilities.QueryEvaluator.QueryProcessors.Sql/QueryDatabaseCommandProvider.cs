@@ -2,9 +2,9 @@
 
 public class QueryDatabaseCommandProvider : IDatabaseCommandProvider<IQuery>
 {
-    private readonly IPagedDatabaseCommandProvider<IQuery> _pagedDatabaseCommandProvider;
+    private readonly IPagedDatabaseCommandProvider<IQueryWrapper> _pagedDatabaseCommandProvider;
 
-    public QueryDatabaseCommandProvider(IPagedDatabaseCommandProvider<IQuery> pagedDatabaseCommandProvider)
+    public QueryDatabaseCommandProvider(IPagedDatabaseCommandProvider<IQueryWrapper> pagedDatabaseCommandProvider)
     {
         ArgumentGuard.IsNotNull(pagedDatabaseCommandProvider, nameof(pagedDatabaseCommandProvider));
 
@@ -18,6 +18,6 @@ public class QueryDatabaseCommandProvider : IDatabaseCommandProvider<IQuery>
             throw new ArgumentOutOfRangeException(nameof(operation), "Only select operation is supported");
         }
 
-        return _pagedDatabaseCommandProvider.CreatePaged(source, operation, 0, 0).DataCommand;
+        return _pagedDatabaseCommandProvider.CreatePaged(source.WithContext(null), operation, 0, 0).DataCommand;
     }
 }

@@ -4,6 +4,7 @@ public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpres
 {
     public Result<string> GetSqlExpression(
         IQuery query,
+        object? context,
         IExpression expression,
         IQueryFieldInfo fieldInfo,
         ParameterBag parameterBag,
@@ -19,11 +20,12 @@ public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpres
             return Result.Continue<string>();
         }
 
-        return DoGetSqlExpression(query, typedExpression, fieldInfo, parameterBag, callback);
+        return DoGetSqlExpression(query, context, typedExpression, fieldInfo, parameterBag, callback);
     }
 
     protected abstract Result<string> DoGetSqlExpression(
         IQuery query,
+        object? context,
         TExpression expression,
         IQueryFieldInfo fieldInfo,
         ParameterBag parameterBag,

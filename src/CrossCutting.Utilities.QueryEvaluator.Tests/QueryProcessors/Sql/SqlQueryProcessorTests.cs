@@ -515,4 +515,70 @@ public sealed class SqlQueryProcessorTests : TestBase
                 x.DataCommand.CommandText == "SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY Property2 ASC) as sq_row_number FROM MyEntity WHERE Property1 = @p0) sq WHERE sq.sq_row_number BETWEEN 2 and 2;"
                 && x.RecordCountCommand.CommandText == "SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0"), Arg.Any<CancellationToken>());
     }
+
+    [Fact]
+    public async Task Can_Find_Items_Paged_With_FieldSelectionQuery()
+    {
+        // Arrange
+        var query = new FieldSelectionQuery
+        {
+            Distinct = false,
+            GetAllFields = false,
+            FieldNames = new List<string> { "Property1", "Property2" },
+            Conditions =  new List<ICondition>
+            {
+                new EqualConditionBuilder()
+                    .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                    .WithCompareExpression(new DelegateExpressionBuilder(() => "A"))
+                    .Build()
+            },
+            SortOrders = new List<ISortOrder>
+            {
+                new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending).Build()
+            }
+        };
+
+        InitializeMock(CreateData().Where(x => x.Property1 == "A").OrderBy(x => x.Property2).Skip(1).Take(1));
+
+        // Act
+        var result = await SqlQueryProcessor.FindPagedAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        result.Value.Count.ShouldBe(1);
+        result.Value.First().Property2.ShouldBe("Z");
+        await DatabaseEntityRetriever
+            .Received()
+            .FindPagedAsync(Arg.Is<IPagedDatabaseCommand>(x =>
+                x.DataCommand.CommandText == "SELECT Property1, Property2 FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC"
+                && x.RecordCountCommand.CommandText == "SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0"), Arg.Any<CancellationToken>());
+    }
+
+    private sealed class FieldSelectionQuery : IFieldSelectionQuery
+    {
+        public bool Distinct { get; set; }
+
+        public bool GetAllFields { get; set; }
+
+        public IReadOnlyCollection<string> FieldNames { get; set; } = new List<string>();
+
+        public int? Limit { get; set; }
+
+        public int? Offset { get; set; }
+
+        public IReadOnlyCollection<ICondition> Conditions { get; set; } = new List<ICondition>();
+
+        public IReadOnlyCollection<ISortOrder> SortOrders { get; set; } = new List<ISortOrder>();
+
+        public IFieldSelectionQueryBuilder ToBuilder()
+        {
+            throw new NotImplementedException();
+        }
+
+        IQueryBuilder IQuery.ToBuilder()
+        {
+            return ToBuilder();
+        }
+    }
 }

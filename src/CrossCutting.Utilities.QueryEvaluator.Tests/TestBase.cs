@@ -11,7 +11,6 @@ public abstract class TestBase
     protected IDatabaseEntityRetrieverProvider DatabaseEntityRetrieverProvider => ClassFactoryDictionary.GetOrCreate<IDatabaseEntityRetrieverProvider>(ClassFactory);
     protected IDatabaseEntityRetriever<MyEntity> DatabaseEntityRetriever => ClassFactoryDictionary.GetOrCreate<IDatabaseEntityRetriever<MyEntity>>(ClassFactory);
     protected IPagedResult<MyEntity> PagedResult => ClassFactoryDictionary.GetOrCreate<IPagedResult<MyEntity>>(ClassFactory);
-    protected IPagedDatabaseCommandProvider<IQuery> PagedDatabaseCommandProvider => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseCommandProvider<IQuery>>(ClassFactory);
     protected IExpressionEvaluator Evaluator => ClassFactoryDictionary.GetOrCreate<IExpressionEvaluator>(ClassFactory);
     protected IDateTimeProvider DateTimeProvider => ClassFactoryDictionary.GetOrCreate<IDateTimeProvider>(ClassFactory);
     protected IPagedDatabaseEntityRetrieverSettingsProvider DatabaseEntityRetrieverSettingsProvider => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseEntityRetrieverSettingsProvider>(ClassFactory);

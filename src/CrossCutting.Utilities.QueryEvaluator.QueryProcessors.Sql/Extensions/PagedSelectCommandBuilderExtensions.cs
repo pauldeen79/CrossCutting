@@ -3,6 +3,7 @@
 internal static class PagedSelectCommandBuilderExtensions
 {
     internal static PagedSelectCommandBuilder Select(this PagedSelectCommandBuilder instance,
+                                                     object? context,
                                                      IPagedDatabaseEntityRetrieverSettings settings,
                                                      IQueryFieldInfo fieldInfo,
                                                      IFieldSelectionQuery? fieldSelectionQuery,
@@ -10,7 +11,7 @@ internal static class PagedSelectCommandBuilderExtensions
                                                      ParameterBag parameterBag)
         => fieldSelectionQuery is null || fieldSelectionQuery.GetAllFields
             ? instance.AppendSelectFieldsForAllFields(settings, fieldInfo)
-            : instance.AppendSelectFieldsForSpecifiedFields(fieldSelectionQuery, fieldInfo, sqlExpressionProvider, parameterBag);
+            : instance.AppendSelectFieldsForSpecifiedFields(context, fieldSelectionQuery, fieldInfo, sqlExpressionProvider, parameterBag);
 
     private static PagedSelectCommandBuilder AppendSelectFieldsForAllFields(this PagedSelectCommandBuilder instance,
                                                                             IPagedDatabaseEntityRetrieverSettings settings,
@@ -25,6 +26,7 @@ internal static class PagedSelectCommandBuilderExtensions
     }
 
     private static PagedSelectCommandBuilder AppendSelectFieldsForSpecifiedFields(this PagedSelectCommandBuilder instance,
+                                                                                  object? context,
                                                                                   IFieldSelectionQuery fieldSelectionQuery,
                                                                                   IQueryFieldInfo fieldInfo,
                                                                                   ISqlExpressionProvider sqlExpressionProvider,
@@ -37,7 +39,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.Select(", ");
             }
 
-            instance.Select(sqlExpressionProvider.GetSqlExpression(fieldSelectionQuery, new PropertyNameExpressionBuilder(expression.Item).Build(), fieldInfo, parameterBag).GetValueOrThrow());
+            instance.Select(sqlExpressionProvider.GetSqlExpression(fieldSelectionQuery, context, new PropertyNameExpressionBuilder(expression.Item).Build(), fieldInfo, parameterBag).GetValueOrThrow());
         }
 
         return instance;
@@ -77,6 +79,7 @@ internal static class PagedSelectCommandBuilderExtensions
 
     internal static PagedSelectCommandBuilder Where(this PagedSelectCommandBuilder instance,
                                                     IQuery query,
+                                                    object? context,
                                                     IPagedDatabaseEntityRetrieverSettings settings,
                                                     IQueryFieldInfo fieldInfo,
                                                     ISqlExpressionProvider sqlExpressionProvider,
@@ -97,6 +100,7 @@ internal static class PagedSelectCommandBuilderExtensions
         {
             provider.GetConditionExpression(
                 query,
+                context,
                 queryCondition,
                 fieldInfo,
                 sqlExpressionProvider,
@@ -112,6 +116,7 @@ internal static class PagedSelectCommandBuilderExtensions
 
     internal static PagedSelectCommandBuilder OrderBy(this PagedSelectCommandBuilder instance,
                                                       IQuery query,
+                                                      object? context,
                                                       IPagedDatabaseEntityRetrieverSettings settings,
                                                       IQueryFieldInfo fieldInfo,
                                                       ISqlExpressionProvider sqlExpressionProvider,
@@ -119,7 +124,7 @@ internal static class PagedSelectCommandBuilderExtensions
     {
         if (query.SortOrders.Count > 0 || !string.IsNullOrEmpty(settings.DefaultOrderBy))
         {
-            return instance.AppendOrderBy(query, settings, fieldInfo, sqlExpressionProvider, parameterBag);
+            return instance.AppendOrderBy(query, context, settings, fieldInfo, sqlExpressionProvider, parameterBag);
         }
         else
         {
@@ -129,6 +134,7 @@ internal static class PagedSelectCommandBuilderExtensions
 
     private static PagedSelectCommandBuilder AppendOrderBy(this PagedSelectCommandBuilder instance,
                                                            IQuery query,
+                                                           object? context,
                                                            IPagedDatabaseEntityRetrieverSettings settings,
                                                            IQueryFieldInfo fieldInfo,
                                                            ISqlExpressionProvider sqlExpressionProvider,
@@ -141,7 +147,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.OrderBy(", ");
             }
 
-            instance.OrderBy($"{sqlExpressionProvider.GetSqlExpression(query, querySortOrder.Item.Expression, fieldInfo, parameterBag).GetValueOrThrow()} {querySortOrder.Item.ToSql()}");
+            instance.OrderBy($"{sqlExpressionProvider.GetSqlExpression(query, context, querySortOrder.Item.Expression, fieldInfo, parameterBag).GetValueOrThrow()} {querySortOrder.Item.ToSql()}");
         }
 
         if (query.SortOrders.Count == 0 && !string.IsNullOrEmpty(settings.DefaultOrderBy))

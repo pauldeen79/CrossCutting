@@ -13,7 +13,7 @@ public abstract class DataProviderBase : IDataProvider
 
     public abstract IEnumerable<object> GetSourceData();
 
-    public async Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query)
+    public async Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query, object? context)
         where TResult : class
     {
         var results = new List<TResult>();

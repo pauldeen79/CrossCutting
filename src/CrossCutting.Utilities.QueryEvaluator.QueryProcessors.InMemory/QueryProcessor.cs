@@ -79,5 +79,5 @@ public class QueryProcessor : IQueryProcessor
 
     private Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query, object? context)
         where TResult : class
-        => _dataFactory.GetDataAsync<TResult>(query.WithContext(context));
+        => _dataFactory.GetDataAsync<TResult>(query, context);
 }
