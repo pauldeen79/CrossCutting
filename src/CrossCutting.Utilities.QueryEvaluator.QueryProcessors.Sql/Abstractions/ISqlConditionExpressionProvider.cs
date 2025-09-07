@@ -2,8 +2,7 @@
 
 public interface ISqlConditionExpressionProvider
 {
-    Result GetConditionExpression(IQuery query,
-                                  object? context,
+    Result GetConditionExpression(IQueryContext context,
                                   ICondition condition,
                                   IQueryFieldInfo fieldInfo,
                                   ISqlExpressionProvider sqlExpressionProvider,

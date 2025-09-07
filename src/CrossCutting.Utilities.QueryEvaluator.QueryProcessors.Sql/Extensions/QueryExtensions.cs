@@ -2,10 +2,10 @@
 
 public static class QueryExtensions
 {
-    public static IQueryWrapper WithContext(this IQuery query, object? context)
+    public static IQueryContext WithContext(this IQuery query, object? context)
         => new QueryWrapper(query, context);
 
-    private sealed class QueryWrapper : IQueryWrapper
+    private sealed class QueryWrapper : IQueryContext
     {
         public QueryWrapper(IQuery query, object? context)
         {

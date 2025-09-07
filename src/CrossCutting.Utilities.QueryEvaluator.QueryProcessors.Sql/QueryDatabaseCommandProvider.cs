@@ -2,9 +2,9 @@
 
 public class QueryDatabaseCommandProvider : IDatabaseCommandProvider<IQuery>
 {
-    private readonly IPagedDatabaseCommandProvider<IQueryWrapper> _pagedDatabaseCommandProvider;
+    private readonly IPagedDatabaseCommandProvider<IQueryContext> _pagedDatabaseCommandProvider;
 
-    public QueryDatabaseCommandProvider(IPagedDatabaseCommandProvider<IQueryWrapper> pagedDatabaseCommandProvider)
+    public QueryDatabaseCommandProvider(IPagedDatabaseCommandProvider<IQueryContext> pagedDatabaseCommandProvider)
     {
         ArgumentGuard.IsNotNull(pagedDatabaseCommandProvider, nameof(pagedDatabaseCommandProvider));
 

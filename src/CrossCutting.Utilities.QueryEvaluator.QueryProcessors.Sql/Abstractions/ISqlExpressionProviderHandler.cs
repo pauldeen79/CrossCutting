@@ -2,5 +2,5 @@
 
 public interface ISqlExpressionProviderHandler
 {
-    Result<string> GetSqlExpression(IQuery query, object? context, IExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback);
+    Result<string> GetSqlExpression(IQueryContext context, IExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback);
 }

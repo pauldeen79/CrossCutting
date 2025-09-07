@@ -3,8 +3,7 @@
 public interface ISqlConditionExpressionProviderHandler
 {
     Result GetConditionExpression(StringBuilder builder,
-                                  IQuery query,
-                                  object? context,
+                                  IQueryContext context,
                                   ICondition condition,
                                   IQueryFieldInfo fieldInfo,
                                   ISqlExpressionProvider sqlExpressionProvider,

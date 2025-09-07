@@ -2,11 +2,11 @@
 
 public class QueryProcessor : IQueryProcessor
 {
-    private readonly IPagedDatabaseCommandProvider<IQueryWrapper> _pagedDatabaseCommandProvider;
+    private readonly IPagedDatabaseCommandProvider<IQueryContext> _pagedDatabaseCommandProvider;
     private readonly IEnumerable<IDatabaseEntityRetrieverProvider> _databaseEntityRetrieverProviders;
 
     public QueryProcessor(
-        IPagedDatabaseCommandProvider<IQueryWrapper> pagedDatabaseCommandProvider,
+        IPagedDatabaseCommandProvider<IQueryContext> pagedDatabaseCommandProvider,
         IEnumerable<IDatabaseEntityRetrieverProvider> databaseEntityRetrieverProviders)
     {
         ArgumentGuard.IsNotNull(pagedDatabaseCommandProvider, nameof(pagedDatabaseCommandProvider));

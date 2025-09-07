@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql;
 
-public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<IQueryWrapper>
+public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<IQueryContext>
 {
     private readonly IQueryFieldInfoProvider _fieldInfoProvider;
     private readonly ISqlExpressionProvider _sqlExpressionProvider;
@@ -23,7 +23,7 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
         _settingsProviders = settingsProviders;
     }
 
-    public IPagedDatabaseCommand CreatePaged(IQueryWrapper source, DatabaseOperation operation, int offset, int pageSize)
+    public IPagedDatabaseCommand CreatePaged(IQueryContext source, DatabaseOperation operation, int offset, int pageSize)
     {
         source = ArgumentGuard.IsNotNull(source, nameof(source));
 
@@ -49,13 +49,13 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
         var fieldInfo = _fieldInfoProvider.Create(source.Query).GetValueOrThrow();
         var parameterBag = new ParameterBag();
         return new PagedSelectCommandBuilder()
-            .Select(source.Context, settings, fieldInfo, fieldSelectionQuery, _sqlExpressionProvider, parameterBag)
+            .Select(source, settings, fieldInfo, fieldSelectionQuery, _sqlExpressionProvider, parameterBag)
             .Distinct(fieldSelectionQuery)
-            .Top(source.Query, settings, pageSize)
-            .Offset(source.Query, offset)
-            .From(source.Query, settings)
-            .Where(source.Query, source.Context, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag)
-            .OrderBy(source.Query, source.Context, settings, fieldInfo, _sqlExpressionProvider, parameterBag)
+            .Top(source, settings, pageSize)
+            .Offset(source, offset)
+            .From(source, settings)
+            .Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag)
+            .OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag)
             .WithParameters(parameterizedQuery, parameterBag)
             .Build();
     }

@@ -5,7 +5,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddQueryEvaluatorSql(this IServiceCollection serviceCollection)
         => serviceCollection
             .AddSingleton<IDatabaseCommandProvider<IQuery>, QueryDatabaseCommandProvider>()
-            .AddSingleton<IPagedDatabaseCommandProvider<IQueryWrapper>, QueryPagedDatabaseCommandProvider>()
+            .AddSingleton<IPagedDatabaseCommandProvider<IQueryContext>, QueryPagedDatabaseCommandProvider>()
             .AddSingleton<IQueryFieldInfoProvider, QueryFieldInfoProvider>()
             .AddSingleton<IQueryProcessor, QueryProcessor>()
             .AddSingleton<ISqlConditionExpressionProvider, SqlConditionExpressionProvider>()

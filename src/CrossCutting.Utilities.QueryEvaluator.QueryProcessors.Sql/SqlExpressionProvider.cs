@@ -10,15 +10,15 @@ public class SqlExpressionProvider : ISqlExpressionProvider
         _handlers = handlers;
     }
 
-    public Result<string> GetSqlExpression(IQuery query, object? context, IExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag)
+    public Result<string> GetSqlExpression(IQueryContext context, IExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag)
     {
-        query = ArgumentGuard.IsNotNull(query, nameof(query));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
         fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
 
         return _handlers
-            .Select(x => x.GetSqlExpression(query, context, expression, fieldInfo, parameterBag, this))
+            .Select(x => x.GetSqlExpression(context, expression, fieldInfo, parameterBag, this))
             .WhenNotContinue(() => Result.Invalid<string>($"No sql expression provider handler found for type: {expression.GetType().FullName}"));
     }
 }

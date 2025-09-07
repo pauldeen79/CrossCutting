@@ -2,7 +2,7 @@
 
 public class PropertyNameExpressionHandler : SqlExpressionProviderHandlerBase<PropertyNameExpression>
 {
-    protected override Result<string> DoGetSqlExpression(IQuery query, object? context, PropertyNameExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback)
+    protected override Result<string> DoGetSqlExpression(IQueryContext context, PropertyNameExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback)
     {
         fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));

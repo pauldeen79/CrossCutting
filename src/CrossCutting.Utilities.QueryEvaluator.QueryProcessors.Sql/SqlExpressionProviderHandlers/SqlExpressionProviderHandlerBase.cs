@@ -3,14 +3,13 @@
 public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpressionProviderHandler
 {
     public Result<string> GetSqlExpression(
-        IQuery query,
-        object? context,
+        IQueryContext context,
         IExpression expression,
         IQueryFieldInfo fieldInfo,
         ParameterBag parameterBag,
         ISqlExpressionProvider callback)
     {
-        query = ArgumentGuard.IsNotNull(query, nameof(query));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
         fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
@@ -20,12 +19,11 @@ public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpres
             return Result.Continue<string>();
         }
 
-        return DoGetSqlExpression(query, context, typedExpression, fieldInfo, parameterBag, callback);
+        return DoGetSqlExpression(context, typedExpression, fieldInfo, parameterBag, callback);
     }
 
     protected abstract Result<string> DoGetSqlExpression(
-        IQuery query,
-        object? context,
+        IQueryContext context,
         TExpression expression,
         IQueryFieldInfo fieldInfo,
         ParameterBag parameterBag,
