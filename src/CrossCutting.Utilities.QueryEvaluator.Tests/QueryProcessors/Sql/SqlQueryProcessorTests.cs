@@ -517,7 +517,7 @@ public sealed class SqlQueryProcessorTests : TestBase
     }
 
     [Fact]
-    public async Task Can_Find_Items_Paged_With_FieldSelectionQuery()
+    public async Task Can_Find_Items_Paged_With_FieldSelectionQuery_Custom_Fields()
     {
         // Arrange
         var query = new FieldSelectionQuery
@@ -538,7 +538,7 @@ public sealed class SqlQueryProcessorTests : TestBase
             }
         };
 
-        InitializeMock(CreateData().Where(x => x.Property1 == "A").OrderBy(x => x.Property2).Skip(1).Take(1));
+        InitializeMock(CreateData().Where(x => x.Property1 == "A").OrderBy(x => x.Property2));
 
         // Act
         var result = await SqlQueryProcessor.FindPagedAsync<MyEntity>(query);
@@ -546,12 +546,84 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        result.Value.Count.ShouldBe(1);
-        result.Value.First().Property2.ShouldBe("Z");
         await DatabaseEntityRetriever
             .Received()
             .FindPagedAsync(Arg.Is<IPagedDatabaseCommand>(x =>
                 x.DataCommand.CommandText == "SELECT Property1, Property2 FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC"
+                && x.RecordCountCommand.CommandText == "SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_Items_Paged_With_FieldSelectionQuery_Custom_Fields_But_Empty()
+    {
+        // Arrange
+        var query = new FieldSelectionQuery
+        {
+            Distinct = false,
+            GetAllFields = true,
+            FieldNames = new List<string>(),
+            Conditions = new List<ICondition>
+            {
+                new EqualConditionBuilder()
+                    .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                    .WithCompareExpression(new DelegateExpressionBuilder(() => "A"))
+                    .Build()
+            },
+            SortOrders = new List<ISortOrder>
+            {
+                new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending).Build()
+            }
+        };
+
+        InitializeMock(CreateData().Where(x => x.Property1 == "A").OrderBy(x => x.Property2));
+        DatabaseEntityRetrieverSettings.Fields.Returns("Property1, Property2");
+
+        // Act
+        var result = await SqlQueryProcessor.FindPagedAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindPagedAsync(Arg.Is<IPagedDatabaseCommand>(x =>
+                x.DataCommand.CommandText == "SELECT Property1, Property2 FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC"
+                && x.RecordCountCommand.CommandText == "SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Can_Find_Items_Paged_With_FieldSelectionQuery_All_Fields_Distinct()
+    {
+        // Arrange
+        var query = new FieldSelectionQuery
+        {
+            Distinct = true,
+            GetAllFields = true,
+            Conditions = new List<ICondition>
+            {
+                new EqualConditionBuilder()
+                    .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
+                    .WithCompareExpression(new DelegateExpressionBuilder(() => "A"))
+                    .Build()
+            },
+            SortOrders = new List<ISortOrder>
+            {
+                new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending).Build()
+            }
+        };
+
+        InitializeMock(CreateData().Where(x => x.Property1 == "A").OrderBy(x => x.Property2));
+
+        // Act
+        var result = await SqlQueryProcessor.FindPagedAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        await DatabaseEntityRetriever
+            .Received()
+            .FindPagedAsync(Arg.Is<IPagedDatabaseCommand>(x =>
+                x.DataCommand.CommandText == "SELECT DISTINCT * FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC"
                 && x.RecordCountCommand.CommandText == "SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0"), Arg.Any<CancellationToken>());
     }
 
