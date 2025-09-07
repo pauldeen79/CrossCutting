@@ -4,8 +4,9 @@ public class ContextExpressionHandler : SqlExpressionProviderHandlerBase<Context
 {
     protected override Result<string> DoGetSqlExpression(IQueryContext context, ContextExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback)
     {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
 
-        return Result.Success(parameterBag.CreateQueryParameterName(context));
+        return Result.Success(parameterBag.CreateQueryParameterName(context.Context));
     }
 }
