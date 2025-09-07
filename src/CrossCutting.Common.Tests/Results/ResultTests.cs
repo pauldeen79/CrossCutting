@@ -207,7 +207,7 @@ public class ResultTests
     public void Can_Create_Success_Result_From_NonNull_Instance_With_ValidationErrors_Provided()
     {
         // Act
-        var actual = Result.FromInstance(this, new[] { new ValidationError("Ignored", ["Member1"]) });
+        var actual = Result.FromInstance(this, [new ValidationError("Ignored", ["Member1"])]);
 
         // Assert
         actual.Status.ShouldBe(ResultStatus.Ok);
@@ -276,7 +276,7 @@ public class ResultTests
     public void Can_Create_Invalid_Result_With_ErrorMessage_And_InnerResults()
     {
         // Act
-        var actual = Result.Invalid<string>("Error", new[] { Result.Error("Kaboom") });
+        var actual = Result.Invalid<string>("Error", [Result.Error("Kaboom")]);
 
         // Assert
         actual.Status.ShouldBe(ResultStatus.Invalid);
@@ -304,7 +304,7 @@ public class ResultTests
     public void Can_Create_Invalid_Void_Result_With_ErrorMessage_And_InnerResults()
     {
         // Act
-        var actual = Result.Invalid("Error", new[] { Result.Error("Kaboom") });
+        var actual = Result.Invalid("Error", [Result.Error("Kaboom")]);
 
         // Assert
         actual.Status.ShouldBe(ResultStatus.Invalid);
@@ -318,7 +318,7 @@ public class ResultTests
     public void Can_Create_Invalid_Result_With_ValidationErrors()
     {
         // Act
-        var actual = Result.Invalid<string>(new[] { new ValidationError("x", ["m1", "m2"]) });
+        var actual = Result.Invalid<string>([new ValidationError("x", ["m1", "m2"])]);
 
         // Assert
         actual.Status.ShouldBe(ResultStatus.Invalid);
@@ -332,7 +332,7 @@ public class ResultTests
     public void Can_Create_Invalid_Void_Result_With_ValidationErrors()
     {
         // Act
-        var actual = Result.Invalid(new[] { new ValidationError("x", ["m1", "m2"]) });
+        var actual = Result.Invalid([new ValidationError("x", ["m1", "m2"])]);
 
         // Assert
         actual.Status.ShouldBe(ResultStatus.Invalid);
@@ -372,7 +372,7 @@ public class ResultTests
     public void Can_Create_Invalid_Result_From_Null_Instance_Without_ErrorMessage()
     {
         // Act
-        var actual = Result.FromInstance<ResultTests>(null, new[] { new ValidationError("Error", ["Name"]) });
+        var actual = Result.FromInstance<ResultTests>(null, [new ValidationError("Error", ["Name"])]);
 
         // Assert
         actual.Status.ShouldBe(ResultStatus.Invalid);

@@ -2,35 +2,35 @@
 
 internal static class PagedSelectCommandBuilderExtensions
 {
-    internal static PagedSelectCommandBuilder Select(this PagedSelectCommandBuilder instance,
-                                                     IQueryContext context,
-                                                     IPagedDatabaseEntityRetrieverSettings settings,
-                                                     IQueryFieldInfo fieldInfo,
-                                                     IFieldSelectionQuery? fieldSelectionQuery,
-                                                     ISqlExpressionProvider sqlExpressionProvider,
-                                                     ParameterBag parameterBag)
+    internal static Result<PagedSelectCommandBuilder> Select(this PagedSelectCommandBuilder instance,
+                                                             IQueryContext context,
+                                                             IPagedDatabaseEntityRetrieverSettings settings,
+                                                             IQueryFieldInfo fieldInfo,
+                                                             IFieldSelectionQuery? fieldSelectionQuery,
+                                                             ISqlExpressionProvider sqlExpressionProvider,
+                                                             ParameterBag parameterBag)
         => fieldSelectionQuery is null || fieldSelectionQuery.GetAllFields
             ? instance.AppendSelectFieldsForAllFields(settings, fieldInfo)
             : instance.AppendSelectFieldsForSpecifiedFields(context, fieldSelectionQuery, fieldInfo, sqlExpressionProvider, parameterBag);
 
-    private static PagedSelectCommandBuilder AppendSelectFieldsForAllFields(this PagedSelectCommandBuilder instance,
-                                                                            IPagedDatabaseEntityRetrieverSettings settings,
-                                                                            IQueryFieldInfo fieldInfo)
+    private static Result<PagedSelectCommandBuilder> AppendSelectFieldsForAllFields(this PagedSelectCommandBuilder instance,
+                                                                                    IPagedDatabaseEntityRetrieverSettings settings,
+                                                                                    IQueryFieldInfo fieldInfo)
     {
         var allFields = fieldInfo.GetAllFields();
-        return allFields.Any()
+        return Result.Success(allFields.Any()
             ? instance.Select(string.Join(", ", allFields
                 .Select(fieldInfo.GetDatabaseFieldName)
                 .Where(x => !string.IsNullOrEmpty(x))))
-            : instance.Select(settings.Fields.WhenNullOrWhitespace("*"));
+            : instance.Select(settings.Fields.WhenNullOrWhitespace("*")));
     }
 
-    private static PagedSelectCommandBuilder AppendSelectFieldsForSpecifiedFields(this PagedSelectCommandBuilder instance,
-                                                                                  IQueryContext context,
-                                                                                  IFieldSelectionQuery fieldSelectionQuery,
-                                                                                  IQueryFieldInfo fieldInfo,
-                                                                                  ISqlExpressionProvider sqlExpressionProvider,
-                                                                                  ParameterBag parameterBag)
+    private static Result<PagedSelectCommandBuilder> AppendSelectFieldsForSpecifiedFields(this PagedSelectCommandBuilder instance,
+                                                                                          IQueryContext context,
+                                                                                          IFieldSelectionQuery fieldSelectionQuery,
+                                                                                          IQueryFieldInfo fieldInfo,
+                                                                                          ISqlExpressionProvider sqlExpressionProvider,
+                                                                                          ParameterBag parameterBag)
     {
         foreach (var expression in fieldSelectionQuery.FieldNames.Select((x, index) => new { Item = x, Index = index }))
         {
@@ -39,55 +39,61 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.Select(", ");
             }
 
-            instance.Select(sqlExpressionProvider.GetSqlExpression(fieldSelectionQuery.WithContext(context.Context), new PropertyNameExpressionBuilder(expression.Item).Build(), fieldInfo, parameterBag).GetValueOrThrow());
+            var result = sqlExpressionProvider.GetSqlExpression(fieldSelectionQuery.WithContext(context.Context), new PropertyNameExpressionBuilder(expression.Item).Build(), fieldInfo, parameterBag).EnsureValue();
+            if (!result.IsSuccessful())
+            {
+                return Result.FromExistingResult<PagedSelectCommandBuilder>(result);
+            }
+
+            instance.Select(result.Value!);
         }
 
-        return instance;
+        return Result.Success(instance);
     }
 
-    internal static PagedSelectCommandBuilder Distinct(this PagedSelectCommandBuilder instance,
-                                                       IFieldSelectionQuery? fieldSelectionQuery)
-        => instance.DistinctValues(fieldSelectionQuery?.Distinct == true);
+    internal static Result<PagedSelectCommandBuilder> Distinct(this PagedSelectCommandBuilder instance,
+                                                               IFieldSelectionQuery? fieldSelectionQuery)
+        => Result.Success(instance.DistinctValues(fieldSelectionQuery?.Distinct == true));
 
-    internal static PagedSelectCommandBuilder Top(this PagedSelectCommandBuilder instance,
+    internal static Result<PagedSelectCommandBuilder> Top(this PagedSelectCommandBuilder instance,
                                                   IQueryContext context,
                                                   IPagedDatabaseEntityRetrieverSettings settings,
                                                   int? customLimit)
     {
         var limit = context.Query.Limit.IfNotGreaterThan(settings.OverridePageSize, customLimit);
 
-        return limit > 0
+        return Result.Success(limit > 0
             ? instance.WithTop(limit)
-            : instance;
+            : instance);
     }
 
-    internal static PagedSelectCommandBuilder Offset(this PagedSelectCommandBuilder instance,
-                                                     IQueryContext context,
-                                                     int? customPageSize)
+    internal static Result<PagedSelectCommandBuilder> Offset(this PagedSelectCommandBuilder instance,
+                                                             IQueryContext context,
+                                                             int? customPageSize)
     {
         var offset = context.Query.Offset.GetValueOrDefault(customPageSize.GetValueOrDefault());
 
-        return offset > 0
+        return Result.Success(offset > 0
             ? instance.Skip(offset)
-            : instance;
+            : instance);
     }
 
-    internal static PagedSelectCommandBuilder From(this PagedSelectCommandBuilder instance,
-                                                   IQueryContext context,
-                                                   IPagedDatabaseEntityRetrieverSettings settings)
-        => instance.From(context.Query.GetTableName(settings.TableName));
+    internal static Result<PagedSelectCommandBuilder> From(this PagedSelectCommandBuilder instance,
+                                                           IQueryContext context,
+                                                           IPagedDatabaseEntityRetrieverSettings settings)
+        => Result.Success(instance.From(context.Query.GetTableName(settings.TableName)));
 
-    internal static PagedSelectCommandBuilder Where(this PagedSelectCommandBuilder instance,
-                                                    IQueryContext context,
-                                                    IPagedDatabaseEntityRetrieverSettings settings,
-                                                    IQueryFieldInfo fieldInfo,
-                                                    ISqlExpressionProvider sqlExpressionProvider,
-                                                    ISqlConditionExpressionProvider provider,
-                                                    ParameterBag parameterBag)
+    internal static Result<PagedSelectCommandBuilder> Where(this PagedSelectCommandBuilder instance,
+                                                            IQueryContext context,
+                                                            IPagedDatabaseEntityRetrieverSettings settings,
+                                                            IQueryFieldInfo fieldInfo,
+                                                            ISqlExpressionProvider sqlExpressionProvider,
+                                                            ISqlConditionExpressionProvider provider,
+                                                            ParameterBag parameterBag)
     {
         if (context.Query.Conditions.Count == 0 && string.IsNullOrEmpty(settings.DefaultWhere))
         {
-            return instance;
+            return Result.Success(instance);
         }
 
         if (!string.IsNullOrEmpty(settings.DefaultWhere))
@@ -97,7 +103,7 @@ internal static class PagedSelectCommandBuilderExtensions
 
         foreach (var queryCondition in context.Query.Conditions)
         {
-            provider.GetConditionExpression(
+            var result = provider.GetConditionExpression(
                 context,
                 queryCondition,
                 fieldInfo,
@@ -106,18 +112,23 @@ internal static class PagedSelectCommandBuilderExtensions
                 (queryCondition.Combination ?? Combination.And) == Combination.And
                     ? instance.And
                     : instance.Or
-            ).ThrowIfNotSuccessful();
+            );
+
+            if (!result.IsSuccessful())
+            {
+                return Result.FromExistingResult<PagedSelectCommandBuilder>(result);
+            }
         }
 
-        return instance;
+        return Result.Success(instance);
     }
 
-    internal static PagedSelectCommandBuilder OrderBy(this PagedSelectCommandBuilder instance,
-                                                      IQueryContext context,
-                                                      IPagedDatabaseEntityRetrieverSettings settings,
-                                                      IQueryFieldInfo fieldInfo,
-                                                      ISqlExpressionProvider sqlExpressionProvider,
-                                                      ParameterBag parameterBag)
+    internal static Result<PagedSelectCommandBuilder> OrderBy(this PagedSelectCommandBuilder instance,
+                                                              IQueryContext context,
+                                                              IPagedDatabaseEntityRetrieverSettings settings,
+                                                              IQueryFieldInfo fieldInfo,
+                                                              ISqlExpressionProvider sqlExpressionProvider,
+                                                              ParameterBag parameterBag)
     {
         if (context.Query.SortOrders.Count > 0 || !string.IsNullOrEmpty(settings.DefaultOrderBy))
         {
@@ -125,16 +136,16 @@ internal static class PagedSelectCommandBuilderExtensions
         }
         else
         {
-            return instance;
+            return Result.Success(instance);
         }
     }
 
-    private static PagedSelectCommandBuilder AppendOrderBy(this PagedSelectCommandBuilder instance,
-                                                           IQueryContext context,
-                                                           IPagedDatabaseEntityRetrieverSettings settings,
-                                                           IQueryFieldInfo fieldInfo,
-                                                           ISqlExpressionProvider sqlExpressionProvider,
-                                                           ParameterBag parameterBag)
+    private static Result<PagedSelectCommandBuilder> AppendOrderBy(this PagedSelectCommandBuilder instance,
+                                                                   IQueryContext context,
+                                                                   IPagedDatabaseEntityRetrieverSettings settings,
+                                                                   IQueryFieldInfo fieldInfo,
+                                                                   ISqlExpressionProvider sqlExpressionProvider,
+                                                                   ParameterBag parameterBag)
     {
         foreach (var querySortOrder in context.Query.SortOrders.Select((x, index) => new { Item = x, Index = index }))
         {
@@ -151,12 +162,12 @@ internal static class PagedSelectCommandBuilderExtensions
             instance.OrderBy(settings.DefaultOrderBy);
         }
 
-        return instance;
+        return Result.Success(instance);
     }
 
-    internal static PagedSelectCommandBuilder WithParameters(this PagedSelectCommandBuilder instance,
-                                                             IParameterizedQuery? parameterizedQuery,
-                                                             ParameterBag parameterBag)
+    internal static Result<PagedSelectCommandBuilder> WithParameters(this PagedSelectCommandBuilder instance,
+                                                                     IParameterizedQuery? parameterizedQuery,
+                                                                     ParameterBag parameterBag)
     {
         if (parameterizedQuery is not null)
         {
@@ -171,6 +182,6 @@ internal static class PagedSelectCommandBuilderExtensions
             instance.AppendParameter(parameter.Key, parameter.Value!);
         }
 
-        return instance;
+        return Result.Success(instance);
     }
 }

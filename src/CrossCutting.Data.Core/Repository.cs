@@ -8,50 +8,146 @@ public class Repository<TEntity, TIdentity>(IDatabaseCommandProcessor<TEntity> c
                   IDatabaseCommandProvider<TEntity> entityCommandProvider) : IRepository<TEntity, TIdentity>
     where TEntity : class
 {
-    public TEntity Add(TEntity instance)
-        => CommandProcessor.ExecuteCommand(EntityCommandProvider.Create(instance, DatabaseOperation.Insert), instance)
-                           .HandleResult($"{typeof(TEntity).Name} has not been added");
+    public Result<TEntity> Add(TEntity instance)
+    {
+        var commandResult = EntityCommandProvider.Create(instance, DatabaseOperation.Insert).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<TEntity>(commandResult);
+        }
 
-    public TEntity Update(TEntity instance)
-        => CommandProcessor.ExecuteCommand(EntityCommandProvider.Create(instance, DatabaseOperation.Update), instance)
-                           .HandleResult($"{typeof(TEntity).Name} has not been updated");
+        return CommandProcessor.ExecuteCommand(commandResult.Value!, instance)
+                               .HandleResult($"{typeof(TEntity).Name} has not been added");
+    }
 
-    public TEntity Delete(TEntity instance)
-        => CommandProcessor.ExecuteCommand(EntityCommandProvider.Create(instance, DatabaseOperation.Delete), instance)
-                           .HandleResult($"{typeof(TEntity).Name} has not been deleted");
+    public Result<TEntity> Update(TEntity instance)
+    {
+        var commandResult = EntityCommandProvider.Create(instance, DatabaseOperation.Update).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<TEntity>(commandResult);
+        }
 
-    public TEntity? Find(TIdentity identity)
-        => EntityRetriever.FindOne(IdentitySelectCommandProvider.Create(identity, DatabaseOperation.Select));
+        return CommandProcessor.ExecuteCommand(commandResult.Value!, instance)
+                               .HandleResult($"{typeof(TEntity).Name} has not been updated");
+    }
 
-    public IReadOnlyCollection<TEntity> FindAll()
-        => EntityRetriever.FindMany(EntitySelectCommandProvider.Create<TEntity>(DatabaseOperation.Select));
+    public Result<TEntity> Delete(TEntity instance)
+    {
+        var commandResult = EntityCommandProvider.Create(instance, DatabaseOperation.Delete).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<TEntity>(commandResult);
+        }
 
-    public IPagedResult<TEntity> FindAllPaged(int offset, int pageSize)
-        => EntityRetriever.FindPaged(PagedEntitySelectCommandProvider.CreatePaged<TEntity>(DatabaseOperation.Select, offset, pageSize));
+        return CommandProcessor.ExecuteCommand(commandResult.Value!, instance)
+                               .HandleResult($"{typeof(TEntity).Name} has not been deleted");
+    }
 
-    public async Task<TEntity> AddAsync(TEntity instance, CancellationToken cancellationToken)
-        => (await CommandProcessor.ExecuteCommandAsync(EntityCommandProvider.Create(instance, DatabaseOperation.Insert), instance, cancellationToken).ConfigureAwait(false))
-                                  .HandleResult($"{typeof(TEntity).Name} has not been added");
+    public Result<TEntity> Find(TIdentity identity)
+    {
+        var commandResult = IdentitySelectCommandProvider.Create(identity, DatabaseOperation.Select).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<TEntity>(commandResult);
+        }
 
-    public async Task<TEntity> UpdateAsync(TEntity instance, CancellationToken cancellationToken)
-        => (await CommandProcessor.ExecuteCommandAsync(EntityCommandProvider.Create(instance, DatabaseOperation.Update), instance, cancellationToken).ConfigureAwait(false))
-                                  .HandleResult($"{typeof(TEntity).Name} has not been updated");
+        return EntityRetriever.FindOne(commandResult.Value!);
+    }
 
-    public async Task<TEntity> DeleteAsync(TEntity instance, CancellationToken cancellationToken)
-        => (await CommandProcessor.ExecuteCommandAsync(EntityCommandProvider.Create(instance, DatabaseOperation.Delete), instance, cancellationToken).ConfigureAwait(false))
-                                  .HandleResult($"{typeof(TEntity).Name} has not been deleted");
+    public Result<IReadOnlyCollection<TEntity>> FindAll()
+    {
+        var commandResult = EntitySelectCommandProvider.Create<TEntity>(DatabaseOperation.Select).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<IReadOnlyCollection<TEntity>>(commandResult);
+        }
 
-    public async Task<TEntity?> FindAsync(TIdentity identity, CancellationToken cancellationToken)
-        => await EntityRetriever.FindOneAsync(IdentitySelectCommandProvider.Create(identity, DatabaseOperation.Select), cancellationToken)
-                                .ConfigureAwait(false);
+        return EntityRetriever.FindMany(commandResult.Value!);
+    }
 
-    public async Task<IReadOnlyCollection<TEntity>> FindAllAsync(CancellationToken cancellationToken)
-        => await EntityRetriever.FindManyAsync(EntitySelectCommandProvider.Create<TEntity>(DatabaseOperation.Select), cancellationToken)
-                                .ConfigureAwait(false);
+    public Result<IPagedResult<TEntity>> FindAllPaged(int offset, int pageSize)
+    {
+        var commandResult = PagedEntitySelectCommandProvider.CreatePaged<TEntity>(DatabaseOperation.Select, offset, pageSize).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<IPagedResult<TEntity>>(commandResult);
+        }
 
-    public async Task<IPagedResult<TEntity>> FindAllPagedAsync(int offset, int pageSize, CancellationToken cancellationToken)
-        => await EntityRetriever.FindPagedAsync(PagedEntitySelectCommandProvider.CreatePaged<TEntity>(DatabaseOperation.Select, offset, pageSize), cancellationToken)
-                                .ConfigureAwait(false);
+        return EntityRetriever.FindPaged(commandResult.Value!);
+    }
+
+    public async Task<Result<TEntity>> AddAsync(TEntity instance, CancellationToken cancellationToken)
+    {
+        var commandResult = EntityCommandProvider.Create(instance, DatabaseOperation.Insert).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<TEntity>(commandResult);
+        }
+
+        return (await CommandProcessor.ExecuteCommandAsync(commandResult.Value!, instance, cancellationToken).ConfigureAwait(false))
+                                      .HandleResult($"{typeof(TEntity).Name} has not been added");
+    }
+
+    public async Task<Result<TEntity>> UpdateAsync(TEntity instance, CancellationToken cancellationToken)
+    {
+        var commandResult = EntityCommandProvider.Create(instance, DatabaseOperation.Update).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<TEntity>(commandResult);
+        }
+
+        return (await CommandProcessor.ExecuteCommandAsync(commandResult.Value!, instance, cancellationToken).ConfigureAwait(false))
+                                      .HandleResult($"{typeof(TEntity).Name} has not been updated");
+    }
+
+    public async Task<Result<TEntity>> DeleteAsync(TEntity instance, CancellationToken cancellationToken)
+    {
+        var commandResult = EntityCommandProvider.Create(instance, DatabaseOperation.Delete).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<TEntity>(commandResult);
+        }
+
+        return (await CommandProcessor.ExecuteCommandAsync(commandResult.Value!, instance, cancellationToken).ConfigureAwait(false))
+                                      .HandleResult($"{typeof(TEntity).Name} has not been deleted");
+    }
+
+    public async Task<Result<TEntity>> FindAsync(TIdentity identity, CancellationToken cancellationToken)
+    {
+        var commandResult = IdentitySelectCommandProvider.Create(identity, DatabaseOperation.Select).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<TEntity>(commandResult);
+        }
+
+        return await EntityRetriever.FindOneAsync(commandResult.Value!, cancellationToken)
+                                    .ConfigureAwait(false);
+    }
+
+    public async Task<Result<IReadOnlyCollection<TEntity>>> FindAllAsync(CancellationToken cancellationToken)
+    {
+        var commandResult = EntitySelectCommandProvider.Create<TEntity>(DatabaseOperation.Select).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<IReadOnlyCollection<TEntity>>(commandResult);
+        }
+
+        return await EntityRetriever.FindManyAsync(commandResult.Value!, cancellationToken)
+                                    .ConfigureAwait(false);
+    }
+
+    public async Task<Result<IPagedResult<TEntity>>> FindAllPagedAsync(int offset, int pageSize, CancellationToken cancellationToken)
+    {
+        var commandResult = PagedEntitySelectCommandProvider.CreatePaged<TEntity>(DatabaseOperation.Select, offset, pageSize).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<IPagedResult<TEntity>>(commandResult);
+        }
+
+        return await EntityRetriever.FindPagedAsync(commandResult.Value!, cancellationToken)
+                                    .ConfigureAwait(false);
+    }
 
     protected IDatabaseCommandProcessor<TEntity> CommandProcessor { get; } = commandProcessor;
     protected IDatabaseEntityRetriever<TEntity> EntityRetriever { get; } = entityRetriever;

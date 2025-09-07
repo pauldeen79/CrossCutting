@@ -23,8 +23,15 @@ public class QueryProcessor : IQueryProcessor
         return await GetDatabaseEntityRetriever<TResult>(query)
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
-                    await provider.FindManyAsync(CreateCommand(query, context, query.Limit.GetValueOrDefault()).DataCommand, cancellationToken).ConfigureAwait(false)
-                ).ConfigureAwait(false))
+                {
+                    var commandResult = CreateCommand(query, context, query.Limit.GetValueOrDefault()).EnsureValue();
+                    if (!commandResult.IsSuccessful())
+                    {
+                        return Result.FromExistingResult<IReadOnlyCollection<TResult>>(commandResult);
+                    }
+
+                    return await provider.FindManyAsync(commandResult.Value!.DataCommand, cancellationToken).ConfigureAwait(false);
+                }).ConfigureAwait(false))
             .ConfigureAwait(false);
     }
 
@@ -36,10 +43,13 @@ public class QueryProcessor : IQueryProcessor
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
                 {
-                    var item = await provider.FindOneAsync(CreateCommand(query, context, 1).DataCommand, cancellationToken).ConfigureAwait(false);
-                    return item is null
-                        ? Result.NotFound<TResult>()
-                        : Result.Success(item!);
+                    var commandResult = CreateCommand(query, context, 1).EnsureValue();
+                    if (!commandResult.IsSuccessful())
+                    {
+                        return Result.FromExistingResult<TResult>(commandResult);
+                    }
+
+                    return await provider.FindOneAsync(commandResult.Value!.DataCommand, cancellationToken).ConfigureAwait(false);
                 }).ConfigureAwait(false)
             ).ConfigureAwait(false);
     }
@@ -51,12 +61,19 @@ public class QueryProcessor : IQueryProcessor
         return await GetDatabaseEntityRetriever<TResult>(query)
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
-                    await provider.FindPagedAsync(CreateCommand(query, context, query.Limit.GetValueOrDefault()), cancellationToken).ConfigureAwait(false)
-                ).ConfigureAwait(false))
+                {
+                    var commandResult = CreateCommand(query, context, query.Limit.GetValueOrDefault()).EnsureValue();
+                    if (!commandResult.IsSuccessful())
+                    {
+                        return Result.FromExistingResult<IPagedResult<TResult>>(commandResult);
+                    }
+
+                    return await provider.FindPagedAsync(commandResult.Value!, cancellationToken).ConfigureAwait(false);
+                }).ConfigureAwait(false))
             .ConfigureAwait(false);
     }
 
-    private IPagedDatabaseCommand CreateCommand(IQuery query, object? context, int pageSize)
+    private Result<IPagedDatabaseCommand> CreateCommand(IQuery query, object? context, int pageSize)
         => _pagedDatabaseCommandProvider.CreatePaged(query.EnsureValid().WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize);
 
     private Result<IDatabaseEntityRetriever<TResult>> GetDatabaseEntityRetriever<TResult>(IQuery query) where TResult : class

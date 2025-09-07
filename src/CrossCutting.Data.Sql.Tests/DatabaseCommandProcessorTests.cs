@@ -151,7 +151,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     }
 
     [Fact]
-    public void InvokeCommand_No_AfterReadDelegate_Throws_When_ExecuteNonQuery_Returns_0()
+    public void InvokeCommand_No_AfterReadDelegate_Returns_Error_When_ExecuteNonQuery_Returns_0()
     {
         // Arrange
         Connection.AddResultForNonQueryCommand(0); // 0 rows affected
@@ -161,13 +161,15 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
-        Action a = () => Sut.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added");
-        a.ShouldThrow<DataException>()
-         .Message.ShouldBe("MyEntity entity was not added");
+        var result = Sut.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added");
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("MyEntity entity was not added");
     }
 
     [Fact]
-    public async Task InvokeCommandAsync_No_AfterReadDelegate_Throws_When_ExecuteNonQuery_Returns_0()
+    public async Task InvokeCommandAsync_No_AfterReadDelegate_Returns_Error_When_ExecuteNonQuery_Returns_0()
     {
         // Arrange
         Connection.AddResultForNonQueryCommand(0); // 0 rows affected
@@ -177,10 +179,11 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.CreateEntity.Returns(default(CreateEntityHandler<MyEntity, MyEntity>?));
 
         // Act
-        var result = await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" });
-        Action a = () => result.HandleResult("MyEntity entity was not added");
-        a.ShouldThrow<DataException>()
-         .Message.ShouldBe("MyEntity entity was not added");
+        var result = (await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added");
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("MyEntity entity was not added");
     }
 
     [Fact]
@@ -211,7 +214,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
     }
 
     [Fact]
-    public void InvokeCommand_AfterReadDelegate_Throws_When_ExecuteReader_Read_Returns_False()
+    public void InvokeCommand_AfterReadDelegate_Returns_Error_When_ExecuteReader_Read_Returns_False()
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
@@ -220,13 +223,15 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.AfterRead.Returns(new AfterReadHandler<MyEntity>((x, _, _) => x));
 
         // Act
-        Action a = () => Sut.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added");
-        a.ShouldThrow<DataException>()
-         .Message.ShouldBe("MyEntity entity was not added");
+        var result = Sut.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added");
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("MyEntity entity was not added");
     }
 
     [Fact]
-    public async Task InvokeCommandAsync_AfterReadDelegate_Throws_When_ExecuteReader_Read_Returns_False()
+    public async Task InvokeCommandAsync_AfterReadDelegate_Returns_Error_When_ExecuteReader_Read_Returns_False()
     {
         // Arrange
         var command = new SqlDatabaseCommand("INSERT INTO ...", DatabaseCommandType.Text, DatabaseOperation.Insert);
@@ -235,10 +240,11 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.AfterRead.Returns(new AfterReadHandler<MyEntity>((x, _, _) => x));
 
         // Act
-        var result = await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" });
-        Action a = () => result.HandleResult("MyEntity entity was not added");
-        a.ShouldThrow<DataException>()
-         .Message.ShouldBe("MyEntity entity was not added");
+        var result = (await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added");
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("MyEntity entity was not added");
     }
 
     [Fact]
@@ -252,7 +258,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.AfterRead.Returns(new AfterReadHandler<MyEntity>((x, _, _) => x));
 
         // Act
-        var actual = Sut.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added");
+        var actual = Sut.ExecuteCommand(command, new MyEntity { Property = "test" }).HandleResult("MyEntity entity was not added").EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.Property.ShouldBe("test");
@@ -269,7 +275,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         ProviderMock.AfterRead.Returns(new AfterReadHandler<MyEntity>((x, _, _) => x));
 
         // Act
-        var actual = (await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added");
+        var actual = (await Sut.ExecuteCommandAsync(command, new MyEntity { Property = "test" })).HandleResult("MyEntity entity was not added").EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.Property.ShouldBe("test");
@@ -357,7 +363,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act
-        var actual = builderSut.ExecuteCommand(command, entity).HandleResult("Something went wrong");
+        var actual = builderSut.ExecuteCommand(command, entity).HandleResult("Something went wrong").EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.Code.ShouldBe(entity.Code);
@@ -382,7 +388,7 @@ public sealed class DatabaseCommandProcessorTests : IDisposable
         var entity = new TestEntity("A", "B", "C", true);
 
         // Act
-        var actual = (await builderSut.ExecuteCommandAsync(command, entity)).HandleResult("Something went wrong");
+        var actual = (await builderSut.ExecuteCommandAsync(command, entity)).HandleResult("Something went wrong").EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.Code.ShouldBe(entity.Code);

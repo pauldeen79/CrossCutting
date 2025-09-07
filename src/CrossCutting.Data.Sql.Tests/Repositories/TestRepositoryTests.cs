@@ -10,11 +10,11 @@ public class TestRepositoryTests : TestBase<TestRepository>
     {
         // Arrange
         var expected = new TestEntity("code", "codeType", "description");
-        IdentityCommandProviderMock.Create(Arg.Any<TestEntityIdentity>(), DatabaseOperation.Select).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
-        EntityRetrieverMock.FindOne(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(expected);
+        IdentityCommandProviderMock.Create(Arg.Any<TestEntityIdentity>(), DatabaseOperation.Select).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
+        EntityRetrieverMock.FindOne(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success(expected));
 
         // Act
-        var actual = Sut.Find(new TestEntityIdentity(expected));
+        var actual = Sut.Find(new TestEntityIdentity(expected)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBe(expected);
@@ -25,10 +25,10 @@ public class TestRepositoryTests : TestBase<TestRepository>
     {
         // Arrange
         var expected = new TestEntity("code", "codeType", "description");
-        EntityRetrieverMock.FindOne(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(expected);
+        EntityRetrieverMock.FindOne(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success(expected));
 
         // Act
-        var actual = Sut.FindOne();
+        var actual = Sut.FindOne().EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBe(expected);
@@ -43,10 +43,10 @@ public class TestRepositoryTests : TestBase<TestRepository>
             new TestEntity("code1", "codeType1", "description1"),
             new TestEntity("code2", "codeType2", "description2")
         };
-        EntityRetrieverMock.FindMany(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(expected);
+        EntityRetrieverMock.FindMany(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success<IReadOnlyCollection<TestEntity>>(expected));
 
         // Act
-        var actual = Sut.FindMany("Value");
+        var actual = Sut.FindMany("Value").EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBeSameAs(expected);
@@ -61,10 +61,10 @@ public class TestRepositoryTests : TestBase<TestRepository>
             new TestEntity("code1", "codeType1", "description1"),
             new TestEntity("code2", "codeType2", "description2")
         };
-        EntityRetrieverMock.FindPaged(Arg.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select)).Returns(new PagedResult<TestEntity>(expected, 2, 0, 10));
+        EntityRetrieverMock.FindPaged(Arg.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select)).Returns(Result.Success<IPagedResult<TestEntity>>(new PagedResult<TestEntity>(expected, 2, 0, 10)));
 
         // Act
-        var actual = Sut.FindPaged(0, 10);
+        var actual = Sut.FindPaged(0, 10).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ToArray().ShouldBeEquivalentTo(expected);

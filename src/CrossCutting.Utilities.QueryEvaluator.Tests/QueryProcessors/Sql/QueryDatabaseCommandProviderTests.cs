@@ -5,16 +5,18 @@ public class QueryDatabaseCommandProviderTests : TestBase<QueryDatabaseCommandPr
     public class Create : QueryDatabaseCommandProviderTests
     {
         [Fact]
-        public void Throws_On_Non_Select_DatabaseOperation()
+        public void Returns_Invalid_On_Non_Select_DatabaseOperation()
         {
             // Arrange
             var query = new SingleEntityQueryBuilder().Build();
             var sut = CreateSut();
-            Action a = () => sut.Create(query, DatabaseOperation.Insert);
 
-            // Act & Assert
-            a.ShouldThrow<ArgumentOutOfRangeException>()
-             .Message.ShouldBe("Only select operation is supported (Parameter 'operation')");
+            // Act
+            var result = sut.Create(query, DatabaseOperation.Insert);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Only select operation is supported");
         }
 
         [Fact]
@@ -25,7 +27,7 @@ public class QueryDatabaseCommandProviderTests : TestBase<QueryDatabaseCommandPr
             var sut = CreateSut();
 
             // Act
-            var command = sut.Create(query, DatabaseOperation.Select);
+            var command = sut.Create(query, DatabaseOperation.Select).EnsureValue().GetValueOrThrow();
 
             // Assert
             command.ShouldNotBeNull();

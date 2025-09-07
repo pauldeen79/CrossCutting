@@ -2,21 +2,21 @@
 
 public interface ITestRepository : IRepository<TestEntity, TestEntityIdentity>
 {
-    TestEntity? FindOne();
-    IReadOnlyCollection<TestEntity> FindMany(string value);
-    IPagedResult<TestEntity> FindPaged(int offset, int pageSize);
+    Result<TestEntity> FindOne();
+    Result<IReadOnlyCollection<TestEntity>> FindMany(string value);
+    Result<IPagedResult<TestEntity>> FindPaged(int offset, int pageSize);
 }
 
 public class TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcessor,
-                      IDatabaseEntityRetriever<TestEntity> entityRetriever,
-                      IDatabaseCommandProvider<TestEntityIdentity> identitySelectCommandProvider,
-                      IPagedDatabaseCommandProvider pagedEntitySelectCommandProvider,
-                      IDatabaseCommandProvider entitySelectCommandProvider,
-                      IDatabaseCommandProvider<TestEntity> entityCommandProvider) : Repository<TestEntity, TestEntityIdentity>(commandProcessor, entityRetriever, identitySelectCommandProvider, pagedEntitySelectCommandProvider, entitySelectCommandProvider, entityCommandProvider), ITestRepository
+                            IDatabaseEntityRetriever<TestEntity> entityRetriever,
+                            IDatabaseCommandProvider<TestEntityIdentity> identitySelectCommandProvider,
+                            IPagedDatabaseCommandProvider pagedEntitySelectCommandProvider,
+                            IDatabaseCommandProvider entitySelectCommandProvider,
+                            IDatabaseCommandProvider<TestEntity> entityCommandProvider) : Repository<TestEntity, TestEntityIdentity>(commandProcessor, entityRetriever, identitySelectCommandProvider, pagedEntitySelectCommandProvider, entitySelectCommandProvider, entityCommandProvider), ITestRepository
 {
 
     // for test purposes only. normally you would add arguments here (request/query)
-    public TestEntity? FindOne()
+    public Result<TestEntity> FindOne()
         => EntityRetriever.FindOne(new SelectCommandBuilder()
             .Select("*")
             .WithTop(1)
@@ -25,7 +25,7 @@ public class TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcess
             .Build());
 
     // for test purposes only. normally you would add arguments here (request/query)
-    public IReadOnlyCollection<TestEntity> FindMany(string value)
+    public Result<IReadOnlyCollection<TestEntity>> FindMany(string value)
         => EntityRetriever.FindMany(new SelectCommandBuilder()
             .Select("*")
             .From("MyTable")
@@ -34,7 +34,7 @@ public class TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcess
             .Build());
 
     // for test purposes only. normally you would add arguments here (request/query)
-    public IPagedResult<TestEntity> FindPaged(int offset, int pageSize)
+    public Result<IPagedResult<TestEntity>> FindPaged(int offset, int pageSize)
         => EntityRetriever.FindPaged(new PagedSelectCommandBuilder()
             .Select("*")
             .From("MyTable")

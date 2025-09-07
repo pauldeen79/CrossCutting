@@ -7,6 +7,7 @@ global using System.Text;
 global using System.Threading;
 global using System.Threading.Tasks;
 global using CrossCutting.Common.Extensions;
+global using CrossCutting.Common.Results;
 global using CrossCutting.Data.Abstractions;
 global using CrossCutting.Data.Abstractions.Extensions;
 global using CrossCutting.Data.Core;

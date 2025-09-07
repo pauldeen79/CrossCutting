@@ -23,54 +23,69 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
         _settingsProviders = settingsProviders;
     }
 
-    public IPagedDatabaseCommand CreatePaged(IQueryContext source, DatabaseOperation operation, int offset, int pageSize)
+    public Result<IPagedDatabaseCommand> CreatePaged(IQueryContext source, DatabaseOperation operation, int offset, int pageSize)
     {
         source = ArgumentGuard.IsNotNull(source, nameof(source));
 
         if (operation != DatabaseOperation.Select)
         {
-            throw new ArgumentOutOfRangeException(nameof(operation), "Only select operation is supported");
+            return Result.Invalid<IPagedDatabaseCommand>("Only select operation is supported");
         }
 
         var fieldSelectionQuery = source.Query as IFieldSelectionQuery;
         var parameterizedQuery = source.Query as IParameterizedQuery;
-        IPagedDatabaseEntityRetrieverSettings settings;
+        Result<IPagedDatabaseEntityRetrieverSettings> settingsResult;
+#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
-            settings = (IPagedDatabaseEntityRetrieverSettings)GetType()
+            settingsResult = (Result<IPagedDatabaseEntityRetrieverSettings>)GetType()
                 .GetMethod(nameof(Create))
                 .MakeGenericMethod(source.Query.GetType())
                 .Invoke(this, Array.Empty<object>());
         }
         catch (TargetInvocationException ex)
         {
-            throw ex.InnerException;
+            return Result.Error<IPagedDatabaseCommand>(ex.InnerException, "Could not get paged database entity retriever settings, see exception for details");
         }
+        catch (Exception ex)
+        {
+            return Result.Error<IPagedDatabaseCommand>(ex, "Could not get paged database entity retriever settings, see exception for details");
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+
+        if (!settingsResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<IPagedDatabaseCommand>(settingsResult);
+        }
+
+        var settings = settingsResult.Value!;
         var fieldInfo = _fieldInfoProvider.Create(source.Query).GetValueOrThrow();
         var parameterBag = new ParameterBag();
         return new PagedSelectCommandBuilder()
             .Select(source, settings, fieldInfo, fieldSelectionQuery, _sqlExpressionProvider, parameterBag)
-            .Distinct(fieldSelectionQuery)
-            .Top(source, settings, pageSize)
-            .Offset(source, offset)
-            .From(source, settings)
-            .Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag)
-            .OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag)
-            .WithParameters(parameterizedQuery, parameterBag)
-            .Build();
+            .OnSuccess(result => result.Distinct(fieldSelectionQuery))
+            .OnSuccess(result => result.Top(source, settings, pageSize))
+            .OnSuccess(result => result.Offset(source, offset))
+            .OnSuccess(result => result.From(source, settings))
+            .OnSuccess(result => result.Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag))
+            .OnSuccess(result => result.OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
+            .OnSuccess(result => result.WithParameters(parameterizedQuery, parameterBag))
+            .OnSuccess(result => result.Build());
     }
 
-    public IPagedDatabaseEntityRetrieverSettings Create<TResult>() where TResult : class
+    public Result<IPagedDatabaseEntityRetrieverSettings> Create<TResult>() where TResult : class
     {
         foreach (var provider in _settingsProviders)
         {
             var success = provider.TryGet<TResult>(out var result);
             if (success)
             {
-                return result ?? throw new InvalidOperationException($"Database entity retriever provider for query type [{typeof(TResult).FullName}] provided an empty result");
+                return result is not null
+                    ? Result.Success(result)
+                    : Result.Invalid<IPagedDatabaseEntityRetrieverSettings>($"Database entity retriever provider for query type [{typeof(TResult).FullName}] provided an empty result");
             }
         }
 
-        throw new InvalidOperationException($"No database entity retriever provider was found for query type [{typeof(TResult).FullName}]");
+        return Result.Invalid<IPagedDatabaseEntityRetrieverSettings>($"No database entity retriever provider was found for query type [{typeof(TResult).FullName}]");
     }
 }

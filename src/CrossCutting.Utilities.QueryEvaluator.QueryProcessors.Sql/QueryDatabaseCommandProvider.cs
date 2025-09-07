@@ -11,13 +11,19 @@ public class QueryDatabaseCommandProvider : IDatabaseCommandProvider<IQuery>
         _pagedDatabaseCommandProvider = pagedDatabaseCommandProvider;
     }
 
-    public IDatabaseCommand Create(IQuery source, DatabaseOperation operation)
+    public Result<IDatabaseCommand> Create(IQuery source, DatabaseOperation operation)
     {
         if (operation != DatabaseOperation.Select)
         {
-            throw new ArgumentOutOfRangeException(nameof(operation), "Only select operation is supported");
+            return Result.Invalid<IDatabaseCommand>("Only select operation is supported");
         }
 
-        return _pagedDatabaseCommandProvider.CreatePaged(source.WithContext(null), operation, 0, 0).DataCommand;
+        var result = _pagedDatabaseCommandProvider.CreatePaged(source.WithContext(null), operation, 0, 0).EnsureValue();
+        if (!result.IsSuccessful())
+        {
+            return Result.FromExistingResult<IDatabaseCommand>(result);
+        }
+
+        return Result.Success(result.Value!.DataCommand);
     }
 }

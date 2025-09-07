@@ -5,32 +5,39 @@ public abstract class IdentityDatabaseCommandProviderBase<T>(IEnumerable<IPagedD
 {
     private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
 
-    public IDatabaseCommand Create(T source, DatabaseOperation operation)
+    public Result<IDatabaseCommand> Create(T source, DatabaseOperation operation)
     {
         if (operation != DatabaseOperation.Select)
         {
-            throw new ArgumentOutOfRangeException(nameof(operation), "Only select is supported");
+            return Result.Invalid<IDatabaseCommand>("Only select operation is supported");
         }
-        var settings = GetSettings();
-        return new SelectCommandBuilder()
+
+        var settingsResult = GetSettings().EnsureValue();
+        if (!settingsResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<IDatabaseCommand>(settingsResult);
+        }
+
+        var settings = settingsResult.Value!;
+        return Result.Success(new SelectCommandBuilder()
             .Select(settings.Fields)
             .From(settings.TableName)
             .Where(string.Join(" AND ", GetFields().Select(x => $"[{x.FieldName}] = @{x.ParameterName}")))
             .AppendParameters(source)
-            .Build();
+            .Build());
     }
 
-    private IPagedDatabaseEntityRetrieverSettings GetSettings()
+    private Result<IPagedDatabaseEntityRetrieverSettings> GetSettings()
     {
         foreach (var settingsProvider in _settingsProviders)
         {
             if (settingsProvider.TryGet<T>(out var settings) && settings is not null)
             {
-                return settings;
+                return Result.Success(settings);
             }
         }
 
-        throw new InvalidOperationException($"Could not obtain paged database entity retriever settings for type [{typeof(T).FullName}]");
+        return Result.Error<IPagedDatabaseEntityRetrieverSettings>($"Could not obtain paged database entity retriever settings for type [{typeof(T).FullName}]");
     }
 
     protected abstract IEnumerable<IdentityDatabaseCommandProviderField> GetFields();
