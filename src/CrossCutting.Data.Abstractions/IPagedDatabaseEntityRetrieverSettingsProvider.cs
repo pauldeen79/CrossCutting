@@ -2,5 +2,5 @@
 
 public interface IPagedDatabaseEntityRetrieverSettingsProvider
 {
-    bool TryGet<TSource>(out IPagedDatabaseEntityRetrieverSettings? settings);
+    Result<IPagedDatabaseEntityRetrieverSettings> Get<TSource>();
 }

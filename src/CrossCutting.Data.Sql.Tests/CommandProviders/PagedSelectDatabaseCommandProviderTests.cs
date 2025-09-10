@@ -21,8 +21,11 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
     [Fact]
     public void CreatePaged_Returns_Error_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
     {
+        // Arrange
+        var sut = new PagedSelectDatabaseCommandProvider([]);
+
         // Act
-        var result = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10);
+        var result = sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
@@ -40,8 +43,8 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.Fields.Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.TableName.Returns("MyTable");
         Fixture.Freeze<IPagedDatabaseEntityRetrieverSettingsProvider>()
-               .TryGet<TestEntity>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings?>())
-               .Returns(x => { x[0] = SettingsMock; return true; });
+               .Get<TestEntity>()
+               .Returns(_ => Result.Success(SettingsMock));
 
         // Act
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10).EnsureValue().GetValueOrThrow();
@@ -62,8 +65,8 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.Fields.Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.TableName.Returns("MyTable");
         Fixture.Freeze<IPagedDatabaseEntityRetrieverSettingsProvider>()
-               .TryGet<TestEntity>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings?>())
-               .Returns(x => { x[0] = SettingsMock; return true; });
+               .Get<TestEntity>()
+               .Returns(_ => Result.Success(SettingsMock));
 
 
         // Act
@@ -84,8 +87,8 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.Fields.Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.TableName.Returns("MyTable");
         Fixture.Freeze<IPagedDatabaseEntityRetrieverSettingsProvider>()
-               .TryGet<TestEntity>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings?>())
-               .Returns(x => { x[0] = SettingsMock; return true; });
+               .Get<TestEntity>()
+               .Returns(_ => Result.Success(SettingsMock));
 
         // Act
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10).EnsureValue().GetValueOrThrow();
@@ -102,8 +105,8 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.TableName.Returns("MyTable");
         SettingsMock.OverridePageSize.Returns(100);
         Fixture.Freeze<IPagedDatabaseEntityRetrieverSettingsProvider>()
-               .TryGet<TestEntity>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings?>())
-               .Returns(x => { x[0] = SettingsMock; return true; });
+               .Get<TestEntity>()
+               .Returns(_ => Result.Success(SettingsMock));
 
         // Act
         var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 1000).EnsureValue().GetValueOrThrow();

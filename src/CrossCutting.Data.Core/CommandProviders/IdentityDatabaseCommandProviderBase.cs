@@ -28,17 +28,9 @@ public abstract class IdentityDatabaseCommandProviderBase<T>(IEnumerable<IPagedD
     }
 
     private Result<IPagedDatabaseEntityRetrieverSettings> GetSettings()
-    {
-        foreach (var settingsProvider in _settingsProviders)
-        {
-            if (settingsProvider.TryGet<T>(out var settings) && settings is not null)
-            {
-                return Result.Success(settings);
-            }
-        }
-
-        return Result.Error<IPagedDatabaseEntityRetrieverSettings>($"Could not obtain paged database entity retriever settings for type [{typeof(T).FullName}]");
-    }
+        => _settingsProviders
+            .Select(x => x.Get<T>())
+            .WhenNotContinue(() => Result.Error<IPagedDatabaseEntityRetrieverSettings>($"Could not obtain paged database entity retriever settings for type [{typeof(T).FullName}]"));
 
     protected abstract IEnumerable<IdentityDatabaseCommandProviderField> GetFields();
 }

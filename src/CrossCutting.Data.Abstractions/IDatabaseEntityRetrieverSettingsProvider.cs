@@ -2,5 +2,5 @@
 
 public interface IDatabaseEntityRetrieverSettingsProvider
 {
-    bool TryGet<TSource>(out IDatabaseEntityRetrieverSettings? settings);
+    Result<IDatabaseEntityRetrieverSettings> Get<TSource>();
 }

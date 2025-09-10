@@ -21,8 +21,11 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
     [Fact]
     public void Create_Returns_Error_On_Unsupported_DatabaseEntityRetrieverSettings()
     {
+        // Arrange
+        var sut = new SelectDatabaseCommandProvider([]);
+
         // Act
-        var result = Sut.Create<TestEntity>(DatabaseOperation.Select);
+        var result = sut.Create<TestEntity>(DatabaseOperation.Select);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
@@ -39,8 +42,8 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
         SettingsMock.Fields.Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.TableName.Returns("MyTable");
         Fixture.Freeze<IDatabaseEntityRetrieverSettingsProvider>()
-               .TryGet<TestEntity>(out Arg.Any<IDatabaseEntityRetrieverSettings?>())
-               .Returns(x => { x[0] = SettingsMock; return true; });
+               .Get<TestEntity>()
+               .Returns(_ => Result.Success(SettingsMock));
 
         // Act
         var actual = Sut.Create<TestEntity>(DatabaseOperation.Select).EnsureValue().GetValueOrThrow();

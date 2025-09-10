@@ -23,7 +23,7 @@ public class IdentityDatabaseCommandProviderBaseTests
     public void Create_Returns_Error_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
     {
         // Arrange
-        var sut = new IdentityDatabaseCommandProviderMock([Substitute.For<IPagedDatabaseEntityRetrieverSettingsProvider>()]);
+        var sut = new IdentityDatabaseCommandProviderMock([]);
 
         // Act
         var result = sut.Create(new TestEntityIdentity("NOTIMPLEMENTED", "NOTIMPLEMENTED"), DatabaseOperation.Select);
@@ -57,16 +57,14 @@ public class IdentityDatabaseCommandProviderBaseTests
 
     private sealed class PagedDatabaseEntityRetrieverSettingsProviderMock : IPagedDatabaseEntityRetrieverSettingsProvider
     {
-        public bool TryGet<TSource>(out IPagedDatabaseEntityRetrieverSettings? settings)
+        public Result<IPagedDatabaseEntityRetrieverSettings> Get<TSource>()
         {
             if (typeof(TSource) == typeof(TestEntityIdentity))
             {
-                settings = new PagedDatabaseEntityRetrieverSettingsMock();
-                return true;
+                return Result.Success<IPagedDatabaseEntityRetrieverSettings>(new PagedDatabaseEntityRetrieverSettingsMock());
             }
 
-            settings = null;
-            return false;
+            return Result.Continue<IPagedDatabaseEntityRetrieverSettings>();
         }
     }
 

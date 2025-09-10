@@ -53,12 +53,8 @@ public abstract class TestBase
         // Initialize entity retriever settings provider
 #pragma warning disable CS8601 // Possible null reference assignment.
         DatabaseEntityRetrieverSettingsProvider
-            .TryGet<IQuery>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings>())
-            .Returns(x =>
-            {
-                x[0] = DatabaseEntityRetrieverSettings;
-                return true;
-            });
+            .Get<IQuery>()
+            .Returns(_ => Result.Success(DatabaseEntityRetrieverSettings));
 #pragma warning restore CS8601 // Possible null reference assignment.
         DatabaseEntityRetrieverSettings
             .TableName

@@ -74,18 +74,7 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
     }
 
     public Result<IPagedDatabaseEntityRetrieverSettings> Create<TResult>() where TResult : class
-    {
-        foreach (var provider in _settingsProviders)
-        {
-            var success = provider.TryGet<TResult>(out var result);
-            if (success)
-            {
-                return result is not null
-                    ? Result.Success(result)
-                    : Result.Invalid<IPagedDatabaseEntityRetrieverSettings>($"Database entity retriever provider for query type [{typeof(TResult).FullName}] provided an empty result");
-            }
-        }
-
-        return Result.Invalid<IPagedDatabaseEntityRetrieverSettings>($"No database entity retriever provider was found for query type [{typeof(TResult).FullName}]");
-    }
+        => _settingsProviders
+            .Select(x => x.Get<TResult>())
+            .WhenNotContinue(() => Result.Invalid<IPagedDatabaseEntityRetrieverSettings>($"No database entity retriever provider was found for query type [{typeof(TResult).FullName}]"));
 }

@@ -27,15 +27,7 @@ public class SelectDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverS
     }
 
     private Result<IDatabaseEntityRetrieverSettings> GetSettings<TSource>()
-    {
-        foreach (var settingsProvider in _settingsProviders)
-        {
-            if (settingsProvider.TryGet<TSource>(out var settings) && settings is not null)
-            {
-                return Result.Success(settings);
-            }
-        }
-
-        return Result.Error<IDatabaseEntityRetrieverSettings>($"Could not obtain database entity retriever settings for type [{typeof(TSource).FullName}]");
-    }
+        => _settingsProviders
+            .Select(x => x.Get<TSource>())
+            .WhenNotContinue(() => Result.Error<IDatabaseEntityRetrieverSettings>($"Could not obtain database entity retriever settings for type [{typeof(TSource).FullName}]"));
 }
