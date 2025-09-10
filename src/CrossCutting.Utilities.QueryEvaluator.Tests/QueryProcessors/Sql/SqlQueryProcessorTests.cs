@@ -202,6 +202,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new NullConditionBuilder()
+                .WithStartGroup()
+                .WithEndGroup()
                 .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1))))
             .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
@@ -216,7 +218,7 @@ public sealed class SqlQueryProcessorTests : TestBase
         result.Value.ShouldBeNull();
         await DatabaseEntityRetriever
             .Received()
-            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 IS NULL ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE (Property1 IS NULL) ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
     }
 
     [Fact]
