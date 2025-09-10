@@ -24,50 +24,49 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
     }
 
     public Result<IPagedDatabaseCommand> CreatePaged(IQueryContext source, DatabaseOperation operation, int offset, int pageSize)
+        => new ResultDictionaryBuilder()
+            .Add("Validate", () => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
+            .Add("Settings", () => GetSettings(source))
+            .Add("FieldInfo", () => _fieldInfoProvider.Create(source.Query).EnsureValue())
+            .Build()
+            .OnSuccess(results => BuildCommand(
+                source,
+                offset,
+                pageSize,
+                results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings"),
+                results.GetValue<IQueryFieldInfo>("FieldInfo")));
+
+    public Result<IPagedDatabaseEntityRetrieverSettings> Create<TResult>() where TResult : class
+        => _settingsProviders
+            .Select(x => x.Get<TResult>())
+            .WhenNotContinue(() => Result.Invalid<IPagedDatabaseEntityRetrieverSettings>($"No database entity retriever provider was found for query type [{typeof(TResult).FullName}]"));
+
+    private Result<IPagedDatabaseEntityRetrieverSettings> GetSettings(IQueryContext source)
     {
-        source = ArgumentGuard.IsNotNull(source, nameof(source));
-
-        return Result.Validate<IPagedDatabaseCommand>(() => operation == DatabaseOperation.Select, "Only select operation is supported")
-            .OnSuccess(() =>
-            {
-                Result<IPagedDatabaseEntityRetrieverSettings> settingsResult;
 #pragma warning disable CA1031 // Do not catch general exception types
-                try
-                {
-                    settingsResult = (Result<IPagedDatabaseEntityRetrieverSettings>)GetType()
-                        .GetMethod(nameof(Create))
-                        .MakeGenericMethod(source.Query.GetType())
-                        .Invoke(this, Array.Empty<object>());
-                }
-                catch (TargetInvocationException ex)
-                {
-                    return Result.Error<IPagedDatabaseCommand>(ex.InnerException, "Could not get paged database entity retriever settings, see exception for details");
-                }
-                catch (Exception ex)
-                {
-                    return Result.Error<IPagedDatabaseCommand>(ex, "Could not get paged database entity retriever settings, see exception for details");
-                }
+        try
+        {
+            return ((Result<IPagedDatabaseEntityRetrieverSettings>)GetType()
+                .GetMethod(nameof(Create))
+                .MakeGenericMethod(source.Query.GetType())
+                .Invoke(this, Array.Empty<object>())).EnsureValue();
+        }
+        catch (TargetInvocationException ex)
+        {
+            return Result.Error<IPagedDatabaseEntityRetrieverSettings>(ex.InnerException, "Could not get paged database entity retriever settings, see exception for details");
+        }
+        catch (Exception ex)
+        {
+            return Result.Error<IPagedDatabaseEntityRetrieverSettings>(ex, "Could not get paged database entity retriever settings, see exception for details");
+        }
 #pragma warning restore CA1031 // Do not catch general exception types
-
-                var parameterBag = new ParameterBag();
-
-                return settingsResult.EnsureValue().OnSuccess(settings =>
-                {
-                    var fieldInfoResult = _fieldInfoProvider.Create(source.Query).EnsureValue();
-                    if (!fieldInfoResult.IsSuccessful())
-                    {
-                        return Result.FromExistingResult<IPagedDatabaseCommand>(fieldInfoResult);
-                    }
-
-                    var fieldInfo = fieldInfoResult.Value!;
-
-                    return BuildCommand(source, offset, pageSize, settings, parameterBag, fieldInfo);
-                });
-            });
     }
 
-    private Result<IPagedDatabaseCommand> BuildCommand(IQueryContext source, int offset, int pageSize, IPagedDatabaseEntityRetrieverSettings settings, ParameterBag parameterBag, IQueryFieldInfo fieldInfo)
-        => new PagedSelectCommandBuilder()
+    private Result<IPagedDatabaseCommand> BuildCommand(IQueryContext source, int offset, int pageSize, IPagedDatabaseEntityRetrieverSettings settings, IQueryFieldInfo fieldInfo)
+    {
+        var parameterBag = new ParameterBag();
+
+        return new PagedSelectCommandBuilder()
             .Select(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag)
             .OnSuccess(result => result.Distinct(source))
             .OnSuccess(result => result.Top(source, settings, pageSize))
@@ -77,9 +76,5 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
             .OnSuccess(result => result.OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
             .OnSuccess(result => result.WithParameters(source, parameterBag))
             .OnSuccess(result => result.Build());
-
-    public Result<IPagedDatabaseEntityRetrieverSettings> Create<TResult>() where TResult : class
-        => _settingsProviders
-            .Select(x => x.Get<TResult>())
-            .WhenNotContinue(() => Result.Invalid<IPagedDatabaseEntityRetrieverSettings>($"No database entity retriever provider was found for query type [{typeof(TResult).FullName}]"));
+    }
 }

@@ -7,6 +7,7 @@ public class QueryFieldInfoProvider : IQueryFieldInfoProvider
     public QueryFieldInfoProvider(IEnumerable<IQueryFieldInfoProviderHandler> handlers)
     {
         ArgumentGuard.IsNotNull(handlers, nameof(handlers));
+
         _handlers = handlers;
     }
 

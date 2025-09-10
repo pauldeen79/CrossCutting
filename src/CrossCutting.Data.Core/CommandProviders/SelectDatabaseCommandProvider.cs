@@ -5,29 +5,24 @@ public class SelectDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverS
     private readonly IEnumerable<IDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
 
     public Result<IDatabaseCommand> Create<TSource>(DatabaseOperation operation)
-    {
-        if (operation != DatabaseOperation.Select)
-        {
-            return Result.Invalid<IDatabaseCommand>("Only Select operation is supported");
-        }
-
-        var settingsResult = GetSettings<TSource>().EnsureValue();
-        if (!settingsResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<IDatabaseCommand>(settingsResult);
-        }
-
-        var settings = settingsResult.Value!;
-        return Result.Success(new SelectCommandBuilder()
-            .Select(settings.Fields)
-            .From(settings.TableName)
-            .Where(settings.DefaultWhere)
-            .OrderBy(settings.DefaultOrderBy)
-            .Build());
-    }
+        => new ResultDictionaryBuilder()
+            .Add("Validate", () => Result.Validate(() => operation == DatabaseOperation.Select, "Only Select operation is supported"))
+            .Add("Settings", GetSettings<TSource>)
+            .Build()
+            .OnSuccess(results =>
+            {
+                var settings = results.GetValue<IDatabaseEntityRetrieverSettings>("Settings");
+                
+                return new SelectCommandBuilder()
+                    .Select(settings.Fields)
+                    .From(settings.TableName)
+                    .Where(settings.DefaultWhere)
+                    .OrderBy(settings.DefaultOrderBy)
+                    .Build();
+            });
 
     private Result<IDatabaseEntityRetrieverSettings> GetSettings<TSource>()
         => _settingsProviders
-            .Select(x => x.Get<TSource>())
+            .Select(x => x.Get<TSource>().EnsureValue())
             .WhenNotContinue(() => Result.Error<IDatabaseEntityRetrieverSettings>($"Could not obtain database entity retriever settings for type [{typeof(TSource).FullName}]"));
 }
