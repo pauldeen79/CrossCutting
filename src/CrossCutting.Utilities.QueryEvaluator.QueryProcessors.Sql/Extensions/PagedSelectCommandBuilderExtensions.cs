@@ -6,12 +6,15 @@ internal static class PagedSelectCommandBuilderExtensions
                                                              IQueryContext context,
                                                              IPagedDatabaseEntityRetrieverSettings settings,
                                                              IQueryFieldInfo fieldInfo,
-                                                             IFieldSelectionQuery? fieldSelectionQuery,
                                                              ISqlExpressionProvider sqlExpressionProvider,
                                                              ParameterBag parameterBag)
-        => fieldSelectionQuery is null || fieldSelectionQuery.GetAllFields
-            ? instance.AppendSelectFieldsForAllFields(settings, fieldInfo)
-            : instance.AppendSelectFieldsForSpecifiedFields(context, fieldSelectionQuery, fieldInfo, sqlExpressionProvider, parameterBag);
+    {
+        var fieldSelectionQuery = context.Query as IFieldSelectionQuery;
+
+        return fieldSelectionQuery is null || fieldSelectionQuery.GetAllFields
+                ? instance.AppendSelectFieldsForAllFields(settings, fieldInfo)
+                : instance.AppendSelectFieldsForSpecifiedFields(context, fieldSelectionQuery, fieldInfo, sqlExpressionProvider, parameterBag);
+    }
 
     private static Result<PagedSelectCommandBuilder> AppendSelectFieldsForAllFields(this PagedSelectCommandBuilder instance,
                                                                                     IPagedDatabaseEntityRetrieverSettings settings,
@@ -51,9 +54,12 @@ internal static class PagedSelectCommandBuilderExtensions
         return Result.Success(instance);
     }
 
-    internal static Result<PagedSelectCommandBuilder> Distinct(this PagedSelectCommandBuilder instance,
-                                                               IFieldSelectionQuery? fieldSelectionQuery)
-        => Result.Success(instance.DistinctValues(fieldSelectionQuery?.Distinct == true));
+    internal static Result<PagedSelectCommandBuilder> Distinct(this PagedSelectCommandBuilder instance, IQueryContext context)
+    {
+        var fieldSelectionQuery = context.Query as IFieldSelectionQuery;
+
+        return Result.Success(instance.DistinctValues(fieldSelectionQuery?.Distinct == true));
+    }
 
     internal static Result<PagedSelectCommandBuilder> Top(this PagedSelectCommandBuilder instance,
                                                   IQueryContext context,

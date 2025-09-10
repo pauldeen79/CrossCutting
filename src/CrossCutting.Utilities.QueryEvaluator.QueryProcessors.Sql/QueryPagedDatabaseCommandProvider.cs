@@ -62,8 +62,8 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
         var fieldInfo = _fieldInfoProvider.Create(source.Query).GetValueOrThrow();
         var parameterBag = new ParameterBag();
         return new PagedSelectCommandBuilder()
-            .Select(source, settings, fieldInfo, fieldSelectionQuery, _sqlExpressionProvider, parameterBag)
-            .OnSuccess(result => result.Distinct(fieldSelectionQuery))
+            .Select(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag)
+            .OnSuccess(result => result.Distinct(source))
             .OnSuccess(result => result.Top(source, settings, pageSize))
             .OnSuccess(result => result.Offset(source, offset))
             .OnSuccess(result => result.From(source, settings))
