@@ -51,24 +51,29 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
         }
 #pragma warning restore CA1031 // Do not catch general exception types
 
-        if (!settingsResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<IPagedDatabaseCommand>(settingsResult);
-        }
-
-        var settings = settingsResult.Value!;
-        var fieldInfo = _fieldInfoProvider.Create(source.Query).GetValueOrThrow();
         var parameterBag = new ParameterBag();
-        return new PagedSelectCommandBuilder()
-            .Select(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag)
-            .OnSuccess(result => result.Distinct(source))
-            .OnSuccess(result => result.Top(source, settings, pageSize))
-            .OnSuccess(result => result.Offset(source, offset))
-            .OnSuccess(result => result.From(source, settings))
-            .OnSuccess(result => result.Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag))
-            .OnSuccess(result => result.OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
-            .OnSuccess(result => result.WithParameters(source, parameterBag))
-            .OnSuccess(result => result.Build());
+
+        return settingsResult.OnSuccess(settings =>
+        {
+            var fieldInfoResult = _fieldInfoProvider.Create(source.Query).EnsureValue();
+            if (!fieldInfoResult.IsSuccessful())
+            {
+                return Result.FromExistingResult<IPagedDatabaseCommand>(fieldInfoResult);
+            }
+
+            var fieldInfo = fieldInfoResult.Value!;
+
+            return new PagedSelectCommandBuilder()
+                .Select(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag)
+                .OnSuccess(result => result.Distinct(source))
+                .OnSuccess(result => result.Top(source, settings, pageSize))
+                .OnSuccess(result => result.Offset(source, offset))
+                .OnSuccess(result => result.From(source, settings))
+                .OnSuccess(result => result.Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag))
+                .OnSuccess(result => result.OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
+                .OnSuccess(result => result.WithParameters(source, parameterBag))
+                .OnSuccess(result => result.Build());
+        });
     }
 
     public Result<IPagedDatabaseEntityRetrieverSettings> Create<TResult>() where TResult : class

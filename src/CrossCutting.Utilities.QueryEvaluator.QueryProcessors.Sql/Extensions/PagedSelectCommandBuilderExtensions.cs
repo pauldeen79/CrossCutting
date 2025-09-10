@@ -161,7 +161,13 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.OrderBy(", ");
             }
 
-            instance.OrderBy($"{sqlExpressionProvider.GetSqlExpression(context, querySortOrder.Item.Expression, fieldInfo, parameterBag).GetValueOrThrow()} {querySortOrder.Item.ToSql()}");
+            var result = sqlExpressionProvider.GetSqlExpression(context, querySortOrder.Item.Expression, fieldInfo, parameterBag);
+            if (!result.IsSuccessful())
+            {
+                return Result.FromExistingResult<PagedSelectCommandBuilder>(result);
+            }
+
+            instance.OrderBy($"{result.Value} {querySortOrder.Item.ToSql()}");
         }
 
         if (context.Query.SortOrders.Count == 0 && !string.IsNullOrEmpty(settings.DefaultOrderBy))
