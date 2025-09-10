@@ -173,9 +173,11 @@ internal static class PagedSelectCommandBuilderExtensions
     }
 
     internal static Result<PagedSelectCommandBuilder> WithParameters(this PagedSelectCommandBuilder instance,
-                                                                     IParameterizedQuery? parameterizedQuery,
+                                                                     IQueryContext context,
                                                                      ParameterBag parameterBag)
     {
+        var parameterizedQuery = context.Query as IParameterizedQuery;
+
         if (parameterizedQuery is not null)
         {
             foreach (var parameter in parameterizedQuery.Parameters)

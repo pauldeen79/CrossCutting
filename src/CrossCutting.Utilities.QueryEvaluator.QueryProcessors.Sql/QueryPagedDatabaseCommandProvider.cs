@@ -32,8 +32,6 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
             return Result.Invalid<IPagedDatabaseCommand>("Only select operation is supported");
         }
 
-        var fieldSelectionQuery = source.Query as IFieldSelectionQuery;
-        var parameterizedQuery = source.Query as IParameterizedQuery;
         Result<IPagedDatabaseEntityRetrieverSettings> settingsResult;
 #pragma warning disable CA1031 // Do not catch general exception types
         try
@@ -69,7 +67,7 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
             .OnSuccess(result => result.From(source, settings))
             .OnSuccess(result => result.Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag))
             .OnSuccess(result => result.OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
-            .OnSuccess(result => result.WithParameters(parameterizedQuery, parameterBag))
+            .OnSuccess(result => result.WithParameters(source, parameterBag))
             .OnSuccess(result => result.Build());
     }
 
