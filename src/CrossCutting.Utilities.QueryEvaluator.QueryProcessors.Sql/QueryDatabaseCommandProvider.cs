@@ -12,9 +12,9 @@ public class QueryDatabaseCommandProvider : IDatabaseCommandProvider<IQuery>
     }
 
     public Result<IDatabaseCommand> Create(IQuery source, DatabaseOperation operation)
-        => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported")
-            .TryCastAllowNull<IDatabaseCommand>()
-            .OnSuccess(() => _pagedDatabaseCommandProvider.CreatePaged(source.WithContext(null), operation, 0, 0)
-                .EnsureValue()
-                .OnSuccess(pagedDatabaseCommand => pagedDatabaseCommand.DataCommand));
+        => new ResultDictionaryBuilder()
+            .Add("Validate", () => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
+            .Add("Command", () => _pagedDatabaseCommandProvider.CreatePaged(source.WithContext(null), operation, 0, 0).EnsureValue())
+            .Build()
+            .OnSuccess(results => results.GetValue<IPagedDatabaseCommand>("Command").DataCommand);
 }

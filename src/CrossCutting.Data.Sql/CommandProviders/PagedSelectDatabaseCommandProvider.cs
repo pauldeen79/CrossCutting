@@ -12,6 +12,7 @@ public class PagedSelectDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntity
             .OnSuccess(results =>
             {
                 var settings = results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings");
+
                 return new PagedSelectCommandBuilder()
                     .Select(settings.Fields)
                     .From(settings.TableName)
