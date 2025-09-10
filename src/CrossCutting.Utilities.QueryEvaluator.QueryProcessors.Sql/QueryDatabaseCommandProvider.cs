@@ -12,18 +12,8 @@ public class QueryDatabaseCommandProvider : IDatabaseCommandProvider<IQuery>
     }
 
     public Result<IDatabaseCommand> Create(IQuery source, DatabaseOperation operation)
-    {
-        if (operation != DatabaseOperation.Select)
-        {
-            return Result.Invalid<IDatabaseCommand>("Only select operation is supported");
-        }
-
-        var result = _pagedDatabaseCommandProvider.CreatePaged(source.WithContext(null), operation, 0, 0).EnsureValue();
-        if (!result.IsSuccessful())
-        {
-            return Result.FromExistingResult<IDatabaseCommand>(result);
-        }
-
-        return Result.Success(result.Value!.DataCommand);
-    }
+        => Result.Validate<IDatabaseCommand>(() => operation == DatabaseOperation.Select, "Only select operation is supported")
+            .OnSuccess(() => _pagedDatabaseCommandProvider.CreatePaged(source.WithContext(null), operation, 0, 0)
+                .EnsureValue()
+                .OnSuccess(pagedDatabaseCommand => pagedDatabaseCommand.DataCommand));
 }

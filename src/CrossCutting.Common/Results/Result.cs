@@ -548,4 +548,30 @@ public record Result
         => ThrowIfNotSuccessful(string.IsNullOrEmpty(ErrorMessage)
             ? $"Result: {Status}"
             : $"Result: {Status}, ErrorMessage: {ErrorMessage}");
+
+    public static Result Validate(Func<bool> validationPredicate, string errorMessage)
+    {
+        ArgumentGuard.IsNotNull(validationPredicate, nameof(validationPredicate));
+
+        var result = validationPredicate();
+        if (!result)
+        {
+            return Invalid(errorMessage);
+        }
+
+        return Continue();
+    }
+
+    public static Result<T> Validate<T>(Func<bool> validationPredicate, string errorMessage)
+    {
+        ArgumentGuard.IsNotNull(validationPredicate, nameof(validationPredicate));
+
+        var result = validationPredicate();
+        if (!result)
+        {
+            return Invalid<T>(errorMessage);
+        }
+
+        return Continue<T>();
+    }
 }

@@ -2928,4 +2928,64 @@ public class ResultTests
             result.Exception.ShouldNotBeNull();
         }
     }
+
+    public class Validate_Untyped : ResultTests
+    {
+        [Fact]
+        public void Returns_Continue_When_Validation_Succeeds()
+        {
+            // Arrange
+            var predicate = () => true;
+
+            // Act
+            var result = Result.Validate(predicate, "Invalid!");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Validation_Fails()
+        {
+            // Arrange
+            var predicate = () => false;
+
+            // Act
+            var result = Result.Validate(predicate, "Invalid!");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Invalid!");
+        }
+    }
+
+    public class Validate_Typed : ResultTests
+    {
+        [Fact]
+        public void Returns_Continue_When_Validation_Succeeds()
+        {
+            // Arrange
+            var predicate = () => true;
+
+            // Act
+            var result = Result.Validate<string>(predicate, "Invalid!");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Validation_Fails()
+        {
+            // Arrange
+            var predicate = () => false;
+
+            // Act
+            var result = Result.Validate<string>(predicate, "Invalid!");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Invalid!");
+        }
+    }
 }
