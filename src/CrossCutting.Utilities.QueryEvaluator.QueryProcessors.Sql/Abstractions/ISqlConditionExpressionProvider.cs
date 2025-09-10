@@ -2,10 +2,9 @@
 
 public interface ISqlConditionExpressionProvider
 {
-    Result GetConditionExpression(IQueryContext context,
-                                  ICondition condition,
-                                  IQueryFieldInfo fieldInfo,
-                                  ISqlExpressionProvider sqlExpressionProvider,
-                                  ParameterBag parameterBag,
-                                  Func<string, PagedSelectCommandBuilder> actionDelegate);
+    Result<string> GetConditionExpression(IQueryContext context,
+                                          ICondition condition,
+                                          IQueryFieldInfo fieldInfo,
+                                          ISqlExpressionProvider sqlExpressionProvider,
+                                          ParameterBag parameterBag);
 }

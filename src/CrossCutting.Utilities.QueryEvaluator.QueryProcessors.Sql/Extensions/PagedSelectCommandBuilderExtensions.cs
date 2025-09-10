@@ -108,16 +108,17 @@ internal static class PagedSelectCommandBuilderExtensions
                 queryCondition,
                 fieldInfo,
                 sqlExpressionProvider,
-                parameterBag,
-                (queryCondition.Combination ?? Combination.And) == Combination.And
-                    ? instance.And
-                    : instance.Or
+                parameterBag
             );
 
             if (!result.IsSuccessful())
             {
                 return Result.FromExistingResult<PagedSelectCommandBuilder>(result);
             }
+
+            result.OnSuccess(value => (queryCondition.Combination ?? Combination.And) == Combination.And
+                ? instance.And(value)
+                : instance.Or(value));
         }
 
         return Result.Success(instance);

@@ -10,20 +10,18 @@ public class SqlConditionExpressionProvider : ISqlConditionExpressionProvider
         _handlers = handlers;
     }
 
-    public Result GetConditionExpression(
+    public Result<string> GetConditionExpression(
         IQueryContext context,
         ICondition condition,
         IQueryFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
-        ParameterBag parameterBag,
-        Func<string, PagedSelectCommandBuilder> actionDelegate)
+        ParameterBag parameterBag)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
         fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
         sqlExpressionProvider = ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
-        actionDelegate = ArgumentGuard.IsNotNull(actionDelegate, nameof(actionDelegate));
 
         var builder = new StringBuilder();
 
@@ -41,8 +39,6 @@ public class SqlConditionExpressionProvider : ISqlConditionExpressionProvider
             builder.Append(")");
         }
 
-        actionDelegate.Invoke(builder.ToString());
-
-        return result;
+        return result.OnSuccess(_ => Result.Success(builder.ToString()));
     }
 }
