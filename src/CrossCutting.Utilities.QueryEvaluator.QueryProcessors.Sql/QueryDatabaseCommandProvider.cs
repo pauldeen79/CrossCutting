@@ -12,7 +12,8 @@ public class QueryDatabaseCommandProvider : IDatabaseCommandProvider<IQuery>
     }
 
     public Result<IDatabaseCommand> Create(IQuery source, DatabaseOperation operation)
-        => Result.Validate<IDatabaseCommand>(() => operation == DatabaseOperation.Select, "Only select operation is supported")
+        => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported")
+            .TryCastAllowNull<IDatabaseCommand>()
             .OnSuccess(() => _pagedDatabaseCommandProvider.CreatePaged(source.WithContext(null), operation, 0, 0)
                 .EnsureValue()
                 .OnSuccess(pagedDatabaseCommand => pagedDatabaseCommand.DataCommand));

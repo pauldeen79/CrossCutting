@@ -561,17 +561,4 @@ public record Result
 
         return Continue();
     }
-
-    public static Result<T> Validate<T>(Func<bool> validationPredicate, string errorMessage)
-    {
-        ArgumentGuard.IsNotNull(validationPredicate, nameof(validationPredicate));
-
-        var result = validationPredicate();
-        if (!result)
-        {
-            return Invalid<T>(errorMessage);
-        }
-
-        return Continue<T>();
-    }
 }
