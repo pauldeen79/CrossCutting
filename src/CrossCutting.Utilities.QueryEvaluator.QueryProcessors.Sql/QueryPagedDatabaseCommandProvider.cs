@@ -25,7 +25,7 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
 
     public Result<IPagedDatabaseCommand> CreatePaged(IQueryContext source, DatabaseOperation operation, int offset, int pageSize)
         => new ResultDictionaryBuilder()
-            .Add("Validate", () => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
+            .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
             .Add("Settings", () => GetSettings(source))
             .Add("FieldInfo", () => _fieldInfoProvider.Create(source.Query).EnsureValue())
             .Build()
@@ -42,39 +42,36 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
             .WhenNotContinue(() => Result.Invalid<IPagedDatabaseEntityRetrieverSettings>($"No database entity retriever provider was found for query type [{typeof(TResult).FullName}]"));
 
     private Result<IPagedDatabaseEntityRetrieverSettings> GetSettings(IQueryContext source)
-    {
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
+        => Result.WrapException(() =>
         {
-            return ((Result<IPagedDatabaseEntityRetrieverSettings>)GetType()
-                .GetMethod(nameof(Create))
-                .MakeGenericMethod(source.Query.GetType())
-                .Invoke(this, Array.Empty<object>())).EnsureValue();
-        }
-        catch (TargetInvocationException ex)
-        {
-            return Result.Error<IPagedDatabaseEntityRetrieverSettings>(ex.InnerException, "Could not get paged database entity retriever settings, see exception for details");
-        }
-        catch (Exception ex)
-        {
-            return Result.Error<IPagedDatabaseEntityRetrieverSettings>(ex, "Could not get paged database entity retriever settings, see exception for details");
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
-    }
+            try
+            {
+                return ((Result<IPagedDatabaseEntityRetrieverSettings>)GetType()
+                    .GetMethod(nameof(Create))
+                    .MakeGenericMethod(source.Query.GetType())
+                    .Invoke(this, Array.Empty<object>())).EnsureValue();
+            }
+            catch (TargetInvocationException ex)
+            {
+                return Result.Error<IPagedDatabaseEntityRetrieverSettings>(ex.InnerException, "Could not get paged database entity retriever settings, see exception for details");
+            }
+        });
 
     private Result<IPagedDatabaseCommand> BuildCommand(IQueryContext source, int offset, int pageSize, IPagedDatabaseEntityRetrieverSettings settings, IQueryFieldInfo fieldInfo)
     {
         var parameterBag = new ParameterBag();
+        var builder = new PagedSelectCommandBuilder();
 
-        return new PagedSelectCommandBuilder()
-            .Select(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag)
-            .OnSuccess(result => result.Distinct(source))
-            .OnSuccess(result => result.Top(source, settings, pageSize))
-            .OnSuccess(result => result.Offset(source, offset))
-            .OnSuccess(result => result.From(source, settings))
-            .OnSuccess(result => result.Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag))
-            .OnSuccess(result => result.OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
-            .OnSuccess(result => result.WithParameters(source, parameterBag))
-            .OnSuccess(result => result.Build());
+        return new ResultDictionaryBuilder()
+            .Add(() => builder.Select(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
+            .Add(() => builder.Distinct(source))
+            .Add(() => builder.Top(source, settings, pageSize))
+            .Add(() => builder.Offset(source, offset))
+            .Add(() => builder.From(source, settings))
+            .Add(() => builder.Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag))
+            .Add(() => builder.OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
+            .Add(() => builder.AddParameters(source, parameterBag))
+            .Build()
+            .OnSuccess(_ => builder.Build());
     }
 }

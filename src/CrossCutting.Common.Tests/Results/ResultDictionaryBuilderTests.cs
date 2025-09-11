@@ -71,12 +71,12 @@ public class ResultDictionaryBuilderTests
                 var sut = new ResultDictionaryBuilder();
 
                 // Act
-                sut.Add("Test", GenericArgumentDelegate);
+                sut.Add(GenericArgumentDelegate);
 
                 // Assert
                 var dictionary = sut.Build();
                 dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.First().Key.ShouldBe("0001");
             }
 
             [Fact]

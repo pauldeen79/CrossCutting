@@ -927,9 +927,9 @@ public class ResultDictionaryExtensionsTests
         {
             // Arrange
             var sut = new ResultDictionaryBuilder()
-                .Add("Step1", NonGenericDelegate)
-                .Add("Step2", NonGenericDelegate)
-                .Add("Step3", GenericDelegate)
+                .Add(NonGenericDelegate)
+                .Add(NonGenericDelegate)
+                .Add(GenericDelegate)
                 .Build();
 
             // Act
@@ -946,9 +946,9 @@ public class ResultDictionaryExtensionsTests
         {
             // Arrange
             var sut = new ResultDictionaryBuilder()
-                .Add("Step1", NonGenericDelegate)
-                .Add("Step2", GenericErrorDelegate)
-                .Add("Step3", GenericDelegate)
+                .Add(NonGenericDelegate)
+                .Add(GenericErrorDelegate)
+                .Add(GenericDelegate)
                 .Build();
 
             // Act

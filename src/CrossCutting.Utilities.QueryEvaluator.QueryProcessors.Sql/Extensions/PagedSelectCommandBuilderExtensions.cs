@@ -178,7 +178,7 @@ internal static class PagedSelectCommandBuilderExtensions
         return Result.Success(instance);
     }
 
-    internal static Result<PagedSelectCommandBuilder> WithParameters(this PagedSelectCommandBuilder instance,
+    internal static Result<PagedSelectCommandBuilder> AddParameters(this PagedSelectCommandBuilder instance,
                                                                      IQueryContext context,
                                                                      ParameterBag parameterBag)
     {
