@@ -489,25 +489,6 @@ public sealed class SqlQueryProcessorTests : TestBase
     }
 
     [Fact]
-    public async Task Can_Find_Many_Items_Using_Custom_Parameterized_Query()
-    {
-        // Arrange
-        var query = new EntityParameterizedQuery("A", "B");
-
-        InitializeMock(CreateData().Where(x => x.Property1.Contains('A') && x.Property2.Contains('A')).OrderBy(x => x.Property2));
-
-        // Act
-        var result = await SqlQueryProcessor.FindManyAsync<MyEntity>(query);
-
-        // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldNotBeNull();
-        await DatabaseEntityRetriever
-            .Received()
-            .FindManyAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT * FROM MyEntity WHERE Property1 LIKE @p0 AND Property2 LIKE @p1"), Arg.Any<CancellationToken>());
-    }
-
-    [Fact]
     public async Task Can_Find_Many_Items_Using_DefaultWhere()
     {
         // Arrange
@@ -728,60 +709,6 @@ public sealed class SqlQueryProcessorTests : TestBase
         public IFieldSelectionQueryBuilder ToBuilder() => throw new NotImplementedException();
 
         IQueryBuilder IQuery.ToBuilder() => ToBuilder();
-    }
-
-    private sealed class EntityParameterizedQuery : IParameterizedQuery
-    {
-        public EntityParameterizedQuery(string property1, string property2)
-        {
-            Property1 = property1;
-            Property2 = property2;
-        }
-
-        IReadOnlyCollection<IQueryParameter> IParameterizedQuery.Parameters =>
-        [
-            new QueryParameterBuilder(nameof(Property1), Property1).Build(),
-            new QueryParameterBuilder(nameof(Property2), Property2).Build(),
-        ];
-
-        int? IQuery.Limit { get; }
-
-        int? IQuery.Offset { get; }
-
-        IReadOnlyCollection<ICondition> IQuery.Conditions
-        {
-            get
-            {
-                var conditions = new List<ICondition>();
-
-                if (!string.IsNullOrEmpty(Property1))
-                {
-                    conditions.Add(new StringContainsConditionBuilder()
-                        .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(Property1)))
-                        .WithCompareExpression(new DelegateExpressionBuilder(() => Property1))
-                        .Build());
-                }
-
-                if (!string.IsNullOrEmpty(Property2))
-                {
-                    conditions.Add(new StringContainsConditionBuilder()
-                        .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(Property2)))
-                        .WithCompareExpression(new DelegateExpressionBuilder(() => Property2))
-                        .Build());
-                }
-
-                return conditions;
-            }
-        }
-
-        IReadOnlyCollection<ISortOrder> IQuery.SortOrders => Array.Empty<ISortOrder>();
-
-        IParameterizedQueryBuilder IParameterizedQuery.ToBuilder() => throw new NotImplementedException();
-
-        IQueryBuilder IQuery.ToBuilder() => throw new NotImplementedException();
-
-        public string Property1 { get; }
-        public string Property2 { get; }
     }
 
     private sealed class DataObjectNameQuery : IDataObjectNameQuery

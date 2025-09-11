@@ -182,16 +182,6 @@ internal static class PagedSelectCommandBuilderExtensions
                                                                      IQueryContext context,
                                                                      ParameterBag parameterBag)
     {
-        var parameterizedQuery = context.Query as IParameterizedQuery;
-
-        if (parameterizedQuery is not null)
-        {
-            foreach (var parameter in parameterizedQuery.Parameters)
-            {
-                instance.AppendParameter(parameter.Name, parameter.Value!);
-            }
-        }
-
         foreach (var parameter in parameterBag.Parameters)
         {
             instance.AppendParameter(parameter.Key, parameter.Value!);
