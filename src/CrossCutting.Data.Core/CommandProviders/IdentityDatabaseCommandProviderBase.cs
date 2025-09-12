@@ -5,33 +5,27 @@ public abstract class IdentityDatabaseCommandProviderBase<T>(IEnumerable<IPagedD
 {
     private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
 
-    public IDatabaseCommand Create(T source, DatabaseOperation operation)
-    {
-        if (operation != DatabaseOperation.Select)
-        {
-            throw new ArgumentOutOfRangeException(nameof(operation), "Only select is supported");
-        }
-        var settings = GetSettings();
-        return new SelectCommandBuilder()
-            .Select(settings.Fields)
-            .From(settings.TableName)
-            .Where(string.Join(" AND ", GetFields().Select(x => $"[{x.FieldName}] = @{x.ParameterName}")))
-            .AppendParameters(source)
-            .Build();
-    }
-
-    private IPagedDatabaseEntityRetrieverSettings GetSettings()
-    {
-        foreach (var settingsProvider in _settingsProviders)
-        {
-            if (settingsProvider.TryGet<T>(out var settings) && settings is not null)
+    public Result<IDatabaseCommand> Create(T source, DatabaseOperation operation)
+        => new ResultDictionaryBuilder()
+            .Add("Validate", () => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
+            .Add("Settings", GetSettings)
+            .Build()
+            .OnSuccess(results =>
             {
-                return settings;
-            }
-        }
+                var settings = results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings");
 
-        throw new InvalidOperationException($"Could not obtain paged database entity retriever settings for type [{typeof(T).FullName}]");
-    }
+                return new SelectCommandBuilder()
+                    .Select(settings.Fields)
+                    .From(settings.TableName)
+                    .Where(string.Join(" AND ", GetFields().Select(x => $"[{x.FieldName}] = @{x.ParameterName}")))
+                    .AppendParameters(source)
+                    .Build();
+            });
+
+    private Result<IPagedDatabaseEntityRetrieverSettings> GetSettings()
+        => _settingsProviders
+            .Select(x => x.Get<T>().EnsureValue())
+            .WhenNotContinue(() => Result.Error<IPagedDatabaseEntityRetrieverSettings>($"Could not obtain paged database entity retriever settings for type [{typeof(T).FullName}]"));
 
     protected abstract IEnumerable<IdentityDatabaseCommandProviderField> GetFields();
 }

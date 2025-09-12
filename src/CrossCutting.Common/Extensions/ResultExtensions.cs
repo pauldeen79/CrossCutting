@@ -262,16 +262,30 @@ public static class ResultExtensions
         return Result.FromExistingResult<TTarget>(instance);
     }
 
-    public static Result<TTarget> OnSuccess<TSource, TTarget>(this Result<TSource> instance, Func<Result<TSource>, Result<TTarget>> successDelegate)
+    public static Result<TTarget> OnSuccess<TSource, TTarget>(this Result<TSource> instance, Func<TSource, Result<TTarget>> successDelegate)
     {
         ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
-        if (instance.IsSuccessful())
+        var result = instance.EnsureValue();
+        if (result.IsSuccessful())
         {
-            return successDelegate(instance);
+            return successDelegate(result.Value!);
         }
 
-        return Result.FromExistingResult<TTarget>(instance);
+        return Result.FromExistingResult<TTarget>(result);
+    }
+
+    public static Result<TTarget> OnSuccess<TSource, TTarget>(this Result<TSource> instance, Func<TSource, TTarget> successDelegate)
+    {
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        var result = instance.EnsureValue();
+        if (result.IsSuccessful())
+        {
+            return Result.Success(successDelegate(result.Value!));
+        }
+
+        return Result.FromExistingResult<TTarget>(result);
     }
 
     public static Task<T> OnSuccessAsync<T>(this T instance, Func<Task<T>> successDelegate)
@@ -312,16 +326,30 @@ public static class ResultExtensions
         return Task.FromResult(Result.FromExistingResult<TTarget>(instance));
     }
 
-    public static Task<Result<TTarget>> OnSuccessAsync<TSource, TTarget>(this Result<TSource> instance, Func<Result<TSource>, Task<Result<TTarget>>> successDelegate)
+    public static Task<Result<TTarget>> OnSuccessAsync<TSource, TTarget>(this Result<TSource> instance, Func<TSource, Task<Result<TTarget>>> successDelegate)
     {
         ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
-        if (instance.IsSuccessful())
+        var result = instance.EnsureValue();
+        if (result.IsSuccessful())
         {
-            return successDelegate(instance);
+            return successDelegate(result.Value!);
         }
 
-        return Task.FromResult(Result.FromExistingResult<TTarget>(instance));
+        return Task.FromResult(Result.FromExistingResult<TTarget>(result));
+    }
+
+    public static async Task<Result<TTarget>> OnSuccessAsync<TSource, TTarget>(this Result<TSource> instance, Func<TSource, Task<TTarget>> successDelegate)
+    {
+        ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
+
+        var result = instance.EnsureValue();
+        if (result.IsSuccessful())
+        {
+            return Result.Success(await successDelegate(result.Value!).ConfigureAwait(false));
+        }
+
+        return Result.FromExistingResult<TTarget>(result);
     }
 
     public static Result IgnoreNotFound(this Result instance)
@@ -412,5 +440,21 @@ public static class ResultExtensions
         }
 
         return instance;
+    }
+
+    public static T WhenNotContinue<T>(this IEnumerable<T> innerResults, Func<T> notFoundDelegate) where T : Result
+    {
+        ArgumentGuard.IsNotNull(innerResults, nameof(innerResults));
+        ArgumentGuard.IsNotNull(notFoundDelegate, nameof(notFoundDelegate));
+
+        foreach (var result in innerResults)
+        {
+            if (result.Status != ResultStatus.Continue)
+            {
+                return result;
+            }
+        }
+
+        return notFoundDelegate();
     }
 }

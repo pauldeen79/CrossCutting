@@ -188,6 +188,7 @@ dotnet_diagnostic.S2325.severity = none # Methods and properties that don't acce
 dotnet_diagnostic.CA1502.severity = none # Cognitive complexity
 dotnet_diagnostic.CA1711.severity = none # Members should not end with 'Exception'
 dotnet_diagnostic.CA1307.severity = none # Specify StringComparison for clarity
+dotnet_diagnostic.CA1506.severity = none # 'x' is coupled with 'y' different types from 'z' different namespaces. Rewrite or refactor the code to decrease its class coupling below 'y'.
 
 ###############################
 # VB Coding Conventions       #

@@ -12,8 +12,8 @@ public class EqualConditionTests : TestBase<EqualCondition>
             var rightValue = "this";
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(IDoubleExpressionContainer.SecondExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
+                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
+                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -23,7 +23,28 @@ public class EqualConditionTests : TestBase<EqualCondition>
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
+            result.ThrowIfNotSuccessful();
+            result.Value.ShouldBe(true);
+        }
+
+        [Fact]
+        public async Task Returns_Ok_On_Two_Empty_Expressions()
+        {
+            // Arrange
+            var parameters = new Dictionary<string, object?>
+            {
+                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new EmptyExpressionBuilder().Build() },
+                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new DynamicExpressionBuilder(new EmptyExpressionBuilder()).Build() },
+            };
+            var sut = CreateSut(parameters);
+            var context = CreateContext("Dummy");
+
+
+            // Act
+            var result = await sut.EvaluateAsync(context, CancellationToken.None);
+
+            // Assert
+            result.ThrowIfNotSuccessful();
             result.Value.ShouldBe(true);
         }
 
@@ -35,8 +56,8 @@ public class EqualConditionTests : TestBase<EqualCondition>
             var rightValue = 13;
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(IDoubleExpressionContainer.SecondExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
+                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
+                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -46,7 +67,7 @@ public class EqualConditionTests : TestBase<EqualCondition>
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
+            result.ThrowIfNotSuccessful();
             result.Value.ShouldBe(false);
         }
     }

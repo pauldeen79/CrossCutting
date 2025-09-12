@@ -22,8 +22,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         return _expressions
             .Select(x => x.Evaluate(expressionContext))
-            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-            .WhenNull(ResultStatus.NotSupported, $"Unknown expression type found in fragment: {expression}");
+            .WhenNotContinue(() => Result.NotSupported<object?>($"Unknown expression type found in fragment: {expression}"));
     }
 
     public Result<Type> Validate(string expression, ExpressionEvaluatorSettings settings, object? context)
@@ -37,7 +36,6 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         return _expressions
             .Select(x => x.Validate(expressionContext))
-            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-            .WhenNull(ResultStatus.Invalid, $"Unknown expression type found in fragment: {expression}");
+            .WhenNotContinue(() => Result.Invalid<Type>($"Unknown expression type found in fragment: {expression}"));
     }
 }

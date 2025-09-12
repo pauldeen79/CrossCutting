@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -32,17 +31,6 @@ public static class DictionaryExtensions
                 instance[typeof(T)] = typeInstances;
                 return typeInstances.FirstOrDefault()
                     ?? throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
-            }
-
-            if (returnValue is IEnumerable multipleItems)
-            {
-                var items = multipleItems.Cast<T>().ToArray();
-                if (items.Length == 0)
-                {
-                    throw new InvalidOperationException($"Class factory did not create an instance of type {typeof(T).FullName}");
-                }
-
-                return items[0];
             }
 
             return (T)returnValue;
@@ -80,12 +68,7 @@ public static class DictionaryExtensions
                 return typeInstances;
             }
 
-            if (returnValue is IEnumerable multipleItems)
-            {
-                return multipleItems.Cast<T>().ToArray();
-            }
-            
-            return [(T)returnValue];
+            return (IEnumerable<T>)returnValue;
         }
 
         var newInstance = Testing.CreateInstance<T>(classFactory, instance)

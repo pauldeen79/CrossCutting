@@ -7,37 +7,40 @@ public class IdentityDatabaseCommandProviderBaseTests
     [InlineData(DatabaseOperation.Insert)]
     [InlineData(DatabaseOperation.Unspecified)]
     [InlineData(DatabaseOperation.Update)]
-    public void Create_Throws_On_Wrong_DatabaseOperation(DatabaseOperation operation)
+    public void Create_Returns_Invalid_On_Wrong_DatabaseOperation(DatabaseOperation operation)
     {
         // Arrange
-        var sut = new IdentityDatabaseCommandProviderMock(new[] { new PagedDatabaseEntityRetrieverSettingsProviderMock() });
+        var sut = new IdentityDatabaseCommandProviderMock([new PagedDatabaseEntityRetrieverSettingsProviderMock()]);
 
         // Act
-        Action a = () => sut.Create(new TestEntityIdentity("A", "B"), operation);
-        a.ShouldThrow<ArgumentOutOfRangeException>()
-         .ParamName.ShouldBe("operation");
+        var result = sut.Create(new TestEntityIdentity("A", "B"), operation);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     [Fact]
-    public void Create_Throws_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
+    public void Create_Returns_Error_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
     {
         // Arrange
-        var sut = new IdentityDatabaseCommandProviderMock([Substitute.For<IPagedDatabaseEntityRetrieverSettingsProvider>()]);
+        var sut = new IdentityDatabaseCommandProviderMock([]);
 
-        // Act & Assert
-        Action a = () => sut.Create(new TestEntityIdentity("NOTIMPLEMENTED", "NOTIMPLEMENTED"), DatabaseOperation.Select);
-        a.ShouldThrow<InvalidOperationException>()
-         .Message.ShouldBe("Could not obtain paged database entity retriever settings for type [CrossCutting.Data.Core.Tests.TestFixtures.TestEntityIdentity]");
+        // Act
+        var result = sut.Create(new TestEntityIdentity("NOTIMPLEMENTED", "NOTIMPLEMENTED"), DatabaseOperation.Select);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Could not obtain paged database entity retriever settings for type [CrossCutting.Data.Core.Tests.TestFixtures.TestEntityIdentity]");
     }
 
     [Fact]
     public void Create_Generates_Where_Statement_For_Both_Simple_Fields_And_Fields_With_Different_Name_In_Database()
     {
         // Arrange
-        var sut = new IdentityDatabaseCommandProviderMock(new[] { new PagedDatabaseEntityRetrieverSettingsProviderMock() });
+        var sut = new IdentityDatabaseCommandProviderMock([new PagedDatabaseEntityRetrieverSettingsProviderMock()]);
 
         // Act
-        var actual = sut.Create(new TestEntityIdentity("A", "B"), DatabaseOperation.Select);
+        var actual = sut.Create(new TestEntityIdentity("A", "B"), DatabaseOperation.Select).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.CommandText.ShouldBe(@"SELECT A, B, C FROM Table WHERE [Field1] = @Field1 AND [Field2] = @Field2Alias");
@@ -54,16 +57,14 @@ public class IdentityDatabaseCommandProviderBaseTests
 
     private sealed class PagedDatabaseEntityRetrieverSettingsProviderMock : IPagedDatabaseEntityRetrieverSettingsProvider
     {
-        public bool TryGet<TSource>(out IPagedDatabaseEntityRetrieverSettings? settings)
+        public Result<IPagedDatabaseEntityRetrieverSettings> Get<TSource>()
         {
             if (typeof(TSource) == typeof(TestEntityIdentity))
             {
-                settings = new PagedDatabaseEntityRetrieverSettingsMock();
-                return true;
+                return Result.Success<IPagedDatabaseEntityRetrieverSettings>(new PagedDatabaseEntityRetrieverSettingsMock());
             }
 
-            settings = null;
-            return false;
+            return Result.Continue<IPagedDatabaseEntityRetrieverSettings>();
         }
     }
 

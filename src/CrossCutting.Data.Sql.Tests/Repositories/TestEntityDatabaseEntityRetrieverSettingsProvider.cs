@@ -2,27 +2,23 @@
 
 public class TestEntityDatabaseEntityRetrieverSettingsProvider : IPagedDatabaseEntityRetrieverSettingsProvider, IDatabaseEntityRetrieverSettingsProvider
 {
-    public bool TryGet<TSource>(out IPagedDatabaseEntityRetrieverSettings? settings)
+    Result<IPagedDatabaseEntityRetrieverSettings> IPagedDatabaseEntityRetrieverSettingsProvider.Get<TSource>()
     {
         if (typeof(TSource) == typeof(TestEntityIdentity) || typeof(TSource) == typeof(TestEntity))
         {
-            settings = new TestEntityDatabaseEntityRetrieverSettings();
-            return true;
+            return Result.Success<IPagedDatabaseEntityRetrieverSettings>(new TestEntityDatabaseEntityRetrieverSettings());
         }
 
-        settings = null;
-        return false;
+        return Result.Continue<IPagedDatabaseEntityRetrieverSettings>();
     }
 
-    public bool TryGet<TSource>(out IDatabaseEntityRetrieverSettings? settings)
+    Result<IDatabaseEntityRetrieverSettings> IDatabaseEntityRetrieverSettingsProvider.Get<TSource>()
     {
         if (typeof(TSource) == typeof(TestEntityIdentity) || typeof(TSource) == typeof(TestEntity))
         {
-            settings = new TestEntityDatabaseEntityRetrieverSettings();
-            return true;
+            return Result.Success<IDatabaseEntityRetrieverSettings>(new TestEntityDatabaseEntityRetrieverSettings());
         }
 
-        settings = null;
-        return false;
+        return Result.Continue<IDatabaseEntityRetrieverSettings>();
     }
 }

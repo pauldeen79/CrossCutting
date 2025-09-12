@@ -17,7 +17,11 @@ public class PropertyTypeNameExclusionFilter(string skipPropertyTypeName) : IObj
         => true;
 
     public bool ShouldProcessProperty(object? instance, PropertyDescriptor propertyDescriptor)
-        => propertyDescriptor.PropertyType.FullName != _skipPropertyTypeName;
+    {
+        propertyDescriptor = ArgumentGuard.IsNotNull(propertyDescriptor, nameof(propertyDescriptor));
+
+        return propertyDescriptor.PropertyType.FullName != _skipPropertyTypeName;
+    }
 
     public object? Transform(object? instance, IObjectDumperResultBuilder builder, int indent, int currentDepth)
         => instance;

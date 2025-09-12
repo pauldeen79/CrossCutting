@@ -6,21 +6,18 @@ public partial record PropertyNameExpression
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var contextValueResult = (await context.State
-            .GetValueAsync(Constants.Context)
-            .ConfigureAwait(false)).EnsureValue();
+        return (await Expression.EvaluateAsync(context, token)
+            .ConfigureAwait(false))
+            .EnsureNotNull("Expression evaluation resulted in null")
+            .OnSuccess(valueResult =>
+            {
+                var property = valueResult.Value!.GetType().GetProperty(PropertyName, BindingFlags.Instance | BindingFlags.Public);
+                if (property is null)
+                {
+                    return Result.Invalid<object?>($"Type {valueResult.Value.GetType().FullName} does not contain property {PropertyName}");
+                }
 
-        if (!contextValueResult.IsSuccessful())
-        {
-            return contextValueResult;
-        }
-
-        var property = contextValueResult.Value!.GetType().GetProperty(PropertyName, BindingFlags.Instance | BindingFlags.Public);
-        if (property is null)
-        {
-            return Result.Invalid<object?>($"Type {contextValueResult.Value.GetType().FullName} does not contain property {PropertyName}");
-        }
-
-        return Result.WrapException(() => Result.Success<object?>(property.GetValue(contextValueResult.Value)));
+                return Result.WrapException<object?>(() => property.GetValue(valueResult.Value));
+            });
     }
 }

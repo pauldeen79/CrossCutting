@@ -1,4 +1,4 @@
-namespace CrossCutting.Data.Core.Tests;
+﻿namespace CrossCutting.Data.Core.Tests;
 
 public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentity>>
 {
@@ -17,10 +17,10 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         commandMock.Operation.Returns(DatabaseOperation.Insert);
         var entity = new TestEntity("01", "Test", "first entity", false);
         CommandProcessorMock.ExecuteCommand(commandMock, entity).Returns(new DatabaseCommandResult<TestEntity>(entity));
-        EntityCommandProviderMock.Create(Arg.Any<TestEntity>(), DatabaseOperation.Insert).Returns(commandMock);
+        EntityCommandProviderMock.Create(Arg.Any<TestEntity>(), DatabaseOperation.Insert).Returns(Result.Success(commandMock));
 
         // Act
-        var result = Sut.Add(entity);
+        var result = Sut.Add(entity).EnsureValue().GetValueOrThrow();
 
         // Assert
         result.ShouldBe(entity);
@@ -35,10 +35,10 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         commandMock.Operation.Returns(DatabaseOperation.Insert);
         var entity = new TestEntity("01", "Test", "first entity", false);
         CommandProcessorMock.ExecuteCommandAsync(commandMock, entity).Returns(new DatabaseCommandResult<TestEntity>(entity));
-        EntityCommandProviderMock.Create(Arg.Any<TestEntity>(), DatabaseOperation.Insert).Returns(commandMock);
+        EntityCommandProviderMock.Create(Arg.Any<TestEntity>(), DatabaseOperation.Insert).Returns(Result.Success(commandMock));
 
         // Act
-        var result = await Sut.AddAsync(entity);
+        var result = (await Sut.AddAsync(entity)).EnsureValue().GetValueOrThrow();
 
         // Assert
         result.ShouldBe(entity);
@@ -53,10 +53,10 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var commandMock = Substitute.For<IDatabaseCommand>();
         commandMock.Operation.Returns(DatabaseOperation.Update);
         CommandProcessorMock.ExecuteCommand(commandMock, entity).Returns(new DatabaseCommandResult<TestEntity>(entity));
-        EntityCommandProviderMock.Create(Arg.Any<TestEntity>(), DatabaseOperation.Update).Returns(commandMock);
+        EntityCommandProviderMock.Create(Arg.Any<TestEntity>(), DatabaseOperation.Update).Returns(Result.Success(commandMock));
 
         // Act
-        var result = Sut.Update(entity);
+        var result = Sut.Update(entity).EnsureValue().GetValueOrThrow();
 
         // Assert
         result.ShouldBe(entity);
@@ -71,10 +71,10 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var commandMock = Substitute.For<IDatabaseCommand>();
         commandMock.Operation.Returns(DatabaseOperation.Update);
         CommandProcessorMock.ExecuteCommandAsync(commandMock, entity).Returns(new DatabaseCommandResult<TestEntity>(entity));
-        EntityCommandProviderMock.Create(Arg.Any<TestEntity>(), DatabaseOperation.Update).Returns(commandMock);
+        EntityCommandProviderMock.Create(Arg.Any<TestEntity>(), DatabaseOperation.Update).Returns(Result.Success(commandMock));
 
         // Act
-        var result = await Sut.UpdateAsync(entity);
+        var result = (await Sut.UpdateAsync(entity)).EnsureValue().GetValueOrThrow();
 
         // Assert
         result.ShouldBe(entity);
@@ -89,10 +89,10 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var commandMock = Fixture.Freeze<IDatabaseCommand>();
         commandMock.Operation.Returns(DatabaseOperation.Delete);
         CommandProcessorMock.ExecuteCommand(commandMock, entity).Returns(new DatabaseCommandResult<TestEntity>(entity));
-        EntityCommandProviderMock.Create(Arg.Any<TestEntity>(), DatabaseOperation.Delete).Returns(commandMock);
+        EntityCommandProviderMock.Create(Arg.Any<TestEntity>(), DatabaseOperation.Delete).Returns(Result.Success(commandMock));
 
         // Act
-        var result = Sut.Delete(entity);
+        var result = Sut.Delete(entity).EnsureValue().GetValueOrThrow();
 
         // Assert
         result.ShouldBe(entity);
@@ -107,10 +107,10 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var commandMock = Fixture.Freeze<IDatabaseCommand>();
         commandMock.Operation.Returns(DatabaseOperation.Delete);
         CommandProcessorMock.ExecuteCommandAsync(commandMock, entity).Returns(new DatabaseCommandResult<TestEntity>(entity));
-        EntityCommandProviderMock.Create(Arg.Any<TestEntity>(), DatabaseOperation.Delete).Returns(commandMock);
+        EntityCommandProviderMock.Create(Arg.Any<TestEntity>(), DatabaseOperation.Delete).Returns(Result.Success(commandMock));
 
         // Act
-        var result = await Sut.DeleteAsync(entity);
+        var result = (await Sut.DeleteAsync(entity)).EnsureValue().GetValueOrThrow();
 
         // Assert
         result.ShouldBe(entity);
@@ -122,11 +122,11 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
     {
         // Arrange
         var expected = new TestEntity("code", "codeType", "description");
-        IdentitySelectCommandProviderMock.Create(Arg.Any<TestEntityIdentity>(), DatabaseOperation.Select).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
-        EntityRetrieverMock.FindOne(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(expected);
+        IdentitySelectCommandProviderMock.Create(Arg.Any<TestEntityIdentity>(), DatabaseOperation.Select).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
+        EntityRetrieverMock.FindOne(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success(expected));
 
         // Act
-        var actual = Sut.Find(new TestEntityIdentity(expected));
+        var actual = Sut.Find(new TestEntityIdentity(expected)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBe(expected);
@@ -137,11 +137,11 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
     {
         // Arrange
         var expected = new TestEntity("code", "codeType", "description");
-        IdentitySelectCommandProviderMock.Create(Arg.Any<TestEntityIdentity>(), DatabaseOperation.Select).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
-        EntityRetrieverMock.FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(expected);
+        IdentitySelectCommandProviderMock.Create(Arg.Any<TestEntityIdentity>(), DatabaseOperation.Select).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
+        EntityRetrieverMock.FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success(expected));
 
         // Act
-        var actual = await Sut.FindAsync(new TestEntityIdentity(expected));
+        var actual = (await Sut.FindAsync(new TestEntityIdentity(expected))).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBe(expected);
@@ -152,11 +152,11 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
     {
         // Arrange
         var expected = new[] { new TestEntity("code", "codeType", "description") };
-        EntitySelectCommandProviderMock.Create<TestEntity>(DatabaseOperation.Select).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
-        EntityRetrieverMock.FindMany(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(expected);
+        EntitySelectCommandProviderMock.Create<TestEntity>(DatabaseOperation.Select).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
+        EntityRetrieverMock.FindMany(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success<IReadOnlyCollection<TestEntity>>(expected));
 
         // Act
-        var actual = Sut.FindAll();
+        var actual = Sut.FindAll().EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBeEquivalentTo(expected);
@@ -167,11 +167,11 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
     {
         // Arrange
         var expected = new[] { new TestEntity("code", "codeType", "description") };
-        EntitySelectCommandProviderMock.Create<TestEntity>(DatabaseOperation.Select).Returns(new SqlTextCommand("SELECT ...", DatabaseOperation.Select));
-        EntityRetrieverMock.FindManyAsync(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(expected);
+        EntitySelectCommandProviderMock.Create<TestEntity>(DatabaseOperation.Select).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
+        EntityRetrieverMock.FindManyAsync(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success<IReadOnlyCollection<TestEntity>>(expected));
 
         // Act
-        var actual = await Sut.FindAllAsync();
+        var actual = (await Sut.FindAllAsync()).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBeEquivalentTo(expected);
@@ -182,11 +182,11 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
     {
         // Arrange
         var expected = new PagedResult<TestEntity>([new TestEntity("code", "codeType", "description")], 10, 1, 10);
-        PagedEntitySelectCommandProviderMock.CreatePaged<TestEntity>(DatabaseOperation.Select, 1, 10).Returns(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10));
-        EntityRetrieverMock.FindPaged(Arg.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select)).Returns(expected);
+        PagedEntitySelectCommandProviderMock.CreatePaged<TestEntity>(DatabaseOperation.Select, 1, 10).Returns(Result.Success<IPagedDatabaseCommand>(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10)));
+        EntityRetrieverMock.FindPaged(Arg.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select)).Returns(Result.Success<IPagedResult<TestEntity>>(expected));
 
         // Act
-        var actual = Sut.FindAllPaged(1, 10);
+        var actual = Sut.FindAllPaged(1, 10).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBeEquivalentTo(expected);
@@ -197,11 +197,11 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
     {
         // Arrange
         var expected = new PagedResult<TestEntity>([new TestEntity("code", "codeType", "description")], 10, 1, 10);
-        PagedEntitySelectCommandProviderMock.CreatePaged<TestEntity>(DatabaseOperation.Select, 1, 10).Returns(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10));
-        EntityRetrieverMock.FindPagedAsync(Arg.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select)).Returns(expected);
+        PagedEntitySelectCommandProviderMock.CreatePaged<TestEntity>(DatabaseOperation.Select, 1, 10).Returns(Result.Success<IPagedDatabaseCommand>(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10)));
+        EntityRetrieverMock.FindPagedAsync(Arg.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select)).Returns(Result.Success<IPagedResult<TestEntity>>(expected));
 
         // Act
-        var actual = await Sut.FindAllPagedAsync(1, 10);
+        var actual = (await Sut.FindAllPagedAsync(1, 10)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBeEquivalentTo(expected);

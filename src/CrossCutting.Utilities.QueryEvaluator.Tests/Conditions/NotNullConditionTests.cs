@@ -11,7 +11,7 @@ public class NotNullConditionTests : TestBase<NotNullCondition>
             var leftValue = "non null value";
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
+                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -20,7 +20,7 @@ public class NotNullConditionTests : TestBase<NotNullCondition>
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
+            result.ThrowIfNotSuccessful();
             result.Value.ShouldBe(true);
         }
 
@@ -31,7 +31,7 @@ public class NotNullConditionTests : TestBase<NotNullCondition>
             var leftValue = default(object?);
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(IDoubleExpressionContainer.FirstExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
+                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -40,7 +40,7 @@ public class NotNullConditionTests : TestBase<NotNullCondition>
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
+            result.ThrowIfNotSuccessful();
             result.Value.ShouldBe(false);
         }
     }

@@ -21,11 +21,15 @@ public record Result<T> : Result
     public T? Value { get; }
     public bool HasValue => Value is not null;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public T GetValueOrThrow(string errorMessage)
         => !IsSuccessful() || Value is null
             ? throw new InvalidOperationException(errorMessage)
             : Value;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public T GetValueOrThrow()
         => GetValueOrThrow(string.IsNullOrEmpty(ErrorMessage)
             ? $"Result: {Status}"
@@ -417,6 +421,7 @@ public record Result
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static Result WrapException(Func<Result> resultDelegate)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
@@ -434,6 +439,7 @@ public record Result
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static Result<T> WrapException<T>(Func<Result<T>> resultDelegate)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
@@ -451,6 +457,25 @@ public record Result
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
+    public static Result<T> WrapException<T>(Func<T> resultDelegate)
+    {
+        ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return Success(resultDelegate());
+        }
+        catch (Exception ex)
+        {
+            return Error<T>(ex, ExceptionOccured);
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static async Task<Result> WrapExceptionAsync(Func<Task<Result>> resultDelegate)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
@@ -468,6 +493,7 @@ public record Result
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
     public static async Task<Result<T>> WrapExceptionAsync<T>(Func<Task<Result<T>>> resultDelegate)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
@@ -484,11 +510,31 @@ public record Result
 #pragma warning restore CA1031 // Do not catch general exception types
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
+    public static async Task<Result<T>> WrapExceptionAsync<T>(Func<Task<T>> resultDelegate)
+    {
+        ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return Success(await resultDelegate().ConfigureAwait(false));
+        }
+        catch (Exception ex)
+        {
+            return Error<T>(ex, ExceptionOccured);
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+    }
+
     private static T? TryGetValue<T>(Result existingResult) => existingResult.GetValue() is T t
         ? t
         : default;
 
-    public void ThrowIfInvalid(string errorMessage)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
+    public void ThrowIfNotSuccessful(string errorMessage)
     {
         if (!IsSuccessful())
         {
@@ -496,8 +542,23 @@ public record Result
         }
     }
 
-    public void ThrowIfInvalid()
-        => ThrowIfInvalid(string.IsNullOrEmpty(ErrorMessage)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
+    public void ThrowIfNotSuccessful()
+        => ThrowIfNotSuccessful(string.IsNullOrEmpty(ErrorMessage)
             ? $"Result: {Status}"
             : $"Result: {Status}, ErrorMessage: {ErrorMessage}");
+
+    public static Result Validate(Func<bool> validationPredicate, string errorMessage)
+    {
+        ArgumentGuard.IsNotNull(validationPredicate, nameof(validationPredicate));
+
+        var result = validationPredicate();
+        if (!result)
+        {
+            return Invalid(errorMessage);
+        }
+
+        return Continue();
+    }
 }

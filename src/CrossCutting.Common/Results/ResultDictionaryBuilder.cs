@@ -4,6 +4,9 @@ public class ResultDictionaryBuilder
 {
     private readonly Dictionary<string, Func<IReadOnlyDictionary<string, Result>, Result>> _resultset = new();
 
+    public ResultDictionaryBuilder Add(Func<Result> value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
+
     public ResultDictionaryBuilder Add(string name, Func<Result> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
@@ -11,6 +14,9 @@ public class ResultDictionaryBuilder
         _resultset.Add(name, _ => value());
         return this;
     }
+
+    public ResultDictionaryBuilder Add(Func<IReadOnlyDictionary<string, Result>, Result> value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
 
     public ResultDictionaryBuilder Add(string name, Func<IReadOnlyDictionary<string, Result>, Result> value)
     {
@@ -75,11 +81,17 @@ public class ResultDictionaryBuilder<T>
 {
     private readonly Dictionary<string, Func<IReadOnlyDictionary<string, Result<T>>, Result<T>>> _resultset = new();
 
+    public ResultDictionaryBuilder<T> Add(Func<Result<T>> value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
+
     public ResultDictionaryBuilder<T> Add(string name, Func<Result<T>> value)
     {
         _resultset.Add(name, _ => value());
         return this;
     }
+
+    public ResultDictionaryBuilder<T> Add(Func<IReadOnlyDictionary<string, Result<T>>, Result<T>> value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
 
     public ResultDictionaryBuilder<T> Add(string name, Func<IReadOnlyDictionary<string, Result<T>>, Result<T>> value)
     {
@@ -87,11 +99,17 @@ public class ResultDictionaryBuilder<T>
         return this;
     }
 
+    public ResultDictionaryBuilder<T> Add(Func<Result> value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
+
     public ResultDictionaryBuilder<T> Add(string name, Func<Result> value)
     {
         _resultset.Add(name, _ => Result.FromExistingResult<T>(value()));
         return this;
     }
+
+    public ResultDictionaryBuilder<T> Add(Func<IReadOnlyDictionary<string, Result<T>>, Result> value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
 
     public ResultDictionaryBuilder<T> Add(string name, Func<IReadOnlyDictionary<string, Result<T>>, Result> value)
     {

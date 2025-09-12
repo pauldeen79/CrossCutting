@@ -87,7 +87,7 @@ public class EnumerableExtensionsTests
         var input = new[] { "1", "2", "3" };
 
         // Act
-        var actual = input.WhenEmpty(new[] { "4", "5", "6" });
+        var actual = input.WhenEmpty(["4", "5", "6"]);
 
         // Assert
         actual.ShouldBeEquivalentTo(input);
@@ -378,13 +378,13 @@ public class EnumerableExtensionsTests
     public async Task PerformUntilFailure_Async_Typed_Performs_Action_Until_First_NonSuccessful_Result()
     {
         // Arrange
-        IEnumerable<string> input = new[]
-        {
+        IEnumerable<string> input =
+        [
         "success 1",
         "success 2",
         "error 1",
         "error 2"
-    };
+    ];
         var counter = 0;
 
         // Act
@@ -452,11 +452,11 @@ public class EnumerableExtensionsTests
     public async Task PerformUntilFailure_Async_Typed_Performs_Action_Until_First_NonSuccessful_Result_No_Unsucessful_Items_Present()
     {
         // Arrange
-        IEnumerable<string> input = new[]
-        {
+        IEnumerable<string> input =
+        [
         "success 1",
         "success 2"
-    };
+    ];
         var counter = 0;
 
         // Act

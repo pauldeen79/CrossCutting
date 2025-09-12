@@ -10,7 +10,7 @@ public class ValidatableObjectExtensionsTests
         var results = new List<ValidationResult>();
 
         // Act
-        var actual = input.Validate(results, input.Value, nameof(MyValidatableClass.Value), new[] { new RequiredAttribute() });
+        var actual = input.Validate(results, input.Value, nameof(MyValidatableClass.Value), [new RequiredAttribute()]);
 
         // Assert
         actual.ShouldBe(true);
@@ -25,7 +25,7 @@ public class ValidatableObjectExtensionsTests
         var results = new List<ValidationResult>();
 
         // Act
-        var actual = input.Validate(results, input.Value, nameof(MyValidatableClass.Value), new[] { new RequiredAttribute() });
+        var actual = input.Validate(results, input.Value, nameof(MyValidatableClass.Value), [new RequiredAttribute()]);
 
         // Assert
         actual.ShouldBe(false);

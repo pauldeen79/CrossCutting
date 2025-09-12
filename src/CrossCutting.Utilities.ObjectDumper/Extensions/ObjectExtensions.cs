@@ -13,6 +13,8 @@ public static class ObjectExtensions
 
     public static string Dump<T>(this T instance, IObjectDumperResultBuilder builder, IEnumerable<IObjectDumperPart> customTypeHandlers)
     {
+        builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
+
         ComposableObjectDumperFactory.Create(customTypeHandlers).Process(instance, typeof(T), builder, 4, 1);
 
         return builder.ToString();

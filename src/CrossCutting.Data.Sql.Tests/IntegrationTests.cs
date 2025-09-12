@@ -36,7 +36,7 @@ public sealed class IntegrationTests : IDisposable
                                            new[] { new TestEntity("A", "B", "C", true) });
 
         // Act
-        var actual = _repository.Add(entity);
+        var actual = _repository.Add(entity).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.Code.ShouldBe(entity.Code);
@@ -54,7 +54,7 @@ public sealed class IntegrationTests : IDisposable
                                            new[] { new TestEntity("A1", "B1", "C1", true) });
 
         // Act
-        var actual = _repository.Update(entity);
+        var actual = _repository.Update(entity).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.Code.ShouldBe(entity.Code + "1");
@@ -72,7 +72,7 @@ public sealed class IntegrationTests : IDisposable
                                            new[] { new TestEntity("A1", "B1", "C1", true) }); //suffixes get ignored because Delete does not read result
 
         // Act
-        var actual = _repository.Delete(entity);
+        var actual = _repository.Delete(entity).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.Code.ShouldBe(entity.Code);
@@ -91,7 +91,7 @@ public sealed class IntegrationTests : IDisposable
                                            new[] { expectedResult });
 
         // Act
-        var actual = _repository.Find(identity);
+        var actual = _repository.Find(identity).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBeEquivalentTo(expectedResult);
@@ -105,7 +105,7 @@ public sealed class IntegrationTests : IDisposable
         _connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT"), expectedResult);
 
         // Act
-        var actual = _repository.FindAll();
+        var actual = _repository.FindAll().EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ToArray().ShouldBeEquivalentTo(expectedResult);
@@ -120,7 +120,7 @@ public sealed class IntegrationTests : IDisposable
         _connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("SELECT COUNT(*)"), 1);
 
         // Act
-        var actual = _repository.FindAllPaged(0, 1);
+        var actual = _repository.FindAllPaged(0, 1).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ToArray().ShouldBeEquivalentTo(expectedResult);

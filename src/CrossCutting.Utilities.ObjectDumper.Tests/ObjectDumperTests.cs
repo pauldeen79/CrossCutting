@@ -307,7 +307,7 @@ public class ObjectDumperTests
         };
 
         // Act
-        var actual = input.Dump(new PropertyNameExclusionFilter("Name", typeof(RecursiveType)?.FullName ?? string.Empty));
+        var actual = input.Dump(new PropertyNameExclusionFilter("Name", typeof(RecursiveType).FullName ?? string.Empty));
 
         // Assert
         actual.ShouldBe(@"{
@@ -339,7 +339,7 @@ public class ObjectDumperTests
         };
 
         // Act
-        var actual = input.Dump(new PropertyTypeNameExclusionFilter(typeof(string)?.FullName ?? string.Empty));
+        var actual = input.Dump(new PropertyTypeNameExclusionFilter(typeof(string).FullName ?? string.Empty));
 
         // Assert
         actual.ShouldBe(@"{

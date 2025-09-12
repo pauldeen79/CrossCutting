@@ -5,7 +5,7 @@ public class AsyncResultDictionaryBuilderTests
     protected static Task<Result> NonGenericTask => Task.FromResult(Result.Success());
     protected static Task<Result<string>> GenericTask => Task.FromResult(Result.Success(string.Empty));
 
-    protected static Func<Result> NonGenericFunc => new Func<Result>(() => Result.Success());
+    protected static Func<Result> NonGenericFunc => new Func<Result>(Result.Success);
     protected static Func<Result<string>> GenericFunc => new Func<Result<string>>(() => Result.Success(string.Empty));
 
     protected static Result NonGenericResult => Result.Success();
@@ -28,12 +28,12 @@ public class AsyncResultDictionaryBuilderTests
                 var sut = new AsyncResultDictionaryBuilder();
 
                 // Act
-                sut.Add("Test", NonGenericTask);
+                sut.Add(NonGenericTask);
 
                 // Assert
                 var dictionary = await sut.Build();
                 dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
+                dictionary.First().Key.ShouldBe("0001");
             }
 
             [Fact]
@@ -192,6 +192,21 @@ public class AsyncResultDictionaryBuilderTests
             }
 
             [Fact]
+            public async Task Adds_Result_Task_Successfully_Without_Specified_Name()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+
+                // Act
+                sut.Add(GenericResult);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("0001");
+            }
+
+            [Fact]
             public void Throws_On_Duplicate_Key()
             {
                 // Arrange
@@ -223,6 +238,21 @@ public class AsyncResultDictionaryBuilderTests
             }
 
             [Fact]
+            public async Task Adds_Result_Task_Successfully_Without_Specified_Name()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+
+                // Act
+                sut.Add("GenericResult");
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("0001");
+            }
+
+            [Fact]
             public void Throws_On_Duplicate_Key()
             {
                 // Arrange
@@ -251,6 +281,21 @@ public class AsyncResultDictionaryBuilderTests
                 var dictionary = await sut.Build();
                 dictionary.Count.ShouldBe(1);
                 dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public async Task Adds_Result_Task_Successfully_Without_Specified_Name()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+
+                // Act
+                sut.Add(() => "GenericResult");
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("0001");
             }
 
             [Fact]

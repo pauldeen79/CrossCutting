@@ -4,34 +4,27 @@ public class PagedSelectDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntity
 {
     private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
 
-    public IPagedDatabaseCommand CreatePaged<TSource>(DatabaseOperation operation, int offset, int pageSize)
-    {
-        if (operation != DatabaseOperation.Select)
-        {
-            throw new ArgumentOutOfRangeException(nameof(operation), "Only Select operation is supported");
-        }
-
-        var settings = GetSettings<TSource>();
-        return new PagedSelectCommandBuilder()
-            .Select(settings.Fields)
-            .From(settings.TableName)
-            .Where(settings.DefaultWhere)
-            .OrderBy(settings.DefaultOrderBy)
-            .Skip(offset)
-            .Take(((int?)pageSize).IfNotGreaterThan(settings.OverridePageSize))
-            .Build();
-    }
-
-    private IPagedDatabaseEntityRetrieverSettings GetSettings<TSource>()
-    {
-        foreach (var settingsProvider in _settingsProviders)
-        {
-            if (settingsProvider.TryGet<TSource>(out var settings) && settings is not null)
+    public Result<IPagedDatabaseCommand> CreatePaged<TSource>(DatabaseOperation operation, int offset, int pageSize)
+        => new ResultDictionaryBuilder()
+            .Add("Validate", () => Result.Validate(() => operation == DatabaseOperation.Select, "Only Select operation is supported"))
+            .Add("Settings", GetSettings<TSource>)
+            .Build()
+            .OnSuccess(results =>
             {
-                return settings;
-            }
-        }
+                var settings = results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings");
 
-        throw new InvalidOperationException($"Could not obtain paged database entity retriever settings for type [{typeof(TSource).FullName}]");
-    }
+                return new PagedSelectCommandBuilder()
+                    .Select(settings.Fields)
+                    .From(settings.TableName)
+                    .Where(settings.DefaultWhere)
+                    .OrderBy(settings.DefaultOrderBy)
+                    .Skip(offset)
+                    .Take(((int?)pageSize).IfNotGreaterThan(settings.OverridePageSize))
+                    .Build();
+            });
+
+    private Result<IPagedDatabaseEntityRetrieverSettings> GetSettings<TSource>()
+        => _settingsProviders
+            .Select(x => x.Get<TSource>().EnsureValue())
+            .WhenNotContinue(() => Result.Error<IPagedDatabaseEntityRetrieverSettings>($"Could not obtain paged database entity retriever settings for type [{typeof(TSource).FullName}]"));
 }

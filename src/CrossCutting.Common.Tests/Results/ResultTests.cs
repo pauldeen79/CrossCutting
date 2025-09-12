@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Tests.Extensions;
-
-namespace CrossCutting.Common.Tests.Results;
+﻿namespace CrossCutting.Common.Tests.Results;
 
 public class ResultTests
 {
@@ -209,7 +207,7 @@ public class ResultTests
     public void Can_Create_Success_Result_From_NonNull_Instance_With_ValidationErrors_Provided()
     {
         // Act
-        var actual = Result.FromInstance(this, new[] { new ValidationError("Ignored", ["Member1"]) });
+        var actual = Result.FromInstance(this, [new ValidationError("Ignored", ["Member1"])]);
 
         // Assert
         actual.Status.ShouldBe(ResultStatus.Ok);
@@ -278,7 +276,7 @@ public class ResultTests
     public void Can_Create_Invalid_Result_With_ErrorMessage_And_InnerResults()
     {
         // Act
-        var actual = Result.Invalid<string>("Error", new[] { Result.Error("Kaboom") });
+        var actual = Result.Invalid<string>("Error", [Result.Error("Kaboom")]);
 
         // Assert
         actual.Status.ShouldBe(ResultStatus.Invalid);
@@ -306,7 +304,7 @@ public class ResultTests
     public void Can_Create_Invalid_Void_Result_With_ErrorMessage_And_InnerResults()
     {
         // Act
-        var actual = Result.Invalid("Error", new[] { Result.Error("Kaboom") });
+        var actual = Result.Invalid("Error", [Result.Error("Kaboom")]);
 
         // Assert
         actual.Status.ShouldBe(ResultStatus.Invalid);
@@ -320,7 +318,7 @@ public class ResultTests
     public void Can_Create_Invalid_Result_With_ValidationErrors()
     {
         // Act
-        var actual = Result.Invalid<string>(new[] { new ValidationError("x", ["m1", "m2"]) });
+        var actual = Result.Invalid<string>([new ValidationError("x", ["m1", "m2"])]);
 
         // Assert
         actual.Status.ShouldBe(ResultStatus.Invalid);
@@ -334,7 +332,7 @@ public class ResultTests
     public void Can_Create_Invalid_Void_Result_With_ValidationErrors()
     {
         // Act
-        var actual = Result.Invalid(new[] { new ValidationError("x", ["m1", "m2"]) });
+        var actual = Result.Invalid([new ValidationError("x", ["m1", "m2"])]);
 
         // Assert
         actual.Status.ShouldBe(ResultStatus.Invalid);
@@ -374,7 +372,7 @@ public class ResultTests
     public void Can_Create_Invalid_Result_From_Null_Instance_Without_ErrorMessage()
     {
         // Act
-        var actual = Result.FromInstance<ResultTests>(null, new[] { new ValidationError("Error", ["Name"]) });
+        var actual = Result.FromInstance<ResultTests>(null, [new ValidationError("Error", ["Name"])]);
 
         // Assert
         actual.Status.ShouldBe(ResultStatus.Invalid);
@@ -2439,24 +2437,24 @@ public class ResultTests
     }
 
     [Fact]
-    public void ThrowIfInvalid_Does_Not_Throw_When_Result_Is_Success()
+    public void ThrowIfNotSuccessful_Does_Not_Throw_When_Result_Is_Success()
     {
         // Arrange
         var sut = Result.Success("ok");
 
         // Act & Assert
-        Action a = () => sut.ThrowIfInvalid();
+        Action a = sut.ThrowIfNotSuccessful;
         a.ShouldNotThrow();
     }
 
     [Fact]
-    public void ThrowIfInvalid_Throws_When_Result_Is_Invalid()
+    public void ThrowIfNotSuccessful_Throws_When_Result_Is_Invalid()
     {
         // Arrange
         var sut = Result.Invalid<string>();
 
         // Act
-        var act = new Action(sut.ThrowIfInvalid);
+        var act = new Action(sut.ThrowIfNotSuccessful);
 
         // Assert
         act.ShouldThrow<InvalidOperationException>()
@@ -2464,13 +2462,13 @@ public class ResultTests
     }
 
     [Fact]
-    public void ThrowIfInvalid_Throws_When_Result_Is_Error_And_ErrorMessage_Is_Filled()
+    public void ThrowIfNotSuccessful_Throws_When_Result_Is_Error_And_ErrorMessage_Is_Filled()
     {
         // Arrange
         var sut = Result.Error<string>("Kaboom");
 
         // Act
-        var act = new Action(sut.ThrowIfInvalid);
+        var act = new Action(sut.ThrowIfNotSuccessful);
 
         // Assert
         act.ShouldThrow<InvalidOperationException>()
@@ -2739,7 +2737,7 @@ public class ResultTests
         // Note that if you don't know if the value is null, you can simply use TryCastAllowNull<string>
     }
 
-    public class WrapException_Func : ResultExtensionTests
+    public class WrapException_Func : ResultTests
     {
         [Fact]
         public void Returns_Correct_Result()
@@ -2771,7 +2769,7 @@ public class ResultTests
         }
     }
 
-    public class WrapExceptionAsync_Func : ResultExtensionTests
+    public class WrapExceptionAsync_Func : ResultTests
     {
         [Fact]
         public async Task Returns_Correct_Result()
@@ -2803,7 +2801,7 @@ public class ResultTests
         }
     }
 
-    public class WrapException_Typed_Func : ResultExtensionTests
+    public class WrapException_Typed_Func_Result : ResultTests
     {
         [Fact]
         public void Returns_Correct_Result()
@@ -2835,7 +2833,39 @@ public class ResultTests
         }
     }
 
-    public class WrapExceptionAsync_Typed_Func : ResultExtensionTests
+    public class WrapException_Typed_Func : ResultTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var resultDelegate = new Func<string>(() => string.Empty);
+
+            // Act
+            var result = Result.WrapException(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Exception.ShouldBeNull();
+        }
+
+        [Fact]
+        public void Returns_Error_When_Exception_Occurs()
+        {
+            // Arrange
+            var resultDelegate = new Func<string>(() => throw new InvalidOperationException("Kaboom"));
+
+            // Act
+            var result = Result.WrapException(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
+            result.Exception.ShouldNotBeNull();
+        }
+    }
+
+    public class WrapExceptionAsync_Typed_Func_Result : ResultTests
     {
         [Fact]
         public async Task Returns_Correct_Result()
@@ -2864,6 +2894,68 @@ public class ResultTests
             result.Status.ShouldBe(ResultStatus.Error);
             result.ErrorMessage.ShouldBe("Exception occured");
             result.Exception.ShouldNotBeNull();
+        }
+    }
+
+    public class WrapExceptionAsync_Typed_Func : ResultTests
+    {
+        [Fact]
+        public async Task Returns_Correct_Result()
+        {
+            // Arrange
+            var resultDelegate = new Func<Task<string>>(() => Task.FromResult(string.Empty));
+
+            // Act
+            var result = await Result.WrapExceptionAsync(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Exception.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task Returns_Error_When_Exception_Occurs()
+        {
+            // Arrange
+            var resultDelegate = new Func<Task<string>>(() => Task.FromException<string>(new InvalidOperationException("Kaboom")));
+
+            // Act
+            var result = await Result.WrapExceptionAsync(resultDelegate);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
+            result.Exception.ShouldNotBeNull();
+        }
+    }
+
+    public class Validate : ResultTests
+    {
+        [Fact]
+        public void Returns_Continue_When_Validation_Succeeds()
+        {
+            // Arrange
+            var predicate = () => true;
+
+            // Act
+            var result = Result.Validate(predicate, "Invalid!");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Validation_Fails()
+        {
+            // Arrange
+            var predicate = () => false;
+
+            // Act
+            var result = Result.Validate(predicate, "Invalid!");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Invalid!");
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Common.Tests.Extensions;
 
-public class ResultExtensionTests
+public class ResultExtensionsTests
 {
-    public class EnsureValue : ResultExtensionTests
+    public class EnsureValue : ResultExtensionsTests
     {
         [Fact]
         public void Returns_Non_Successful_Result_Untyped()
@@ -85,7 +85,7 @@ public class ResultExtensionTests
         }
     }
 
-    public class IgnoreNotFound : ResultExtensionTests
+    public class IgnoreNotFound : ResultExtensionsTests
     {
         [Fact]
         public void Untyped_Returns_Continue_When_Status_Is_NotFound()
@@ -140,7 +140,7 @@ public class ResultExtensionTests
         }
     }
 
-    public class Either : ResultExtensionTests
+    public class Either : ResultExtensionsTests
     {
         [Fact]
         public void Void_Runs_Success_Action_On_Successful_Result()
@@ -415,7 +415,7 @@ public class ResultExtensionTests
         }
     }
 
-    public class OnFailure : ResultExtensionTests
+    public class OnFailure : ResultExtensionsTests
     {
         [Fact]
         public void Does_Nothing_On_Successful_Result_No_Success_Delegate()
@@ -598,7 +598,7 @@ public class ResultExtensionTests
         }
     }
 
-    public class OnSuccess : ResultExtensionTests
+    public class OnSuccess : ResultExtensionsTests
     {
         [Fact]
         public void Runs_Success_Action_On_Successful_Result_No_Success_Delegate()
@@ -754,14 +754,14 @@ public class ResultExtensionTests
         public void Func_With_Arguments_Different_Type_Runs_Success_Action_On_Successful_Result()
         {
             // Arrange
-            var sut = Result.Continue<string>();
+            var sut = Result.Success(string.Empty);
             var success = false;
 
             // Act
-            var result = sut.OnSuccess(_ => Result.Continue<int>().Then(() => success = true));
+            var result = sut.OnSuccess(_ => Result.Success(0).Then(() => success = true));
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Ok);
             success.ShouldBeTrue();
         }
 
@@ -779,9 +779,39 @@ public class ResultExtensionTests
             result.Status.ShouldBe(ResultStatus.Error);
             success.ShouldBeFalse();
         }
+
+        [Fact]
+        public void Func_With_Arguments_Different_Type_Value_Runs_Success_Action_On_Successful_Result()
+        {
+            // Arrange
+            var sut = Result.Success(string.Empty);
+            var success = false;
+
+            // Act
+            var result = sut.OnSuccess(_ => 0.Then(() => success = true));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            success.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void Func_With_Arguments_Different_Type_Value_Does_Nothing_On_Non_Successful_Result()
+        {
+            // Arrange
+            var sut = Result.Error<string>("Kaboom");
+            var success = false;
+
+            // Act
+            var result = sut.OnSuccess(_ => 0.Then(() => success = true));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            success.ShouldBeFalse();
+        }
     }
 
-    public class OnSuccessAsync : ResultExtensionTests
+    public class OnSuccessAsync : ResultExtensionsTests
     {
         [Fact]
         public async Task Func_No_Arguments_Runs_Success_Action_On_Successful_Resul()
@@ -877,14 +907,14 @@ public class ResultExtensionTests
         public async Task Func_With_Arguments_Different_Type_Runs_Success_Action_On_Successful_Result()
         {
             // Arrange
-            var sut = Result.Continue<string>();
+            var sut = Result.Success(string.Empty);
             var success = false;
 
             // Act
-            var result = await sut.OnSuccessAsync(_ => Task.FromResult(Result.Continue<int>().Then(() => success = true)));
+            var result = await sut.OnSuccessAsync(_ => Task.FromResult(Result.Success(0).Then(() => success = true)));
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Ok);
             success.ShouldBeTrue();
         }
 
@@ -902,9 +932,39 @@ public class ResultExtensionTests
             result.Status.ShouldBe(ResultStatus.Error);
             success.ShouldBeFalse();
         }
+
+        [Fact]
+        public async Task Func_With_Arguments_Different_Type_Value_Runs_Success_Action_On_Successful_Result()
+        {
+            // Arrange
+            var sut = Result.Success(string.Empty);
+            var success = false;
+
+            // Act
+            var result = await sut.OnSuccessAsync(_ => Task.FromResult(0.Then(() => success = true)));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            success.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task Func_With_Arguments_Different_Type_Value_Does_Nothing_On_Non_Successful_Result()
+        {
+            // Arrange
+            var sut = Result.Error<string>("Kaboom");
+            var success = false;
+
+            // Act
+            var result = await sut.OnSuccessAsync(_ => Task.FromResult(0.Then(() => success = true)));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            success.ShouldBeFalse();
+        }
     }
 
-    public class Wrap_Untyped : ResultExtensionTests
+    public class Wrap_Untyped : ResultExtensionsTests
     {
         [Fact]
         public void Returns_Same_Instance_When_Successful()
@@ -937,7 +997,7 @@ public class ResultExtensionTests
         }
     }
 
-    public class Wrap_Typed : ResultExtensionTests
+    public class Wrap_Typed : ResultExtensionsTests
     {
         [Fact]
         public void Returns_Same_Instance_When_Successful()
@@ -970,7 +1030,7 @@ public class ResultExtensionTests
         }
     }
 
-    public class EnsureNotNull_Untyped : ResultExtensionTests
+    public class EnsureNotNull_Untyped : ResultExtensionsTests
     {
         [Fact]
         public void Returns_New_Result_When_Result_Is_Null_Default_ErrorMessage()
@@ -1016,7 +1076,7 @@ public class ResultExtensionTests
         }
     }
 
-    public class EnsureNotNull_Typed : ResultExtensionTests
+    public class EnsureNotNull_Typed : ResultExtensionsTests
     {
         [Fact]
         public void Returns_New_Result_When_Result_Is_Null_Default_ErrorMessage()
@@ -1062,7 +1122,7 @@ public class ResultExtensionTests
         }
     }
 
-    public class WhenNull_Untyped : ResultExtensionTests
+    public class WhenNull_Untyped : ResultExtensionsTests
     {
         [Fact]
         public void Returns_New_Result_When_Result_Is_Null_Default_ErrorMessage()
@@ -1108,7 +1168,7 @@ public class ResultExtensionTests
         }
     }
 
-    public class WhenNull_Typed : ResultExtensionTests
+    public class WhenNull_Typed : ResultExtensionsTests
     {
         [Fact]
         public void Returns_New_Result_When_Result_Is_Null_Default_ErrorMessage()
@@ -1151,6 +1211,36 @@ public class ResultExtensionTests
 
             // Arrange
             result.ShouldBeSameAs(sut);
+        }
+    }
+
+    public class WhenNotContinue : ResultExtensionsTests
+    {
+        [Fact]
+        public void Returns_Result_With_Status_Not_Equal_To_Continue_When_Found()
+        {
+            // Arrange
+            var sut = new Result[] { Result.Continue(), Result.Success() };
+
+            // Act
+            var result = sut.WhenNotContinue(() => Result.Error("Kaboom"));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public void Returns_ErrorResult_When_Status_Not_Equal_To_Continue_Is_Not_Found()
+        {
+            // Arrange
+            var sut = new Result[] { Result.Continue(), Result.Continue() };
+
+            // Act
+            var result = sut.WhenNotContinue(() => Result.Error("Kaboom"));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
     }
 }

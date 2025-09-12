@@ -6,6 +6,7 @@ global using System.Threading.Tasks;
 global using AutoFixture;
 global using AutoFixture.AutoNSubstitute;
 global using CrossCutting.Common.Extensions;
+global using CrossCutting.Common.Results;
 global using CrossCutting.Data.Abstractions;
 global using CrossCutting.Data.Abstractions.Extensions;
 global using CrossCutting.Data.Core.Builders;

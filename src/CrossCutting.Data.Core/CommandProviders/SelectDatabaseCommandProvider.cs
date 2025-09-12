@@ -4,32 +4,25 @@ public class SelectDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverS
 {
     private readonly IEnumerable<IDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
 
-    public IDatabaseCommand Create<TSource>(DatabaseOperation operation)
-    {
-        if (operation != DatabaseOperation.Select)
-        {
-            throw new ArgumentOutOfRangeException(nameof(operation), "Only Select operation is supported");
-        }
-
-        var settings = GetSettings<TSource>();
-        return new SelectCommandBuilder()
-            .Select(settings.Fields)
-            .From(settings.TableName)
-            .Where(settings.DefaultWhere)
-            .OrderBy(settings.DefaultOrderBy)
-            .Build();
-    }
-
-    private IDatabaseEntityRetrieverSettings GetSettings<TSource>()
-    {
-        foreach (var settingsProvider in _settingsProviders)
-        {
-            if (settingsProvider.TryGet<TSource>(out var settings) && settings is not null)
+    public Result<IDatabaseCommand> Create<TSource>(DatabaseOperation operation)
+        => new ResultDictionaryBuilder()
+            .Add("Validate", () => Result.Validate(() => operation == DatabaseOperation.Select, "Only Select operation is supported"))
+            .Add("Settings", GetSettings<TSource>)
+            .Build()
+            .OnSuccess(results =>
             {
-                return settings;
-            }
-        }
+                var settings = results.GetValue<IDatabaseEntityRetrieverSettings>("Settings");
+                
+                return new SelectCommandBuilder()
+                    .Select(settings.Fields)
+                    .From(settings.TableName)
+                    .Where(settings.DefaultWhere)
+                    .OrderBy(settings.DefaultOrderBy)
+                    .Build();
+            });
 
-        throw new InvalidOperationException($"Could not obtain database entity retriever settings for type [{typeof(TSource).FullName}]");
-    }
+    private Result<IDatabaseEntityRetrieverSettings> GetSettings<TSource>()
+        => _settingsProviders
+            .Select(x => x.Get<TSource>().EnsureValue())
+            .WhenNotContinue(() => Result.Error<IDatabaseEntityRetrieverSettings>($"Could not obtain database entity retriever settings for type [{typeof(TSource).FullName}]"));
 }

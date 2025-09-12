@@ -54,18 +54,9 @@ public sealed class BinaryExpression : IExpression
     }
 
     private Result<object?> Process(ExpressionTokenType @operator, ExpressionEvaluatorContext context, IReadOnlyDictionary<string, Result> results)
-    {
-        foreach (var component in _components)
-        {
-            var result = Result.WrapException(() => component.Process(@operator, context, results));
-            if (result.Status != ResultStatus.Continue)
-            {
-                return result;
-            }
-        }
-
-        return Result.Invalid<object?>($"Unsupported operator: {Operator}");
-    }
+        => _components
+            .Select(x => Result.WrapException(() => x.Process(@operator, context, results)))
+            .WhenNotContinue(() => Result.Invalid<object?>($"Unsupported operator: {Operator}"));
 
     public async Task<ExpressionParseResult> ParseAsync(CancellationToken token)
     {

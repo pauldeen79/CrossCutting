@@ -1,5 +1,6 @@
 ﻿global using System.Collections.Generic;
 global using System.Linq;
+global using System.Text;
 global using System.Threading;
 global using System.Threading.Tasks;
 global using CrossCutting.Common;
@@ -10,10 +11,9 @@ global using CrossCutting.Data.Core;
 global using CrossCutting.Utilities.ExpressionEvaluator;
 global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
-global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains;
+global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Extensions;
 global using CrossCutting.Utilities.QueryEvaluator.Core.Queries;
 global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory.Abstractions;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.DependencyInjection.Extensions;

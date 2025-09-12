@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Data.Sql.Tests;
+﻿using CrossCutting.Common.Extensions;
+
+namespace CrossCutting.Data.Sql.Tests;
 
 public sealed class DatabaseEntityRetrieverTests : IDisposable
 {
@@ -22,11 +24,11 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         InitializeMapper();
 
         // Act
-        var actual = Sut.FindOne(new SqlDatabaseCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text));
+        var actual = Sut.FindOne(new SqlDatabaseCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldNotBeNull();
-        actual?.Property.ShouldBe("test");
+        actual.Property.ShouldBe("test");
     }
 
     [Fact]
@@ -37,11 +39,11 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         InitializeMapper();
 
         // Act
-        var actual = await Sut.FindOneAsync(new SqlDatabaseCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text));
+        var actual = (await Sut.FindOneAsync(new SqlDatabaseCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text))).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldNotBeNull();
-        actual?.Property.ShouldBe("test");
+        actual.Property.ShouldBe("test");
     }
 
     [Fact]
@@ -56,7 +58,7 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         InitializeMapper();
 
         // Act
-        var actual = Sut.FindMany(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text));
+        var actual = Sut.FindMany(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldNotBeNull().Count.ShouldBe(2);
@@ -78,7 +80,7 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         InitializeMapper();
 
         // Act
-        var actual = await Sut.FindManyAsync(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text));
+        var actual = (await Sut.FindManyAsync(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text))).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldNotBeNull().Count.ShouldBe(2);
@@ -105,7 +107,7 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
                                                10);
 
         // Act
-        var actual = Sut.FindPaged(command);
+        var actual = Sut.FindPaged(command).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldNotBeNull().Count.ShouldBe(2);
@@ -135,7 +137,7 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
                                                10);
 
         // Act
-        var actual = await Sut.FindPagedAsync(command);
+        var actual = (await Sut.FindPagedAsync(command)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldNotBeNull().Count.ShouldBe(2);

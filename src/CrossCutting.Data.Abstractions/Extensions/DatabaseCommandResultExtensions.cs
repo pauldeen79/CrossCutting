@@ -2,14 +2,14 @@
 
 public static class DatabaseCommandResultExtensions
 {
-    public static T HandleResult<T>(this IDatabaseCommandResult<T> instance, string exceptionMessage)
+    public static Result<T> HandleResult<T>(this IDatabaseCommandResult<T> instance, string exceptionMessage)
         where T : class
     {
-        if (!instance.Success || instance.Data == default)
+        if (!instance.Success || instance.Data is null)
         {
-            throw new DataException(exceptionMessage);
+            return Result.Error<T>(exceptionMessage);
         }
 
-        return instance.Data;
+        return Result.Success(instance.Data!);
     }
 }

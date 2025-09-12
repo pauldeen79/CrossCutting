@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <PackageId>pauldeen79.CrossCutting.Data.Abstractions</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>4.0.2</Version>
-    <PackageVersion>4.0.2</PackageVersion>
+    <Version>5.0.0</Version>
+    <PackageVersion>5.0.0</PackageVersion>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
@@ -15,6 +15,10 @@
   <ItemGroup>
     <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrossCutting.Common\CrossCutting.Common.csproj" />
   </ItemGroup>
 
 </Project>

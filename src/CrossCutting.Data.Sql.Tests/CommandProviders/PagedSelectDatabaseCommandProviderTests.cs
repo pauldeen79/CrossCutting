@@ -9,21 +9,27 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
     [InlineData(DatabaseOperation.Insert)]
     [InlineData(DatabaseOperation.Unspecified)]
     [InlineData(DatabaseOperation.Update)]
-    public void CreatePaged_Throws_On_Unsupported_DatabaseOperation(DatabaseOperation operation)
+    public void CreatePaged_Returns_Invalid_On_Unsupported_DatabaseOperation(DatabaseOperation operation)
     {
         // Act
-        Action a = () => Sut.CreatePaged<TestEntity>(operation, 1, 1);
-        a.ShouldThrow<ArgumentOutOfRangeException>()
-         .ParamName.ShouldBe("operation");
+        var result = Sut.CreatePaged<TestEntity>(operation, 1, 1);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     [Fact]
-    public void CreatePaged_Throws_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
+    public void CreatePaged_Returns_Error_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
     {
-        // Act & Assert
-        Action a = () => Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10);
-        a.ShouldThrow<InvalidOperationException>()
-         .Message.ShouldBe("Could not obtain paged database entity retriever settings for type [CrossCutting.Data.Sql.Tests.Repositories.TestEntity]");
+        // Arrange
+        var sut = new PagedSelectDatabaseCommandProvider([]);
+
+        // Act
+        var result = sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Could not obtain paged database entity retriever settings for type [CrossCutting.Data.Sql.Tests.Repositories.TestEntity]");
     }
 
     [Fact]
@@ -37,11 +43,11 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.Fields.Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.TableName.Returns("MyTable");
         Fixture.Freeze<IPagedDatabaseEntityRetrieverSettingsProvider>()
-               .TryGet<TestEntity>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings?>())
-               .Returns(x => { x[0] = SettingsMock; return true; });
+               .Get<TestEntity>()
+               .Returns(_ => Result.Success(SettingsMock));
 
         // Act
-        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10);
+        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.DataCommand.CommandText.ShouldBe(CommandSql);
@@ -59,12 +65,12 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.Fields.Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.TableName.Returns("MyTable");
         Fixture.Freeze<IPagedDatabaseEntityRetrieverSettingsProvider>()
-               .TryGet<TestEntity>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings?>())
-               .Returns(x => { x[0] = SettingsMock; return true; });
+               .Get<TestEntity>()
+               .Returns(_ => Result.Success(SettingsMock));
 
 
         // Act
-        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10);
+        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.DataCommand.CommandText.ShouldBe(CommandSql);
@@ -81,11 +87,11 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.Fields.Returns("Id, Active, Field1, Field2, Field3");
         SettingsMock.TableName.Returns("MyTable");
         Fixture.Freeze<IPagedDatabaseEntityRetrieverSettingsProvider>()
-               .TryGet<TestEntity>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings?>())
-               .Returns(x => { x[0] = SettingsMock; return true; });
+               .Get<TestEntity>()
+               .Returns(_ => Result.Success(SettingsMock));
 
         // Act
-        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10);
+        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.DataCommand.CommandText.ShouldBe(CommandSql);
@@ -99,11 +105,11 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         SettingsMock.TableName.Returns("MyTable");
         SettingsMock.OverridePageSize.Returns(100);
         Fixture.Freeze<IPagedDatabaseEntityRetrieverSettingsProvider>()
-               .TryGet<TestEntity>(out Arg.Any<IPagedDatabaseEntityRetrieverSettings?>())
-               .Returns(x => { x[0] = SettingsMock; return true; });
+               .Get<TestEntity>()
+               .Returns(_ => Result.Success(SettingsMock));
 
         // Act
-        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 1000);
+        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 1000).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.PageSize.ShouldBe(100);

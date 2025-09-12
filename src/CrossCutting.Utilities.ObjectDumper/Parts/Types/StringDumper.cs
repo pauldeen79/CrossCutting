@@ -6,6 +6,8 @@ public class StringDumper : IObjectDumperPart
 
     public bool Process(object? instance, Type instanceType, IObjectDumperResultBuilder builder, int indent, int currentDepth)
     {
+        builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
+
         if (instance is string s)
         {
             builder.AddSingleValue(s, typeof(string));

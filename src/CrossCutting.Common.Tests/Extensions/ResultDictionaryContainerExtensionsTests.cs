@@ -38,9 +38,9 @@ public class ResultDictionaryContainerExtensionsTests
         {
             // Arrange
             var sut = CreateSut(new ResultDictionaryBuilder<string>()
-                .Add("Step1", GenericDelegate)
-                .Add("Step2", GenericErrorDelegate)
-                .Add("Step3", NonGenericDelegate)
+                .Add(GenericDelegate)
+                .Add(GenericErrorDelegate)
+                .Add(NonGenericDelegate)
                 .Build());
 
             // Act
@@ -82,9 +82,9 @@ public class ResultDictionaryContainerExtensionsTests
         {
             // Arrange
             var sut = CreateSut(new ResultDictionaryBuilder<string>()
-                .Add("Step1", GenericDelegate)
-                .Add("Step2", GenericErrorDelegate)
-                .Add("Step3", NonGenericDelegate)
+                .Add(GenericDelegate)
+                .Add(GenericErrorDelegate)
+                .Add(NonGenericDelegate)
                 .Build());
 
             // Act
