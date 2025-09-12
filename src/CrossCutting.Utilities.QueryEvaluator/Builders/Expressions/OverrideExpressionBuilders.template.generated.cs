@@ -93,6 +93,90 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
             return builder.BuildTyped();
         }
     }
+    public partial class DynamicExpressionBuilder : ExpressionBaseBuilder<DynamicExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Expressions.DynamicExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
+    {
+        private CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder _expression;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder Expression
+        {
+            get
+            {
+                return _expression;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder>.Default.Equals(_expression!, value!);
+                _expression = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Expression));
+            }
+        }
+
+        public DynamicExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.DynamicExpression source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _expression = source.Expression?.ToBuilder()!;
+        }
+
+        public DynamicExpressionBuilder() : base()
+        {
+            _expression = default(CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Expressions.DynamicExpression BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Expressions.DynamicExpression(Expression?.Build()!);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.DynamicExpressionBuilder WithExpression(CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder expression)
+        {
+            if (expression is null) throw new System.ArgumentNullException(nameof(expression));
+            Expression = expression;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Expressions.DynamicExpression(DynamicExpressionBuilder builder)
+        {
+            return builder.BuildTyped();
+        }
+    }
+    public partial class EmptyExpressionBuilder : ExpressionBaseBuilder<EmptyExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Expressions.EmptyExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
+    {
+        public EmptyExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.EmptyExpression source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+        }
+
+        public EmptyExpressionBuilder() : base()
+        {
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Expressions.EmptyExpression BuildTyped()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Expressions.EmptyExpression();
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Expressions.EmptyExpression(EmptyExpressionBuilder builder)
+        {
+            return builder.BuildTyped();
+        }
+    }
     public partial class LiteralExpressionBuilder : ExpressionBaseBuilder<LiteralExpressionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Expressions.LiteralExpression>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
     {
         private object? _value;

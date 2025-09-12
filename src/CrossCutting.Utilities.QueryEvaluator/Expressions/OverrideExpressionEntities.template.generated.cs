@@ -70,6 +70,67 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Expressions
             return ToTypedBuilder();
         }
     }
+    public partial record DynamicExpression : CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression Expression
+        {
+            get;
+        }
+
+        public DynamicExpression(CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression expression) : base()
+        {
+            this.Expression = expression;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.DynamicExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.DynamicExpression entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Builders.ExpressionBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.DynamicExpressionBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.DynamicExpressionBuilder(this);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+    public partial record EmptyExpression : CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
+    {
+        public EmptyExpression() : base()
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.EmptyExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.EmptyExpression entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Builders.ExpressionBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.EmptyExpressionBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.EmptyExpressionBuilder(this);
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
     public partial record LiteralExpression : CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase, CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
     {
         public object? Value
