@@ -263,6 +263,21 @@ public class ResultDictionaryBuilderTests
             }
 
             [Fact]
+            public void Adds_Generic_Result_ArgumentDelegate_Without_Specified_Key_Successfully()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+
+                // Act
+                sut.Add(GenericArgumentDelegate2);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("0001");
+            }
+
+            [Fact]
             public void Adds_Generic_Result_ArgumentDelegate_Untyped_Successfully()
             {
                 // Arrange
@@ -275,6 +290,21 @@ public class ResultDictionaryBuilderTests
                 var dictionary = sut.Build();
                 dictionary.Count.ShouldBe(1);
                 dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
+            public void Adds_Generic_Result_ArgumentDelegate_Untyped_Without_Specified_Key_Successfully()
+            {
+                // Arrange
+                var sut = new ResultDictionaryBuilder<string>();
+
+                // Act
+                sut.Add(GenericArgumentDelegate3);
+
+                // Assert
+                var dictionary = sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("0001");
             }
 
             [Fact]
