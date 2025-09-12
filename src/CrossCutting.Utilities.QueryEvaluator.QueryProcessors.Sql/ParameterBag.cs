@@ -14,11 +14,6 @@ public class ParameterBag
             return Add($"@{keyValuePair.Key}", value);
         }
 
-        if (value is IQueryParameterValue queryParameterValue)
-        {
-            return Add($"@{queryParameterValue.Name}", value);
-        }
-
         var returnValue = Add($"@p{_paramCounter}", value);
         _paramCounter++;
         return returnValue;

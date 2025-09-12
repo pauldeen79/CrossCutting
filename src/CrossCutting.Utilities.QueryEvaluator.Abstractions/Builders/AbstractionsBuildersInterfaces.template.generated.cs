@@ -135,34 +135,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery Build();
     }
-    public partial interface IQueryParameterBuilder
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        string Name
-        {
-            get;
-            set;
-        }
-
-        object? Value
-        {
-            get;
-            set;
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameter Build();
-    }
-    public partial interface IQueryParameterValueBuilder
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        string Name
-        {
-            get;
-            set;
-        }
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IQueryParameterValue Build();
-    }
     public partial interface ISingleExpressionContainerBuilder
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]

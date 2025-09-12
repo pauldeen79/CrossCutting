@@ -1,6 +1,0 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Abstractions;
-
-internal interface IQueryParameterValue
-{
-    [Required(AllowEmptyStrings = false)] string Name { get; }
-}

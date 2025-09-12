@@ -158,33 +158,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
             return instance;
         }
     }
-    public static partial class QueryParameterBuilderExtensions
-    {
-        public static T WithName<T>(this T instance, string name)
-            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            instance.Name = name;
-            return instance;
-        }
-
-        public static T WithValue<T>(this T instance, object? value)
-            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterBuilder
-        {
-            instance.Value = value;
-            return instance;
-        }
-    }
-    public static partial class QueryParameterValueBuilderExtensions
-    {
-        public static T WithName<T>(this T instance, string name)
-            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryParameterValueBuilder
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            instance.Name = name;
-            return instance;
-        }
-    }
     public static partial class SingleExpressionContainerBuilderExtensions
     {
         public static T WithSourceExpression<T>(this T instance, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder sourceExpression)
