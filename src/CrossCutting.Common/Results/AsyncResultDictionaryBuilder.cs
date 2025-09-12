@@ -4,6 +4,9 @@ public class AsyncResultDictionaryBuilder
 {
     private readonly Dictionary<string, Task<Result>> _resultset = new();
 
+    public AsyncResultDictionaryBuilder Add<T>(Task<Result<T>> value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
+
     public AsyncResultDictionaryBuilder Add<T>(string name, Task<Result<T>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
@@ -11,6 +14,9 @@ public class AsyncResultDictionaryBuilder
         _resultset.Add(name, value.ContinueWith(x => (Result)x.Result, TaskScheduler.Current));
         return this;
     }
+
+    public AsyncResultDictionaryBuilder Add(Task<Result> value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
 
     public AsyncResultDictionaryBuilder Add(string name, Task<Result> value)
     {
@@ -20,6 +26,9 @@ public class AsyncResultDictionaryBuilder
         return this;
     }
 
+    public AsyncResultDictionaryBuilder Add<T>(Func<Result<T>> value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
+
     public AsyncResultDictionaryBuilder Add<T>(string name, Func<Result<T>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
@@ -27,6 +36,9 @@ public class AsyncResultDictionaryBuilder
         _resultset.Add(name, Task.Run<Result>(() => value()));
         return this;
     }
+
+    public AsyncResultDictionaryBuilder Add(Func<Result> value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
 
     public AsyncResultDictionaryBuilder Add(string name, Func<Result> value)
     {
@@ -36,6 +48,9 @@ public class AsyncResultDictionaryBuilder
         return this;
     }
 
+    public AsyncResultDictionaryBuilder Add<T>(Result<T> value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
+
     public AsyncResultDictionaryBuilder Add<T>(string name, Result<T> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
@@ -43,6 +58,9 @@ public class AsyncResultDictionaryBuilder
         _resultset.Add(name, Task.Run<Result>(() => value));
         return this;
     }
+
+    public AsyncResultDictionaryBuilder Add(Result value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
 
     public AsyncResultDictionaryBuilder Add(string name, Result value)
     {
@@ -52,6 +70,9 @@ public class AsyncResultDictionaryBuilder
         return this;
     }
 
+    public AsyncResultDictionaryBuilder Add<T>(T value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
+
     public AsyncResultDictionaryBuilder Add<T>(string name, T value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
@@ -59,6 +80,9 @@ public class AsyncResultDictionaryBuilder
         _resultset.Add(name, Task.Run<Result>(() => Result.Success(value)));
         return this;
     }
+
+    public AsyncResultDictionaryBuilder Add<T>(Func<T> value)
+        => Add((_resultset.Count + 1).ToString("D4"), value);
 
     public AsyncResultDictionaryBuilder Add<T>(string name, Func<T> value)
     {
