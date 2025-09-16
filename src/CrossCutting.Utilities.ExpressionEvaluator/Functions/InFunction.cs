@@ -9,7 +9,7 @@ public class InFunction : IFunction
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var leftValueResult = (await context.GetArgumentValueResultAsync(0, Constants.Expression, token).ConfigureAwait(false));
+        var leftValueResult = await context.GetArgumentValueResultAsync(0, Constants.Expression, token).ConfigureAwait(false);
         if (!leftValueResult.IsSuccessful())
         {
             return leftValueResult;

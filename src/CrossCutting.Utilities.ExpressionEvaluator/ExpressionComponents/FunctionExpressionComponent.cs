@@ -33,7 +33,7 @@ public class FunctionExpressionComponent : IExpressionComponent
         }
 
         var functionCallContext = new FunctionCallContext(parseResult.Value!, context);
-        var resolveResult = (await _memberResolver.ResolveAsync(functionCallContext, token).ConfigureAwait(false));
+        var resolveResult = await _memberResolver.ResolveAsync(functionCallContext, token).ConfigureAwait(false);
         if (!resolveResult.IsSuccessful())
         {
             return resolveResult;

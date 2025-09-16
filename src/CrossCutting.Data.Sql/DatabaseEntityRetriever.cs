@@ -84,7 +84,7 @@ public class DatabaseEntityRetriever<T>(
             var totalRecordCount = ((await countCommand.ExecuteScalarAsync(cancellationToken)) as int?).GetValueOrDefault();
             returnValue = new PagedResult<T>
             (
-                [.. (await cmd.FindManyAsync(command.DataCommand.CommandText, command.DataCommand.CommandType, cancellationToken, _mapper.Map, command.DataCommand.CommandParameters))],
+                [.. await cmd.FindManyAsync(command.DataCommand.CommandText, command.DataCommand.CommandType, cancellationToken, _mapper.Map, command.DataCommand.CommandParameters)],
                 totalRecordCount,
                 command.Offset,
                 command.PageSize

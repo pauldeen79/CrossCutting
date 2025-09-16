@@ -16,7 +16,7 @@ public sealed class UnaryExpression : IExpression<bool>
     }
 
     public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => (await EvaluateTypedAsync(context, token).ConfigureAwait(false));
+        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
     public async Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => (Operand.Value is not null
