@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public sealed class BinaryExpression : IExpression
+public sealed class OperatorExpression : IExpression
 {
     public Result<IExpression> Left { get; }
     public ExpressionTokenType Operator { get; }
@@ -10,7 +10,7 @@ public sealed class BinaryExpression : IExpression
     private readonly ExpressionEvaluatorContext _context;
     private readonly IEnumerable<IBinaryExpressionComponent> _components;
 
-    public BinaryExpression(
+    public OperatorExpression(
         ExpressionEvaluatorContext context,
         Result<IExpression> left,
         ExpressionTokenType @operator,
@@ -74,7 +74,7 @@ public sealed class BinaryExpression : IExpression
         }
 
         var result = new ExpressionParseResultBuilder()
-            .WithExpressionComponentType(typeof(BinaryExpression))
+            .WithExpressionComponentType(typeof(OperatorExpression))
             .WithSourceExpression(SourceExpression)
             .AddPartResult(leftResult ?? new ExpressionParseResultBuilder().FillFromResult(Left), Constants.LeftExpression)
             .AddPartResult(rightResult ?? new ExpressionParseResultBuilder().FillFromResult(Right), Constants.RightExpression)
@@ -96,4 +96,9 @@ public sealed class BinaryExpression : IExpression
         => component.HasBooleanResult
             ? typeof(bool)
             : leftResult?.ResultType;
+
+    public IExpressionBuilder ToBuilder()
+    {
+        throw new NotImplementedException();
+    }
 }

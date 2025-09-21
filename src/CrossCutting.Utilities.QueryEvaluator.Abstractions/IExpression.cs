@@ -1,5 +1,5 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Abstractions;
+﻿//namespace CrossCutting.Utilities.QueryEvaluator.Abstractions;
 
-public partial interface IExpression : IEvaluatable
-{
-}
+//public partial interface IExpression : IEvaluatable
+//{
+//}

@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Core.Expressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
 public partial record ContextExpression
 {
@@ -13,4 +13,10 @@ public partial record ContextExpression
 
         return Result.NoContent<object?>();
     }
+
+    public override Task<ExpressionParseResult> ParseAsync(CancellationToken token)
+        => Task.FromResult(new ExpressionParseResultBuilder()
+            .WithStatus(ResultStatus.NotSupported)
+            .WithExpressionComponentType(GetType())
+            .Build());
 }

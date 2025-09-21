@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Expressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.Models.Expressions;
 
 internal interface IDelegateExpression : IExpressionBase
 {

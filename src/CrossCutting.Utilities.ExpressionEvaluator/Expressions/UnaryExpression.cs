@@ -53,4 +53,9 @@ public sealed class UnaryExpression : IExpression<bool>
 
         return result;
     }
+
+    public IExpressionBuilder ToBuilder()
+    {
+        throw new NotImplementedException();
+    }
 }

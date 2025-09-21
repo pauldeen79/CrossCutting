@@ -22,4 +22,7 @@ public sealed class SqlLikeExpression : IExpression
 
     public IExpressionBuilder ToBuilder()
         => new SqlLikeExpressionBuilder(SourceExpression, FormatString);
+
+    public Task<ExpressionParseResult> ParseAsync(CancellationToken token)
+        => Task.FromResult(new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.NotSupported).Build());
 }

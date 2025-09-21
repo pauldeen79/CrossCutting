@@ -32,7 +32,38 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
         yield return new TypenameMappingBuilder(typeof(IFormatProvider))
             .AddMetadata
             (
-                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
+                new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
             );
+
+        var expressionType = typeof(IExpression);
+        foreach (var mapping in CreateBuilderAbstractionTypeConversionTypenameMappings(expressionType.GetEntityClassName(), expressionType.GetGenericTypeArgumentsString(), "CrossCutting.Utilities.ExpressionEvaluator.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator"))
+        {
+            yield return mapping;
+        }
     }
+
+    private static TypenameMappingBuilder[] CreateBuilderAbstractionTypeConversionTypenameMappings(
+        string entityClassName,
+        string genericTypeArgumentsString,
+        string abstractionsNamespace,
+        string builderAbstractionsNamespace,
+        string coreNamespace)
+        => [
+            new TypenameMappingBuilder($"{abstractionsNamespace}.I{entityClassName}{genericTypeArgumentsString}", $"{abstractionsNamespace}.I{entityClassName}")
+                .AddMetadata
+                (
+                    new MetadataBuilder(MetadataNames.CustomBuilderNamespace, builderAbstractionsNamespace),
+                    new MetadataBuilder(MetadataNames.CustomBuilderName, $"I{entityClassName.WithoutGenerics()}Builder"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderInterfaceNamespace, builderAbstractionsNamespace),
+                    new MetadataBuilder(MetadataNames.CustomBuilderInterfaceName, $"I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString}"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderInterfaceTypeName, $"{builderAbstractionsNamespace}.I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString}"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderSourceExpression, "[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal($"default({builderAbstractionsNamespace}.I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString})")),
+                    new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, "[Name][NullableSuffix].Build()[ForcedNullableSuffix]"),
+                    new MetadataBuilder(MetadataNames.CustomEntityInterfaceTypeName, $"{abstractionsNamespace}.I{entityClassName}")
+                ),
+            new TypenameMappingBuilder($"{coreNamespace}.Builders.I{entityClassName}Builder", $"{builderAbstractionsNamespace}.I{entityClassName}Builder"),
+            new TypenameMappingBuilder($"{coreNamespace}.Abstractions.{entityClassName}", $"{abstractionsNamespace}.I{entityClassName}"),
+            new TypenameMappingBuilder($"{abstractionsNamespace}.{entityClassName}", $"{abstractionsNamespace}.I{entityClassName}")
+        ];
 }

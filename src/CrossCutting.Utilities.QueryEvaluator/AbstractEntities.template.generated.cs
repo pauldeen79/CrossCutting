@@ -46,24 +46,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core
             return ToBuilder();
         }
     }
-    public abstract partial record ExpressionBase : CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression
-    {
-        protected ExpressionBase()
-        {
-        }
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Builders.ExpressionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase entity)
-        {
-            return entity.ToBuilder();
-        }
-
-        public abstract CrossCutting.Utilities.QueryEvaluator.Core.Builders.ExpressionBaseBuilder ToBuilder();
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression.ToBuilder()
-        {
-            return ToBuilder();
-        }
-    }
     public abstract partial record QueryBase : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
     {
         public System.Nullable<int> Limit

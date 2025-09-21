@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 {
-    public partial class ExpressionEvaluatorSettingsBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class ExpressionEvaluatorSettingsBuilder : CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.ExpressionEvaluatorSettings>, System.ComponentModel.INotifyPropertyChanged
     {
         private System.IFormatProvider _formatProvider;
 
@@ -268,7 +268,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class ExpressionParsePartResultBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IParseResultBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class ExpressionParsePartResultBuilder : CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IParseResultBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private string _partName;
 
@@ -446,6 +446,12 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             SetDefaultValues();
         }
 
+        // added manually
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IParseResult CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IParseResult>.Build()
+        {
+            return Build();
+        }
+
         public CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult Build()
         {
             return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionParsePartResult(PartName, PartResults.Select(x => x.Build()!).ToList().AsReadOnly(), Status, ValidationErrors, ErrorMessage, Exception, SourceExpression, ExpressionComponentType, ResultType);
@@ -483,7 +489,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class ExpressionParseResultBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IParseResultBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class ExpressionParseResultBuilder : CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.ExpressionParseResult>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IParseResultBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder> _partResults;
 
@@ -642,6 +648,12 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             SetDefaultValues();
         }
 
+        // added manually
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IParseResult CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IParseResult>.Build()
+        {
+            return Build();
+        }
+
         public CrossCutting.Utilities.ExpressionEvaluator.ExpressionParseResult Build()
         {
             return new CrossCutting.Utilities.ExpressionEvaluator.ExpressionParseResult(PartResults.Select(x => x.Build()!).ToList().AsReadOnly(), Status, ValidationErrors, ErrorMessage, Exception, SourceExpression, ExpressionComponentType, ResultType);
@@ -672,7 +684,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class FunctionCallBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class FunctionCallBuilder : CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.FunctionCall>, System.ComponentModel.INotifyPropertyChanged
     {
         private string _name;
 
@@ -819,7 +831,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class MemberDescriptorArgumentBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class MemberDescriptorArgumentBuilder : CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorArgument>, System.ComponentModel.INotifyPropertyChanged
     {
         private string _name;
 
@@ -951,7 +963,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class MemberDescriptorBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class MemberDescriptorBuilder : CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptor>, System.ComponentModel.INotifyPropertyChanged
     {
         private string _name;
 
@@ -1254,7 +1266,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class MemberDescriptorResultBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class MemberDescriptorResultBuilder : CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorResult>, System.ComponentModel.INotifyPropertyChanged
     {
         private CrossCutting.Common.Results.ResultStatus _status;
 
@@ -1383,7 +1395,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class MemberDescriptorTypeArgumentBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class MemberDescriptorTypeArgumentBuilder : CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptorTypeArgument>, System.ComponentModel.INotifyPropertyChanged
     {
         private string _name;
 

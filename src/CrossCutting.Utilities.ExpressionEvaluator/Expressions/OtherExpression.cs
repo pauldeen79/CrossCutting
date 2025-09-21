@@ -20,4 +20,9 @@ public sealed class OtherExpression : IExpression
 
     public Task<ExpressionParseResult> ParseAsync(CancellationToken token)
         => _context.ParseAsync(Expression, token);
+
+    public IExpressionBuilder ToBuilder()
+    {
+        throw new NotImplementedException();
+    }
 }

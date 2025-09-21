@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator
 {
-    public partial record ExpressionEvaluatorSettings
+    public partial record ExpressionEvaluatorSettings : CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder>
     {
         public System.IFormatProvider FormatProvider
         {
@@ -90,7 +90,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionEvaluatorSettingsBuilder(this);
         }
     }
-    public partial record ExpressionParsePartResult : CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IParseResult
+    public partial record ExpressionParsePartResult : CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IParseResult, CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string PartName
@@ -161,12 +161,18 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             return entity.ToBuilder();
         }
 
+        // Added manually
+        CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IParseResultBuilder CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IParseResultBuilder>.ToBuilder()
+        {
+            return ToBuilder();
+
+        }
         public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder ToBuilder()
         {
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParsePartResultBuilder(this);
         }
     }
-    public partial record ExpressionParseResult : CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IParseResult
+    public partial record ExpressionParseResult : CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IParseResult, CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParseResultBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -230,12 +236,18 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             return entity.ToBuilder();
         }
 
+        // added manually
+        CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IParseResultBuilder CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IParseResultBuilder>.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
         public CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParseResultBuilder ToBuilder()
         {
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionParseResultBuilder(this);
         }
     }
-    public partial record FunctionCall
+    public partial record FunctionCall : CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name
@@ -280,7 +292,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallBuilder(this);
         }
     }
-    public partial record MemberDescriptor
+    public partial record MemberDescriptor : CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name
@@ -366,7 +378,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorBuilder(this);
         }
     }
-    public partial record MemberDescriptorArgument
+    public partial record MemberDescriptorArgument : CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorArgumentBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name
@@ -410,7 +422,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorArgumentBuilder(this);
         }
     }
-    public partial record MemberDescriptorResult
+    public partial record MemberDescriptorResult : CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorResultBuilder>
     {
         public CrossCutting.Common.Results.ResultStatus Status
         {
@@ -453,7 +465,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorResultBuilder(this);
         }
     }
-    public partial record MemberDescriptorTypeArgument
+    public partial record MemberDescriptorTypeArgument : CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.MemberDescriptorTypeArgumentBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string Name

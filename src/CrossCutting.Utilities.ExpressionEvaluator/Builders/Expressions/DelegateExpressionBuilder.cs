@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Expressions;
 
 public partial class DelegateExpressionBuilder
 {
