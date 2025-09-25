@@ -8,19 +8,12 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-
 namespace CrossCutting.Utilities.ExpressionEvaluator
 {
-    public abstract partial record ExpressionBase : CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression, CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionBaseBuilder>
+    public abstract partial record ExpressionBase : CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression
     {
         protected ExpressionBase()
         {
-        }
-
-        // added manually
-        CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.ToBuilder()
-        {
-            return ToBuilder();
         }
 
         public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionBaseBuilder(CrossCutting.Utilities.ExpressionEvaluator.ExpressionBase entity)

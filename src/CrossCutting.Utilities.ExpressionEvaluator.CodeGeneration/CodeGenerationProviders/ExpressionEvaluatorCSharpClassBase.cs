@@ -17,7 +17,7 @@ public abstract class ExpressionEvaluatorCSharpClassBase(IPipelineService pipeli
     protected override bool CreateRecord => true;
     protected override bool GenerateMultipleFiles => false;
     protected override bool EnableGlobalUsings => true;
-    protected override bool UseCrossCuttingInterfaces => true;
+    //protected override bool UseCrossCuttingInterfaces => true;
 
     protected override IEnumerable<TypenameMappingBuilder> GetAdditionalTypenameMappings()
     {

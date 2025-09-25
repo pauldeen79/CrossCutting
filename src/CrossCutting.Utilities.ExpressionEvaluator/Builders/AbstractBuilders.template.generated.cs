@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 {
-    public abstract partial class ExpressionBaseBuilder<TBuilder, TEntity> : ExpressionBaseBuilder, CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.ExpressionBase>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder
+    public abstract partial class ExpressionBaseBuilder<TBuilder, TEntity> : ExpressionBaseBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder
         where TEntity : CrossCutting.Utilities.ExpressionEvaluator.ExpressionBase
         where TBuilder : ExpressionBaseBuilder<TBuilder, TEntity>
     {

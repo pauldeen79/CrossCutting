@@ -10,10 +10,10 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions
 {
-    public partial interface IExpression : CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>
+    public partial interface IExpression
     {
     }
-    public partial interface IParseResult : CrossCutting.Common.Abstractions.IBuildableEntity<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IParseResultBuilder>
+    public partial interface IParseResult
     {
         CrossCutting.Common.Results.ResultStatus Status
         {

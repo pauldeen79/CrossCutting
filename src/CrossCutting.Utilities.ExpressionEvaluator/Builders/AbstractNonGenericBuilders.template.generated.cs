@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 {
-    public abstract partial class ExpressionBaseBuilder : CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.ExpressionBase>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder, System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class ExpressionBaseBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -21,12 +21,6 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         protected ExpressionBaseBuilder()
         {
             SetDefaultValues();
-        }
-
-        // added manually
-        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Build()
-        {
-            return Build();
         }
 
         public abstract CrossCutting.Utilities.ExpressionEvaluator.ExpressionBase Build();
