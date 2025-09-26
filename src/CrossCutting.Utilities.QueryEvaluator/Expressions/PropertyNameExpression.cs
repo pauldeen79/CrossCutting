@@ -33,4 +33,32 @@ public sealed record PropertyNameExpression : IExpression
 
     public Task<ExpressionParseResult> ParseAsync(CancellationToken token)
         => Task.FromResult(new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.NotSupported).Build());
+
+    public IExpressionBuilder ToBuilder() => new PropertyNameExpressionBuilder(this);
+}
+
+public sealed class PropertyNameExpressionBuilder : IExpressionBuilder
+{
+    [Required, ValidateObject]
+    public IExpressionBuilder SourceExpression { get; set; }
+
+    [Required]
+    public string PropertyName { get; set; }
+
+    public PropertyNameExpressionBuilder()
+    {
+        SourceExpression = new EmptyExpressionBuilder();
+        PropertyName = string.Empty;
+    }
+
+    public PropertyNameExpressionBuilder(PropertyNameExpression propertyNameExpression)
+    {
+        propertyNameExpression = ArgumentGuard.IsNotNull(propertyNameExpression, nameof(propertyNameExpression));
+
+        SourceExpression = propertyNameExpression.SourceExpression.ToBuilder();
+        PropertyName = propertyNameExpression.PropertyName;
+    }
+
+    public IExpression Build()
+        => new PropertyNameExpression(SourceExpression?.Build()!, PropertyName);
 }
