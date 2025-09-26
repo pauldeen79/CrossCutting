@@ -13,6 +13,7 @@ global using CrossCutting.Data.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator;
 global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
+global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Expressions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions;
@@ -31,8 +32,6 @@ global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory.Abst
 global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory.Extensions;
 global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql;
 global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Abstractions;
-global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Builders.Expressions;
-global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Expressions;
 global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Extensions;
 global using CrossCutting.Utilities.QueryEvaluator.Tests.Mocks;
 global using Microsoft.Extensions.DependencyInjection;

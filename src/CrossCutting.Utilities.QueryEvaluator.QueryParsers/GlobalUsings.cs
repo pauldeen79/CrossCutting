@@ -4,7 +4,7 @@ global using System.Globalization;
 global using System.Linq;
 global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
-global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
+global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Expressions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions;

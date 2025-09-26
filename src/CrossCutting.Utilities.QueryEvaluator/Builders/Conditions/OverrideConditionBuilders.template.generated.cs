@@ -12,15 +12,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 {
     public partial class BetweenConditionBuilder : ConditionBaseBuilder<BetweenConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.BetweenCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _lowerBoundExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _lowerBoundExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _upperBoundExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _upperBoundExpression;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -28,7 +28,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -36,7 +36,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression LowerBoundExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder LowerBoundExpression
         {
             get
             {
@@ -44,7 +44,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_lowerBoundExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_lowerBoundExpression!, value!);
                 _lowerBoundExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(LowerBoundExpression));
             }
@@ -52,7 +52,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression UpperBoundExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder UpperBoundExpression
         {
             get
             {
@@ -60,7 +60,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_upperBoundExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_upperBoundExpression!, value!);
                 _upperBoundExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(UpperBoundExpression));
             }
@@ -69,22 +69,22 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public BetweenConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.BetweenCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _sourceExpression = source.SourceExpression;
-            _lowerBoundExpression = source.LowerBoundExpression;
-            _upperBoundExpression = source.UpperBoundExpression;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
+            _lowerBoundExpression = source.LowerBoundExpression?.ToBuilder()!;
+            _upperBoundExpression = source.UpperBoundExpression?.ToBuilder()!;
         }
 
         public BetweenConditionBuilder() : base()
         {
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _lowerBoundExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _upperBoundExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _lowerBoundExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _upperBoundExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.BetweenCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.BetweenCondition(SourceExpression, LowerBoundExpression, UpperBoundExpression, Combination, StartGroup, EndGroup);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.BetweenCondition(SourceExpression?.Build()!, LowerBoundExpression?.Build()!, UpperBoundExpression?.Build()!, Combination, StartGroup, EndGroup);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -94,21 +94,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.BetweenConditionBuilder WithSourceExpression(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression)
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.BetweenConditionBuilder WithSourceExpression(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder sourceExpression)
         {
             if (sourceExpression is null) throw new System.ArgumentNullException(nameof(sourceExpression));
             SourceExpression = sourceExpression;
             return this;
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.BetweenConditionBuilder WithLowerBoundExpression(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression lowerBoundExpression)
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.BetweenConditionBuilder WithLowerBoundExpression(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder lowerBoundExpression)
         {
             if (lowerBoundExpression is null) throw new System.ArgumentNullException(nameof(lowerBoundExpression));
             LowerBoundExpression = lowerBoundExpression;
             return this;
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.BetweenConditionBuilder WithUpperBoundExpression(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression upperBoundExpression)
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions.BetweenConditionBuilder WithUpperBoundExpression(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder upperBoundExpression)
         {
             if (upperBoundExpression is null) throw new System.ArgumentNullException(nameof(upperBoundExpression));
             UpperBoundExpression = upperBoundExpression;
@@ -122,13 +122,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class EqualConditionBuilder : ConditionBaseBuilder<EqualConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.EqualCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -136,7 +136,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -144,7 +144,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -152,7 +152,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -161,20 +161,20 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public EqualConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.EqualCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
         }
 
         public EqualConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.EqualCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.EqualCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.EqualCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -201,13 +201,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class GreaterThanConditionBuilder : ConditionBaseBuilder<GreaterThanConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.GreaterThanCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -215,7 +215,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -223,7 +223,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -231,7 +231,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -240,20 +240,20 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public GreaterThanConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.GreaterThanCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
         }
 
         public GreaterThanConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.GreaterThanCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.GreaterThanCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.GreaterThanCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -280,13 +280,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class GreaterThanOrEqualConditionBuilder : ConditionBaseBuilder<GreaterThanOrEqualConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.GreaterThanOrEqualCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -294,7 +294,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -302,7 +302,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -310,7 +310,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -319,20 +319,20 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public GreaterThanOrEqualConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.GreaterThanOrEqualCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
         }
 
         public GreaterThanOrEqualConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.GreaterThanOrEqualCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.GreaterThanOrEqualCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.GreaterThanOrEqualCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -359,13 +359,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class InConditionBuilder : ConditionBaseBuilder<InConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.InCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
-        private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression> _compareExpressions;
+        private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder> _compareExpressions;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -373,7 +373,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -381,7 +381,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression> CompareExpressions
+        public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder> CompareExpressions
         {
             get
             {
@@ -389,7 +389,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>>.Default.Equals(_compareExpressions!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>>.Default.Equals(_compareExpressions!, value!);
                 _compareExpressions = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpressions));
             }
@@ -398,21 +398,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public InConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.InCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpressions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>();
-            _sourceExpression = source.SourceExpression;
-            if (source.CompareExpressions is not null) foreach (var item in source.CompareExpressions) _compareExpressions.Add(item);
+            _compareExpressions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>();
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
+            if (source.CompareExpressions is not null) foreach (var item in source.CompareExpressions.Select(x => x.ToBuilder())) _compareExpressions.Add(item);
         }
 
         public InConditionBuilder() : base()
         {
-            _compareExpressions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>();
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpressions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>();
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.InCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.InCondition(Combination, StartGroup, EndGroup, SourceExpression, CompareExpressions);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.InCondition(Combination, StartGroup, EndGroup, SourceExpression?.Build()!, CompareExpressions.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -434,13 +434,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class NotEqualConditionBuilder : ConditionBaseBuilder<NotEqualConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotEqualCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -448,7 +448,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -456,7 +456,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -464,7 +464,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -473,20 +473,20 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public NotEqualConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotEqualCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
         }
 
         public NotEqualConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotEqualCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotEqualCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotEqualCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -513,13 +513,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class NotInConditionBuilder : ConditionBaseBuilder<NotInConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotInCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
-        private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression> _compareExpressions;
+        private System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder> _compareExpressions;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -527,7 +527,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -535,7 +535,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression> CompareExpressions
+        public System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder> CompareExpressions
         {
             get
             {
@@ -543,7 +543,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>>.Default.Equals(_compareExpressions!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>>.Default.Equals(_compareExpressions!, value!);
                 _compareExpressions = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpressions));
             }
@@ -552,21 +552,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public NotInConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotInCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpressions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>();
-            _sourceExpression = source.SourceExpression;
-            if (source.CompareExpressions is not null) foreach (var item in source.CompareExpressions) _compareExpressions.Add(item);
+            _compareExpressions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>();
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
+            if (source.CompareExpressions is not null) foreach (var item in source.CompareExpressions.Select(x => x.ToBuilder())) _compareExpressions.Add(item);
         }
 
         public NotInConditionBuilder() : base()
         {
-            _compareExpressions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>();
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpressions = new System.Collections.Generic.List<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>();
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotInCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotInCondition(Combination, StartGroup, EndGroup, SourceExpression, CompareExpressions);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotInCondition(Combination, StartGroup, EndGroup, SourceExpression?.Build()!, CompareExpressions.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -588,11 +588,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class NotNullConditionBuilder : ConditionBaseBuilder<NotNullConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotNullCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -600,7 +600,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -609,18 +609,18 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public NotNullConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotNullCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _sourceExpression = source.SourceExpression;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
         }
 
         public NotNullConditionBuilder() : base()
         {
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotNullCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotNullCondition(Combination, StartGroup, EndGroup, SourceExpression);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NotNullCondition(Combination, StartGroup, EndGroup, SourceExpression?.Build()!);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -642,11 +642,11 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class NullConditionBuilder : ConditionBaseBuilder<NullConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NullCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -654,7 +654,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -663,18 +663,18 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public NullConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NullCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _sourceExpression = source.SourceExpression;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
         }
 
         public NullConditionBuilder() : base()
         {
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NullCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NullCondition(Combination, StartGroup, EndGroup, SourceExpression);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.NullCondition(Combination, StartGroup, EndGroup, SourceExpression?.Build()!);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -696,13 +696,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class SmallerThanConditionBuilder : ConditionBaseBuilder<SmallerThanConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.SmallerThanCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -710,7 +710,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -718,7 +718,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -726,7 +726,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -735,20 +735,20 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public SmallerThanConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.SmallerThanCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
         }
 
         public SmallerThanConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.SmallerThanCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.SmallerThanCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.SmallerThanCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -775,13 +775,13 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class SmallerThanOrEqualConditionBuilder : ConditionBaseBuilder<SmallerThanOrEqualConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.SmallerThanOrEqualCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -789,7 +789,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -797,7 +797,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -805,7 +805,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -814,20 +814,20 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public SmallerThanOrEqualConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.SmallerThanOrEqualCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
         }
 
         public SmallerThanOrEqualConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.SmallerThanOrEqualCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.SmallerThanOrEqualCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.SmallerThanOrEqualCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -854,15 +854,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class StringContainsConditionBuilder : ConditionBaseBuilder<StringContainsConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringContainsCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         private System.StringComparison _stringComparison;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -870,7 +870,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -878,7 +878,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -886,7 +886,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -909,21 +909,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public StringContainsConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringContainsCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _stringComparison = source.StringComparison;
         }
 
         public StringContainsConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringContainsCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringContainsCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression, StringComparison);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringContainsCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!, StringComparison);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -955,15 +955,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class StringEndsWithConditionBuilder : ConditionBaseBuilder<StringEndsWithConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringEndsWithCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         private System.StringComparison _stringComparison;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -971,7 +971,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -979,7 +979,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -987,7 +987,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -1010,21 +1010,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public StringEndsWithConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringEndsWithCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _stringComparison = source.StringComparison;
         }
 
         public StringEndsWithConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringEndsWithCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringEndsWithCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression, StringComparison);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringEndsWithCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!, StringComparison);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -1056,15 +1056,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class StringEqualsConditionBuilder : ConditionBaseBuilder<StringEqualsConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringEqualsCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         private System.StringComparison _stringComparison;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -1072,7 +1072,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -1080,7 +1080,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -1088,7 +1088,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -1111,21 +1111,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public StringEqualsConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringEqualsCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _stringComparison = source.StringComparison;
         }
 
         public StringEqualsConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringEqualsCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringEqualsCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression, StringComparison);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringEqualsCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!, StringComparison);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -1157,15 +1157,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class StringNotContainsConditionBuilder : ConditionBaseBuilder<StringNotContainsConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotContainsCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         private System.StringComparison _stringComparison;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -1173,7 +1173,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -1181,7 +1181,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -1189,7 +1189,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -1212,21 +1212,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public StringNotContainsConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotContainsCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _stringComparison = source.StringComparison;
         }
 
         public StringNotContainsConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotContainsCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotContainsCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression, StringComparison);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotContainsCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!, StringComparison);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -1258,15 +1258,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class StringNotEndsWithConditionBuilder : ConditionBaseBuilder<StringNotEndsWithConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotEndsWithCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         private System.StringComparison _stringComparison;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -1274,7 +1274,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -1282,7 +1282,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -1290,7 +1290,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -1313,21 +1313,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public StringNotEndsWithConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotEndsWithCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _stringComparison = source.StringComparison;
         }
 
         public StringNotEndsWithConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotEndsWithCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotEndsWithCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression, StringComparison);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotEndsWithCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!, StringComparison);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -1359,15 +1359,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class StringNotEqualsConditionBuilder : ConditionBaseBuilder<StringNotEqualsConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotEqualsCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         private System.StringComparison _stringComparison;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -1375,7 +1375,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -1383,7 +1383,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -1391,7 +1391,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -1414,21 +1414,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public StringNotEqualsConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotEqualsCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _stringComparison = source.StringComparison;
         }
 
         public StringNotEqualsConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotEqualsCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotEqualsCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression, StringComparison);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotEqualsCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!, StringComparison);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -1460,15 +1460,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class StringNotStartsWithConditionBuilder : ConditionBaseBuilder<StringNotStartsWithConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotStartsWithCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         private System.StringComparison _stringComparison;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -1476,7 +1476,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -1484,7 +1484,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -1492,7 +1492,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -1515,21 +1515,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public StringNotStartsWithConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotStartsWithCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _stringComparison = source.StringComparison;
         }
 
         public StringNotStartsWithConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotStartsWithCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotStartsWithCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression, StringComparison);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringNotStartsWithCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!, StringComparison);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()
@@ -1561,15 +1561,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
     }
     public partial class StringStartsWithConditionBuilder : ConditionBaseBuilder<StringStartsWithConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringStartsWithCondition>, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _compareExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _compareExpression;
 
-        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
 
         private System.StringComparison _stringComparison;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder CompareExpression
         {
             get
             {
@@ -1577,7 +1577,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_compareExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_compareExpression!, value!);
                 _compareExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(CompareExpression));
             }
@@ -1585,7 +1585,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
         {
             get
             {
@@ -1593,7 +1593,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -1616,21 +1616,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions
         public StringStartsWithConditionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringStartsWithCondition source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _compareExpression = source.CompareExpression;
-            _sourceExpression = source.SourceExpression;
+            _compareExpression = source.CompareExpression?.ToBuilder()!;
+            _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _stringComparison = source.StringComparison;
         }
 
         public StringStartsWithConditionBuilder() : base()
         {
-            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression)!;
+            _compareExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringStartsWithCondition BuildTyped()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringStartsWithCondition(Combination, StartGroup, EndGroup, CompareExpression, SourceExpression, StringComparison);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Conditions.StringStartsWithCondition(Combination, StartGroup, EndGroup, CompareExpression?.Build()!, SourceExpression?.Build()!, StringComparison);
         }
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.ICondition CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder.Build()

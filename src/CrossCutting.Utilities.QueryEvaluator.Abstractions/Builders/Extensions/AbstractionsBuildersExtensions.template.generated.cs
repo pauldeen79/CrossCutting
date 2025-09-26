@@ -45,7 +45,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
     }
     public static partial class DoubleExpressionContainerBuilderExtensions
     {
-        public static T WithCompareExpression<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression)
+        public static T WithCompareExpression<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder compareExpression)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder
         {
             if (compareExpression is null) throw new System.ArgumentNullException(nameof(compareExpression));
@@ -86,14 +86,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
     }
     public static partial class InConditionBuilderExtensions
     {
-        public static T AddCompareExpressions<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression> compareExpressions)
+        public static T AddCompareExpressions<T>(this T instance, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder> compareExpressions)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder
         {
             if (compareExpressions is null) throw new System.ArgumentNullException(nameof(compareExpressions));
             return instance.AddCompareExpressions<T>(compareExpressions.ToArray());
         }
 
-        public static T AddCompareExpressions<T>(this T instance, params CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression[] compareExpressions)
+        public static T AddCompareExpressions<T>(this T instance, params CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder[] compareExpressions)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder
         {
             if (compareExpressions is null) throw new System.ArgumentNullException(nameof(compareExpressions));
@@ -101,7 +101,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
             return instance;
         }
 
-        public static T WithSourceExpression<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression)
+        public static T WithSourceExpression<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder sourceExpression)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IInConditionBuilder
         {
             if (sourceExpression is null) throw new System.ArgumentNullException(nameof(sourceExpression));
@@ -157,7 +157,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
     }
     public static partial class SingleExpressionContainerBuilderExtensions
     {
-        public static T WithSourceExpression<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression)
+        public static T WithSourceExpression<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder sourceExpression)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISingleExpressionContainerBuilder
         {
             if (sourceExpression is null) throw new System.ArgumentNullException(nameof(sourceExpression));
@@ -167,7 +167,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
     }
     public static partial class SortOrderBuilderExtensions
     {
-        public static T WithExpression<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression expression)
+        public static T WithExpression<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder expression)
             where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISortOrderBuilder
         {
             if (expression is null) throw new System.ArgumentNullException(nameof(expression));

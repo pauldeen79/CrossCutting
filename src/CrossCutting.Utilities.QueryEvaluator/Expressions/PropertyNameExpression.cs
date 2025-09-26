@@ -47,7 +47,7 @@ public sealed class PropertyNameExpressionBuilder : IExpressionBuilder
 
     public PropertyNameExpressionBuilder()
     {
-        SourceExpression = new EmptyExpressionBuilder();
+        SourceExpression = new ContextExpressionBuilder();
         PropertyName = string.Empty;
     }
 
@@ -58,6 +58,12 @@ public sealed class PropertyNameExpressionBuilder : IExpressionBuilder
         SourceExpression = propertyNameExpression.SourceExpression.ToBuilder();
         PropertyName = propertyNameExpression.PropertyName;
     }
+
+    public PropertyNameExpressionBuilder WithPropertyName(string propertyName)
+        => this.With(x => x.PropertyName = propertyName);
+
+    public PropertyNameExpressionBuilder WithSourceExpression(IExpressionBuilder sourceExpression)
+        => this.With(x => x.SourceExpression = sourceExpression);
 
     public IExpression Build()
         => new PropertyNameExpression(SourceExpression?.Build()!, PropertyName);
