@@ -8,10 +8,10 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new BetweenConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithLowerBoundExpression(new LiteralExpressionBuilder("A"))
-                .WithUpperBoundExpression(new LiteralExpressionBuilder("B")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithLowerBoundExpression(new LiteralExpression("A"))
+                .WithUpperBoundExpression(new LiteralExpression("B")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -33,9 +33,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -57,9 +57,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new GreaterThanConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -81,9 +81,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new GreaterThanOrEqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -105,10 +105,10 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new InConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .AddCompareExpressions(new LiteralExpressionBuilder("A"))
-                .AddCompareExpressions(new DelegateExpressionBuilder(() => "B")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .AddCompareExpressions(new LiteralExpression("A"))
+                .AddCompareExpressions(new DelegateExpression(() => "B")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -130,9 +130,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new NotEqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -154,10 +154,10 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new NotInConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .AddCompareExpressions(new LiteralExpressionBuilder("A"))
-                .AddCompareExpressions(new DelegateExpressionBuilder(() => "B")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .AddCompareExpressions(new LiteralExpression("A"))
+                .AddCompareExpressions(new DelegateExpression(() => "B")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -179,8 +179,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new NotNullConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1))))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1))))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData().Where(x => x.Property1 != null));
@@ -204,8 +204,8 @@ public sealed class SqlQueryProcessorTests : TestBase
             .AddConditions(new NullConditionBuilder()
                 .WithStartGroup()
                 .WithEndGroup()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1))))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1))))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData().Where(x => x.Property1 == null));
@@ -227,9 +227,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new SmallerThanConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -251,9 +251,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new SmallerThanOrEqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -275,9 +275,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new StringContainsConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -299,9 +299,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new StringEndsWithConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -323,9 +323,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new StringEqualsConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -347,9 +347,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new StringNotContainsConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -371,9 +371,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new StringNotEndsWithConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -395,9 +395,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new StringNotEqualsConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -419,9 +419,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new StringNotStartsWithConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -443,9 +443,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new StringStartsWithConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -467,9 +467,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new ContextExpressionBuilder()))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new ContextExpression()))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData().Where(x => x.Property1 == "A").OrderBy(x => x.Property2));
@@ -555,9 +555,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new DelegateExpressionBuilder(() => "A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new DelegateExpression(() => "A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .WithLimit(1)
             .WithOffset(1)
             .Build();
@@ -591,13 +591,13 @@ public sealed class SqlQueryProcessorTests : TestBase
             Conditions =  new List<ICondition>
             {
                 new EqualConditionBuilder()
-                    .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                    .WithCompareExpression(new DelegateExpressionBuilder(() => "A"))
+                    .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                    .WithCompareExpression(new DelegateExpression(() => "A"))
                     .Build()
             },
             SortOrders = new List<ISortOrder>
             {
-                new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending).Build()
+                new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending).Build()
             }
         };
 
@@ -628,13 +628,13 @@ public sealed class SqlQueryProcessorTests : TestBase
             Conditions = new List<ICondition>
             {
                 new EqualConditionBuilder()
-                    .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                    .WithCompareExpression(new DelegateExpressionBuilder(() => "A"))
+                    .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                    .WithCompareExpression(new DelegateExpression(() => "A"))
                     .Build()
             },
             SortOrders = new List<ISortOrder>
             {
-                new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending).Build()
+                new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending).Build()
             }
         };
 
@@ -665,13 +665,13 @@ public sealed class SqlQueryProcessorTests : TestBase
             Conditions = new List<ICondition>
             {
                 new EqualConditionBuilder()
-                    .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                    .WithCompareExpression(new DelegateExpressionBuilder(() => "A"))
+                    .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                    .WithCompareExpression(new DelegateExpression(() => "A"))
                     .Build()
             },
             SortOrders = new List<ISortOrder>
             {
-                new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending).Build()
+                new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending).Build()
             }
         };
 

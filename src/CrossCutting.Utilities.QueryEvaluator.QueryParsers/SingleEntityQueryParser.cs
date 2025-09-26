@@ -1,10 +1,10 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryParsers;
 
-public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : IQueryParser<TQueryBuilder>
+public class SingleEntityQueryParser<TQueryBuilder, TQueryExpression> : IQueryParser<TQueryBuilder>
     where TQueryBuilder : IQueryBuilder
-    where TQueryExpressionBuilder : IExpressionBuilder, new()
+    where TQueryExpression : IExpression
 {
-    private readonly Func<TQueryExpressionBuilder> _defaultFieldExpressionBuilderFactory;
+    private readonly Func<TQueryExpression> _defaultFieldExpressionFactory;
 
     private static readonly Dictionary<string, Func<IConditionBuilder>> _operatorMap = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -33,11 +33,11 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
         { "NOTENDSWITH", () => new StringNotEndsWithConditionBuilder() },
     };
 
-    public SingleEntityQueryParser(Func<TQueryExpressionBuilder> defaultFieldExpressionBuilderFactory)
+    public SingleEntityQueryParser(Func<TQueryExpression> defaultFieldExpressionFactory)
     {
-        ArgumentGuard.IsNotNull(defaultFieldExpressionBuilderFactory, nameof(defaultFieldExpressionBuilderFactory));
+        ArgumentGuard.IsNotNull(defaultFieldExpressionFactory, nameof(defaultFieldExpressionFactory));
 
-        _defaultFieldExpressionBuilderFactory = defaultFieldExpressionBuilderFactory;
+        _defaultFieldExpressionFactory = defaultFieldExpressionFactory;
     }
 
     public TQueryBuilder Parse(TQueryBuilder builder, string queryString)
@@ -105,7 +105,7 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
                 .WithCombination(nextSearchCombination);
 
             (condition as ISingleExpressionContainerBuilder)?.WithSourceExpression(GetField(fieldName));
-            (condition as IDoubleExpressionContainerBuilder)?.WithCompareExpression(new LiteralExpressionBuilder(fieldValue));
+            (condition as IDoubleExpressionContainerBuilder)?.WithCompareExpression(new LiteralExpressionBuilder(fieldValue).Build());
 
             if (items.Length > i + 3)
             {
@@ -132,8 +132,8 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
             _ => null,// Unknown search combination
         };
 
-    private static PropertyNameExpressionBuilder GetField(string fieldName)
-        => new PropertyNameExpressionBuilder().WithPropertyName(fieldName);
+    private static PropertyNameExpression GetField(string fieldName)
+        => new PropertyNameExpression(new ContextExpression(), fieldName);
 
     private List<IConditionBuilder> PerformSimpleSearch(string[] items)
         => items
@@ -153,14 +153,14 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpressionBuilder> : I
     private IConditionBuilder CreateQueryCondition(string value, bool startsWithPlusOrMinus, bool startsWithMinus)
         => startsWithMinus
             ? new StringNotContainsConditionBuilder()
-                .WithSourceExpression(_defaultFieldExpressionBuilderFactory())
+                .WithSourceExpression(_defaultFieldExpressionFactory())
                 .WithCompareExpression(CreateLiteralExpression(value, startsWithPlusOrMinus))
             : new StringContainsConditionBuilder()
-                .WithSourceExpression(_defaultFieldExpressionBuilderFactory())
+                .WithSourceExpression(_defaultFieldExpressionFactory())
                 .WithCompareExpression(CreateLiteralExpression(value, startsWithPlusOrMinus));
 
-    private static LiteralExpressionBuilder CreateLiteralExpression(string value, bool startsWithPlusOrMinus)
-        => new LiteralExpressionBuilder(startsWithPlusOrMinus
+    private static LiteralExpression CreateLiteralExpression(string value, bool startsWithPlusOrMinus)
+        => new LiteralExpression(startsWithPlusOrMinus
             ? value.Substring(1)
             : value);
 

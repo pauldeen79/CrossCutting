@@ -1,12 +1,16 @@
 ﻿global using System;
+global using System.ComponentModel.DataAnnotations;
 global using System.Linq;
+global using System.Reflection;
 global using System.Threading;
 global using System.Threading.Tasks;
 global using CrossCutting.Common;
+global using CrossCutting.Common.DataAnnotations;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
 global using CrossCutting.Utilities.ExpressionEvaluator;
 global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
-global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions;
+global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
+global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
 global using CrossCutting.Utilities.Operators;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains;

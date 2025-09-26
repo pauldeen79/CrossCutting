@@ -12,8 +12,8 @@ public class EqualConditionTests : TestBase<EqualCondition>
             var rightValue = "this";
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
+                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
+                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(rightValue) },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -33,8 +33,8 @@ public class EqualConditionTests : TestBase<EqualCondition>
             // Arrange
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new EmptyExpressionBuilder().Build() },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new DynamicExpressionBuilder(new EmptyExpressionBuilder()).Build() },
+                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new EmptyExpression() },
+                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new EmptyExpression() },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -56,8 +56,8 @@ public class EqualConditionTests : TestBase<EqualCondition>
             var rightValue = 13;
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
+                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
+                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(rightValue) },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");

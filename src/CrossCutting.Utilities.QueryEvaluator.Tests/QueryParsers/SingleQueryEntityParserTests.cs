@@ -37,8 +37,8 @@ public class SingleEntityQueryParserTests
 
         // Assert
         actual.Conditions.Count.ShouldBe(1);
-        var conditionField = (actual.Conditions[0] as ISingleExpressionContainerBuilder)?.SourceExpression as PropertyNameExpressionBuilder;
-        var conditionValue = ((actual.Conditions[0] as IDoubleExpressionContainerBuilder)?.CompareExpression as LiteralExpressionBuilder)?.Value;
+        var conditionField = (actual.Conditions[0] as ISingleExpressionContainerBuilder)?.SourceExpression as PropertyNameExpression;
+        var conditionValue = ((actual.Conditions[0] as IDoubleExpressionContainerBuilder)?.CompareExpression as LiteralExpression)?.Value;
         conditionField.ShouldNotBeNull();
         conditionField.PropertyName.ShouldBe("MyFieldName");
         actual.Conditions[0].ShouldBeOfType(expectedConditionBuilder);
@@ -57,8 +57,8 @@ public class SingleEntityQueryParserTests
 
         // Assert
         actual.Conditions.Count.ShouldBe(1);
-        var conditionField = (actual.Conditions[0] as ISingleExpressionContainerBuilder)?.SourceExpression as PropertyNameExpressionBuilder;
-        var conditionValue = ((actual.Conditions[0] as IDoubleExpressionContainerBuilder)?.CompareExpression as LiteralExpressionBuilder)?.Value;
+        var conditionField = (actual.Conditions[0] as ISingleExpressionContainerBuilder)?.SourceExpression as PropertyNameExpression;
+        var conditionValue = ((actual.Conditions[0] as IDoubleExpressionContainerBuilder)?.CompareExpression as LiteralExpression)?.Value;
         conditionField.ShouldNotBeNull();
         conditionField.PropertyName.ShouldBe("MyFieldName");
         actual.Conditions[0].ShouldBeOfType<EqualConditionBuilder>();
@@ -209,6 +209,6 @@ public class SingleEntityQueryParserTests
         validationResults[0].ErrorMessage.ShouldBe("EndGroup not valid at index 0, because there is no corresponding StartGroup");
     }
 
-    private static SingleEntityQueryParser<IQueryBuilder, PropertyNameExpressionBuilder> CreateSut()
-        => new(() => new PropertyNameExpressionBuilder().WithPropertyName("PrefilledField"));
+    private static SingleEntityQueryParser<IQueryBuilder, PropertyNameExpression> CreateSut()
+        => new(() => new PropertyNameExpression(new ContextExpression(), "PrefilledField"));
 }

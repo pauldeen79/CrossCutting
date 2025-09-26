@@ -12,8 +12,8 @@ public class NotInConditionTests : TestBase<NotInCondition>
             var rightValue = "THIS";
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(InCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(InCondition.CompareExpressions).ToCamelCase(CultureInfo.CurrentCulture), new List<Abstractions.IExpression> { new LiteralExpressionBuilder(rightValue).Build() } },
+                { nameof(InCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
+                { nameof(InCondition.CompareExpressions).ToCamelCase(CultureInfo.CurrentCulture), new List<IExpression> { new LiteralExpression(rightValue) } },
             };
             var sut = CreateSut(parameters);
             var settings = new ExpressionEvaluatorSettingsBuilder().WithStringComparison(StringComparison.OrdinalIgnoreCase);
@@ -36,8 +36,8 @@ public class NotInConditionTests : TestBase<NotInCondition>
             var rightValue = 13;
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(InCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(InCondition.CompareExpressions).ToCamelCase(CultureInfo.CurrentCulture), new List<Abstractions.IExpression> { new LiteralExpressionBuilder(rightValue).Build() } },
+                { nameof(InCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
+                { nameof(InCondition.CompareExpressions).ToCamelCase(CultureInfo.CurrentCulture), new List<IExpression> { new LiteralExpression(rightValue) } },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");

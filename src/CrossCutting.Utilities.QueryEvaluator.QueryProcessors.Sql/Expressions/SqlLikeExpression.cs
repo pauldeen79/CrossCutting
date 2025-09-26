@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Expressions;
 
-public sealed class SqlLikeExpression : IExpression
+public sealed record SqlLikeExpression : IExpression
 {
     [Required]
     [AllowedTypes([typeof(ContextExpression), typeof(DelegateExpression), typeof(LiteralExpression)])]

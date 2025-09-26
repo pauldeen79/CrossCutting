@@ -12,8 +12,8 @@ public class InConditionTests : TestBase<InCondition>
             var rightValue = "this";
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(InCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(InCondition.CompareExpressions).ToCamelCase(CultureInfo.CurrentCulture), new List<Abstractions.IExpression> { new LiteralExpressionBuilder(rightValue).Build() } },
+                { nameof(InCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
+                { nameof(InCondition.CompareExpressions).ToCamelCase(CultureInfo.CurrentCulture), new List<IExpression> { new LiteralExpression(rightValue) } },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -35,8 +35,8 @@ public class InConditionTests : TestBase<InCondition>
             var rightValue = new List<string> { "A", "B", "C" };
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(InCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(InCondition.CompareExpressions).ToCamelCase(CultureInfo.CurrentCulture), rightValue.Select(x => new LiteralExpressionBuilder(x).Build()).ToList() },
+                { nameof(InCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
+                { nameof(InCondition.CompareExpressions).ToCamelCase(CultureInfo.CurrentCulture), rightValue.Select(x => new LiteralExpression(x)).ToList() },
             };
             var sut = CreateSut(parameters);
             var settings = new ExpressionEvaluatorSettingsBuilder().WithStringComparison(StringComparison.OrdinalIgnoreCase);
@@ -59,8 +59,8 @@ public class InConditionTests : TestBase<InCondition>
             var rightValue = 13;
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(InCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(InCondition.CompareExpressions).ToCamelCase(CultureInfo.CurrentCulture), new List<Abstractions.IExpression> { new LiteralExpressionBuilder(rightValue).Build() } },
+                { nameof(InCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
+                { nameof(InCondition.CompareExpressions).ToCamelCase(CultureInfo.CurrentCulture), new List<IExpression> { new LiteralExpression(rightValue) } },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");

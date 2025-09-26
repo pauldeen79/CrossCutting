@@ -8,9 +8,9 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -30,9 +30,9 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -54,9 +54,9 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(nameof(MyEntity.Property1)))
-                .WithCompareExpression(new DelegateExpressionBuilder(() => "A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpressionBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+                .WithSourceExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new DelegateExpression(() => "A")))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameExpression(new ContextExpression(), nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .WithLimit(1)
             .WithOffset(1)
             .Build();
@@ -79,8 +79,8 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameExpressionBuilder(new PropertyNameExpressionBuilder(nameof(MyNestedEntity.Property)), nameof(MyEntity.Property1)))
-                .WithCompareExpression(new LiteralExpressionBuilder("A")))
+                .WithSourceExpression(new PropertyNameExpression(new PropertyNameExpression(new ContextExpression(), nameof(MyNestedEntity.Property)), nameof(MyEntity.Property1)))
+                .WithCompareExpression(new LiteralExpression("A")))
             .Build();
 
         InitializeMock([new MyNestedEntity(new MyEntity("A", "B"))]);
@@ -98,7 +98,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
     public async Task Can_Use_Brackets_And_Multiple_Operators_In_Query()
     {
         // Arrange
-        var parser = new SingleEntityQueryParser<SingleEntityQueryBuilder, PropertyNameExpressionBuilder>(() => new PropertyNameExpressionBuilder("MyProperty"));
+        var parser = new SingleEntityQueryParser<SingleEntityQueryBuilder, PropertyNameExpression>(() => new PropertyNameExpression(new ContextExpression(), "MyProperty"));
         var builder = new SingleEntityQueryBuilder();
         var query = parser.Parse(builder, "(Property1 = \"A\" AND Property1 <> \"B\") OR Property1 = \"Z\"").Build();
         InitializeMock(CreateData());

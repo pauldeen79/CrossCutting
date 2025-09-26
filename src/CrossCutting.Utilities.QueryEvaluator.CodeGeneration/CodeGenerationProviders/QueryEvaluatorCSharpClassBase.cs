@@ -35,11 +35,11 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
                 new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
             );
 
-        var expressionType = typeof(IExpression);
-        foreach (var mapping in CreateBuilderAbstractionTypeConversionTypenameMappings(expressionType.GetEntityClassName(), expressionType.GetGenericTypeArgumentsString(), "CrossCutting.Utilities.ExpressionEvaluator.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator"))
-        {
-            yield return mapping;
-        }
+        //var expressionType = typeof(IExpression);
+        //foreach (var mapping in CreateBuilderAbstractionTypeConversionTypenameMappings(expressionType.GetEntityClassName(), expressionType.GetGenericTypeArgumentsString(), "CrossCutting.Utilities.ExpressionEvaluator.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator"))
+        //{
+        //    yield return mapping;
+        //}
     }
 
     private static TypenameMappingBuilder[] CreateBuilderAbstractionTypeConversionTypenameMappings(

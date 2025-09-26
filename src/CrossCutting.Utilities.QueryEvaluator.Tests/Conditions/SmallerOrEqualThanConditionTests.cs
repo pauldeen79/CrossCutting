@@ -12,8 +12,8 @@ public class SmallerOrEqualThanConditionTests : TestBase<SmallerThanOrEqualCondi
             var rightValue = 15;
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
+                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
+                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(rightValue) },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -33,8 +33,8 @@ public class SmallerOrEqualThanConditionTests : TestBase<SmallerThanOrEqualCondi
             var rightValue = 13;
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
+                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
+                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(rightValue) },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");

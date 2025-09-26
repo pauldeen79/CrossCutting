@@ -13,9 +13,9 @@ public class BetweenConditionTests : TestBase<BetweenCondition>
             var upperBoundValue = 15;
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(BetweenCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(sourceValue).Build() },
-                { nameof(BetweenCondition.LowerBoundExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(lowerBoundValue).Build() },
-                { nameof(BetweenCondition.UpperBoundExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(upperBoundValue).Build() },
+                { nameof(BetweenCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(sourceValue) },
+                { nameof(BetweenCondition.LowerBoundExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(lowerBoundValue) },
+                { nameof(BetweenCondition.UpperBoundExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(upperBoundValue) },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");
@@ -36,9 +36,9 @@ public class BetweenConditionTests : TestBase<BetweenCondition>
             var upperBoundValue = 15;
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(BetweenCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(sourceValue).Build() },
-                { nameof(BetweenCondition.LowerBoundExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(lowerBoundValue).Build() },
-                { nameof(BetweenCondition.UpperBoundExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(upperBoundValue).Build() },
+                { nameof(BetweenCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(sourceValue) },
+                { nameof(BetweenCondition.LowerBoundExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(lowerBoundValue) },
+                { nameof(BetweenCondition.UpperBoundExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(upperBoundValue) },
             };
             var sut = CreateSut(parameters);
             var context = CreateContext("Dummy");

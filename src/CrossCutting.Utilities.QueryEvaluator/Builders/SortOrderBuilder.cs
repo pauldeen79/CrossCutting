@@ -2,14 +2,14 @@
 
 public partial class SortOrderBuilder
 {
-    public SortOrderBuilder(IExpressionBuilder expression)
+    public SortOrderBuilder(IExpression expression)
     {
         ArgumentGuard.IsNotNull(expression, nameof(expression));
 
         _expression = expression;
     }
 
-    public SortOrderBuilder(IExpressionBuilder expression, SortOrderDirection order)
+    public SortOrderBuilder(IExpression expression, SortOrderDirection order)
     {
         ArgumentGuard.IsNotNull(expression, nameof(expression));
         ArgumentGuard.IsNotNull(order, nameof(order));
