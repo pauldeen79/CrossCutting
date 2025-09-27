@@ -14,26 +14,26 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression LowerBoundExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable LowerBoundExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression UpperBoundExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable UpperBoundExpression
         {
             get;
         }
 
-        public BetweenCondition(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression lowerBoundExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression upperBoundExpression, System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup) : base(combination, startGroup, endGroup)
+        public BetweenCondition(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable lowerBoundExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable upperBoundExpression, System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup) : base(combination, startGroup, endGroup)
         {
             this.SourceExpression = sourceExpression;
             this.LowerBoundExpression = lowerBoundExpression;
@@ -65,19 +65,19 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
-        public EqualCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression) : base(combination, startGroup, endGroup)
+        public EqualCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -118,19 +118,19 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
-        public GreaterThanCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression) : base(combination, startGroup, endGroup)
+        public GreaterThanCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -171,19 +171,19 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
-        public GreaterThanOrEqualCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression) : base(combination, startGroup, endGroup)
+        public GreaterThanOrEqualCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -224,22 +224,22 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression> CompareExpressions
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable> CompareExpressions
         {
             get;
         }
 
-        public InCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression> compareExpressions) : base(combination, startGroup, endGroup)
+        public InCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable> compareExpressions) : base(combination, startGroup, endGroup)
         {
             this.SourceExpression = sourceExpression;
-            this.CompareExpressions = compareExpressions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>(compareExpressions);
+            this.CompareExpressions = compareExpressions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable>(compareExpressions);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -272,19 +272,19 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
-        public NotEqualCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression) : base(combination, startGroup, endGroup)
+        public NotEqualCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -325,22 +325,22 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression> CompareExpressions
+        public System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable> CompareExpressions
         {
             get;
         }
 
-        public NotInCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression> compareExpressions) : base(combination, startGroup, endGroup)
+        public NotInCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, System.Collections.Generic.IEnumerable<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable> compareExpressions) : base(combination, startGroup, endGroup)
         {
             this.SourceExpression = sourceExpression;
-            this.CompareExpressions = compareExpressions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>(compareExpressions);
+            this.CompareExpressions = compareExpressions is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable>(compareExpressions);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -373,12 +373,12 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
-        public NotNullCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression) : base(combination, startGroup, endGroup)
+        public NotNullCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression) : base(combination, startGroup, endGroup)
         {
             this.SourceExpression = sourceExpression;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
@@ -413,12 +413,12 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
-        public NullCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression) : base(combination, startGroup, endGroup)
+        public NullCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression) : base(combination, startGroup, endGroup)
         {
             this.SourceExpression = sourceExpression;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
@@ -453,19 +453,19 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
-        public SmallerThanCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression) : base(combination, startGroup, endGroup)
+        public SmallerThanCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -506,19 +506,19 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
-        public SmallerThanOrEqualCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression) : base(combination, startGroup, endGroup)
+        public SmallerThanOrEqualCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -559,14 +559,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
@@ -576,7 +576,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             get;
         }
 
-        public StringContainsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringContainsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -623,14 +623,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
@@ -640,7 +640,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             get;
         }
 
-        public StringEndsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringEndsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -687,14 +687,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
@@ -704,7 +704,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             get;
         }
 
-        public StringEqualsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringEqualsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -751,14 +751,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
@@ -768,7 +768,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             get;
         }
 
-        public StringNotContainsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringNotContainsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -815,14 +815,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
@@ -832,7 +832,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             get;
         }
 
-        public StringNotEndsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringNotEndsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -879,14 +879,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
@@ -896,7 +896,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             get;
         }
 
-        public StringNotEqualsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringNotEqualsCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -943,14 +943,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
@@ -960,7 +960,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             get;
         }
 
-        public StringNotStartsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringNotStartsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;
@@ -1007,14 +1007,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
@@ -1024,7 +1024,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions
             get;
         }
 
-        public StringStartsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
+        public StringStartsWithCondition(System.Nullable<CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.Combination> combination, bool startGroup, bool endGroup, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable compareExpression, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, System.StringComparison stringComparison) : base(combination, startGroup, endGroup)
         {
             this.CompareExpression = compareExpression;
             this.SourceExpression = sourceExpression;

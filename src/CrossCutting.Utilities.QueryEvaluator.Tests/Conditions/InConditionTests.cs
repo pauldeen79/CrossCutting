@@ -11,8 +11,8 @@ public class InConditionTests : TestBase<InCondition>
             var leftValue = "this";
             var rightValue = "this";
             var sut = new InConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .AddCompareExpressions(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .AddCompareExpressions(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 
@@ -31,8 +31,8 @@ public class InConditionTests : TestBase<InCondition>
             var leftValue = "a";
             var rightValue = new List<string> { "A", "B", "C" };
             var sut = new InConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .AddCompareExpressions(rightValue.Select(x => new LiteralExpressionBuilder(x)))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .AddCompareExpressions(rightValue.Select(x => new LiteralEvaluatableBuilder(x)))
                 .Build();
             var settings = new ExpressionEvaluatorSettingsBuilder().WithStringComparison(StringComparison.OrdinalIgnoreCase);
             var context = CreateContext(settings: settings);
@@ -52,8 +52,8 @@ public class InConditionTests : TestBase<InCondition>
             var leftValue = "this";
             var rightValue = 13;
             var sut = new InConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .AddCompareExpressions(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .AddCompareExpressions(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 

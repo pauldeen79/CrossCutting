@@ -12,8 +12,8 @@ public class StringEqualsConditionTests : TestBase<StringEqualsCondition>
             var rightValue = "THIS";
             StringComparison = StringComparison.OrdinalIgnoreCase;
             var sut = new StringEqualsConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .WithStringComparison(StringComparison)
                 .Build();
             var context = CreateContext();
@@ -33,8 +33,8 @@ public class StringEqualsConditionTests : TestBase<StringEqualsCondition>
             var leftValue = "this";
             var rightValue = 13;
             var sut = new StringEqualsConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .WithStringComparison(StringComparison)
                 .Build();
             var context = CreateContext();

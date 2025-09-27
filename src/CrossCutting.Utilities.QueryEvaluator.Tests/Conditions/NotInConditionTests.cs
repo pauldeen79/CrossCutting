@@ -11,8 +11,8 @@ public class NotInConditionTests : TestBase<NotInCondition>
             var leftValue = "this";
             var rightValue = "THIS";
             var sut = new NotInConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .AddCompareExpressions(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .AddCompareExpressions(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var settings = new ExpressionEvaluatorSettingsBuilder().WithStringComparison(StringComparison.OrdinalIgnoreCase);
             var context = CreateContext(settings: settings);
@@ -32,8 +32,8 @@ public class NotInConditionTests : TestBase<NotInCondition>
             var leftValue = "this";
             var rightValue = 13;
             var sut = new NotInConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .AddCompareExpressions(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .AddCompareExpressions(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 

@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.SqlExpressionProviderHandlers;
 
-public class PropertyNameExpressionHandler : SqlExpressionProviderHandlerBase<PropertyNameExpression>
+public class PropertyNameExpressionHandler : SqlExpressionProviderHandlerBase<PropertyNameEvaluatable>
 {
-    protected override Result<string> DoGetSqlExpression(IQueryContext context, PropertyNameExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback)
+    protected override Result<string> DoGetSqlExpression(IQueryContext context, PropertyNameEvaluatable expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback)
     {
         fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));

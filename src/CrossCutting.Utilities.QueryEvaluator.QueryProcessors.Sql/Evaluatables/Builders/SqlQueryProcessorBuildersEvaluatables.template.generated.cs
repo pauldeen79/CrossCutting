@@ -8,11 +8,11 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Expressions.Builders
+namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.Builders
 {
-    public partial class SqlLikeExpressionBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class SqlLikeEvaluatableBuilder : System.ComponentModel.INotifyPropertyChanged
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _sourceExpression;
 
         private string _formatString;
 
@@ -20,7 +20,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Expressions.
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder SourceExpression
         {
             get
             {
@@ -28,7 +28,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Expressions.
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -49,42 +49,42 @@ namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Expressions.
             }
         }
 
-        public SqlLikeExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Expressions.SqlLikeExpression source)
+        public SqlLikeEvaluatableBuilder(CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _formatString = source.FormatString;
         }
 
-        public SqlLikeExpressionBuilder()
+        public SqlLikeEvaluatableBuilder()
         {
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
             _formatString = string.Empty;
             SetDefaultValues();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Expressions.SqlLikeExpression Build()
+        public CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable Build()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Expressions.SqlLikeExpression(SourceExpression?.Build()!, FormatString);
+            return new CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable(SourceExpression?.Build()!, FormatString);
         }
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Expressions.Builders.SqlLikeExpressionBuilder WithSourceExpression(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder sourceExpression)
+        public CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.Builders.SqlLikeEvaluatableBuilder WithSourceExpression(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder sourceExpression)
         {
             if (sourceExpression is null) throw new System.ArgumentNullException(nameof(sourceExpression));
             SourceExpression = sourceExpression;
             return this;
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Expressions.Builders.SqlLikeExpressionBuilder WithFormatString(string formatString)
+        public CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.Builders.SqlLikeEvaluatableBuilder WithFormatString(string formatString)
         {
             if (formatString is null) throw new System.ArgumentNullException(nameof(formatString));
             FormatString = formatString;
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Expressions.SqlLikeExpression(SqlLikeExpressionBuilder builder)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable(SqlLikeEvaluatableBuilder builder)
         {
             return builder.Build();
         }

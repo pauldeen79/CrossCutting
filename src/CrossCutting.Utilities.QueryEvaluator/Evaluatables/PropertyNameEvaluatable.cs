@@ -1,6 +1,6 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Core.Expressions;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables;
 
-public partial record PropertyNameExpression : IExpression
+public partial record PropertyNameEvaluatable : IEvaluatable
 {
     public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => (await SourceExpression.EvaluateAsync(context, token)
@@ -20,5 +20,5 @@ public partial record PropertyNameExpression : IExpression
     public Task<ExpressionParseResult> ParseAsync(CancellationToken token)
         => Task.FromResult(new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.NotSupported).Build());
 
-    IExpressionBuilder IBuildableEntity<IExpressionBuilder>.ToBuilder() => new PropertyNameExpressionBuilder(this);
+    IEvaluatableBuilder IBuildableEntity<IEvaluatableBuilder>.ToBuilder() => new PropertyNameEvaluatableBuilder(this);
 }

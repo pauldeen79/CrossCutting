@@ -14,7 +14,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression Expression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable Expression
         {
             get;
         }
@@ -24,7 +24,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core
             get;
         }
 
-        public SortOrder(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression expression, CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.SortOrderDirection order)
+        public SortOrder(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable expression, CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.SortOrderDirection order)
         {
             this.Expression = expression;
             this.Order = order;

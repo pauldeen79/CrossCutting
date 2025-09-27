@@ -8,11 +8,11 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
+namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables
 {
-    public partial class PropertyNameExpressionBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class PropertyNameEvaluatableBuilder : System.ComponentModel.INotifyPropertyChanged
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _sourceExpression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _sourceExpression;
 
         private string _propertyName;
 
@@ -20,7 +20,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder SourceExpression
         {
             get
             {
@@ -28,7 +28,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_sourceExpression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder>.Default.Equals(_sourceExpression!, value!);
                 _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
             }
@@ -49,42 +49,42 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions
             }
         }
 
-        public PropertyNameExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression source)
+        public PropertyNameEvaluatableBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _propertyName = source.PropertyName;
         }
 
-        public PropertyNameExpressionBuilder()
+        public PropertyNameEvaluatableBuilder()
         {
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
             _propertyName = string.Empty;
             SetDefaultValues();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression Build()
+        public CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable Build()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression(SourceExpression?.Build()!, PropertyName);
+            return new CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable(SourceExpression?.Build()!, PropertyName);
         }
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.PropertyNameExpressionBuilder WithSourceExpression(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder sourceExpression)
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables.PropertyNameEvaluatableBuilder WithSourceExpression(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder sourceExpression)
         {
             if (sourceExpression is null) throw new System.ArgumentNullException(nameof(sourceExpression));
             SourceExpression = sourceExpression;
             return this;
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.PropertyNameExpressionBuilder WithPropertyName(string propertyName)
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables.PropertyNameEvaluatableBuilder WithPropertyName(string propertyName)
         {
             if (propertyName is null) throw new System.ArgumentNullException(nameof(propertyName));
             PropertyName = propertyName;
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression(PropertyNameExpressionBuilder builder)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable(PropertyNameEvaluatableBuilder builder)
         {
             return builder.Build();
         }

@@ -12,8 +12,8 @@ public class StringNotEqualsConditionTests : TestBase<StringNotEqualsCondition>
             var rightValue = "something else";
             StringComparison = StringComparison.OrdinalIgnoreCase;
             var sut = new StringNotEqualsConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .WithStringComparison(StringComparison)
                 .Build();
             var context = CreateContext();
@@ -33,8 +33,8 @@ public class StringNotEqualsConditionTests : TestBase<StringNotEqualsCondition>
             var leftValue = "this";
             var rightValue = 13;
             var sut = new StringNotEqualsConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 

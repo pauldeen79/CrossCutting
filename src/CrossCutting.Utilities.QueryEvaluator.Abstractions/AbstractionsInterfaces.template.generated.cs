@@ -43,7 +43,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CompareExpression
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
@@ -74,14 +74,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression> CompareExpressions
+        System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable> CompareExpressions
         {
             get;
         }
@@ -121,7 +121,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
@@ -132,7 +132,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression Expression
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable Expression
         {
             get;
         }

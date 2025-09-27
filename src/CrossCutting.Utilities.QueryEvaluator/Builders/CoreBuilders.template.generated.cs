@@ -12,7 +12,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
 {
     public partial class SortOrderBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ISortOrderBuilder, System.ComponentModel.INotifyPropertyChanged
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder _expression;
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _expression;
 
         private CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains.SortOrderDirection _order;
 
@@ -20,7 +20,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder Expression
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder Expression
         {
             get
             {
@@ -28,7 +28,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder>.Default.Equals(_expression!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder>.Default.Equals(_expression!, value!);
                 _expression = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Expression));
             }
@@ -57,7 +57,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
 
         public SortOrderBuilder()
         {
-            _expression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder)!;
+            _expression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
             SetDefaultValues();
         }
 

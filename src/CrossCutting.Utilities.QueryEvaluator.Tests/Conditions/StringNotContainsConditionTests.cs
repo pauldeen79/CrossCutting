@@ -12,8 +12,8 @@ public class StringNotContainsConditionTests : TestBase<StringNotContainsConditi
             var rightValue = "a";
             StringComparison = StringComparison.OrdinalIgnoreCase;
             var sut = new StringNotContainsConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .WithStringComparison(StringComparison)
                 .Build();
             var context = CreateContext();
@@ -33,8 +33,8 @@ public class StringNotContainsConditionTests : TestBase<StringNotContainsConditi
             var leftValue = 1;
             var rightValue = "this";
             var sut = new StringNotContainsConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 
@@ -53,8 +53,8 @@ public class StringNotContainsConditionTests : TestBase<StringNotContainsConditi
             var leftValue = "this";
             var rightValue = 2;
             var sut = new StringNotContainsConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 

@@ -42,7 +42,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.Select(", ");
             }
 
-            var result = sqlExpressionProvider.GetSqlExpression(fieldSelectionQuery.WithContext(context.Context), new PropertyNameExpression(new ContextExpression(), expression.Item), fieldInfo, parameterBag).EnsureValue();
+            var result = sqlExpressionProvider.GetSqlExpression(fieldSelectionQuery.WithContext(context.Context), new PropertyNameEvaluatable(new ContextEvaluatable(), expression.Item), fieldInfo, parameterBag).EnsureValue();
             if (!result.IsSuccessful())
             {
                 return Result.FromExistingResult<PagedSelectCommandBuilder>(result);

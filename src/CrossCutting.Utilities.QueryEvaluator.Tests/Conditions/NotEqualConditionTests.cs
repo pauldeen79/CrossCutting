@@ -11,8 +11,8 @@ public class NotEqualConditionTests : TestBase<NotEqualCondition>
             var leftValue = "this";
             var rightValue = "this";
             var sut = new NotEqualConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 
@@ -31,8 +31,8 @@ public class NotEqualConditionTests : TestBase<NotEqualCondition>
             var leftValue = "this";
             var rightValue = 13;
             var sut = new NotEqualConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 

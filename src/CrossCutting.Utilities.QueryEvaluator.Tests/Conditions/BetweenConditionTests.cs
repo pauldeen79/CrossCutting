@@ -12,9 +12,9 @@ public class BetweenConditionTests : TestBase<BetweenCondition>
             var lowerBoundValue = 13;
             var upperBoundValue = 15;
             var sut = new BetweenConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(sourceValue))
-                .WithLowerBoundExpression(new LiteralExpressionBuilder(lowerBoundValue))
-                .WithUpperBoundExpression(new LiteralExpressionBuilder(upperBoundValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
+                .WithLowerBoundExpression(new LiteralEvaluatableBuilder(lowerBoundValue))
+                .WithUpperBoundExpression(new LiteralEvaluatableBuilder(upperBoundValue))
                 .Build();
             var context = CreateContext();
 
@@ -34,9 +34,9 @@ public class BetweenConditionTests : TestBase<BetweenCondition>
             var lowerBoundValue = 13;
             var upperBoundValue = 15;
             var sut = new BetweenConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(sourceValue))
-                .WithLowerBoundExpression(new LiteralExpressionBuilder(lowerBoundValue))
-                .WithUpperBoundExpression(new LiteralExpressionBuilder(upperBoundValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
+                .WithLowerBoundExpression(new LiteralEvaluatableBuilder(lowerBoundValue))
+                .WithUpperBoundExpression(new LiteralEvaluatableBuilder(upperBoundValue))
                 .Build();
             var context = CreateContext();
 

@@ -11,8 +11,8 @@ public class SmallerThanConditionTests : TestBase<SmallerThanCondition>
             var leftValue = 13;
             var rightValue = 15;
             var sut = new SmallerThanConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 
@@ -31,8 +31,8 @@ public class SmallerThanConditionTests : TestBase<SmallerThanCondition>
             var leftValue = "this";
             var rightValue = 13;
             var sut = new SmallerThanConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 

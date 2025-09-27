@@ -12,8 +12,8 @@ public class StringNotStartsWithConditionTests : TestBase<StringNotStartsWithCon
             var rightValue = "s";
             StringComparison = StringComparison.OrdinalIgnoreCase;
             var sut = new StringNotStartsWithConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .WithStringComparison(StringComparison)
                 .Build();
             var context = CreateContext();
@@ -33,8 +33,8 @@ public class StringNotStartsWithConditionTests : TestBase<StringNotStartsWithCon
             var leftValue = 1;
             var rightValue = "this";
             var sut = new StringNotStartsWithConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 
@@ -53,8 +53,8 @@ public class StringNotStartsWithConditionTests : TestBase<StringNotStartsWithCon
             var leftValue = "this";
             var rightValue = 2;
             var sut = new StringNotStartsWithConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 

@@ -11,8 +11,8 @@ public class EqualConditionTests : TestBase<EqualCondition>
             var leftValue = "this";
             var rightValue = "this";
             var sut = new EqualConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 
@@ -29,8 +29,8 @@ public class EqualConditionTests : TestBase<EqualCondition>
         {
             // Arrange
             var sut = new EqualConditionBuilder()
-                .WithSourceExpression(new EmptyExpressionBuilder())
-                .WithCompareExpression(new EmptyExpressionBuilder())
+                .WithSourceExpression(new EmptyEvaluatableBuilder())
+                .WithCompareExpression(new EmptyEvaluatableBuilder())
                 .Build();
 
             var context = CreateContext();
@@ -50,8 +50,8 @@ public class EqualConditionTests : TestBase<EqualCondition>
             var leftValue = "this";
             var rightValue = 13;
             var sut = new EqualConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
-                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
                 .Build();
             var context = CreateContext();
 

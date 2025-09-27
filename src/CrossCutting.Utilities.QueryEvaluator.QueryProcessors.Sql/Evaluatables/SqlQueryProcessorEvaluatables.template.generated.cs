@@ -8,38 +8,38 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.QueryEvaluator.Core.Expressions
+namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables
 {
-    public partial record PropertyNameExpression
+    public partial record SqlLikeEvaluatable
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression SourceExpression
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string PropertyName
+        public string FormatString
         {
             get;
         }
 
-        public PropertyNameExpression(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression sourceExpression, string propertyName)
+        public SqlLikeEvaluatable(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, string formatString)
         {
             this.SourceExpression = sourceExpression;
-            this.PropertyName = propertyName;
+            this.FormatString = formatString;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.PropertyNameExpressionBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Expressions.PropertyNameExpression entity)
+        public static implicit operator CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.Builders.SqlLikeEvaluatableBuilder(CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable entity)
         {
             return entity.ToBuilder();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.PropertyNameExpressionBuilder ToBuilder()
+        public CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.Builders.SqlLikeEvaluatableBuilder ToBuilder()
         {
-            return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.Expressions.PropertyNameExpressionBuilder(this);
+            return new CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.Builders.SqlLikeEvaluatableBuilder(this);
         }
     }
 }

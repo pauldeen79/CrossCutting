@@ -10,7 +10,7 @@ public class NotNullConditionTests : TestBase<NotNullCondition>
             // Arrange
             var leftValue = "non null value";
             var sut = new NotNullConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
                 .Build();
             var context = CreateContext();
 
@@ -28,7 +28,7 @@ public class NotNullConditionTests : TestBase<NotNullCondition>
             // Arrange
             var leftValue = default(object?);
             var sut = new NotNullConditionBuilder()
-                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
                 .Build();
             var context = CreateContext();
 

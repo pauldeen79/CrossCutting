@@ -2,7 +2,7 @@
 
 public class SingleEntityQueryParser<TQueryBuilder, TQueryExpression> : IQueryParser<TQueryBuilder>
     where TQueryBuilder : IQueryBuilder
-    where TQueryExpression : IExpressionBuilder
+    where TQueryExpression : IEvaluatableBuilder
 {
     private readonly Func<TQueryExpression> _defaultFieldExpressionFactory;
 
@@ -105,7 +105,7 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpression> : IQueryPa
                 .WithCombination(nextSearchCombination);
 
             (condition as ISingleExpressionContainerBuilder)?.WithSourceExpression(GetField(fieldName));
-            (condition as IDoubleExpressionContainerBuilder)?.WithCompareExpression(new LiteralExpressionBuilder(fieldValue));
+            (condition as IDoubleExpressionContainerBuilder)?.WithCompareExpression(new LiteralEvaluatableBuilder(fieldValue));
 
             if (items.Length > i + 3)
             {
@@ -132,8 +132,8 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpression> : IQueryPa
             _ => null,// Unknown search combination
         };
 
-    private static PropertyNameExpressionBuilder GetField(string fieldName)
-        => new PropertyNameExpressionBuilder().WithSourceExpression(new ContextExpressionBuilder()).WithPropertyName(fieldName);
+    private static PropertyNameEvaluatableBuilder GetField(string fieldName)
+        => new PropertyNameEvaluatableBuilder().WithSourceExpression(new ContextEvaluatableBuilder()).WithPropertyName(fieldName);
 
     private List<IConditionBuilder> PerformSimpleSearch(string[] items)
         => items
@@ -159,8 +159,8 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpression> : IQueryPa
                 .WithSourceExpression(_defaultFieldExpressionFactory())
                 .WithCompareExpression(CreateLiteralExpression(value, startsWithPlusOrMinus));
 
-    private static LiteralExpressionBuilder CreateLiteralExpression(string value, bool startsWithPlusOrMinus)
-        => new LiteralExpressionBuilder(startsWithPlusOrMinus
+    private static LiteralEvaluatableBuilder CreateLiteralExpression(string value, bool startsWithPlusOrMinus)
+        => new LiteralEvaluatableBuilder(startsWithPlusOrMinus
             ? value.Substring(1)
             : value);
 
