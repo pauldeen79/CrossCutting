@@ -2,7 +2,7 @@
 
 public sealed record SqlLikeExpression : IExpression
 {
-    [Required, AllowedTypes([typeof(ContextExpression), typeof(DelegateExpression), typeof(LiteralExpression)])]
+    [Required]
     public IExpression SourceExpression { get; }
 
     [Required]
