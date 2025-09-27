@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
+﻿using CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions;
+
+namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
 internal interface IOperator
@@ -285,6 +287,11 @@ internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
         => closeIndex == expression.Length
             ? string.Empty
             : expression.Substring(closeIndex + 1);
+
+    public IEvaluatableBuilder ToBuilder()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 internal sealed class EqualsOperator : IOperator
@@ -304,6 +311,11 @@ internal sealed class ConstantEvaluatable : IEvaluatable
 
     public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => Task.FromResult(Result.Success(Value));
+
+    public IEvaluatableBuilder ToBuilder()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 internal sealed class ConstantEvaluatable<T> : IEvaluatable<T>
@@ -320,6 +332,11 @@ internal sealed class ConstantEvaluatable<T> : IEvaluatable<T>
 
     public Task<Result<T>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => Task.FromResult(Result.Success(Value));
+
+    public IEvaluatableBuilder ToBuilder()
+    {
+        throw new NotImplementedException();
+    }
 }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 

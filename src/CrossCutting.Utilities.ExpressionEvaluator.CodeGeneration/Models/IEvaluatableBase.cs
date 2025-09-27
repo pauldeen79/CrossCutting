@@ -1,5 +1,5 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.Models;
 
-internal interface IExpressionBase : IExpression
+internal interface IEvaluatableBase : IEvaluatable
 {
 }

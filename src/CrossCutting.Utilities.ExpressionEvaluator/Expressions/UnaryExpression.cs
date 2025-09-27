@@ -54,7 +54,7 @@ internal sealed class UnaryExpression : IExpression<bool>
         return result;
     }
 
-    public IExpressionBuilder ToBuilder()
+    public IEvaluatableBuilder ToBuilder()
     {
         throw new NotImplementedException();
     }

@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions
 {
-    public partial interface IExpression
+    public partial interface IEvaluatable
     {
     }
     public partial interface IParseResult

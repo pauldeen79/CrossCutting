@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions
 {
-    public static partial class ExpressionBuilderExtensions
+    public static partial class EvaluatableBuilderExtensions
     {
     }
     public static partial class ParseResultBuilderExtensions

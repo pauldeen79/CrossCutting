@@ -10,18 +10,18 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator
 {
-    public abstract partial record ExpressionBase : CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression
+    public abstract partial record EvaluatableBase : CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable
     {
-        protected ExpressionBase()
+        protected EvaluatableBase()
         {
         }
 
-        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionBaseBuilder(CrossCutting.Utilities.ExpressionEvaluator.ExpressionBase entity)
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder(CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase entity)
         {
             return entity.ToBuilder();
         }
 
-        public abstract CrossCutting.Utilities.ExpressionEvaluator.Builders.ExpressionBaseBuilder ToBuilder();
+        public abstract CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder ToBuilder();
     }
 }
 #nullable disable

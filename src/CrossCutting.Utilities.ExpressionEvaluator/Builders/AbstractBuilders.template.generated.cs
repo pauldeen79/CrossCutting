@@ -10,26 +10,26 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
 {
-    public abstract partial class ExpressionBaseBuilder<TBuilder, TEntity> : ExpressionBaseBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IExpressionBuilder
-        where TEntity : CrossCutting.Utilities.ExpressionEvaluator.ExpressionBase
-        where TBuilder : ExpressionBaseBuilder<TBuilder, TEntity>
+    public abstract partial class EvaluatableBaseBuilder<TBuilder, TEntity> : EvaluatableBaseBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+        where TEntity : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase
+        where TBuilder : EvaluatableBaseBuilder<TBuilder, TEntity>
     {
-        protected ExpressionBaseBuilder(CrossCutting.Utilities.ExpressionEvaluator.ExpressionBase source) : base(source)
+        protected EvaluatableBaseBuilder(CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase source) : base(source)
         {
         }
 
-        protected ExpressionBaseBuilder() : base()
+        protected EvaluatableBaseBuilder() : base()
         {
         }
 
-        public override CrossCutting.Utilities.ExpressionEvaluator.ExpressionBase Build()
+        public override CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase Build()
         {
             return BuildTyped();
         }
 
         public abstract TEntity BuildTyped();
 
-        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.ExpressionBase(ExpressionBaseBuilder<TBuilder, TEntity> builder)
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase(EvaluatableBaseBuilder<TBuilder, TEntity> builder)
         {
             return builder.BuildTyped();
         }

@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 
-public interface IEvaluatable
+public partial interface IEvaluatable : IBuildableEntity<IEvaluatableBuilder>
 {
     Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token);
 }

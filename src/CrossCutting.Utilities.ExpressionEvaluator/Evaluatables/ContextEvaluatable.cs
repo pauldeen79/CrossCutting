@@ -1,6 +1,6 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
 
-public partial record ContextExpression
+public partial record ContextEvaluatable
 {
     public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
@@ -13,10 +13,4 @@ public partial record ContextExpression
 
         return Result.NoContent<object?>();
     }
-
-    public override Task<ExpressionParseResult> ParseAsync(CancellationToken token)
-        => Task.FromResult(new ExpressionParseResultBuilder()
-            .WithStatus(ResultStatus.NotSupported)
-            .WithExpressionComponentType(GetType())
-            .Build());
 }

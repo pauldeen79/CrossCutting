@@ -21,7 +21,7 @@ internal sealed class OtherExpression : IExpression
     public Task<ExpressionParseResult> ParseAsync(CancellationToken token)
         => _context.ParseAsync(Expression, token);
 
-    public IExpressionBuilder ToBuilder()
+    public IEvaluatableBuilder ToBuilder()
     {
         throw new NotImplementedException();
     }

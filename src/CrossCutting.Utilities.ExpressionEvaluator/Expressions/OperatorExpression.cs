@@ -97,7 +97,7 @@ internal sealed class OperatorExpression : IExpression
             ? typeof(bool)
             : leftResult?.ResultType;
 
-    public IExpressionBuilder ToBuilder()
+    public IEvaluatableBuilder ToBuilder()
     {
         throw new NotImplementedException();
     }
