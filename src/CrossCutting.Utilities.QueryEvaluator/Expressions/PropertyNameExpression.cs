@@ -1,21 +1,7 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Core.Expressions;
 
-public sealed record PropertyNameExpression : IExpression
+public partial record PropertyNameExpression : IExpression
 {
-    [Required, ValidateObject]
-    public IExpression SourceExpression { get; }
-
-    [Required]
-    public string PropertyName { get; }
-
-    public PropertyNameExpression(IExpression sourceExpression, string propertyName)
-    {
-        SourceExpression = sourceExpression;
-        PropertyName = propertyName;
-
-        Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
-    }
-
     public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => (await SourceExpression.EvaluateAsync(context, token)
             .ConfigureAwait(false))
@@ -34,5 +20,5 @@ public sealed record PropertyNameExpression : IExpression
     public Task<ExpressionParseResult> ParseAsync(CancellationToken token)
         => Task.FromResult(new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.NotSupported).Build());
 
-    public IExpressionBuilder ToBuilder() => new PropertyNameExpressionBuilder(this);
+    IExpressionBuilder IBuildableEntity<IExpressionBuilder>.ToBuilder() => new PropertyNameExpressionBuilder(this);
 }
