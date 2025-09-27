@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public sealed class OtherExpression : IExpression
+internal sealed class OtherExpression : IExpression
 {
     private readonly ExpressionEvaluatorContext _context;
 

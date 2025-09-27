@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public sealed class OperatorExpression : IExpression
+internal sealed class OperatorExpression : IExpression
 {
     public Result<IExpression> Left { get; }
     public ExpressionTokenType Operator { get; }
