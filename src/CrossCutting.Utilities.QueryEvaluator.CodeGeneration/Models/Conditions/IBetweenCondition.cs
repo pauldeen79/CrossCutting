@@ -2,7 +2,7 @@
 
 internal interface IBetweenCondition : IConditionBase
 {
-    [Required][ValidateObject] IExpression SourceExpression { get; set; }
-    [Required][ValidateObject] IExpression LowerBoundExpression { get; set; }
-    [Required][ValidateObject] IExpression UpperBoundExpression { get; set; }
+    [Required][ValidateObject] IEvaluatable SourceExpression { get; set; }
+    [Required][ValidateObject] IEvaluatable LowerBoundExpression { get; set; }
+    [Required][ValidateObject] IEvaluatable UpperBoundExpression { get; set; }
 }

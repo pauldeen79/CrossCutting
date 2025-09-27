@@ -27,7 +27,8 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
             get;
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder ToBuilder();
+        //TODO: Fix generation of 'new' keyword, so we don't have to manually change this
+        new CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder ToBuilder();
     }
     public partial interface IDataObjectNameQuery : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
     {
@@ -43,16 +44,12 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CompareExpression
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable CompareExpression
         {
             get;
         }
 
         new CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IDoubleExpressionContainerBuilder ToBuilder();
-    }
-    public partial interface IExpression
-    {
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder ToBuilder();
     }
     public partial interface IFieldSelectionQuery : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
     {
@@ -78,14 +75,14 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression SourceExpression
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression> CompareExpressions
+        System.Collections.Generic.IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable> CompareExpressions
         {
             get;
         }
@@ -125,7 +122,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression SourceExpression
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
         {
             get;
         }
@@ -136,7 +133,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression Expression
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable Expression
         {
             get;
         }

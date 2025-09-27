@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public sealed class UnaryExpression : IExpression<bool>
+internal sealed class UnaryExpression : IExpression<bool>
 {
     private readonly ExpressionEvaluatorContext _context;
 
@@ -52,5 +52,10 @@ public sealed class UnaryExpression : IExpression<bool>
             .SetStatusFromPartResults();
 
         return result;
+    }
+
+    public IEvaluatableBuilder ToBuilder()
+    {
+        throw new NotImplementedException();
     }
 }

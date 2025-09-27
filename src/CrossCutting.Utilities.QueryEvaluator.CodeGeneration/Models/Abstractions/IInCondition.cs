@@ -2,6 +2,6 @@
 
 internal interface IInCondition : ICondition
 {
-    [Required][ValidateObject] IExpression SourceExpression { get; set; }
-    [Required][ValidateObject] IReadOnlyCollection<IExpression> CompareExpressions { get; set; }
+    [Required][ValidateObject] IEvaluatable SourceExpression { get; set; }
+    [Required][ValidateObject] IReadOnlyCollection<IEvaluatable> CompareExpressions { get; set; }
 }

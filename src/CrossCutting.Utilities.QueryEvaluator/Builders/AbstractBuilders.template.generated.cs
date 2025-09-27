@@ -39,35 +39,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
             return builder.BuildTyped();
         }
     }
-    public abstract partial class ExpressionBaseBuilder<TBuilder, TEntity> : ExpressionBaseBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder
-        where TEntity : CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase
-        where TBuilder : ExpressionBaseBuilder<TBuilder, TEntity>
-    {
-        protected ExpressionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase source) : base(source)
-        {
-        }
-
-        protected ExpressionBaseBuilder() : base()
-        {
-        }
-
-        public override CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase Build()
-        {
-            return BuildTyped();
-        }
-
-        public abstract TEntity BuildTyped();
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder.Build()
-        {
-            return BuildTyped();
-        }
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase(ExpressionBaseBuilder<TBuilder, TEntity> builder)
-        {
-            return builder.BuildTyped();
-        }
-    }
     public abstract partial class QueryBaseBuilder<TBuilder, TEntity> : QueryBaseBuilder, CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder
         where TEntity : CrossCutting.Utilities.QueryEvaluator.Core.QueryBase
         where TBuilder : QueryBaseBuilder<TBuilder, TEntity>

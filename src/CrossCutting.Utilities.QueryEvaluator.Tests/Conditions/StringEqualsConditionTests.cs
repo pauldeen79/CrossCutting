@@ -11,15 +11,12 @@ public class StringEqualsConditionTests : TestBase<StringEqualsCondition>
             var leftValue = "this";
             var rightValue = "THIS";
             StringComparison = StringComparison.OrdinalIgnoreCase;
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new DynamicExpressionBuilder(new LiteralExpressionBuilder(leftValue)).Build() },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new DynamicExpressionBuilder(new LiteralExpressionBuilder(rightValue)).Build() },
-                { nameof(IStringComparisonContainer.StringComparison).ToCamelCase(CultureInfo.CurrentCulture), StringComparison },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
-
+            var sut = new StringEqualsConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .WithStringComparison(StringComparison)
+                .Build();
+            var context = CreateContext();
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -35,13 +32,12 @@ public class StringEqualsConditionTests : TestBase<StringEqualsCondition>
             // Arrange
             var leftValue = "this";
             var rightValue = 13;
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
+            var sut = new StringEqualsConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .WithStringComparison(StringComparison)
+                .Build();
+            var context = CreateContext();
 
 
             // Act

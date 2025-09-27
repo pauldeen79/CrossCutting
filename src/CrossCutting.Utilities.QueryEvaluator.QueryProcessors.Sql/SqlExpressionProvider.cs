@@ -10,7 +10,7 @@ public class SqlExpressionProvider : ISqlExpressionProvider
         _handlers = handlers;
     }
 
-    public Result<string> GetSqlExpression(IQueryContext context, IExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag)
+    public Result<string> GetSqlExpression(IQueryContext context, IEvaluatable expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));

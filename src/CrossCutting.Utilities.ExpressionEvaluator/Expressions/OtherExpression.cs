@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public sealed class OtherExpression : IExpression
+internal sealed class OtherExpression : IExpression
 {
     private readonly ExpressionEvaluatorContext _context;
 
@@ -20,4 +20,9 @@ public sealed class OtherExpression : IExpression
 
     public Task<ExpressionParseResult> ParseAsync(CancellationToken token)
         => _context.ParseAsync(Expression, token);
+
+    public IEvaluatableBuilder ToBuilder()
+    {
+        throw new NotImplementedException();
+    }
 }
