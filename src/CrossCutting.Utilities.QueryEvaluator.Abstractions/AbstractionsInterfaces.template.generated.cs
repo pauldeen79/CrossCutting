@@ -27,7 +27,8 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
             get;
         }
 
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder ToBuilder();
+        //TODO: Fix generation of 'new' keyword, so we don't have to manually change this
+        new CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IConditionBuilder ToBuilder();
     }
     public partial interface IDataObjectNameQuery : CrossCutting.Utilities.QueryEvaluator.Abstractions.IQuery
     {
