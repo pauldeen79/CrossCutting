@@ -10,15 +10,12 @@ public class NotInConditionTests : TestBase<NotInCondition>
             // Arrange
             var leftValue = "this";
             var rightValue = "THIS";
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(InCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
-                { nameof(InCondition.CompareExpressions).ToCamelCase(CultureInfo.CurrentCulture), new List<IExpression> { new LiteralExpression(rightValue) } },
-            };
-            var sut = CreateSut(parameters);
+            var sut = new NotInConditionBuilder()
+                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
+                .AddCompareExpressions(new LiteralExpressionBuilder(rightValue))
+                .Build();
             var settings = new ExpressionEvaluatorSettingsBuilder().WithStringComparison(StringComparison.OrdinalIgnoreCase);
-            var context = CreateContext("Dummy", settings: settings);
-
+            var context = CreateContext(settings: settings);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -34,13 +31,11 @@ public class NotInConditionTests : TestBase<NotInCondition>
             // Arrange
             var leftValue = "this";
             var rightValue = 13;
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(InCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
-                { nameof(InCondition.CompareExpressions).ToCamelCase(CultureInfo.CurrentCulture), new List<IExpression> { new LiteralExpression(rightValue) } },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
+            var sut = new NotInConditionBuilder()
+                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
+                .AddCompareExpressions(new LiteralExpressionBuilder(rightValue))
+                .Build();
+            var context = CreateContext();
 
 
             // Act

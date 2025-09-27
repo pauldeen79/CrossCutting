@@ -2,8 +2,7 @@
 
 public sealed record SqlLikeExpression : IExpression
 {
-    [Required]
-    [AllowedTypes([typeof(ContextExpression), typeof(DelegateExpression), typeof(LiteralExpression)])]
+    [Required, AllowedTypes([typeof(ContextExpression), typeof(DelegateExpression), typeof(LiteralExpression)])]
     public IExpression SourceExpression { get; }
 
     [Required]
@@ -21,7 +20,7 @@ public sealed record SqlLikeExpression : IExpression
         => SourceExpression.EvaluateAsync(context, token);
 
     public IExpressionBuilder ToBuilder()
-        => new SqlLikeExpressionBuilder(SourceExpression, FormatString);
+        => new SqlLikeExpressionBuilder(this);
 
     public Task<ExpressionParseResult> ParseAsync(CancellationToken token)
         => Task.FromResult(new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.NotSupported).Build());

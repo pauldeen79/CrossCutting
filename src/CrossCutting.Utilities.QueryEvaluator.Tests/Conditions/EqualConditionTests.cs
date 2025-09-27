@@ -10,14 +10,11 @@ public class EqualConditionTests : TestBase<EqualCondition>
             // Arrange
             var leftValue = "this";
             var rightValue = "this";
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(rightValue) },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
-
+            var sut = new EqualConditionBuilder()
+                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
+                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .Build();
+            var context = CreateContext();
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -31,14 +28,12 @@ public class EqualConditionTests : TestBase<EqualCondition>
         public async Task Returns_Ok_On_Two_Empty_Expressions()
         {
             // Arrange
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new EmptyExpression() },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new EmptyExpression() },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
+            var sut = new EqualConditionBuilder()
+                .WithSourceExpression(new EmptyExpressionBuilder())
+                .WithCompareExpression(new EmptyExpressionBuilder())
+                .Build();
 
+            var context = CreateContext();
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -54,14 +49,11 @@ public class EqualConditionTests : TestBase<EqualCondition>
             // Arrange
             var leftValue = "this";
             var rightValue = 13;
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(rightValue) },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
-
+            var sut = new EqualConditionBuilder()
+                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
+                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .Build();
+            var context = CreateContext();
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);

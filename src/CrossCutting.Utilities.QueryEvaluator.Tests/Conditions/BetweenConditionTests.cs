@@ -11,14 +11,13 @@ public class BetweenConditionTests : TestBase<BetweenCondition>
             var sourceValue = 14;
             var lowerBoundValue = 13;
             var upperBoundValue = 15;
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(BetweenCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(sourceValue) },
-                { nameof(BetweenCondition.LowerBoundExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(lowerBoundValue) },
-                { nameof(BetweenCondition.UpperBoundExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(upperBoundValue) },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
+            var sut = new BetweenConditionBuilder()
+                .WithSourceExpression(new LiteralExpressionBuilder(sourceValue))
+                .WithLowerBoundExpression(new LiteralExpressionBuilder(lowerBoundValue))
+                .WithUpperBoundExpression(new LiteralExpressionBuilder(upperBoundValue))
+                .Build();
+            var context = CreateContext();
+
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
@@ -34,14 +33,12 @@ public class BetweenConditionTests : TestBase<BetweenCondition>
             var sourceValue = "this";
             var lowerBoundValue = 13;
             var upperBoundValue = 15;
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(BetweenCondition.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(sourceValue) },
-                { nameof(BetweenCondition.LowerBoundExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(lowerBoundValue) },
-                { nameof(BetweenCondition.UpperBoundExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(upperBoundValue) },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
+            var sut = new BetweenConditionBuilder()
+                .WithSourceExpression(new LiteralExpressionBuilder(sourceValue))
+                .WithLowerBoundExpression(new LiteralExpressionBuilder(lowerBoundValue))
+                .WithUpperBoundExpression(new LiteralExpressionBuilder(upperBoundValue))
+                .Build();
+            var context = CreateContext();
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);

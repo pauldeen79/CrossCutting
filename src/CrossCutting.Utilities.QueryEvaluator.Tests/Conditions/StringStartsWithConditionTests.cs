@@ -11,14 +11,12 @@ public class StringStartsWithConditionTests : TestBase<StringStartsWithCondition
             var leftValue = "this";
             var rightValue = "T";
             StringComparison = StringComparison.OrdinalIgnoreCase;
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(rightValue) },
-                { nameof(IStringComparisonContainer.StringComparison).ToCamelCase(CultureInfo.CurrentCulture), StringComparison },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
+            var sut = new StringStartsWithConditionBuilder()
+                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
+                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .WithStringComparison(StringComparison)
+                .Build();
+            var context = CreateContext();
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -34,13 +32,12 @@ public class StringStartsWithConditionTests : TestBase<StringStartsWithCondition
             // Arrange
             var leftValue = 1;
             var rightValue = "this";
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(rightValue) },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
+            var sut = new StringStartsWithConditionBuilder()
+                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
+                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .Build();
+
+            var context = CreateContext();
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -56,13 +53,12 @@ public class StringStartsWithConditionTests : TestBase<StringStartsWithCondition
             // Arrange
             var leftValue = "this";
             var rightValue = 2;
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(rightValue) },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
+            var sut = new StringStartsWithConditionBuilder()
+                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
+                .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
+                .Build();
+
+            var context = CreateContext();
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);

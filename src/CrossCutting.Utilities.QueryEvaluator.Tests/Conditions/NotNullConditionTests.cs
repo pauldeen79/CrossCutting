@@ -9,12 +9,10 @@ public class NotNullConditionTests : TestBase<NotNullCondition>
         {
             // Arrange
             var leftValue = "non null value";
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
+            var sut = new NotNullConditionBuilder()
+                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
+                .Build();
+            var context = CreateContext();
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -29,12 +27,10 @@ public class NotNullConditionTests : TestBase<NotNullCondition>
         {
             // Arrange
             var leftValue = default(object?);
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpression(leftValue) },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
+            var sut = new NotNullConditionBuilder()
+                .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
+                .Build();
+            var context = CreateContext();
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);

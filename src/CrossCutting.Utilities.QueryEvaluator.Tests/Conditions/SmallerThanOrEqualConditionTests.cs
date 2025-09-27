@@ -1,20 +1,18 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class StringNotEqualsConditionTests : TestBase<StringNotEqualsCondition>
+public class SmallerThanOrEqualConditionTests : TestBase<SmallerThanOrEqualCondition>
 {
-    public class Evaluate : StringNotEqualsConditionTests
+    public class Evaluate : SmallerThanOrEqualConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
         {
             // Arrange
-            var leftValue = "this";
-            var rightValue = "something else";
-            StringComparison = StringComparison.OrdinalIgnoreCase;
-            var sut = new StringNotEqualsConditionBuilder()
+            var leftValue = 13;
+            var rightValue = 15;
+            var sut = new SmallerThanOrEqualConditionBuilder()
                 .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
                 .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
-                .WithStringComparison(StringComparison)
                 .Build();
             var context = CreateContext();
 
@@ -32,10 +30,11 @@ public class StringNotEqualsConditionTests : TestBase<StringNotEqualsCondition>
             // Arrange
             var leftValue = "this";
             var rightValue = 13;
-            var sut = new StringNotEqualsConditionBuilder()
+            var sut = new SmallerThanOrEqualConditionBuilder()
                 .WithSourceExpression(new LiteralExpressionBuilder(leftValue))
                 .WithCompareExpression(new LiteralExpressionBuilder(rightValue))
                 .Build();
+
             var context = CreateContext();
 
             // Act
@@ -43,7 +42,7 @@ public class StringNotEqualsConditionTests : TestBase<StringNotEqualsCondition>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
+            result.ErrorMessage.ShouldBe("Object must be of type String.");
         }
     }
 }

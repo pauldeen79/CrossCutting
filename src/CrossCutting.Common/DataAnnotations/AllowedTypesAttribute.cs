@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Validation;
+﻿namespace CrossCutting.Common.DataAnnotations;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 public sealed class AllowedTypesAttribute : ValidationAttribute
