@@ -17,8 +17,5 @@ public partial record PropertyNameEvaluatable : IEvaluatable
                 return Result.WrapException<object?>(() => property.GetValue(valueResult.Value));
             });
 
-    public Task<ExpressionParseResult> ParseAsync(CancellationToken token)
-        => Task.FromResult(new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.NotSupported).Build());
-
     IEvaluatableBuilder IBuildableEntity<IEvaluatableBuilder>.ToBuilder() => new PropertyNameEvaluatableBuilder(this);
 }
