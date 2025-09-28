@@ -24,6 +24,7 @@ global using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
 global using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables;
 global using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Queries;
 global using CrossCutting.Utilities.QueryEvaluator.Core.Conditions;
+global using CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables;
 global using CrossCutting.Utilities.QueryEvaluator.QueryParsers;
 global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory;
 global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory.Abstractions;
