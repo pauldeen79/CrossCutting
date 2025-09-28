@@ -288,9 +288,10 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
+
         await DatabaseEntityRetriever
             .Received()
-            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC" && IsValidParameters(x.CommandParameters, "%A%")), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -314,7 +315,7 @@ public sealed class SqlQueryProcessorTests : TestBase
         result.Value.ShouldNotBeNull();
         await DatabaseEntityRetriever
             .Received()
-            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC" && IsValidParameters(x.CommandParameters, "%A")), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -362,7 +363,7 @@ public sealed class SqlQueryProcessorTests : TestBase
         result.Value.ShouldNotBeNull();
         await DatabaseEntityRetriever
             .Received()
-            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC" && IsValidParameters(x.CommandParameters, "%A%")), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -386,7 +387,7 @@ public sealed class SqlQueryProcessorTests : TestBase
         result.Value.ShouldNotBeNull();
         await DatabaseEntityRetriever
             .Received()
-            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC" && IsValidParameters(x.CommandParameters, "%A")), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -434,7 +435,7 @@ public sealed class SqlQueryProcessorTests : TestBase
         result.Value.ShouldNotBeNull();
         await DatabaseEntityRetriever
             .Received()
-            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC" && IsValidParameters(x.CommandParameters, "A%")), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -458,7 +459,7 @@ public sealed class SqlQueryProcessorTests : TestBase
         result.Value.ShouldNotBeNull();
         await DatabaseEntityRetriever
             .Received()
-            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC"), Arg.Any<CancellationToken>());
+            .FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.CommandText == "SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC" && IsValidParameters(x.CommandParameters, "A%")), Arg.Any<CancellationToken>());
     }
 
     [Fact]
