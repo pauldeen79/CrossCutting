@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-internal sealed class OperatorExpression : IExpression
+internal sealed class OperatorExpression : ExpressionBase
 {
     public Result<IExpression> Left { get; }
     public ExpressionTokenType Operator { get; }
@@ -32,7 +32,7 @@ internal sealed class OperatorExpression : IExpression
         _components = components;
     }
 
-    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+    public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         var results = await new AsyncResultDictionaryBuilder()
             .Add(Constants.LeftExpression, Left.Value is not null
@@ -53,12 +53,7 @@ internal sealed class OperatorExpression : IExpression
         return Process(Operator, _context, results);
     }
 
-    private Result<object?> Process(ExpressionTokenType @operator, ExpressionEvaluatorContext context, IReadOnlyDictionary<string, Result> results)
-        => _components
-            .Select(x => Result.WrapException(() => x.Process(@operator, context, results)))
-            .WhenNotContinue(() => Result.Invalid<object?>($"Unsupported operator: {Operator}"));
-
-    public async Task<ExpressionParseResult> ParseAsync(CancellationToken token)
+    public override async Task<ExpressionParseResult> ParseAsync(CancellationToken token)
     {
         ExpressionParseResult? leftResult = null;
         ExpressionParseResult? rightResult = null;
@@ -92,13 +87,13 @@ internal sealed class OperatorExpression : IExpression
             : result.WithStatus(ResultStatus.Invalid).WithErrorMessage($"Unsupported operator: {Operator}");
     }
 
+    private Result<object?> Process(ExpressionTokenType @operator, ExpressionEvaluatorContext context, IReadOnlyDictionary<string, Result> results)
+        => _components
+            .Select(x => Result.WrapException(() => x.Process(@operator, context, results)))
+            .WhenNotContinue(() => Result.Invalid<object?>($"Unsupported operator: {Operator}"));
+
     private static Type? GetResultType(ExpressionParseResult? leftResult, IBinaryExpressionComponent component)
         => component.HasBooleanResult
             ? typeof(bool)
             : leftResult?.ResultType;
-
-    public IEvaluatableBuilder ToBuilder()
-    {
-        throw new NotImplementedException();
-    }
 }
