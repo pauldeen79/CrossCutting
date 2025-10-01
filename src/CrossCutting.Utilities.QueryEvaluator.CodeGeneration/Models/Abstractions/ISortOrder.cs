@@ -2,6 +2,6 @@
 
 internal interface ISortOrder
 {
-    [Required][ValidateObject] IExpression Expression { get; }
+    [Required][ValidateObject] IEvaluatable Expression { get; }
     SortOrderDirection Order { get; }
 }

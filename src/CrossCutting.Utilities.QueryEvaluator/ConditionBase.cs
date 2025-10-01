@@ -4,4 +4,6 @@ public partial record ConditionBase
 {
     public abstract Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token);
     public abstract Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token);
+
+    IEvaluatableBuilder IBuildableEntity<IEvaluatableBuilder>.ToBuilder() => ToBuilder();
 }

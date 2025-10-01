@@ -79,6 +79,14 @@ public abstract class TestBase
     ];
 
     protected ExpressionEvaluatorContext CreateContext(
+        IReadOnlyDictionary<string, Task<Result<object?>>>? state = null,
+        int currentRecursionLevel = 1,
+        ExpressionEvaluatorContext? parentContext = null,
+        IExpressionEvaluator? evaluator = null,
+        ExpressionEvaluatorSettingsBuilder? settings = null)
+            => CreateContext(null, state, currentRecursionLevel, parentContext, evaluator, settings);
+
+    protected ExpressionEvaluatorContext CreateContext(
         string? expression,
         IReadOnlyDictionary<string, Task<Result<object?>>>? state = null,
         int currentRecursionLevel = 1,
@@ -104,6 +112,13 @@ public abstract class TestBase
         PagedResult.PageSize.Returns(_sourceData.OfType<T>().Count());
         PagedResult.GetEnumerator().Returns(_sourceData.OfType<MyEntity>().GetEnumerator());
     }
+
+    protected static bool IsValidParameters(object? commandParameters, string expectedValue)
+        => commandParameters is Dictionary<string, object> dict
+            && dict.Count == 1
+            && dict.First().Key == "@p0"
+            && dict.First().Value is string s
+            && s == expectedValue;
 }
 
 public abstract class TestBase<T> : TestBase

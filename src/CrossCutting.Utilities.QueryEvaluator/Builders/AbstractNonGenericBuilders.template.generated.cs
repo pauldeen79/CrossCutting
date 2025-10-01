@@ -93,38 +93,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public abstract partial class ExpressionBaseBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder, System.ComponentModel.INotifyPropertyChanged
-    {
-        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
-
-        protected ExpressionBaseBuilder(CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase source)
-        {
-        }
-
-        protected ExpressionBaseBuilder()
-        {
-            SetDefaultValues();
-        }
-
-        public abstract CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase Build();
-
-        CrossCutting.Utilities.QueryEvaluator.Abstractions.IExpression CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IExpressionBuilder.Build()
-        {
-            return Build();
-        }
-
-        partial void SetDefaultValues();
-
-        public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.ExpressionBase(ExpressionBaseBuilder builder)
-        {
-            return builder.Build();
-        }
-
-        protected void HandlePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    }
     public abstract partial class QueryBaseBuilder : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IQueryBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private System.Nullable<int> _limit;

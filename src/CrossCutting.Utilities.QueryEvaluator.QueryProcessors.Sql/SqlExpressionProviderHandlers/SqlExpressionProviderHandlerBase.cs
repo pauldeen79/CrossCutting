@@ -4,7 +4,7 @@ public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpres
 {
     public Result<string> GetSqlExpression(
         IQueryContext context,
-        IExpression expression,
+        IEvaluatable expression,
         IQueryFieldInfo fieldInfo,
         ParameterBag parameterBag,
         ISqlExpressionProvider callback)

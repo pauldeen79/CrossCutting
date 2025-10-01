@@ -32,7 +32,13 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
         yield return new TypenameMappingBuilder(typeof(IFormatProvider))
             .AddMetadata
             (
-                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
+                new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
             );
+
+        var evaluatableType = typeof(IEvaluatable);
+        foreach (var mapping in CreateBuilderAbstractionTypeConversionTypenameMappings(evaluatableType.GetEntityClassName(), evaluatableType.GetGenericTypeArgumentsString(), "CrossCutting.Utilities.ExpressionEvaluator.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator"))
+        {
+            yield return mapping;
+        }
     }
 }
