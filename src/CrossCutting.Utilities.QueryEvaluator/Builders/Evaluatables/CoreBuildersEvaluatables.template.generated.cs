@@ -10,13 +10,11 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables
 {
-    public partial class PropertyNameEvaluatableBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class PropertyNameEvaluatableBuilder : EvaluatableBaseBuilder<PropertyNameEvaluatableBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable>
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _sourceExpression;
 
         private string _propertyName;
-
-        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -49,21 +47,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables
             }
         }
 
-        public PropertyNameEvaluatableBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable source)
+        public PropertyNameEvaluatableBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _propertyName = source.PropertyName;
         }
 
-        public PropertyNameEvaluatableBuilder()
+        public PropertyNameEvaluatableBuilder() : base()
         {
             _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
             _propertyName = string.Empty;
             SetDefaultValues();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable Build()
+        public override CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable BuildTyped()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable(SourceExpression?.Build()!, PropertyName);
         }
@@ -86,12 +84,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable(PropertyNameEvaluatableBuilder builder)
         {
-            return builder.Build();
-        }
-
-        protected void HandlePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            return builder.BuildTyped();
         }
     }
 }

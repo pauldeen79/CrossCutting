@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables
 {
-    public partial record PropertyNameEvaluatable
+    public partial record PropertyNameEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -25,7 +25,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables
             get;
         }
 
-        public PropertyNameEvaluatable(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, string propertyName)
+        public PropertyNameEvaluatable(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, string propertyName) : base()
         {
             this.SourceExpression = sourceExpression;
             this.PropertyName = propertyName;
@@ -34,10 +34,16 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables.PropertyNameEvaluatableBuilder(CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable entity)
         {
-            return entity.ToBuilder();
+            return entity.ToTypedBuilder();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables.PropertyNameEvaluatableBuilder ToBuilder()
+        //public override CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.Builders.EvaluatableBaseBuilder ToBuilder()
+        public override CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables.PropertyNameEvaluatableBuilder ToTypedBuilder()
         {
             return new CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables.PropertyNameEvaluatableBuilder(this);
         }

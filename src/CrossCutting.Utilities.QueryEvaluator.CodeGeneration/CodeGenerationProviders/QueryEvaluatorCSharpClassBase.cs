@@ -41,4 +41,11 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
             yield return mapping;
         }
     }
+
+    protected static TypeBase GetEvaluatableBase()
+        => new ClassBuilder()
+            .WithName("EvaluatableBase")
+            .WithNamespace("CrossCutting.Utilities.ExpressionEvaluator")
+            .AddInterfaces(typeof(IEvaluatable))
+            .Build();
 }

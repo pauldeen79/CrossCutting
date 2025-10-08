@@ -8,5 +8,9 @@ public class CoreBuildersEvaluatables(IPipelineService pipelineService) : QueryE
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
         => GetBuildersAsync(GetNonCoreModelsAsync(typeof(IPropertyNameEvaluatable).FullName.GetNamespaceWithDefault()), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Builders.Evaluatables", $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Evaluatables");
 
+    protected override bool EnableEntityInheritance => true;
     protected override bool CreateAsObservable => true;
+
+    protected override Task<Result<TypeBase>> GetBaseClassAsync()
+        => Task.FromResult(Result.Success(GetEvaluatableBase()));
 }

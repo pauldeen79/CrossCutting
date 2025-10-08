@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables;
 
-public partial record PropertyNameEvaluatable : IEvaluatable
+public partial record PropertyNameEvaluatable
 {
-    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+    public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => (await SourceExpression.EvaluateAsync(context, token)
             .ConfigureAwait(false))
             .EnsureNotNull("Expression evaluation resulted in null")
@@ -17,6 +17,4 @@ public partial record PropertyNameEvaluatable : IEvaluatable
 
                 return Result.WrapException<object?>(() => property.GetValue(valueResult.Value));
             });
-
-    IEvaluatableBuilder IBuildableEntity<IEvaluatableBuilder>.ToBuilder() => new PropertyNameEvaluatableBuilder(this);
 }
