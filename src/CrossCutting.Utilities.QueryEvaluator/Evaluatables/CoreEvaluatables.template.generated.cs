@@ -37,7 +37,6 @@ namespace CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables
             return entity.ToTypedBuilder();
         }
 
-        //public override CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.Builders.EvaluatableBaseBuilder ToBuilder()
         public override CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();

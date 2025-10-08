@@ -35,6 +35,7 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
                 new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
             );
 
+        // Part 1 to get code generation of evaluatables working
         var evaluatableType = typeof(IEvaluatable);
         foreach (var mapping in CreateBuilderAbstractionTypeConversionTypenameMappings(evaluatableType.GetEntityClassName(), evaluatableType.GetGenericTypeArgumentsString(), "CrossCutting.Utilities.ExpressionEvaluator.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator"))
         {
@@ -42,10 +43,20 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
         }
     }
 
+    // Part 2 to get code generation of evaluatables working
     protected static TypeBase GetEvaluatableBase()
         => new ClassBuilder()
             .WithName("EvaluatableBase")
             .WithNamespace("CrossCutting.Utilities.ExpressionEvaluator")
             .AddInterfaces(typeof(IEvaluatable))
             .Build();
+
+    // Part 3 to get code generation of evaluatables working
+    protected async Task<Result<IEnumerable<TypeBase>>> GetEvaluatableEntities(Task<Result<IEnumerable<TypeBase>>> models, string entitiesNamespace)
+        => (await GetEntitiesAsync(models, entitiesNamespace).ConfigureAwait(false))
+            .EnsureValue()
+            .OnSuccess(result => Result.Success(result.Value!.Select(x =>
+                x.ToBuilder()
+                 .With(y => y.Methods.First(z => z.Name == "ToBuilder").ReturnTypeName = "CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder")
+                 .Build())));
 }

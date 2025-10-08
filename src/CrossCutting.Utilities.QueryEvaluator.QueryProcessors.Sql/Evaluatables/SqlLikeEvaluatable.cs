@@ -1,9 +1,7 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables;
 
-public partial record SqlLikeEvaluatable : IEvaluatable
+public partial record SqlLikeEvaluatable
 {
-    public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+    public override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => SourceExpression.EvaluateAsync(context, token);
-
-    IEvaluatableBuilder IBuildableEntity<IEvaluatableBuilder>.ToBuilder() => new SqlLikeEvaluatableBuilder(this);
 }

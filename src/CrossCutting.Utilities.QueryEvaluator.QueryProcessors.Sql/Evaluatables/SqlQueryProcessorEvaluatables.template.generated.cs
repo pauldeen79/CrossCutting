@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables
 {
-    public partial record SqlLikeEvaluatable
+    public partial record SqlLikeEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -25,7 +25,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables
             get;
         }
 
-        public SqlLikeEvaluatable(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, string formatString)
+        public SqlLikeEvaluatable(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, string formatString) : base()
         {
             this.SourceExpression = sourceExpression;
             this.FormatString = formatString;
@@ -34,10 +34,15 @@ namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.Builders.SqlLikeEvaluatableBuilder(CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable entity)
         {
-            return entity.ToBuilder();
+            return entity.ToTypedBuilder();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.Builders.SqlLikeEvaluatableBuilder ToBuilder()
+        public override CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.Builders.SqlLikeEvaluatableBuilder ToTypedBuilder()
         {
             return new CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.Builders.SqlLikeEvaluatableBuilder(this);
         }

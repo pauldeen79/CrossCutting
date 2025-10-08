@@ -10,13 +10,11 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.Builders
 {
-    public partial class SqlLikeEvaluatableBuilder : System.ComponentModel.INotifyPropertyChanged
+    public partial class SqlLikeEvaluatableBuilder : EvaluatableBaseBuilder<SqlLikeEvaluatableBuilder, CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable>
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _sourceExpression;
 
         private string _formatString;
-
-        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -49,21 +47,21 @@ namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables
             }
         }
 
-        public SqlLikeEvaluatableBuilder(CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable source)
+        public SqlLikeEvaluatableBuilder(CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _formatString = source.FormatString;
         }
 
-        public SqlLikeEvaluatableBuilder()
+        public SqlLikeEvaluatableBuilder() : base()
         {
             _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
             _formatString = string.Empty;
             SetDefaultValues();
         }
 
-        public CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable Build()
+        public override CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable BuildTyped()
         {
             return new CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable(SourceExpression?.Build()!, FormatString);
         }
@@ -86,12 +84,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables
 
         public static implicit operator CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable(SqlLikeEvaluatableBuilder builder)
         {
-            return builder.Build();
-        }
-
-        protected void HandlePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            return builder.BuildTyped();
         }
     }
 }
