@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.CodeGenerationProviders;
+﻿using ClassFramework.Domain.Types;
+
+namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
@@ -52,11 +54,20 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
             .Build();
 
     // Part 3 to get code generation of evaluatables working
-    protected async Task<Result<IEnumerable<TypeBase>>> GetEvaluatableEntities(Task<Result<IEnumerable<TypeBase>>> models, string entitiesNamespace)
-        => (await GetEntitiesAsync(models, entitiesNamespace).ConfigureAwait(false))
+    protected async Task<Result<IEnumerable<TypeBase>>> GetEvaluatableEntities(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string entitiesNamespace)
+        => (await GetEntitiesAsync(modelsResultTask, entitiesNamespace).ConfigureAwait(false))
             .EnsureValue()
             .OnSuccess(result => Result.Success(result.Value!.Select(x =>
                 x.ToBuilder()
                  .With(y => y.Methods.First(z => z.Name == "ToBuilder").ReturnTypeName = "CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder")
+                 .Build())));
+
+    // Part 4 to get code generation of evaluatables working
+    protected async Task<Result<IEnumerable<TypeBase>>> GetEvaluatableBuildersAsync(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
+        => (await GetBuildersAsync(modelsResultTask, buildersNamespace, entitiesNamespace).ConfigureAwait(false))
+            .EnsureValue()
+            .OnSuccess(result => Result.Success(result.Value!.OfType<Class>().Select(x =>
+                x.ToTypedBuilder()
+                 .With(y => y.BaseClass = "ExpressionEvaluator.Builders." + y.BaseClass)
                  .Build())));
 }

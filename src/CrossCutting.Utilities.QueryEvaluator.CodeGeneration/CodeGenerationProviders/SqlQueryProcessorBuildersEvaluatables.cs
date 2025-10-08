@@ -6,7 +6,7 @@ public class SqlQueryProcessorBuildersEvaluatables(IPipelineService pipelineServ
     public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}.QueryProcessors.Sql/Evaluatables/Builders";
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetBuildersAsync(GetNonCoreModelsAsync(typeof(ISqlLikeEvaluatable).FullName.GetNamespaceWithDefault()), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.QueryProcessors.Sql.Evaluatables.Builders", $"{Constants.Namespaces.UtilitiesQueryEvaluator}.QueryProcessors.Sql.Evaluatables");
+        => GetEvaluatableBuildersAsync(GetNonCoreModelsAsync(typeof(ISqlLikeEvaluatable).FullName.GetNamespaceWithDefault()), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.QueryProcessors.Sql.Evaluatables.Builders", $"{Constants.Namespaces.UtilitiesQueryEvaluator}.QueryProcessors.Sql.Evaluatables");
     
     protected override bool EnableEntityInheritance => true;
     protected override bool CreateAsObservable => true;

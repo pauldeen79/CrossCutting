@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.Builders
 {
-    public partial class SqlLikeEvaluatableBuilder : EvaluatableBaseBuilder<SqlLikeEvaluatableBuilder, CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable>
+    public partial class SqlLikeEvaluatableBuilder : ExpressionEvaluator.Builders.EvaluatableBaseBuilder<SqlLikeEvaluatableBuilder, CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Evaluatables.SqlLikeEvaluatable>
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _sourceExpression;
 

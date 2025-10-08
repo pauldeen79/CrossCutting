@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables
 {
-    public partial class PropertyNameEvaluatableBuilder : EvaluatableBaseBuilder<PropertyNameEvaluatableBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable>
+    public partial class PropertyNameEvaluatableBuilder : ExpressionEvaluator.Builders.EvaluatableBaseBuilder<PropertyNameEvaluatableBuilder, CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables.PropertyNameEvaluatable>
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _sourceExpression;
 
