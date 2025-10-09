@@ -1,6 +1,4 @@
-﻿using ClassFramework.Domain.Types;
-
-namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.CodeGenerationProviders;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
@@ -32,10 +30,7 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
     protected override IEnumerable<TypenameMappingBuilder> GetAdditionalTypenameMappings()
     {
         yield return new TypenameMappingBuilder(typeof(IFormatProvider))
-            .AddMetadata
-            (
-                new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
-            );
+            .AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"));
 
         // Part 1 to get code generation of evaluatables working
         var evaluatableType = typeof(IEvaluatable);
@@ -43,6 +38,8 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
         {
             yield return mapping;
         }
+        //yield return new TypenameMappingBuilder(typeof(IEvaluatable))
+        //    .AddMetadata(MetadataNames.CustomBuilderNamespace, "CrossCutting.Utilities.ExpressionEvaluator.Builders");
     }
 
     // Part 2 to get code generation of evaluatables working
@@ -54,7 +51,7 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
             .Build();
 
     // Part 3 to get code generation of evaluatables working
-    protected async Task<Result<IEnumerable<TypeBase>>> GetEvaluatableEntities(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string entitiesNamespace)
+    protected async Task<Result<IEnumerable<TypeBase>>> GetEvaluatableEntitiesAsync(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string entitiesNamespace)
         => (await GetEntitiesAsync(modelsResultTask, entitiesNamespace).ConfigureAwait(false))
             .EnsureValue()
             .OnSuccess(result => Result.Success(result.Value!.Select(x =>

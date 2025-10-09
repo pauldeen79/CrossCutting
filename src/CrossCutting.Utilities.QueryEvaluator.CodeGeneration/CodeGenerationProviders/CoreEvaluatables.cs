@@ -6,7 +6,7 @@ public class CoreEvaluatables(IPipelineService pipelineService) : QueryEvaluator
     public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}/Evaluatables";
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetEvaluatableEntities(GetNonCoreModelsAsync(typeof(IPropertyNameEvaluatable).FullName.GetNamespaceWithDefault()), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Evaluatables");
+        => GetEvaluatableEntitiesAsync(GetNonCoreModelsAsync(typeof(IPropertyNameEvaluatable).FullName.GetNamespaceWithDefault()), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Evaluatables");
 
     protected override bool EnableEntityInheritance => true;
 
