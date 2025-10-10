@@ -39,7 +39,8 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
             yield return mapping;
         }
         yield return new TypenameMappingBuilder("CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase")
-            .AddMetadata(MetadataNames.CustomBuilderBaseClassTypeName, "CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder");
+            .AddMetadata(MetadataNames.CustomBuilderBaseClassTypeName, "CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder")
+            .AddMetadata(MetadataNames.CustomBuilderNamespace, "CrossCutting.Utilities.ExpressionEvaluator.Builders");
     }
 
     // Part 2 to get code generation of evaluatables working
@@ -49,13 +50,4 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
             .WithNamespace("CrossCutting.Utilities.ExpressionEvaluator")
             .AddInterfaces(typeof(IEvaluatable))
             .Build();
-
-    // Part 3 to get code generation of evaluatables working
-    protected async Task<Result<IEnumerable<TypeBase>>> GetEvaluatableEntitiesAsync(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string entitiesNamespace)
-        => (await GetEntitiesAsync(modelsResultTask, entitiesNamespace).ConfigureAwait(false))
-            .EnsureValue()
-            .OnSuccess(result => Result.Success(result.Value!.Select(x =>
-                x.ToBuilder()
-                 .With(y => y.Methods.First(z => z.Name == "ToBuilder").ReturnTypeName = "CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder")
-                 .Build())));
 }
