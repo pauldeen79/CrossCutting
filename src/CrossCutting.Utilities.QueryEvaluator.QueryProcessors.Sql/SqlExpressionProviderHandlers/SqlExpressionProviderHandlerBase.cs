@@ -1,10 +1,11 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.SqlExpressionProviderHandlers;
 
 public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpressionProviderHandler
+    where TExpression : ISqlExpression
 {
     public Result<string> GetSqlExpression(
         IQueryContext context,
-        IEvaluatable expression,
+        ISqlExpression expression,
         IQueryFieldInfo fieldInfo,
         ParameterBag parameterBag,
         ISqlExpressionProvider callback)

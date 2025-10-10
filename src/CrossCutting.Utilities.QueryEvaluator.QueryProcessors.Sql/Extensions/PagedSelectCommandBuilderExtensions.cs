@@ -42,7 +42,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.Select(", ");
             }
 
-            var result = sqlExpressionProvider.GetSqlExpression(fieldSelectionQuery.WithContext(context.Context), new PropertyNameEvaluatable(new ContextEvaluatable(), expression.Item), fieldInfo, parameterBag).EnsureValue();
+            var result = sqlExpressionProvider.GetSqlExpression(fieldSelectionQuery.WithContext(context.Context), new SqlExpression(new PropertyNameEvaluatable(new ContextEvaluatable(), expression.Item)), fieldInfo, parameterBag).EnsureValue();
             if (!result.IsSuccessful())
             {
                 return Result.FromExistingResult<PagedSelectCommandBuilder>(result);
@@ -161,7 +161,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.OrderBy(", ");
             }
 
-            var result = sqlExpressionProvider.GetSqlExpression(context, querySortOrder.Item.Expression, fieldInfo, parameterBag);
+            var result = sqlExpressionProvider.GetSqlExpression(context, new SqlExpression(querySortOrder.Item.Expression), fieldInfo, parameterBag);
             if (!result.IsSuccessful())
             {
                 return Result.FromExistingResult<PagedSelectCommandBuilder>(result);
@@ -179,8 +179,8 @@ internal static class PagedSelectCommandBuilderExtensions
     }
 
     internal static Result<PagedSelectCommandBuilder> AddParameters(this PagedSelectCommandBuilder instance,
-                                                                     IQueryContext context,
-                                                                     ParameterBag parameterBag)
+                                                                    IQueryContext context,
+                                                                    ParameterBag parameterBag)
     {
         foreach (var parameter in parameterBag.Parameters)
         {

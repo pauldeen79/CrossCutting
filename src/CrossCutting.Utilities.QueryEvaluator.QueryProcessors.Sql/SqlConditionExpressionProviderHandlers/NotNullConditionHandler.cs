@@ -4,7 +4,7 @@ public class NotNullConditionHandler : ConditionExpressionHandlerBase<NotNullCon
 {
     protected override Result DoGetConditionExpression(StringBuilder builder, IQueryContext context, NotNullCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag)
         => new ResultDictionaryBuilder<string>()
-            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpression(context, condition.SourceExpression, fieldInfo, parameterBag))
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpression(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
             .Build()
             .OnSuccess(results => builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} IS NOT NULL"));
 }

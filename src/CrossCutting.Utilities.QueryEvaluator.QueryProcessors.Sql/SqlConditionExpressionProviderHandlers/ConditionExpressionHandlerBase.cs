@@ -35,22 +35,22 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
 
     protected static Result GetSimpleConditionExpression(StringBuilder builder, IQueryContext context, IDoubleExpressionContainer condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, ConditionParameters parameters)
         => new ResultDictionaryBuilder<string>()
-            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpression(context, condition.SourceExpression, fieldInfo, parameterBag))
-            .Add(nameof(condition.CompareExpression), () => sqlExpressionProvider.GetSqlExpression(context, condition.CompareExpression, fieldInfo, parameterBag))
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpression(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
+            .Add(nameof(condition.CompareExpression), () => sqlExpressionProvider.GetSqlExpression(context, new SqlExpression(condition.CompareExpression), fieldInfo, parameterBag))
             .Build()
             .OnSuccess(results => builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} {parameters.Operator} {results.GetValue(nameof(condition.CompareExpression))}"));
 
     protected static Result GetStringConditionExpression(StringBuilder builder, IQueryContext context, IDoubleExpressionContainer condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, StringConditionParameters parameters)
         => new ResultDictionaryBuilder<string>()
-            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpression(context, condition.SourceExpression, fieldInfo, parameterBag))
-            .Add(nameof(condition.CompareExpression), () => sqlExpressionProvider.GetSqlExpression(context, new SqlLikeEvaluatable(condition.CompareExpression, parameters.FormatString), fieldInfo, parameterBag))
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpression(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
+            .Add(nameof(condition.CompareExpression), () => sqlExpressionProvider.GetSqlExpression(context, new SqlLikeExpression(condition.CompareExpression, parameters.FormatString), fieldInfo, parameterBag))
             .Build()
             .OnSuccess(results => builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} {parameters.Operator} {results.GetValue(nameof(condition.CompareExpression))}"));
 
     protected static Result GetInConditionExpression(StringBuilder builder, IQueryContext context, IInCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, string @operator)
         => new ResultDictionaryBuilder<string>()
-            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpression(context, condition.SourceExpression, fieldInfo, parameterBag))
-            .AddRange($"{nameof(condition.CompareExpressions)}.{{0}}", () => condition.CompareExpressions.Select(x => sqlExpressionProvider.GetSqlExpression(context, x, fieldInfo, parameterBag)))
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpression(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
+            .AddRange($"{nameof(condition.CompareExpressions)}.{{0}}", () => condition.CompareExpressions.Select(x => sqlExpressionProvider.GetSqlExpression(context, new SqlExpression(x), fieldInfo, parameterBag)))
             .Build()
             .OnSuccess(results =>
             {

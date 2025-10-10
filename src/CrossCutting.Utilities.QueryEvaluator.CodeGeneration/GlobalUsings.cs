@@ -25,7 +25,6 @@ global using CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models;
 global using CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Abstractions;
 global using CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Domains;
 global using CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Evaluatables;
-global using CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.QueryProcessors.Sql.Evaluatables;
 global using CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Validation;
 global using CsharpExpressionDumper.Core.Extensions;
 global using Microsoft.Extensions.DependencyInjection;
