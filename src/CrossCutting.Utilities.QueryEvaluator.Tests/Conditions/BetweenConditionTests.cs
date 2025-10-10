@@ -11,11 +11,12 @@ public class BetweenConditionTests : TestBase<BetweenCondition>
             var sourceValue = 14;
             var lowerBoundValue = 13;
             var upperBoundValue = 15;
+            // just for fun, use BuildTyped instead of Build
             var sut = new BetweenConditionBuilder()
                 .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
                 .WithLowerBoundExpression(new LiteralEvaluatableBuilder(lowerBoundValue))
                 .WithUpperBoundExpression(new LiteralEvaluatableBuilder(upperBoundValue))
-                .Build();
+                .BuildTyped();
             var context = CreateContext();
 
             // Act
@@ -33,11 +34,13 @@ public class BetweenConditionTests : TestBase<BetweenCondition>
             var sourceValue = "this";
             var lowerBoundValue = 13;
             var upperBoundValue = 15;
-            var sut = new BetweenConditionBuilder()
+            // just for fun, create the builder as an evaluatable builder, and then call Build on it to produce the evaluatable.
+            // note that this gives an IEvaluatable because of the interface, but it's actually a BetweenCondition :)
+            IBuilder<IEvaluatable> builder = new BetweenConditionBuilder()
                 .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
                 .WithLowerBoundExpression(new LiteralEvaluatableBuilder(lowerBoundValue))
-                .WithUpperBoundExpression(new LiteralEvaluatableBuilder(upperBoundValue))
-                .Build();
+                .WithUpperBoundExpression(new LiteralEvaluatableBuilder(upperBoundValue));
+            var sut = builder.Build();
             var context = CreateContext();
 
             // Act
