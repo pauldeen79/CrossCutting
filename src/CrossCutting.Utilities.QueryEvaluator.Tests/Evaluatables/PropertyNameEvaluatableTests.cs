@@ -50,9 +50,7 @@ public class PropertyNameEvaluatableTests : TestBase<PropertyNameEvaluatable>
                 .WithPropertyName("MyProperty")
                 .WithSourceExpression(new ContextEvaluatableBuilder())
                 .Build();
-            var context = CreateContext(state: new AsyncResultDictionaryBuilder<object?>()
-                .Add(Constants.Context, () => this)
-                .BuildDeferred());
+            var context = CreateContext(context: this);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -70,9 +68,7 @@ public class PropertyNameEvaluatableTests : TestBase<PropertyNameEvaluatable>
                 .WithPropertyName(nameof(MyClass.MyProperty))
                 .WithSourceExpression(new ContextEvaluatableBuilder())
                 .Build();
-            var context = CreateContext(state: new AsyncResultDictionaryBuilder<object?>()
-                .Add(Constants.Context, () => new MyClass())
-                .BuildDeferred());
+            var context = CreateContext(context: new MyClass());
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);

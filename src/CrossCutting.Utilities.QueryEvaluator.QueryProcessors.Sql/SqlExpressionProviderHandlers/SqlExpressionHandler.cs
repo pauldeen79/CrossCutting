@@ -27,14 +27,8 @@ public class SqlExpressionHandler : SqlExpressionProviderHandlerBase<SqlExpressi
         }
         else
         {
-            // TODO: Change ISqlExpressionProviderHandler signature so the method is async
-            // TODO: Change callback argument to new ISqlExpressionProvider interface, which has an Evaluate method that takes only an expression, and builds the context itself using the context of IQueryContext.Context
-            var state = context.Context is not null
-                ? new AsyncResultDictionaryBuilder<object?>()
-                    .Add(Constants.Context, context.Context)
-                    .BuildDeferred()
-                : null;
-            var expressionEvaluatorContext = new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, state);
+            //TODO: Change ISqlExpressionProviderHandler signature so the method is async
+            var expressionEvaluatorContext = new ExpressionEvaluatorContext(new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, context.Context);
             return Result.Success(parameterBag.CreateQueryParameterName(expression.SourceExpression.EvaluateAsync(expressionEvaluatorContext, CancellationToken.None).Result.Value));
         }
     }

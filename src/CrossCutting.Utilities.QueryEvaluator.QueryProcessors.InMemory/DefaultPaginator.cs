@@ -41,10 +41,7 @@ public class DefaultPaginator : IPaginator
         var orderByResults = await Task.WhenAll(result.Select(async x =>
         {
             var list = new List<object?>();
-            var state = new AsyncResultDictionaryBuilder<object?>()
-                .Add(Constants.Context, x)
-                .BuildDeferred();
-            var context = new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, state);
+            var context = new ExpressionEvaluatorContext(new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, x);
 
             foreach (var orderByField in query.SortOrders)
             {

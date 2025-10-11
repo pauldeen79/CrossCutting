@@ -79,12 +79,10 @@ public abstract class TestBase
     ];
 
     protected ExpressionEvaluatorContext CreateContext(
-        IReadOnlyDictionary<string, Task<Result<object?>>>? state = null,
-        int currentRecursionLevel = 1,
-        ExpressionEvaluatorContext? parentContext = null,
+        object? context = null,
         IExpressionEvaluator? evaluator = null,
         ExpressionEvaluatorSettingsBuilder? settings = null)
-            => CreateContext(null, state, currentRecursionLevel, parentContext, evaluator, settings);
+            => new ExpressionEvaluatorContext(settings ?? new ExpressionEvaluatorSettingsBuilder(), evaluator ?? Evaluator, context);
 
     protected ExpressionEvaluatorContext CreateContext(
         string? expression,
