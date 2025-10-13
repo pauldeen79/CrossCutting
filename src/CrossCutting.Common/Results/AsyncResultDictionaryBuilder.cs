@@ -11,10 +11,10 @@ public class AsyncResultDictionaryBuilder
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        _resultset.Add(name, value.ContinueWith(x => (Result)x.Result, TaskScheduler.Current));
+        _resultset.Add(name, ConvertAsync(value));
         return this;
     }
-
+    
     public AsyncResultDictionaryBuilder Add(Task<Result> value)
         => Add((_resultset.Count + 1).ToString("D4"), value);
 
@@ -270,6 +270,12 @@ public class AsyncResultDictionaryBuilder
         }
 
         return results;
+    }
+
+    private static async Task<Result> ConvertAsync<T>(Task<Result<T>> task)
+    {
+        Result<T> result = await task.ConfigureAwait(false);
+        return result; // implicit upcast to Result works here
     }
 }
 
