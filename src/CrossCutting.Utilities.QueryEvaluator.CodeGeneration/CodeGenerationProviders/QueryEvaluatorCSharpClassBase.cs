@@ -28,19 +28,24 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
     protected override bool EnableGlobalUsings => true;
 
     protected override IEnumerable<TypenameMappingBuilder> GetAdditionalTypenameMappings()
-    {
-        yield return new TypenameMappingBuilder(typeof(IFormatProvider))
-            .AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"));
+        => GetEvaluatableMappings()
+            .Concat(
+            [
+                new TypenameMappingBuilder(typeof(IFormatProvider))
+                    .AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}")),
+            ]);
 
-        // Part 1 to get code generation of evaluatables working
+    // Part 1 to get code generation of evaluatables working
+    private static IEnumerable<TypenameMappingBuilder> GetEvaluatableMappings()
+    {
         var evaluatableType = typeof(IEvaluatable);
-        foreach (var mapping in CreateBuilderAbstractionTypeConversionTypenameMappings(evaluatableType.GetEntityClassName(), evaluatableType.GetGenericTypeArgumentsString(), "CrossCutting.Utilities.ExpressionEvaluator.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator"))
-        {
-            yield return mapping;
-        }
-        yield return new TypenameMappingBuilder("CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase")
+        return CreateBuilderAbstractionTypeConversionTypenameMappings(evaluatableType.GetEntityClassName(), evaluatableType.GetGenericTypeArgumentsString(), "CrossCutting.Utilities.ExpressionEvaluator.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator")
+            .Concat(
+            [
+                new TypenameMappingBuilder("CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase")
             .AddMetadata(MetadataNames.CustomBuilderBaseClassTypeName, "CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder")
-            .AddMetadata(MetadataNames.CustomBuilderNamespace, "CrossCutting.Utilities.ExpressionEvaluator.Builders");
+            .AddMetadata(MetadataNames.CustomBuilderNamespace, "CrossCutting.Utilities.ExpressionEvaluator.Builders")
+            ]);
     }
 
     // Part 2 to get code generation of evaluatables working

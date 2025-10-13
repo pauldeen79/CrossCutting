@@ -10,7 +10,7 @@ public class TestRepositoryTests : TestBase<TestRepository>
     {
         // Arrange
         var expected = new TestEntity("code", "codeType", "description");
-        IdentityCommandProviderMock.Create(Arg.Any<TestEntityIdentity>(), DatabaseOperation.Select).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
+        IdentityCommandProviderMock.CreateAsync(Arg.Any<TestEntityIdentity>(), DatabaseOperation.Select).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
         EntityRetrieverMock.FindOne(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success(expected));
 
         // Act

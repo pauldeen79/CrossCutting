@@ -11,10 +11,10 @@ public class QueryDatabaseCommandProvider : IDatabaseCommandProvider<IQuery>
         _pagedDatabaseCommandProvider = pagedDatabaseCommandProvider;
     }
 
-    public Result<IDatabaseCommand> Create(IQuery source, DatabaseOperation operation)
-        => new ResultDictionaryBuilder()
+    public async Task<Result<IDatabaseCommand>> CreateAsync(IQuery source, DatabaseOperation operation)
+        => (await new AsyncResultDictionaryBuilder()
             .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
-            .Add("Command", () => _pagedDatabaseCommandProvider.CreatePaged(source.WithContext(null), operation, 0, 0).EnsureValue())
-            .Build()
+            .Add("Command", _pagedDatabaseCommandProvider.CreatePagedAsync(source.WithContext(null), operation, 0, 0))
+            .Build().ConfigureAwait(false))
             .OnSuccess(results => results.GetValue<IPagedDatabaseCommand>("Command").DataCommand);
 }

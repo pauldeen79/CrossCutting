@@ -2,10 +2,10 @@
 
 public interface IDatabaseCommandProvider
 {
-    Result<IDatabaseCommand> Create<TSource>(DatabaseOperation operation);
+    Task<Result<IDatabaseCommand>> CreateAsync<TSource>(DatabaseOperation operation);
 }
 
 public interface IDatabaseCommandProvider<in TSource>
 {
-    Result<IDatabaseCommand> Create(TSource source, DatabaseOperation operation);
+    Task<Result<IDatabaseCommand>> CreateAsync(TSource source, DatabaseOperation operation);
 }

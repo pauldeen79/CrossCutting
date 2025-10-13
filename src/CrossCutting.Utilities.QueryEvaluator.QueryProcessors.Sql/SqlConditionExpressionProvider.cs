@@ -10,7 +10,7 @@ public class SqlConditionExpressionProvider : ISqlConditionExpressionProvider
         _handlers = handlers;
     }
 
-    public Result<string> GetConditionExpression(
+    public async Task<Result<string>> GetConditionExpressionAsync(
         IQueryContext context,
         ICondition condition,
         IQueryFieldInfo fieldInfo,
@@ -30,9 +30,16 @@ public class SqlConditionExpressionProvider : ISqlConditionExpressionProvider
             builder.Append("(");
         }
 
-        var result = _handlers
-            .Select(x => x.GetConditionExpression(builder, context, condition, fieldInfo, sqlExpressionProvider, parameterBag))
-            .WhenNotContinue(() => Result.Invalid<string>($"No sql condition expression provider handler found for condition: {condition.GetType().FullName}"));
+        Result result = Result.Invalid<string>($"No sql condition expression provider handler found for condition: {condition.GetType().FullName}");
+        foreach (var handler in _handlers)
+        {
+            var handlerResult = await handler.GetConditionExpressionAsync(builder, context, condition, fieldInfo, sqlExpressionProvider, parameterBag).ConfigureAwait(false);
+            if (handlerResult.Status != ResultStatus.Continue)
+            {
+                result = handlerResult;
+                break;
+            }
+        }
 
         if (condition.EndGroup)
         {
