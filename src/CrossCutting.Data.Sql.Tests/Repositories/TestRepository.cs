@@ -2,9 +2,9 @@
 
 public interface ITestRepository : IRepository<TestEntity, TestEntityIdentity>
 {
-    Result<TestEntity> FindOne();
-    Result<IReadOnlyCollection<TestEntity>> FindMany(string value);
-    Result<IPagedResult<TestEntity>> FindPaged(int offset, int pageSize);
+    Task<Result<TestEntity>> FindOneAsync();
+    Task<Result<IReadOnlyCollection<TestEntity>>> FindManyAsync(string value);
+    Task<Result<IPagedResult<TestEntity>>> FindPagedAsync(int offset, int pageSize);
 }
 
 public class TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcessor,
@@ -16,8 +16,8 @@ public class TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcess
 {
 
     // for test purposes only. normally you would add arguments here (request/query)
-    public Result<TestEntity> FindOne()
-        => EntityRetriever.FindOne(new SelectCommandBuilder()
+    public Task<Result<TestEntity>> FindOneAsync()
+        => EntityRetriever.FindOneAsync(new SelectCommandBuilder()
             .Select("*")
             .WithTop(1)
             .From("MyTable")
@@ -25,8 +25,8 @@ public class TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcess
             .Build());
 
     // for test purposes only. normally you would add arguments here (request/query)
-    public Result<IReadOnlyCollection<TestEntity>> FindMany(string value)
-        => EntityRetriever.FindMany(new SelectCommandBuilder()
+    public Task<Result<IReadOnlyCollection<TestEntity>>> FindManyAsync(string value)
+        => EntityRetriever.FindManyAsync(new SelectCommandBuilder()
             .Select("*")
             .From("MyTable")
             .Where("Field = @Value")
@@ -34,8 +34,8 @@ public class TestRepository(IDatabaseCommandProcessor<TestEntity> commandProcess
             .Build());
 
     // for test purposes only. normally you would add arguments here (request/query)
-    public Result<IPagedResult<TestEntity>> FindPaged(int offset, int pageSize)
-        => EntityRetriever.FindPaged(new PagedSelectCommandBuilder()
+    public Task<Result<IPagedResult<TestEntity>>> FindPagedAsync(int offset, int pageSize)
+        => EntityRetriever.FindPagedAsync(new PagedSelectCommandBuilder()
             .Select("*")
             .From("MyTable")
             .OrderBy("Name")

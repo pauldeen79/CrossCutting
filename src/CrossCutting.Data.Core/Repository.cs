@@ -9,39 +9,6 @@ public class Repository<TEntity, TIdentity>(
     IDatabaseCommandProvider<TEntity> entityCommandProvider) : IRepository<TEntity, TIdentity>
     where TEntity : class
 {
-    public Result<TEntity> Add(TEntity instance)
-        => EntityCommandProvider.CreateAsync(instance, DatabaseOperation.Insert).Result
-            .EnsureValue()
-            .OnSuccess(databaseCommand => CommandProcessor.ExecuteCommand(databaseCommand, instance)
-                .HandleResult($"{typeof(TEntity).Name} has not been added"));
-
-    public Result<TEntity> Update(TEntity instance)
-        => EntityCommandProvider.CreateAsync(instance, DatabaseOperation.Update).Result
-            .EnsureValue()
-            .OnSuccess(databaseCommand => CommandProcessor.ExecuteCommand(databaseCommand, instance)
-                .HandleResult($"{typeof(TEntity).Name} has not been updated"));
-
-    public Result<TEntity> Delete(TEntity instance)
-        => EntityCommandProvider.CreateAsync(instance, DatabaseOperation.Delete).Result
-            .EnsureValue()
-            .OnSuccess(databaseCommand => CommandProcessor.ExecuteCommand(databaseCommand, instance)
-                .HandleResult($"{typeof(TEntity).Name} has not been deleted"));
-
-    public Result<TEntity> Find(TIdentity identity)
-        => IdentitySelectCommandProvider.CreateAsync(identity, DatabaseOperation.Select).Result
-            .EnsureValue()
-            .OnSuccess(EntityRetriever.FindOne);
-
-    public Result<IReadOnlyCollection<TEntity>> FindAll()
-        => EntitySelectCommandProvider.CreateAsync<TEntity>(DatabaseOperation.Select).Result
-            .EnsureValue()
-            .OnSuccess(EntityRetriever.FindMany);
-
-    public Result<IPagedResult<TEntity>> FindAllPaged(int offset, int pageSize)
-        => PagedEntitySelectCommandProvider.CreatePagedAsync<TEntity>(DatabaseOperation.Select, offset, pageSize).Result
-            .EnsureValue()
-            .OnSuccess(EntityRetriever.FindPaged);
-
     public async Task<Result<TEntity>> AddAsync(TEntity instance, CancellationToken cancellationToken)
         => await EntityCommandProvider.CreateAsync(instance, DatabaseOperation.Insert).Result
             .EnsureValue()

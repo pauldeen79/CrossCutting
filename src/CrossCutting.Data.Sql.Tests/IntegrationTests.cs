@@ -28,7 +28,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void Can_Add_Entity()
+    public async Task Can_Add_Entity()
     {
         // Arrange
         var entity = new TestEntity("A", "B", "C", false);
@@ -36,7 +36,7 @@ public sealed class IntegrationTests : IDisposable
                                            new[] { new TestEntity("A", "B", "C", true) });
 
         // Act
-        var actual = _repository.Add(entity).EnsureValue().GetValueOrThrow();
+        var actual = (await _repository.AddAsync(entity)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.Code.ShouldBe(entity.Code);
@@ -46,7 +46,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void Can_Update_Entity()
+    public async Task Can_Update_Entity()
     {
         // Arrange
         var entity = new TestEntity("A", "B", "C", true);
@@ -54,7 +54,7 @@ public sealed class IntegrationTests : IDisposable
                                            new[] { new TestEntity("A1", "B1", "C1", true) });
 
         // Act
-        var actual = _repository.Update(entity).EnsureValue().GetValueOrThrow();
+        var actual = (await _repository.UpdateAsync(entity)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.Code.ShouldBe(entity.Code + "1");
@@ -64,7 +64,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void Can_Delete_Entity()
+    public async Task Can_Delete_Entity()
     {
         // Arrange
         var entity = new TestEntity("A", "B", "C", true);
@@ -72,7 +72,7 @@ public sealed class IntegrationTests : IDisposable
                                            new[] { new TestEntity("A1", "B1", "C1", true) }); //suffixes get ignored because Delete does not read result
 
         // Act
-        var actual = _repository.Delete(entity).EnsureValue().GetValueOrThrow();
+        var actual = (await _repository.DeleteAsync(entity)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.Code.ShouldBe(entity.Code);
@@ -82,7 +82,7 @@ public sealed class IntegrationTests : IDisposable
     }
 
     [Fact]
-    public void Can_Find_Entity_By_Identity()
+    public async Task Can_Find_Entity_By_Identity()
     {
         // Arrange
         var expectedResult = new TestEntity("A", "B", "C", true);
@@ -91,28 +91,28 @@ public sealed class IntegrationTests : IDisposable
                                            new[] { expectedResult });
 
         // Act
-        var actual = _repository.Find(identity).EnsureValue().GetValueOrThrow();
+        var actual = (await _repository.FindAsync(identity)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBeEquivalentTo(expectedResult);
     }
 
     [Fact]
-    public void Can_Find_All_Entities()
+    public async Task Can_Find_All_Entities()
     {
         // Arrange
         var expectedResult = new[] { new TestEntity("A", "B", "C", true) };
         _connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT"), expectedResult);
 
         // Act
-        var actual = _repository.FindAll().EnsureValue().GetValueOrThrow();
+        var actual = (await _repository.FindAllAsync()).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ToArray().ShouldBeEquivalentTo(expectedResult);
     }
 
     [Fact]
-    public void Can_Find_All_Entities_Paged()
+    public async Task Can_Find_All_Entities_Paged()
     {
         // Arrange
         var expectedResult = new[] { new TestEntity("A", "B", "C", true) };
@@ -120,7 +120,7 @@ public sealed class IntegrationTests : IDisposable
         _connection.AddResultForScalarCommand(cmd => cmd.CommandText.StartsWith("SELECT COUNT(*)"), 1);
 
         // Act
-        var actual = _repository.FindAllPaged(0, 1).EnsureValue().GetValueOrThrow();
+        var actual = (await _repository.FindAllPagedAsync(0, 1)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ToArray().ShouldBeEquivalentTo(expectedResult);
