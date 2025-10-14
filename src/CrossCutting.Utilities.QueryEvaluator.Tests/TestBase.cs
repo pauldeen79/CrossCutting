@@ -106,33 +106,20 @@ public abstract class TestBase
         _sourceData = items.Cast<object>().ToArray();
         DatabaseEntityRetriever.FindOneAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
         {
-            Console.WriteLine($"{x.ArgAt<IDatabaseCommand>(0).CommandText}({ParamsToString(x.ArgAt<IDatabaseCommand>(0).CommandParameters)})");
-            return _sourceData.OfType<MyEntity>().Any() ? Result.Success(_sourceData.OfType<MyEntity>().FirstOrDefault()!) : Result.NotFound<MyEntity>();
+            return Task.FromResult(_sourceData.OfType<MyEntity>().Any() ? Result.Success(_sourceData.OfType<MyEntity>().FirstOrDefault()!) : Result.NotFound<MyEntity>());
         });
         DatabaseEntityRetriever.FindManyAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
         {
-            Console.WriteLine($"{x.ArgAt<IDatabaseCommand>(0).CommandText}({ParamsToString(x.ArgAt<IDatabaseCommand>(0).CommandParameters)})");
-            return Result.Success<IReadOnlyCollection<MyEntity>>(_sourceData.OfType<MyEntity>().ToList());
+            return Task.FromResult(Result.Success<IReadOnlyCollection<MyEntity>>(_sourceData.OfType<MyEntity>().ToList()));
         });
         DatabaseEntityRetriever.FindPagedAsync(Arg.Any<IPagedDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
         {
-            Console.WriteLine($"{x.ArgAt<IPagedDatabaseCommand>(0).DataCommand.CommandText}({ParamsToString(x.ArgAt<IPagedDatabaseCommand>(0).DataCommand.CommandParameters)})");
-            return Result.Success(PagedResult);
+            return Task.FromResult(Result.Success(PagedResult));
         });
         PagedResult.Count.Returns(_sourceData.OfType<T>().Count());
         PagedResult.TotalRecordCount.Returns(_sourceData.OfType<T>().Count());
         PagedResult.PageSize.Returns(_sourceData.OfType<T>().Count());
         PagedResult.GetEnumerator().Returns(_sourceData.OfType<MyEntity>().GetEnumerator());
-    }
-
-    private string? ParamsToString(object? commandParameters)
-    {
-        if (commandParameters is IDictionary<string, object> dict)
-        {
-            return string.Join(", ", dict.Select(kvp => $"{kvp.Key} = {kvp.Value}"));
-        }
-
-        return commandParameters?.ToString();
     }
 
     protected static bool IsValidParameters(object? commandParameters, string expectedValue)
