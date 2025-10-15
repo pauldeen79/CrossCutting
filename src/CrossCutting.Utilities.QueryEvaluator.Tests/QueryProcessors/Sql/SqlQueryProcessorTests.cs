@@ -632,14 +632,10 @@ public sealed class SqlQueryProcessorTests : TestBase
                     .WithSourceExpression(new PropertyNameEvaluatableBuilder().WithSourceExpression(new ContextEvaluatableBuilder()).WithPropertyName(nameof(MyEntity.Property1)))
                     .WithCompareExpression(new DelegateEvaluatableBuilder(() => "A"))
                     .Build()
-            },
-            SortOrders = new List<ISortOrder>
-            {
-                new SortOrderBuilder(new PropertyNameEvaluatableBuilder().WithPropertyName(nameof(MyEntity.Property2)), SortOrderDirection.Ascending).Build()
             }
         };
 
-        InitializeMock(CreateData().Where(x => x.Property1 == "A").OrderBy(x => x.Property2));
+        InitializeMock(CreateData().Where(x => x.Property1 == "A"));
         DatabaseEntityRetrieverSettings.Fields.Returns("Property1, Property2");
 
         // Act
@@ -651,7 +647,7 @@ public sealed class SqlQueryProcessorTests : TestBase
         await DatabaseEntityRetriever
             .Received()
             .FindPagedAsync(Arg.Is<IPagedDatabaseCommand>(x =>
-                x.DataCommand.CommandText == "SELECT Property1, Property2 FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC"
+                x.DataCommand.CommandText == "SELECT Property1, Property2 FROM MyEntity WHERE Property1 = @p0"
                 && x.RecordCountCommand.CommandText == "SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0"), Arg.Any<CancellationToken>());
     }
 
