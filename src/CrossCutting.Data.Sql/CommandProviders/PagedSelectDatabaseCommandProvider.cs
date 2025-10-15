@@ -6,7 +6,7 @@ public class PagedSelectDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntity
 
     public async Task<Result<IPagedDatabaseCommand>> CreatePagedAsync<TSource>(DatabaseOperation operation, int offset, int pageSize)
         => (await new AsyncResultDictionaryBuilder()
-            .Add("Validate", () => Result.Validate(() => operation == DatabaseOperation.Select, "Only Select operation is supported"))
+            .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only Select operation is supported"))
             .Add("Settings", GetSettings<TSource>)
             .Build().ConfigureAwait(false))
             .OnSuccess(results =>

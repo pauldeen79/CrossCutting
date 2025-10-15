@@ -7,7 +7,7 @@ public abstract class IdentityDatabaseCommandProviderBase<T>(IEnumerable<IPagedD
 
     public async Task<Result<IDatabaseCommand>> CreateAsync(T source, DatabaseOperation operation)
         => (await new AsyncResultDictionaryBuilder()
-            .Add("Validate", () => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
+            .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
             .Add("Settings", GetSettings)
             .Build().ConfigureAwait(false))
             .OnSuccess(results =>

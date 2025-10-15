@@ -6,7 +6,7 @@ public class SelectDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverS
 
     public async Task<Result<IDatabaseCommand>> CreateAsync<TSource>(DatabaseOperation operation)
         => (await new AsyncResultDictionaryBuilder()
-            .Add("Validate", () => Result.Validate(() => operation == DatabaseOperation.Select, "Only Select operation is supported"))
+            .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only Select operation is supported"))
             .Add("Settings", GetSettings<TSource>)
             .Build().ConfigureAwait(false))
             .OnSuccess(results =>
