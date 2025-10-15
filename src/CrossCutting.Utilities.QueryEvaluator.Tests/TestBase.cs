@@ -106,27 +106,25 @@ public abstract class TestBase
     {
         _sourceData = items.Cast<object>().ToArray();
         DatabaseEntityRetriever.FindOneAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
-            Task.Run(() =>
-            {
-                LastDatabaseCommand = x.ArgAt<IDatabaseCommand>(0);
-                return _sourceData.OfType<MyEntity>().Any()
-                                ? Result.Success(_sourceData.OfType<MyEntity>().FirstOrDefault()!)
-                                : Result.NotFound<MyEntity>();
-            }));
+        {
+            LastDatabaseCommand = x.ArgAt<IDatabaseCommand>(0);
+            return Task.FromResult(
+            _sourceData.OfType<MyEntity>().Any()
+                    ? Result.Success(_sourceData.OfType<MyEntity>().FirstOrDefault()!)
+                    : Result.NotFound<MyEntity>());
+        });
 
         DatabaseEntityRetriever.FindManyAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
-            Task.Run(() =>
-            {
-                LastDatabaseCommand = x.ArgAt<IDatabaseCommand>(0);
-                return Result.Success<IReadOnlyCollection<MyEntity>>(_sourceData.OfType<MyEntity>().ToList());
-            }));
+        {
+            LastDatabaseCommand = x.ArgAt<IDatabaseCommand>(0);
+            return Task.FromResult(Result.Success<IReadOnlyCollection<MyEntity>>(_sourceData.OfType<MyEntity>().ToList()));
+        });
 
         DatabaseEntityRetriever.FindPagedAsync(Arg.Any<IPagedDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
-            Task.Run(() =>
-            {
-                LastPagedDatabaseCommand = x.ArgAt<IPagedDatabaseCommand>(0);
-                return Result.Success(PagedResult);
-            }));
+        {
+            LastPagedDatabaseCommand = x.ArgAt<IPagedDatabaseCommand>(0);
+            return Task.FromResult(Result.Success(PagedResult));
+        });
 
         PagedResult.Count.Returns(_sourceData.OfType<T>().Count());
         PagedResult.TotalRecordCount.Returns(_sourceData.OfType<T>().Count());
