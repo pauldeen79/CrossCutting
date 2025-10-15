@@ -19,10 +19,8 @@ public class DatabaseCommand<T> : IDatabaseCommand
                            DatabaseOperation operation,
                            Func<T, object?>? commandParametersDelegate)
     {
-        if (string.IsNullOrEmpty(commandText))
-        {
-            throw new ArgumentOutOfRangeException(nameof(commandText), "CommandText may not be null or empty");
-        }
+        ArgumentGuard.IsNotNullOrEmpty(commandText, nameof(commandText));
+
         CommandText = commandText;
         CommandType = commandType;
         Operation = operation;

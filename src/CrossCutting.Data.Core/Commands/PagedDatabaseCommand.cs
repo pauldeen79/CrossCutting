@@ -1,9 +1,9 @@
 ﻿namespace CrossCutting.Data.Core.Commands;
 
 public class PagedDatabaseCommand(IDatabaseCommand dataCommand,
-                            IDatabaseCommand recordCountCommand,
-                            int offset,
-                            int pageSize) : IPagedDatabaseCommand
+                                  IDatabaseCommand recordCountCommand,
+                                  int offset,
+                                  int pageSize) : IPagedDatabaseCommand
 {
     public IDatabaseCommand DataCommand { get; } = dataCommand;
     public IDatabaseCommand RecordCountCommand { get; } = recordCountCommand;

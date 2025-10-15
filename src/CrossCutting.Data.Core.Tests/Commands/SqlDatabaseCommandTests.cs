@@ -8,7 +8,7 @@ public class SqlDatabaseCommandTests
     public void Ctor_Throws_On_CommandText(string? commandText)
     {
         Action a = () => _ = new SqlDatabaseCommand(commandText!, DatabaseCommandType.Text);
-        a.ShouldThrow<ArgumentOutOfRangeException>()
+        a.ShouldThrow<ArgumentException>()
          .ParamName.ShouldBe("commandText");
     }
 
