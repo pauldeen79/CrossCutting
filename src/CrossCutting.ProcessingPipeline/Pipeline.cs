@@ -8,7 +8,7 @@ public class Pipeline<TRequest> : IPipeline<TRequest>
     {
         ArgumentGuard.IsNotNull(components, nameof(components));
 
-        _components = components;
+        _components = components.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
     }
 
     public async Task<Result> ProcessAsync(TRequest request, CancellationToken token)
@@ -44,8 +44,8 @@ public class Pipeline<TRequest, TResponse> : IPipeline<TRequest, TResponse>
     public Pipeline(IEnumerable<IPipelineComponent<TRequest, TResponse>> components)
     {
         ArgumentGuard.IsNotNull(components, nameof(components));
-        
-        _components = components;
+
+        _components = components.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
     }
 
     public async Task<Result<TResponse>> ProcessAsync(TRequest request, TResponse seed, CancellationToken token)

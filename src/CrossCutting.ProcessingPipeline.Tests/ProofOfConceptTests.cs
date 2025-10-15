@@ -27,7 +27,7 @@ public class ProofOfConceptTests
     public class Pipeline_With_Response : ProofOfConceptTests
     {
         [Fact]
-        public async Task Can_ProcessAsync_Pipeline_With_Component()
+        public async Task Can_Process_Pipeline_With_Component()
         {
             // Arrange
             PipelineContext<object?, StringBuilder>? context = null;
@@ -46,6 +46,25 @@ public class ProofOfConceptTests
             context.ShouldNotBeNull();
             context!.Request.ShouldBeEquivalentTo(1);
             result.GetValueOrThrow().ToString().ShouldBe("2");
+        }
+
+        [Fact]
+        public async Task Can_Process_Pipeline_Ordered()
+        {
+            // Arrange
+            var component1 = new OrderedComponent(1, "First");
+            var component2 = new OrderedComponent(2, "Second");
+            var sut = new Pipeline<StringBuilder>([component2, component1]);
+            var builder = new StringBuilder();
+
+            // Act
+            var result = await sut.ProcessAsync(builder);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            builder.ToString().ShouldBe(@"First
+Second
+");
         }
 
         [Fact]
@@ -84,12 +103,31 @@ public class ProofOfConceptTests
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("components");
         }
+
+        private sealed class OrderedComponent : IPipelineComponent<StringBuilder>, IOrderContainer
+        {
+            private readonly string _contents;
+
+            public int Order { get; }
+
+            public OrderedComponent(int order, string contents)
+            {
+                Order = order;
+                _contents = contents;
+            }
+
+            public Task<Result> ProcessAsync(PipelineContext<StringBuilder> context, CancellationToken token)
+            {
+                context.Request.AppendLine(_contents);
+                return Task.FromResult(Result.Success());
+            }
+        }
     }
 
     public class Pipeline_Without_Response : ProofOfConceptTests
     {
         [Fact]
-        public async Task Can_ProcessAsync_Pipeline_With_Component()
+        public async Task Can_Process_Pipeline_With_Component()
         {
             // Arrange
             PipelineContext<object?>? context = null;
@@ -149,7 +187,7 @@ public class ProofOfConceptTests
     public class PipelineComponent_Without_Context()
     {
         [Fact]
-        public async Task Can_Call_ProcessAsync_Without_CancellationToken()
+        public async Task Can_Call_Process_Without_CancellationToken()
         {
             // Arrange
             var sut = Substitute.For<IPipelineComponent<object?>>();
@@ -169,7 +207,7 @@ public class ProofOfConceptTests
     public class PipelineComponent_With_Context()
     {
         [Fact]
-        public async Task Can_Call_ProcessAsync_Without_CancellationToken()
+        public async Task Can_Call_Process_Without_CancellationToken()
         {
             // Arrange
             var sut = Substitute.For<IPipelineComponent<object?, StringBuilder>>();
