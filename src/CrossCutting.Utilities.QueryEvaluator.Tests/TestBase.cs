@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace CrossCutting.Utilities.QueryEvaluator.Tests;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests;
 
 public abstract class TestBase
 {
@@ -105,17 +103,16 @@ public abstract class TestBase
     {
         _sourceData = items.Cast<object>().ToArray();
         DatabaseEntityRetriever.FindOneAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
-        {
-            return Task.FromResult(_sourceData.OfType<MyEntity>().Any() ? Result.Success(_sourceData.OfType<MyEntity>().FirstOrDefault()!) : Result.NotFound<MyEntity>());
-        });
+            Task.Run(() => _sourceData.OfType<MyEntity>().Any()
+                ? Result.Success(_sourceData.OfType<MyEntity>().FirstOrDefault()!)
+                : Result.NotFound<MyEntity>()));
+
         DatabaseEntityRetriever.FindManyAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
-        {
-            return Task.FromResult(Result.Success<IReadOnlyCollection<MyEntity>>(_sourceData.OfType<MyEntity>().ToList()));
-        });
+            Task.Run(() => Result.Success<IReadOnlyCollection<MyEntity>>(_sourceData.OfType<MyEntity>().ToList())));
+
         DatabaseEntityRetriever.FindPagedAsync(Arg.Any<IPagedDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
-        {
-            return Task.FromResult(Result.Success(PagedResult));
-        });
+            Task.Run(() => Result.Success(PagedResult)));
+
         PagedResult.Count.Returns(_sourceData.OfType<T>().Count());
         PagedResult.TotalRecordCount.Returns(_sourceData.OfType<T>().Count());
         PagedResult.PageSize.Returns(_sourceData.OfType<T>().Count());
@@ -123,7 +120,7 @@ public abstract class TestBase
     }
 
     protected static bool IsValidParameters(object? commandParameters, string expectedValue)
-        => commandParameters is Dictionary<string, object> dict
+        => commandParameters is IDictionary<string, object> dict
             && dict.Count == 1
             && dict.First().Key == "@p0"
             && dict.First().Value is string s
