@@ -73,8 +73,8 @@ public class QueryProcessor : IQueryProcessor
             .ConfigureAwait(false);
     }
 
-    private Task<Result<IPagedDatabaseCommand>> CreateCommandAsync(IQuery query, object? context, int pageSize)
-        => _pagedDatabaseCommandProvider.CreatePagedAsync(query.EnsureValid().WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize);
+    private async Task<Result<IPagedDatabaseCommand>> CreateCommandAsync(IQuery query, object? context, int pageSize)
+        => await _pagedDatabaseCommandProvider.CreatePagedAsync(query.EnsureValid().WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize).ConfigureAwait(false);
 
     private Result<IDatabaseEntityRetriever<TResult>> GetDatabaseEntityRetriever<TResult>(IQuery query) where TResult : class
         => _databaseEntityRetrieverProviders

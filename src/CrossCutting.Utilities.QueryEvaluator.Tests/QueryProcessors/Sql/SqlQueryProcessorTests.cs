@@ -625,7 +625,6 @@ public sealed class SqlQueryProcessorTests : TestBase
         {
             Distinct = false,
             GetAllFields = true,
-            FieldNames = new List<string>(),
             Conditions = new List<ICondition>
             {
                 new EqualConditionBuilder()
