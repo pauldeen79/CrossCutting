@@ -9,23 +9,23 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
     [InlineData(DatabaseOperation.Insert)]
     [InlineData(DatabaseOperation.Unspecified)]
     [InlineData(DatabaseOperation.Update)]
-    public void Create_Returns_Invalid_On_Unsupported_DatabaseOperation(DatabaseOperation operation)
+    public async Task CreateAsync_Returns_Invalid_On_Unsupported_DatabaseOperation(DatabaseOperation operation)
     {
         // Act
-        var result = Sut.Create<TestEntity>(operation);
+        var result = await Sut.CreateAsync<TestEntity>(operation);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     [Fact]
-    public void Create_Returns_Error_On_Unsupported_DatabaseEntityRetrieverSettings()
+    public async Task CreateAsync_Returns_Error_On_Unsupported_DatabaseEntityRetrieverSettings()
     {
         // Arrange
         var sut = new SelectDatabaseCommandProvider([]);
 
         // Act
-        var result = sut.Create<TestEntity>(DatabaseOperation.Select);
+        var result = await sut.CreateAsync<TestEntity>(DatabaseOperation.Select);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
@@ -33,7 +33,7 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
     }
 
     [Fact]
-    public void Create_Returns_Correct_Command_On_Select_DatabaseOperation()
+    public async Task CreateAsync_Returns_Correct_Command_On_Select_DatabaseOperation()
     {
         // Arrange
         const string Sql = "SELECT Id, Active, Field1, Field2, Field3 FROM MyTable WHERE Active = 1 ORDER BY Field1";
@@ -46,7 +46,7 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
                .Returns(_ => Result.Success(SettingsMock));
 
         // Act
-        var actual = Sut.Create<TestEntity>(DatabaseOperation.Select).EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.CreateAsync<TestEntity>(DatabaseOperation.Select)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.CommandText.ShouldBe(Sql);

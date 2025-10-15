@@ -17,21 +17,6 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
     }
 
     [Fact]
-    public void FindOne_Returns_MappedEntity_When_All_Goes_Well()
-    {
-        // Arrange
-        Connection.AddResultForDataReader(new[] { new MyEntity { Property = "test" } });
-        InitializeMapper();
-
-        // Act
-        var actual = Sut.FindOne(new SqlDatabaseCommand("SELECT TOP 1 Property FROM MyEntity", DatabaseCommandType.Text)).EnsureValue().GetValueOrThrow();
-
-        // Assert
-        actual.ShouldNotBeNull();
-        actual.Property.ShouldBe("test");
-    }
-
-    [Fact]
     public async Task FindOneAync_Returns_MappedEntity_When_All_Goes_Well()
     {
         // Arrange
@@ -44,28 +29,6 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         // Assert
         actual.ShouldNotBeNull();
         actual.Property.ShouldBe("test");
-    }
-
-    [Fact]
-    public void FindMany_Returns_MappedEntities_When_All_Goes_Well()
-    {
-        // Arrange
-        Connection.AddResultForDataReader(new[]
-        {
-            new MyEntity { Property = "test1" },
-            new MyEntity { Property = "test2" }
-        });
-        InitializeMapper();
-
-        // Act
-        var actual = Sut.FindMany(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text)).EnsureValue().GetValueOrThrow();
-
-        // Assert
-        actual.ShouldNotBeNull().Count.ShouldBe(2);
-        actual.First().ShouldNotBeNull();
-        actual.First().Property.ShouldBe("test1");
-        actual.Last().ShouldNotBeNull();
-        actual.Last().Property.ShouldBe("test2");
     }
 
     [Fact]
@@ -88,36 +51,6 @@ public sealed class DatabaseEntityRetrieverTests : IDisposable
         actual.First().Property.ShouldBe("test1");
         actual.Last().ShouldNotBeNull();
         actual.Last().Property.ShouldBe("test2");
-    }
-
-    [Fact]
-    public void FindPaged_Returns_MappedEntities_And_Other_Properties_When_All_Goes_Well()
-    {
-        // Arrange
-        Connection.AddResultForDataReader(new[]
-        {
-            new MyEntity { Property = "test1" },
-            new MyEntity { Property = "test2" }
-        });
-        Connection.AddResultForScalarCommand(1);
-        InitializeMapper();
-        var command = new PagedDatabaseCommand(new SqlDatabaseCommand("SELECT Property FROM MyEntity", DatabaseCommandType.Text),
-                                               new SqlDatabaseCommand("SELECT COUNT(*) FROM MyEntity", DatabaseCommandType.Text),
-                                               20,
-                                               10);
-
-        // Act
-        var actual = Sut.FindPaged(command).EnsureValue().GetValueOrThrow();
-
-        // Assert
-        actual.ShouldNotBeNull().Count.ShouldBe(2);
-        actual.First().ShouldNotBeNull();
-        actual.First().Property.ShouldBe("test1");
-        actual.Last().ShouldNotBeNull();
-        actual.Last().Property.ShouldBe("test2");
-        actual.TotalRecordCount.ShouldBe(1);
-        actual.Offset.ShouldBe(20);
-        actual.PageSize.ShouldBe(10);
     }
 
     [Fact]

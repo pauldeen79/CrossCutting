@@ -4,11 +4,11 @@ public class PagedSelectDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntity
 {
     private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
 
-    public Result<IPagedDatabaseCommand> CreatePaged<TSource>(DatabaseOperation operation, int offset, int pageSize)
-        => new ResultDictionaryBuilder()
-            .Add("Validate", () => Result.Validate(() => operation == DatabaseOperation.Select, "Only Select operation is supported"))
+    public async Task<Result<IPagedDatabaseCommand>> CreatePagedAsync<TSource>(DatabaseOperation operation, int offset, int pageSize)
+        => (await new AsyncResultDictionaryBuilder()
+            .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only Select operation is supported"))
             .Add("Settings", GetSettings<TSource>)
-            .Build()
+            .Build().ConfigureAwait(false))
             .OnSuccess(results =>
             {
                 var settings = results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings");

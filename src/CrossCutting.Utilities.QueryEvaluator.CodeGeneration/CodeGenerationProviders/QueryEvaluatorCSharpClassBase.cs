@@ -28,11 +28,31 @@ public abstract class QueryEvaluatorCSharpClassBase(IPipelineService pipelineSer
     protected override bool EnableGlobalUsings => true;
 
     protected override IEnumerable<TypenameMappingBuilder> GetAdditionalTypenameMappings()
+        => GetEvaluatableMappings()
+            .Concat(
+            [
+                new TypenameMappingBuilder(typeof(IFormatProvider))
+                    .AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}")),
+            ]);
+
+    // Part 1 to get code generation of evaluatables working
+    private static IEnumerable<TypenameMappingBuilder> GetEvaluatableMappings()
     {
-        yield return new TypenameMappingBuilder(typeof(IFormatProvider))
-            .AddMetadata
-            (
-                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
-            );
+        var evaluatableType = typeof(IEvaluatable);
+        return CreateBuilderAbstractionTypeConversionTypenameMappings(evaluatableType.GetEntityClassName(), evaluatableType.GetGenericTypeArgumentsString(), "CrossCutting.Utilities.ExpressionEvaluator.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator")
+            .Concat(
+            [
+                new TypenameMappingBuilder("CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase")
+            .AddMetadata(MetadataNames.CustomBuilderBaseClassTypeName, "CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder")
+            .AddMetadata(MetadataNames.CustomBuilderNamespace, "CrossCutting.Utilities.ExpressionEvaluator.Builders")
+            ]);
     }
+
+    // Part 2 to get code generation of evaluatables working
+    protected static TypeBase GetEvaluatableBase()
+        => new ClassBuilder()
+            .WithName("EvaluatableBase")
+            .WithNamespace("CrossCutting.Utilities.ExpressionEvaluator")
+            .AddInterfaces(typeof(IEvaluatable))
+            .Build();
 }

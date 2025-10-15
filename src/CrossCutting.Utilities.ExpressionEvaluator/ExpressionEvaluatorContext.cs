@@ -12,6 +12,24 @@ public class ExpressionEvaluatorContext
     private bool UseCallback { get; set; }
 
     public ExpressionEvaluatorContext(
+        ExpressionEvaluatorSettings settings,
+        IExpressionEvaluator evaluator,
+        object? context)
+    {
+        ArgumentGuard.IsNotNull(settings, nameof(settings));
+        ArgumentGuard.IsNotNull(evaluator, nameof(evaluator));
+
+        var state = new AsyncResultDictionaryBuilder<object?>()
+            .Add(Constants.Context, context)
+            .BuildDeferred();
+
+        Expression = string.Empty;
+        Settings = settings;
+        State = state;
+        Evaluator = evaluator;
+    }
+
+    public ExpressionEvaluatorContext(
         string? expression,
         ExpressionEvaluatorSettings settings,
         IExpressionEvaluator evaluator,

@@ -10,13 +10,11 @@ public class GreaterThanConditionTests : TestBase<GreaterThanCondition>
             // Arrange
             var leftValue = 15;
             var rightValue = 13;
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
+            var sut = new GreaterThanConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .Build();
+            var context = CreateContext();
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -32,13 +30,11 @@ public class GreaterThanConditionTests : TestBase<GreaterThanCondition>
             // Arrange
             var leftValue = "this";
             var rightValue = 13;
-            var parameters = new Dictionary<string, object?>
-            {
-                { nameof(IDoubleExpressionContainer.SourceExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(leftValue).Build() },
-                { nameof(IDoubleExpressionContainer.CompareExpression).ToCamelCase(CultureInfo.CurrentCulture), new LiteralExpressionBuilder(rightValue).Build() },
-            };
-            var sut = CreateSut(parameters);
-            var context = CreateContext("Dummy");
+            var sut = new GreaterThanConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .Build();
+            var context = CreateContext();
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);

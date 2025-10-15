@@ -1,10 +1,14 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public class Pipeline<TRequest> : PipelineBase<TRequest>, IPipeline<TRequest>
+public class Pipeline<TRequest> : IPipeline<TRequest>
 {
-    public Pipeline(IEnumerable<IPipelineComponent<TRequest>> components) : base(components)
+    private readonly IEnumerable<IPipelineComponent<TRequest>> _components;
+
+    public Pipeline(IEnumerable<IPipelineComponent<TRequest>> components)
     {
-        ArgumentGuard.IsNotNull(components, nameof(components)); //note that the base class allows null
+        ArgumentGuard.IsNotNull(components, nameof(components));
+
+        _components = components.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
     }
 
     public async Task<Result> ProcessAsync(TRequest request, CancellationToken token)
@@ -14,7 +18,7 @@ public class Pipeline<TRequest> : PipelineBase<TRequest>, IPipeline<TRequest>
         var pipelineContext = new PipelineContext<TRequest>(request);
 
         var results = new List<Result>();
-        foreach (var component in Components)
+        foreach (var component in _components)
         {
             var result = await component.ProcessAsync(pipelineContext, token).ConfigureAwait(false);
             results.Add(result);
@@ -33,11 +37,15 @@ public class Pipeline<TRequest> : PipelineBase<TRequest>, IPipeline<TRequest>
     }
 }
 
-public class Pipeline<TRequest, TResponse> : PipelineBase<TRequest, TResponse>, IPipeline<TRequest, TResponse>
+public class Pipeline<TRequest, TResponse> : IPipeline<TRequest, TResponse>
 {
-    public Pipeline(IEnumerable<IPipelineComponent<TRequest, TResponse>> components) : base(components)
+    private readonly IEnumerable<IPipelineComponent<TRequest, TResponse>> _components;
+
+    public Pipeline(IEnumerable<IPipelineComponent<TRequest, TResponse>> components)
     {
-        ArgumentGuard.IsNotNull(components, nameof(components)); //note that the base class allows null
+        ArgumentGuard.IsNotNull(components, nameof(components));
+
+        _components = components.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
     }
 
     public async Task<Result<TResponse>> ProcessAsync(TRequest request, TResponse seed, CancellationToken token)
@@ -47,7 +55,7 @@ public class Pipeline<TRequest, TResponse> : PipelineBase<TRequest, TResponse>, 
         var pipelineContext = new PipelineContext<TRequest, TResponse>(request, seed);
 
         var results = new List<Result>();
-        foreach (var component in Components)
+        foreach (var component in _components)
         {
             var result = await component.ProcessAsync(pipelineContext, token).ConfigureAwait(false);
             results.Add(result);

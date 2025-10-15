@@ -6,18 +6,17 @@
     <Nullable>enable</Nullable>
     <PackageId>pauldeen79.CrossCutting.Data.Core</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>6.0.0</Version>
-    <PackageVersion>6.0.0</PackageVersion>
+    <Version>7.0.0</Version>
+    <PackageVersion>7.0.0</PackageVersion>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.10" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CrossCutting.Common\CrossCutting.Common.csproj" />
     <ProjectReference Include="..\CrossCutting.Data.Abstractions\CrossCutting.Data.Abstractions.csproj" />
   </ItemGroup>
 

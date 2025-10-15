@@ -2,10 +2,10 @@
 
 public interface ISqlConditionExpressionProviderHandler
 {
-    Result GetConditionExpression(StringBuilder builder,
-                                  IQueryContext context,
-                                  ICondition condition,
-                                  IQueryFieldInfo fieldInfo,
-                                  ISqlExpressionProvider sqlExpressionProvider,
-                                  ParameterBag parameterBag);
+    Task<Result> GetConditionExpressionAsync(StringBuilder builder,
+                                             IQueryContext context,
+                                             ICondition condition,
+                                             IQueryFieldInfo fieldInfo,
+                                             ISqlExpressionProvider sqlExpressionProvider,
+                                             ParameterBag parameterBag);
 }

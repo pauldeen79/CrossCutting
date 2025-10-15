@@ -9,23 +9,23 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
     [InlineData(DatabaseOperation.Insert)]
     [InlineData(DatabaseOperation.Unspecified)]
     [InlineData(DatabaseOperation.Update)]
-    public void CreatePaged_Returns_Invalid_On_Unsupported_DatabaseOperation(DatabaseOperation operation)
+    public async Task CreatePagedAsync_Returns_Invalid_On_Unsupported_DatabaseOperation(DatabaseOperation operation)
     {
         // Act
-        var result = Sut.CreatePaged<TestEntity>(operation, 1, 1);
+        var result = await Sut.CreatePagedAsync<TestEntity>(operation, 1, 1);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     [Fact]
-    public void CreatePaged_Returns_Error_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
+    public async Task CreatePagedAsync_Returns_Error_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
     {
         // Arrange
         var sut = new PagedSelectDatabaseCommandProvider([]);
 
         // Act
-        var result = sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10);
+        var result = await sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 0, 10);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
@@ -33,7 +33,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
     }
 
     [Fact]
-    public void CreatePaged_Returns_Correct_Command_On_Select_DatabaseOperation_First_Page()
+    public async Task CreatePagedAsync_Returns_Correct_Command_On_Select_DatabaseOperation_First_Page()
     {
         // Arrange
         const string CommandSql = "SELECT TOP 10 Id, Active, Field1, Field2, Field3 FROM MyTable WHERE Active = 1 ORDER BY Field1";
@@ -47,7 +47,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
                .Returns(_ => Result.Success(SettingsMock));
 
         // Act
-        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 10).EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 0, 10)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.DataCommand.CommandText.ShouldBe(CommandSql);
@@ -55,7 +55,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
     }
 
     [Fact]
-    public void CreatePaged_Returns_Correct_Command_On_Select_DatabaseOperation_Subsequent_Page_OrderBy_Specified()
+    public async Task CreatePagedAsync_Returns_Correct_Command_On_Select_DatabaseOperation_Subsequent_Page_OrderBy_Specified()
     {
         // Arrange
         const string CommandSql = "SELECT Id, Active, Field1, Field2, Field3 FROM (SELECT Id, Active, Field1, Field2, Field3, ROW_NUMBER() OVER (ORDER BY Field1) as sq_row_number FROM MyTable WHERE Active = 1) sq WHERE sq.sq_row_number BETWEEN 11 and 20;";
@@ -70,7 +70,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
 
 
         // Act
-        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10).EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 10, 10)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.DataCommand.CommandText.ShouldBe(CommandSql);
@@ -78,7 +78,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
     }
 
     [Fact]
-    public void CreatePaged_Returns_Correct_Command_On_Select_DatabaseOperation_Subsequent_Page_No_OrderBy_Specified()
+    public async Task CreatePagedAsync_Returns_Correct_Command_On_Select_DatabaseOperation_Subsequent_Page_No_OrderBy_Specified()
     {
         // Arrange
         const string CommandSql = "SELECT Id, Active, Field1, Field2, Field3 FROM (SELECT TOP 10 Id, Active, Field1, Field2, Field3, ROW_NUMBER() OVER (ORDER BY (SELECT 0)) as sq_row_number FROM MyTable WHERE Active = 1) sq WHERE sq.sq_row_number BETWEEN 11 and 20;";
@@ -91,7 +91,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
                .Returns(_ => Result.Success(SettingsMock));
 
         // Act
-        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 10, 10).EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 10, 10)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.DataCommand.CommandText.ShouldBe(CommandSql);
@@ -99,7 +99,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
     }
 
     [Fact]
-    public void CreatePaged_Limits_PageSize_Based_On_Settings()
+    public async Task CreatePagedAsync_Limits_PageSize_Based_On_Settings()
     {
         // Arrange
         SettingsMock.TableName.Returns("MyTable");
@@ -109,7 +109,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
                .Returns(_ => Result.Success(SettingsMock));
 
         // Act
-        var actual = Sut.CreatePaged<TestEntity>(DatabaseOperation.Select, 0, 1000).EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 0, 1000)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.PageSize.ShouldBe(100);

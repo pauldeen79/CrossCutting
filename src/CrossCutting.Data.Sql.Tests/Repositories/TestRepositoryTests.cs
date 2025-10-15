@@ -6,36 +6,36 @@ public class TestRepositoryTests : TestBase<TestRepository>
     private IDatabaseCommandProvider<TestEntityIdentity> IdentityCommandProviderMock => Fixture.Freeze<IDatabaseCommandProvider<TestEntityIdentity>>();
 
     [Fact]
-    public void Can_Find_Entity_Using_Identity()
+    public async Task Can_Find_Entity_Using_Identity()
     {
         // Arrange
         var expected = new TestEntity("code", "codeType", "description");
-        IdentityCommandProviderMock.Create(Arg.Any<TestEntityIdentity>(), DatabaseOperation.Select).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
-        EntityRetrieverMock.FindOne(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success(expected));
+        IdentityCommandProviderMock.CreateAsync(Arg.Any<TestEntityIdentity>(), DatabaseOperation.Select).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
+        EntityRetrieverMock.FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success(expected));
 
         // Act
-        var actual = Sut.Find(new TestEntityIdentity(expected)).EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.FindAsync(new TestEntityIdentity(expected))).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBe(expected);
     }
 
     [Fact]
-    public void Can_FindOne_Entity_Using_Repository()
+    public async Task Can_FindOne_Entity_Using_Repository()
     {
         // Arrange
         var expected = new TestEntity("code", "codeType", "description");
-        EntityRetrieverMock.FindOne(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success(expected));
+        EntityRetrieverMock.FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success(expected));
 
         // Act
-        var actual = Sut.FindOne().EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.FindOneAsync()).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBe(expected);
     }
 
     [Fact]
-    public void Can_FindMany_Entities_Using_Repository()
+    public async Task Can_FindMany_Entities_Using_Repository()
     {
         // Arrange
         var expected = new[]
@@ -43,17 +43,17 @@ public class TestRepositoryTests : TestBase<TestRepository>
             new TestEntity("code1", "codeType1", "description1"),
             new TestEntity("code2", "codeType2", "description2")
         };
-        EntityRetrieverMock.FindMany(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success<IReadOnlyCollection<TestEntity>>(expected));
+        EntityRetrieverMock.FindManyAsync(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success<IReadOnlyCollection<TestEntity>>(expected));
 
         // Act
-        var actual = Sut.FindMany("Value").EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.FindManyAsync("Value")).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ShouldBeSameAs(expected);
     }
 
     [Fact]
-    public void Can_FindPaged_Entities_Using_Repository()
+    public async Task Can_FindPaged_Entities_Using_Repository()
     {
         // Arrange
         var expected = new[]
@@ -61,10 +61,10 @@ public class TestRepositoryTests : TestBase<TestRepository>
             new TestEntity("code1", "codeType1", "description1"),
             new TestEntity("code2", "codeType2", "description2")
         };
-        EntityRetrieverMock.FindPaged(Arg.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select)).Returns(Result.Success<IPagedResult<TestEntity>>(new PagedResult<TestEntity>(expected, 2, 0, 10)));
+        EntityRetrieverMock.FindPagedAsync(Arg.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select)).Returns(Result.Success<IPagedResult<TestEntity>>(new PagedResult<TestEntity>(expected, 2, 0, 10)));
 
         // Act
-        var actual = Sut.FindPaged(0, 10).EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.FindPagedAsync(0, 10)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.ToArray().ShouldBeEquivalentTo(expected);

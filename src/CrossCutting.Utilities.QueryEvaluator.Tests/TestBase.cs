@@ -79,6 +79,12 @@ public abstract class TestBase
     ];
 
     protected ExpressionEvaluatorContext CreateContext(
+        object? context = null,
+        IExpressionEvaluator? evaluator = null,
+        ExpressionEvaluatorSettingsBuilder? settings = null)
+            => new ExpressionEvaluatorContext(settings ?? new ExpressionEvaluatorSettingsBuilder(), evaluator ?? Evaluator, context);
+
+    protected ExpressionEvaluatorContext CreateContext(
         string? expression,
         IReadOnlyDictionary<string, Task<Result<object?>>>? state = null,
         int currentRecursionLevel = 1,
@@ -96,14 +102,29 @@ public abstract class TestBase
     protected void InitializeMock<T>(IEnumerable<T> items)
     {
         _sourceData = items.Cast<object>().ToArray();
-        DatabaseEntityRetriever.FindOneAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(_ => Task.FromResult(_sourceData.OfType<MyEntity>().Any() ? Result.Success(_sourceData.OfType<MyEntity>().FirstOrDefault()!) : Result.NotFound<MyEntity>()));
-        DatabaseEntityRetriever.FindManyAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(_ => Task.FromResult(Result.Success<IReadOnlyCollection<MyEntity>>(_sourceData.OfType<MyEntity>().ToList())));
-        DatabaseEntityRetriever.FindPagedAsync(Arg.Any<IPagedDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(_ => Task.FromResult(Result.Success(PagedResult)));
+        DatabaseEntityRetriever.FindOneAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
+            Task.Run(() => _sourceData.OfType<MyEntity>().Any()
+                ? Result.Success(_sourceData.OfType<MyEntity>().FirstOrDefault()!)
+                : Result.NotFound<MyEntity>()));
+
+        DatabaseEntityRetriever.FindManyAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
+            Task.Run(() => Result.Success<IReadOnlyCollection<MyEntity>>(_sourceData.OfType<MyEntity>().ToList())));
+
+        DatabaseEntityRetriever.FindPagedAsync(Arg.Any<IPagedDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
+            Task.Run(() => Result.Success(PagedResult)));
+
         PagedResult.Count.Returns(_sourceData.OfType<T>().Count());
         PagedResult.TotalRecordCount.Returns(_sourceData.OfType<T>().Count());
         PagedResult.PageSize.Returns(_sourceData.OfType<T>().Count());
         PagedResult.GetEnumerator().Returns(_sourceData.OfType<MyEntity>().GetEnumerator());
     }
+
+    protected static bool IsValidParameters(object? commandParameters, string expectedValue)
+        => commandParameters is IDictionary<string, object> dict
+            && dict.Count == 1
+            && dict.First().Key == "@p0"
+            && dict.First().Value is string s
+            && s == expectedValue;
 }
 
 public abstract class TestBase<T> : TestBase

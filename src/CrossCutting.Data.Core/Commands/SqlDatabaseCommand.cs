@@ -7,10 +7,8 @@ public class SqlDatabaseCommand : IDatabaseCommand
                               DatabaseOperation operation = DatabaseOperation.Unspecified,
                               object? commandParameters = null)
     {
-        if (string.IsNullOrEmpty(commandText))
-        {
-            throw new ArgumentOutOfRangeException(nameof(commandText), "CommandText may not be null or empty");
-        }
+        ArgumentGuard.IsNotNullOrEmpty(commandText, nameof(commandText));
+
         CommandText = commandText;
         CommandType = commandType;
         Operation = operation;

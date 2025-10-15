@@ -23,18 +23,18 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
         _settingsProviders = settingsProviders;
     }
 
-    public Result<IPagedDatabaseCommand> CreatePaged(IQueryContext source, DatabaseOperation operation, int offset, int pageSize)
-        => new ResultDictionaryBuilder()
+    public async Task<Result<IPagedDatabaseCommand>> CreatePagedAsync(IQueryContext source, DatabaseOperation operation, int offset, int pageSize)
+        => await (await new AsyncResultDictionaryBuilder()
             .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
             .Add("Settings", () => GetSettings(source))
             .Add("FieldInfo", () => _fieldInfoProvider.Create(source.Query).EnsureValue())
-            .Build()
-            .OnSuccess(results => BuildCommand(
+            .Build().ConfigureAwait(false))
+            .OnSuccessAsync(results => BuildCommandAsync(
                 source,
                 offset,
                 pageSize,
                 results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings"),
-                results.GetValue<IQueryFieldInfo>("FieldInfo")));
+                results.GetValue<IQueryFieldInfo>("FieldInfo"))).ConfigureAwait(false);
 
     public Result<IPagedDatabaseEntityRetrieverSettings> Create<TResult>() where TResult : class
         => _settingsProviders
@@ -57,12 +57,12 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
             }
         });
 
-    private Result<IPagedDatabaseCommand> BuildCommand(IQueryContext source, int offset, int pageSize, IPagedDatabaseEntityRetrieverSettings settings, IQueryFieldInfo fieldInfo)
+    private async Task<Result<IPagedDatabaseCommand>> BuildCommandAsync(IQueryContext source, int offset, int pageSize, IPagedDatabaseEntityRetrieverSettings settings, IQueryFieldInfo fieldInfo)
     {
         var parameterBag = new ParameterBag();
         var builder = new PagedSelectCommandBuilder();
 
-        return new ResultDictionaryBuilder()
+        return (await new AsyncResultDictionaryBuilder()
             .Add(() => builder.Select(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
             .Add(() => builder.Distinct(source))
             .Add(() => builder.Top(source, settings, pageSize))
@@ -70,8 +70,8 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
             .Add(() => builder.From(source, settings))
             .Add(() => builder.Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag))
             .Add(() => builder.OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
-            .Add(() => builder.AddParameters(source, parameterBag))
-            .Build()
+            .Build().ConfigureAwait(false))
+            .OnSuccess(_ => builder.AddParameters(source, parameterBag))
             .OnSuccess(_ => builder.Build());
     }
 }

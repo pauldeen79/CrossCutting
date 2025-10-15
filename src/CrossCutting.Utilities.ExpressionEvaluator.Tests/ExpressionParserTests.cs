@@ -23,12 +23,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false || true);
@@ -53,12 +53,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false && true);
@@ -83,12 +83,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false == true);
@@ -113,12 +113,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false != true);
@@ -143,12 +143,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 < 2);
@@ -173,12 +173,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 <= 2);
@@ -203,12 +203,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 > 2);
@@ -233,12 +233,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 >= 2);
@@ -263,12 +263,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 + 2);
@@ -293,12 +293,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 - 2);
@@ -323,12 +323,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 * 2);
@@ -353,12 +353,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 / 2);
@@ -383,12 +383,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<BinaryExpression>();
-            var binaryOperator = (BinaryExpression)result.Value;
-            binaryOperator.Left.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Left.Value.ShouldBeOfType<OtherExpression>();
-            binaryOperator.Right.Status.ShouldBe(ResultStatus.Ok);
-            binaryOperator.Right.Value.ShouldBeOfType<OtherExpression>();
+            result.Value.ShouldBeOfType<OperatorExpression>();
+            var operatorExpression = (OperatorExpression)result.Value;
+            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
+            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 % 2);

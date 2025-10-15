@@ -7,18 +7,26 @@ public class SqlExpressionProvider : ISqlExpressionProvider
     public SqlExpressionProvider(IEnumerable<ISqlExpressionProviderHandler> handlers)
     {
         ArgumentGuard.IsNotNull(handlers, nameof(handlers));
+
         _handlers = handlers;
     }
 
-    public Result<string> GetSqlExpression(IQueryContext context, IExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag)
+    public async Task<Result<string>> GetSqlExpressionAsync(IQueryContext context, ISqlExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
         fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
 
-        return _handlers
-            .Select(x => x.GetSqlExpression(context, expression, fieldInfo, parameterBag, this))
-            .WhenNotContinue(() => Result.Invalid<string>($"No sql expression provider handler found for type: {expression.GetType().FullName}"));
+        foreach (var handler in _handlers)
+        {
+            var result = await handler.GetSqlExpressionAsync(context, expression, fieldInfo, parameterBag, this).ConfigureAwait(false);
+            if (result.Status != ResultStatus.Continue)
+            {
+                return result;
+            }
+        }
+        
+        return Result.Invalid<string>($"No sql expression provider handler found for type: {expression.GetType().FullName}");
     }
 }

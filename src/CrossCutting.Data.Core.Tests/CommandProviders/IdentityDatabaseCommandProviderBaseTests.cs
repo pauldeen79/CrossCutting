@@ -7,26 +7,26 @@ public class IdentityDatabaseCommandProviderBaseTests
     [InlineData(DatabaseOperation.Insert)]
     [InlineData(DatabaseOperation.Unspecified)]
     [InlineData(DatabaseOperation.Update)]
-    public void Create_Returns_Invalid_On_Wrong_DatabaseOperation(DatabaseOperation operation)
+    public async Task CreateAsync_Returns_Invalid_On_Wrong_DatabaseOperation(DatabaseOperation operation)
     {
         // Arrange
         var sut = new IdentityDatabaseCommandProviderMock([new PagedDatabaseEntityRetrieverSettingsProviderMock()]);
 
         // Act
-        var result = sut.Create(new TestEntityIdentity("A", "B"), operation);
+        var result = await sut.CreateAsync(new TestEntityIdentity("A", "B"), operation);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
     }
 
     [Fact]
-    public void Create_Returns_Error_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
+    public async Task CreateAsync_Returns_Error_On_Unsupported_PagedDatabaseEntityRetrieverSettings()
     {
         // Arrange
         var sut = new IdentityDatabaseCommandProviderMock([]);
 
         // Act
-        var result = sut.Create(new TestEntityIdentity("NOTIMPLEMENTED", "NOTIMPLEMENTED"), DatabaseOperation.Select);
+        var result = await sut.CreateAsync(new TestEntityIdentity("NOTIMPLEMENTED", "NOTIMPLEMENTED"), DatabaseOperation.Select);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
@@ -34,13 +34,13 @@ public class IdentityDatabaseCommandProviderBaseTests
     }
 
     [Fact]
-    public void Create_Generates_Where_Statement_For_Both_Simple_Fields_And_Fields_With_Different_Name_In_Database()
+    public async Task CreateAsync_Generates_Where_Statement_For_Both_Simple_Fields_And_Fields_With_Different_Name_In_Database()
     {
         // Arrange
         var sut = new IdentityDatabaseCommandProviderMock([new PagedDatabaseEntityRetrieverSettingsProviderMock()]);
 
         // Act
-        var actual = sut.Create(new TestEntityIdentity("A", "B"), DatabaseOperation.Select).EnsureValue().GetValueOrThrow();
+        var actual = (await sut.CreateAsync(new TestEntityIdentity("A", "B"), DatabaseOperation.Select)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.CommandText.ShouldBe(@"SELECT A, B, C FROM Table WHERE [Field1] = @Field1 AND [Field2] = @Field2Alias");

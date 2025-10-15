@@ -1,10 +1,11 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.SqlExpressionProviderHandlers;
 
 public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpressionProviderHandler
+    where TExpression : ISqlExpression
 {
-    public Result<string> GetSqlExpression(
+    public async Task<Result<string>> GetSqlExpressionAsync(
         IQueryContext context,
-        IExpression expression,
+        ISqlExpression expression,
         IQueryFieldInfo fieldInfo,
         ParameterBag parameterBag,
         ISqlExpressionProvider callback)
@@ -13,16 +14,17 @@ public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpres
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
         fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
+        callback = ArgumentGuard.IsNotNull(callback, nameof(callback));
 
         if (expression is not TExpression typedExpression)
         {
             return Result.Continue<string>();
         }
 
-        return DoGetSqlExpression(context, typedExpression, fieldInfo, parameterBag, callback);
+        return await DoGetSqlExpressionAsync(context, typedExpression, fieldInfo, parameterBag, callback).ConfigureAwait(false);
     }
 
-    protected abstract Result<string> DoGetSqlExpression(
+    protected abstract Task<Result<string>> DoGetSqlExpressionAsync(
         IQueryContext context,
         TExpression expression,
         IQueryFieldInfo fieldInfo,

@@ -5,11 +5,11 @@ public abstract class IdentityDatabaseCommandProviderBase<T>(IEnumerable<IPagedD
 {
     private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
 
-    public Result<IDatabaseCommand> Create(T source, DatabaseOperation operation)
-        => new ResultDictionaryBuilder()
-            .Add("Validate", () => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
+    public async Task<Result<IDatabaseCommand>> CreateAsync(T source, DatabaseOperation operation)
+        => (await new AsyncResultDictionaryBuilder()
+            .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
             .Add("Settings", GetSettings)
-            .Build()
+            .Build().ConfigureAwait(false))
             .OnSuccess(results =>
             {
                 var settings = results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings");

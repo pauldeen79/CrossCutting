@@ -42,17 +42,7 @@ public abstract class DataProviderBase : IDataProvider
     }
 
     private ExpressionEvaluatorContext CreateContext(object? state)
-    {
-        IReadOnlyDictionary<string, Task<Result<object?>>>? dict = null;
-        if (state is not null)
-        {
-            dict = new AsyncResultDictionaryBuilder<object?>()
-                .Add(Constants.Context, state)
-                .BuildDeferred();
-        }
-
-        return new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, dict);
-    }
+        => new ExpressionEvaluatorContext(new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, state);
 
     private static async Task<Result<bool>> IsItemValid(IQuery query, ExpressionEvaluatorContext context)
     {

@@ -24,7 +24,7 @@ public class QueryProcessor : IQueryProcessor
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
                 {
-                    var commandResult = CreateCommand(query, context, query.Limit.GetValueOrDefault()).EnsureValue();
+                    var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault()).ConfigureAwait(false)).EnsureValue();
                     if (!commandResult.IsSuccessful())
                     {
                         return Result.FromExistingResult<IReadOnlyCollection<TResult>>(commandResult);
@@ -43,7 +43,7 @@ public class QueryProcessor : IQueryProcessor
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
                 {
-                    var commandResult = CreateCommand(query, context, 1).EnsureValue();
+                    var commandResult = (await CreateCommandAsync(query, context, 1).ConfigureAwait(false)).EnsureValue();
                     if (!commandResult.IsSuccessful())
                     {
                         return Result.FromExistingResult<TResult>(commandResult);
@@ -62,7 +62,7 @@ public class QueryProcessor : IQueryProcessor
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
                 {
-                    var commandResult = CreateCommand(query, context, query.Limit.GetValueOrDefault()).EnsureValue();
+                    var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault()).ConfigureAwait(false)).EnsureValue();
                     if (!commandResult.IsSuccessful())
                     {
                         return Result.FromExistingResult<IPagedResult<TResult>>(commandResult);
@@ -73,8 +73,8 @@ public class QueryProcessor : IQueryProcessor
             .ConfigureAwait(false);
     }
 
-    private Result<IPagedDatabaseCommand> CreateCommand(IQuery query, object? context, int pageSize)
-        => _pagedDatabaseCommandProvider.CreatePaged(query.EnsureValid().WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize);
+    private async Task<Result<IPagedDatabaseCommand>> CreateCommandAsync(IQuery query, object? context, int pageSize)
+        => await _pagedDatabaseCommandProvider.CreatePagedAsync(query.EnsureValid().WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize).ConfigureAwait(false);
 
     private Result<IDatabaseEntityRetriever<TResult>> GetDatabaseEntityRetriever<TResult>(IQuery query) where TResult : class
         => _databaseEntityRetrieverProviders

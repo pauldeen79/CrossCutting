@@ -2,6 +2,6 @@
 
 public class StringNotEqualsConditionHandler : ConditionExpressionHandlerBase<StringNotEqualsCondition>
 {
-    protected override Result DoGetConditionExpression(StringBuilder builder, IQueryContext context, StringNotEqualsCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag)
-        => GetStringConditionExpression(builder, context, condition, fieldInfo, sqlExpressionProvider, parameterBag, new StringConditionParameters("<>", "{0}"));
+    protected override Task<Result> DoGetConditionExpressionAsync(StringBuilder builder, IQueryContext context, StringNotEqualsCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag)
+        => GetStringConditionExpressionAsync(builder, context, condition, fieldInfo, sqlExpressionProvider, parameterBag, new StringConditionParameters("<>", "{0}"));
 }

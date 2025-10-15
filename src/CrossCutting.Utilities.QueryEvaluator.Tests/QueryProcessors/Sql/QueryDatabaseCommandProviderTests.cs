@@ -2,17 +2,17 @@
 
 public class QueryDatabaseCommandProviderTests : TestBase<QueryDatabaseCommandProvider>
 {
-    public class Create : QueryDatabaseCommandProviderTests
+    public class CreateAsync : QueryDatabaseCommandProviderTests
     {
         [Fact]
-        public void Returns_Invalid_On_Non_Select_DatabaseOperation()
+        public async Task Returns_Invalid_On_Non_Select_DatabaseOperation()
         {
             // Arrange
             var query = new SingleEntityQueryBuilder().Build();
             var sut = CreateSut();
 
             // Act
-            var result = sut.Create(query, DatabaseOperation.Insert);
+            var result = await sut.CreateAsync(query, DatabaseOperation.Insert);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -20,14 +20,14 @@ public class QueryDatabaseCommandProviderTests : TestBase<QueryDatabaseCommandPr
         }
 
         [Fact]
-        public void Returns_DatabaseCommand_On_Select_DatabaseOperation()
+        public async Task Returns_DatabaseCommand_On_Select_DatabaseOperation()
         {
             // Arrange
             var query = new SingleEntityQueryBuilder().Build();
             var sut = CreateSut();
 
             // Act
-            var command = sut.Create(query, DatabaseOperation.Select).EnsureValue().GetValueOrThrow();
+            var command = (await sut.CreateAsync(query, DatabaseOperation.Select)).EnsureValue().GetValueOrThrow();
 
             // Assert
             command.ShouldNotBeNull();

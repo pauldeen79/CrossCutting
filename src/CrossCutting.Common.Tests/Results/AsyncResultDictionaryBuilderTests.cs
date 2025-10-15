@@ -238,6 +238,21 @@ public class AsyncResultDictionaryBuilderTests
             }
 
             [Fact]
+            public async Task Adds_Result_Task_Default_Value_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder();
+
+                // Act
+                sut.Add("Test", default(string));
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldBe("Test");
+            }
+
+            [Fact]
             public async Task Adds_Result_Task_Successfully_Without_Specified_Name()
             {
                 // Arrange
