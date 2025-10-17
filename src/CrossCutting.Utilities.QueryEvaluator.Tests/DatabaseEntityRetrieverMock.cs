@@ -12,7 +12,7 @@ public class DatabaseEntityRetrieverMock<T> : IDatabaseEntityRetriever<T> where 
         {
             LastDatabaseCommand = command;
             return Result.Success<IReadOnlyCollection<T>>(Data.OfType<T>().ToList());
-        });
+        }, cancellationToken);
 
     public Task<Result<T>> FindOneAsync(IDatabaseCommand command, CancellationToken cancellationToken)
         => Task.Run(() =>
@@ -21,14 +21,14 @@ public class DatabaseEntityRetrieverMock<T> : IDatabaseEntityRetriever<T> where 
             return Data.OfType<T>().Any()
                 ? Result.Success(Data.OfType<T>().FirstOrDefault()!)
                 : Result.NotFound<T>();
-        });
+        }, cancellationToken);
 
     public Task<Result<IPagedResult<T>>> FindPagedAsync(IPagedDatabaseCommand command, CancellationToken cancellationToken)
         => Task.Run(() =>
         {
             LastPagedDatabaseCommand = command;
             return Result.Success(PagedResult);
-        });
+        }, cancellationToken);
 
     public void SetData(IEnumerable items, IPagedResult<T> pagedResult)
     {
