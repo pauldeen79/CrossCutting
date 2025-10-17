@@ -27,7 +27,7 @@ public class DatabaseEntityRetrieverMock<T> : IDatabaseEntityRetriever<T> where 
         => Task.Run(() =>
         {
             LastPagedDatabaseCommand = command;
-            return Task.FromResult(Result.Success(PagedResult));
+            return Result.Success(PagedResult);
         });
 
     public void SetData(IEnumerable items, IPagedResult<T> pagedResult)
