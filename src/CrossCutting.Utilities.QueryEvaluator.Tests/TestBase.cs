@@ -3,13 +3,12 @@
 public abstract class TestBase
 {
     private readonly DataProviderMock _dataProviderMock;
-    private IEnumerable<object> _sourceData = Enumerable.Empty<object>();
 
     protected IDictionary<Type, object?> ClassFactoryDictionary { get; }
     protected IQueryProcessor InMemoryQueryProcessor => ClassFactoryDictionary.GetOrCreateMultiple<IQueryProcessor>(ClassFactory).OfType<QueryEvaluator.QueryProcessors.InMemory.QueryProcessor>().First();
     protected IQueryProcessor SqlQueryProcessor => ClassFactoryDictionary.GetOrCreateMultiple<IQueryProcessor>(ClassFactory).OfType<QueryEvaluator.QueryProcessors.Sql.QueryProcessor>().First();
     protected IDatabaseEntityRetrieverProvider DatabaseEntityRetrieverProvider => ClassFactoryDictionary.GetOrCreate<IDatabaseEntityRetrieverProvider>(ClassFactory);
-    protected IDatabaseEntityRetriever<MyEntity> DatabaseEntityRetriever => ClassFactoryDictionary.GetOrCreate<IDatabaseEntityRetriever<MyEntity>>(ClassFactory);
+    protected DatabaseEntityRetrieverMock<MyEntity> DatabaseEntityRetriever { get; }
     protected IPagedResult<MyEntity> PagedResult => ClassFactoryDictionary.GetOrCreate<IPagedResult<MyEntity>>(ClassFactory);
     protected IExpressionEvaluator Evaluator => ClassFactoryDictionary.GetOrCreate<IExpressionEvaluator>(ClassFactory);
     protected IDateTimeProvider DateTimeProvider => ClassFactoryDictionary.GetOrCreate<IDateTimeProvider>(ClassFactory);
@@ -18,9 +17,6 @@ public abstract class TestBase
     protected IQueryFieldInfoProviderHandler QueryFieldInfoProviderHandler => ClassFactoryDictionary.GetOrCreate<IQueryFieldInfoProviderHandler>(ClassFactory);
     protected IQueryFieldInfo QueryFieldInfo => ClassFactoryDictionary.GetOrCreate<IQueryFieldInfo>(ClassFactory);
     protected DateTime CurrentDateTime { get; }
-
-    protected IDatabaseCommand? LastDatabaseCommand { get; private set; }
-    protected IPagedDatabaseCommand? LastPagedDatabaseCommand { get; private set; }
 
     protected TestBase()
     {
@@ -43,15 +39,17 @@ public abstract class TestBase
             .GetCurrentDateTime()
             .Returns(CurrentDateTime);
 
+        DatabaseEntityRetriever = new DatabaseEntityRetrieverMock<MyEntity>();
+
         // Initialize the expression evaluator on the DataProvider
         // This needs to be done after initializing class factories, because we need the expression evaluator
-        _dataProviderMock = new DataProviderMock(Evaluator, () => _sourceData);
+        _dataProviderMock = new DataProviderMock(Evaluator, () => DatabaseEntityRetriever.Data);
         ClassFactoryDictionary.Add(typeof(IDataProvider), _dataProviderMock);
 
         // Initialize entity retriever
         DatabaseEntityRetrieverProvider
             .Create<MyEntity>(Arg.Any<IQuery>())
-            .Returns(Result.Success(DatabaseEntityRetriever));
+            .Returns(Result.Success<IDatabaseEntityRetriever<MyEntity>>(DatabaseEntityRetriever));
 
         // Initialize entity retriever settings provider
 #pragma warning disable CS8601 // Possible null reference assignment.
@@ -104,32 +102,7 @@ public abstract class TestBase
 
     protected void InitializeMock<T>(IEnumerable<T> items)
     {
-        _sourceData = items.Cast<object>().ToArray();
-        DatabaseEntityRetriever.FindOneAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
-        {
-            LastDatabaseCommand = x.ArgAt<IDatabaseCommand>(0);
-            return Task.FromResult(
-            _sourceData.OfType<MyEntity>().Any()
-                    ? Result.Success(_sourceData.OfType<MyEntity>().FirstOrDefault()!)
-                    : Result.NotFound<MyEntity>());
-        });
-
-        DatabaseEntityRetriever.FindManyAsync(Arg.Any<IDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
-        {
-            LastDatabaseCommand = x.ArgAt<IDatabaseCommand>(0);
-            return Task.FromResult(Result.Success<IReadOnlyCollection<MyEntity>>(_sourceData.OfType<MyEntity>().ToList()));
-        });
-
-        DatabaseEntityRetriever.FindPagedAsync(Arg.Any<IPagedDatabaseCommand>(), Arg.Any<CancellationToken>()).Returns(x =>
-        {
-            LastPagedDatabaseCommand = x.ArgAt<IPagedDatabaseCommand>(0);
-            return Task.FromResult(Result.Success(PagedResult));
-        });
-
-        PagedResult.Count.Returns(_sourceData.OfType<T>().Count());
-        PagedResult.TotalRecordCount.Returns(_sourceData.OfType<T>().Count());
-        PagedResult.PageSize.Returns(_sourceData.OfType<T>().Count());
-        PagedResult.GetEnumerator().Returns(_sourceData.OfType<MyEntity>().GetEnumerator());
+        DatabaseEntityRetriever.SetData(items, PagedResult);
     }
 
     protected static bool IsValidParameters(object? commandParameters, string expectedValue)
