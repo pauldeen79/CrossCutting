@@ -63,9 +63,9 @@ internal static class PagedSelectCommandBuilderExtensions
     }
 
     internal static Result<PagedSelectCommandBuilder> Top(this PagedSelectCommandBuilder instance,
-                                                  IQueryContext context,
-                                                  IPagedDatabaseEntityRetrieverSettings settings,
-                                                  int? customLimit)
+                                                          IQueryContext context,
+                                                          IPagedDatabaseEntityRetrieverSettings settings,
+                                                          int? customLimit)
     {
         var limit = context.Query.Limit.IfNotGreaterThan(settings.OverridePageSize, customLimit);
 
