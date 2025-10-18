@@ -21,8 +21,8 @@ internal static class PagedSelectCommandBuilderExtensions
                                                                                           IQueryFieldInfo fieldInfo)
         => Task.Run(() =>
         {
-            var allFields = fieldInfo.GetAllFields();
-            return Result.Success(allFields.Any()
+            var allFields = fieldInfo.GetAllFields().ToArray();
+            return Result.Success(allFields.Length != 0
                 ? instance.Select(string.Join(", ", allFields
                     .Select(fieldInfo.GetDatabaseFieldName)
                     .Where(x => !string.IsNullOrEmpty(x))))
