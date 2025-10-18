@@ -49,7 +49,7 @@ public abstract class TestBase
         // Initialize entity retriever
         DatabaseEntityRetrieverProvider
             .Create<MyEntity>(Arg.Any<IQuery>())
-            .Returns(Result.Success<IDatabaseEntityRetriever<MyEntity>>(DatabaseEntityRetriever));
+            .Returns(_ => Result.Success<IDatabaseEntityRetriever<MyEntity>>(DatabaseEntityRetriever));
 
         // Initialize entity retriever settings provider
 #pragma warning disable CS8601 // Possible null reference assignment.

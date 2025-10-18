@@ -20,61 +20,88 @@ public class QueryProcessor : IQueryProcessor
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
-        return await GetDatabaseEntityRetriever<TResult>(query)
-            .OnSuccessAsync(async provider =>
-                await Result.WrapExceptionAsync(async () =>
-                {
-                    var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault()).ConfigureAwait(false)).EnsureValue();
-                    if (!commandResult.IsSuccessful())
-                    {
-                        return Result.FromExistingResult<IReadOnlyCollection<TResult>>(commandResult);
-                    }
+        var entityRetrieverResult = GetDatabaseEntityRetriever<TResult>(query).EnsureValue();
+        if (!entityRetrieverResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<IReadOnlyCollection<TResult>>(entityRetrieverResult);
+        }
+        
+        var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault()).ConfigureAwait(false)).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<IReadOnlyCollection<TResult>>(commandResult);
+        }
 
-                    return await provider.FindManyAsync(commandResult.Value!.DataCommand, cancellationToken).ConfigureAwait(false);
-                }).ConfigureAwait(false))
-            .ConfigureAwait(false);
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return await entityRetrieverResult.Value!.FindManyAsync(commandResult.Value!.DataCommand, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            return Result.Error<IReadOnlyCollection<TResult>>(ex, "Exception occured in FindMany operation");
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     public async Task<Result<TResult>> FindOneAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken) where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
-        return await GetDatabaseEntityRetriever<TResult>(query)
-            .OnSuccessAsync(async provider =>
-                await Result.WrapExceptionAsync(async () =>
-                {
-                    var commandResult = (await CreateCommandAsync(query, context, 1).ConfigureAwait(false)).EnsureValue();
-                    if (!commandResult.IsSuccessful())
-                    {
-                        return Result.FromExistingResult<TResult>(commandResult);
-                    }
+        var entityRetrieverResult = GetDatabaseEntityRetriever<TResult>(query).EnsureValue();
+        if (!entityRetrieverResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<TResult>(entityRetrieverResult);
+        }
 
-                    return await provider.FindOneAsync(commandResult.Value!.DataCommand, cancellationToken).ConfigureAwait(false);
-                }).ConfigureAwait(false)
-            ).ConfigureAwait(false);
+        var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault()).ConfigureAwait(false)).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<TResult>(commandResult);
+        }
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return await entityRetrieverResult.Value!.FindOneAsync(commandResult.Value!.DataCommand, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            return Result.Error<TResult>(ex, "Exception occured in FindOne operation");
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     public async Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken) where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
-        return await GetDatabaseEntityRetriever<TResult>(query)
-            .OnSuccessAsync(async provider =>
-                await Result.WrapExceptionAsync(async () =>
-                {
-                    var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault()).ConfigureAwait(false)).EnsureValue();
-                    if (!commandResult.IsSuccessful())
-                    {
-                        return Result.FromExistingResult<IPagedResult<TResult>>(commandResult);
-                    }
+        var entityRetrieverResult = GetDatabaseEntityRetriever<TResult>(query).EnsureValue();
+        if (!entityRetrieverResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<IPagedResult<TResult>>(entityRetrieverResult);
+        }
 
-                    return await provider.FindPagedAsync(commandResult.Value!, cancellationToken).ConfigureAwait(false);
-                }).ConfigureAwait(false))
-            .ConfigureAwait(false);
+        var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault()).ConfigureAwait(false)).EnsureValue();
+        if (!commandResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<IPagedResult<TResult>>(commandResult);
+        }
+
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            return await entityRetrieverResult.Value!.FindPagedAsync(commandResult.Value!, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            return Result.Error<IPagedResult<TResult>>(ex, "Exception occured in FindOne operation");
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
-    private async Task<Result<IPagedDatabaseCommand>> CreateCommandAsync(IQuery query, object? context, int pageSize)
-        => await _pagedDatabaseCommandProvider.CreatePagedAsync(query.EnsureValid().WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize).ConfigureAwait(false);
+    private Task<Result<IPagedDatabaseCommand>> CreateCommandAsync(IQuery query, object? context, int pageSize)
+        => _pagedDatabaseCommandProvider.CreatePagedAsync(query.EnsureValid().WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize);
 
     private Result<IDatabaseEntityRetriever<TResult>> GetDatabaseEntityRetriever<TResult>(IQuery query) where TResult : class
         => _databaseEntityRetrieverProviders
