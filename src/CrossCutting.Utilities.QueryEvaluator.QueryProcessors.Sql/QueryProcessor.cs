@@ -54,7 +54,7 @@ public class QueryProcessor : IQueryProcessor
             return Result.FromExistingResult<TResult>(entityRetrieverResult);
         }
 
-        var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault()).ConfigureAwait(false)).EnsureValue();
+        var commandResult = (await CreateCommandAsync(query, context, 1).ConfigureAwait(false)).EnsureValue();
         if (!commandResult.IsSuccessful())
         {
             return Result.FromExistingResult<TResult>(commandResult);
