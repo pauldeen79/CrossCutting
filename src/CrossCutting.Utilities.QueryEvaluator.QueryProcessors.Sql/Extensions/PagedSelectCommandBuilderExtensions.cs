@@ -21,8 +21,8 @@ internal static class PagedSelectCommandBuilderExtensions
                                                                                           IQueryFieldInfo fieldInfo)
         => Task.Run(() =>
         {
-            var allFields = fieldInfo.GetAllFields();
-            return Result.Success(allFields.Any()
+            var allFields = fieldInfo.GetAllFields().ToArray();
+            return Result.Success(allFields.Length != 0
                 ? instance.Select(string.Join(", ", allFields
                     .Select(fieldInfo.GetDatabaseFieldName)
                     .Where(x => !string.IsNullOrEmpty(x))))
@@ -63,9 +63,9 @@ internal static class PagedSelectCommandBuilderExtensions
     }
 
     internal static Result<PagedSelectCommandBuilder> Top(this PagedSelectCommandBuilder instance,
-                                                  IQueryContext context,
-                                                  IPagedDatabaseEntityRetrieverSettings settings,
-                                                  int? customLimit)
+                                                          IQueryContext context,
+                                                          IPagedDatabaseEntityRetrieverSettings settings,
+                                                          int? customLimit)
     {
         var limit = context.Query.Limit.IfNotGreaterThan(settings.OverridePageSize, customLimit);
 

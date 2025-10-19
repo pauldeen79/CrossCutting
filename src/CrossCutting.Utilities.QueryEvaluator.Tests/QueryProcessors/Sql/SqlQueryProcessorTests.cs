@@ -22,8 +22,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 BETWEEN @p0 AND @p1 ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 BETWEEN @p0 AND @p1 ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -45,8 +45,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -68,8 +68,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 > @p0 ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 > @p0 ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -91,8 +91,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 >= @p0 ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 >= @p0 ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -115,8 +115,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 IN (@p0, @p1) ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 IN (@p0, @p1) ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -138,8 +138,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 <> @p0 ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 <> @p0 ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -162,8 +162,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT IN (@p0, @p1) ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT IN (@p0, @p1) ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -184,8 +184,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 IS NOT NULL ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 IS NOT NULL ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -208,8 +208,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.NotFound);
         result.Value.ShouldBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE (Property1 IS NULL) ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE (Property1 IS NULL) ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -231,8 +231,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 < @p0 ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 < @p0 ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -254,8 +254,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 <= @p0 ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 <= @p0 ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -277,9 +277,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC");
-        IsValidParameters(DatabaseEntityRetriever.LastDatabaseCommand.CommandParameters, "%A%").ShouldBeTrue();
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC");
+        IsValidParameters(LastDatabaseCommand.CommandParameters, "%A%").ShouldBeTrue();
     }
 
     [Fact]
@@ -301,9 +301,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC");
-        IsValidParameters(DatabaseEntityRetriever.LastDatabaseCommand.CommandParameters, "%A").ShouldBeTrue();
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC");
+        IsValidParameters(LastDatabaseCommand.CommandParameters, "%A").ShouldBeTrue();
     }
 
     [Fact]
@@ -325,8 +325,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -348,9 +348,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC");
-        IsValidParameters(DatabaseEntityRetriever.LastDatabaseCommand.CommandParameters, "%A%").ShouldBeTrue();
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC");
+        IsValidParameters(LastDatabaseCommand.CommandParameters, "%A%").ShouldBeTrue();
     }
 
     [Fact]
@@ -372,9 +372,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC");
-        IsValidParameters(DatabaseEntityRetriever.LastDatabaseCommand.CommandParameters, "%A").ShouldBeTrue();
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC");
+        IsValidParameters(LastDatabaseCommand.CommandParameters, "%A").ShouldBeTrue();
     }
 
     [Fact]
@@ -396,8 +396,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 <> @p0 ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 <> @p0 ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -419,9 +419,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC");
-        IsValidParameters(DatabaseEntityRetriever.LastDatabaseCommand.CommandParameters, "A%").ShouldBeTrue();
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 NOT LIKE @p0 ORDER BY Property2 ASC");
+        IsValidParameters(LastDatabaseCommand.CommandParameters, "A%").ShouldBeTrue();
     }
 
     [Fact]
@@ -443,9 +443,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC");
-        IsValidParameters(DatabaseEntityRetriever.LastDatabaseCommand.CommandParameters, "A%").ShouldBeTrue();
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 LIKE @p0 ORDER BY Property2 ASC");
+        IsValidParameters(LastDatabaseCommand.CommandParameters, "A%").ShouldBeTrue();
     }
 
     [Fact]
@@ -470,8 +470,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         result.Value.Count.ShouldBe(2);
         result.Value.First().Property2.ShouldBe("A");
         result.Value.Last().Property2.ShouldBe("Z");
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT * FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT * FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC");
     }
 
     [Fact]
@@ -490,8 +490,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT * FROM MyEntity WHERE Property1 = 'A'");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT * FROM MyEntity WHERE Property1 = 'A'");
     }
 
     [Fact]
@@ -510,8 +510,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT * FROM MyEntity ORDER BY Property1 ASC");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT * FROM MyEntity ORDER BY Property1 ASC");
     }
 
     [Fact]
@@ -528,8 +528,8 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastDatabaseCommand.CommandText.ShouldBe("SELECT * FROM CustomTable");
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT * FROM CustomTable");
     }
 
     [Fact]
@@ -555,9 +555,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         result.Value.ShouldNotBeNull();
         result.Value.Count.ShouldBe(1);
         result.Value.First().Property2.ShouldBe("Z");
-        DatabaseEntityRetriever.LastPagedDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastPagedDatabaseCommand.DataCommand.CommandText.ShouldBe("SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY Property2 ASC) as sq_row_number FROM MyEntity WHERE Property1 = @p0) sq WHERE sq.sq_row_number BETWEEN 2 and 2;");
-        DatabaseEntityRetriever.LastPagedDatabaseCommand.RecordCountCommand.CommandText.ShouldBe("SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0");
+        LastPagedDatabaseCommand.ShouldNotBeNull();
+        LastPagedDatabaseCommand.DataCommand.CommandText.ShouldBe("SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY Property2 ASC) as sq_row_number FROM MyEntity WHERE Property1 = @p0) sq WHERE sq.sq_row_number BETWEEN 2 and 2;");
+        LastPagedDatabaseCommand.RecordCountCommand.CommandText.ShouldBe("SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0");
     }
 
     [Fact]
@@ -590,9 +590,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastPagedDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastPagedDatabaseCommand.DataCommand.CommandText.ShouldBe("SELECT Property1, Property2 FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC");
-        DatabaseEntityRetriever.LastPagedDatabaseCommand.RecordCountCommand.CommandText.ShouldBe("SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0");
+        LastPagedDatabaseCommand.ShouldNotBeNull();
+        LastPagedDatabaseCommand.DataCommand.CommandText.ShouldBe("SELECT Property1, Property2 FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC");
+        LastPagedDatabaseCommand.RecordCountCommand.CommandText.ShouldBe("SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0");
     }
 
     [Fact]
@@ -621,9 +621,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastPagedDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastPagedDatabaseCommand.DataCommand.CommandText.ShouldBe("SELECT Property1, Property2 FROM MyEntity WHERE Property1 = @p0");
-        DatabaseEntityRetriever.LastPagedDatabaseCommand.RecordCountCommand.CommandText.ShouldBe("SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0");
+        LastPagedDatabaseCommand.ShouldNotBeNull();
+        LastPagedDatabaseCommand.DataCommand.CommandText.ShouldBe("SELECT Property1, Property2 FROM MyEntity WHERE Property1 = @p0");
+        LastPagedDatabaseCommand.RecordCountCommand.CommandText.ShouldBe("SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0");
     }
 
     [Fact]
@@ -655,9 +655,9 @@ public sealed class SqlQueryProcessorTests : TestBase
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastPagedDatabaseCommand.ShouldNotBeNull();
-        DatabaseEntityRetriever.LastPagedDatabaseCommand.DataCommand.CommandText.ShouldBe("SELECT DISTINCT * FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC");
-        DatabaseEntityRetriever.LastPagedDatabaseCommand.RecordCountCommand.CommandText.ShouldBe("SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0");
+        LastPagedDatabaseCommand.ShouldNotBeNull();
+        LastPagedDatabaseCommand.DataCommand.CommandText.ShouldBe("SELECT DISTINCT * FROM MyEntity WHERE Property1 = @p0 ORDER BY Property2 ASC");
+        LastPagedDatabaseCommand.RecordCountCommand.CommandText.ShouldBe("SELECT COUNT(*) FROM MyEntity WHERE Property1 = @p0");
     }
 
     private sealed class FieldSelectionQuery : IFieldSelectionQuery
