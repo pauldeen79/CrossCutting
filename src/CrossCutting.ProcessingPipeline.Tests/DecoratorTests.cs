@@ -44,12 +44,12 @@ MyComponent called
             _decoratee = decoratee;
         }
 
-        public Task<Result> ProcessAsync(PipelineContext<DecoratorTestsContext> context, CancellationToken token)
+        public async Task<Result> ProcessAsync(PipelineContext<DecoratorTestsContext> context, CancellationToken token)
         {
             try
             {
                 context.Request.AppendLine("--- Start ---");
-                return _decoratee.ProcessAsync(context, token);
+                return await _decoratee.ProcessAsync(context, token).ConfigureAwait(false);
             }
             finally
             {
