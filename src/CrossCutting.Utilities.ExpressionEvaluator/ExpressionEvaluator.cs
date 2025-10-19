@@ -25,20 +25,19 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         context = context.FromRoot();
 
-        var results = new ResultDictionaryBuilder()
+        var result = new ResultDictionaryBuilder()
             .Add(nameof(context.Validate), () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
-            .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
-            .Build();
+            .Build()
+            .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
+            .EnsureValue();
             
-        var error = results.GetError();
-        if (error is not null)
+        if (!result.IsSuccessful())
         {
-            return Result.FromExistingResult<object?>(error);
+            return Result.FromExistingResult<object?>(result);
         }
 
-        return await results.GetValue<IExpression>(nameof(IExpressionParser.Parse))
-            .EvaluateAsync(context, token).ConfigureAwait(false);
+        return await result.Value!.EvaluateAsync(context, token).ConfigureAwait(false);
     }
 
     public async Task<Result<T>> EvaluateTypedAsync<T>(ExpressionEvaluatorContext context, CancellationToken token)
@@ -47,19 +46,19 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         context = context.FromRoot();
 
-        var results = new ResultDictionaryBuilder()
+        var result = new ResultDictionaryBuilder()
             .Add(nameof(context.Validate), () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
-            .Add(nameof(IExpressionParser.Parse), results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
-            .Build();
+            .Build()
+            .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
+            .EnsureValue();
 
-        var error = results.GetError();
-        if (error is not null)
+        if (!result.IsSuccessful())
         {
-            return Result.FromExistingResult<T>(error);
+            return Result.FromExistingResult<T>(result);
         }
 
-        var expression = results.GetValue<IExpression>(nameof(IExpressionParser.Parse));
+        var expression = result.Value!;
 
         return expression is IExpression<T> typedExpression
             ? (await typedExpression.EvaluateTypedAsync(context, token).ConfigureAwait(false))
@@ -77,19 +76,19 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         var result = new ExpressionParseResultBuilder().WithSourceExpression(context.Expression);
 
-        var results = new ResultDictionaryBuilder()
+        var parseResult = new ResultDictionaryBuilder()
             .Add(nameof(context.Validate), () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
-            .Add(nameof(ParseAsync), results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
-            .Build();
+            .Build()
+            .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
+            .EnsureValue();
 
-        var error = results.GetError();
-        if (error is not null)
+        if (!parseResult.IsSuccessful())
         {
-            return result.FillFromResult(error);
+            return result.FillFromResult(parseResult);
         }
 
-        return (await results.GetValue<IExpression>(nameof(ParseAsync)).ParseAsync(token).ConfigureAwait(false))
+        return (await parseResult.Value!.ParseAsync(token).ConfigureAwait(false))
             ?? new ExpressionParseResultBuilder()
                 .WithSourceExpression(context.Expression)
                 .WithStatus(ResultStatus.Error)
