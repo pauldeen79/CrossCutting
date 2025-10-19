@@ -43,7 +43,9 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.Select(", ");
             }
 
-            var result = (await sqlExpressionProvider.GetSqlExpressionAsync(fieldSelectionQuery.WithContext(context.Context), new SqlExpression(new PropertyNameEvaluatable(new ContextEvaluatable(), expression.Item)), fieldInfo, parameterBag).ConfigureAwait(false)).EnsureValue();
+            var result = (await sqlExpressionProvider.GetSqlExpressionAsync(fieldSelectionQuery.WithContext(context.Context), new SqlExpression(new PropertyNameEvaluatable(new ContextEvaluatable(), expression.Item)), fieldInfo, parameterBag).ConfigureAwait(false))
+                .EnsureNotNull()
+                .EnsureValue();
             if (!result.IsSuccessful())
             {
                 return Result.FromExistingResult<PagedSelectCommandBuilder>(result);

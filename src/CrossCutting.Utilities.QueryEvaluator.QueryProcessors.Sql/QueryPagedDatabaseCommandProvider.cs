@@ -27,7 +27,7 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
         => await (await new AsyncResultDictionaryBuilder()
             .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
             .Add("Settings", () => GetSettings(source))
-            .Add("FieldInfo", () => _fieldInfoProvider.Create(source.Query).EnsureValue())
+            .Add("FieldInfo", () => _fieldInfoProvider.Create(source.Query).EnsureNotNull().EnsureValue())
             .Build().ConfigureAwait(false))
             .OnSuccessAsync(results => BuildCommandAsync(
                 source,
@@ -49,7 +49,7 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
                 return ((Result<IPagedDatabaseEntityRetrieverSettings>)GetType()
                     .GetMethod(nameof(Create))
                     .MakeGenericMethod(source.Query.GetType())
-                    .Invoke(this, Array.Empty<object>())).EnsureValue();
+                    .Invoke(this, Array.Empty<object>())).EnsureNotNull().EnsureValue();
             }
             catch (TargetInvocationException ex)
             {

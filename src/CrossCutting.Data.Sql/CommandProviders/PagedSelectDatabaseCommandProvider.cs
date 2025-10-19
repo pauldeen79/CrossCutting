@@ -25,6 +25,6 @@ public class PagedSelectDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntity
 
     private Result<IPagedDatabaseEntityRetrieverSettings> GetSettings<TSource>()
         => _settingsProviders
-            .Select(x => x.Get<TSource>().EnsureValue())
+            .Select(x => x.Get<TSource>().EnsureNotNull().EnsureValue())
             .WhenNotContinue(() => Result.Error<IPagedDatabaseEntityRetrieverSettings>($"Could not obtain paged database entity retriever settings for type [{typeof(TSource).FullName}]"));
 }

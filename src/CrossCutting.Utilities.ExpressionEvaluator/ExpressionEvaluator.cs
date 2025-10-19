@@ -29,7 +29,8 @@ public class ExpressionEvaluator : IExpressionEvaluator
             .Add(nameof(context.Validate), () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Build()
-            .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
+            .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
+            .EnsureNotNull("Parse returned null")
             .EnsureValue();
             
         if (!result.IsSuccessful())
@@ -50,7 +51,8 @@ public class ExpressionEvaluator : IExpressionEvaluator
             .Add(nameof(context.Validate), () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Build()
-            .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
+            .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
+            .EnsureNotNull("Parse returned null")
             .EnsureValue();
 
         if (!result.IsSuccessful())
@@ -80,7 +82,8 @@ public class ExpressionEvaluator : IExpressionEvaluator
             .Add(nameof(context.Validate), () => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Build()
-            .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))).EnsureNotNull("Parse returned null"))
+            .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
+            .EnsureNotNull("Parse returned null")
             .EnsureValue();
 
         if (!parseResult.IsSuccessful())

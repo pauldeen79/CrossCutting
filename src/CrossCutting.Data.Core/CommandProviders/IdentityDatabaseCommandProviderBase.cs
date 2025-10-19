@@ -24,7 +24,7 @@ public abstract class IdentityDatabaseCommandProviderBase<T>(IEnumerable<IPagedD
 
     private Result<IPagedDatabaseEntityRetrieverSettings> GetSettings()
         => _settingsProviders
-            .Select(x => x.Get<T>().EnsureValue())
+            .Select(x => x.Get<T>().EnsureNotNull().EnsureValue())
             .WhenNotContinue(() => Result.Error<IPagedDatabaseEntityRetrieverSettings>($"Could not obtain paged database entity retriever settings for type [{typeof(T).FullName}]"));
 
     protected abstract IEnumerable<IdentityDatabaseCommandProviderField> GetFields();
