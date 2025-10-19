@@ -21,8 +21,8 @@ MyComponent called
 
     }
 
-    private static IPipelineComponent<DecoratorTestsContext> Decorate(IPipelineComponent<DecoratorTestsContext> decoratee)
-        => new LoggerDecorator(new ErrorHandlerDecorator(decoratee));
+    private static LoggerDecorator Decorate(IPipelineComponent<DecoratorTestsContext> decoratee)
+        => new LoggerDecorator(new ValidatorDecorator(new ErrorHandlerDecorator(decoratee)));
 
     private sealed class MyComponent : IPipelineComponent<DecoratorTestsContext>
     {
@@ -78,6 +78,28 @@ MyComponent called
                 context.Request.AppendLine($"Error occured: {ex}");
                 return Result.Error(ex, "Error occured");
             }
+        }
+    }
+
+    private sealed class ValidatorDecorator : IPipelineComponent<DecoratorTestsContext>
+    {
+        private readonly IPipelineComponent<DecoratorTestsContext> _decoratee;
+
+        public ValidatorDecorator(IPipelineComponent<DecoratorTestsContext> decoratee)
+        {
+            _decoratee = decoratee;
+        }
+
+        public async Task<Result> ProcessAsync(PipelineContext<DecoratorTestsContext> context, CancellationToken token)
+        {
+            ICollection<ValidationResult> validationResults = new List<ValidationResult>();
+            var isValid = context.Request.TryValidate(validationResults);
+            if (!isValid)
+            {
+                return Result.Invalid(validationResults.Select(x => new ValidationError(x.ErrorMessage.ToStringWithDefault(), x.MemberNames)));
+            }
+
+            return await _decoratee.ProcessAsync(context, token).ConfigureAwait(false);
         }
     }
 
