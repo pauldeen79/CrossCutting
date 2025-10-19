@@ -50,7 +50,7 @@ public class ResultDictionaryBuilder
     {
         var results = new Dictionary<string, Result>();
 
-        foreach (var item in _resultset)
+        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
             Result result = default!;
 
@@ -145,7 +145,7 @@ public class ResultDictionaryBuilder<T>
         var results = new Dictionary<string, Result<T>>();
 
         Result<T> result = default!;
-        foreach (var item in _resultset)
+        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
 #pragma warning disable CA1031 // Do not catch general exception types
             try

@@ -209,7 +209,7 @@ public class AsyncResultDictionaryBuilder
     {
         var results = new Dictionary<string, Task<Result>>();
 
-        foreach (var item in _resultset)
+        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
             results.Add(item.Key, item.Value);
         }
@@ -221,7 +221,7 @@ public class AsyncResultDictionaryBuilder
     {
         var results = new Dictionary<string, Func<Result>>();
 
-        foreach (var item in _resultset)
+        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
             Result result;
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -248,7 +248,7 @@ public class AsyncResultDictionaryBuilder
     {
         var results = new Dictionary<string, Result>();
 
-        foreach (var item in _resultset)
+        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
             Result result;
 #pragma warning disable CA1031 // Do not catch general exception types
