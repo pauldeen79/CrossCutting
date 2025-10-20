@@ -22,7 +22,7 @@ MyComponent called
     }
 
     private static LoggerDecorator Decorate(IPipelineComponent<DecoratorTestsContext> decoratee)
-        => new LoggerDecorator(new ValidatorDecorator(new ErrorHandlerDecorator(decoratee)));
+        => new LoggerDecorator(new ValidationDecorator<DecoratorTestsContext>(new ExceptionDecorator<DecoratorTestsContext>(decoratee)));
 
     private sealed class MyComponent : IPipelineComponent<DecoratorTestsContext>
     {
@@ -58,52 +58,7 @@ MyComponent called
         }
     }
 
-    private sealed class ErrorHandlerDecorator : IPipelineComponent<DecoratorTestsContext>
-    {
-        private readonly IPipelineComponent<DecoratorTestsContext> _decoratee;
-
-        public ErrorHandlerDecorator(IPipelineComponent<DecoratorTestsContext> decoratee)
-        {
-            _decoratee = decoratee;
-        }
-
-        public async Task<Result> ProcessAsync(PipelineContext<DecoratorTestsContext> context, CancellationToken token)
-        {
-            try
-            {
-                return await _decoratee.ProcessAsync(context, token).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                context.Request.AppendLine($"Error occured: {ex}");
-                return Result.Error(ex, "Error occured");
-            }
-        }
-    }
-
-    private sealed class ValidatorDecorator : IPipelineComponent<DecoratorTestsContext>
-    {
-        private readonly IPipelineComponent<DecoratorTestsContext> _decoratee;
-
-        public ValidatorDecorator(IPipelineComponent<DecoratorTestsContext> decoratee)
-        {
-            _decoratee = decoratee;
-        }
-
-        public async Task<Result> ProcessAsync(PipelineContext<DecoratorTestsContext> context, CancellationToken token)
-        {
-            ICollection<ValidationResult> validationResults = new List<ValidationResult>();
-            var isValid = context.Request.TryValidate(validationResults);
-            if (!isValid)
-            {
-                return Result.Invalid(validationResults.Select(x => new ValidationError(x.ErrorMessage.ToStringWithDefault(), x.MemberNames)));
-            }
-
-            return await _decoratee.ProcessAsync(context, token).ConfigureAwait(false);
-        }
-    }
-
-    private sealed class DecoratorTestsContext
+    private sealed class DecoratorTestsContext : IValidatableObject
     {
         private readonly StringBuilder _builder = new();
 
@@ -112,5 +67,8 @@ MyComponent called
 
         public override string ToString()
             => _builder.ToString();
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+            => Enumerable.Empty<ValidationResult>();
     }
 }
