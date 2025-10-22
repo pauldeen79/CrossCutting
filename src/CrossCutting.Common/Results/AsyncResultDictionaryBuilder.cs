@@ -3,6 +3,18 @@
 public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
 {
     private readonly Dictionary<string, Task<Result>> _resultset = new();
+    private readonly ITaskDecorator _taskDecorator;
+
+    public AsyncResultDictionaryBuilder() : this(new LegacyTaskDecorator())
+    {
+    }
+
+    public AsyncResultDictionaryBuilder(ITaskDecorator taskDecorator)
+    {
+        ArgumentGuard.IsNotNull(taskDecorator, nameof(taskDecorator));
+
+        _taskDecorator = taskDecorator;
+    }
 
     public IAsyncResultDictionaryBuilder Add<T>(Task<Result<T>> value)
         => Add((_resultset.Count + 1).ToString("D4"), value);
@@ -217,51 +229,13 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
         return results;
     }
 
-    public async Task<IReadOnlyDictionary<string, Func<Result>>> BuildLazy()
-    {
-        var results = new Dictionary<string, Func<Result>>();
-
-        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
-        {
-            Result result;
-#pragma warning disable CA1031 // Do not catch general exception types
-            try
-            {
-                result = await item.Value.ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                result = Result.Error(ex, "Exception occured");
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
-            results.Add(item.Key, () => result);
-            if (!result.IsSuccessful())
-            {
-                break;
-            }
-        }
-
-        return results;
-    }
-
     public async Task<IReadOnlyDictionary<string, Result>> Build()
     {
         var results = new Dictionary<string, Result>();
 
         foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
-            Result result;
-#pragma warning disable CA1031 // Do not catch general exception types
-            try
-            {
-                result = (await item.Value.ConfigureAwait(false))
-                    .EnsureNotNull($"Result with key {item.Key} returned a null result");
-            }
-            catch (Exception ex)
-            {
-                result = Result.Error(ex, "Exception occured");
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
+            var result = await _taskDecorator.Execute(item).ConfigureAwait(false);
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
@@ -277,11 +251,41 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
         Result<T> result = await task.ConfigureAwait(false);
         return result; // implicit upcast to Result works here
     }
+
+    private sealed class LegacyTaskDecorator : ITaskDecorator
+    {
+        public async Task<Result> Execute(KeyValuePair<string, Task<Result>> taskItem)
+        {
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                return (await taskItem.Value.ConfigureAwait(false))
+                    .EnsureNotNull($"Result with key {taskItem.Key} returned a null result");
+            }
+            catch (Exception ex)
+            {
+                return Result.Error(ex, "Exception occured");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+        }
+    }
 }
 
 public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
 {
     private readonly Dictionary<string, Task<Result<T>>> _resultset = new();
+    private readonly ITaskDecorator<T> _taskDecorator;
+
+    public AsyncResultDictionaryBuilder() : this(new LegacyTaskDecorator())
+    {
+    }
+
+    public AsyncResultDictionaryBuilder(ITaskDecorator<T> taskDecorator)
+    {
+        ArgumentGuard.IsNotNull(taskDecorator, nameof(taskDecorator));
+
+        _taskDecorator = taskDecorator;
+    }
 
     public IAsyncResultDictionaryBuilder<T> Add(Task<Result<T>> value)
         => Add((_resultset.Count + 1).ToString("D4"), value);
@@ -405,37 +409,9 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
     {
         var results = new Dictionary<string, Task<Result<T>>>();
 
-        foreach (var item in _resultset)
+        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
             results.Add(item.Key, item.Value);
-        }
-
-        return results;
-    }
-
-    public async Task<IReadOnlyDictionary<string, Func<Result<T>>>> BuildLazy()
-    {
-        var results = new Dictionary<string, Func<Result<T>>>();
-
-        foreach (var item in _resultset)
-        {
-            Result<T> result;
-#pragma warning disable CA1031 // Do not catch general exception types
-            try
-            {
-                result = await item.Value.ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                result = Result.Error<T>(ex, "Exception occured");
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
-
-            results.Add(item.Key, () => result);
-            if (!result.IsSuccessful())
-            {
-                break;
-            }
         }
 
         return results;
@@ -445,19 +421,9 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
     {
         var results = new Dictionary<string, Result<T>>();
 
-        foreach (var item in _resultset)
+        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
-            Result<T> result;
-#pragma warning disable CA1031 // Do not catch general exception types
-            try
-            {
-                result = await item.Value.ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                result = Result.Error<T>(ex, "Exception occured");
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
+            var result = await _taskDecorator.Execute(item).ConfigureAwait(false);
 
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
@@ -467,5 +433,23 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
         }
 
         return results;
+    }
+
+    private sealed class LegacyTaskDecorator : ITaskDecorator<T>
+    {
+        public async Task<Result<T>> Execute(KeyValuePair<string, Task<Result<T>>> taskItem)
+        {
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                return (await taskItem.Value.ConfigureAwait(false))
+                    .EnsureNotNull($"Result with key {taskItem.Key} returned a null result");
+            }
+            catch (Exception ex)
+            {
+                return Result.Error<T>(ex, "Exception occured");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+        }
     }
 }

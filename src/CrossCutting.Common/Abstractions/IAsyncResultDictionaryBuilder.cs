@@ -27,7 +27,6 @@ public interface IAsyncResultDictionaryBuilder
     IAsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Task<Result<T>>> value);
     Task<IReadOnlyDictionary<string, Result>> Build();
     IReadOnlyDictionary<string, Task<Result>> BuildDeferred();
-    Task<IReadOnlyDictionary<string, Func<Result>>> BuildLazy();
 }
 
 public interface IAsyncResultDictionaryBuilder<T>
@@ -48,5 +47,4 @@ public interface IAsyncResultDictionaryBuilder<T>
     IAsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Task<Result<T>>> value);
     Task<IReadOnlyDictionary<string, Result<T>>> Build();
     IReadOnlyDictionary<string, Task<Result<T>>> BuildDeferred();
-    Task<IReadOnlyDictionary<string, Func<Result<T>>>> BuildLazy();
 }

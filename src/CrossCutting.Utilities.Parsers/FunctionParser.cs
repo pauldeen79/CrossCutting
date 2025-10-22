@@ -56,13 +56,18 @@ public class FunctionParser : IFunctionParser
             var argumentResults = new ResultDictionaryBuilder()
                 .Add("Name", () => FindFunctionName(remainder.Substring(0, openIndex.Value)))
                 .Add("Arguments", () => AddArguments(results, stringArguments, arguments, settings, context))
-                .Add("TypeArguments", results => AddTypeArguments(results.GetValue<FunctionNameAndTypeArguments>("Name"), typeArguments))
                 .Build();
 
             var error = argumentResults.GetError();
             if (error is not null)
             {
                 return Result.FromExistingResult<FunctionCall>(error);
+            }
+
+            var typeArgumentsResults = AddTypeArguments(argumentResults.GetValue<FunctionNameAndTypeArguments>("Name"), typeArguments);
+            if (!typeArgumentsResults.IsSuccessful())
+            {
+                return Result.FromExistingResult<FunctionCall>(typeArgumentsResults);
             }
 
             var found = $"{argumentResults.GetValue<FunctionNameAndTypeArguments>("Name").RawResult}({stringArguments})";

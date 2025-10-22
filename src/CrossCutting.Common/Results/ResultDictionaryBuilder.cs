@@ -2,23 +2,24 @@
 
 public class ResultDictionaryBuilder : IResultDictionaryBuilder
 {
-    private readonly Dictionary<string, Func<IReadOnlyDictionary<string, Result>, Result>> _resultset = new();
+    private readonly Dictionary<string, Func<Result>> _resultset = new();
+    private readonly IFuncDecorator _funcDecorator;
+
+    public ResultDictionaryBuilder() : this(new LegacyFuncDecorator())
+    {
+    }
+
+    public ResultDictionaryBuilder(IFuncDecorator funcDecorator)
+    {
+        ArgumentGuard.IsNotNull(funcDecorator, nameof(funcDecorator));
+
+        _funcDecorator = funcDecorator;
+    }
 
     public IResultDictionaryBuilder Add(Func<Result> value)
         => Add((_resultset.Count + 1).ToString("D4"), value);
 
     public IResultDictionaryBuilder Add(string name, Func<Result> value)
-    {
-        value = ArgumentGuard.IsNotNull(value, nameof(value));
-
-        _resultset.Add(name, _ => value());
-        return this;
-    }
-
-    public IResultDictionaryBuilder Add(Func<IReadOnlyDictionary<string, Result>, Result> value)
-        => Add((_resultset.Count + 1).ToString("D4"), value);
-
-    public IResultDictionaryBuilder Add(string name, Func<IReadOnlyDictionary<string, Result>, Result> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
@@ -52,20 +53,7 @@ public class ResultDictionaryBuilder : IResultDictionaryBuilder
 
         foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
-            Result result = default!;
-
-#pragma warning disable CA1031 // Do not catch general exception types
-            try
-            {
-                result = item.Value(results)
-                    .EnsureNotNull($"Result instance for item with key {item.Key} is null");
-            }
-            catch (Exception ex)
-            {
-                result = Result.Error(ex, $"Error occured while adding item with key {item.Key}, see Exception for details");
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
-
+            var result = _funcDecorator.Execute(item);
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
@@ -75,25 +63,46 @@ public class ResultDictionaryBuilder : IResultDictionaryBuilder
 
         return results;
     }
+
+    private sealed class LegacyFuncDecorator : IFuncDecorator
+    {
+        public Result Execute(KeyValuePair<string, Func<Result>> taskItem)
+        {
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                return taskItem.Value()
+                    .EnsureNotNull($"Result instance for item with key {taskItem.Key} is null");
+            }
+            catch (Exception ex)
+            {
+                return Result.Error(ex, $"Error occured while adding item with key {taskItem.Key}, see Exception for details");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+        }
+    }
 }
 
 public class ResultDictionaryBuilder<T> : IResultDictionaryBuilder<T>
 {
-    private readonly Dictionary<string, Func<IReadOnlyDictionary<string, Result<T>>, Result<T>>> _resultset = new();
+    private readonly Dictionary<string, Func<Result<T>>> _resultset = new();
+    private readonly IFuncDecorator<T> _funcDecorator;
+
+    public ResultDictionaryBuilder() : this(new LegacyFuncDecorator())
+    {
+    }
+
+    public ResultDictionaryBuilder(IFuncDecorator<T> funcDecorator)
+    {
+        ArgumentGuard.IsNotNull(funcDecorator, nameof(funcDecorator));
+
+        _funcDecorator = funcDecorator;
+    }
 
     public IResultDictionaryBuilder<T> Add(Func<Result<T>> value)
         => Add((_resultset.Count + 1).ToString("D4"), value);
 
     public IResultDictionaryBuilder<T> Add(string name, Func<Result<T>> value)
-    {
-        _resultset.Add(name, _ => value());
-        return this;
-    }
-
-    public IResultDictionaryBuilder<T> Add(Func<IReadOnlyDictionary<string, Result<T>>, Result<T>> value)
-        => Add((_resultset.Count + 1).ToString("D4"), value);
-
-    public IResultDictionaryBuilder<T> Add(string name, Func<IReadOnlyDictionary<string, Result<T>>, Result<T>> value)
     {
         _resultset.Add(name, value);
         return this;
@@ -104,16 +113,7 @@ public class ResultDictionaryBuilder<T> : IResultDictionaryBuilder<T>
 
     public IResultDictionaryBuilder<T> Add(string name, Func<Result> value)
     {
-        _resultset.Add(name, _ => Result.FromExistingResult<T>(value()));
-        return this;
-    }
-
-    public IResultDictionaryBuilder<T> Add(Func<IReadOnlyDictionary<string, Result<T>>, Result> value)
-        => Add((_resultset.Count + 1).ToString("D4"), value);
-
-    public IResultDictionaryBuilder<T> Add(string name, Func<IReadOnlyDictionary<string, Result<T>>, Result> value)
-    {
-        _resultset.Add(name, results => Result.FromExistingResult<T>(value(results)));
+        _resultset.Add(name, () => Result.FromExistingResult<T>(value()));
         return this;
     }
 
@@ -144,21 +144,9 @@ public class ResultDictionaryBuilder<T> : IResultDictionaryBuilder<T>
     {
         var results = new Dictionary<string, Result<T>>();
 
-        Result<T> result = default!;
         foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
-#pragma warning disable CA1031 // Do not catch general exception types
-            try
-            {
-                result = item.Value(results)
-                    .EnsureNotNull($"Result instance for item with key {item.Key} is null");
-            }
-            catch (Exception ex)
-            {
-                result = Result.Error<T>(ex, $"Error occured while adding item with key {item.Key}, see Exception for details");
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
-
+            var result = _funcDecorator.Execute(item);
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
@@ -167,5 +155,23 @@ public class ResultDictionaryBuilder<T> : IResultDictionaryBuilder<T>
         }
 
         return results;
+    }
+
+    private sealed class LegacyFuncDecorator : IFuncDecorator<T>
+    {
+        public Result<T> Execute(KeyValuePair<string, Func<Result<T>>> taskItem)
+        {
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                return taskItem.Value()
+                    .EnsureNotNull($"Result instance for item with key {taskItem.Key} is null");
+            }
+            catch (Exception ex)
+            {
+                return Result.Error<T>(ex, $"Error occured while adding item with key {taskItem.Key}, see Exception for details");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+        }
     }
 }

@@ -3,11 +3,7 @@
 public class ResultDictionaryBuilderTests
 {
     protected static Result NonGenericDelegate() => Result.Success();
-    protected static Result NonGenericArgumentDelegate(IReadOnlyDictionary<string, Result> results) => Result.Success();
     protected static Result<string> GenericDelegate() => Result.Success(string.Empty);
-    protected static Result<string> GenericArgumentDelegate(IReadOnlyDictionary<string, Result> results) => Result.Success(string.Empty);
-    protected static Result<string> GenericArgumentDelegate2(IReadOnlyDictionary<string, Result<string>> results) => Result.Success(string.Empty);
-    protected static Result GenericArgumentDelegate3(IReadOnlyDictionary<string, Result<string>> results) => Result.Success(string.Empty);
     protected static Result<string> GenericErrorDelegate() => Result.Error<string>("Kaboom");
 
     protected static IEnumerable<Result> NonGenericRangeDelegate() => [Result.Success(), Result.Success()];
@@ -35,21 +31,6 @@ public class ResultDictionaryBuilderTests
             }
 
             [Fact]
-            public void Adds_Non_Generic_Result_ArgumentDelegate_Successfully()
-            {
-                // Arrange
-                var sut = new ResultDictionaryBuilder();
-
-                // Act
-                sut.Add("Test", NonGenericArgumentDelegate);
-
-                // Assert
-                var dictionary = sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
-            }
-
-            [Fact]
             public void Adds_Generic_Result_Delegate_Successfully()
             {
                 // Arrange
@@ -62,21 +43,6 @@ public class ResultDictionaryBuilderTests
                 var dictionary = sut.Build();
                 dictionary.Count.ShouldBe(1);
                 dictionary.First().Key.ShouldBe("Test");
-            }
-
-            [Fact]
-            public void Adds_Generic_Result_ArgumentDelegate_Successfully()
-            {
-                // Arrange
-                var sut = new ResultDictionaryBuilder();
-
-                // Act
-                sut.Add(GenericArgumentDelegate);
-
-                // Assert
-                var dictionary = sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("0001");
             }
 
             [Fact]
@@ -245,66 +211,6 @@ public class ResultDictionaryBuilderTests
                 var dictionary = sut.Build();
                 dictionary.Count.ShouldBe(1);
                 dictionary.First().Key.ShouldBe("Test");
-            }
-
-            [Fact]
-            public void Adds_Generic_Result_ArgumentDelegate_Successfully()
-            {
-                // Arrange
-                var sut = new ResultDictionaryBuilder<string>();
-
-                // Act
-                sut.Add("Test", GenericArgumentDelegate2);
-
-                // Assert
-                var dictionary = sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
-            }
-
-            [Fact]
-            public void Adds_Generic_Result_ArgumentDelegate_Without_Specified_Key_Successfully()
-            {
-                // Arrange
-                var sut = new ResultDictionaryBuilder<string>();
-
-                // Act
-                sut.Add(GenericArgumentDelegate2);
-
-                // Assert
-                var dictionary = sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("0001");
-            }
-
-            [Fact]
-            public void Adds_Generic_Result_ArgumentDelegate_Untyped_Successfully()
-            {
-                // Arrange
-                var sut = new ResultDictionaryBuilder<string>();
-
-                // Act
-                sut.Add("Test", GenericArgumentDelegate3);
-
-                // Assert
-                var dictionary = sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("Test");
-            }
-
-            [Fact]
-            public void Adds_Generic_Result_ArgumentDelegate_Untyped_Without_Specified_Key_Successfully()
-            {
-                // Arrange
-                var sut = new ResultDictionaryBuilder<string>();
-
-                // Act
-                sut.Add(GenericArgumentDelegate3);
-
-                // Assert
-                var dictionary = sut.Build();
-                dictionary.Count.ShouldBe(1);
-                dictionary.First().Key.ShouldBe("0001");
             }
 
             [Fact]

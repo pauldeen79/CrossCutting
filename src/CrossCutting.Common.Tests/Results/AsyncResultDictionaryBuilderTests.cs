@@ -652,58 +652,6 @@ public class AsyncResultDictionaryBuilderTests
                 result.Count.ShouldBe(2);
             }
         }
-
-        public class BuildLazy : NonGeneric
-        {
-            [Fact]
-            public async Task Builds_Results_Correctly()
-            {
-                // Arrange
-                var sut = new AsyncResultDictionaryBuilder();
-                sut.Add("Test1", NonGenericTask);
-                sut.Add("Test2", GenericTask);
-
-                // Act
-                var result = await sut.BuildLazy();
-
-                // Assert
-                result.Count.ShouldBe(2);
-            }
-
-            [Fact]
-            public async Task Stops_On_First_NonSuccessful_Result()
-            {
-                // Arrange
-                var sut = new AsyncResultDictionaryBuilder();
-                sut.Add("Test1", NonGenericTask);
-                sut.Add("Test2", GenericErrorTask); // This one returns an error
-                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
-
-                // Act
-                var result = await sut.BuildLazy();
-
-                // Assert
-                result.Count.ShouldBe(2);
-                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
-            }
-
-            [Fact]
-            public async Task Wraps_Exception_In_Error()
-            {
-                // Arrange
-                var sut = new AsyncResultDictionaryBuilder();
-                sut.Add("Test1", NonGenericTask);
-                sut.Add("Test2", GenericExceptionTask); // This one returns an error
-                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
-
-                // Act
-                var result = await sut.BuildLazy();
-
-                // Assert
-                result.Count.ShouldBe(2);
-                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
-            }
-        }
     }
 
     public class Generic : AsyncResultDictionaryBuilderTests
@@ -1164,58 +1112,6 @@ public class AsyncResultDictionaryBuilderTests
 
                 // Assert
                 result.Count.ShouldBe(2);
-            }
-        }
-
-        public class BuildLazy : Generic
-        {
-            [Fact]
-            public async Task Builds_Results_Correctly()
-            {
-                // Arrange
-                var sut = new AsyncResultDictionaryBuilder<string>();
-                sut.Add("Test1", GenericTask);
-                sut.Add("Test2", GenericTask);
-
-                // Act
-                var result = await sut.BuildLazy();
-
-                // Assert
-                result.Count.ShouldBe(2);
-            }
-
-            [Fact]
-            public async Task Stops_On_First_NonSuccessful_Result()
-            {
-                // Arrange
-                var sut = new AsyncResultDictionaryBuilder<string>();
-                sut.Add("Test1", GenericTask);
-                sut.Add("Test2", GenericErrorTask); // This one returns an error
-                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
-
-                // Act
-                var result = await sut.BuildLazy();
-
-                // Assert
-                result.Count.ShouldBe(2);
-                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
-            }
-
-            [Fact]
-            public async Task Wraps_Exception_In_Error()
-            {
-                // Arrange
-                var sut = new AsyncResultDictionaryBuilder<string>();
-                sut.Add("Test1", GenericTask);
-                sut.Add("Test2", GenericExceptionTask); // This one returns an error
-                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
-
-                // Act
-                var result = await sut.BuildLazy();
-
-                // Assert
-                result.Count.ShouldBe(2);
-                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
             }
         }
     }
