@@ -9,5 +9,6 @@ global using CrossCutting.ProcessingPipeline.Decorators;
 global using Microsoft.Extensions.DependencyInjection;
 global using NSubstitute;
 global using NSubstitute.Core;
+global using NSubstitute.ExceptionExtensions;
 global using Shouldly;
 global using Xunit;

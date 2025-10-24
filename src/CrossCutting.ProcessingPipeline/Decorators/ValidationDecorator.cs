@@ -13,8 +13,10 @@ public class ValidationDecorator<TRequest> : IPipelineComponent<TRequest>
 
     public async Task<Result> ProcessAsync(PipelineContext<TRequest> context, CancellationToken token)
     {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+
         ICollection<ValidationResult> validationResults = new List<ValidationResult>();
-        if (!context.TryValidate(validationResults))
+        if (!context.Request!.TryValidate(validationResults))
         {
             return Result.Invalid(validationResults.Select(x => new ValidationError(x.ErrorMessage.ToStringWithDefault(), x.MemberNames)));
         }
