@@ -6,7 +6,8 @@ public class DecoratorTests
     public async Task Can_Decorate_PipelineComponents()
     {
         // Arrange
-        var sut = new Pipeline<DecoratorTestsContext>([Decorate(new MyComponent())]);
+        var decorator = new LoggerDecorator(new ExceptionDecorator(new PassThroughDecorator<DecoratorTestsContext>()));
+        var sut = new Pipeline<DecoratorTestsContext>(decorator, [new MyComponent()]);
         var context = new DecoratorTestsContext();
 
         // Act
@@ -21,9 +22,6 @@ MyComponent called
 
     }
 
-    private static LoggerDecorator Decorate(IPipelineComponent<DecoratorTestsContext> decoratee)
-        => new LoggerDecorator(new ValidationDecorator<DecoratorTestsContext>(new ExceptionDecorator<DecoratorTestsContext>(decoratee)));
-
     private sealed class MyComponent : IPipelineComponent<DecoratorTestsContext>
     {
         public Task<Result> ProcessAsync(PipelineContext<DecoratorTestsContext> context, CancellationToken token)
@@ -35,26 +33,54 @@ MyComponent called
             }, token);
     }
 
-    private sealed class LoggerDecorator : IPipelineComponent<DecoratorTestsContext>
+    private sealed class LoggerDecorator : IPipelineComponentDecorator<DecoratorTestsContext>
     {
-        private readonly IPipelineComponent<DecoratorTestsContext> _decoratee;
+        private readonly IPipelineComponentDecorator<DecoratorTestsContext> _decorator;
 
-        public LoggerDecorator(IPipelineComponent<DecoratorTestsContext> decoratee)
+        public LoggerDecorator(IPipelineComponentDecorator<DecoratorTestsContext> decorator)
         {
-            _decoratee = decoratee;
+            ArgumentGuard.IsNotNull(decorator, nameof(decorator));
+
+            _decorator = decorator;
         }
 
-        public async Task<Result> ProcessAsync(PipelineContext<DecoratorTestsContext> context, CancellationToken token)
+        public async Task<Result> ProcessAsync(Func<Task<Result>> taskDelegate, DecoratorTestsContext request, CancellationToken token)
         {
             try
             {
-                context.Request.AppendLine("--- Start ---");
-                return await _decoratee.ProcessAsync(context, token).ConfigureAwait(false);
+                request.AppendLine("--- Start ---");
+                return await ((Func<Task<Result>>)(() => _decorator.ProcessAsync(taskDelegate, request, token)))().ConfigureAwait(false);
             }
             finally
             {
-                context.Request.AppendLine("--- End ---");
+                request.AppendLine("--- End ---");
             }
+        }
+    }
+
+    private sealed class ExceptionDecorator : IPipelineComponentDecorator<DecoratorTestsContext>
+    {
+        private readonly IPipelineComponentDecorator<DecoratorTestsContext> _decorator;
+
+        public ExceptionDecorator(IPipelineComponentDecorator<DecoratorTestsContext> decorator)
+        {
+            ArgumentGuard.IsNotNull(decorator, nameof(decorator));
+
+            _decorator = decorator;
+        }
+
+        public async Task<Result> ProcessAsync(Func<Task<Result>> taskDelegate, DecoratorTestsContext request, CancellationToken token)
+        {
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                return await ((Func<Task<Result>>)(() => _decorator.ProcessAsync(taskDelegate, request, token)))().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return Result.Error(ex, "Error occured, see Exception for more details");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
     }
 
