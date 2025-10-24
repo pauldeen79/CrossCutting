@@ -652,6 +652,36 @@ public class AsyncResultDictionaryBuilderTests
                 result.Count.ShouldBe(2);
             }
         }
+
+        public class Decorators : NonGeneric
+        {
+            [Fact]
+            public async Task Can_Add_Decorator_To_Add_Functionality()
+            {
+                // Arrange
+                var decorator = new MyTaskDecorator();
+                var sut = new AsyncResultDictionaryBuilder(decorator);
+                sut.Add(NonGenericTask);
+
+                // Act
+                var result = await sut.Build();
+
+                // Assert
+                result.Count.ShouldBe(1);
+                decorator.IsCalled.ShouldBeTrue();
+            }
+
+            private sealed class MyTaskDecorator : ITaskDecorator
+            {
+                public bool IsCalled { get; private set; }
+
+                public async Task<Result> Execute(KeyValuePair<string, Task<Result>> taskItem)
+                {
+                    IsCalled = true;
+                    return await taskItem.Value.ConfigureAwait(false);
+                }
+            }
+        }
     }
 
     public class Generic : AsyncResultDictionaryBuilderTests
@@ -1112,6 +1142,36 @@ public class AsyncResultDictionaryBuilderTests
 
                 // Assert
                 result.Count.ShouldBe(2);
+            }
+        }
+
+        public class Decorators : Generic
+        {
+            [Fact]
+            public async Task Can_Add_Decorator_To_Add_Functionality()
+            {
+                // Arrange
+                var decorator = new MyTaskDecorator<string>();
+                var sut = new AsyncResultDictionaryBuilder<string>(decorator);
+                sut.Add(GenericTask);
+
+                // Act
+                var result = await sut.Build();
+
+                // Assert
+                result.Count.ShouldBe(1);
+                decorator.IsCalled.ShouldBeTrue();
+            }
+
+            private sealed class MyTaskDecorator<T> : ITaskDecorator<T>
+            {
+                public bool IsCalled { get; private set; }
+
+                public async Task<Result<T>> Execute(KeyValuePair<string, Task<Result<T>>> taskItem)
+                {
+                    IsCalled = true;
+                    return await taskItem.Value.ConfigureAwait(false);
+                }
             }
         }
     }

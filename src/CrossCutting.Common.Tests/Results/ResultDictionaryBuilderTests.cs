@@ -177,6 +177,36 @@ public class ResultDictionaryBuilderTests
                 result.First().Value.Exception!.Message.ShouldBe("Kaboom");
             }
         }
+
+        public class Decorators : NonGeneric
+        {
+            [Fact]
+            public void Can_Add_Decorator_To_Add_Functionality()
+            {
+                // Arrange
+                var decorator = new MyFuncDecorator();
+                var sut = new ResultDictionaryBuilder(decorator);
+                sut.Add(NonGenericDelegate);
+
+                // Act
+                var result = sut.Build();
+
+                // Assert
+                result.Count.ShouldBe(1);
+                decorator.IsCalled.ShouldBeTrue();
+            }
+
+            private sealed class MyFuncDecorator : IFuncDecorator
+            {
+                public bool IsCalled { get; private set; }
+
+                public Result Execute(KeyValuePair<string, Func<Result>> taskItem)
+                {
+                    IsCalled = true;
+                    return taskItem.Value();
+                }
+            }
+        }
     }
 
     public class Generic : ResultDictionaryBuilderTests
@@ -343,6 +373,36 @@ public class ResultDictionaryBuilderTests
                 result.First().Value.Status.ShouldBe(ResultStatus.Error);
                 result.First().Value.Exception.ShouldBeOfType<InvalidOperationException>();
                 result.First().Value.Exception!.Message.ShouldBe("Kaboom");
+            }
+        }
+
+        public class Decorators : Generic
+        {
+            [Fact]
+            public void Can_Add_Decorator_To_Add_Functionality()
+            {
+                // Arrange
+                var decorator = new MyFuncDecorator<string>();
+                var sut = new ResultDictionaryBuilder<string>(decorator);
+                sut.Add(GenericDelegate);
+
+                // Act
+                var result = sut.Build();
+
+                // Assert
+                result.Count.ShouldBe(1);
+                decorator.IsCalled.ShouldBeTrue();
+            }
+
+            private sealed class MyFuncDecorator<T> : IFuncDecorator<T>
+            {
+                public bool IsCalled { get; private set; }
+
+                public Result<T> Execute(KeyValuePair<string, Func<Result<T>>> taskItem)
+                {
+                    IsCalled = true;
+                    return taskItem.Value();
+                }
             }
         }
     }
