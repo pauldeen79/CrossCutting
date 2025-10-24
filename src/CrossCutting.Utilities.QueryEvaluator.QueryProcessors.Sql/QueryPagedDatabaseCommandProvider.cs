@@ -62,16 +62,20 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
         var parameterBag = new ParameterBag();
         var builder = new PagedSelectCommandBuilder();
 
-        return (await new AsyncResultDictionaryBuilder()
-            .Add(builder.Select(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
+        var selectResult = await builder.Select(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag).ConfigureAwait(false);
+        var whereResult = await builder.Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag).ConfigureAwait(false);
+        var orderByResult = await builder.OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag).ConfigureAwait(false);
+
+        return new ResultDictionaryBuilder()
+            .Add(() => selectResult)
+            .Add(() => whereResult)
             .Add(() => builder.Distinct(source))
             .Add(() => builder.Top(source, settings, pageSize))
             .Add(() => builder.Offset(source, offset))
             .Add(() => builder.From(source, settings))
-            .Add(builder.Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag))
-            .Add(builder.OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
-            .Build().ConfigureAwait(false))
-            .OnSuccess(_ => builder.AddParameters(source, parameterBag))
+            .Add(() => orderByResult)
+            .Add(() => builder.AddParameters(source, parameterBag))
+            .Build()
             .OnSuccess(_ => builder.Build());
     }
 }
