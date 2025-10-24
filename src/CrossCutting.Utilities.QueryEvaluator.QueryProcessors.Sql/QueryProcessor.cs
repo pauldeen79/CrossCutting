@@ -24,7 +24,9 @@ public class QueryProcessor : IQueryProcessor
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
                 {
-                    var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault()).ConfigureAwait(false)).EnsureValue();
+                    var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault()).ConfigureAwait(false))
+                        .EnsureNotNull()
+                        .EnsureValue();
                     if (!commandResult.IsSuccessful())
                     {
                         return Result.FromExistingResult<IReadOnlyCollection<TResult>>(commandResult);
@@ -43,7 +45,9 @@ public class QueryProcessor : IQueryProcessor
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
                 {
-                    var commandResult = (await CreateCommandAsync(query, context, 1).ConfigureAwait(false)).EnsureValue();
+                    var commandResult = (await CreateCommandAsync(query, context, 1).ConfigureAwait(false))
+                        .EnsureNotNull()
+                        .EnsureValue();
                     if (!commandResult.IsSuccessful())
                     {
                         return Result.FromExistingResult<TResult>(commandResult);
@@ -62,7 +66,9 @@ public class QueryProcessor : IQueryProcessor
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
                 {
-                    var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault()).ConfigureAwait(false)).EnsureValue();
+                    var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault()).ConfigureAwait(false))
+                        .EnsureNotNull()
+                        .EnsureValue();
                     if (!commandResult.IsSuccessful())
                     {
                         return Result.FromExistingResult<IPagedResult<TResult>>(commandResult);

@@ -19,7 +19,7 @@ public class QueryProcessor : IQueryProcessor
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
-        var result = (await GetDataAsync<TResult>(query, context).ConfigureAwait(false)).EnsureValue();
+        var result = await GetDataAsync<TResult>(query, context).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return Result.FromExistingResult<IReadOnlyCollection<TResult>>(result);
@@ -38,7 +38,7 @@ public class QueryProcessor : IQueryProcessor
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
-        var result = (await GetDataAsync<TResult>(query, context).ConfigureAwait(false)).EnsureValue();
+        var result = await GetDataAsync<TResult>(query, context).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return Result.FromExistingResult<TResult>(result);
@@ -61,7 +61,7 @@ public class QueryProcessor : IQueryProcessor
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
 
-        var result = (await GetDataAsync<TResult>(query, context).ConfigureAwait(false)).EnsureValue();
+        var result = await GetDataAsync<TResult>(query, context).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return Result.FromExistingResult<IPagedResult<TResult>>(result);
@@ -77,7 +77,7 @@ public class QueryProcessor : IQueryProcessor
         ));
     }
 
-    private Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query, object? context)
+    private async Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query, object? context)
         where TResult : class
-        => _dataFactory.GetDataAsync<TResult>(query, context);
+        => (await _dataFactory.GetDataAsync<TResult>(query, context).ConfigureAwait(false)).EnsureNotNull().EnsureValue();
 }

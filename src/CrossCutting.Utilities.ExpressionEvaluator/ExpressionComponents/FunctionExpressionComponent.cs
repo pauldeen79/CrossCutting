@@ -46,7 +46,7 @@ public class FunctionExpressionComponent : IExpressionComponent
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var functionCallResult = _functionParser.Parse(context);
+        var functionCallResult = _functionParser.Parse(context).EnsureNotNull().EnsureValue();
         if (functionCallResult.Status == ResultStatus.NotFound)
         {
             return new ExpressionParseResultBuilder()
@@ -54,7 +54,7 @@ public class FunctionExpressionComponent : IExpressionComponent
                 .WithExpressionComponentType(typeof(FunctionExpressionComponent))
                 .WithSourceExpression(context.Expression);
         }
-        else if (!functionCallResult.EnsureValue().IsSuccessful())
+        else if (!functionCallResult.IsSuccessful())
         {
             return new ExpressionParseResultBuilder()
                 .FillFromResult(functionCallResult)

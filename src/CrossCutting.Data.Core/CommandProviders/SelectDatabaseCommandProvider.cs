@@ -23,6 +23,6 @@ public class SelectDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverS
 
     private Result<IDatabaseEntityRetrieverSettings> GetSettings<TSource>()
         => _settingsProviders
-            .Select(x => x.Get<TSource>().EnsureValue())
+            .Select(x => x.Get<TSource>().EnsureNotNull().EnsureValue())
             .WhenNotContinue(() => Result.Error<IDatabaseEntityRetrieverSettings>($"Could not obtain database entity retriever settings for type [{typeof(TSource).FullName}]"));
 }

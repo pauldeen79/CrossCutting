@@ -653,55 +653,33 @@ public class AsyncResultDictionaryBuilderTests
             }
         }
 
-        public class BuildLazy : NonGeneric
+        public class Decorators : NonGeneric
         {
             [Fact]
-            public async Task Builds_Results_Correctly()
+            public async Task Can_Add_Decorator_To_Add_Functionality()
             {
                 // Arrange
-                var sut = new AsyncResultDictionaryBuilder();
-                sut.Add("Test1", NonGenericTask);
-                sut.Add("Test2", GenericTask);
+                var decorator = new MyTaskDecorator();
+                var sut = new AsyncResultDictionaryBuilder(decorator);
+                sut.Add(NonGenericTask);
 
                 // Act
-                var result = await sut.BuildLazy();
+                var result = await sut.Build();
 
                 // Assert
-                result.Count.ShouldBe(2);
+                result.Count.ShouldBe(1);
+                decorator.IsCalled.ShouldBeTrue();
             }
 
-            [Fact]
-            public async Task Stops_On_First_NonSuccessful_Result()
+            private sealed class MyTaskDecorator : ITaskDecorator
             {
-                // Arrange
-                var sut = new AsyncResultDictionaryBuilder();
-                sut.Add("Test1", NonGenericTask);
-                sut.Add("Test2", GenericErrorTask); // This one returns an error
-                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
+                public bool IsCalled { get; private set; }
 
-                // Act
-                var result = await sut.BuildLazy();
-
-                // Assert
-                result.Count.ShouldBe(2);
-                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
-            }
-
-            [Fact]
-            public async Task Wraps_Exception_In_Error()
-            {
-                // Arrange
-                var sut = new AsyncResultDictionaryBuilder();
-                sut.Add("Test1", NonGenericTask);
-                sut.Add("Test2", GenericExceptionTask); // This one returns an error
-                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
-
-                // Act
-                var result = await sut.BuildLazy();
-
-                // Assert
-                result.Count.ShouldBe(2);
-                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
+                public async Task<Result> Execute(KeyValuePair<string, Task<Result>> taskItem)
+                {
+                    IsCalled = true;
+                    return await taskItem.Value.ConfigureAwait(false);
+                }
             }
         }
     }
@@ -739,6 +717,24 @@ public class AsyncResultDictionaryBuilderTests
             }
         }
 
+        public class Add_Task_Unnamed : Generic
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+
+                // Act
+                sut.Add(GenericTask);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldNotBeEmpty();
+            }
+        }
+
         public class Add_Result_Func : Generic
         {
             [Fact]
@@ -767,6 +763,24 @@ public class AsyncResultDictionaryBuilderTests
                 Action a = () => sut.Add("Test", GenericFunc);
                 a.ShouldThrow<ArgumentException>()
                  .Message.ShouldBe("An item with the same key has already been added. Key: Test");
+            }
+        }
+
+        public class Add_Result_Func_Unnamed : Generic
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+
+                // Act
+                sut.Add(GenericFunc);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldNotBeEmpty();
             }
         }
 
@@ -801,6 +815,24 @@ public class AsyncResultDictionaryBuilderTests
             }
         }
 
+        public class Add_Result_Unnamed : Generic
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+
+                // Act
+                sut.Add(GenericResult);
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldNotBeEmpty();
+            }
+        }
+
         public class Add_Value : Generic
         {
             [Fact]
@@ -832,6 +864,24 @@ public class AsyncResultDictionaryBuilderTests
             }
         }
 
+        public class Add_Value_Unnamed : Generic
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+
+                // Act
+                sut.Add("some value");
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldNotBeEmpty();
+            }
+        }
+
         public class Add_Value_Func : Generic
         {
             [Fact]
@@ -860,6 +910,24 @@ public class AsyncResultDictionaryBuilderTests
                 Action a = () => sut.Add("Test", () => "some value");
                 a.ShouldThrow<ArgumentException>()
                  .Message.ShouldBe("An item with the same key has already been added. Key: Test");
+            }
+        }
+
+        public class Add_Value_Func_Unnamed : Generic
+        {
+            [Fact]
+            public async Task Adds_Result_Task_Successfully()
+            {
+                // Arrange
+                var sut = new AsyncResultDictionaryBuilder<string>();
+
+                // Act
+                sut.Add(() => "some value");
+
+                // Assert
+                var dictionary = await sut.Build();
+                dictionary.Count.ShouldBe(1);
+                dictionary.First().Key.ShouldNotBeEmpty();
             }
         }
 
@@ -1077,55 +1145,33 @@ public class AsyncResultDictionaryBuilderTests
             }
         }
 
-        public class BuildLazy : Generic
+        public class Decorators : Generic
         {
             [Fact]
-            public async Task Builds_Results_Correctly()
+            public async Task Can_Add_Decorator_To_Add_Functionality()
             {
                 // Arrange
-                var sut = new AsyncResultDictionaryBuilder<string>();
-                sut.Add("Test1", GenericTask);
-                sut.Add("Test2", GenericTask);
+                var decorator = new MyTaskDecorator<string>();
+                var sut = new AsyncResultDictionaryBuilder<string>(decorator);
+                sut.Add(GenericTask);
 
                 // Act
-                var result = await sut.BuildLazy();
+                var result = await sut.Build();
 
                 // Assert
-                result.Count.ShouldBe(2);
+                result.Count.ShouldBe(1);
+                decorator.IsCalled.ShouldBeTrue();
             }
 
-            [Fact]
-            public async Task Stops_On_First_NonSuccessful_Result()
+            private sealed class MyTaskDecorator<T> : ITaskDecorator<T>
             {
-                // Arrange
-                var sut = new AsyncResultDictionaryBuilder<string>();
-                sut.Add("Test1", GenericTask);
-                sut.Add("Test2", GenericErrorTask); // This one returns an error
-                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
+                public bool IsCalled { get; private set; }
 
-                // Act
-                var result = await sut.BuildLazy();
-
-                // Assert
-                result.Count.ShouldBe(2);
-                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
-            }
-
-            [Fact]
-            public async Task Wraps_Exception_In_Error()
-            {
-                // Arrange
-                var sut = new AsyncResultDictionaryBuilder<string>();
-                sut.Add("Test1", GenericTask);
-                sut.Add("Test2", GenericExceptionTask); // This one returns an error
-                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
-
-                // Act
-                var result = await sut.BuildLazy();
-
-                // Assert
-                result.Count.ShouldBe(2);
-                result.Keys.ToArray().ShouldBeEquivalentTo(new[] { "Test1", "Test2" });
+                public async Task<Result<T>> Execute(KeyValuePair<string, Task<Result<T>>> taskItem)
+                {
+                    IsCalled = true;
+                    return await taskItem.Value.ConfigureAwait(false);
+                }
             }
         }
     }

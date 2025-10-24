@@ -2,7 +2,7 @@
 
 public static class AsyncResultDictionaryBuilderExtensions
 {
-    public static AsyncResultDictionaryBuilder Add(this AsyncResultDictionaryBuilder instance, FunctionCallContext context, int index, string name, CancellationToken token)
+    public static IAsyncResultDictionaryBuilder Add(this IAsyncResultDictionaryBuilder instance, FunctionCallContext context, int index, string name, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         ArgumentGuard.IsNotNull(name, nameof(name));
@@ -10,7 +10,7 @@ public static class AsyncResultDictionaryBuilderExtensions
         return instance.Add(name, context.GetArgumentValueResultAsync(index, name, token));
     }
 
-    public static AsyncResultDictionaryBuilder Add<T>(this AsyncResultDictionaryBuilder instance, FunctionCallContext context, int index, string name, CancellationToken token)
+    public static IAsyncResultDictionaryBuilder Add<T>(this IAsyncResultDictionaryBuilder instance, FunctionCallContext context, int index, string name, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         ArgumentGuard.IsNotNull(name, nameof(name));
@@ -18,7 +18,7 @@ public static class AsyncResultDictionaryBuilderExtensions
         return instance.Add(name, context.GetArgumentValueResultAsync<T>(index, name, token));
     }
 
-    public static AsyncResultDictionaryBuilder<TResult> Add<TResult>(this AsyncResultDictionaryBuilder<TResult> instance, FunctionCallContext context, int index, string name, CancellationToken token)
+    public static IAsyncResultDictionaryBuilder<TResult> Add<TResult>(this IAsyncResultDictionaryBuilder<TResult> instance, FunctionCallContext context, int index, string name, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         ArgumentGuard.IsNotNull(name, nameof(name));
