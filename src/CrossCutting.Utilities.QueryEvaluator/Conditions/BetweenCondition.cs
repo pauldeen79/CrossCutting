@@ -10,9 +10,9 @@ public partial record BetweenCondition
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add(nameof(SourceExpression), SourceExpression.EvaluateAsync(context, token))
-            .Add(nameof(LowerBoundExpression), LowerBoundExpression.EvaluateAsync(context, token))
-            .Add(nameof(UpperBoundExpression), UpperBoundExpression.EvaluateAsync(context, token))
+            .Add(nameof(SourceExpression), () => SourceExpression.EvaluateAsync(context, token))
+            .Add(nameof(LowerBoundExpression), () => LowerBoundExpression.EvaluateAsync(context, token))
+            .Add(nameof(UpperBoundExpression), () => UpperBoundExpression.EvaluateAsync(context, token))
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(results => Between.Evaluate(results.GetValue(nameof(SourceExpression)), results.GetValue(nameof(LowerBoundExpression)), results.GetValue(nameof(UpperBoundExpression))));

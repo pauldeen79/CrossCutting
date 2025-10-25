@@ -13,8 +13,8 @@ public class DateTimeAddDaysMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add(Constants.Instance, context.GetInstanceValueResultAsync<DateTime>(token))
-            .Add(DaysToAdd, context.GetArgumentValueResultAsync<int>(0, "DaysToAdd", token))
+            .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<DateTime>(token))
+            .Add(DaysToAdd, () => context.GetArgumentValueResultAsync<int>(0, "DaysToAdd", token))
             .Build().ConfigureAwait(false))
             .OnSuccess<object?>(results => results.GetValue<DateTime>(Constants.Instance).AddDays(results.GetValue<int>(DaysToAdd)));
     }

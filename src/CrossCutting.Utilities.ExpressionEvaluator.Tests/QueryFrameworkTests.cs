@@ -212,8 +212,8 @@ internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
 
     private static async Task<Result<bool>> IsItemValid(ICondition condition, ExpressionEvaluatorContext context, CancellationToken token)
         => await(await new AsyncResultDictionaryBuilder()
-            .Add(Constants.LeftExpression, condition.LeftExpression.EvaluateAsync(context, token))
-            .Add(Constants.RightExpression, condition.RightExpression.EvaluateAsync(context, token))
+            .Add(Constants.LeftExpression, () => condition.LeftExpression.EvaluateAsync(context, token))
+            .Add(Constants.RightExpression, () => condition.RightExpression.EvaluateAsync(context, token))
             .Build()
             .ConfigureAwait(false))
             .OnSuccessAsync(async results => await condition.Operator

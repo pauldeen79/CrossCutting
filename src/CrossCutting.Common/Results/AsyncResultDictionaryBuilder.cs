@@ -2,7 +2,7 @@
 
 public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
 {
-    private readonly Dictionary<string, Task<Result>> _resultset = new();
+    private readonly Dictionary<string, Func<Task<Result>>> _resultset = new();
     private readonly ITaskDecorator _taskDecorator;
 
     public AsyncResultDictionaryBuilder() : this(new LegacyTaskDecorator())
@@ -16,21 +16,21 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
         _taskDecorator = taskDecorator;
     }
 
-    public IAsyncResultDictionaryBuilder Add<T>(Task<Result<T>> value)
+    public IAsyncResultDictionaryBuilder Add<T>(Func<Task<Result<T>>> value)
         => Add((_resultset.Count + 1).ToString("D4"), value);
 
-    public IAsyncResultDictionaryBuilder Add<T>(string name, Task<Result<T>> value)
+    public IAsyncResultDictionaryBuilder Add<T>(string name, Func<Task<Result<T>>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        _resultset.Add(name, ConvertAsync(value));
+        _resultset.Add(name, () => value().ContinueWith(x => (Result)x.Result, TaskScheduler.Current));
         return this;
     }
 
-    public IAsyncResultDictionaryBuilder Add(Task<Result> value)
+    public IAsyncResultDictionaryBuilder Add(Func<Task<Result>> value)
         => Add((_resultset.Count + 1).ToString("D4"), value);
 
-    public IAsyncResultDictionaryBuilder Add(string name, Task<Result> value)
+    public IAsyncResultDictionaryBuilder Add(string name, Func<Task<Result>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
@@ -45,7 +45,7 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        _resultset.Add(name, Task.Run<Result>(() => value()));
+        _resultset.Add(name, () => Task.Run<Result>(() => value()));
         return this;
     }
 
@@ -56,7 +56,7 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        _resultset.Add(name, Task.Run(() => value()));
+        _resultset.Add(name, () => Task.Run(() => value()));
         return this;
     }
 
@@ -67,7 +67,7 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        _resultset.Add(name, Task.Run<Result>(() => value));
+        _resultset.Add(name, () => Task.Run<Result>(() => value));
         return this;
     }
 
@@ -78,7 +78,7 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        _resultset.Add(name, Task.Run(() => value));
+        _resultset.Add(name, () => Task.Run(() => value));
         return this;
     }
 
@@ -87,7 +87,7 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
 
     public IAsyncResultDictionaryBuilder Add<T>(string name, T value)
     {
-        _resultset.Add(name, Task.Run<Result>(() => Result.Success(value)));
+        _resultset.Add(name, () => Task.Run<Result>(() => Result.Success(value)));
         return this;
     }
 
@@ -98,11 +98,11 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        _resultset.Add(name, Task.Run<Result>(() => Result.Success(value())));
+        _resultset.Add(name, () => Task.Run<Result>(() => Result.Success(value())));
         return this;
     }
 
-    public IAsyncResultDictionaryBuilder AddRange(string nameFormatString, IEnumerable<Task<Result>> value)
+    public IAsyncResultDictionaryBuilder AddRange(string nameFormatString, IEnumerable<Func<Task<Result>>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
@@ -117,7 +117,7 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
         return this;
     }
 
-    public IAsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Task<Result<T>>> value)
+    public IAsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Func<Task<Result<T>>>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
@@ -217,9 +217,9 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
         return this;
     }
 
-    public IReadOnlyDictionary<string, Task<Result>> BuildDeferred()
+    public IReadOnlyDictionary<string, Func<Task<Result>>> BuildDeferred()
     {
-        var results = new Dictionary<string, Task<Result>>();
+        var results = new Dictionary<string, Func<Task<Result>>>();
 
         foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
@@ -246,21 +246,15 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
         return results;
     }
 
-    private static async Task<Result> ConvertAsync<T>(Task<Result<T>> task)
-    {
-        Result<T> result = await task.ConfigureAwait(false);
-        return result; // implicit upcast to Result works here
-    }
-
     private sealed class LegacyTaskDecorator : ITaskDecorator
     {
-        public async Task<Result> Execute(KeyValuePair<string, Task<Result>> taskItem)
+        public async Task<Result> Execute(KeyValuePair<string, Func<Task<Result>>> taskDelegateItem)
         {
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                return (await taskItem.Value.ConfigureAwait(false))
-                    .EnsureNotNull($"Result with key {taskItem.Key} returned a null result");
+                return (await taskDelegateItem.Value().ConfigureAwait(false))
+                    .EnsureNotNull($"Result with key {taskDelegateItem.Key} returned a null result");
             }
             catch (Exception ex)
             {
@@ -273,7 +267,7 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
 
 public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
 {
-    private readonly Dictionary<string, Task<Result<T>>> _resultset = new();
+    private readonly Dictionary<string, Func<Task<Result<T>>>> _resultset = new();
     private readonly ITaskDecorator<T> _taskDecorator;
 
     public AsyncResultDictionaryBuilder() : this(new LegacyTaskDecorator())
@@ -287,10 +281,10 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
         _taskDecorator = taskDecorator;
     }
 
-    public IAsyncResultDictionaryBuilder<T> Add(Task<Result<T>> value)
+    public IAsyncResultDictionaryBuilder<T> Add(Func<Task<Result<T>>> value)
         => Add((_resultset.Count + 1).ToString("D4"), value);
 
-    public IAsyncResultDictionaryBuilder<T> Add(string name, Task<Result<T>> value)
+    public IAsyncResultDictionaryBuilder<T> Add(string name, Func<Task<Result<T>>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
@@ -305,7 +299,7 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        _resultset.Add(name, Task.Run(value));
+        _resultset.Add(name, () => Task.Run(value));
         return this;
     }
 
@@ -316,7 +310,7 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        _resultset.Add(name, Task.FromResult(value));
+        _resultset.Add(name, () => Task.FromResult(value));
         return this;
     }
 
@@ -325,7 +319,7 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
 
     public IAsyncResultDictionaryBuilder<T> Add(string name, T value)
     {
-        _resultset.Add(name, Task.FromResult(Result.Success(value)));
+        _resultset.Add(name, () => Task.FromResult(Result.Success(value)));
         return this;
     }
 
@@ -336,11 +330,11 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
-        _resultset.Add(name, Task.Run(() => Result.Success(value())));
+        _resultset.Add(name, () => Task.Run(() => Result.Success(value())));
         return this;
     }
 
-    public IAsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Task<Result<T>>> value)
+    public IAsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Func<Task<Result<T>>>> value)
     {
         value = ArgumentGuard.IsNotNull(value, nameof(value));
 
@@ -405,9 +399,9 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
         return this;
     }
 
-    public IReadOnlyDictionary<string, Task<Result<T>>> BuildDeferred()
+    public IReadOnlyDictionary<string, Func<Task<Result<T>>>> BuildDeferred()
     {
-        var results = new Dictionary<string, Task<Result<T>>>();
+        var results = new Dictionary<string, Func<Task<Result<T>>>>();
 
         foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
@@ -424,7 +418,6 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
         foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
         {
             var result = await _taskDecorator.Execute(item).ConfigureAwait(false);
-
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
@@ -437,13 +430,13 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
 
     private sealed class LegacyTaskDecorator : ITaskDecorator<T>
     {
-        public async Task<Result<T>> Execute(KeyValuePair<string, Task<Result<T>>> taskItem)
+        public async Task<Result<T>> Execute(KeyValuePair<string, Func<Task<Result<T>>>> taskDelegateItem)
         {
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                return (await taskItem.Value.ConfigureAwait(false))
-                    .EnsureNotNull($"Result with key {taskItem.Key} returned a null result");
+                return (await taskDelegateItem.Value().ConfigureAwait(false))
+                    .EnsureNotNull($"Result with key {taskDelegateItem.Key} returned a null result");
             }
             catch (Exception ex)
             {

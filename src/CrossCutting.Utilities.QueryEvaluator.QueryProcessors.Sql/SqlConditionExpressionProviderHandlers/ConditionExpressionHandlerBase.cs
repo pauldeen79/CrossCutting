@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.SqlConditionExpressionProviderHandlers;
+﻿using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Abstractions;
+
+namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.SqlConditionExpressionProviderHandlers;
 
 public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlConditionExpressionProviderHandler
 {
@@ -39,8 +41,8 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
 
         return (await new AsyncResultDictionaryBuilder<string>()
-            .Add(nameof(condition.SourceExpression), sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
-            .Add(nameof(condition.CompareExpression), sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.CompareExpression), fieldInfo, parameterBag))
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
+            .Add(nameof(condition.CompareExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.CompareExpression), fieldInfo, parameterBag))
             .Build().ConfigureAwait(false))
             .OnSuccess(results => builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} {parameters.Operator} {results.GetValue(nameof(condition.CompareExpression))}"));
     }
@@ -52,8 +54,8 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
         parameters = ArgumentGuard.IsNotNull(parameters, nameof(parameters));
 
         return (await new AsyncResultDictionaryBuilder<string>()
-            .Add(nameof(condition.SourceExpression), sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
-            .Add(nameof(condition.CompareExpression), sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlLikeExpression(condition.CompareExpression, parameters.FormatString), fieldInfo, parameterBag))
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
+            .Add(nameof(condition.CompareExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlLikeExpression(condition.CompareExpression, parameters.FormatString), fieldInfo, parameterBag))
             .Build().ConfigureAwait(false))
             .OnSuccess(results => builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} {parameters.Operator} {results.GetValue(nameof(condition.CompareExpression))}"));
     }
@@ -64,8 +66,8 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
 
         return (await new AsyncResultDictionaryBuilder<string>()
-            .Add(nameof(condition.SourceExpression), sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
-            .AddRange($"{nameof(condition.CompareExpressions)}.{{0}}", condition.CompareExpressions.Select(x => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(x), fieldInfo, parameterBag)))
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
+            .AddRange($"{nameof(condition.CompareExpressions)}.{{0}}", condition.CompareExpressions.Select(x => new Func<Task<Result<string>>>(() => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(x), fieldInfo, parameterBag))))
             .Build().ConfigureAwait(false))
             .OnSuccess(results =>
             {

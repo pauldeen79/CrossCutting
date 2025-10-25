@@ -1342,7 +1342,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
             => (await new AsyncResultDictionaryBuilder()
-                .Add("Input", context.GetArgumentValueResultAsync<string>(0, "Input", token))
+                .Add("Input", () => context.GetArgumentValueResultAsync<string>(0, "Input", token))
                 .Build().ConfigureAwait(false))
                 .OnSuccess<object?>(results => results.GetValue<string>("Input").ToUpperInvariant());
     }
@@ -1356,7 +1356,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
         public async Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context, CancellationToken token)
             => (await new AsyncResultDictionaryBuilder()
-                .Add("Input", context.GetArgumentValueResultAsync<string>(0, "Input", token))
+                .Add("Input", () => context.GetArgumentValueResultAsync<string>(0, "Input", token))
                 .Build().ConfigureAwait(false))
                 .OnSuccess(results => results.GetValue<string>("Input").ToUpperInvariant());
     }

@@ -18,7 +18,7 @@ public abstract class TestBase
         IExpressionEvaluator? evaluator = null,
         ExpressionEvaluatorSettingsBuilder? settings = null)
     {
-        IReadOnlyDictionary<string, Task<Result<object?>>>? dict = null;
+        IReadOnlyDictionary<string, Func<Task<Result<object?>>>>? dict = null;
         if (state is not null)
         {
             dict = new AsyncResultDictionaryBuilder<object?>()
@@ -31,7 +31,7 @@ public abstract class TestBase
 
     protected ExpressionEvaluatorContext CreateContext(
         string? expression,
-        IReadOnlyDictionary<string, Task<Result<object?>>>? state = null,
+        IReadOnlyDictionary<string, Func<Task<Result<object?>>>>? state = null,
         int currentRecursionLevel = 1,
         ExpressionEvaluatorContext? parentContext = null,
         IExpressionEvaluator? evaluator = null,
@@ -109,7 +109,7 @@ public abstract class TestBase
             var success = context.State.TryGetValue(context.Expression, out var dlg);
             if (success && dlg is not null)
             {
-                return await dlg.ConfigureAwait(false);
+                return await dlg().ConfigureAwait(false);
             }
 
             if (context.Expression == $"{Constants.Context}.Length")
@@ -212,7 +212,7 @@ public abstract class TestBase
                 "string" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(string)),
                 "unknown" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok),
                 "object" => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(typeof(object)),
-                Constants.Context => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(context.State?.FirstOrDefault().Value?.Result.Value?.GetType()),
+                Constants.Context => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok).WithResultType(context.State?.FirstOrDefault().Value()?.Result.Value?.GetType()),
                 _ => new ExpressionParseResultBuilder().WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Ok)
             });
 

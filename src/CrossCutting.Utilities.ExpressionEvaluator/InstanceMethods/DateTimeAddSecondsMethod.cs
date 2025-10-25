@@ -13,8 +13,8 @@ public class DateTimeAddSecondsMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add(Constants.Instance, context.GetInstanceValueResultAsync<DateTime>(token))
-            .Add(SecondsToAdd, context.GetArgumentValueResultAsync<int>(0, "SecondsToAdd", token))
+            .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<DateTime>(token))
+            .Add(SecondsToAdd, () => context.GetArgumentValueResultAsync<int>(0, "SecondsToAdd", token))
             .Build().ConfigureAwait(false))
             .OnSuccess<object?>(results => results.GetValue<DateTime>(Constants.Instance).AddSeconds(results.GetValue<int>(SecondsToAdd)));
     }

@@ -13,8 +13,8 @@ public class DateTimeAddMonthsMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add(Constants.Instance, context.GetInstanceValueResultAsync<DateTime>(token))
-            .Add(MonthsToAdd, context.GetArgumentValueResultAsync<int>(0, "MonthsToAdd", token))
+            .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<DateTime>(token))
+            .Add(MonthsToAdd, () => context.GetArgumentValueResultAsync<int>(0, "MonthsToAdd", token))
             .Build().ConfigureAwait(false))
             .OnSuccess<object?>(results => results.GetValue<DateTime>(Constants.Instance).AddMonths(results.GetValue<int>(MonthsToAdd)));
     }

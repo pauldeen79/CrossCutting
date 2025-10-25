@@ -8,7 +8,7 @@ public partial record ContextEvaluatable
 
         if (context.State.TryGetValue(Constants.Context, out var value))
         {
-            return await value.ConfigureAwait(false);
+            return await value().ConfigureAwait(false);
         }
 
         return Result.NoContent<object?>();
