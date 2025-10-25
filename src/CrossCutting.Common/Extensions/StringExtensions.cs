@@ -257,63 +257,80 @@ public static class StringExtensions
         return result.Select(x => trimItems ? x.Trim() : x).ToArray();
     }
 
-    public static string[] SplitDelimited(this string instance, string[] delimiters, char? textQualifier = null, bool leaveTextQualifier = false, bool trimItems = false, bool addDelimiters = false, StringComparison comparisonType = StringComparison.CurrentCulture)
+    public static string[] SplitDelimited(
+        this string instance,
+        string[] delimiters,
+        char? textQualifier = null,
+        bool leaveTextQualifier = false,
+        bool trimItems = false,
+        bool addDelimiters = false,
+        StringComparison comparisonType = StringComparison.CurrentCulture)
     {
         ArgumentGuard.IsNotNull(delimiters, nameof(delimiters));
 
         if (string.IsNullOrEmpty(instance))
-        {
             return Array.Empty<string>();
-        }
 
         var results = new List<string>();
         var currentSegment = new List<char>();
         bool insideQualifier = false;
         char qualifierChar = textQualifier ?? '\0';
 
-        for (int i = 0; i < instance.Length; i++)
+        int i = 0;
+        while (i < instance.Length)
         {
             char c = instance[i];
 
-            // Toggle insideQualifier when encountering a text qualifier
-            if (textQualifier.HasValue && c == qualifierChar)
+            if (ShouldToggleQualifier(textQualifier, c, qualifierChar))
             {
                 insideQualifier = !insideQualifier;
                 if (!leaveTextQualifier)
                 {
-                    continue; // Skip the qualifier if removal is enabled
+                    i++;
+                    continue;
                 }
             }
 
-            // If outside qualifier, check for multi-character delimiters
-            if (!insideQualifier)
+            string matchedDelimiter;
+            if (!insideQualifier && TryMatchDelimiter(instance, i, delimiters, comparisonType, out matchedDelimiter))
             {
-                foreach (var delimiter in from string delimiter in delimiters
-                                          where instance.Substring(i).StartsWith(delimiter, comparisonType)
-                                          select delimiter)
-                {
-                    AddCurrentSegmentToResults(trimItems, addDelimiters, results, currentSegment, delimiter);
-
-#pragma warning disable S127 // "for" loop stop conditions should be invariant
-                    i += delimiter.Length - 1;// Skip the delimiter
-#pragma warning restore S127 // "for" loop stop conditions should be invariant
-#pragma warning disable S907 // "goto" statement should not be used
-                    goto NextChar;// Move to next character
-#pragma warning restore S907 // "goto" statement should not be used
-                }
+                AddCurrentSegmentToResults(trimItems, addDelimiters, results, currentSegment, matchedDelimiter);
+                i += matchedDelimiter.Length;
+                continue;
             }
 
-            // Add character to current segment
             currentSegment.Add(c);
-
-#pragma warning disable S1116 // Empty statements should be removed
-NextChar:;
-#pragma warning restore S1116 // Empty statements should be removed
+            i++;
         }
 
         AddLastSegmentIfNotEmpty(trimItems, results, currentSegment);
-
         return results.ToArray();
+    }
+
+    private static bool ShouldToggleQualifier(char? textQualifier, char currentChar, char qualifierChar)
+    {
+        return textQualifier.HasValue && currentChar == qualifierChar;
+    }
+
+    private static bool TryMatchDelimiter(
+        string instance,
+        int position,
+        string[] delimiters,
+        StringComparison comparisonType,
+        out string matchedDelimiter)
+    {
+        foreach (var delimiter in delimiters)
+        {
+            if (instance.Length - position >= delimiter.Length &&
+                instance.Substring(position, delimiter.Length).Equals(delimiter, comparisonType))
+            {
+                matchedDelimiter = delimiter;
+                return true;
+            }
+        }
+
+        matchedDelimiter = null!;
+        return false;
     }
 
     private static void AddLastSegmentIfNotEmpty(bool trimItems, List<string> results, List<char> currentSegment)
