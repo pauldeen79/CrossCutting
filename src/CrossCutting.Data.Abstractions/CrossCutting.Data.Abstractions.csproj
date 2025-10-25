@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <PackageId>pauldeen79.CrossCutting.Data.Abstractions</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>6.0.2</Version>
-    <PackageVersion>6.0.2</PackageVersion>
+    <Version>6.0.3</Version>
+    <PackageVersion>6.0.3</PackageVersion>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>

@@ -221,7 +221,7 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
     {
         var results = new Dictionary<string, Func<Task<Result>>>();
 
-        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
+        foreach (var item in _resultset)
         {
             results.Add(item.Key, item.Value);
         }
@@ -233,7 +233,7 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
     {
         var results = new Dictionary<string, Result>();
 
-        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
+        foreach (var item in _resultset)
         {
             var result = await _taskDecorator.Execute(item).ConfigureAwait(false);
             results.Add(item.Key, result);
@@ -403,7 +403,7 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
     {
         var results = new Dictionary<string, Func<Task<Result<T>>>>();
 
-        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
+        foreach (var item in _resultset)
         {
             results.Add(item.Key, item.Value);
         }
@@ -415,7 +415,7 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
     {
         var results = new Dictionary<string, Result<T>>();
 
-        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
+        foreach (var item in _resultset)
         {
             var result = await _taskDecorator.Execute(item).ConfigureAwait(false);
             results.Add(item.Key, result);

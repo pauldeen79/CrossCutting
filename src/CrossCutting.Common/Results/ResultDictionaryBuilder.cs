@@ -51,7 +51,7 @@ public class ResultDictionaryBuilder : IResultDictionaryBuilder
     {
         var results = new Dictionary<string, Result>();
 
-        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
+        foreach (var item in _resultset)
         {
             var result = _funcDecorator.Execute(item);
             results.Add(item.Key, result);
@@ -144,7 +144,7 @@ public class ResultDictionaryBuilder<T> : IResultDictionaryBuilder<T>
     {
         var results = new Dictionary<string, Result<T>>();
 
-        foreach (var item in _resultset.OrderBy(kvp => kvp.Key))
+        foreach (var item in _resultset)
         {
             var result = _funcDecorator.Execute(item);
             results.Add(item.Key, result);
