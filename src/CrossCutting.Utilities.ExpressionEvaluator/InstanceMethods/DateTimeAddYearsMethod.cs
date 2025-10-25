@@ -13,8 +13,8 @@ public class DateTimeAddYearsMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add(Constants.Instance, context.GetInstanceValueResultAsync<DateTime>(token))
-            .Add(YearsToAdd, context.GetArgumentValueResultAsync<int>(0, "YearsToAdd", token))
+            .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<DateTime>(token))
+            .Add(YearsToAdd, () => context.GetArgumentValueResultAsync<int>(0, "YearsToAdd", token))
             .Build().ConfigureAwait(false))
             .OnSuccess<object?>(results => results.GetValue<DateTime>(Constants.Instance).AddYears(results.GetValue<int>(YearsToAdd)));
     }

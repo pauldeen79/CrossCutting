@@ -8,7 +8,7 @@ public class NullConditionHandler : ConditionExpressionHandlerBase<NullCondition
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
 
         return (await new AsyncResultDictionaryBuilder<string>()
-            .Add(nameof(condition.SourceExpression), sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
             .Build().ConfigureAwait(false))
             .OnSuccess(results => builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} IS NULL"));
     }

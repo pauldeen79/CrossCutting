@@ -35,10 +35,10 @@ internal sealed class OperatorExpression : ExpressionBase
     public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         var results = await new AsyncResultDictionaryBuilder()
-            .Add(Constants.LeftExpression, Left.Value is not null
+            .Add(Constants.LeftExpression, () => Left.Value is not null
                 ? Left.Value.EvaluateAsync(context, token)
                 : Task.FromResult(Result.FromExistingResult<object?>(Left)))
-            .Add(Constants.RightExpression, Right.Value is not null
+            .Add(Constants.RightExpression, () => Right.Value is not null
                 ? Right.Value.EvaluateAsync(context, token)
                 : Task.FromResult(Result.FromExistingResult<object?>(Right)))
             .Build()

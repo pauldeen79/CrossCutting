@@ -10,7 +10,7 @@ public class StringToUpperMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add(Constants.Instance, context.GetInstanceValueResultAsync<string>(token))
+            .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<string>(token))
             .Build().ConfigureAwait(false))
             .OnSuccess<object?>(results => results.GetValue<string>(Constants.Instance).ToUpper(context.Context.Settings.FormatProvider.ToCultureInfo()));
     }

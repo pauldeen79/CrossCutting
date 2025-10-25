@@ -89,7 +89,7 @@ public abstract class TestBase
 
     protected ExpressionEvaluatorContext CreateContext(
         string? expression,
-        IReadOnlyDictionary<string, Task<Result<object?>>>? state = null,
+        IReadOnlyDictionary<string, Func<Task<Result<object?>>>>? state = null,
         int currentRecursionLevel = 1,
         ExpressionEvaluatorContext? parentContext = null,
         IExpressionEvaluator? evaluator = null,

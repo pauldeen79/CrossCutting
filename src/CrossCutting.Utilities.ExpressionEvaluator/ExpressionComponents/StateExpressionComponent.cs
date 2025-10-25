@@ -11,7 +11,7 @@ public class StateExpressionComponent : IExpressionComponent
         var success = context.State.TryGetValue(context.Expression, out var dlg);
         if (success)
         {
-            return await dlg.ConfigureAwait(false);
+            return await dlg().ConfigureAwait(false);
         }
 
         return Result.Continue<object?>();
@@ -28,7 +28,7 @@ public class StateExpressionComponent : IExpressionComponent
         var success = context.State.TryGetValue(context.Expression, out var dlg);
         if (success)
         {
-            var stateResult = await dlg.ConfigureAwait(false);
+            var stateResult = await dlg().ConfigureAwait(false);
             return result.WithResultType(stateResult.Value?.GetType());
         }
 

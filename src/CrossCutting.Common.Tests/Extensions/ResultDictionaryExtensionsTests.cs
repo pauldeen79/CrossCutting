@@ -259,9 +259,9 @@ public class ResultDictionaryExtensionsTests
         {
             // Arrange
             var sut = await new AsyncResultDictionaryBuilder()
-                .Add(GenericTask)
-                .Add(GenericErrorTask)
-                .Add(NonGenericTask)
+                .Add(() => NonGenericTask)
+                .Add(() => NonGenericErrorTask)
+                .Add(() => NonGenericTask)
                 .Build();
 
             // Act

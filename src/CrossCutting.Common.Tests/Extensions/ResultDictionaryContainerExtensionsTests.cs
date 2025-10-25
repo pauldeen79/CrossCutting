@@ -126,9 +126,9 @@ public class ResultDictionaryContainerExtensionsTests
         {
             // Arrange
             var sut = CreateSut(await new AsyncResultDictionaryBuilder()
-                .Add("Step1", GenericTask)
-                .Add("Step2", GenericErrorTask)
-                .Add("Step3", NonGenericTask)
+                .Add("Step1", () => NonGenericTask)
+                .Add("Step2", () => NonGenericErrorTask)
+                .Add("Step3", () => NonGenericTask)
                 .Build());
 
             // Act
@@ -170,9 +170,9 @@ public class ResultDictionaryContainerExtensionsTests
         {
             // Arrange
             var sut = CreateSut(await new AsyncResultDictionaryBuilder()
-                .Add("Step1", GenericTask)
-                .Add("Step2", GenericErrorTask)
-                .Add("Step3", NonGenericTask)
+                .Add("Step1", () => NonGenericTask)
+                .Add("Step2", () => NonGenericErrorTask)
+                .Add("Step3", () => NonGenericTask)
                 .Build());
 
             // Act

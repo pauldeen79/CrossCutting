@@ -2,10 +2,10 @@
 
 public interface ITaskDecorator
 {
-    Task<Result> Execute(KeyValuePair<string, Task<Result>> taskItem);
+    Task<Result> Execute(KeyValuePair<string, Func<Task<Result>>> taskDelegateItem);
 }
 
 public interface ITaskDecorator<T>
 {
-    Task<Result<T>> Execute(KeyValuePair<string, Task<Result<T>>> taskItem);
+    Task<Result<T>> Execute(KeyValuePair<string, Func<Task<Result<T>>>> taskDelegateItem);
 }

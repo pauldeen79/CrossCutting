@@ -11,8 +11,8 @@ public class StringContainsMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add(Constants.Instance, context.GetInstanceValueResultAsync<string>(token))
-            .Add(Constants.Expression, context.GetArgumentValueResultAsync<string>(0, Constants.Expression, token))
+            .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<string>(token))
+            .Add(Constants.Expression, () => context.GetArgumentValueResultAsync<string>(0, Constants.Expression, token))
             .Build().ConfigureAwait(false))
             .OnSuccess<object?>(results => results.GetValue<string>(Constants.Instance).IndexOf(results.GetValue<string>(Constants.Expression), context.Context.Settings.StringComparison) > -1);
     }

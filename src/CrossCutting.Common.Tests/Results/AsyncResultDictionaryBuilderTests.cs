@@ -2,8 +2,8 @@
 
 public class AsyncResultDictionaryBuilderTests
 {
-    protected static Task<Result> NonGenericTask => Task.FromResult(Result.Success());
-    protected static Task<Result<string>> GenericTask => Task.FromResult(Result.Success(string.Empty));
+    protected static Func<Task<Result>> NonGenericTask => () => Task.FromResult(Result.Success());
+    protected static Func<Task<Result<string>>> GenericTask => () => Task.FromResult(Result.Success(string.Empty));
 
     protected static Func<Result> NonGenericFunc => new Func<Result>(Result.Success);
     protected static Func<Result<string>> GenericFunc => new Func<Result<string>>(() => Result.Success(string.Empty));
@@ -13,9 +13,9 @@ public class AsyncResultDictionaryBuilderTests
     protected static Result<string> GenericResult => Result.Success(string.Empty);
     protected static Result<string> GenericNotSuccesfulResult => Result.Error<string>("Kaboom");
 
-    protected static Task<Result> NonGenericErrorTask => Task.FromResult(Result.Error("Kaboom"));
-    protected static Task<Result<string>> GenericErrorTask => Task.FromResult(Result.Error<string>("Kaboom"));
-    protected static Task<Result<string>> GenericExceptionTask => Task.Run(new Func<Result<string>>(() => throw new InvalidOperationException("Kaboom")));
+    protected static Func<Task<Result>> NonGenericErrorTask => () => Task.FromResult(Result.Error("Kaboom"));
+    protected static Func<Task<Result<string>>> GenericErrorTask => () => Task.FromResult(Result.Error<string>("Kaboom"));
+    protected static Func<Task<Result<string>>> GenericExceptionTask => () => Task.Run(new Func<Result<string>>(() => throw new InvalidOperationException("Kaboom")));
 
     public class NonGeneric : AsyncResultDictionaryBuilderTests
     {
@@ -606,8 +606,8 @@ public class AsyncResultDictionaryBuilderTests
                 // Arrange
                 var sut = new AsyncResultDictionaryBuilder();
                 sut.Add("Test1", NonGenericTask);
-                sut.Add("Test2", GenericErrorTask); // This one returns an error
-                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
+                sut.Add("Test2", NonGenericErrorTask); // This one returns an error
+                sut.Add("Test3", NonGenericTask); // This one will not get executed because of the error
 
                 // Act
                 var result = await sut.Build();
@@ -623,8 +623,8 @@ public class AsyncResultDictionaryBuilderTests
                 // Arrange
                 var sut = new AsyncResultDictionaryBuilder();
                 sut.Add("Test1", NonGenericTask);
-                sut.Add("Test2", GenericExceptionTask); // This one returns an error
-                sut.Add("Test3", GenericTask); // This one will not get executed because of the error
+                sut.Add("Test2", NonGenericErrorTask); // This one returns an error
+                sut.Add("Test3", NonGenericTask); // This one will not get executed because of the error
 
                 // Act
                 var result = await sut.Build();
@@ -675,10 +675,10 @@ public class AsyncResultDictionaryBuilderTests
             {
                 public bool IsCalled { get; private set; }
 
-                public async Task<Result> Execute(KeyValuePair<string, Task<Result>> taskItem)
+                public async Task<Result> Execute(KeyValuePair<string, Func<Task<Result>>> taskDelegateItem)
                 {
                     IsCalled = true;
-                    return await taskItem.Value.ConfigureAwait(false);
+                    return await taskDelegateItem.Value().ConfigureAwait(false);
                 }
             }
         }
@@ -1167,10 +1167,10 @@ public class AsyncResultDictionaryBuilderTests
             {
                 public bool IsCalled { get; private set; }
 
-                public async Task<Result<T>> Execute(KeyValuePair<string, Task<Result<T>>> taskItem)
+                public async Task<Result<T>> Execute(KeyValuePair<string, Func<Task<Result<T>>>> taskDelegateItem)
                 {
                     IsCalled = true;
-                    return await taskItem.Value.ConfigureAwait(false);
+                    return await taskDelegateItem.Value().ConfigureAwait(false);
                 }
             }
         }

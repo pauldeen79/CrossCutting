@@ -15,9 +15,9 @@ public class StringSubstringMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add(Constants.Instance, context.GetInstanceValueResultAsync<string>(token))
-            .Add(Index, context.FunctionCall.GetArgumentValueResultAsync<int>(0, Index, context, token))
-            .Add(Length, context.FunctionCall.GetArgumentValueResultAsync<int?>(1, Length, context, null, token))
+            .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<string>(token))
+            .Add(Index, () => context.FunctionCall.GetArgumentValueResultAsync<int>(0, Index, context, token))
+            .Add(Length, () => context.FunctionCall.GetArgumentValueResultAsync<int?>(1, Length, context, null, token))
             .Build().ConfigureAwait(false))
             .OnSuccess(results =>
             {
