@@ -9,7 +9,7 @@ public partial record NotInCondition
         => (await new AsyncResultDictionaryBuilder()
             .Add(nameof(SourceExpression), () => SourceExpression.EvaluateAsync(context, token))
             .AddRange($"{nameof(CompareExpressions)}.{{0}}", CompareExpressions.Select(x => new Func<Task<Result<object?>>>(() => x.EvaluateAsync(context, token))))
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false))
             .OnSuccess(results => Result.Success(!results.GetValue(nameof(SourceExpression)).In(context.Settings.StringComparison, results.Where(x => x.Key.StartsWith($"{nameof(CompareExpressions)}.")).Select(x => x.Value.GetValue()))));
 }

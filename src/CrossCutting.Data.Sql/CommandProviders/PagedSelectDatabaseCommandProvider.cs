@@ -8,7 +8,7 @@ public class PagedSelectDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntity
         => (await new AsyncResultDictionaryBuilder()
             .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only Select operation is supported"))
             .Add("Settings", GetSettings<TSource>)
-            .Build().ConfigureAwait(false))
+            .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results =>
             {
                 var settings = results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings");

@@ -41,7 +41,7 @@ internal sealed class OperatorExpression : ExpressionBase
             .Add(Constants.RightExpression, () => Right.Value is not null
                 ? Right.Value.EvaluateAsync(context, token)
                 : Task.FromResult(Result.FromExistingResult<object?>(Right)))
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false);
 
         var error = results.GetError();

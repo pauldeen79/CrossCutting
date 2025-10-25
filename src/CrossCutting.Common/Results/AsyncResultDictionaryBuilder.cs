@@ -229,7 +229,7 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
         return results;
     }
 
-    public async Task<IReadOnlyDictionary<string, Result>> Build()
+    public async Task<IReadOnlyDictionary<string, Result>> BuildAsync()
     {
         var results = new Dictionary<string, Result>();
 

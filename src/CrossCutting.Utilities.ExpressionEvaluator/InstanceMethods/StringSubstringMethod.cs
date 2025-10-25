@@ -18,7 +18,7 @@ public class StringSubstringMethod : IMethod
             .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<string>(token))
             .Add(Index, () => context.FunctionCall.GetArgumentValueResultAsync<int>(0, Index, context, token))
             .Add(Length, () => context.FunctionCall.GetArgumentValueResultAsync<int?>(1, Length, context, null, token))
-            .Build().ConfigureAwait(false))
+            .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results =>
             {
                 var sourceValue = results.GetValue<string>(Constants.Instance);

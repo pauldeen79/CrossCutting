@@ -15,6 +15,6 @@ public class QueryDatabaseCommandProvider : IDatabaseCommandProvider<IQuery>
         => (await new AsyncResultDictionaryBuilder()
             .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
             .Add("Command", () => _pagedDatabaseCommandProvider.CreatePagedAsync(source.WithContext(null), operation, 0, 0))
-            .Build().ConfigureAwait(false))
+            .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results => results.GetValue<IPagedDatabaseCommand>("Command").DataCommand);
 }

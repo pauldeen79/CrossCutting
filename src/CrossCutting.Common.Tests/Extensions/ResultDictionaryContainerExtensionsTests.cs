@@ -129,7 +129,7 @@ public class ResultDictionaryContainerExtensionsTests
                 .Add("Step1", () => NonGenericTask)
                 .Add("Step2", () => NonGenericErrorTask)
                 .Add("Step3", () => NonGenericTask)
-                .Build());
+                .BuildAsync());
 
             // Act
             var result = await sut.OnSuccessAsync(results => Task.FromResult(Result.Success()));
@@ -173,7 +173,7 @@ public class ResultDictionaryContainerExtensionsTests
                 .Add("Step1", () => NonGenericTask)
                 .Add("Step2", () => NonGenericErrorTask)
                 .Add("Step3", () => NonGenericTask)
-                .Build());
+                .BuildAsync());
 
             // Act
             var result = await sut.OnSuccessAsync(results => Task.FromResult(Result.Continue<string>()));

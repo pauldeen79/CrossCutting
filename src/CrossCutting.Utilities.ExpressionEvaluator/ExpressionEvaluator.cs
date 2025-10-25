@@ -26,7 +26,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         context = context.FromRoot();
 
         var result = new ResultDictionaryBuilder()
-            .Add(nameof(context.Validate), () => context.Validate<object?>())
+            .Add(() => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Build()
             .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
@@ -48,7 +48,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         context = context.FromRoot();
 
         var result = new ResultDictionaryBuilder()
-            .Add(nameof(context.Validate), () => context.Validate<object?>())
+            .Add(() => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Build()
             .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
@@ -79,7 +79,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
         var result = new ExpressionParseResultBuilder().WithSourceExpression(context.Expression);
 
         var parseResult = new ResultDictionaryBuilder()
-            .Add(nameof(context.Validate), () => context.Validate<object?>())
+            .Add(() => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Build()
             .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
