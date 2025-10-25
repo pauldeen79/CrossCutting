@@ -13,7 +13,6 @@ global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains;
-global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Extensions;
 global using CrossCutting.Utilities.QueryEvaluator.Core.Queries;
 global using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory.Abstractions;
 global using Microsoft.Extensions.DependencyInjection;

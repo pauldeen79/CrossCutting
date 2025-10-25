@@ -1,6 +1,4 @@
-﻿using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Abstractions;
-
-namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.SqlConditionExpressionProviderHandlers;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.SqlConditionExpressionProviderHandlers;
 
 public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlConditionExpressionProviderHandler
 {
