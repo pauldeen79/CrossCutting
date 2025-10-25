@@ -20,7 +20,7 @@ public class IndexerExpressionComponent : IExpressionComponent
         var results = await new AsyncResultDictionaryBuilder()
             .Add(Constants.Expression, () => context.EvaluateTypedAsync<IEnumerable>(match.Groups[Constants.Expression].Value, token))
             .Add(Index, () => context.EvaluateTypedAsync<int>(match.Groups[Index].Value, token))
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false);
 
         return Result.Success(results.GetValue<IEnumerable>(Constants.Expression).OfType<object?>().ElementAtOrDefault(results.GetValue<int>(Index)));

@@ -15,7 +15,7 @@ public class DateTimeAddHoursMethod : IMethod
         return (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<DateTime>(token))
             .Add(HoursToAdd, () => context.GetArgumentValueResultAsync<int>(0, "HoursToAdd", token))
-            .Build().ConfigureAwait(false))
+            .BuildAsync().ConfigureAwait(false))
             .OnSuccess<object?>(results => results.GetValue<DateTime>(Constants.Instance).AddHours(results.GetValue<int>(HoursToAdd)));
     }
 }

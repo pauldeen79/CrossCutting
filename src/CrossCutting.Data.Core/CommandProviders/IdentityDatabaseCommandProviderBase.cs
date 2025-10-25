@@ -9,7 +9,7 @@ public abstract class IdentityDatabaseCommandProviderBase<T>(IEnumerable<IPagedD
         => (await new AsyncResultDictionaryBuilder()
             .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
             .Add("Settings", GetSettings)
-            .Build().ConfigureAwait(false))
+            .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results =>
             {
                 var settings = results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings");

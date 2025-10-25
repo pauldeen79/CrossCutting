@@ -26,7 +26,7 @@ public static class ConditionHelper
 
         return (await new AsyncResultDictionaryBuilder()
             .Add(nameof(firstExpression), () => firstExpression.EvaluateAsync(context, token))
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false))
             .OnSuccess(results => resultDelegate(results.GetValue(nameof(firstExpression))));
     }
@@ -46,7 +46,7 @@ public static class ConditionHelper
         return (await new AsyncResultDictionaryBuilder()
             .Add(nameof(firstExpression), () => firstExpression.EvaluateAsync(context, token))
             .Add(nameof(secondExpression), () => secondExpression.EvaluateAsync(context, token))
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false))
             .OnSuccess(results => resultDelegate(results.GetValue(nameof(firstExpression)), results.GetValue(nameof(secondExpression))));
     }

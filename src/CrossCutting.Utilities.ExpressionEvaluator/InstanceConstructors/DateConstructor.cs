@@ -12,6 +12,6 @@ public class DateConstructor : IConstructor
             .Add<int>(context, 0, "Year", token)
             .Add<int>(context, 1, "Month", token)
             .Add<int>(context, 2, "Day", token)
-            .Build().ConfigureAwait(false))
+            .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results => Result.WrapException<object?>(() => new DateTime(results.GetValue<int>("Year"), results.GetValue<int>("Month"), results.GetValue<int>("Day"), 0, 0, 0, DateTimeKind.Unspecified)));
 }

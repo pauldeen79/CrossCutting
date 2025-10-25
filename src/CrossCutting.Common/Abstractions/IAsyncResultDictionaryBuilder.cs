@@ -25,7 +25,7 @@ public interface IAsyncResultDictionaryBuilder
     IAsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Func<Result<T>>> value);
     IAsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Result<T>> value);
     IAsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<T> value);
-    Task<IReadOnlyDictionary<string, Result>> Build();
+    Task<IReadOnlyDictionary<string, Result>> BuildAsync();
     IReadOnlyDictionary<string, Func<Task<Result>>> BuildDeferred();
 }
 

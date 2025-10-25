@@ -11,7 +11,7 @@ public class StringToCamelCaseMethod : IMethod
 
         return (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<string>(token))
-            .Build().ConfigureAwait(false))
+            .BuildAsync().ConfigureAwait(false))
             .OnSuccess<object?>(results => results.GetValue<string>(Constants.Instance).ToCamelCase(context.Context.Settings.FormatProvider.ToCultureInfo()));
     }
 }

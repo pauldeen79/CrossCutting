@@ -28,7 +28,7 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
             .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
             .Add("Settings", () => GetSettings(source))
             .Add("FieldInfo", () => _fieldInfoProvider.Create(source.Query).EnsureNotNull().EnsureValue())
-            .Build().ConfigureAwait(false))
+            .BuildAsync().ConfigureAwait(false))
             .OnSuccessAsync(results => BuildCommandAsync(
                 source,
                 offset,
@@ -70,7 +70,7 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
             .Add(() => builder.From(source, settings))
             .Add(() => builder.Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag))
             .Add(() => builder.OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
-            .Build().ConfigureAwait(false))
+            .BuildAsync().ConfigureAwait(false))
             .OnSuccess(_ => builder.AddParameters(source, parameterBag))
             .OnSuccess(_ => builder.Build());
     }
