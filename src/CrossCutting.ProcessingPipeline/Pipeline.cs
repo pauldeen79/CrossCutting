@@ -5,7 +5,8 @@ public class Pipeline<TRequest> : IPipeline<TRequest>
     private readonly IPipelineComponentDecorator<TRequest> _decorator;
     private readonly IEnumerable<IPipelineComponent<TRequest>> _components;
 
-    public Pipeline(IEnumerable<IPipelineComponent<TRequest>> components) : this(new PassThroughDecorator<TRequest>(), components)
+    public Pipeline(IEnumerable<IPipelineComponent<TRequest>> components)
+        : this(new PassThroughDecorator<TRequest>(), components)
     {
     }
 
@@ -25,7 +26,10 @@ public class Pipeline<TRequest> : IPipeline<TRequest>
         var results = new List<Result>();
         foreach (var component in _components)
         {
-            var result = await _decorator.ProcessAsync(() => component.ProcessAsync(pipelineContext, token), request, token).ConfigureAwait(false);
+            var result = await _decorator.ProcessAsync(() => component
+                .ProcessAsync(pipelineContext, token), request, token)
+                .ConfigureAwait(false);
+
             results.Add(result);
             if (!result.IsSuccessful())
             {
@@ -47,7 +51,8 @@ public class Pipeline<TRequest, TResponse> : IPipeline<TRequest, TResponse>
     private readonly IPipelineComponentDecorator<TRequest, TResponse> _decorator;
     private readonly IEnumerable<IPipelineComponent<TRequest, TResponse>> _components;
 
-    public Pipeline(IEnumerable<IPipelineComponent<TRequest, TResponse>> components) : this(new PassThroughDecorator<TRequest, TResponse>(), components)
+    public Pipeline(IEnumerable<IPipelineComponent<TRequest, TResponse>> components)
+        : this(new PassThroughDecorator<TRequest, TResponse>(), components)
     {
     }
 
@@ -69,7 +74,10 @@ public class Pipeline<TRequest, TResponse> : IPipeline<TRequest, TResponse>
         var results = new List<Result>();
         foreach (var component in _components)
         {
-            var result = await _decorator.ProcessAsync(() => component.ProcessAsync(pipelineContext, token), request, seed, token).ConfigureAwait(false);
+            var result = await _decorator.ProcessAsync(() => component
+                .ProcessAsync(pipelineContext, token), request, seed, token)
+                .ConfigureAwait(false);
+
             results.Add(result);
             if (!result.IsSuccessful())
             {
