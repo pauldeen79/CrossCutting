@@ -13,7 +13,7 @@ public static class StringExtensions
     /// <returns></returns>
     public static string WhenNullOrEmpty(this string? instance, string whenNullOrEmpty)
     {
-        if (instance is null || string.IsNullOrEmpty(instance))
+        if (instance is null || instance.Length == 0)
         {
             return whenNullOrEmpty;
         }
