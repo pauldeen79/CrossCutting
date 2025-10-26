@@ -1,11 +1,6 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public interface IPipelineComponent<TRequest>
+public interface IPipelineComponent<TCommand>
 {
-    Task<Result> ProcessAsync(PipelineContext<TRequest> context, CancellationToken token);
-}
-
-public interface IPipelineComponent<TRequest, TResponse>
-{
-    Task<Result> ProcessAsync(PipelineContext<TRequest, TResponse> context, CancellationToken token);
+    Task<Result> ExecuteAsync(TCommand commmand, CancellationToken token);
 }

@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.ProcessingPipeline;
+﻿namespace CrossCutting.Commands.Abstractions;
 
 public interface IOrderContainer
 {

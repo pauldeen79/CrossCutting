@@ -7,121 +7,10 @@ public class ProofOfConceptTests
         var pipelineComponent = Substitute.For<IPipelineComponent<object?>>();
 
         pipelineComponent
-            .ProcessAsync(Arg.Any<PipelineContext<object?>>(), Arg.Any<CancellationToken>())
+            .ExecuteAsync(Arg.Any<object?>(), Arg.Any<CancellationToken>())
             .Returns(processDelegate);
 
-        return new Pipeline<object?>([pipelineComponent]);
-    }
-
-    protected static Pipeline<object?, StringBuilder> CreateResponsefulSut(Func<CallInfo, Result> processDelegate)
-    {
-        var pipelineComponent = Substitute.For<IPipelineComponent<object?, StringBuilder>>();
-
-        pipelineComponent
-            .ProcessAsync(Arg.Any<PipelineContext<object?, StringBuilder>>(), Arg.Any<CancellationToken>())
-            .Returns(processDelegate);
-
-        return new Pipeline<object?, StringBuilder>([pipelineComponent]);
-    }
-
-    public class Pipeline_With_Response : ProofOfConceptTests
-    {
-        [Fact]
-        public async Task Can_Process_Pipeline_With_Component()
-        {
-            // Arrange
-            PipelineContext<object?, StringBuilder>? context = null;
-            var sut = CreateResponsefulSut(x =>
-            {
-                context = x.ArgAt<PipelineContext<object?, StringBuilder>>(0);
-                x.ArgAt<PipelineContext<object?, StringBuilder>>(0).Response.Append("2");
-                return Result.Continue<object?>();
-            });
-
-            // Act
-            var result = await sut.ProcessAsync(request: 1, seed: new StringBuilder());
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            context.ShouldNotBeNull();
-            context!.Request.ShouldBeEquivalentTo(1);
-            result.GetValueOrThrow().ToString().ShouldBe("2");
-        }
-
-        [Fact]
-        public async Task Can_Process_Pipeline_Ordered()
-        {
-            // Arrange
-            var component1 = new OrderedComponent(1, "First");
-            var component2 = new OrderedComponent(2, "Second");
-            var sut = new Pipeline<StringBuilder>([component2, component1]);
-            var builder = new StringBuilder();
-
-            // Act
-            var result = await sut.ProcessAsync(builder);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            builder.ToString().ShouldBe(@"First
-Second
-");
-        }
-
-        [Fact]
-        public async Task Can_Abort_Pipeline_With_Component_Using_Non_Success_Status()
-        {
-            // Arrange
-            var sut = CreateResponsefulSut(x => Result.Error<object?>("Kaboom"));
-
-            // Act
-            var result = await sut.ProcessAsync(request: 1);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("An error occured while processing the pipeline. See the inner results for more details.");
-        }
-
-        [Fact]
-        public async Task Can_Abort_Pipeline_With_Component_Using_Non_Success_Status_And_CancellationToken()
-        {
-            // Arrange
-            var sut = CreateResponsefulSut(x => Result.Error<object?>("Kaboom"));
-
-            // Act
-            var result = await sut.ProcessAsync(request: 1, cancellationToken: new CancellationToken());
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("An error occured while processing the pipeline. See the inner results for more details.");
-        }
-
-        [Fact]
-        public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
-        {
-            // Act & Assert
-            Action a = () => _ = new Pipeline<object?>(components: null!);
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("components");
-        }
-
-        private sealed class OrderedComponent : IPipelineComponent<StringBuilder>, IOrderContainer
-        {
-            private readonly string _contents;
-
-            public int Order { get; }
-
-            public OrderedComponent(int order, string contents)
-            {
-                Order = order;
-                _contents = contents;
-            }
-
-            public Task<Result> ProcessAsync(PipelineContext<StringBuilder> context, CancellationToken token)
-            {
-                context.Request.AppendLine(_contents);
-                return Task.FromResult(Result.Success());
-            }
-        }
+        return new Pipeline<object?>(new PassThroughDecorator<object?>(), [pipelineComponent]);
     }
 
     public class Pipeline_Without_Response : ProofOfConceptTests
@@ -130,20 +19,19 @@ Second
         public async Task Can_Process_Pipeline_With_Component()
         {
             // Arrange
-            PipelineContext<object?>? context = null;
+            object? command = null;
             var sut = CreateResponselessSut(x =>
             {
-                context = x.ArgAt<PipelineContext<object?>>(0);
+                command = x.ArgAt<object?>(0);
                 return Result.Continue<object?>();
             });
 
             // Act
-            var result = await sut.ProcessAsync(request: 1);
+            var result = await sut.ExecuteAsync(command: 1);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.ShouldNotBeNull();
-            context!.Request.ShouldBeEquivalentTo(1);
+            command.ShouldBeEquivalentTo(1);
         }
 
         [Fact]
@@ -153,7 +41,7 @@ Second
             var sut = CreateResponselessSut(x => Result.Error<object?>("Kaboom"));
 
             // Act
-            var result = await sut.ProcessAsync(request: 1);
+            var result = await sut.ExecuteAsync(command: 1);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -167,7 +55,7 @@ Second
             var sut = CreateResponselessSut(x => Result.Error<object?>("Kaboom"));
 
             // Act
-            var result = await sut.ProcessAsync(request: 1, new CancellationToken());
+            var result = await sut.ExecuteAsync(command: 1, new CancellationToken());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -175,16 +63,25 @@ Second
         }
 
         [Fact]
+        public void Constructing_Pipeline_Using_Null_Decorator_Throws_ArgumentNullException()
+        {
+            // Act & Assert
+            Action a = () => _ = new Pipeline<object?>(decorator: null!, components: []);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("decorator");
+        }
+
+        [Fact]
         public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new Pipeline<object?>(components: null!);
+            Action a = () => _ = new Pipeline<object?>(new PassThroughDecorator<object?>(), components: null!);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("components");
         }
     }
 
-    public class PipelineComponent_Without_Context()
+    public class PipelineComponent()
     {
         [Fact]
         public async Task Can_Call_Process_Without_CancellationToken()
@@ -192,32 +89,12 @@ Second
             // Arrange
             var sut = Substitute.For<IPipelineComponent<object?>>();
             sut
-                .ProcessAsync(Arg.Any<PipelineContext<object?>>(), Arg.Any<CancellationToken>())
+                .ExecuteAsync(Arg.Any<object?>(), Arg.Any<CancellationToken>())
                 .Returns(Result.NotImplemented());
-            var context = new PipelineContext<object?>(1);
+            var command = 1;
 
             // Act
-            var result = await sut.ProcessAsync(context);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.NotImplemented);
-        }
-    }
-
-    public class PipelineComponent_With_Context()
-    {
-        [Fact]
-        public async Task Can_Call_Process_Without_CancellationToken()
-        {
-            // Arrange
-            var sut = Substitute.For<IPipelineComponent<object?, StringBuilder>>();
-            sut
-                .ProcessAsync(Arg.Any<PipelineContext<object?, StringBuilder>>(), Arg.Any<CancellationToken>())
-                .Returns(Result.NotImplemented());
-            var context = new PipelineContext<object?, StringBuilder>(1, new StringBuilder());
-
-            // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotImplemented);

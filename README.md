@@ -5,12 +5,14 @@ This repository consists of the following packages:
 
 | Package name                               | Description                                                                                                                                                                              |
 | :----------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CroddCutting.Commands                      | Generic command handler                                                                                                                                                                  |
 | CrossCutting.Common                        | Provider for system date and user name, some useful extension methods on System.Object and System.String, and the Result class                                                           |
 | CrossCutting.Common.Testing                | Helps you test constructors on null checks, and construct instances with mocks                                                                                                           |
 | CrossCutting.Data.Abstractions             | Abstraction for executing database commands using System.Data namespace (IDbConnection and IDbCommand)                                                                                   |
 | CrossCutting.Data.Core                     | Default implementation of database commands                                                                                                                                              |
 | CrossCutting.Data.Sql                      | Extension methods for working with database commands in System.Data namespace (IDbConnection)                                                                                            |
 | CrossCutting.DataTableDumper               | Produces flat-text data tables from objects                                                                                                                                              |
+| CrossCutting.ProcessingPipeline            | Generic pipeline with dependency injection-feeded multiple components                                                                                                                    |
 | CrossCutting.Utilities.ObjectDumper        | Produces readable flat-text representation from objects, for use in logging                                                                                                              |
 | CrossCutting.Utilities.Parsers             | Parsers for pipe-delmited data table strings, TSQL INSERT INTO statements, expression strings, function strings, math expressions and formattable strings (dynamic interpolated strings) |
 | CrossCutting.Utilities.ExpressionEvaluator | Expression evaluator to dynamically evaluate strings, with support for all kinds of stuff, like: operators, functions, mathematic expressions, and so on                                 |
@@ -142,3 +144,11 @@ Design decisions:
 
 Queries are data transfer objects (C# classes) which you can fill with filters, paging information and sorting information.
 These queries can then be processed by a query processor, which can use any source like an in-memory one, RDBMS or external API.
+
+# Upgrade ProcessingPipeline from 10.x to 11.x
+
+* IPipeline<TRequest, TResponse> is gone, you can only use IPipeline<TRequest>.
+* The result extension method ProcessResult is gone, you need to add a command decorator to validate the response builder in the request.
+
+Note that if you want to get a response, but you don't want to construct the reponse from outside (because the pipeline needs to create the response), then wrap the request and the response in a context.
+This way, you have control where the response is constructed. (maybe by the context class itelf, or by the caller)

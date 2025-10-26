@@ -11,7 +11,7 @@ public class DecoratorTests
         var context = new DecoratorTestsContext();
 
         // Act
-        var result = await sut.ProcessAsync(context);
+        var result = await sut.ExecuteAsync(context);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -24,10 +24,10 @@ MyComponent called
 
     private sealed class MyComponent : IPipelineComponent<DecoratorTestsContext>
     {
-        public Task<Result> ProcessAsync(PipelineContext<DecoratorTestsContext> context, CancellationToken token)
+        public Task<Result> ExecuteAsync(DecoratorTestsContext command, CancellationToken token)
             => Task.Run(() =>
             {
-                context.Request.AppendLine("MyComponent called");
+                command.AppendLine("MyComponent called");
 
                 return Result.Success();
             }, token);
@@ -44,16 +44,16 @@ MyComponent called
             _decorator = decorator;
         }
 
-        public async Task<Result> ProcessAsync(Func<Task<Result>> taskDelegate, DecoratorTestsContext request, CancellationToken token)
+        public async Task<Result> ExecuteAsync(IPipelineComponent<DecoratorTestsContext> component, DecoratorTestsContext command, CancellationToken token)
         {
             try
             {
-                request.AppendLine("--- Start ---");
-                return await ((Func<Task<Result>>)(() => _decorator.ProcessAsync(taskDelegate, request, token)))().ConfigureAwait(false);
+                command.AppendLine("--- Start ---");
+                return await ((Func<Task<Result>>)(() => _decorator.ExecuteAsync(component, command, token)))().ConfigureAwait(false);
             }
             finally
             {
-                request.AppendLine("--- End ---");
+                command.AppendLine("--- End ---");
             }
         }
     }
@@ -69,12 +69,12 @@ MyComponent called
             _decorator = decorator;
         }
 
-        public async Task<Result> ProcessAsync(Func<Task<Result>> taskDelegate, DecoratorTestsContext request, CancellationToken token)
+        public async Task<Result> ExecuteAsync(IPipelineComponent<DecoratorTestsContext> component, DecoratorTestsContext command, CancellationToken token)
         {
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                return await ((Func<Task<Result>>)(() => _decorator.ProcessAsync(taskDelegate, request, token)))().ConfigureAwait(false);
+                return await ((Func<Task<Result>>)(() => _decorator.ExecuteAsync(component, command, token)))().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
