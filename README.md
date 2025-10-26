@@ -150,7 +150,8 @@ These queries can then be processed by a query processor, which can use any sour
 * IPipeline<TRequest, TResponse> is gone, you can only use IPipeline<TCommand>.
 * TRequest is renamed to TCommand
 * ProcessAsync is renamed to ExecuteAsync
-* The result extension method ProcessResult is gone, you either need to add a command decorator to validate the response builder in the command, or add a pipeline component with highest order, so it's processed as last.
+* The PipelineContext is gone, it only wrapped the request/command.
+* The result extension method ProcessResult is gone, you need to add a pipeline component with highest order which performs the validation, so it's processed as last.
 
-Note that if you want to get a response, but you don't want to construct the reponse from outside (because the pipeline needs to create the response), then wrap the request and the response in a context.
+Note that if you want to get a response, but you don't want to construct the response from outside (because the pipeline needs to create the response), then wrap the command and the response in a context.
 This way, you have control where the response is constructed. (maybe by the context class itelf, or by the caller)
