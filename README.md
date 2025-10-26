@@ -147,7 +147,9 @@ These queries can then be processed by a query processor, which can use any sour
 
 # Upgrade ProcessingPipeline from 10.x to 11.x
 
-* IPipeline<TRequest, TResponse> is gone, you can only use IPipeline<TRequest>.
+* IPipeline<TRequest, TResponse> is gone, you can only use IPipeline<TCommand>.
+* TRequest is renamed to TCommand
+* ProcessAsync is renamed to ExecuteAsync
 * The result extension method ProcessResult is gone, you need to add a command decorator to validate the response builder in the request.
 
 Note that if you want to get a response, but you don't want to construct the reponse from outside (because the pipeline needs to create the response), then wrap the request and the response in a context.

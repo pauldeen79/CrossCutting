@@ -11,7 +11,7 @@ public class CommandService : ICommandService
         ArgumentGuard.IsNotNull(handlers, nameof(handlers));
 
         _decorator = decorator;
-        _handlers = handlers.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
+        _handlers = handlers;
     }
 
     public async Task<Result> ExecuteAsync<TCommand>(TCommand command, CancellationToken token)
