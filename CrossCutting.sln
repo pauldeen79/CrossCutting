@@ -83,6 +83,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.Oper
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql", "src\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.csproj", "{AC0D03A8-B58A-4E64-848C-BADC72D6A424}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Commands", "src\CrossCutting.Commands\CrossCutting.Commands.csproj", "{05295429-18E4-40CB-8746-327418D9252F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Commands.Tests", "src\CrossCutting.Commands.Tests\CrossCutting.Commands.Tests.csproj", "{D6305EAA-9E58-41E9-B44A-002B0F32B350}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -229,6 +233,14 @@ Global
 		{AC0D03A8-B58A-4E64-848C-BADC72D6A424}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC0D03A8-B58A-4E64-848C-BADC72D6A424}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC0D03A8-B58A-4E64-848C-BADC72D6A424}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05295429-18E4-40CB-8746-327418D9252F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05295429-18E4-40CB-8746-327418D9252F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05295429-18E4-40CB-8746-327418D9252F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05295429-18E4-40CB-8746-327418D9252F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6305EAA-9E58-41E9-B44A-002B0F32B350}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6305EAA-9E58-41E9-B44A-002B0F32B350}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6305EAA-9E58-41E9-B44A-002B0F32B350}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6305EAA-9E58-41E9-B44A-002B0F32B350}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
