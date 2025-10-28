@@ -2,10 +2,10 @@
 
 public class Pipeline<TCommand> : IPipeline<TCommand>
 {
-    private readonly IPipelineComponentDecorator<TCommand> _decorator;
+    private readonly IPipelineComponentDecorator _decorator;
     private readonly IEnumerable<IPipelineComponent<TCommand>> _components;
 
-    public Pipeline(IPipelineComponentDecorator<TCommand> decorator, IEnumerable<IPipelineComponent<TCommand>> components)
+    public Pipeline(IPipelineComponentDecorator decorator, IEnumerable<IPipelineComponent<TCommand>> components)
     {
         ArgumentGuard.IsNotNull(decorator, nameof(decorator));
         ArgumentGuard.IsNotNull(components, nameof(components));

@@ -10,7 +10,7 @@ public class ProofOfConceptTests
             .ExecuteAsync(Arg.Any<object?>(), Arg.Any<CancellationToken>())
             .Returns(processDelegate);
 
-        return new Pipeline<object?>(new PassThroughDecorator<object?>(), [pipelineComponent]);
+        return new Pipeline<object?>(new PassThroughDecorator(), [pipelineComponent]);
     }
 
     public class Pipeline_Without_Response : ProofOfConceptTests
@@ -75,7 +75,7 @@ public class ProofOfConceptTests
         public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new Pipeline<object?>(new PassThroughDecorator<object?>(), components: null!);
+            Action a = () => _ = new Pipeline<object?>(new PassThroughDecorator(), components: null!);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("components");
         }
