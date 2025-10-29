@@ -23,7 +23,7 @@ public class CommandService : ICommandService
         return handlers.Length switch
         {
             0 => Result.NotSupported($"No command handler is known for command type {typeof(TCommand).FullName}"),
-            1 => await _decorator.ExecuteAsync(handlers[0], command, token).ConfigureAwait(false),
+            1 => await _decorator.ExecuteAsync(handlers[0], command, this, token).ConfigureAwait(false),
             _ => Result.NotSupported($"{handlers.Length} command handlers are known for command type {typeof(TCommand).FullName}, only 1 can be present"),
         };
     }
@@ -37,7 +37,7 @@ public class CommandService : ICommandService
         return handlers.Length switch
         {
             0 => Result.NotSupported<TResponse>($"No command handler is known for command type {typeof(TCommand).FullName}"),
-            1 => await _decorator.ExecuteAsync(handlers[0], command, token).ConfigureAwait(false),
+            1 => await _decorator.ExecuteAsync(handlers[0], command, this, token).ConfigureAwait(false),
             _ => Result.NotSupported<TResponse>($"{handlers.Length} command handlers are known for command type {typeof(TCommand).FullName}, only 1 can be present"),
         };
     }

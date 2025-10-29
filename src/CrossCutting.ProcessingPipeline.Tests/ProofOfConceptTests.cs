@@ -7,7 +7,7 @@ public class ProofOfConceptTests
         var pipelineComponent = Substitute.For<IPipelineComponent<object?>>();
 
         pipelineComponent
-            .ExecuteAsync(Arg.Any<object?>(), Arg.Any<CancellationToken>())
+            .ExecuteAsync(Arg.Any<object?>(), Arg.Any<ICommandService>(), Arg.Any<CancellationToken>())
             .Returns(processDelegate);
 
         return new Pipeline<object?>(new PassThroughDecorator(), [pipelineComponent]);
@@ -25,9 +25,10 @@ public class ProofOfConceptTests
                 command = x.ArgAt<object?>(0);
                 return Result.Continue<object?>();
             });
+            var commandService = Substitute.For<ICommandService>();
 
             // Act
-            var result = await sut.ExecuteAsync(command: 1);
+            var result = await sut.ExecuteAsync(command: 1, commandService);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -39,9 +40,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var sut = CreateResponselessSut(x => Result.Error<object?>("Kaboom"));
+            var commandService = Substitute.For<ICommandService>();
 
             // Act
-            var result = await sut.ExecuteAsync(command: 1);
+            var result = await sut.ExecuteAsync(command: 1, commandService);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -53,9 +55,10 @@ public class ProofOfConceptTests
         {
             // Arrange
             var sut = CreateResponselessSut(x => Result.Error<object?>("Kaboom"));
+            var commandService = Substitute.For<ICommandService>();
 
             // Act
-            var result = await sut.ExecuteAsync(command: 1, new CancellationToken());
+            var result = await sut.ExecuteAsync(command: 1, commandService, new CancellationToken());
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -89,12 +92,13 @@ public class ProofOfConceptTests
             // Arrange
             var sut = Substitute.For<IPipelineComponent<object?>>();
             sut
-                .ExecuteAsync(Arg.Any<object?>(), Arg.Any<CancellationToken>())
+                .ExecuteAsync(Arg.Any<object?>(), Arg.Any<ICommandService>(), Arg.Any<CancellationToken>())
                 .Returns(Result.NotImplemented());
             var command = 1;
+            var commandService = Substitute.For<ICommandService>();
 
             // Act
-            var result = await sut.ExecuteAsync(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, commandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotImplemented);

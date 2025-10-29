@@ -45,7 +45,8 @@ public class CommandServiceTests
         {
             // Arrange
             var handler = Substitute.For<ICommandHandler<MyCommand>>();
-            handler.ExecuteAsync(Arg.Any<MyCommand>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            handler.ExecuteAsync(Arg.Any<MyCommand>(), Arg.Any<ICommandService>(), Arg.Any<CancellationToken>())
+                   .Returns(Result.Success());
             var command = new MyCommand();
             var sut = new CommandService(new PassThroughDecorator(), [handler]);
 
@@ -96,7 +97,8 @@ public class CommandServiceTests
         {
             // Arrange
             var handler = Substitute.For<ICommandHandler<MyCommand, MyResponse>>();
-            handler.ExecuteAsync(Arg.Any<MyCommand>(), Arg.Any<CancellationToken>()).Returns(Result.Success(new MyResponse()));
+            handler.ExecuteAsync(Arg.Any<MyCommand>(), Arg.Any<ICommandService>(), Arg.Any<CancellationToken>())
+                   .Returns(Result.Success(new MyResponse()));
             var command = new MyCommand();
             var sut = new CommandService(new PassThroughDecorator(), [handler]);
 

@@ -9,9 +9,10 @@ public class DecoratorTests
         var decorator = new LoggerDecorator(new ExceptionDecorator(new PassThroughDecorator()));
         var sut = new Pipeline<DecoratorTestsContext>(decorator, [new MyComponent()]);
         var context = new DecoratorTestsContext();
+        var commandService = Substitute.For<ICommandService>();
 
         // Act
-        var result = await sut.ExecuteAsync(context);
+        var result = await sut.ExecuteAsync(context, commandService);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -24,7 +25,7 @@ MyComponent called
 
     private sealed class MyComponent : IPipelineComponent<DecoratorTestsContext>
     {
-        public Task<Result> ExecuteAsync(DecoratorTestsContext command, CancellationToken token)
+        public Task<Result> ExecuteAsync(DecoratorTestsContext command, ICommandService commandService, CancellationToken token)
             => Task.Run(() =>
             {
                 command.AppendLine("MyComponent called");
@@ -44,7 +45,7 @@ MyComponent called
             _decorator = decorator;
         }
 
-        public async Task<Result> ExecuteAsync<TCommand>(IPipelineComponent<TCommand> component, TCommand command, CancellationToken token)
+        public async Task<Result> ExecuteAsync<TCommand>(IPipelineComponent<TCommand> component, TCommand command, ICommandService commandService, CancellationToken token)
         {
             try
             {
@@ -52,7 +53,7 @@ MyComponent called
                 {
                     dtc.AppendLine("--- Start ---");
                 }
-                return await ((Func<Task<Result>>)(() => _decorator.ExecuteAsync(component, command, token)))().ConfigureAwait(false);
+                return await ((Func<Task<Result>>)(() => _decorator.ExecuteAsync(component, command, commandService, token)))().ConfigureAwait(false);
             }
             finally
             {
@@ -75,12 +76,12 @@ MyComponent called
             _decorator = decorator;
         }
 
-        public async Task<Result> ExecuteAsync<TCommand>(IPipelineComponent<TCommand> component, TCommand command, CancellationToken token)
+        public async Task<Result> ExecuteAsync<TCommand>(IPipelineComponent<TCommand> component, TCommand command, ICommandService commandService, CancellationToken token)
         {
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                return await ((Func<Task<Result>>)(() => _decorator.ExecuteAsync(component, command, token)))().ConfigureAwait(false);
+                return await ((Func<Task<Result>>)(() => _decorator.ExecuteAsync(component, command, commandService, token)))().ConfigureAwait(false);
             }
             catch (Exception ex)
             {

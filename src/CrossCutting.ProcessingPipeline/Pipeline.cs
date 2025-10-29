@@ -14,14 +14,14 @@ public class Pipeline<TCommand> : IPipeline<TCommand>
         _components = components.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
     }
 
-    public async Task<Result> ExecuteAsync(TCommand command, CancellationToken token)
+    public async Task<Result> ExecuteAsync(TCommand command, ICommandService commandService, CancellationToken token)
     {
         ArgumentGuard.IsNotNull(command, nameof(command));
 
         var results = new List<Result>();
         foreach (var component in _components)
         {
-            var result = await _decorator.ExecuteAsync(component, command, token)
+            var result = await _decorator.ExecuteAsync(component, command, commandService, token)
                 .ConfigureAwait(false);
 
             results.Add(result);
