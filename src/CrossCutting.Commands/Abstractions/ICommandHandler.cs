@@ -9,10 +9,10 @@ public interface ICommandHandler
 
 public interface ICommandHandler<in TCommand> : ICommandHandler
 {
-    Task<Result> ExecuteAsync(TCommand command, CancellationToken token);
+    Task<Result> ExecuteAsync(TCommand command, ICommandService commandService, CancellationToken token);
 }
 
 public interface ICommandHandler<in TCommand, TResponse> : ICommandHandler
 {
-    Task<Result<TResponse>> ExecuteAsync(TCommand command, CancellationToken token);
+    Task<Result<TResponse>> ExecuteAsync(TCommand command, ICommandService commandService, CancellationToken token);
 }

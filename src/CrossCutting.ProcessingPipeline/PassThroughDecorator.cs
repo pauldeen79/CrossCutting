@@ -1,11 +1,11 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public class PassThroughDecorator<TCommand> : IPipelineComponentDecorator<TCommand>
+public class PassThroughDecorator : IPipelineComponentDecorator
 {
-    public Task<Result> ExecuteAsync(IPipelineComponent<TCommand> component, TCommand command, CancellationToken token)
+    public Task<Result> ExecuteAsync<TCommand>(IPipelineComponent<TCommand> component, TCommand command, ICommandService commandService, CancellationToken token)
     {
         component = ArgumentGuard.IsNotNull(component, nameof(component));
 
-        return component.ExecuteAsync(command, token);
+        return component.ExecuteAsync(command, commandService, token);
     }
 }
