@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class OverrideQueryEntities(IPipelineService pipelineService) : QueryEvaluatorCSharpClassBase(pipelineService)
+public class OverrideQueryEntities(ICommandService commandService) : QueryEvaluatorCSharpClassBase(commandService)
 {
     public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}/Queries";
 

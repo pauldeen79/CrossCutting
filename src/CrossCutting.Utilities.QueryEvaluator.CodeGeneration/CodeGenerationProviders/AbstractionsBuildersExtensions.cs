@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class AbstractionsBuildersExtensions(IPipelineService pipelineService) : QueryEvaluatorCSharpClassBase(pipelineService)
+public class AbstractionsBuildersExtensions(ICommandService commandService) : QueryEvaluatorCSharpClassBase(commandService)
 {
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuilderExtensionsAsync(GetAbstractionsInterfacesAsync(), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Abstractions.Builders", $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Abstractions", CurrentNamespace);
 

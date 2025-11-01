@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class CoreBuilders(IPipelineService pipelineService) : ExpressionEvaluatorCSharpClassBase(pipelineService)
+public class CoreBuilders(ICommandService commandService) : ExpressionEvaluatorCSharpClassBase(commandService)
 {
     public override string Path => $"{Constants.Namespaces.UtilitiesExpressionEvaluator}/Builders";
 

@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.Parsers.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class CoreBuilders(IPipelineService pipelineService) : CrossCuttingCSharpClassBase(pipelineService)
+public class CoreBuilders(ICommandService commandService) : CrossCuttingCSharpClassBase(commandService)
 {
     public override string Path => $"{Constants.Namespaces.UtilitiesParsers}/Builders";
 

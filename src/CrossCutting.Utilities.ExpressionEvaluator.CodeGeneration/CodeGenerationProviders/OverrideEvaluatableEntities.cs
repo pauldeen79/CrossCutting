@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class OverrideEvaluatableEntities(IPipelineService pipelineService) : ExpressionEvaluatorCSharpClassBase(pipelineService)
+public class OverrideEvaluatableEntities(ICommandService commandService) : ExpressionEvaluatorCSharpClassBase(commandService)
 {
     public override string Path => $"{Constants.Namespaces.UtilitiesExpressionEvaluator}/Evaluatables";
 

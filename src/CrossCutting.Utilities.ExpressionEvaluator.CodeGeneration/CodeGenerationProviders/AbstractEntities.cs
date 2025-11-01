@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class AbstractEntities(IPipelineService pipelineService) : ExpressionEvaluatorCSharpClassBase(pipelineService)
+public class AbstractEntities(ICommandService commandService) : ExpressionEvaluatorCSharpClassBase(commandService)
 {
     public override string Path => Constants.Namespaces.UtilitiesExpressionEvaluator;
 

@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class OverrideConditionBuilders(IPipelineService pipelineService) : QueryEvaluatorCSharpClassBase(pipelineService)
+public class OverrideConditionBuilders(ICommandService commandService) : QueryEvaluatorCSharpClassBase(commandService)
 {
     public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}/Builders/Conditions";
 

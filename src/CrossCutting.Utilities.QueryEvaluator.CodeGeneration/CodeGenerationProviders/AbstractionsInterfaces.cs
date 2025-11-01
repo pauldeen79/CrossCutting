@@ -3,7 +3,7 @@
 namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class AbstractionsInterfaces(IPipelineService pipelineService) : QueryEvaluatorCSharpClassBase(pipelineService)
+public class AbstractionsInterfaces(ICommandService commandService) : QueryEvaluatorCSharpClassBase(commandService)
 {
     public override async Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
     {

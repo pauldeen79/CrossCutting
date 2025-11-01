@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.Parsers.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class AbstractNonGenericBuilders(IPipelineService pipelineService) : CrossCuttingCSharpClassBase(pipelineService)
+public class AbstractNonGenericBuilders(ICommandService commandService) : CrossCuttingCSharpClassBase(commandService)
 {
     public override string Path => $"{Constants.Namespaces.UtilitiesParsers}/Builders";
 

@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.Parsers.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class AbstractionsBuildersInterfaces(IPipelineService pipelineService) : CrossCuttingCSharpClassBase(pipelineService)
+public class AbstractionsBuildersInterfaces(ICommandService commandService) : CrossCuttingCSharpClassBase(commandService)
 {
     public override string Path => "CrossCutting.Utilities.Parsers/Builders/Abstractions";
 

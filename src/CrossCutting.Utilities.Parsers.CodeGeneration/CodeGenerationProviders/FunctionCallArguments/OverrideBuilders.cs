@@ -1,7 +1,7 @@
 ﻿namespace CrossCutting.Utilities.Parsers.CodeGeneration.CodeGenerationProviders.FunctionCallArguments;
 
 [ExcludeFromCodeCoverage]
-public class OverrideBuilders(IPipelineService pipelineService) : CrossCuttingCSharpClassBase(pipelineService)
+public class OverrideBuilders(ICommandService commandService) : CrossCuttingCSharpClassBase(commandService)
 {
     public override string Path => Constants.Paths.FunctionCallArgumentBuilders;
 
