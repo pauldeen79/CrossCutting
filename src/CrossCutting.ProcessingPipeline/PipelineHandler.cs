@@ -1,11 +1,11 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public class Pipeline<TCommand> : IPipeline<TCommand>
+public class PipelineHandler<TCommand> : ICommandHandler<TCommand>
 {
     private readonly IPipelineComponentDecorator _decorator;
     private readonly IEnumerable<IPipelineComponent<TCommand>> _components;
 
-    public Pipeline(IPipelineComponentDecorator decorator, IEnumerable<IPipelineComponent<TCommand>> components)
+    public PipelineHandler(IPipelineComponentDecorator decorator, IEnumerable<IPipelineComponent<TCommand>> components)
     {
         ArgumentGuard.IsNotNull(decorator, nameof(decorator));
         ArgumentGuard.IsNotNull(components, nameof(components));
@@ -40,13 +40,13 @@ public class Pipeline<TCommand> : IPipeline<TCommand>
     }
 }
 
-public class Pipeline<TCommand, TResponse> : IPipeline<TCommand, TResponse>
+public class PipelineHandler<TCommand, TResponse> : ICommandHandler<TCommand, TResponse>
     where TResponse : new()
 {
     private readonly IPipelineComponentDecorator _decorator;
     private readonly IEnumerable<IPipelineComponent<TCommand, TResponse>> _components;
 
-    public Pipeline(IPipelineComponentDecorator decorator, IEnumerable<IPipelineComponent<TCommand, TResponse>> components)
+    public PipelineHandler(IPipelineComponentDecorator decorator, IEnumerable<IPipelineComponent<TCommand, TResponse>> components)
     {
         ArgumentGuard.IsNotNull(decorator, nameof(decorator));
         ArgumentGuard.IsNotNull(components, nameof(components));

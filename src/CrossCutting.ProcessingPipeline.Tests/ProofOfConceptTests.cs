@@ -2,7 +2,7 @@
 
 public class ProofOfConceptTests
 {
-    protected static Pipeline<object?> CreateResponselessSut(Func<CallInfo, Result> processDelegate)
+    protected static ICommandHandler<object?> CreateResponselessSut(Func<CallInfo, Result> processDelegate)
     {
         var pipelineComponent = Substitute.For<IPipelineComponent<object?>>();
 
@@ -10,10 +10,10 @@ public class ProofOfConceptTests
             .ExecuteAsync(Arg.Any<object?>(), Arg.Any<ICommandService>(), Arg.Any<CancellationToken>())
             .Returns(processDelegate);
 
-        return new Pipeline<object?>(new PassThroughDecorator(), [pipelineComponent]);
+        return new PipelineHandler<object?>(new PassThroughDecorator(), [pipelineComponent]);
     }
 
-    protected static Pipeline<object?, StringBuilder> CreateResponseSut(Func<CallInfo, Result> processDelegate)
+    protected static ICommandHandler<object?, StringBuilder> CreateResponseSut(Func<CallInfo, Result> processDelegate)
     {
         var pipelineComponent = Substitute.For<IPipelineComponent<object?, StringBuilder>>();
 
@@ -21,7 +21,7 @@ public class ProofOfConceptTests
             .ExecuteAsync(Arg.Any<object?>(), Arg.Any<StringBuilder>(), Arg.Any<ICommandService>(), Arg.Any<CancellationToken>())
             .Returns(processDelegate);
 
-        return new Pipeline<object?, StringBuilder>(new PassThroughDecorator(), [pipelineComponent]);
+        return new PipelineHandler<object?, StringBuilder>(new PassThroughDecorator(), [pipelineComponent]);
     }
 
     public class Pipeline_Without_Response : ProofOfConceptTests
@@ -39,7 +39,7 @@ public class ProofOfConceptTests
             var commandService = Substitute.For<ICommandService>();
 
             // Act
-            var result = await sut.ExecuteAsync(command: 1, commandService);
+            var result = await sut.ExecuteAsync(command: 1, commandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -54,7 +54,7 @@ public class ProofOfConceptTests
             var commandService = Substitute.For<ICommandService>();
 
             // Act
-            var result = await sut.ExecuteAsync(command: 1, commandService);
+            var result = await sut.ExecuteAsync(command: 1, commandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -80,7 +80,7 @@ public class ProofOfConceptTests
         public void Constructing_Pipeline_Using_Null_Decorator_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new Pipeline<object?>(decorator: null!, components: []);
+            Action a = () => _ = new PipelineHandler<object?>(decorator: null!, components: []);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("decorator");
         }
@@ -89,7 +89,7 @@ public class ProofOfConceptTests
         public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new Pipeline<object?>(new PassThroughDecorator(), components: null!);
+            Action a = () => _ = new PipelineHandler<object?>(new PassThroughDecorator(), components: null!);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("components");
         }
@@ -110,7 +110,7 @@ public class ProofOfConceptTests
             var commandService = Substitute.For<ICommandService>();
 
             // Act
-            var result = await sut.ExecuteAsync(command: 1, commandService);
+            var result = await sut.ExecuteAsync(command: 1, commandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -125,7 +125,7 @@ public class ProofOfConceptTests
             var commandService = Substitute.For<ICommandService>();
 
             // Act
-            var result = await sut.ExecuteAsync(command: 1, commandService);
+            var result = await sut.ExecuteAsync(command: 1, commandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -151,7 +151,7 @@ public class ProofOfConceptTests
         public void Constructing_Pipeline_Using_Null_Decorator_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new Pipeline<object?, StringBuilder>(decorator: null!, components: []);
+            Action a = () => _ = new PipelineHandler<object?, StringBuilder>(decorator: null!, components: []);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("decorator");
         }
@@ -160,7 +160,7 @@ public class ProofOfConceptTests
         public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new Pipeline<object?, StringBuilder>(new PassThroughDecorator(), components: null!);
+            Action a = () => _ = new PipelineHandler<object?, StringBuilder>(new PassThroughDecorator(), components: null!);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("components");
         }

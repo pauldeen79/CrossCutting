@@ -7,12 +7,12 @@ public class DecoratorTests
     {
         // Arrange
         var decorator = new LoggerDecorator(new ExceptionDecorator(new PassThroughDecorator()));
-        var sut = new Pipeline<DecoratorTestsContext>(decorator, [new MyComponent()]);
+        var sut = new PipelineHandler<DecoratorTestsContext>(decorator, [new MyComponent()]);
         var context = new DecoratorTestsContext();
         var commandService = Substitute.For<ICommandService>();
 
         // Act
-        var result = await sut.ExecuteAsync(context, commandService);
+        var result = await sut.ExecuteAsync(context, commandService, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -28,12 +28,12 @@ MyComponent called
     {
         // Arrange
         var decorator = new LoggerDecorator(new ExceptionDecorator(new PassThroughDecorator()));
-        var sut = new Pipeline<DecoratorTestsContext, StringBuilder>(decorator, [new MyStringBuilderComponent()]);
+        var sut = new PipelineHandler<DecoratorTestsContext, StringBuilder>(decorator, [new MyStringBuilderComponent()]);
         var context = new DecoratorTestsContext();
         var commandService = Substitute.For<ICommandService>();
 
         // Act
-        var result = await sut.ExecuteAsync(context, commandService);
+        var result = await sut.ExecuteAsync(context, commandService, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
