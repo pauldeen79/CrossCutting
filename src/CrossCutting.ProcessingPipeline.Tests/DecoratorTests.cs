@@ -3,19 +3,43 @@
 public class DecoratorTests
 {
     [Fact]
-    public async Task Can_Decorate_PipelineComponents()
+    public async Task Can_Decorate_PipelineComponents_Responseless()
     {
         // Arrange
         var decorator = new LoggerDecorator(new ExceptionDecorator(new PassThroughDecorator()));
-        var sut = new Pipeline<DecoratorTestsContext>(decorator, [new MyComponent()]);
+        var sut = new PipelineHandler<DecoratorTestsContext>(decorator, [new MyComponent()]);
         var context = new DecoratorTestsContext();
         var commandService = Substitute.For<ICommandService>();
 
         // Act
-        var result = await sut.ExecuteAsync(context, commandService);
+        var result = await sut.ExecuteAsync(context, commandService, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
+        context.ToString().ShouldBe(@"--- Start ---
+MyComponent called
+--- End ---
+");
+
+    }
+
+    [Fact]
+    public async Task Can_Decorate_PipelineComponents_With_Response()
+    {
+        // Arrange
+        var decorator = new LoggerDecorator(new ExceptionDecorator(new PassThroughDecorator()));
+        var responseGenerator = new PipelineResponseGenerator([]);
+        var sut = new PipelineHandler<DecoratorTestsContext, StringBuilder>(decorator, responseGenerator, [new MyStringBuilderComponent()]);
+        var context = new DecoratorTestsContext();
+        var commandService = Substitute.For<ICommandService>();
+
+        // Act
+        var result = await sut.ExecuteAsync(context, commandService, CancellationToken.None);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        result.Value.ToString().ShouldBe("My Result");
         context.ToString().ShouldBe(@"--- Start ---
 MyComponent called
 --- End ---
@@ -29,6 +53,18 @@ MyComponent called
             => Task.Run(() =>
             {
                 command.AppendLine("MyComponent called");
+
+                return Result.Success();
+            }, token);
+    }
+
+    private sealed class MyStringBuilderComponent : IPipelineComponent<DecoratorTestsContext, StringBuilder>
+    {
+        public Task<Result> ExecuteAsync(DecoratorTestsContext command, StringBuilder response, ICommandService commandService, CancellationToken token)
+            => Task.Run(() =>
+            {
+                command.AppendLine("MyComponent called");
+                response.Append("My Result");
 
                 return Result.Success();
             }, token);
@@ -63,6 +99,25 @@ MyComponent called
                 }
             }
         }
+
+        public async Task<Result> ExecuteAsync<TCommand, TResponse>(IPipelineComponent<TCommand, TResponse> component, TCommand command, TResponse response, ICommandService commandService, CancellationToken token)
+        {
+            try
+            {
+                if (command is DecoratorTestsContext dtc)
+                {
+                    dtc.AppendLine("--- Start ---");
+                }
+                return await((Func<Task<Result>>)(() => _decorator.ExecuteAsync(component, command, response, commandService, token)))().ConfigureAwait(false);
+            }
+            finally
+            {
+                if (command is DecoratorTestsContext dtc)
+                {
+                    dtc.AppendLine("--- End ---");
+                }
+            }
+        }
     }
 
     private sealed class ExceptionDecorator : IPipelineComponentDecorator
@@ -88,6 +143,20 @@ MyComponent called
                 return Result.Error(ex, "Error occured, see Exception for more details");
             }
 #pragma warning restore CA1031 // Do not catch general exception types
+        }
+
+        public async Task<Result> ExecuteAsync<TCommand, TResponse>(IPipelineComponent<TCommand, TResponse> component, TCommand command, TResponse response, ICommandService commandService, CancellationToken token)
+        {
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                return await ((Func<Task<Result>>)(() => _decorator.ExecuteAsync(component, command, response, commandService, token)))().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return Result.Error(ex, "Error occured, see Exception for more details");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types        }
         }
     }
 

@@ -1,6 +1,10 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public interface IPipelineComponent<TCommand>
+public interface IPipelineComponent<in TCommand> : IExecutable<TCommand>
 {
-    Task<Result> ExecuteAsync(TCommand commmand, ICommandService commandService, CancellationToken token);
+}
+
+public interface IPipelineComponent<TCommand, TResponse>
+{
+    Task<Result> ExecuteAsync(TCommand commmand, TResponse response, ICommandService commandService, CancellationToken token);
 }
