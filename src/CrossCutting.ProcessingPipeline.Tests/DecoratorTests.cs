@@ -28,7 +28,8 @@ MyComponent called
     {
         // Arrange
         var decorator = new LoggerDecorator(new ExceptionDecorator(new PassThroughDecorator()));
-        var sut = new PipelineHandler<DecoratorTestsContext, StringBuilder>(decorator, [new MyStringBuilderComponent()]);
+        var responseGenerator = new PipelineResponseGenerator([]);
+        var sut = new PipelineHandler<DecoratorTestsContext, StringBuilder>(decorator, responseGenerator, [new MyStringBuilderComponent()]);
         var context = new DecoratorTestsContext();
         var commandService = Substitute.For<ICommandService>();
 

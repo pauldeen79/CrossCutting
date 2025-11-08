@@ -11,7 +11,7 @@ public class PipelineHandler<TCommand> : ICommandHandler<TCommand>
         ArgumentGuard.IsNotNull(components, nameof(components));
 
         _decorator = decorator;
-        _components = components.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
+        _components = components.OrderBy(x => (x as IOrderContainer)?.Order).ToArray();
     }
 
     public async Task<Result> ExecuteAsync(TCommand command, ICommandService commandService, CancellationToken token)
@@ -41,17 +41,19 @@ public class PipelineHandler<TCommand> : ICommandHandler<TCommand>
 }
 
 public class PipelineHandler<TCommand, TResponse> : ICommandHandler<TCommand, TResponse>
-    where TResponse : new()
 {
     private readonly IPipelineComponentDecorator _decorator;
+    private readonly IPipelineResponseGenerator _responseGenerator;
     private readonly IEnumerable<IPipelineComponent<TCommand, TResponse>> _components;
 
-    public PipelineHandler(IPipelineComponentDecorator decorator, IEnumerable<IPipelineComponent<TCommand, TResponse>> components)
+    public PipelineHandler(IPipelineComponentDecorator decorator, IPipelineResponseGenerator responseGenerator, IEnumerable<IPipelineComponent<TCommand, TResponse>> components)
     {
         ArgumentGuard.IsNotNull(decorator, nameof(decorator));
+        ArgumentGuard.IsNotNull(responseGenerator, nameof(responseGenerator));
         ArgumentGuard.IsNotNull(components, nameof(components));
 
         _decorator = decorator;
+        _responseGenerator = responseGenerator;
         _components = components.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
     }
 
@@ -60,24 +62,29 @@ public class PipelineHandler<TCommand, TResponse> : ICommandHandler<TCommand, TR
         ArgumentGuard.IsNotNull(command, nameof(command));
 
         var results = new List<Result>();
-        var response = new TResponse();
-        foreach (var component in _components)
-        {
-            var result = await _decorator.ExecuteAsync(component, command, response, commandService, token)
-                .ConfigureAwait(false);
 
-            results.Add(result);
-            if (!result.IsSuccessful())
+        return await _responseGenerator.Generate<TResponse>(command!)
+            .EnsureValue()
+            .OnSuccessAsync(async response =>
             {
-                break;
-            }
-        }
+                foreach (var component in _components)
+                {
+                    var result = await _decorator.ExecuteAsync(component, command, response.Value!, commandService, token)
+                        .ConfigureAwait(false);
 
-        return Result.Aggregate
-        (
-            results,
-            Result.Success(response),
-            errors => Result.Error<TResponse>(errors, "An error occured while processing the pipeline. See the inner results for more details.")
-        );
+                    results.Add(result);
+                    if (!result.IsSuccessful())
+                    {
+                        break;
+                    }
+                }
+
+                return Result.Aggregate
+                (
+                    results,
+                    Result.Success(response.Value!),
+                    errors => Result.Error<TResponse>(errors, "An error occured while processing the pipeline. See the inner results for more details.")
+                );
+            }).ConfigureAwait(false);
     }
 }

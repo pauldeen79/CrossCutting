@@ -15,13 +15,14 @@ public class ProofOfConceptTests
 
     protected static ICommandHandler<object?, StringBuilder> CreateResponseSut(Func<CallInfo, Result> processDelegate)
     {
+        var responseGenerator = new PipelineResponseGenerator([]);
         var pipelineComponent = Substitute.For<IPipelineComponent<object?, StringBuilder>>();
 
         pipelineComponent
             .ExecuteAsync(Arg.Any<object?>(), Arg.Any<StringBuilder>(), Arg.Any<ICommandService>(), Arg.Any<CancellationToken>())
             .Returns(processDelegate);
 
-        return new PipelineHandler<object?, StringBuilder>(new PassThroughDecorator(), [pipelineComponent]);
+        return new PipelineHandler<object?, StringBuilder>(new PassThroughDecorator(), responseGenerator, [pipelineComponent]);
     }
 
     public class Pipeline_Without_Response : ProofOfConceptTests
@@ -151,16 +152,25 @@ public class ProofOfConceptTests
         public void Constructing_Pipeline_Using_Null_Decorator_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new PipelineHandler<object?, StringBuilder>(decorator: null!, components: []);
+            Action a = () => _ = new PipelineHandler<object?, StringBuilder>(decorator: null!, new PipelineResponseGenerator([]), components: []);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("decorator");
+        }
+
+        [Fact]
+        public void Constructing_Pipeline_Using_Null_ResponseGenerator_Throws_ArgumentNullException()
+        {
+            // Act & Assert
+            Action a = () => _ = new PipelineHandler<object?, StringBuilder>(new PassThroughDecorator(), responseGenerator: null!, components: []);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("responseGenerator");
         }
 
         [Fact]
         public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new PipelineHandler<object?, StringBuilder>(new PassThroughDecorator(), components: null!);
+            Action a = () => _ = new PipelineHandler<object?, StringBuilder>(new PassThroughDecorator(), new PipelineResponseGenerator([]), components: null!);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("components");
         }
