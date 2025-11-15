@@ -176,7 +176,7 @@ public sealed class SqlQueryProcessorTests : TestBase
             .AddSortOrders(new SortOrderBuilder(new PropertyNameEvaluatableBuilder().WithSourceExpression(new ContextEvaluatableBuilder()).WithPropertyName(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
-        InitializeMock(CreateData().Where(x => x.Property1 != null));
+        InitializeMock(CreateData().Where(x => x.Property1 is not null));
 
         // Act
         var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
@@ -200,7 +200,7 @@ public sealed class SqlQueryProcessorTests : TestBase
             .AddSortOrders(new SortOrderBuilder(new PropertyNameEvaluatableBuilder().WithSourceExpression(new ContextEvaluatableBuilder()).WithPropertyName(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
-        InitializeMock(CreateData().Where(x => x.Property1 == null));
+        InitializeMock(CreateData().Where(x => x.Property1 is null));
 
         // Act
         var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);

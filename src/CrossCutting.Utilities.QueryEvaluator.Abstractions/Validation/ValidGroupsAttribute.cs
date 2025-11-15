@@ -15,7 +15,7 @@ public sealed class ValidGroupsAttribute : ValidationAttribute
 
         foreach (var item in collection)
         {
-            if (item == null) continue;
+            if (item is null) continue;
 
             var type = item.GetType();
             var startGroupProperty = type.GetProperty(nameof(ICondition.StartGroup), BindingFlags.Public | BindingFlags.Instance);
