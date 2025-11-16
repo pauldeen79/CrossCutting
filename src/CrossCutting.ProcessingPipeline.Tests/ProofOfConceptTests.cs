@@ -10,7 +10,7 @@ public class ProofOfConceptTests
             .ExecuteAsync(Arg.Any<object?>(), Arg.Any<ICommandService>(), Arg.Any<CancellationToken>())
             .Returns(processDelegate);
 
-        return new PipelineHandler<object?>(new PassThroughDecorator(), [pipelineComponent]);
+        return new PipelineHandler<object?>([], [pipelineComponent]);
     }
 
     protected static ICommandHandler<object?, StringBuilder> CreateResponseSut(Func<CallInfo, Result> processDelegate)
@@ -22,7 +22,7 @@ public class ProofOfConceptTests
             .ExecuteAsync(Arg.Any<object?>(), Arg.Any<StringBuilder>(), Arg.Any<ICommandService>(), Arg.Any<CancellationToken>())
             .Returns(processDelegate);
 
-        return new PipelineHandler<object?, StringBuilder>(new PassThroughDecorator(), responseGenerator, [pipelineComponent]);
+        return new PipelineHandler<object?, StringBuilder>([], responseGenerator, [pipelineComponent]);
     }
 
     public class Pipeline_Without_Response : ProofOfConceptTests
@@ -78,19 +78,19 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Constructing_Pipeline_Using_Null_Decorator_Throws_ArgumentNullException()
+        public void Constructing_Pipeline_Using_Null_Interceptors_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new PipelineHandler<object?>(decorator: null!, components: []);
+            Action a = () => _ = new PipelineHandler<object?>(interceptors: null!, components: []);
             a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("decorator");
+             .ParamName.ShouldBe("interceptors");
         }
 
         [Fact]
         public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new PipelineHandler<object?>(new PassThroughDecorator(), components: null!);
+            Action a = () => _ = new PipelineHandler<object?>([], components: null!);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("components");
         }
@@ -149,19 +149,19 @@ public class ProofOfConceptTests
         }
 
         [Fact]
-        public void Constructing_Pipeline_Using_Null_Decorator_Throws_ArgumentNullException()
+        public void Constructing_Pipeline_Using_Null_Interceptors_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new PipelineHandler<object?, StringBuilder>(decorator: null!, new PipelineResponseGenerator([]), components: []);
+            Action a = () => _ = new PipelineHandler<object?, StringBuilder>(interceptors: null!, new PipelineResponseGenerator([]), components: []);
             a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("decorator");
+             .ParamName.ShouldBe("interceptors");
         }
 
         [Fact]
         public void Constructing_Pipeline_Using_Null_ResponseGenerator_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new PipelineHandler<object?, StringBuilder>(new PassThroughDecorator(), responseGenerator: null!, components: []);
+            Action a = () => _ = new PipelineHandler<object?, StringBuilder>([], responseGenerator: null!, components: []);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("responseGenerator");
         }
@@ -170,7 +170,7 @@ public class ProofOfConceptTests
         public void Constructing_Pipeline_Using_Null_Components_Throws_ArgumentNullException()
         {
             // Act & Assert
-            Action a = () => _ = new PipelineHandler<object?, StringBuilder>(new PassThroughDecorator(), new PipelineResponseGenerator([]), components: null!);
+            Action a = () => _ = new PipelineHandler<object?, StringBuilder>([], new PipelineResponseGenerator([]), components: null!);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("components");
         }
