@@ -109,7 +109,7 @@ The ExpressionEvaluator is a complete rewrite of the Parsers project, where and 
 * Strings, like "hello world"
 * Interpolated strings, like $"hello {name}"
 * Booleans "true" and "false"
-* Constructors like "new DateTime(2025, 1 ,1)"
+* Constructors like "new DateTime(2025, 1, 1)"
 * DateTime.Now and DateTime.Today, as well as the Date and DateTime functions to create a custom DateTime value
 * Numeric values, both integer and floating point types like "1.3" and "12"
 * Mathematic operators like +, -, * and /, including brackets, for example "(1 + 1) * 13"
