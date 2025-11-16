@@ -5,4 +5,5 @@ global using System.Threading;
 global using System.Threading.Tasks;
 global using CrossCutting.Commands.Abstractions;
 global using CrossCutting.Common;
+global using CrossCutting.Common.Abstractions;
 global using CrossCutting.Common.Results;
