@@ -117,7 +117,7 @@ MyComponent called
     {
         public async Task<Result> ExecuteAsync<TCommand>(TCommand command, ICommandService commandService, Func<Task<Result>> next, CancellationToken token)
         {
-            #pragma warning disable CA1031 // Do not catch general exception types
+#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 return await next().ConfigureAwait(false);
@@ -126,12 +126,12 @@ MyComponent called
             {
                 return Result.Error(ex, "Error occured, see Exception for more details");
             }
-            #pragma warning restore CA1031 // Do not catch general exception types
+#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         public async Task<Result> ExecuteAsync<TCommand, TResponse>(TCommand command, TResponse response, ICommandService commandService, Func<Task<Result>> next, CancellationToken token)
         {
-            #pragma warning disable CA1031 // Do not catch general exception types
+#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 return await next().ConfigureAwait(false);
@@ -140,7 +140,7 @@ MyComponent called
             {
                 return Result.Error(ex, "Error occured, see Exception for more details");
             }
-            #pragma warning restore CA1031 // Do not catch general exception types
+#pragma warning restore CA1031 // Do not catch general exception types
         }
     }
 

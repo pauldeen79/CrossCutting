@@ -15,7 +15,7 @@ public class DateTimeAddYearsMethod : IMethod
         return (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<DateTime>(token))
             .Add(YearsToAdd, () => context.GetArgumentValueResultAsync<int>(0, "YearsToAdd", token))
-            .BuildAsync().ConfigureAwait(false))
+            .BuildAsync(token).ConfigureAwait(false))
             .OnSuccess<object?>(results => results.GetValue<DateTime>(Constants.Instance).AddYears(results.GetValue<int>(YearsToAdd)));
     }
 }

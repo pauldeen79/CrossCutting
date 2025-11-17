@@ -12,7 +12,7 @@ public class LeftFunction : IFunction
         return (await new AsyncResultDictionaryBuilder()
             .Add<string>(context, 0, "StringExpression", token)
             .Add<int>(context, 1, "Length", token)
-            .BuildAsync().ConfigureAwait(false))
+            .BuildAsync(token).ConfigureAwait(false))
             .OnSuccess(results =>
             {
                 var stringExpression = results.GetValue<string>("StringExpression");

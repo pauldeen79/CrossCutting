@@ -10,5 +10,7 @@ public class AbstractEntities(ICommandService commandService) : ExpressionEvalua
     protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.None; // not needed for abstract entities, because each derived class will do its own validation
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetEntitiesAsync(GetAbstractModelsAsync(), CurrentNamespace);
+    {
+        return GetEntitiesAsync(GetAbstractModelsAsync(), CurrentNamespace);
+    }
 }

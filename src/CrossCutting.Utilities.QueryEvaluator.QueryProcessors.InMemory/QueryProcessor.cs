@@ -14,7 +14,7 @@ public class QueryProcessor : IQueryProcessor
         _dataFactory = dataFactory;
     }
 
-    public async Task<Result<IReadOnlyCollection<TResult>>> FindManyAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<TResult>>> FindManyAsync<TResult>(IQuery query, object? context, CancellationToken token)
         where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
@@ -29,11 +29,11 @@ public class QueryProcessor : IQueryProcessor
         (
             new SingleEntityQuery(null, null, query.Conditions, query.SortOrders),
             result.Value!,
-            cancellationToken).ConfigureAwait(false)
+            token).ConfigureAwait(false)
         ).ToList());
     }
 
-    public async Task<Result<TResult>> FindOneAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken)
+    public async Task<Result<TResult>> FindOneAsync<TResult>(IQuery query, object? context, CancellationToken token)
         where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
@@ -48,7 +48,7 @@ public class QueryProcessor : IQueryProcessor
         (
             new SingleEntityQuery(null, null, query.Conditions, query.SortOrders),
             result.Value!,
-            cancellationToken
+            token
         ).ConfigureAwait(false)).FirstOrDefault();
 
         return firstItem is null
@@ -56,7 +56,7 @@ public class QueryProcessor : IQueryProcessor
             : Result.Success(firstItem);
     }
 
-    public async Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(IQuery query, object? context, CancellationToken cancellationToken)
+    public async Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(IQuery query, object? context, CancellationToken token)
         where TResult : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
@@ -70,7 +70,7 @@ public class QueryProcessor : IQueryProcessor
 
         return Result.Success<IPagedResult<TResult>>(new PagedResult<TResult>
         (
-            await _paginator.GetPagedDataAsync(query, filteredRecords, cancellationToken).ConfigureAwait(false),
+            await _paginator.GetPagedDataAsync(query, filteredRecords, token).ConfigureAwait(false),
             filteredRecords.Length,
             query.Offset.GetValueOrDefault(),
             query.Limit.GetValueOrDefault()

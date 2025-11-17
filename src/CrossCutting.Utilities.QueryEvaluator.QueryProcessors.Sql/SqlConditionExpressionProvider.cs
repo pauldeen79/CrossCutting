@@ -15,7 +15,8 @@ public class SqlConditionExpressionProvider : ISqlConditionExpressionProvider
         ICondition condition,
         IQueryFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
-        ParameterBag parameterBag)
+        ParameterBag parameterBag,
+        CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
@@ -33,7 +34,7 @@ public class SqlConditionExpressionProvider : ISqlConditionExpressionProvider
         Result result = Result.Invalid<string>($"No sql condition expression provider handler found for condition: {condition.GetType().FullName}");
         foreach (var handler in _handlers)
         {
-            var handlerResult = await handler.GetConditionExpressionAsync(builder, context, condition, fieldInfo, sqlExpressionProvider, parameterBag).ConfigureAwait(false);
+            var handlerResult = await handler.GetConditionExpressionAsync(builder, context, condition, fieldInfo, sqlExpressionProvider, parameterBag, token).ConfigureAwait(false);
             if (handlerResult.Status != ResultStatus.Continue)
             {
                 result = handlerResult;

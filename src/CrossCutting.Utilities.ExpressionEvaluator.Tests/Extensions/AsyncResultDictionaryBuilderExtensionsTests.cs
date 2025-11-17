@@ -18,7 +18,7 @@ public class AsyncResultDictionaryBuilderExtensionsTests : TestBase
         var result = sut.Add(context, 0, "MyName", CancellationToken.None);
 
         // Assert
-        var dict = await result.BuildAsync();
+        var dict = await result.BuildAsync(CancellationToken.None);
         dict.Count.ShouldBe(1);
         dict.First().Key.ShouldBe("MyName");
         dict.First().Value.Status.ShouldBe(ResultStatus.Ok);
@@ -36,7 +36,7 @@ public class AsyncResultDictionaryBuilderExtensionsTests : TestBase
         var result = sut.Add<int>(context, 0, "MyName", CancellationToken.None);
 
         // Assert
-        var dict = await result.BuildAsync();
+        var dict = await result.BuildAsync(CancellationToken.None);
         dict.Count.ShouldBe(1);
         dict.First().Key.ShouldBe("MyName");
         dict.First().Value.Status.ShouldBe(ResultStatus.Ok);
@@ -54,7 +54,7 @@ public class AsyncResultDictionaryBuilderExtensionsTests : TestBase
         var result = sut.Add(context, 0, "MyName", CancellationToken.None);
 
         // Assert
-        var dict = await result.Build();
+        var dict = await result.BuildAsync(CancellationToken.None);
         dict.Count.ShouldBe(1);
         dict.First().Key.ShouldBe("MyName");
         var value = dict.First().Value;

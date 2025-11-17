@@ -262,7 +262,7 @@ public class ResultDictionaryExtensionsTests
                 .Add(() => NonGenericTask)
                 .Add(() => NonGenericErrorTask)
                 .Add(() => NonGenericTask)
-                .BuildAsync();
+                .BuildAsync(CancellationToken.None);
 
             // Act
             var result = await sut.OnSuccessAsync(results => Task.FromResult(Result.Continue<string>()));
@@ -281,7 +281,7 @@ public class ResultDictionaryExtensionsTests
                 .Add(GenericDelegate)
                 .Add(GenericDelegate)
                 .Add(NonGenericDelegate)
-                .BuildAsync();
+                .BuildAsync(CancellationToken.None);
 
             // Act
             var result = await sut.OnSuccessAsync(results => Task.FromResult(Result.Continue<string>()));

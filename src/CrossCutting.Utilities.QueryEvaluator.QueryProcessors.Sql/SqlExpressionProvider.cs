@@ -11,7 +11,7 @@ public class SqlExpressionProvider : ISqlExpressionProvider
         _handlers = handlers;
     }
 
-    public async Task<Result<string>> GetSqlExpressionAsync(IQueryContext context, ISqlExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag)
+    public async Task<Result<string>> GetSqlExpressionAsync(IQueryContext context, ISqlExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
@@ -20,7 +20,7 @@ public class SqlExpressionProvider : ISqlExpressionProvider
 
         foreach (var handler in _handlers)
         {
-            var result = await handler.GetSqlExpressionAsync(context, expression, fieldInfo, parameterBag, this).ConfigureAwait(false);
+            var result = await handler.GetSqlExpressionAsync(context, expression, fieldInfo, parameterBag, this, token).ConfigureAwait(false);
             if (result.Status != ResultStatus.Continue)
             {
                 return result;

@@ -6,5 +6,7 @@ public class CoreEntities(ICommandService commandService) : ExpressionEvaluatorC
     public override string Path => Constants.Namespaces.UtilitiesExpressionEvaluator;
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetEntitiesAsync(GetCoreModelsAsync(), CurrentNamespace);
+    {
+        return GetEntitiesAsync(GetCoreModelsAsync(), CurrentNamespace);
+    }
 }

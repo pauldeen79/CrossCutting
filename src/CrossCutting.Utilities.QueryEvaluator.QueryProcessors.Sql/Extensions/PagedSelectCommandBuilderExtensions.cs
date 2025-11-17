@@ -43,7 +43,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.Select(", ");
             }
 
-            var result = (await sqlExpressionProvider.GetSqlExpressionAsync(fieldSelectionQuery.WithContext(context.Context), new SqlExpression(new PropertyNameEvaluatable(new ContextEvaluatable(), expression.Item)), fieldInfo, parameterBag).ConfigureAwait(false))
+            var result = (await sqlExpressionProvider.GetSqlExpressionAsync(fieldSelectionQuery.WithContext(context.Context), new SqlExpression(new PropertyNameEvaluatable(new ContextEvaluatable(), expression.Item)), fieldInfo, parameterBag, CancellationToken.None).ConfigureAwait(false))
                 .EnsureNotNull()
                 .EnsureValue();
             if (!result.IsSuccessful())
@@ -98,7 +98,8 @@ internal static class PagedSelectCommandBuilderExtensions
                                                                         IQueryFieldInfo fieldInfo,
                                                                         ISqlExpressionProvider sqlExpressionProvider,
                                                                         ISqlConditionExpressionProvider provider,
-                                                                        ParameterBag parameterBag)
+                                                                        ParameterBag parameterBag,
+                                                                        CancellationToken token)
     {
         if (context.Query.Conditions.Count == 0 && string.IsNullOrEmpty(settings.DefaultWhere))
         {
@@ -117,7 +118,8 @@ internal static class PagedSelectCommandBuilderExtensions
                 queryCondition,
                 fieldInfo,
                 sqlExpressionProvider,
-                parameterBag
+                parameterBag,
+                token
             ).ConfigureAwait(false);
 
             if (!result.IsSuccessful())
@@ -138,11 +140,12 @@ internal static class PagedSelectCommandBuilderExtensions
                                                                           IPagedDatabaseEntityRetrieverSettings settings,
                                                                           IQueryFieldInfo fieldInfo,
                                                                           ISqlExpressionProvider sqlExpressionProvider,
-                                                                          ParameterBag parameterBag)
+                                                                          ParameterBag parameterBag,
+                                                                          CancellationToken token)
     {
         if (context.Query.SortOrders.Count > 0 || !string.IsNullOrEmpty(settings.DefaultOrderBy))
         {
-            return await instance.AppendOrderBy(context, settings, fieldInfo, sqlExpressionProvider, parameterBag).ConfigureAwait(false);
+            return await instance.AppendOrderBy(context, settings, fieldInfo, sqlExpressionProvider, parameterBag, token).ConfigureAwait(false);
         }
         else
         {
@@ -155,7 +158,8 @@ internal static class PagedSelectCommandBuilderExtensions
                                                                                IPagedDatabaseEntityRetrieverSettings settings,
                                                                                IQueryFieldInfo fieldInfo,
                                                                                ISqlExpressionProvider sqlExpressionProvider,
-                                                                               ParameterBag parameterBag)
+                                                                               ParameterBag parameterBag,
+                                                                               CancellationToken token)
     {
         foreach (var querySortOrder in context.Query.SortOrders.Select((x, index) => new { Item = x, Index = index }))
         {
@@ -164,7 +168,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.OrderBy(", ");
             }
 
-            var result = await sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(querySortOrder.Item.Expression), fieldInfo, parameterBag).ConfigureAwait(false);
+            var result = await sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(querySortOrder.Item.Expression), fieldInfo, parameterBag, token).ConfigureAwait(false);
             if (!result.IsSuccessful())
             {
                 return Result.FromExistingResult<PagedSelectCommandBuilder>(result);

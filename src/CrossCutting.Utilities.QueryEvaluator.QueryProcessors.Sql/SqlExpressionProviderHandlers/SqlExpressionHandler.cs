@@ -10,7 +10,7 @@ public class SqlExpressionHandler : SqlExpressionProviderHandlerBase<SqlExpressi
         _expressionEvaluator = expressionEvaluator;
     }
 
-    protected override async Task<Result<string>> DoGetSqlExpressionAsync(IQueryContext context, SqlExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback)
+    protected override async Task<Result<string>> DoGetSqlExpressionAsync(IQueryContext context, SqlExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
@@ -29,7 +29,7 @@ public class SqlExpressionHandler : SqlExpressionProviderHandlerBase<SqlExpressi
         {
             var expressionEvaluatorContext = new ExpressionEvaluatorContext(new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, context.Context);
 
-            return (await expression.SourceExpression.EvaluateAsync(expressionEvaluatorContext, CancellationToken.None).ConfigureAwait(false))
+            return (await expression.SourceExpression.EvaluateAsync(expressionEvaluatorContext, token).ConfigureAwait(false))
                 .OnSuccess(value => Result.Success(parameterBag.CreateQueryParameterName(value)));
         }
     }

@@ -8,7 +8,8 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
         ICondition condition,
         IQueryFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
-        ParameterBag parameterBag)
+        ParameterBag parameterBag,
+        CancellationToken token)
     {
         builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
         context = ArgumentGuard.IsNotNull(context, nameof(context));
@@ -22,7 +23,7 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
             return Result.Continue();
         }
 
-        return await DoGetConditionExpressionAsync(builder, context, typedCondition, fieldInfo, sqlExpressionProvider, parameterBag).ConfigureAwait(false);
+        return await DoGetConditionExpressionAsync(builder, context, typedCondition, fieldInfo, sqlExpressionProvider, parameterBag, token).ConfigureAwait(false);
     }
 
     protected abstract Task<Result> DoGetConditionExpressionAsync(
@@ -31,42 +32,43 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
         TCondition condition,
         IQueryFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
-        ParameterBag parameterBag);
+        ParameterBag parameterBag,
+        CancellationToken token);
 
-    protected static async Task<Result> GetSimpleConditionExpressionAsync(StringBuilder builder, IQueryContext context, IDoubleExpressionContainer condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, ConditionParameters parameters)
+    protected static async Task<Result> GetSimpleConditionExpressionAsync(StringBuilder builder, IQueryContext context, IDoubleExpressionContainer condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, ConditionParameters parameters, CancellationToken token)
     {
         sqlExpressionProvider = ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
 
         return (await new AsyncResultDictionaryBuilder<string>()
-            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
-            .Add(nameof(condition.CompareExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.CompareExpression), fieldInfo, parameterBag))
-            .Build().ConfigureAwait(false))
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag, token))
+            .Add(nameof(condition.CompareExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.CompareExpression), fieldInfo, parameterBag, token))
+            .BuildAsync(token).ConfigureAwait(false))
             .OnSuccess(results => builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} {parameters.Operator} {results.GetValue(nameof(condition.CompareExpression))}"));
     }
 
-    protected static async Task<Result> GetStringConditionExpressionAsync(StringBuilder builder, IQueryContext context, IDoubleExpressionContainer condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, StringConditionParameters parameters)
+    protected static async Task<Result> GetStringConditionExpressionAsync(StringBuilder builder, IQueryContext context, IDoubleExpressionContainer condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, StringConditionParameters parameters, CancellationToken token)
     {
         sqlExpressionProvider = ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
         parameters = ArgumentGuard.IsNotNull(parameters, nameof(parameters));
 
         return (await new AsyncResultDictionaryBuilder<string>()
-            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
-            .Add(nameof(condition.CompareExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlLikeExpression(condition.CompareExpression, parameters.FormatString), fieldInfo, parameterBag))
-            .Build().ConfigureAwait(false))
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag, token))
+            .Add(nameof(condition.CompareExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlLikeExpression(condition.CompareExpression, parameters.FormatString), fieldInfo, parameterBag, token))
+            .BuildAsync(token).ConfigureAwait(false))
             .OnSuccess(results => builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} {parameters.Operator} {results.GetValue(nameof(condition.CompareExpression))}"));
     }
 
-    protected static async Task<Result> GetInConditionExpressionAsync(StringBuilder builder, IQueryContext context, IInCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, string @operator)
+    protected static async Task<Result> GetInConditionExpressionAsync(StringBuilder builder, IQueryContext context, IInCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, string @operator, CancellationToken token)
     {
         sqlExpressionProvider = ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
 
         return (await new AsyncResultDictionaryBuilder<string>()
-            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag))
-            .AddRange($"{nameof(condition.CompareExpressions)}.{{0}}", condition.CompareExpressions.Select(x => new Func<Task<Result<string>>>(() => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(x), fieldInfo, parameterBag))))
-            .Build().ConfigureAwait(false))
+            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag, token))
+            .AddRange($"{nameof(condition.CompareExpressions)}.{{0}}", condition.CompareExpressions.Select(x => new Func<Task<Result<string>>>(() => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(x), fieldInfo, parameterBag, token))))
+            .BuildAsync(token).ConfigureAwait(false))
             .OnSuccess(results =>
             {
                 var secondExpressionValues = results

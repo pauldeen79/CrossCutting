@@ -3,8 +3,9 @@
 [ExcludeFromCodeCoverage]
 public class MyAssemblyInfoContextService : IAssemblyInfoContextService
 {
-    public string[] GetExcludedAssemblies() =>
-    [
+    public string[] GetExcludedAssemblies()
+    {
+        return [
         "System.Runtime",
         "System.Collections",
         "System.ComponentModel",
@@ -27,4 +28,5 @@ public class MyAssemblyInfoContextService : IAssemblyInfoContextService
         "CsharpExpressionDumper.Core",
         "CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration",
     ];
+    }
 }

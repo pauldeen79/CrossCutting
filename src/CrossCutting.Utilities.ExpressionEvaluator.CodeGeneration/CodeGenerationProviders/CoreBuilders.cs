@@ -6,7 +6,9 @@ public class CoreBuilders(ICommandService commandService) : ExpressionEvaluatorC
     public override string Path => $"{Constants.Namespaces.UtilitiesExpressionEvaluator}/Builders";
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetBuildersAsync(GetCoreModelsAsync(), CurrentNamespace, Constants.Namespaces.UtilitiesExpressionEvaluator);
+    {
+        return GetBuildersAsync(GetCoreModelsAsync(), CurrentNamespace, Constants.Namespaces.UtilitiesExpressionEvaluator);
+    }
 
     protected override bool CreateAsObservable => true;
 }

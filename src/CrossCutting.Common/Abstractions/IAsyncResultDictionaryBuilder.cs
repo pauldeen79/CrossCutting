@@ -25,7 +25,7 @@ public interface IAsyncResultDictionaryBuilder
     IAsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Func<Result<T>>> value);
     IAsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<Result<T>> value);
     IAsyncResultDictionaryBuilder AddRange<T>(string nameFormatString, IEnumerable<T> value);
-    Task<IReadOnlyDictionary<string, Result>> BuildAsync();
+    Task<IReadOnlyDictionary<string, Result>> BuildAsync(CancellationToken token);
     IReadOnlyDictionary<string, Func<Task<Result>>> BuildDeferred();
 }
 
@@ -45,6 +45,6 @@ public interface IAsyncResultDictionaryBuilder<T>
     IAsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Result<T>> value);
     IAsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<T> value);
     IAsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Func<Task<Result<T>>>> value);
-    Task<IReadOnlyDictionary<string, Result<T>>> Build();
+    Task<IReadOnlyDictionary<string, Result<T>>> BuildAsync(CancellationToken token);
     IReadOnlyDictionary<string, Func<Task<Result<T>>>> BuildDeferred();
 }

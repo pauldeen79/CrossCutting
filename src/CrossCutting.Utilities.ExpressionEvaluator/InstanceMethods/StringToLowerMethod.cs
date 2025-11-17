@@ -11,7 +11,7 @@ public class StringToLowerMethod : IMethod
 
         return (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<string>(token))
-            .BuildAsync().ConfigureAwait(false))
+            .BuildAsync(token).ConfigureAwait(false))
             .OnSuccess<object?>(results => results.GetValue<string>(Constants.Instance).ToLower(context.Context.Settings.FormatProvider.ToCultureInfo()));
     }
 }

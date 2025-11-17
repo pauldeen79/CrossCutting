@@ -12,7 +12,7 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
     public async Task CreateAsync_Returns_Invalid_On_Unsupported_DatabaseOperation(DatabaseOperation operation)
     {
         // Act
-        var result = await Sut.CreateAsync<TestEntity>(operation);
+        var result = await Sut.CreateAsync<TestEntity>(operation, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -25,7 +25,7 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
         var sut = new SelectDatabaseCommandProvider([]);
 
         // Act
-        var result = await sut.CreateAsync<TestEntity>(DatabaseOperation.Select);
+        var result = await sut.CreateAsync<TestEntity>(DatabaseOperation.Select, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
@@ -46,7 +46,7 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
                .Returns(_ => Result.Success(SettingsMock));
 
         // Act
-        var actual = (await Sut.CreateAsync<TestEntity>(DatabaseOperation.Select)).EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.CreateAsync<TestEntity>(DatabaseOperation.Select, CancellationToken.None)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.CommandText.ShouldBe(Sql);

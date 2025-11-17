@@ -3,17 +3,17 @@
 public class ResultDictionaryBuilder : IResultDictionaryBuilder
 {
     private readonly Dictionary<string, Func<Result>> _resultset = new();
-    private readonly IFuncDecorator _funcDecorator;
+    private readonly List<IFuncInterceptor> _interceptors;
 
-    public ResultDictionaryBuilder() : this(new LegacyFuncDecorator())
+    public ResultDictionaryBuilder() : this([new LegacyFuncInterceptor()])
     {
     }
 
-    public ResultDictionaryBuilder(IFuncDecorator funcDecorator)
+    public ResultDictionaryBuilder(IEnumerable<IFuncInterceptor> interceptors)
     {
-        ArgumentGuard.IsNotNull(funcDecorator, nameof(funcDecorator));
+        ArgumentGuard.IsNotNull(interceptors, nameof(interceptors));
 
-        _funcDecorator = funcDecorator;
+        _interceptors = interceptors.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
     }
 
     public IResultDictionaryBuilder Add(Func<Result> value)
@@ -53,7 +53,7 @@ public class ResultDictionaryBuilder : IResultDictionaryBuilder
 
         foreach (var item in _resultset)
         {
-            var result = _funcDecorator.Execute(item);
+            var result = DoExecute(item);
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
@@ -64,19 +64,36 @@ public class ResultDictionaryBuilder : IResultDictionaryBuilder
         return results;
     }
 
-    private sealed class LegacyFuncDecorator : IFuncDecorator
+    private Result DoExecute(KeyValuePair<string, Func<Result>> item)
     {
-        public Result Execute(KeyValuePair<string, Func<Result>> taskItem)
+        var index = 0;
+
+        Result Next()
+        {
+            if (index < _interceptors.Count)
+            {
+                return _interceptors[index++].Execute(item, Next);
+            }
+
+            return item.Value.Invoke();
+        }
+
+        return Next();
+    }
+
+    private sealed class LegacyFuncInterceptor : IFuncInterceptor
+    {
+        public Result Execute(KeyValuePair<string, Func<Result>> item, Func<Result> next)
         {
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                return taskItem.Value()
-                    .EnsureNotNull($"Result instance for item with key {taskItem.Key} is null");
+                return next()
+                    .EnsureNotNull($"Result instance for item with key {item.Key} is null");
             }
             catch (Exception ex)
             {
-                return Result.Error(ex, $"Error occured while adding item with key {taskItem.Key}, see Exception for details");
+                return Result.Error(ex, $"Error occured while adding item with key {item.Key}, see Exception for details");
             }
 #pragma warning restore CA1031 // Do not catch general exception types
         }
@@ -86,17 +103,17 @@ public class ResultDictionaryBuilder : IResultDictionaryBuilder
 public class ResultDictionaryBuilder<T> : IResultDictionaryBuilder<T>
 {
     private readonly Dictionary<string, Func<Result<T>>> _resultset = new();
-    private readonly IFuncDecorator<T> _funcDecorator;
+    private readonly List<IFuncInterceptor<T>> _interceptors;
 
-    public ResultDictionaryBuilder() : this(new LegacyFuncDecorator())
+    public ResultDictionaryBuilder() : this([new LegacyFuncInterceptor()])
     {
     }
 
-    public ResultDictionaryBuilder(IFuncDecorator<T> funcDecorator)
+    public ResultDictionaryBuilder(IEnumerable<IFuncInterceptor<T>> interceptors)
     {
-        ArgumentGuard.IsNotNull(funcDecorator, nameof(funcDecorator));
+        ArgumentGuard.IsNotNull(interceptors, nameof(interceptors));
 
-        _funcDecorator = funcDecorator;
+        _interceptors = interceptors.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
     }
 
     public IResultDictionaryBuilder<T> Add(Func<Result<T>> value)
@@ -146,7 +163,7 @@ public class ResultDictionaryBuilder<T> : IResultDictionaryBuilder<T>
 
         foreach (var item in _resultset)
         {
-            var result = _funcDecorator.Execute(item);
+            var result = DoExecute(item);
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
@@ -157,19 +174,36 @@ public class ResultDictionaryBuilder<T> : IResultDictionaryBuilder<T>
         return results;
     }
 
-    private sealed class LegacyFuncDecorator : IFuncDecorator<T>
+    private Result<T> DoExecute(KeyValuePair<string, Func<Result<T>>> item)
     {
-        public Result<T> Execute(KeyValuePair<string, Func<Result<T>>> taskItem)
+        var index = 0;
+
+        Result<T> Next()
+        {
+            if (index < _interceptors.Count)
+            {
+                return _interceptors[index++].Execute(item, Next);
+            }
+
+            return item.Value.Invoke();
+        }
+
+        return Next();
+    }
+
+    private sealed class LegacyFuncInterceptor : IFuncInterceptor<T>
+    {
+        public Result<T> Execute(KeyValuePair<string, Func<Result<T>>> item, Func<Result<T>> next)
         {
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                return taskItem.Value()
-                    .EnsureNotNull($"Result instance for item with key {taskItem.Key} is null");
+                return next()
+                    .EnsureNotNull($"Result instance for item with key {item.Key} is null");
             }
             catch (Exception ex)
             {
-                return Result.Error<T>(ex, $"Error occured while adding item with key {taskItem.Key}, see Exception for details");
+                return Result.Error<T>(ex, $"Error occured while adding item with key {item.Key}, see Exception for details");
             }
 #pragma warning restore CA1031 // Do not catch general exception types
         }
