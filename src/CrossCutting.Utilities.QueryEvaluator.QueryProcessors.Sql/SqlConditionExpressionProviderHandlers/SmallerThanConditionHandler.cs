@@ -2,6 +2,6 @@
 
 public class SmallerThanConditionHandler : ConditionExpressionHandlerBase<SmallerThanCondition>
 {
-    protected override Task<Result> DoGetConditionExpressionAsync(StringBuilder builder, IQueryContext context, SmallerThanCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, CancellationToken token)
-        => GetSimpleConditionExpressionAsync(builder, context, condition, fieldInfo, sqlExpressionProvider, parameterBag, new ConditionParameters("<"), token);
+    protected override Task<Result> DoGetConditionExpressionAsync(ConditionExpressionHandlerContext<SmallerThanCondition> context, CancellationToken token)
+        => GetSimpleConditionExpressionAsync(context, new ConditionParameters("<"), token);
 }

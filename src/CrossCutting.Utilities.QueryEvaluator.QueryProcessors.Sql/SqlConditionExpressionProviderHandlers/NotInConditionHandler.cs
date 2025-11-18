@@ -2,6 +2,6 @@
 
 public class NotInConditionHandler : ConditionExpressionHandlerBase<NotInCondition>
 {
-    protected override Task<Result> DoGetConditionExpressionAsync(StringBuilder builder, IQueryContext context, NotInCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, CancellationToken token)
-        => GetInConditionExpressionAsync(builder, context, condition, fieldInfo, sqlExpressionProvider, parameterBag, "NOT IN", token);
+    protected override Task<Result> DoGetConditionExpressionAsync(ConditionExpressionHandlerContext<NotInCondition> context, CancellationToken token)
+        => GetInConditionExpressionAsync(context, "NOT IN", token);
 }

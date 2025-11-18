@@ -2,14 +2,13 @@
 
 public class NullConditionHandler : ConditionExpressionHandlerBase<NullCondition>
 {
-    protected override async Task<Result> DoGetConditionExpressionAsync(StringBuilder builder, IQueryContext context, NullCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag, CancellationToken token)
+    protected override async Task<Result> DoGetConditionExpressionAsync(ConditionExpressionHandlerContext<NullCondition> context, CancellationToken token)
     {
-        sqlExpressionProvider = ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
-        condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder<string>()
-            .Add(nameof(condition.SourceExpression), () => sqlExpressionProvider.GetSqlExpressionAsync(context, new SqlExpression(condition.SourceExpression), fieldInfo, parameterBag, token))
+            .Add(nameof(context.Condition.SourceExpression), () => context.SqlExpressionProvider.GetSqlExpressionAsync(context.Context, new SqlExpression(context.Condition.SourceExpression), context.FieldInfo, context.ParameterBag, token))
             .BuildAsync(token).ConfigureAwait(false))
-            .OnSuccess(results => builder.Append($"{results.GetValue(nameof(condition.SourceExpression))} IS NULL"));
+            .OnSuccess(results => context.Builder.Append($"{results.GetValue(nameof(context.Condition.SourceExpression))} IS NULL"));
     }
 }

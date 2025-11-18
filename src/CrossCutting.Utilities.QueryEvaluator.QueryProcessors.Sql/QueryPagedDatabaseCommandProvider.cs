@@ -62,15 +62,16 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
     {
         var parameterBag = new ParameterBag();
         var builder = new PagedSelectCommandBuilder();
+        var context = new PagedSelectCommandBuilderContext(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag);
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add(() => builder.Select(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag))
+            .Add(() => builder.Select(context))
             .Add(() => builder.Distinct(source))
             .Add(() => builder.Top(source, settings, pageSize))
             .Add(() => builder.Offset(source, offset))
             .Add(() => builder.From(source, settings))
-            .Add(() => builder.Where(source, settings, fieldInfo, _sqlExpressionProvider, _sqlConditionExpressionProvider, parameterBag, token))
-            .Add(() => builder.OrderBy(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag, token))
+            .Add(() => builder.Where(context, _sqlConditionExpressionProvider, token))
+            .Add(() => builder.OrderBy(context, token))
             .BuildAsync(token).ConfigureAwait(false))
             .OnSuccess(_ => builder.AddParameters(source, parameterBag))
             .OnSuccess(_ => builder.Build());
