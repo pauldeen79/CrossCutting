@@ -184,8 +184,8 @@ public class ResultDictionaryBuilderTests
             public void Can_Add_Decorator_To_Add_Functionality()
             {
                 // Arrange
-                var decorator = new MyFuncDecorator();
-                var sut = new ResultDictionaryBuilder(decorator);
+                var interceptor = new MyFuncInterceptor();
+                var sut = new ResultDictionaryBuilder([interceptor]);
                 sut.Add(NonGenericDelegate);
 
                 // Act
@@ -193,17 +193,17 @@ public class ResultDictionaryBuilderTests
 
                 // Assert
                 result.Count.ShouldBe(1);
-                decorator.IsCalled.ShouldBeTrue();
+                interceptor.IsCalled.ShouldBeTrue();
             }
 
-            private sealed class MyFuncDecorator : IFuncDecorator
+            private sealed class MyFuncInterceptor : IFuncInterceptor
             {
                 public bool IsCalled { get; private set; }
 
-                public Result Execute(KeyValuePair<string, Func<Result>> taskItem)
+                public Result Execute(KeyValuePair<string, Func<Result>> item, Func<Result> next)
                 {
                     IsCalled = true;
-                    return taskItem.Value();
+                    return next();
                 }
             }
         }
@@ -382,8 +382,8 @@ public class ResultDictionaryBuilderTests
             public void Can_Add_Decorator_To_Add_Functionality()
             {
                 // Arrange
-                var decorator = new MyFuncDecorator<string>();
-                var sut = new ResultDictionaryBuilder<string>(decorator);
+                var interceptor = new MyFuncInterceptor<string>();
+                var sut = new ResultDictionaryBuilder<string>([interceptor]);
                 sut.Add(GenericDelegate);
 
                 // Act
@@ -391,17 +391,17 @@ public class ResultDictionaryBuilderTests
 
                 // Assert
                 result.Count.ShouldBe(1);
-                decorator.IsCalled.ShouldBeTrue();
+                interceptor.IsCalled.ShouldBeTrue();
             }
 
-            private sealed class MyFuncDecorator<T> : IFuncDecorator<T>
+            private sealed class MyFuncInterceptor<T> : IFuncInterceptor<T>
             {
                 public bool IsCalled { get; private set; }
 
-                public Result<T> Execute(KeyValuePair<string, Func<Result<T>>> taskItem)
+                public Result<T> Execute(KeyValuePair<string, Func<Result<T>>> item, Func<Result<T>> next)
                 {
                     IsCalled = true;
-                    return taskItem.Value();
+                    return next();
                 }
             }
         }

@@ -154,7 +154,7 @@ public class DbCommandExtensionsTests
         using var command = connection.CreateCommand();
 
         // Act
-        var result = await command.FindOneAsync($"SELECT TOP 1 * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, CancellationToken.None, reader => new MyDataObject { Property = reader.GetString("Property") });
+        var result = await command.FindOneAsync($"SELECT TOP 1 * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, reader => new MyDataObject { Property = reader.GetString("Property") }, CancellationToken.None);
 
         // Assert
         result.ShouldNotBeNull();
@@ -195,7 +195,7 @@ public class DbCommandExtensionsTests
         using var command = connection.CreateCommand();
 
         // Act
-        var result = await command.FindManyAsync($"SELECT * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, CancellationToken.None, reader => new MyDataObject { Property = reader.GetString("Property") });
+        var result = await command.FindManyAsync($"SELECT * FROM FRIDGE WHERE Alcohol > 0", DatabaseCommandType.Text, reader => new MyDataObject { Property = reader.GetString("Property") }, CancellationToken.None);
 
         // Assert
         result.ShouldNotBeNull().Count.ShouldBe(2);

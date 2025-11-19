@@ -924,7 +924,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Act
         var result = (await new AsyncResultDictionaryBuilder<object?>()
             .Add("instance", context.GetInstanceValueResult<string>())
-            .Build())
+            .BuildAsync())
             .OnSuccess(results => results.GetValue("instance"));
 
         // Assert
@@ -948,7 +948,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var result = (await new AsyncResultDictionaryBuilder<object?>()
             .Add("instance", context.GetInstanceValueResult<string>())
             .Add("error", Result.Error<object?>("Kaboom"))
-            .Build())
+            .BuildAsync())
             .OnSuccess(results => results.GetValue("instance"));
 
         // Assert
@@ -1343,7 +1343,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
             => (await new AsyncResultDictionaryBuilder()
                 .Add("Input", () => context.GetArgumentValueResultAsync<string>(0, "Input", token))
-                .BuildAsync().ConfigureAwait(false))
+                .BuildAsync(token).ConfigureAwait(false))
                 .OnSuccess<object?>(results => results.GetValue<string>("Input").ToUpperInvariant());
     }
 
@@ -1357,7 +1357,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         public async Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context, CancellationToken token)
             => (await new AsyncResultDictionaryBuilder()
                 .Add("Input", () => context.GetArgumentValueResultAsync<string>(0, "Input", token))
-                .BuildAsync().ConfigureAwait(false))
+                .BuildAsync(token).ConfigureAwait(false))
                 .OnSuccess(results => results.GetValue<string>("Input").ToUpperInvariant());
     }
 

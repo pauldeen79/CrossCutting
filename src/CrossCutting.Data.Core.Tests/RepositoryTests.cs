@@ -17,7 +17,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         commandMock.Operation.Returns(DatabaseOperation.Insert);
         var entity = new TestEntity("01", "Test", "first entity", false);
         CommandProcessorMock.ExecuteCommandAsync(commandMock, entity).Returns(new DatabaseCommandResult<TestEntity>(entity));
-        EntityCommandProviderMock.CreateAsync(Arg.Any<TestEntity>(), DatabaseOperation.Insert).Returns(Result.Success(commandMock));
+        EntityCommandProviderMock.CreateAsync(Arg.Any<TestEntity>(), DatabaseOperation.Insert, Arg.Any<CancellationToken>()).Returns(Result.Success(commandMock));
 
         // Act
         var result = (await Sut.AddAsync(entity)).EnsureValue().GetValueOrThrow();
@@ -35,7 +35,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var commandMock = Substitute.For<IDatabaseCommand>();
         commandMock.Operation.Returns(DatabaseOperation.Update);
         CommandProcessorMock.ExecuteCommandAsync(commandMock, entity).Returns(new DatabaseCommandResult<TestEntity>(entity));
-        EntityCommandProviderMock.CreateAsync(Arg.Any<TestEntity>(), DatabaseOperation.Update).Returns(Result.Success(commandMock));
+        EntityCommandProviderMock.CreateAsync(Arg.Any<TestEntity>(), DatabaseOperation.Update, Arg.Any<CancellationToken>()).Returns(Result.Success(commandMock));
 
         // Act
         var result = (await Sut.UpdateAsync(entity)).EnsureValue().GetValueOrThrow();
@@ -53,7 +53,7 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
         var commandMock = Fixture.Freeze<IDatabaseCommand>();
         commandMock.Operation.Returns(DatabaseOperation.Delete);
         CommandProcessorMock.ExecuteCommandAsync(commandMock, entity).Returns(new DatabaseCommandResult<TestEntity>(entity));
-        EntityCommandProviderMock.CreateAsync(Arg.Any<TestEntity>(), DatabaseOperation.Delete).Returns(Result.Success(commandMock));
+        EntityCommandProviderMock.CreateAsync(Arg.Any<TestEntity>(), DatabaseOperation.Delete, Arg.Any<CancellationToken>()).Returns(Result.Success(commandMock));
 
         // Act
         var result = (await Sut.DeleteAsync(entity)).EnsureValue().GetValueOrThrow();
@@ -68,8 +68,8 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
     {
         // Arrange
         var expected = new TestEntity("code", "codeType", "description");
-        IdentitySelectCommandProviderMock.CreateAsync(Arg.Any<TestEntityIdentity>(), DatabaseOperation.Select).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
-        EntityRetrieverMock.FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success(expected));
+        IdentitySelectCommandProviderMock.CreateAsync(Arg.Any<TestEntityIdentity>(), DatabaseOperation.Select, Arg.Any<CancellationToken>()).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
+        EntityRetrieverMock.FindOneAsync(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select), Arg.Any<CancellationToken>()).Returns(Result.Success(expected));
 
         // Act
         var actual = (await Sut.FindAsync(new TestEntityIdentity(expected))).EnsureValue().GetValueOrThrow();
@@ -83,8 +83,8 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
     {
         // Arrange
         var expected = new[] { new TestEntity("code", "codeType", "description") };
-        EntitySelectCommandProviderMock.CreateAsync<TestEntity>(DatabaseOperation.Select).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
-        EntityRetrieverMock.FindManyAsync(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select)).Returns(Result.Success<IReadOnlyCollection<TestEntity>>(expected));
+        EntitySelectCommandProviderMock.CreateAsync<TestEntity>(DatabaseOperation.Select, Arg.Any<CancellationToken>()).Returns(Result.Success<IDatabaseCommand>(new SqlTextCommand("SELECT ...", DatabaseOperation.Select)));
+        EntityRetrieverMock.FindManyAsync(Arg.Is<IDatabaseCommand>(x => x.Operation == DatabaseOperation.Select), Arg.Any<CancellationToken>()).Returns(Result.Success<IReadOnlyCollection<TestEntity>>(expected));
 
         // Act
         var actual = (await Sut.FindAllAsync()).EnsureValue().GetValueOrThrow();
@@ -98,8 +98,8 @@ public class RepositoryTests : TestBase<Repository<TestEntity, TestEntityIdentit
     {
         // Arrange
         var expected = new PagedResult<TestEntity>([new TestEntity("code", "codeType", "description")], 10, 1, 10);
-        PagedEntitySelectCommandProviderMock.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 1, 10).Returns(Result.Success<IPagedDatabaseCommand>(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10)));
-        EntityRetrieverMock.FindPagedAsync(Arg.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select)).Returns(Result.Success<IPagedResult<TestEntity>>(expected));
+        PagedEntitySelectCommandProviderMock.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 1, 10, Arg.Any<CancellationToken>()).Returns(Result.Success<IPagedDatabaseCommand>(new PagedDatabaseCommand(new SqlTextCommand("SELECT ...", DatabaseOperation.Select), new SqlTextCommand("SELECT COUNT(*) FROM...", DatabaseOperation.Unspecified), 1, 10)));
+        EntityRetrieverMock.FindPagedAsync(Arg.Is<IPagedDatabaseCommand>(x => x.DataCommand.Operation == DatabaseOperation.Select), Arg.Any<CancellationToken>()).Returns(Result.Success<IPagedResult<TestEntity>>(expected));
 
         // Act
         var actual = (await Sut.FindAllPagedAsync(1, 10)).EnsureValue().GetValueOrThrow();

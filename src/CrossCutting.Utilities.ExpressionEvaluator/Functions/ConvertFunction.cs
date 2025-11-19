@@ -8,6 +8,6 @@ public class ConvertFunction : IFunction
         => (await new AsyncResultDictionaryBuilder()
             .Add<Type>(context, 0, "Type", token)
             .Add(context, 1, "Expression", token)
-            .BuildAsync().ConfigureAwait(false))
+            .BuildAsync(token).ConfigureAwait(false))
             .OnSuccess(results => Result.WrapException(() => Convert.ChangeType(results.GetValue("Expression")!, results.GetValue<Type>("Type"))));
 }

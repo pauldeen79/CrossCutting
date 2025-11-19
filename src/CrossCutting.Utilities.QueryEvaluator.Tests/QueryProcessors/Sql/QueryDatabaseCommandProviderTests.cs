@@ -12,7 +12,7 @@ public class QueryDatabaseCommandProviderTests : TestBase<QueryDatabaseCommandPr
             var sut = CreateSut();
 
             // Act
-            var result = await sut.CreateAsync(query, DatabaseOperation.Insert);
+            var result = await sut.CreateAsync(query, DatabaseOperation.Insert, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -27,7 +27,7 @@ public class QueryDatabaseCommandProviderTests : TestBase<QueryDatabaseCommandPr
             var sut = CreateSut();
 
             // Act
-            var command = (await sut.CreateAsync(query, DatabaseOperation.Select)).EnsureValue().GetValueOrThrow();
+            var command = (await sut.CreateAsync(query, DatabaseOperation.Select, CancellationToken.None)).EnsureValue().GetValueOrThrow();
 
             // Assert
             command.ShouldNotBeNull();

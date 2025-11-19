@@ -15,7 +15,7 @@ public class DateTimeAddMonthsMethod : IMethod
         return (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Instance, () => context.GetInstanceValueResultAsync<DateTime>(token))
             .Add(MonthsToAdd, () => context.GetArgumentValueResultAsync<int>(0, "MonthsToAdd", token))
-            .BuildAsync().ConfigureAwait(false))
+            .BuildAsync(token).ConfigureAwait(false))
             .OnSuccess<object?>(results => results.GetValue<DateTime>(Constants.Instance).AddMonths(results.GetValue<int>(MonthsToAdd)));
     }
 }

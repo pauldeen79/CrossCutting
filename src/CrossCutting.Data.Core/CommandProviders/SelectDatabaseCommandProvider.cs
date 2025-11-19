@@ -4,11 +4,11 @@ public class SelectDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverS
 {
     private readonly IEnumerable<IDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
 
-    public async Task<Result<IDatabaseCommand>> CreateAsync<TSource>(DatabaseOperation operation)
+    public async Task<Result<IDatabaseCommand>> CreateAsync<TSource>(DatabaseOperation operation, CancellationToken token)
         => (await new AsyncResultDictionaryBuilder()
             .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only Select operation is supported"))
             .Add("Settings", GetSettings<TSource>)
-            .BuildAsync().ConfigureAwait(false))
+            .BuildAsync(token).ConfigureAwait(false))
             .OnSuccess(results =>
             {
                 var settings = results.GetValue<IDatabaseEntityRetrieverSettings>("Settings");

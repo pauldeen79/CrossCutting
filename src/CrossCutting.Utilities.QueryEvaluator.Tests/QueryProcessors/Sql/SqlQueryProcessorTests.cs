@@ -616,7 +616,7 @@ public sealed class SqlQueryProcessorTests : TestBase
         DatabaseEntityRetrieverSettings.Fields.Returns("Property1, Property2");
 
         // Act
-        var result = await SqlQueryProcessor.FindPagedAsync<MyEntity>(query);
+        var result = await SqlQueryProcessor.FindPagedAsync<MyEntity>(query, null);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

@@ -7,5 +7,6 @@ public interface ISqlConditionExpressionProviderHandler
                                              ICondition condition,
                                              IQueryFieldInfo fieldInfo,
                                              ISqlExpressionProvider sqlExpressionProvider,
-                                             ParameterBag parameterBag);
+                                             ParameterBag parameterBag,
+                                             CancellationToken token);
 }

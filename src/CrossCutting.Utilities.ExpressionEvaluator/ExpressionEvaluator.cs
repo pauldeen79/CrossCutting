@@ -25,20 +25,15 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         context = context.FromRoot();
 
-        var result = new ResultDictionaryBuilder()
+        return await new ResultDictionaryBuilder()
             .Add(() => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Build()
             .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
             .EnsureNotNull("Parse returned null")
-            .EnsureValue();
-            
-        if (!result.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(result);
-        }
-
-        return await result.Value!.EvaluateAsync(context, token).ConfigureAwait(false);
+            .EnsureValue()
+            .OnSuccessAsync(expression => expression.EvaluateAsync(context, token))
+            .ConfigureAwait(false);
     }
 
     public async Task<Result<T>> EvaluateTypedAsync<T>(ExpressionEvaluatorContext context, CancellationToken token)
@@ -47,27 +42,21 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         context = context.FromRoot();
 
-        var result = new ResultDictionaryBuilder()
+        return await new ResultDictionaryBuilder()
             .Add(() => context.Validate<object?>())
             .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
             .Build()
             .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
             .EnsureNotNull("Parse returned null")
-            .EnsureValue();
-
-        if (!result.IsSuccessful())
-        {
-            return Result.FromExistingResult<T>(result);
-        }
-
-        var expression = result.Value!;
-
-        return expression is IExpression<T> typedExpression
-            ? (await typedExpression.EvaluateTypedAsync(context, token).ConfigureAwait(false))
-                .EnsureNotNull("EvaluateTypedAsync returned null")
-            : (await expression.EvaluateAsync(context, token).ConfigureAwait(false))
-                .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage)
-                .TryCastAllowNull<T>();
+            .EnsureValue()
+            .OnSuccessAsync(async expression =>
+                expression is IExpression<T> typedExpression
+                    ? (await typedExpression.EvaluateTypedAsync(context, token).ConfigureAwait(false))
+                        .EnsureNotNull("EvaluateTypedAsync returned null")
+                    : (await expression.EvaluateAsync(context, token).ConfigureAwait(false))
+                        .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage)
+                        .TryCastAllowNull<T>())
+            .ConfigureAwait(false);
     }
 
     public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
@@ -107,6 +96,11 @@ public class ExpressionEvaluator : IExpressionEvaluator
             {
                 foreach (var component in _components)
                 {
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
                     var result = (await Result.WrapExceptionAsync(() => component.EvaluateAsync(context, token)).ConfigureAwait(false))
                             .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage);
 
@@ -129,6 +123,11 @@ public class ExpressionEvaluator : IExpressionEvaluator
             {
                 foreach (var component in _components)
                 {
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
                     var result = await Result.WrapExceptionAsync(async () => 
                         component is IExpressionComponent<T> typedComponent
                             ? (await typedComponent.EvaluateTypedAsync(context, token).ConfigureAwait(false))
@@ -159,6 +158,11 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         foreach (var component in _components)
         {
+            if (token.IsCancellationRequested)
+            {
+                break;
+            }
+
             var result = (await component.ParseAsync(context, token).ConfigureAwait(false))
                 ?? new ExpressionParseResultBuilder()
                     .WithSourceExpression(context.Expression)

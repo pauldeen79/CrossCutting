@@ -2,6 +2,6 @@
 
 public class StringNotContainsConditionHandler : ConditionExpressionHandlerBase<StringNotContainsCondition>
 {
-    protected override Task<Result> DoGetConditionExpressionAsync(StringBuilder builder, IQueryContext context, StringNotContainsCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag)
-        => GetStringConditionExpressionAsync(builder, context, condition, fieldInfo, sqlExpressionProvider, parameterBag, new StringConditionParameters("NOT LIKE", "%{0}%"));
+    protected override Task<Result> DoGetConditionExpressionAsync(ConditionExpressionHandlerContext<StringNotContainsCondition> context, CancellationToken token)
+        => GetStringConditionExpressionAsync(context, new StringConditionParameters("NOT LIKE", "%{0}%"), token);
 }

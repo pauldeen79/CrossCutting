@@ -19,14 +19,14 @@ public class DatabaseCommandProcessor<TEntity, TBuilder>(
     public int ExecuteNonQuery(IDatabaseCommand command)
         => InvokeCommand(command, cmd => cmd.ExecuteNonQuery());
 
-    public async Task<int> ExecuteNonQueryAsync(IDatabaseCommand command, CancellationToken cancellationToken)
-        => await InvokeCommandAsync(command, async cmd => await cmd.ExecuteNonQueryAsync(cancellationToken));
+    public async Task<int> ExecuteNonQueryAsync(IDatabaseCommand command, CancellationToken token)
+        => await InvokeCommandAsync(command, async cmd => await cmd.ExecuteNonQueryAsync(token));
 
     public object ExecuteScalar(IDatabaseCommand command)
         => InvokeCommand(command, cmd => cmd.ExecuteScalar());
 
-    public async Task<object?> ExecuteScalarAsync(IDatabaseCommand command, CancellationToken cancellationToken)
-        => await InvokeCommandAsync(command, async cmd => await cmd.ExecuteScalarAsync(cancellationToken));
+    public async Task<object?> ExecuteScalarAsync(IDatabaseCommand command, CancellationToken token)
+        => await InvokeCommandAsync(command, async cmd => await cmd.ExecuteScalarAsync(token));
 
     public IDatabaseCommandResult<TEntity> ExecuteCommand(IDatabaseCommand command, TEntity instance)
     {
@@ -50,7 +50,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder>(
         }
     }
 
-    public async Task<IDatabaseCommandResult<TEntity>> ExecuteCommandAsync(IDatabaseCommand command, TEntity instance, CancellationToken cancellationToken)
+    public async Task<IDatabaseCommandResult<TEntity>> ExecuteCommandAsync(IDatabaseCommand command, TEntity instance, CancellationToken token)
     {
         var resultEntity = CreateResultEntity(command, instance);
 
@@ -62,12 +62,12 @@ public class DatabaseCommandProcessor<TEntity, TBuilder>(
             if (_provider.AfterRead is null)
             {
                 //Use ExecuteNonQuery
-                return await ExecuteNonQueryAsync(cmd, resultEntity, cancellationToken);
+                return await ExecuteNonQueryAsync(cmd, resultEntity, token);
             }
             else
             {
                 //Use ExecuteReader
-                return await ExecuteReaderAsync(cmd, command.Operation, cancellationToken, _provider.AfterRead, resultEntity);
+                return await ExecuteReaderAsync(cmd, command.Operation, token, _provider.AfterRead, resultEntity);
             }
         }
     }
@@ -117,8 +117,8 @@ public class DatabaseCommandProcessor<TEntity, TBuilder>(
     private IDatabaseCommandResult<TEntity> ExecuteNonQuery(IDbCommand cmd, TBuilder result)
         => new DatabaseCommandResult<TEntity>(cmd.ExecuteNonQuery() != 0, CreateEntityFromBuilder(result));
 
-    private async Task<IDatabaseCommandResult<TEntity>> ExecuteNonQueryAsync(DbCommand cmd, TBuilder result, CancellationToken cancellationToken)
-        => new DatabaseCommandResult<TEntity>(await cmd.ExecuteNonQueryAsync(cancellationToken) != 0, CreateEntityFromBuilder(result));
+    private async Task<IDatabaseCommandResult<TEntity>> ExecuteNonQueryAsync(DbCommand cmd, TBuilder result, CancellationToken token)
+        => new DatabaseCommandResult<TEntity>(await cmd.ExecuteNonQueryAsync(token) != 0, CreateEntityFromBuilder(result));
 
     private TEntity CreateEntityFromBuilder(TBuilder result)
     {
@@ -159,15 +159,15 @@ public class DatabaseCommandProcessor<TEntity, TBuilder>(
     private async Task<IDatabaseCommandResult<TEntity>> ExecuteReaderAsync(
         DbCommand cmd,
         DatabaseOperation operation,
-        CancellationToken cancellationToken,
+        CancellationToken token,
         AfterReadHandler<TBuilder> afterReadDelegate,
         TBuilder resultEntity)
     {
         var success = false;
-        using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.Default, cancellationToken))
+        using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.Default, token))
         {
-            var result = await reader.ReadAsync(cancellationToken);
-            do { Nothing(); } while (!cancellationToken.IsCancellationRequested && (reader.FieldCount == 0 || !result) && await reader.NextResultAsync(cancellationToken));
+            var result = await reader.ReadAsync(token);
+            do { Nothing(); } while (!token.IsCancellationRequested && (reader.FieldCount == 0 || !result) && await reader.NextResultAsync(token));
             if (result)
             {
                 resultEntity = afterReadDelegate(resultEntity, operation, reader);

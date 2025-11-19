@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.ProcessingPipeline;
+﻿namespace CrossCutting.ProcessingPipeline.Abstractions;
 
 public interface IPipelineResponseGeneratorComponent
 {

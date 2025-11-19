@@ -2,6 +2,6 @@
 
 public class EqualConditionHandler : ConditionExpressionHandlerBase<EqualCondition>
 {
-    protected override Task<Result> DoGetConditionExpressionAsync(StringBuilder builder, IQueryContext context, EqualCondition condition, IQueryFieldInfo fieldInfo, ISqlExpressionProvider sqlExpressionProvider, ParameterBag parameterBag)
-        => GetSimpleConditionExpressionAsync(builder, context, condition, fieldInfo, sqlExpressionProvider, parameterBag, new ConditionParameters("="));
+    protected override Task<Result> DoGetConditionExpressionAsync(ConditionExpressionHandlerContext<EqualCondition> context, CancellationToken token)
+        => GetSimpleConditionExpressionAsync(context, new ConditionParameters("="), token);
 }

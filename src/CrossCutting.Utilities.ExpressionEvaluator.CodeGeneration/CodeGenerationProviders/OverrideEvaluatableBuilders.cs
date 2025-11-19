@@ -7,7 +7,8 @@ public class OverrideEvaluatableBuilders(ICommandService commandService) : Expre
 
     protected override bool EnableEntityInheritance => true;
     protected override bool CreateAsObservable => true;
-    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IEvaluatableBase), Constants.Namespaces.UtilitiesExpressionEvaluator);
+    protected override Task<Result<TypeBase>> GetBaseClassAsync()
+        => CreateBaseClassAsync(typeof(IEvaluatableBase), Constants.Namespaces.UtilitiesExpressionEvaluator);
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
         => GetBuildersAsync(

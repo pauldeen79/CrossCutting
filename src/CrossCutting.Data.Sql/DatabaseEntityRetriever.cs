@@ -23,13 +23,13 @@ public class DatabaseEntityRetriever<T>(
             : Result.Success(returnValue);
     }
 
-    public async Task<Result<T>> FindOneAsync(IDatabaseCommand command, CancellationToken cancellationToken)
-        => await FindAsync(async cmd => (await cmd.FindOneAsync(command.CommandText, command.CommandType, cancellationToken, _mapper.Map, command.CommandParameters).ConfigureAwait(false))!).ConfigureAwait(false);
+    public async Task<Result<T>> FindOneAsync(IDatabaseCommand command, CancellationToken token)
+        => await FindAsync(async cmd => (await cmd.FindOneAsync(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters, token).ConfigureAwait(false))!).ConfigureAwait(false);
 
-    public async Task<Result<IReadOnlyCollection<T>>> FindManyAsync(IDatabaseCommand command, CancellationToken cancellationToken)
-        => (await FindAsync(async cmd => (await cmd.FindManyAsync(command.CommandText, command.CommandType, cancellationToken, _mapper.Map, command.CommandParameters).ConfigureAwait(false)).ToList()).ConfigureAwait(false)).TryCastAllowNull<IReadOnlyCollection<T>>();
+    public async Task<Result<IReadOnlyCollection<T>>> FindManyAsync(IDatabaseCommand command, CancellationToken token)
+        => (await FindAsync(async cmd => (await cmd.FindManyAsync(command.CommandText, command.CommandType, _mapper.Map, command.CommandParameters, token).ConfigureAwait(false)).ToList()).ConfigureAwait(false)).TryCastAllowNull<IReadOnlyCollection<T>>();
 
-    public async Task<Result<IPagedResult<T>>> FindPagedAsync(IPagedDatabaseCommand command, CancellationToken cancellationToken)
+    public async Task<Result<IPagedResult<T>>> FindPagedAsync(IPagedDatabaseCommand command, CancellationToken token)
     {
         var returnValue = default(IPagedResult<T>);
 
@@ -38,10 +38,10 @@ public class DatabaseEntityRetriever<T>(
         using (var countCommand = _connection.CreateCommand())
         {
             countCommand.FillCommand(command.RecordCountCommand.CommandText, command.RecordCountCommand.CommandType, command.RecordCountCommand.CommandParameters);
-            var totalRecordCount = ((await countCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false)) as int?).GetValueOrDefault();
+            var totalRecordCount = ((await countCommand.ExecuteScalarAsync(token).ConfigureAwait(false)) as int?).GetValueOrDefault();
             returnValue = new PagedResult<T>
             (
-                [.. await cmd.FindManyAsync(command.DataCommand.CommandText, command.DataCommand.CommandType, cancellationToken, _mapper.Map, command.DataCommand.CommandParameters).ConfigureAwait(false)],
+                [.. await cmd.FindManyAsync(command.DataCommand.CommandText, command.DataCommand.CommandType, _mapper.Map, command.DataCommand.CommandParameters, token).ConfigureAwait(false)],
                 totalRecordCount,
                 command.Offset,
                 command.PageSize

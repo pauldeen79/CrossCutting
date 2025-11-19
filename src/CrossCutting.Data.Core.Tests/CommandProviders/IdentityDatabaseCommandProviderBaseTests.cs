@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Data.Core.Tests.CommandProviders;
+﻿using System.Threading;
+
+namespace CrossCutting.Data.Core.Tests.CommandProviders;
 
 public class IdentityDatabaseCommandProviderBaseTests
 {
@@ -13,7 +15,7 @@ public class IdentityDatabaseCommandProviderBaseTests
         var sut = new IdentityDatabaseCommandProviderMock([new PagedDatabaseEntityRetrieverSettingsProviderMock()]);
 
         // Act
-        var result = await sut.CreateAsync(new TestEntityIdentity("A", "B"), operation);
+        var result = await sut.CreateAsync(new TestEntityIdentity("A", "B"), operation, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -26,7 +28,7 @@ public class IdentityDatabaseCommandProviderBaseTests
         var sut = new IdentityDatabaseCommandProviderMock([]);
 
         // Act
-        var result = await sut.CreateAsync(new TestEntityIdentity("NOTIMPLEMENTED", "NOTIMPLEMENTED"), DatabaseOperation.Select);
+        var result = await sut.CreateAsync(new TestEntityIdentity("NOTIMPLEMENTED", "NOTIMPLEMENTED"), DatabaseOperation.Select, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
@@ -40,7 +42,7 @@ public class IdentityDatabaseCommandProviderBaseTests
         var sut = new IdentityDatabaseCommandProviderMock([new PagedDatabaseEntityRetrieverSettingsProviderMock()]);
 
         // Act
-        var actual = (await sut.CreateAsync(new TestEntityIdentity("A", "B"), DatabaseOperation.Select)).EnsureValue().GetValueOrThrow();
+        var actual = (await sut.CreateAsync(new TestEntityIdentity("A", "B"), DatabaseOperation.Select, CancellationToken.None)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.CommandText.ShouldBe(@"SELECT A, B, C FROM Table WHERE [Field1] = @Field1 AND [Field2] = @Field2Alias");

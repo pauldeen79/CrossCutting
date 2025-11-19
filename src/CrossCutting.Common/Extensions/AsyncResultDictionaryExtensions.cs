@@ -10,4 +10,10 @@ public static class AsyncResultDictionaryExtensions
         => instance.TryGetValue(resultKey, out var settingsResult)
             ? (await settingsResult().ConfigureAwait(false))
             : Result.NotFound<object?>($"{resultKey} was not found in state");
+
+    public static Task<IReadOnlyDictionary<string, Result>> BuildAsync(this IAsyncResultDictionaryBuilder instance)
+        => instance.BuildAsync(CancellationToken.None);
+
+    public static Task<IReadOnlyDictionary<string, Result<T>>> BuildAsync<T>(this IAsyncResultDictionaryBuilder<T> instance)
+        => instance.BuildAsync(CancellationToken.None);
 }

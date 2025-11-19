@@ -54,7 +54,7 @@ public class AsyncResultDictionaryBuilderExtensionsTests : TestBase
         var result = sut.Add(context, 0, "MyName", CancellationToken.None);
 
         // Assert
-        var dict = await result.Build();
+        var dict = await result.BuildAsync();
         dict.Count.ShouldBe(1);
         dict.First().Key.ShouldBe("MyName");
         var value = dict.First().Value;

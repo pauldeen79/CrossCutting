@@ -8,7 +8,8 @@ public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpres
         ISqlExpression expression,
         IQueryFieldInfo fieldInfo,
         ParameterBag parameterBag,
-        ISqlExpressionProvider callback)
+        ISqlExpressionProvider callback,
+        CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
@@ -21,7 +22,7 @@ public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpres
             return Result.Continue<string>();
         }
 
-        return await DoGetSqlExpressionAsync(context, typedExpression, fieldInfo, parameterBag, callback).ConfigureAwait(false);
+        return await DoGetSqlExpressionAsync(context, typedExpression, fieldInfo, parameterBag, callback, token).ConfigureAwait(false);
     }
 
     protected abstract Task<Result<string>> DoGetSqlExpressionAsync(
@@ -29,5 +30,6 @@ public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpres
         TExpression expression,
         IQueryFieldInfo fieldInfo,
         ParameterBag parameterBag,
-        ISqlExpressionProvider callback);
+        ISqlExpressionProvider callback,
+        CancellationToken token);
 }

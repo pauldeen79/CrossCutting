@@ -16,7 +16,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         InitializeMock(CreateData());
 
         // Act
-        var result = await InMemoryQueryProcessor.FindOneAsync<MyEntity>(query);
+        var result = await InMemoryQueryProcessor.FindOneAsync<MyEntity>(query, CancellationToken.None);
 
         // Assert
         result.ThrowIfNotSuccessful();
@@ -38,7 +38,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         InitializeMock(CreateData());
 
         // Act
-        var result = await InMemoryQueryProcessor.FindManyAsync<MyEntity>(query);
+        var result = await InMemoryQueryProcessor.FindManyAsync<MyEntity>(query, CancellationToken.None);
 
         // Assert
         result.ThrowIfNotSuccessful();
@@ -64,7 +64,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         InitializeMock(CreateData());
 
         // Act
-        var result = await InMemoryQueryProcessor.FindPagedAsync<MyEntity>(query);
+        var result = await InMemoryQueryProcessor.FindPagedAsync<MyEntity>(query, CancellationToken.None);
 
         // Assert
         result.ThrowIfNotSuccessful();
@@ -86,7 +86,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         InitializeMock([new MyNestedEntity(new MyEntity("A", "B"))]);
 
         // Act
-        var result = await InMemoryQueryProcessor.FindOneAsync<MyNestedEntity>(query);
+        var result = await InMemoryQueryProcessor.FindOneAsync<MyNestedEntity>(query, null);
 
         // Assert
         result.ThrowIfNotSuccessful();
@@ -104,7 +104,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         InitializeMock(CreateData());
 
         // Act
-        var result = await InMemoryQueryProcessor.FindOneAsync<MyEntity>(query);
+        var result = await InMemoryQueryProcessor.FindOneAsync<MyEntity>(query, CancellationToken.None);
 
         // Assert
         result.ThrowIfNotSuccessful();

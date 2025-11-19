@@ -12,7 +12,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
     public async Task CreatePagedAsync_Returns_Invalid_On_Unsupported_DatabaseOperation(DatabaseOperation operation)
     {
         // Act
-        var result = await Sut.CreatePagedAsync<TestEntity>(operation, 1, 1);
+        var result = await Sut.CreatePagedAsync<TestEntity>(operation, 1, 1, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -25,7 +25,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
         var sut = new PagedSelectDatabaseCommandProvider([]);
 
         // Act
-        var result = await sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 0, 10);
+        var result = await sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 0, 10, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
@@ -47,7 +47,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
                .Returns(_ => Result.Success(SettingsMock));
 
         // Act
-        var actual = (await Sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 0, 10)).EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 0, 10, CancellationToken.None)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.DataCommand.CommandText.ShouldBe(CommandSql);
@@ -70,7 +70,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
 
 
         // Act
-        var actual = (await Sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 10, 10)).EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 10, 10, CancellationToken.None)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.DataCommand.CommandText.ShouldBe(CommandSql);
@@ -91,7 +91,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
                .Returns(_ => Result.Success(SettingsMock));
 
         // Act
-        var actual = (await Sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 10, 10)).EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 10, 10, CancellationToken.None)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.DataCommand.CommandText.ShouldBe(CommandSql);
@@ -109,7 +109,7 @@ public class PagedSelectDatabaseCommandProviderTests : TestBase<PagedSelectDatab
                .Returns(_ => Result.Success(SettingsMock));
 
         // Act
-        var actual = (await Sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 0, 1000)).EnsureValue().GetValueOrThrow();
+        var actual = (await Sut.CreatePagedAsync<TestEntity>(DatabaseOperation.Select, 0, 1000, CancellationToken.None)).EnsureValue().GetValueOrThrow();
 
         // Assert
         actual.PageSize.ShouldBe(100);

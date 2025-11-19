@@ -3,17 +3,17 @@
 public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
 {
     private readonly Dictionary<string, Func<Task<Result>>> _resultset = new();
-    private readonly ITaskDecorator _taskDecorator;
+    private readonly List<ITaskInterceptor> _interceptors;
 
-    public AsyncResultDictionaryBuilder() : this(new LegacyTaskDecorator())
+    public AsyncResultDictionaryBuilder() : this([new LegacyTaskInterceptor()])
     {
     }
 
-    public AsyncResultDictionaryBuilder(ITaskDecorator taskDecorator)
+    public AsyncResultDictionaryBuilder(IEnumerable<ITaskInterceptor> interceptors)
     {
-        ArgumentGuard.IsNotNull(taskDecorator, nameof(taskDecorator));
+        ArgumentGuard.IsNotNull(interceptors, nameof(interceptors));
 
-        _taskDecorator = taskDecorator;
+        _interceptors = interceptors.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
     }
 
     public IAsyncResultDictionaryBuilder Add<T>(Func<Task<Result<T>>> value)
@@ -229,13 +229,18 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
         return results;
     }
 
-    public async Task<IReadOnlyDictionary<string, Result>> BuildAsync()
+    public async Task<IReadOnlyDictionary<string, Result>> BuildAsync(CancellationToken token)
     {
         var results = new Dictionary<string, Result>();
 
         foreach (var item in _resultset)
         {
-            var result = await _taskDecorator.Execute(item).ConfigureAwait(false);
+            if (token.IsCancellationRequested)
+            {
+                break;
+            }
+
+            var result = await DoExecuteAsync(item, token).ConfigureAwait(false);
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
@@ -246,14 +251,31 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
         return results;
     }
 
-    private sealed class LegacyTaskDecorator : ITaskDecorator
+    private async Task<Result> DoExecuteAsync(KeyValuePair<string, Func<Task<Result>>> item, CancellationToken token)
     {
-        public async Task<Result> Execute(KeyValuePair<string, Func<Task<Result>>> taskDelegateItem)
+        var index = 0;
+
+        async Task<Result> Next()
+        {
+            if (index < _interceptors.Count)
+            {
+                return await _interceptors[index++].ExecuteAsync(item, Next, token).ConfigureAwait(false);
+            }
+
+            return await item.Value.Invoke().ConfigureAwait(false);
+        }
+
+        return await Next().ConfigureAwait(false);
+    }
+
+    private sealed class LegacyTaskInterceptor : ITaskInterceptor
+    {
+        public async Task<Result> ExecuteAsync(KeyValuePair<string, Func<Task<Result>>> taskDelegateItem, Func<Task<Result>> next, CancellationToken token)
         {
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                return (await taskDelegateItem.Value().ConfigureAwait(false))
+                return (await next().ConfigureAwait(false))
                     .EnsureNotNull($"Result with key {taskDelegateItem.Key} returned a null result");
             }
             catch (Exception ex)
@@ -268,17 +290,17 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
 public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
 {
     private readonly Dictionary<string, Func<Task<Result<T>>>> _resultset = new();
-    private readonly ITaskDecorator<T> _taskDecorator;
+    private readonly List<ITaskInterceptor<T>> _interceptors;
 
-    public AsyncResultDictionaryBuilder() : this(new LegacyTaskDecorator())
+    public AsyncResultDictionaryBuilder() : this([new LegacyTaskInterceptor()])
     {
     }
 
-    public AsyncResultDictionaryBuilder(ITaskDecorator<T> taskDecorator)
+    public AsyncResultDictionaryBuilder(IEnumerable<ITaskInterceptor<T>> interceptors)
     {
-        ArgumentGuard.IsNotNull(taskDecorator, nameof(taskDecorator));
+        ArgumentGuard.IsNotNull(interceptors, nameof(interceptors));
 
-        _taskDecorator = taskDecorator;
+        _interceptors = interceptors.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
     }
 
     public IAsyncResultDictionaryBuilder<T> Add(Func<Task<Result<T>>> value)
@@ -411,13 +433,18 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
         return results;
     }
 
-    public async Task<IReadOnlyDictionary<string, Result<T>>> Build()
+    public async Task<IReadOnlyDictionary<string, Result<T>>> BuildAsync(CancellationToken token)
     {
         var results = new Dictionary<string, Result<T>>();
 
         foreach (var item in _resultset)
         {
-            var result = await _taskDecorator.Execute(item).ConfigureAwait(false);
+            if (token.IsCancellationRequested)
+            {
+                break;
+            }
+
+            var result = await DoExecuteAsync(item, token).ConfigureAwait(false);
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
             {
@@ -428,14 +455,31 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
         return results;
     }
 
-    private sealed class LegacyTaskDecorator : ITaskDecorator<T>
+    private async Task<Result<T>> DoExecuteAsync(KeyValuePair<string, Func<Task<Result<T>>>> item, CancellationToken token)
     {
-        public async Task<Result<T>> Execute(KeyValuePair<string, Func<Task<Result<T>>>> taskDelegateItem)
+        var index = 0;
+
+        async Task<Result<T>> Next()
+        {
+            if (index < _interceptors.Count)
+            {
+                return await _interceptors[index++].ExecuteAsync(item, Next, token).ConfigureAwait(false);
+            }
+
+            return await item.Value.Invoke().ConfigureAwait(false);
+        }
+
+        return await Next().ConfigureAwait(false);
+    }
+
+    private sealed class LegacyTaskInterceptor : ITaskInterceptor<T>
+    {
+        public async Task<Result<T>> ExecuteAsync(KeyValuePair<string, Func<Task<Result<T>>>> taskDelegateItem, Func<Task<Result<T>>> next, CancellationToken token)
         {
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                return (await taskDelegateItem.Value().ConfigureAwait(false))
+                return (await next().ConfigureAwait(false))
                     .EnsureNotNull($"Result with key {taskDelegateItem.Key} returned a null result");
             }
             catch (Exception ex)
