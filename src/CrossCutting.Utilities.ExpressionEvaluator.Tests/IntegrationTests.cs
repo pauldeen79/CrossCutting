@@ -877,7 +877,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Act
         var result = (await new AsyncResultDictionaryBuilder()
             .Add("instance", context.GetInstanceValueResult<string>())
-            .BuildAsync(CancellationToken.None))
+            .BuildAsync())
             .OnSuccess(results => results.GetValue<string>("instance"));
 
         // Assert
@@ -901,7 +901,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var result = (await new AsyncResultDictionaryBuilder()
             .Add("instance", context.GetInstanceValueResult<string>())
             .Add(Result.Error("Kaboom"))
-            .BuildAsync(CancellationToken.None))
+            .BuildAsync())
             .OnSuccess(results => results.GetValue<string>("instance"));
 
         // Assert
@@ -924,7 +924,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Act
         var result = (await new AsyncResultDictionaryBuilder<object?>()
             .Add("instance", context.GetInstanceValueResult<string>())
-            .BuildAsync(CancellationToken.None))
+            .BuildAsync())
             .OnSuccess(results => results.GetValue("instance"));
 
         // Assert
@@ -948,7 +948,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var result = (await new AsyncResultDictionaryBuilder<object?>()
             .Add("instance", context.GetInstanceValueResult<string>())
             .Add("error", Result.Error<object?>("Kaboom"))
-            .BuildAsync(CancellationToken.None))
+            .BuildAsync())
             .OnSuccess(results => results.GetValue("instance"));
 
         // Assert
