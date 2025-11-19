@@ -21,6 +21,11 @@ public class PipelineHandler<TCommand> : ICommandHandler<TCommand>
         var results = new List<Result>();
         foreach (var component in _components)
         {
+            if (token.IsCancellationRequested)
+            {
+                break;
+            }
+
             var result = await DoExecuteAsync(component, command, commandService, token)
                 .ConfigureAwait(false);
 
@@ -86,6 +91,11 @@ public class PipelineHandler<TCommand, TResponse> : ICommandHandler<TCommand, TR
             {
                 foreach (var component in _components)
                 {
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
                     var result = await DoExecuteAsync(component, command, response.Value!, commandService, token)
                         .ConfigureAwait(false);
 

@@ -235,6 +235,11 @@ public class AsyncResultDictionaryBuilder : IAsyncResultDictionaryBuilder
 
         foreach (var item in _resultset)
         {
+            if (token.IsCancellationRequested)
+            {
+                break;
+            }
+
             var result = await DoExecuteAsync(item, token).ConfigureAwait(false);
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
@@ -434,6 +439,11 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
 
         foreach (var item in _resultset)
         {
+            if (token.IsCancellationRequested)
+            {
+                break;
+            }
+
             var result = await DoExecuteAsync(item, token).ConfigureAwait(false);
             results.Add(item.Key, result);
             if (!result.IsSuccessful())
