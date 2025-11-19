@@ -47,6 +47,11 @@ public class DotExpressionComponent : IExpressionComponent
 
             foreach (var component in _components)
             {
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
+
                 state.CurrentEvaluateResult = await component.EvaluateAsync(state, token).ConfigureAwait(false);
                 if (state.CurrentEvaluateResult.Status != ResultStatus.Continue)
                 {
@@ -103,6 +108,11 @@ public class DotExpressionComponent : IExpressionComponent
 
             foreach (var component in _components)
             {
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
+
                 state.CurrentParseResult = await component.ValidateAsync(state, token).ConfigureAwait(false);
                 if (state.CurrentParseResult.Status != ResultStatus.Continue)
                 {
