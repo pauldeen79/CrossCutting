@@ -4,9 +4,7 @@
 public class AbstractionsBuildersExtensions(ICommandService commandService) : ExpressionEvaluatorCSharpClassBase(commandService)
 {
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-    {
-        return GetBuilderExtensionsAsync(GetAbstractionsInterfacesAsync(), "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions");
-    }
+        => GetBuilderExtensionsAsync(GetAbstractionsInterfacesAsync(), "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions");
 
     public override string Path => $"{Constants.Namespaces.UtilitiesExpressionEvaluator}/Builders/Extensions";
 

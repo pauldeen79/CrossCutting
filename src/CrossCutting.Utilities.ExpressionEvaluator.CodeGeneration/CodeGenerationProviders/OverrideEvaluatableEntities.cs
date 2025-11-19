@@ -7,12 +7,8 @@ public class OverrideEvaluatableEntities(ICommandService commandService) : Expre
 
     protected override bool EnableEntityInheritance => true;
     protected override Task<Result<TypeBase>> GetBaseClassAsync()
-    {
-        return CreateBaseClassAsync(typeof(IEvaluatableBase), Constants.Namespaces.UtilitiesExpressionEvaluator);
-    }
+        => CreateBaseClassAsync(typeof(IEvaluatableBase), Constants.Namespaces.UtilitiesExpressionEvaluator);
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-    {
-        return GetEntitiesAsync(GetOverrideModelsAsync(typeof(IEvaluatableBase)), $"{Constants.Namespaces.UtilitiesExpressionEvaluator}.Evaluatables");
-    }
+        => GetEntitiesAsync(GetOverrideModelsAsync(typeof(IEvaluatableBase)), $"{Constants.Namespaces.UtilitiesExpressionEvaluator}.Evaluatables");
 }

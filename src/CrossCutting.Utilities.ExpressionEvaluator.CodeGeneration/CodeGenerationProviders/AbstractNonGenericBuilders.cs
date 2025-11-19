@@ -19,7 +19,5 @@ public class AbstractNonGenericBuilders(ICommandService commandService) : Expres
     protected override string AddMethodNameFormatString => string.Empty;
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-    {
-        return GetNonGenericBuildersAsync(GetAbstractModelsAsync(), $"{Constants.Namespaces.UtilitiesExpressionEvaluator}.Builders", Constants.Namespaces.UtilitiesExpressionEvaluator);
-    }
+        => GetNonGenericBuildersAsync(GetAbstractModelsAsync(), $"{Constants.Namespaces.UtilitiesExpressionEvaluator}.Builders", Constants.Namespaces.UtilitiesExpressionEvaluator);
 }
