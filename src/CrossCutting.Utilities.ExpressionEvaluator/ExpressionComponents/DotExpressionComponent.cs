@@ -26,50 +26,19 @@ public class DotExpressionComponent : IExpressionComponent
             return Result.Continue<object?>();
         }
 
-        var result = await context.EvaluateAsync(split[0], token).ConfigureAwait(false);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
-
-        var state = new DotExpressionComponentState(context, _functionParser, result, split[0]);
-
-        foreach (var part in split.Skip(1))
-        {
-            state.Part = part;
-
-            if (state.CurrentEvaluateResult.Value is null)
+        return await (await context.EvaluateAsync(split[0], token).ConfigureAwait(false))
+            .OnSuccessAsync(async result =>
             {
-                return Result.Invalid<object?>($"{state.CurrentExpression} is null, cannot evaluate {state.TypeDisplayName} {state.Name}");
-            }
+                var state = new DotExpressionComponentState(context, _functionParser, result, split[0]);
 
-            state.Value = state.CurrentEvaluateResult.Value;
-
-            foreach (var component in _components)
-            {
-                if (token.IsCancellationRequested)
+                var (flowControl, value) = await ProcessState(split, state, token).ConfigureAwait(false);
+                if (!flowControl)
                 {
-                    break;
+                    return value;
                 }
 
-                state.CurrentEvaluateResult = await component.EvaluateAsync(state, token).ConfigureAwait(false);
-                if (state.CurrentEvaluateResult.Status != ResultStatus.Continue)
-                {
-                    break;
-                }
-            }
-
-            if (!state.CurrentEvaluateResult.IsSuccessful())
-            {
                 return state.CurrentEvaluateResult;
-            }
-            else if (state.CurrentEvaluateResult.Status == ResultStatus.Continue)
-            {
-                return Result.Invalid<object?>($"Unknown {state.TypeDisplayName} on type {(state.ResultType ?? typeof(object)).FullName}: {state.Name}");
-            }
-        }
-
-        return state.CurrentEvaluateResult;
+            }).ConfigureAwait(false);
     }
 
     public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
@@ -108,11 +77,6 @@ public class DotExpressionComponent : IExpressionComponent
 
             foreach (var component in _components)
             {
-                if (token.IsCancellationRequested)
-                {
-                    break;
-                }
-
                 state.CurrentParseResult = await component.ValidateAsync(state, token).ConfigureAwait(false);
                 if (state.CurrentParseResult.Status != ResultStatus.Continue)
                 {
@@ -137,5 +101,45 @@ public class DotExpressionComponent : IExpressionComponent
         return result
             .WithStatus(ResultStatus.Ok)
             .WithResultType(state.ResultType);
+    }
+
+    private async Task<(bool flowControl, Result<object?> value)> ProcessState(string[] split, DotExpressionComponentState state, CancellationToken token)
+    {
+        foreach (var part in split.Skip(1))
+        {
+            state.Part = part;
+
+            if (state.CurrentEvaluateResult.Value is null)
+            {
+                return (flowControl: false, value: Result.Invalid<object?>($"{state.CurrentExpression} is null, cannot evaluate {state.TypeDisplayName} {state.Name}"));
+            }
+
+            state.Value = state.CurrentEvaluateResult.Value;
+
+            foreach (var component in _components)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                state.CurrentEvaluateResult = await component.EvaluateAsync(state, token).ConfigureAwait(false);
+                if (state.CurrentEvaluateResult.Status != ResultStatus.Continue)
+                {
+                    break;
+                }
+            }
+
+            if (!state.CurrentEvaluateResult.IsSuccessful())
+            {
+                return (flowControl: false, value: state.CurrentEvaluateResult);
+            }
+            else if (state.CurrentEvaluateResult.Status == ResultStatus.Continue)
+            {
+                return (flowControl: false, value: Result.Invalid<object?>($"Unknown {state.TypeDisplayName} on type {(state.ResultType ?? typeof(object)).FullName}: {state.Name}"));
+            }
+        }
+
+        return (flowControl: true, value: Result.NoContent<object?>());
     }
 }
