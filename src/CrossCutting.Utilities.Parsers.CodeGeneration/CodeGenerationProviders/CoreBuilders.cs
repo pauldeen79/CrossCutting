@@ -5,7 +5,7 @@ public class CoreBuilders(ICommandService commandService) : CrossCuttingCSharpCl
 {
     public override string Path => $"{Constants.Namespaces.UtilitiesParsers}/Builders";
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(GetCoreModelsAsync(), CurrentNamespace, Constants.Namespaces.UtilitiesParsers);
 
     protected override bool CreateAsObservable => true;

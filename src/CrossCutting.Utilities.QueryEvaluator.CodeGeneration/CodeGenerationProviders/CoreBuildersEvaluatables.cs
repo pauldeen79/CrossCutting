@@ -5,7 +5,7 @@ public class CoreBuildersEvaluatables(ICommandService commandService) : QueryEva
 {
     public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}/Builders/Evaluatables";
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(GetNonCoreModelsAsync(typeof(IPropertyNameEvaluatable).FullName.GetNamespaceWithDefault()), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Builders.Evaluatables", $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Evaluatables");
 
     protected override bool EnableEntityInheritance => true;

@@ -9,7 +9,7 @@ public class OverrideQueryBuilders(ICommandService commandService) : QueryEvalua
     protected override bool CreateAsObservable => true;
     protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IQueryBase), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core");
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(
             GetOverrideModelsAsync(typeof(IQueryBase)),
             $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Builders.Queries",

@@ -8,6 +8,6 @@ public class OverrideEntities(ICommandService commandService) : CrossCuttingCSha
     protected override bool EnableEntityInheritance => true;
     protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IFunctionCallTypeArgumentBase), Constants.Namespaces.UtilitiesParsers);
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetEntitiesAsync(GetOverrideModelsAsync(typeof(IFunctionCallTypeArgumentBase)), CurrentNamespace);
 }

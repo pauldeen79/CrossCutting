@@ -5,7 +5,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.CodeGenerationPro
 [ExcludeFromCodeCoverage]
 public class AbstractionsInterfaces(ICommandService commandService) : QueryEvaluatorCSharpClassBase(commandService)
 {
-    public override async Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override async Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
     {
         // Work-around to fix 'new' keyword on ToBuilder method, which is not detected correctly because I'm adding the intheritance after code generation.
         // For some reason, it doesn't work to add the interface to code generation

@@ -10,7 +10,7 @@ public class OverrideBuilders(ICommandService commandService) : CrossCuttingCSha
     protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IFunctionCallArgumentBase), Constants.Namespaces.UtilitiesParsers);
     protected override string BaseClassBuilderNamespace => Constants.Namespaces.UtilitiesParsersBuilders;
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(
             GetOverrideModelsAsync(typeof(IFunctionCallArgumentBase)),
             CurrentNamespace,

@@ -9,7 +9,7 @@ public class OverrideConditionBuilders(ICommandService commandService) : QueryEv
     protected override bool CreateAsObservable => true;
     protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IConditionBase), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core");
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(
             GetOverrideModelsAsync(typeof(IConditionBase)),
             $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Builders.Conditions",

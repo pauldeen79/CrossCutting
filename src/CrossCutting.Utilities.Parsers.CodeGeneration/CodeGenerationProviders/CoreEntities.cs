@@ -5,6 +5,6 @@ public class CoreEntities(ICommandService commandService) : CrossCuttingCSharpCl
 {
     public override string Path => Constants.Namespaces.UtilitiesParsers;
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetEntitiesAsync(GetCoreModelsAsync(), CurrentNamespace);
 }

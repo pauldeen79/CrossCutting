@@ -5,6 +5,6 @@ public class CoreEntities(ICommandService commandService) : QueryEvaluatorCSharp
 {
     public override string Path => Constants.Namespaces.UtilitiesQueryEvaluator;
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetEntitiesAsync(GetCoreModelsAsync(), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core");
 }

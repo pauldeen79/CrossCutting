@@ -7,6 +7,6 @@ public class AbstractionsInterfaces(ICommandService commandService) : CrossCutti
 
     protected override bool EnableEntityInheritance => true;
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetEntityInterfacesAsync(GetAbstractionsInterfacesAsync(), "CrossCutting.Utilities.Parsers", "CrossCutting.Utilities.Parsers.Abstractions");
 }

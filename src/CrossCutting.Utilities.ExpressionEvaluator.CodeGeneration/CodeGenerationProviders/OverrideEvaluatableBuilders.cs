@@ -10,7 +10,7 @@ public class OverrideEvaluatableBuilders(ICommandService commandService) : Expre
     protected override Task<Result<TypeBase>> GetBaseClassAsync()
         => CreateBaseClassAsync(typeof(IEvaluatableBase), Constants.Namespaces.UtilitiesExpressionEvaluator);
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(
             GetOverrideModelsAsync(typeof(IEvaluatableBase)),
             $"{Constants.Namespaces.UtilitiesExpressionEvaluator}.Builders.Evaluatables",

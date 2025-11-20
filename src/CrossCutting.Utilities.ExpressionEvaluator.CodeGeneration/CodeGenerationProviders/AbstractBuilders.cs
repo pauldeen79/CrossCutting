@@ -9,6 +9,6 @@ public class AbstractBuilders(ICommandService commandService) : ExpressionEvalua
     protected override bool EnableEntityInheritance => true;
     protected override bool IsAbstract => true;
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(GetAbstractModelsAsync(), CurrentNamespace, Constants.Namespaces.UtilitiesExpressionEvaluator);
 }

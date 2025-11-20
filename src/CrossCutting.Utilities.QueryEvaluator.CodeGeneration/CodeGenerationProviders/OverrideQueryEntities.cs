@@ -8,6 +8,6 @@ public class OverrideQueryEntities(ICommandService commandService) : QueryEvalua
     protected override bool EnableEntityInheritance => true;
     protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IQueryBase), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core");
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetEntitiesAsync(GetOverrideModelsAsync(typeof(IQueryBase)), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Queries");
 }

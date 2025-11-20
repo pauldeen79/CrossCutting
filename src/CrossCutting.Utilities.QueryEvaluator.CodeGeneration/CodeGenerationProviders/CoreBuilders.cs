@@ -5,7 +5,7 @@ public class CoreBuilders(ICommandService commandService) : QueryEvaluatorCSharp
 {
     public override string Path => $"{Constants.Namespaces.UtilitiesQueryEvaluator}/Builders";
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(GetCoreModelsAsync(), $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core.Builders", $"{Constants.Namespaces.UtilitiesQueryEvaluator}.Core");
 
     protected override bool CreateAsObservable => true;
