@@ -7,14 +7,14 @@ public class FunctionCallContext
         functionCall = ArgumentGuard.IsNotNull(functionCall, nameof(functionCall));
         ArgumentGuard.IsNotNull(context, nameof(context));
 
-        FunctionCall = functionCall;
-        Context = context;
-        MemberType = functionCall.MemberType;
-
-        if (MemberType == MemberType.Unknown)
+        if (functionCall.MemberType == MemberType.Unknown)
         {
             throw new ArgumentException("MemberType cannot be Unknown", nameof(functionCall));
         }
+
+        FunctionCall = functionCall;
+        Context = context;
+        MemberType = functionCall.MemberType;
     }
 
     public FunctionCallContext(DotExpressionComponentState state)

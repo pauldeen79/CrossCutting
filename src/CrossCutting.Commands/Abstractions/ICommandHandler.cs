@@ -7,18 +7,8 @@ public interface ICommandHandler
 
 }
 
-public interface IExecutable<in TCommand>
-{
-    Task<Result> ExecuteAsync(TCommand command, ICommandService commandService, CancellationToken token);
-}
-
 public interface ICommandHandler<in TCommand> : ICommandHandler, IExecutable<TCommand>
 {
-}
-
-public interface IExecutable<in TCommand, TResponse>
-{
-    Task<Result<TResponse>> ExecuteAsync(TCommand command, ICommandService commandService, CancellationToken token);
 }
 
 public interface ICommandHandler<in TCommand, TResponse> : ICommandHandler, IExecutable<TCommand, TResponse>
