@@ -45,6 +45,19 @@ public class ResultExtensionsTests
         }
 
         [Fact]
+        public void Returns_Successful_Result_With_No_Value_Untyped_On_Status_Continue()
+        {
+            // Arrange
+            var sut = Result.Continue();
+
+            // Act
+            var result = sut.EnsureValue();
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
         public void Returns_Non_Successful_Result_Typed()
         {
             // Arrange
@@ -71,6 +84,19 @@ public class ResultExtensionsTests
         }
 
         [Fact]
+        public void Returns_Successful_Result_With_No_Value_Typed_On_Status_Continue()
+        {
+            // Arrange
+            var sut = Result.Continue<string>();
+
+            // Act
+            var result = sut.EnsureValue();
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
         public void Returns_Error_On_Successful_Result_Without_Value_Typed()
         {
             // Arrange
@@ -82,6 +108,34 @@ public class ResultExtensionsTests
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
             result.ErrorMessage.ShouldBe("Result value is required");
+        }
+
+        [Fact]
+        public void Returns_Error_On_Null_Result_Untyped()
+        {
+            // Arrange
+            var sut = default(Result);
+
+            // Act
+            var result = sut!.EnsureValue();
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Result is null");
+        }
+
+        [Fact]
+        public void Returns_Error_On_Null_Result_Typed()
+        {
+            // Arrange
+            var sut = default(Result<string>);
+
+            // Act
+            var result = sut!.EnsureValue();
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Result is null");
         }
     }
 
