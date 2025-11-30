@@ -15,6 +15,7 @@ public class DefaultPaginator : IPaginator
         where T : class
     {
         query = ArgumentGuard.IsNotNull(query, nameof(query));
+        filteredRecords = ArgumentGuard.IsNotNull(filteredRecords, nameof(filteredRecords));
 
         IEnumerable<T> result = filteredRecords;
 
@@ -38,17 +39,19 @@ public class DefaultPaginator : IPaginator
 
     private async Task<IEnumerable<T>> GetOrderedItems<T>(IQuery query, IEnumerable<T> result, CancellationToken token) where T : class
     {
-        var orderByResults = await Task.WhenAll(result.Select(async x =>
+        var orderByResults = new List<List<object?>>();
+
+        foreach (var item in result)
         {
             var list = new List<object?>();
-            var context = new ExpressionEvaluatorContext(new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, x);
+            var context = new ExpressionEvaluatorContext(new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, item);
 
             foreach (var orderByField in query.SortOrders)
             {
                 list.Add((await orderByField.Expression.EvaluateAsync(context, token).ConfigureAwait(false)).Value);
             }
-            return list;
-        })).ConfigureAwait(false);
+            orderByResults.Add(list);
+        }
 
         var zippedItems = result.Zip(orderByResults, (item, itemOrders) => new { Item = item, ItemOrders = itemOrders });
         var orderedItems = query.SortOrders.First().Order == SortOrderDirection.Ascending
