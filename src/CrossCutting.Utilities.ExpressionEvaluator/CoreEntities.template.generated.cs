@@ -249,7 +249,6 @@ namespace CrossCutting.Utilities.ExpressionEvaluator
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         public System.Collections.Generic.IReadOnlyCollection<string> Arguments
         {
             get;

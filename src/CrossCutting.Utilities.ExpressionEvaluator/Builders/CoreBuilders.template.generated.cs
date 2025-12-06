@@ -714,7 +714,6 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
         public System.Collections.Generic.List<string> Arguments
         {
             get
