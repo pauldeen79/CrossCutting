@@ -2,10 +2,10 @@
 
 public class SmallerThanOrEqualConditionTests : TestBase<SmallerThanOrEqualCondition>
 {
-    public class Evaluate : SmallerThanOrEqualConditionTests
+    public class EvaluateAsync : SmallerThanOrEqualConditionTests
     {
         [Fact]
-        public async Task Returns_Ok_On_Two_Strings()
+        public async Task Returns_Ok_On_Two_Integers()
         {
             // Arrange
             var leftValue = 13;
@@ -43,6 +43,29 @@ public class SmallerThanOrEqualConditionTests : TestBase<SmallerThanOrEqualCondi
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Object must be of type String.");
+        }
+    }
+
+    public class EvaluateTypedAsync : SmallerThanOrEqualConditionTests
+    {
+        [Fact]
+        public async Task Returns_Ok_On_Two_Integers()
+        {
+            // Arrange
+            var leftValue = 13;
+            var rightValue = 15;
+            var sut = new SmallerThanOrEqualConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .Build();
+            var context = CreateContext();
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.ThrowIfNotSuccessful();
+            result.Value.ShouldBeTrue();
         }
     }
 }

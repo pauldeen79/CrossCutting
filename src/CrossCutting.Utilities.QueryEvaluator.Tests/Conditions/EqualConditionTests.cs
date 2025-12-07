@@ -2,7 +2,7 @@
 
 public class EqualConditionTests : TestBase<EqualCondition>
 {
-    public class Evaluate : EqualConditionTests
+    public class EvaluateAsync : EqualConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
@@ -61,6 +61,29 @@ public class EqualConditionTests : TestBase<EqualCondition>
             // Assert
             result.ThrowIfNotSuccessful();
             result.Value.ShouldBe(false);
+        }
+    }
+
+    public class EvaluateTypedAsync : EqualConditionTests
+    {
+        [Fact]
+        public async Task Returns_Ok_On_Two_Strings()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "this";
+            var sut = new EqualConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .Build();
+            var context = CreateContext();
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.ThrowIfNotSuccessful();
+            result.Value.ShouldBeTrue();
         }
     }
 }

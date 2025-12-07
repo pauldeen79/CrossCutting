@@ -2,7 +2,7 @@
 
 public class BetweenConditionTests : TestBase<BetweenCondition>
 {
-    public class Evaluate : BetweenConditionTests
+    public class EvaluateAsync : BetweenConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Integers()
