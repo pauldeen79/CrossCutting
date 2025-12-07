@@ -82,11 +82,21 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new OperatorExpression(context, expr, op.Type, right, op.Value, _components));
+            expr = Result.Success(CreateComparisonExpression(expr, op, right));
         }
 
         return expr;
     }
+
+    private static IExpression CreateComparisonExpression(Result<IExpression> expr, ExpressionToken op, Result<IExpression> right)
+        => op.Type switch
+        {
+            ExpressionTokenType.Less => new LessOperatorExpression(expr, right, op.Value),
+            ExpressionTokenType.LessOrEqual => new LessOrEqualOperatorExpression(expr, right, op.Value),
+            ExpressionTokenType.Greater => new GreaterOperatorExpression(expr, right, op.Value),
+            //ExpressionTokenType.GreaterOrEqual
+            _ => new GreaterOrEqualOperatorExpression(expr, right, op.Value)
+        };
 
     private Result<IExpression> ParseAdditive(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
