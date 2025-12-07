@@ -10,6 +10,27 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions
 {
+    public static partial class BinaryOperatorBuilderExtensions
+    {
+        public static T WithLeftOperand<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable leftOperand)
+            where T : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+        {
+            if (leftOperand is null) throw new System.ArgumentNullException(nameof(leftOperand));
+            instance.LeftOperand = leftOperand;
+            return instance;
+        }
+
+        public static T WithRightOperand<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable rightOperand)
+            where T : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+        {
+            if (rightOperand is null) throw new System.ArgumentNullException(nameof(rightOperand));
+            instance.RightOperand = rightOperand;
+            return instance;
+        }
+    }
+    public static partial class EvaluatableBuilderExtensions
+    {
+    }
     public static partial class EvaluatableBuilderExtensions
     {
     }

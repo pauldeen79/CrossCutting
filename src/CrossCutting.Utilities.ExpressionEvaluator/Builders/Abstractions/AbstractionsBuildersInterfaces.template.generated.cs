@@ -10,7 +10,28 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions
 {
+    public partial interface IBinaryOperatorBuilder
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable LeftOperand
+        {
+            get;
+            set;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable RightOperand
+        {
+            get;
+            set;
+        }
+    }
     public partial interface IEvaluatableBuilder
+    {
+    }
+    public partial interface IEvaluatableBuilder<T> : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
     }
     public partial interface IParseResultBuilder

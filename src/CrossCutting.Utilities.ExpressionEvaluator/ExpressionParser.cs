@@ -62,7 +62,9 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new OperatorExpression(context, expr, op.Type, right, op.Value, _components));
+            expr = Result.Success<IExpression>(op.Type == ExpressionTokenType.Equal
+                ? new EqualOperatorExpression(expr, right, op.Value)
+                : new NotEqualOperatorExpression(expr, right, op.Value));
         }
 
         return expr;
