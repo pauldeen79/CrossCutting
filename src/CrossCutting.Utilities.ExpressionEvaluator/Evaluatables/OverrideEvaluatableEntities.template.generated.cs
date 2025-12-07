@@ -136,6 +136,90 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateEvaluatableBuilder(this);
         }
     }
+    public partial record DelegateEvaluatable<T> : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable<T>
+    {
+        public System.Func<T> Value
+        {
+            get;
+        }
+
+        public DelegateEvaluatable(System.Func<T> value) : base()
+        {
+            this.Value = value;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateEvaluatableBuilder<T>(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateEvaluatable<T> entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateEvaluatableBuilder<T> ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateEvaluatableBuilder<T>(this);
+        }
+    }
+    public partial record DelegateResultEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable
+    {
+        public System.Func<CrossCutting.Common.Results.Result<object>> Value
+        {
+            get;
+        }
+
+        public DelegateResultEvaluatable(System.Func<CrossCutting.Common.Results.Result<object>> value) : base()
+        {
+            this.Value = value;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateResultEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateResultEvaluatableBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateResultEvaluatableBuilder(this);
+        }
+    }
+    public partial record DelegateResultEvaluatable<T> : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable<T>
+    {
+        public System.Func<CrossCutting.Common.Results.Result<T>> Value
+        {
+            get;
+        }
+
+        public DelegateResultEvaluatable(System.Func<CrossCutting.Common.Results.Result<T>> value) : base()
+        {
+            this.Value = value;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateResultEvaluatableBuilder<T>(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable<T> entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateResultEvaluatableBuilder<T> ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateResultEvaluatableBuilder<T>(this);
+        }
+    }
     public partial record EmptyEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable
     {
         public EmptyEvaluatable() : base()
@@ -326,6 +410,62 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables
         public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.LiteralEvaluatableBuilder<T> ToTypedBuilder()
         {
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.LiteralEvaluatableBuilder<T>(this);
+        }
+    }
+    public partial record LiteralResultEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable
+    {
+        public CrossCutting.Common.Results.Result<object?> Value
+        {
+            get;
+        }
+
+        public LiteralResultEvaluatable(CrossCutting.Common.Results.Result<object?> value) : base()
+        {
+            this.Value = value;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.LiteralResultEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.LiteralResultEvaluatableBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.LiteralResultEvaluatableBuilder(this);
+        }
+    }
+    public partial record LiteralResultEvaluatable<T> : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable<T>
+    {
+        public CrossCutting.Common.Results.Result<T> Value
+        {
+            get;
+        }
+
+        public LiteralResultEvaluatable(CrossCutting.Common.Results.Result<T> value) : base()
+        {
+            this.Value = value;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.LiteralResultEvaluatableBuilder<T>(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable<T> entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.LiteralResultEvaluatableBuilder<T> ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.LiteralResultEvaluatableBuilder<T>(this);
         }
     }
     public partial record NotEqualOperatorEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IBinaryOperator, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable<bool>

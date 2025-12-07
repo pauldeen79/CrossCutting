@@ -211,6 +211,153 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
+    public partial class DelegateEvaluatableBuilder<T> : EvaluatableBaseBuilder<DelegateEvaluatableBuilder<T>, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateEvaluatable<T>>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<T>
+    {
+        private System.Func<T> _value;
+
+        public System.Func<T> Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<T>>.Default.Equals(_value!, value!);
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Value));
+            }
+        }
+
+        public DelegateEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateEvaluatable<T> source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = source.Value;
+        }
+
+        public DelegateEvaluatableBuilder() : base()
+        {
+            _value = default(System.Func<T>)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateEvaluatable<T> BuildTyped()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateEvaluatable<T>(Value);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateEvaluatableBuilder<T> WithValue(System.Func<T> value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateEvaluatable<T>(DelegateEvaluatableBuilder<T> builder)
+        {
+            return builder.BuildTyped();
+        }
+    }
+    public partial class DelegateResultEvaluatableBuilder : EvaluatableBaseBuilder<DelegateResultEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    {
+        private System.Func<CrossCutting.Common.Results.Result<object>> _value;
+
+        public System.Func<CrossCutting.Common.Results.Result<object>> Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<System.Object>>>.Default.Equals(_value!, value!);
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Value));
+            }
+        }
+
+        public DelegateResultEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = source.Value;
+        }
+
+        public DelegateResultEvaluatableBuilder() : base()
+        {
+            _value = default(System.Func<CrossCutting.Common.Results.Result<System.Object>>)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable BuildTyped()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable(Value);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateResultEvaluatableBuilder WithValue(System.Func<CrossCutting.Common.Results.Result<object>> value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable(DelegateResultEvaluatableBuilder builder)
+        {
+            return builder.BuildTyped();
+        }
+    }
+    public partial class DelegateResultEvaluatableBuilder<T> : EvaluatableBaseBuilder<DelegateResultEvaluatableBuilder<T>, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable<T>>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<T>
+    {
+        private System.Func<CrossCutting.Common.Results.Result<T>> _value;
+
+        public System.Func<CrossCutting.Common.Results.Result<T>> Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<T>>>.Default.Equals(_value!, value!);
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Value));
+            }
+        }
+
+        public DelegateResultEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable<T> source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = source.Value;
+        }
+
+        public DelegateResultEvaluatableBuilder() : base()
+        {
+            _value = default(System.Func<CrossCutting.Common.Results.Result<T>>)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable<T> BuildTyped()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable<T>(Value);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateResultEvaluatableBuilder<T> WithValue(System.Func<CrossCutting.Common.Results.Result<T>> value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable<T>(DelegateResultEvaluatableBuilder<T> builder)
+        {
+            return builder.BuildTyped();
+        }
+    }
     public partial class EmptyEvaluatableBuilder : EvaluatableBaseBuilder<EmptyEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.EmptyEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         public EmptyEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.EmptyEvaluatable source) : base(source)
@@ -518,6 +665,104 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
         }
 
         public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralEvaluatable<T>(LiteralEvaluatableBuilder<T> builder)
+        {
+            return builder.BuildTyped();
+        }
+    }
+    public partial class LiteralResultEvaluatableBuilder : EvaluatableBaseBuilder<LiteralResultEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    {
+        private CrossCutting.Common.Results.Result<object?> _value;
+
+        public CrossCutting.Common.Results.Result<object?> Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Common.Results.Result<System.Object?>>.Default.Equals(_value!, value!);
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Value));
+            }
+        }
+
+        public LiteralResultEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = source.Value;
+        }
+
+        public LiteralResultEvaluatableBuilder() : base()
+        {
+            _value = default(CrossCutting.Common.Results.Result<System.Object?>)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable BuildTyped()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable(Value);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.LiteralResultEvaluatableBuilder WithValue(CrossCutting.Common.Results.Result<object?> value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable(LiteralResultEvaluatableBuilder builder)
+        {
+            return builder.BuildTyped();
+        }
+    }
+    public partial class LiteralResultEvaluatableBuilder<T> : EvaluatableBaseBuilder<LiteralResultEvaluatableBuilder<T>, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable<T>>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<T>
+    {
+        private CrossCutting.Common.Results.Result<T> _value;
+
+        public CrossCutting.Common.Results.Result<T> Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Common.Results.Result<T>>.Default.Equals(_value!, value!);
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Value));
+            }
+        }
+
+        public LiteralResultEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable<T> source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = source.Value;
+        }
+
+        public LiteralResultEvaluatableBuilder() : base()
+        {
+            _value = default(CrossCutting.Common.Results.Result<T>)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable<T> BuildTyped()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable<T>(Value);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.LiteralResultEvaluatableBuilder<T> WithValue(CrossCutting.Common.Results.Result<T> value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable<T>(LiteralResultEvaluatableBuilder<T> builder)
         {
             return builder.BuildTyped();
         }
