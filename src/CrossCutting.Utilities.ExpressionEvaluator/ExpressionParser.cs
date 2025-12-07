@@ -91,8 +91,8 @@ public sealed class ExpressionParser : IExpressionParser
     private static IExpression CreateComparisonExpression(Result<IExpression> expr, ExpressionToken op, Result<IExpression> right)
         => op.Type switch
         {
-            ExpressionTokenType.Less => new LessOperatorExpression(expr, right, op.Value),
-            ExpressionTokenType.LessOrEqual => new LessOrEqualOperatorExpression(expr, right, op.Value),
+            ExpressionTokenType.Less => new SmallerOperatorExpression(expr, right, op.Value),
+            ExpressionTokenType.LessOrEqual => new SmallerOrEqualOperatorExpression(expr, right, op.Value),
             ExpressionTokenType.Greater => new GreaterOperatorExpression(expr, right, op.Value),
             //ExpressionTokenType.GreaterOrEqual
             _ => new GreaterOrEqualOperatorExpression(expr, right, op.Value)

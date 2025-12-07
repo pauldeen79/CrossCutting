@@ -2,9 +2,9 @@
 
 public partial record SmallerThanOrEqualCondition
 {
-    public async override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
+    public override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => new SmallerOrEqualOperatorEvaluatable(SourceExpression, CompareExpression).EvaluateAsync(context, token);
 
     public override Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => ConditionHelper.EvaluateObjectConditionAsync(SourceExpression, CompareExpression, context, SmallerOrEqualThan.Evaluate, token);
+        => new SmallerOrEqualOperatorEvaluatable(SourceExpression, CompareExpression).EvaluateTypedAsync(context, token);
 }

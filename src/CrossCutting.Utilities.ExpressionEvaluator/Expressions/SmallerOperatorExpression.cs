@@ -1,18 +1,18 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public class LessOrEqualOperatorExpression : BinaryOperatorExpressionBase, IExpression<bool>
+public class SmallerOperatorExpression : BinaryOperatorExpressionBase, IExpression<bool>
 {
-    public LessOrEqualOperatorExpression(Result<IExpression> left, Result<IExpression> right, string sourceExpression) : base(left, right, sourceExpression)
+    public SmallerOperatorExpression(Result<IExpression> left, Result<IExpression> right, string sourceExpression) : base(left, right, sourceExpression)
     {
     }
 
     public async Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => await (await EvaluateAsResultDictionaryAsync(context, token).ConfigureAwait(false))
-            .OnSuccessAsync(results => new LessOrEqualOperatorEvaluatable(new LiteralEvaluatable(results.GetValue(Constants.LeftExpression)), new LiteralEvaluatable(results.GetValue(Constants.RightExpression)))
+            .OnSuccessAsync(results => new SmallerOperatorEvaluatable(new LiteralEvaluatable(results.GetValue(Constants.LeftExpression)), new LiteralEvaluatable(results.GetValue(Constants.RightExpression)))
             .EvaluateTypedAsync(context, token)).ConfigureAwait(false);
 
     public override IEvaluatableBuilder ToBuilder()
-        => new LessOrEqualOperatorEvaluatableBuilder()
+        => new SmallerOperatorEvaluatableBuilder()
             .WithLeftOperand(Left.Value!)
             .WithRightOperand(Right.Value!);
 
@@ -21,6 +21,6 @@ public class LessOrEqualOperatorExpression : BinaryOperatorExpressionBase, IExpr
 
     public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => await(await EvaluateAsResultDictionaryAsync(context, token).ConfigureAwait(false))
-            .OnSuccessAsync(results => new LessOrEqualOperatorEvaluatable(new LiteralEvaluatable(results.GetValue(Constants.LeftExpression)), new LiteralEvaluatable(results.GetValue(Constants.RightExpression)))
+            .OnSuccessAsync(results => new SmallerOperatorEvaluatable(new LiteralEvaluatable(results.GetValue(Constants.LeftExpression)), new LiteralEvaluatable(results.GetValue(Constants.RightExpression)))
             .EvaluateAsync(context, token)).ConfigureAwait(false);
 }

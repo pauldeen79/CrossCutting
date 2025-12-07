@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
 
-public partial record LessOrEqualOperatorEvaluatable
+public partial record SmallerOperatorEvaluatable
 {
     public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => (await EvaluateTypedAsync(context, token).ConfigureAwait(false)).TryCast<object?>();
@@ -10,5 +10,5 @@ public partial record LessOrEqualOperatorEvaluatable
             .Add(nameof(LeftOperand), () => LeftOperand.EvaluateAsync(context, token))
             .Add(nameof(RightOperand), () => RightOperand.EvaluateAsync(context, token))
             .BuildAsync().ConfigureAwait(false))
-            .OnSuccess(results => SmallerOrEqualThan.Evaluate(results.GetValue(nameof(LeftOperand)), results.GetValue(nameof(RightOperand))));
+            .OnSuccess(results => SmallerThan.Evaluate(results.GetValue(nameof(LeftOperand)), results.GetValue(nameof(RightOperand))));
 }
