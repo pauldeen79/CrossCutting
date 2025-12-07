@@ -28,7 +28,7 @@ public class BinaryOrOperatorExpressionTests : TestBase
     public class EvaluateAsync : BinaryOrOperatorExpressionTests
     {
         [Fact]
-        public async Task Returns_Correct_Result()
+        public async Task Returns_Correct_Result_On_Valid_Operands()
         {
             // Arrange
             var sourceExpression = "true || false";
@@ -47,7 +47,7 @@ public class BinaryOrOperatorExpressionTests : TestBase
     public class EvaluateTypedAsync : BinaryOrOperatorExpressionTests
     {
         [Fact]
-        public async Task Returns_Correct_Result()
+        public async Task Returns_Correct_Result_On_Valid_Operands()
         {
             // Arrange
             var sourceExpression = "true || false";
@@ -60,6 +60,38 @@ public class BinaryOrOperatorExpressionTests : TestBase
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task Returns_Correct_Result_On_Invalid_Left_Operand()
+        {
+            // Arrange
+            var sourceExpression = "1 || true";
+            var context = CreateContext(sourceExpression);
+            var sut = new BinaryOrOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "1")), Result.Success<IExpression>(new OtherExpression(context, "true")), sourceExpression);
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Left operand should be of type boolean");
+        }
+
+        [Fact]
+        public async Task Returns_Correct_Result_On_Invalid_Right_Operand()
+        {
+            // Arrange
+            var sourceExpression = "true || 1";
+            var context = CreateContext(sourceExpression);
+            var sut = new BinaryOrOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "true")), Result.Success<IExpression>(new OtherExpression(context, "1")), sourceExpression);
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Right operand should be of type boolean");
         }
     }
 
