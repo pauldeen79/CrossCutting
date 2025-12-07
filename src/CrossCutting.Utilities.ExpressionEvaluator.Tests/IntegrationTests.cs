@@ -16,7 +16,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "true && true && true";
+        var expression = "true || true && true || false && true";
 
         // Act
         var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
