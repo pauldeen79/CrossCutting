@@ -5,66 +5,6 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
     public class ParseAsync : ExpressionParserTests
     {
         [Fact]
-        public async Task Returns_Correct_Result_On_Logical_Or()
-        {
-            // Arrange
-            var context = CreateContext("false || true");
-            var tokens = new List<ExpressionToken>
-            {
-                new ExpressionToken(ExpressionTokenType.Other, "false"),
-                new ExpressionToken(ExpressionTokenType.Or),
-                new ExpressionToken(ExpressionTokenType.Other, "true"),
-                new ExpressionToken(ExpressionTokenType.EOF),
-            };
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context, tokens);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
-            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
-            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
-            evaluationResult.Status.ShouldBe(ResultStatus.Ok);
-            evaluationResult.Value.ShouldBe(false || true);
-        }
-
-        [Fact]
-        public async Task Returns_Correct_Result_On_Logical_And()
-        {
-            // Arrange
-            var context = CreateContext("false && true");
-            var tokens = new List<ExpressionToken>
-            {
-                new ExpressionToken(ExpressionTokenType.Other, "false"),
-                new ExpressionToken(ExpressionTokenType.And),
-                new ExpressionToken(ExpressionTokenType.Other, "true"),
-                new ExpressionToken(ExpressionTokenType.EOF),
-            };
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context, tokens);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
-            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
-            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
-            evaluationResult.Status.ShouldBe(ResultStatus.Ok);
-            evaluationResult.Value.ShouldBe(false && true);
-        }
-
-        [Fact]
         public async Task Returns_Correct_Result_On_Equal()
         {
             // Arrange

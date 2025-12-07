@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
+﻿using CrossCutting.Common.Extensions;
+
+namespace CrossCutting.Utilities.ExpressionEvaluator;
 
 public sealed class ExpressionParser : IExpressionParser
 {
@@ -26,7 +28,9 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new OperatorExpression(context, expr, op.Type, right, op.Value, _components));
+            expr = Result.Success<IExpression>(op.Type == ExpressionTokenType.And
+                ? new BinaryAndOperatorExpression(expr, right, op.Value)
+                : new BinaryOrOperatorExpression(expr, right, op.Value));
         }
 
         return expr;
@@ -44,7 +48,9 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new OperatorExpression(context, expr, op.Type, right, op.Value, _components));
+            expr = Result.Success<IExpression>(op.Type == ExpressionTokenType.Equal
+                ? new BinaryAndOperatorExpression(expr, right, op.Value)
+                : new BinaryOrOperatorExpression(expr, right, op.Value));
         }
 
         return expr;

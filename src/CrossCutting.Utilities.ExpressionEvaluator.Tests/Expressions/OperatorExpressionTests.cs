@@ -227,58 +227,6 @@ public class OperatorExpressionTests : TestBase
         }
 
         [Fact]
-        public async Task Returns_Success_On_And_Operator()
-        {
-            // Arrange
-            var expression = "1 && 2";
-            var context = CreateContext(expression);
-            var counter = 0;
-            Operator
-                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
-                .Returns(_ =>
-                {
-                    counter++;
-
-                    return Result.Success<object?>(counter);
-                });
-
-            var sut = new OperatorExpression(context, Result.Success(Operator), ExpressionTokenType.And, Result.Success(Operator), expression, BinaryComponents);
-
-            // Act
-            var result = await sut.EvaluateAsync(context, CancellationToken.None);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(1.IsTruthy() && 2.IsTruthy());
-        }
-
-        [Fact]
-        public async Task Returns_Success_On_Or_Operator()
-        {
-            // Arrange
-            var expression = "1 || 2";
-            var context = CreateContext(expression);
-            var counter = 0;
-            Operator
-                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
-                .Returns(_ =>
-                {
-                    counter++;
-
-                    return Result.Success<object?>(counter);
-                });
-
-            var sut = new OperatorExpression(context, Result.Success(Operator), ExpressionTokenType.Or, Result.Success(Operator), expression, BinaryComponents);
-
-            // Act
-            var result = await sut.EvaluateAsync(context, CancellationToken.None);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(1.IsTruthy() || 2.IsTruthy());
-        }
-
-        [Fact]
         public async Task Returns_Success_On_Modulus_Operator()
         {
             // Arrange
@@ -524,48 +472,6 @@ public class OperatorExpressionTests : TestBase
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.ResultType.ShouldBe(typeof(int));
-            result.PartResults.Count.ShouldBe(2);
-        }
-
-        [Fact]
-        public async Task Returns_Success_On_And_Operator()
-        {
-            // Arrange
-            var expression = "1 && 2";
-            var context = CreateContext(expression);
-            Operator
-                .ParseAsync(CancellationToken.None)
-                .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
-
-            var sut = new OperatorExpression(context, Result.Success(Operator), ExpressionTokenType.And, Result.Success(Operator), expression, BinaryComponents);
-
-            // Act
-            var result = await sut.ParseAsync(CancellationToken.None);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.ResultType.ShouldBe(typeof(bool));
-            result.PartResults.Count.ShouldBe(2);
-        }
-
-        [Fact]
-        public async Task Returns_Success_On_Or_Operator()
-        {
-            // Arrange
-            var expression = "1 || 2";
-            var context = CreateContext(expression);
-            Operator
-                .ParseAsync(CancellationToken.None)
-                .Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Ok).WithResultType(typeof(int)));
-
-            var sut = new OperatorExpression(context, Result.Success(Operator), ExpressionTokenType.Or, Result.Success(Operator), expression, BinaryComponents);
-
-            // Act
-            var result = await sut.ParseAsync(CancellationToken.None);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.ResultType.ShouldBe(typeof(bool));
             result.PartResults.Count.ShouldBe(2);
         }
     }
