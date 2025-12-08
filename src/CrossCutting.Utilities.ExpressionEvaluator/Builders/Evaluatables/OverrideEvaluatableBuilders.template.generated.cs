@@ -262,9 +262,9 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
     }
     public partial class DelegateResultEvaluatableBuilder : EvaluatableBaseBuilder<DelegateResultEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
-        private System.Func<CrossCutting.Common.Results.Result<object>> _value;
+        private System.Func<CrossCutting.Common.Results.Result<object?>> _value;
 
-        public System.Func<CrossCutting.Common.Results.Result<object>> Value
+        public System.Func<CrossCutting.Common.Results.Result<object?>> Value
         {
             get
             {
@@ -272,7 +272,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<System.Object>>>.Default.Equals(_value!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<object?>>>.Default.Equals(_value!, value!);
                 _value = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Value));
             }
@@ -286,7 +286,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
 
         public DelegateResultEvaluatableBuilder() : base()
         {
-            _value = default(System.Func<CrossCutting.Common.Results.Result<System.Object>>)!;
+            _value = default(System.Func<CrossCutting.Common.Results.Result<object?>>)!;
             SetDefaultValues();
         }
 
@@ -297,7 +297,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateResultEvaluatableBuilder WithValue(System.Func<CrossCutting.Common.Results.Result<object>> value)
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.DelegateResultEvaluatableBuilder WithValue(System.Func<CrossCutting.Common.Results.Result<object?>> value)
         {
             if (value is null) throw new System.ArgumentNullException(nameof(value));
             Value = value;

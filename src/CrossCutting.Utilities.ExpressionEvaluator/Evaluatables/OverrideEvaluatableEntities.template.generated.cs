@@ -166,12 +166,12 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables
     }
     public partial record DelegateResultEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable
     {
-        public System.Func<CrossCutting.Common.Results.Result<object>> Value
+        public System.Func<CrossCutting.Common.Results.Result<object?>> Value
         {
             get;
         }
 
-        public DelegateResultEvaluatable(System.Func<CrossCutting.Common.Results.Result<object>> value) : base()
+        public DelegateResultEvaluatable(System.Func<CrossCutting.Common.Results.Result<object?>> value) : base()
         {
             this.Value = value;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);

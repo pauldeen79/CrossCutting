@@ -2,6 +2,7 @@
 
 internal interface IDelegateResultEvaluatable : IEvaluatableBase
 {
+    [CsharpTypeName("System.Func<CrossCutting.Common.Results.Result<object?>>")]
     Func<Result<object?>> Value { get; }
 }
 

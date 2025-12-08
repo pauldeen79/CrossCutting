@@ -1,16 +1,16 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
 
-public partial record DelegateEvaluatable
+public partial record DelegateResultEvaluatable
 {
     public override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => Task.FromResult(Result.Success(Value()));
+        => Task.FromResult(Value());
 }
 
-public partial record DelegateEvaluatable<T>
+public partial record DelegateResultEvaluatable<T>
 {
     public override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => Task.FromResult(Result.Success<object?>(Value()));
+        => Task.FromResult(Value().TryCastAllowNull<object?>());
 
     public Task<Result<T>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => Task.FromResult(Result.Success(Value()));
+        => Task.FromResult(Value());
 }
