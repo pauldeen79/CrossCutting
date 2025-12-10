@@ -13,8 +13,8 @@ public class NotEqualOperatorExpression : BinaryOperatorExpressionBase, IExpress
 
     public override IEvaluatableBuilder ToBuilder()
         => new NotEqualOperatorEvaluatableBuilder()
-            .WithLeftOperand(Left.Value!)
-            .WithRightOperand(Right.Value!);
+            .WithLeftOperand(Left.ToEvaluatable())
+            .WithRightOperand(Right.ToEvaluatable());
 
     protected override Type? GetResultType(ExpressionParseResult? leftResult)
         => typeof(bool);

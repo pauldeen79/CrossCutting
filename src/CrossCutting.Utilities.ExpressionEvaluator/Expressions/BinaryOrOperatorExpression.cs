@@ -13,8 +13,8 @@ public class BinaryOrOperatorExpression : BinaryOperatorExpressionBase, IExpress
 
     public override IEvaluatableBuilder ToBuilder()
         => new BinaryOrOperatorEvaluatableBuilder()
-            .WithLeftOperand(Left.Value!)
-            .WithRightOperand(Right.Value!);
+            .WithLeftOperand(Left.ToEvaluatable())
+            .WithRightOperand(Right.ToEvaluatable());
 
     protected override Type? GetResultType(ExpressionParseResult? leftResult)
         => typeof(bool);

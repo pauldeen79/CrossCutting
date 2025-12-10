@@ -1,11 +1,13 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Expressions;
+﻿using CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
+
+namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Expressions;
 
 public class BinaryAndOperatorExpressionTests : TestBase
 {
     public class ToBuilder : BinaryAndOperatorExpressionTests
     {
         [Fact]
-        public void Returns_BinaryAndOperatorEvaluatableBuilder_Correctly()
+        public void Returns_Builder_Correctly_On_Successful_Expressions()
         {
             // Arrange
             var sourceExpression = "true && true";
@@ -17,11 +19,32 @@ public class BinaryAndOperatorExpressionTests : TestBase
 
             // Assert
             result.ShouldBeOfType<BinaryAndOperatorEvaluatableBuilder>();
-            var BinaryAndOperatorEvaluatableBuilder = (BinaryAndOperatorEvaluatableBuilder)result;
-            BinaryAndOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)BinaryAndOperatorEvaluatableBuilder.LeftOperand).Expression.ShouldBe("true");
-            BinaryAndOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)BinaryAndOperatorEvaluatableBuilder.RightOperand).Expression.ShouldBe("true");
+            var binaryAndOperatorEvaluatableBuilder = (BinaryAndOperatorEvaluatableBuilder)result;
+            binaryAndOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<OtherExpression>();
+            ((OtherExpression)binaryAndOperatorEvaluatableBuilder.LeftOperand).Expression.ShouldBe("true");
+            binaryAndOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<OtherExpression>();
+            ((OtherExpression)binaryAndOperatorEvaluatableBuilder.RightOperand).Expression.ShouldBe("true");
+        }
+
+        [Fact]
+        public void Returns_Builder_Correctly_On_Error_Expressions()
+        {
+            // Arrange
+            var sourceExpression = "x && y";
+            var sut = new BinaryAndOperatorExpression(Result.Error<IExpression>("x is unknown"), Result.Error<IExpression>("y is unknown"), sourceExpression);
+
+            // Act
+            var result = sut.ToBuilder();
+
+            // Assert
+            result.ShouldBeOfType<BinaryAndOperatorEvaluatableBuilder>();
+            var binaryAndOperatorEvaluatableBuilder = (BinaryAndOperatorEvaluatableBuilder)result;
+            binaryAndOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<LiteralResultEvaluatable>();
+            ((LiteralResultEvaluatable)binaryAndOperatorEvaluatableBuilder.LeftOperand).Value.Status.ShouldBe(ResultStatus.Error);
+            ((LiteralResultEvaluatable)binaryAndOperatorEvaluatableBuilder.LeftOperand).Value.ErrorMessage.ShouldBe("x is unknown");
+            binaryAndOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<LiteralResultEvaluatable>();
+            ((LiteralResultEvaluatable)binaryAndOperatorEvaluatableBuilder.RightOperand).Value.Status.ShouldBe(ResultStatus.Error);
+            ((LiteralResultEvaluatable)binaryAndOperatorEvaluatableBuilder.RightOperand).Value.ErrorMessage.ShouldBe("y is unknown");
         }
     }
 

@@ -13,8 +13,8 @@ public class SmallerOperatorExpression : BinaryOperatorExpressionBase, IExpressi
 
     public override IEvaluatableBuilder ToBuilder()
         => new SmallerOperatorEvaluatableBuilder()
-            .WithLeftOperand(Left.Value!)
-            .WithRightOperand(Right.Value!);
+            .WithLeftOperand(Left.ToEvaluatable())
+            .WithRightOperand(Right.ToEvaluatable());
 
     protected override Type? GetResultType(ExpressionParseResult? leftResult)
         => typeof(bool);
