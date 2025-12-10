@@ -26,19 +26,23 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.Value.ShouldBe(true);
     }
 
-    [Fact]
-    public async Task Can_Evaluate_Comparison_Operator_Expression()
+    [Theory]
+    [InlineData("<", false)]
+    [InlineData(">", true)]
+    [InlineData("<=", false)]
+    [InlineData(">=", true)]
+    public async Task Can_Evaluate_Comparison_Operator_Expression(string @operator, bool expectedResult)
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "2 > 1";
+        var expression = $"2 {@operator} 1";
 
         // Act
         var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(true);
+        result.Value.ShouldBe(expectedResult);
     }
 
     [Fact]
