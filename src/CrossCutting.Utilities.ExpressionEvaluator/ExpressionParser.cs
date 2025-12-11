@@ -116,7 +116,9 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new OperatorExpression(context, expr, op.Type, right, op.Value, _components));
+            expr = Result.Success<IExpression>(op.Type == ExpressionTokenType.Plus
+                ? new AddOperatorExpression(expr, right, op.Value)
+                : new SubtractOperatorExpression(expr, right, op.Value));
         }
 
         return expr;

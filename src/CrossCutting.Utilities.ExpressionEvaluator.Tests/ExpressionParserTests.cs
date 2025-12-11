@@ -83,8 +83,8 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
+            result.Value.ShouldBeOfType<AddOperatorExpression>();
+            var operatorExpression = (AddOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
             operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
@@ -113,8 +113,8 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
+            result.Value.ShouldBeOfType<SubtractOperatorExpression>();
+            var operatorExpression = (SubtractOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
             operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
