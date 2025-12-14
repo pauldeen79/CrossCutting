@@ -237,7 +237,7 @@ public class ExpressionEvaluatorTests : TestBase<ExpressionEvaluator>
             var typedExpression = Substitute.For<IExpressionComponent<string>>();
             typedExpression.ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(new ExpressionParseResultBuilder().WithStatus(ResultStatus.Continue));
             typedExpression.EvaluateTypedAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>()).Returns(Result.Error<string>("Kaboom"));
-            var sut = new ExpressionEvaluator(new ExpressionTokenizer(), new ExpressionParser([]), [typedExpression]);
+            var sut = new ExpressionEvaluator(new ExpressionTokenizer(), new ExpressionParser(), [typedExpression]);
 
             // Act
             var result = await sut.EvaluateTypedCallbackAsync<string>(CreateContext("expression"), CancellationToken.None);

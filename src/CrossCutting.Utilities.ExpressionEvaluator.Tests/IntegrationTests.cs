@@ -260,6 +260,20 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
+    public async Task Can_Evaluate_Operator_Expression_With_Power_Operator()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = await sut.EvaluateAsync(CreateContext("2 ^ 2", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(4);
+    }
+
+    [Fact]
     public async Task Can_Evaluate_Operator_Expression_With_Double_Bang_Operator()
     {
         // Arrange

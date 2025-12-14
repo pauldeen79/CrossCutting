@@ -4,15 +4,6 @@ namespace CrossCutting.Utilities.ExpressionEvaluator;
 
 public sealed class ExpressionParser : IExpressionParser
 {
-    private readonly IEnumerable<IBinaryExpressionComponent> _components;
-
-    public ExpressionParser(IEnumerable<IBinaryExpressionComponent> components)
-    {
-        ArgumentGuard.IsNotNull(components, nameof(components));
-
-        _components = components;
-    }
-
     public Result<IExpression> Parse(ExpressionEvaluatorContext context, ICollection<ExpressionToken> tokens)
         => ParseLogicalOr(context, new ExpressionParserState(tokens));
 
@@ -126,20 +117,49 @@ public sealed class ExpressionParser : IExpressionParser
 
     private Result<IExpression> ParseMultiplicative(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
-        var expr = ParseUnary(context, state);
+        var expr = ParseExponent(context, state);
 
         while (expr.IsSuccessful() && Match(state, ExpressionTokenType.Multiply, ExpressionTokenType.Divide, ExpressionTokenType.Modulus))
         {
             var op = Previous(state);
-            var right = ParseUnary(context, state);
+            var right = ParseExponent(context, state);
             if (!right.IsSuccessful())
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new OperatorExpression(context, expr, op.Type, right, op.Value, _components));
+            expr = Result.Success<IExpression>(op.Type switch
+            {
+                ExpressionTokenType.Multiply => new MultiplyOperatorExpression(expr, right, op.Value),
+                ExpressionTokenType.Divide => new DivideOperatorExpression(expr, right, op.Value),
+                //ExpressionTokenType.Modulus
+                _  => new ModulusOperatorExpression(expr, right, op.Value),
+            });
         }
 
         return expr;
+    }
+
+    private Result<IExpression> ParseExponent(ExpressionEvaluatorContext context, ExpressionParserState state)
+    {
+        var left = ParseUnary(context, state);
+
+        if (!left.IsSuccessful())
+            return left;
+
+        if (Match(state, ExpressionTokenType.Exponentiation))
+        {
+            var op = Previous(state);
+            var right = ParseExponent(context, state); // recursion = right-associative
+
+            if (!right.IsSuccessful())
+            {
+                return right;
+            }
+
+            return Result.Success<IExpression>(new PowerOperatorExpression(left, right, op.Value));
+        }
+
+        return left;
     }
 
     private Result<IExpression> ParseUnary(ExpressionEvaluatorContext context, ExpressionParserState state)
