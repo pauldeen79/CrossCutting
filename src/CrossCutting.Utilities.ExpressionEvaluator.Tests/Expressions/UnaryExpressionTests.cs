@@ -11,7 +11,7 @@ public class UnaryExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("kaboom");
-            var sut = new UnaryExpression(context, Result.Error<IExpression>("Kaboom"));
+            var sut = new UnaryExpression(context.Expression, Result.Error<IExpression>("Kaboom"));
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -30,7 +30,7 @@ public class UnaryExpressionTests : TestBase
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Error<object?>("Kaboom"));
 
-            var sut = new UnaryExpression(context, Result.Success(Operand));
+            var sut = new UnaryExpression(context.Expression, Result.Success(Operand));
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -49,7 +49,7 @@ public class UnaryExpressionTests : TestBase
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Throws<InvalidOperationException>();
             var context = CreateContext("error");
-            var sut = new UnaryExpression(context, Result.Success(exceptionExpression));
+            var sut = new UnaryExpression(context.Expression, Result.Success(exceptionExpression));
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -67,7 +67,7 @@ public class UnaryExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("kaboom");
-            var sut = new UnaryExpression(context, Result.Error<IExpression>("Kaboom"));
+            var sut = new UnaryExpression(context.Expression, Result.Error<IExpression>("Kaboom"));
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -88,7 +88,7 @@ public class UnaryExpressionTests : TestBase
                 .ParseAsync(Arg.Any<CancellationToken>())
                 .Returns(new ExpressionParseResultBuilder().WithErrorMessage("Kaboom").WithStatus(ResultStatus.Error));
 
-            var sut = new UnaryExpression(context, Result.Success(Operand));
+            var sut = new UnaryExpression(context.Expression, Result.Success(Operand));
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);

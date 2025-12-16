@@ -2,16 +2,16 @@
 
 internal sealed class UnaryExpression : ExpressionBase, IExpression<bool>
 {
-    private readonly ExpressionEvaluatorContext _context;
+    private readonly string _sourceExpression;
 
     public Result<IExpression> Operand { get; }
 
-    public UnaryExpression(ExpressionEvaluatorContext context, Result<IExpression> operand)
+    public UnaryExpression(string sourceExpression, Result<IExpression> operand)
     {
-        ArgumentGuard.IsNotNull(context, nameof(context));
+        ArgumentGuard.IsNotNull(sourceExpression, nameof(sourceExpression));
         ArgumentGuard.IsNotNull(operand, nameof(operand));
 
-        _context = context;
+        _sourceExpression = sourceExpression;
         Operand = operand;
     }
 
@@ -46,7 +46,7 @@ internal sealed class UnaryExpression : ExpressionBase, IExpression<bool>
 
         var result = new ExpressionParseResultBuilder()
             .WithExpressionComponentType(typeof(UnaryExpression))
-            .WithSourceExpression(_context.Expression)
+            .WithSourceExpression(_sourceExpression)
             .WithResultType(typeof(bool))
             .AddPartResult(operandResult ?? new ExpressionParseResultBuilder().FillFromResult(Operand), Constants.Operand)
             .SetStatusFromPartResults();

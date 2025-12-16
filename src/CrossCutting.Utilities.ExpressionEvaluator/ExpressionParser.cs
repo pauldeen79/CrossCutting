@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Extensions;
-
-namespace CrossCutting.Utilities.ExpressionEvaluator;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
 public sealed class ExpressionParser : IExpressionParser
 {
@@ -79,21 +77,18 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success(CreateComparisonExpression(expr, op, right));
+            expr = Result.Success<IExpression>(op.Type switch
+            {
+                ExpressionTokenType.Less => new SmallerOperatorExpression(expr, right, op.Value),
+                ExpressionTokenType.LessOrEqual => new SmallerOrEqualOperatorExpression(expr, right, op.Value),
+                ExpressionTokenType.Greater => new GreaterOperatorExpression(expr, right, op.Value),
+                //ExpressionTokenType.GreaterOrEqual
+                _ => new GreaterOrEqualOperatorExpression(expr, right, op.Value)
+            });
         }
 
         return expr;
     }
-
-    private static IExpression CreateComparisonExpression(Result<IExpression> expr, ExpressionToken op, Result<IExpression> right)
-        => op.Type switch
-        {
-            ExpressionTokenType.Less => new SmallerOperatorExpression(expr, right, op.Value),
-            ExpressionTokenType.LessOrEqual => new SmallerOrEqualOperatorExpression(expr, right, op.Value),
-            ExpressionTokenType.Greater => new GreaterOperatorExpression(expr, right, op.Value),
-            //ExpressionTokenType.GreaterOrEqual
-            _ => new GreaterOrEqualOperatorExpression(expr, right, op.Value)
-        };
 
     private Result<IExpression> ParseAdditive(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
@@ -172,7 +167,7 @@ public sealed class ExpressionParser : IExpressionParser
                 return right;
             }
 
-            return Result.Success<IExpression>(new UnaryExpression(context, right));
+            return Result.Success<IExpression>(new UnaryExpression(context.Expression, right));
         }
 
         return ParsePrimary(context, state);
