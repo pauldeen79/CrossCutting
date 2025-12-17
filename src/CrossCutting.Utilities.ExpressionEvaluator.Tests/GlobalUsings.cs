@@ -20,6 +20,7 @@ global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Domains;
 global using CrossCutting.Utilities.ExpressionEvaluator.DotExpressionComponents;
+global using CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
 global using CrossCutting.Utilities.ExpressionEvaluator.ExpressionComponents;
 global using CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
