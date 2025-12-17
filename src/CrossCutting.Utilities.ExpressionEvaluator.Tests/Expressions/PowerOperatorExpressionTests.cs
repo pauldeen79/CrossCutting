@@ -40,7 +40,7 @@ public class PowerOperatorExpressionTests : TestBase
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe(4 ^ 2);
+            result.Value.ShouldBe(Math.Pow(4, 2));
         }
     }
 
