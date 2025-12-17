@@ -73,16 +73,16 @@ public class BinaryAndOperatorExpressionTests : TestBase
         public async Task Returns_Correct_Result_On_Valid_Operands()
         {
             // Arrange
-            var sourceExpression = "true && true";
+            var sourceExpression = "true && false";
             var context = CreateContext(sourceExpression);
-            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "true")), Result.Success<IExpression>(new OtherExpression(context, "true")), sourceExpression);
+            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "true")), Result.Success<IExpression>(new OtherExpression(context, "false")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeTrue();
+            result.Value.ShouldBeFalse();
         }
 
         [Fact]
