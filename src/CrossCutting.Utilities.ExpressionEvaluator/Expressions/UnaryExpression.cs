@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-internal sealed class UnaryExpression : ExpressionBase, IExpression<bool>
+internal sealed class UnaryExpression : IExpression<bool>
 {
     private readonly string _sourceExpression;
 
@@ -15,7 +15,7 @@ internal sealed class UnaryExpression : ExpressionBase, IExpression<bool>
         Operand = operand;
     }
 
-    public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+    public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
     public async Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
@@ -38,7 +38,7 @@ internal sealed class UnaryExpression : ExpressionBase, IExpression<bool>
 #pragma warning restore CA1031 // Do not catch general exception types
     }
 
-    public override async Task<ExpressionParseResult> ParseAsync(CancellationToken token)
+    public async Task<ExpressionParseResult> ParseAsync(CancellationToken token)
     {
         var operandResult = Operand.Value is not null
             ? await Operand.Value.ParseAsync(token).ConfigureAwait(false)
@@ -53,4 +53,6 @@ internal sealed class UnaryExpression : ExpressionBase, IExpression<bool>
 
         return result;
     }
+
+    public IEvaluatableBuilder ToBuilder() => Operand.ToEvaluatable().ToBuilder();
 }
