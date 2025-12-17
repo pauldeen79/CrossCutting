@@ -19,9 +19,9 @@ public class SmallerOperatorExpressionTests : TestBase
             result.ShouldBeOfType<SmallerOperatorEvaluatableBuilder>();
             var SmallerOperatorEvaluatableBuilder = (SmallerOperatorEvaluatableBuilder)result;
             SmallerOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)SmallerOperatorEvaluatableBuilder.LeftOperand).Expression.ShouldBe("Dummy1");
+            ((OtherExpression)SmallerOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
             SmallerOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)SmallerOperatorEvaluatableBuilder.RightOperand).Expression.ShouldBe("Dummy2");
+            ((OtherExpression)SmallerOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
         }
     }
 

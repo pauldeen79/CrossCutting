@@ -19,9 +19,9 @@ public class EqualOperatorExpressionTests : TestBase
             result.ShouldBeOfType<EqualOperatorEvaluatableBuilder>();
             var equalOperatorEvaluatableBuilder = (EqualOperatorEvaluatableBuilder)result;
             equalOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)equalOperatorEvaluatableBuilder.LeftOperand).Expression.ShouldBe("Dummy1");
+            ((OtherExpression)equalOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
             equalOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)equalOperatorEvaluatableBuilder.RightOperand).Expression.ShouldBe("Dummy2");
+            ((OtherExpression)equalOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
         }
     }
 

@@ -4,7 +4,7 @@ internal sealed class OtherExpression : ExpressionBase
 {
     private readonly ExpressionEvaluatorContext _context;
 
-    internal string Expression { get; }
+    public override string SourceExpression { get; }
 
     public OtherExpression(ExpressionEvaluatorContext context, string expression)
     {
@@ -12,12 +12,12 @@ internal sealed class OtherExpression : ExpressionBase
         ArgumentGuard.IsNotNull(expression, nameof(expression));
 
         _context = context;
-        Expression = expression;
+        SourceExpression = expression;
     }
 
     public override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => _context.EvaluateAsync(Expression, token);
+        => _context.EvaluateAsync(SourceExpression, token);
 
     public override Task<ExpressionParseResult> ParseAsync(CancellationToken token)
-        => _context.ParseAsync(Expression, token);
+        => _context.ParseAsync(SourceExpression, token);
 }

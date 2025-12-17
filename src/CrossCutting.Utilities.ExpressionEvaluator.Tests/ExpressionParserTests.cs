@@ -398,7 +398,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)result.Value).Expression.ShouldBe("MyFunction(MyNestedFunction(arguments))");
+            ((OtherExpression)result.Value).SourceExpression.ShouldBe("MyFunction(MyNestedFunction(arguments))");
         }
 
         [Fact]

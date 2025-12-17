@@ -19,9 +19,9 @@ public class BinaryOrOperatorExpressionTests : TestBase
             result.ShouldBeOfType<BinaryOrOperatorEvaluatableBuilder>();
             var BinaryOrOperatorEvaluatableBuilder = (BinaryOrOperatorEvaluatableBuilder)result;
             BinaryOrOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)BinaryOrOperatorEvaluatableBuilder.LeftOperand).Expression.ShouldBe("true");
+            ((OtherExpression)BinaryOrOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("true");
             BinaryOrOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)BinaryOrOperatorEvaluatableBuilder.RightOperand).Expression.ShouldBe("false");
+            ((OtherExpression)BinaryOrOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("false");
         }
     }
 

@@ -2,7 +2,7 @@
 
 internal sealed class UnaryExpression : IExpression<bool>
 {
-    private readonly string _sourceExpression;
+    public string SourceExpression { get; }
 
     public Result<IExpression> Operand { get; }
 
@@ -11,7 +11,7 @@ internal sealed class UnaryExpression : IExpression<bool>
         ArgumentGuard.IsNotNull(sourceExpression, nameof(sourceExpression));
         ArgumentGuard.IsNotNull(operand, nameof(operand));
 
-        _sourceExpression = sourceExpression;
+        SourceExpression = sourceExpression;
         Operand = operand;
     }
 
@@ -46,7 +46,7 @@ internal sealed class UnaryExpression : IExpression<bool>
 
         var result = new ExpressionParseResultBuilder()
             .WithExpressionComponentType(typeof(UnaryExpression))
-            .WithSourceExpression(_sourceExpression)
+            .WithSourceExpression(SourceExpression)
             .WithResultType(typeof(bool))
             .AddPartResult(operandResult ?? new ExpressionParseResultBuilder().FillFromResult(Operand), Constants.Operand)
             .SetStatusFromPartResults();

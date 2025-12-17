@@ -21,9 +21,9 @@ public class BinaryAndOperatorExpressionTests : TestBase
             result.ShouldBeOfType<BinaryAndOperatorEvaluatableBuilder>();
             var binaryAndOperatorEvaluatableBuilder = (BinaryAndOperatorEvaluatableBuilder)result;
             binaryAndOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)binaryAndOperatorEvaluatableBuilder.LeftOperand).Expression.ShouldBe("true");
+            ((OtherExpression)binaryAndOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("true");
             binaryAndOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)binaryAndOperatorEvaluatableBuilder.RightOperand).Expression.ShouldBe("true");
+            ((OtherExpression)binaryAndOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("true");
         }
 
         [Fact]

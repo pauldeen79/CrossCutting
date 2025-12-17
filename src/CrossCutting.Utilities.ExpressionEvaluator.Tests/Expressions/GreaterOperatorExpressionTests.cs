@@ -19,9 +19,9 @@ public class GreaterOperatorExpressionTests : TestBase
             result.ShouldBeOfType<GreaterOperatorEvaluatableBuilder>();
             var GreaterOperatorEvaluatableBuilder = (GreaterOperatorEvaluatableBuilder)result;
             GreaterOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)GreaterOperatorEvaluatableBuilder.LeftOperand).Expression.ShouldBe("Dummy1");
+            ((OtherExpression)GreaterOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
             GreaterOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)GreaterOperatorEvaluatableBuilder.RightOperand).Expression.ShouldBe("Dummy2");
+            ((OtherExpression)GreaterOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
         }
     }
 
