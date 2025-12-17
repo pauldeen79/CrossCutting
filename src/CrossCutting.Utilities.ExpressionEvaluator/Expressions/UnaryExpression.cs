@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-internal sealed class UnaryExpression : IExpression<bool>
+public class UnaryExpression : IExpression<bool>
 {
     public string SourceExpression { get; }
 
