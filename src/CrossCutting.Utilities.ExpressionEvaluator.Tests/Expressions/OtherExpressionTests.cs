@@ -46,4 +46,24 @@ public class OtherExpressionTests : TestBase
             result.ResultType.ShouldBe(typeof(string));
         }
     }
+
+    public class ToBuilder : OtherExpressionTests
+    {
+        [Fact]
+        public void Can_Use_ToBuilder_To_Alter_Values_And_Create_New_Expression()
+        {
+            // Arrange
+            var evaluator = Substitute.For<IExpressionEvaluator>();
+            var context = CreateContext("dummy expression", evaluator: evaluator);
+            var sut = new OtherExpression(context, "expression");
+
+            // Act
+            var builder = sut.ToBuilder();
+            var sut2 = builder.Build();
+
+            // Assert
+            sut2.ShouldBeOfType<OtherExpression>();
+            ((OtherExpression)sut2).SourceExpression.ShouldBe(sut.SourceExpression);
+        }
+    }
 }

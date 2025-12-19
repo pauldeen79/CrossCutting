@@ -21,5 +21,21 @@ internal sealed class OtherExpression : IExpression
     public Task<ExpressionParseResult> ParseAsync(CancellationToken token)
         => _context.ParseAsync(SourceExpression, token);
 
-    public IEvaluatableBuilder ToBuilder() => throw new NotSupportedException();
+    public IEvaluatableBuilder ToBuilder() => new OtherExpressionBuilder(_context, SourceExpression);
+}
+
+internal class OtherExpressionBuilder : IEvaluatableBuilder
+{
+    public OtherExpressionBuilder(ExpressionEvaluatorContext context, string sourceExpression)
+    {
+        Context = context;
+        SourceExpression = sourceExpression;
+    }
+
+    public ExpressionEvaluatorContext Context { get; set; }
+    
+    public string SourceExpression { get; set; }
+
+    public IEvaluatable Build()
+        => new OtherExpression(Context, SourceExpression);
 }
