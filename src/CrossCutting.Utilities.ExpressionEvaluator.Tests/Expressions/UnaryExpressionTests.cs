@@ -100,4 +100,25 @@ public class UnaryExpressionTests : TestBase
             result.PartResults.First().ErrorMessage.ShouldBe("Kaboom");
         }
     }
+
+    public class ToBuilder : UnaryExpressionTests
+    {
+        [Fact]
+        public void Returns_AddOperatorEvaluatableBuilder_Correctly()
+        {
+            // Arrange
+            var context = CreateContext("kaboom");
+            var sut = new UnaryExpression(context.Expression, Result.Error<IExpression>("Kaboom"));
+
+            // Act
+            var result = sut.ToBuilder();
+
+            // Assert
+            result.ShouldBeOfType<LiteralResultEvaluatableBuilder>();
+            var equalOperatorEvaluatableBuilder = (LiteralResultEvaluatableBuilder)result;
+            equalOperatorEvaluatableBuilder.Value.ShouldNotBeNull();
+            equalOperatorEvaluatableBuilder.Value.Status.ShouldBe(ResultStatus.Error);
+            equalOperatorEvaluatableBuilder.Value.ErrorMessage.ShouldBe("Kaboom");
+        }
+    }
 }
