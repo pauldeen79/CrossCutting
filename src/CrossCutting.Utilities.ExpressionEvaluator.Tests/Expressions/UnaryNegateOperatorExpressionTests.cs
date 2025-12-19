@@ -151,6 +151,23 @@ public class UnaryNegateOperatorExpressionTests : TestBase
         }
 
         [Fact]
+        public async Task Returns_Success_From_Expression()
+        {
+            // Arrange
+            var context = CreateContext("!true");
+            var sut = new UnaryNegateOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "!true")), context.Expression);
+
+            // Act
+            var result = await sut.ParseAsync(CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.ExpressionComponentType.ShouldBe(typeof(UnaryNegateOperatorExpression));
+            result.PartResults.Count.ShouldBe(1);
+            result.PartResults.First().Status.ShouldBe(ResultStatus.Ok);
+        }
+
+        [Fact]
         public async Task Returns_Error_From_Expression_Parsing()
         {
             // Arrange
