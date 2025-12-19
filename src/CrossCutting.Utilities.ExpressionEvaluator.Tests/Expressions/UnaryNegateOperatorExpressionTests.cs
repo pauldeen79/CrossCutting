@@ -104,7 +104,7 @@ public class UnaryNegateOperatorExpressionTests : TestBase
     public class ToBuilder : UnaryNegateOperatorExpressionTests
     {
         [Fact]
-        public void Returns_AddOperatorEvaluatableBuilder_Correctly()
+        public async Task Returns_AddOperatorEvaluatableBuilder_Correctly()
         {
             // Arrange
             var context = CreateContext("kaboom");
@@ -114,11 +114,12 @@ public class UnaryNegateOperatorExpressionTests : TestBase
             var result = sut.ToBuilder();
 
             // Assert
-            result.ShouldBeOfType<LiteralResultEvaluatableBuilder>();
-            var equalOperatorEvaluatableBuilder = (LiteralResultEvaluatableBuilder)result;
-            equalOperatorEvaluatableBuilder.Value.ShouldNotBeNull();
-            equalOperatorEvaluatableBuilder.Value.Status.ShouldBe(ResultStatus.Error);
-            equalOperatorEvaluatableBuilder.Value.ErrorMessage.ShouldBe("Kaboom");
+            result.ShouldBeOfType<UnaryNegateOperatorEvaluatableBuilder>();
+            var equalOperatorEvaluatableBuilder = (UnaryNegateOperatorEvaluatableBuilder)result;
+            equalOperatorEvaluatableBuilder.Operand.ShouldNotBeNull();
+            var evaluateResult = await equalOperatorEvaluatableBuilder.Operand.EvaluateAsync(context, CancellationToken.None);
+            evaluateResult.Status.ShouldBe(ResultStatus.Error);
+            evaluateResult.ErrorMessage.ShouldBe("Kaboom");
         }
     }
 }
