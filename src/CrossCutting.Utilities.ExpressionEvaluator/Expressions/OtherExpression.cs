@@ -16,7 +16,7 @@ internal sealed class OtherExpression : ExpressionBase
     }
 
     public override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => _context.EvaluateAsync(SourceExpression, token);
+        => context.EvaluateAsync(SourceExpression, token);
 
     public override Task<ExpressionParseResult> ParseAsync(CancellationToken token)
         => _context.ParseAsync(SourceExpression, token);
