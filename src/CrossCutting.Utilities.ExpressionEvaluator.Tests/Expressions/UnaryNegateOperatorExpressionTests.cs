@@ -60,6 +60,77 @@ public class UnaryNegateOperatorExpressionTests : TestBase
         }
     }
 
+    public class EvaluateTypedAsync : UnaryNegateOperatorExpressionTests
+    {
+        [Fact]
+        public async Task Returns_Error_From_Expression()
+        {
+            // Arrange
+            var context = CreateContext("kaboom");
+            var sut = new UnaryNegateOperatorExpression(Result.Error<IExpression>("Kaboom"), context.Expression);
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+
+        [Fact]
+        public async Task Returns_Success_From_Expression()
+        {
+            // Arrange
+            var context = CreateContext("true");
+            var sut = new UnaryNegateOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "true")), context.Expression);
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeFalse();
+        }
+        
+        [Fact]
+        public async Task Returns_Error_From_Expression_Parsing()
+        {
+            // Arrange
+            var context = CreateContext("!kaboom");
+            Operand
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(Result.Error<object?>("Kaboom"));
+
+            var sut = new UnaryNegateOperatorExpression(Result.Success(Operand), context.Expression);
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
+        }
+
+        [Fact]
+        public async Task Wraps_Exception_Into_Error_Result()
+        {
+            // Arrange
+            var exceptionExpression = Substitute.For<IExpression>();
+            exceptionExpression
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Throws<InvalidOperationException>();
+            var context = CreateContext("error");
+            var sut = new UnaryNegateOperatorExpression(Result.Success(exceptionExpression), context.Expression);
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Exception occured");
+        }
+    }
+
     public class ParseAsync : UnaryNegateOperatorExpressionTests
     {
         [Fact]
