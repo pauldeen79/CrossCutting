@@ -1,17 +1,17 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Expressions;
 
-public class UnaryExpressionTests : TestBase
+public class UnaryNegateOperatorExpressionTests : TestBase
 {
     protected IExpression Operand => ClassFactories.GetOrCreate<IExpression>(ClassFactory);
 
-    public class EvaluateAsync : UnaryExpressionTests
+    public class EvaluateAsync : UnaryNegateOperatorExpressionTests
     {
         [Fact]
         public async Task Returns_Error_From_Expression()
         {
             // Arrange
             var context = CreateContext("kaboom");
-            var sut = new UnaryExpression(context.Expression, Result.Error<IExpression>("Kaboom"));
+            var sut = new UnaryNegateOperatorExpression(Result.Error<IExpression>("Kaboom"), context.Expression);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -30,7 +30,7 @@ public class UnaryExpressionTests : TestBase
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Error<object?>("Kaboom"));
 
-            var sut = new UnaryExpression(context.Expression, Result.Success(Operand));
+            var sut = new UnaryNegateOperatorExpression(Result.Success(Operand), context.Expression);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -49,7 +49,7 @@ public class UnaryExpressionTests : TestBase
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Throws<InvalidOperationException>();
             var context = CreateContext("error");
-            var sut = new UnaryExpression(context.Expression, Result.Success(exceptionExpression));
+            var sut = new UnaryNegateOperatorExpression(Result.Success(exceptionExpression), context.Expression);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -60,14 +60,14 @@ public class UnaryExpressionTests : TestBase
         }
     }
 
-    public class ParseAsync : UnaryExpressionTests
+    public class ParseAsync : UnaryNegateOperatorExpressionTests
     {
         [Fact]
         public async Task Returns_Error_From_Expression()
         {
             // Arrange
             var context = CreateContext("kaboom");
-            var sut = new UnaryExpression(context.Expression, Result.Error<IExpression>("Kaboom"));
+            var sut = new UnaryNegateOperatorExpression(Result.Error<IExpression>("Kaboom"), context.Expression);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -88,7 +88,7 @@ public class UnaryExpressionTests : TestBase
                 .ParseAsync(Arg.Any<CancellationToken>())
                 .Returns(new ExpressionParseResultBuilder().WithErrorMessage("Kaboom").WithStatus(ResultStatus.Error));
 
-            var sut = new UnaryExpression(context.Expression, Result.Success(Operand));
+            var sut = new UnaryNegateOperatorExpression(Result.Success(Operand), context.Expression);
 
             // Act
             var result = await sut.ParseAsync(CancellationToken.None);
@@ -101,14 +101,14 @@ public class UnaryExpressionTests : TestBase
         }
     }
 
-    public class ToBuilder : UnaryExpressionTests
+    public class ToBuilder : UnaryNegateOperatorExpressionTests
     {
         [Fact]
         public void Returns_AddOperatorEvaluatableBuilder_Correctly()
         {
             // Arrange
             var context = CreateContext("kaboom");
-            var sut = new UnaryExpression(context.Expression, Result.Error<IExpression>("Kaboom"));
+            var sut = new UnaryNegateOperatorExpression(Result.Error<IExpression>("Kaboom"), context.Expression);
 
             // Act
             var result = sut.ToBuilder();

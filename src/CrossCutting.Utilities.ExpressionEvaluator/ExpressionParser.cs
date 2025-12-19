@@ -167,7 +167,7 @@ public sealed class ExpressionParser : IExpressionParser
                 return right;
             }
 
-            return Result.Success<IExpression>(new UnaryExpression(context.Expression, right));
+            return Result.Success<IExpression>(new UnaryNegateOperatorExpression(right, context.Expression));
         }
 
         return ParsePrimary(context, state);

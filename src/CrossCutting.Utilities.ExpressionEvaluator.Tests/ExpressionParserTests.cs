@@ -232,8 +232,8 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<UnaryExpression>();
-            var unaryOperator = (UnaryExpression)result.Value;
+            result.Value.ShouldBeOfType<UnaryNegateOperatorExpression>();
+            var unaryOperator = (UnaryNegateOperatorExpression)result.Value;
             unaryOperator.Operand.Status.ShouldBe(ResultStatus.Ok);
             unaryOperator.Operand.Value.ShouldBeOfType<OtherExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);

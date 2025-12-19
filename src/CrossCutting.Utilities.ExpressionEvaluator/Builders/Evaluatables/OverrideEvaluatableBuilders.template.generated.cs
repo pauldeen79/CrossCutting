@@ -1343,5 +1343,56 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
+    public partial class UnaryNegateOperatorEvaluatableBuilder : EvaluatableBaseBuilder<UnaryNegateOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.UnaryNegateOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<bool>
+    {
+        private CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable _operand;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable Operand
+        {
+            get
+            {
+                return _operand;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable>.Default.Equals(_operand!, value!);
+                _operand = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Operand));
+            }
+        }
+
+        public UnaryNegateOperatorEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.UnaryNegateOperatorEvaluatable source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _operand = source.Operand;
+        }
+
+        public UnaryNegateOperatorEvaluatableBuilder() : base()
+        {
+            _operand = default(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.UnaryNegateOperatorEvaluatable BuildTyped()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.UnaryNegateOperatorEvaluatable(Operand);
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.UnaryNegateOperatorEvaluatableBuilder WithOperand(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable operand)
+        {
+            if (operand is null) throw new System.ArgumentNullException(nameof(operand));
+            Operand = operand;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.UnaryNegateOperatorEvaluatable(UnaryNegateOperatorEvaluatableBuilder builder)
+        {
+            return builder.BuildTyped();
+        }
+    }
 }
 #nullable disable

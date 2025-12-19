@@ -810,5 +810,35 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.SubtractOperatorEvaluatableBuilder(this);
         }
     }
+    public partial record UnaryNegateOperatorEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable<bool>
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable Operand
+        {
+            get;
+        }
+
+        public UnaryNegateOperatorEvaluatable(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable operand) : base()
+        {
+            this.Operand = operand;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.UnaryNegateOperatorEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.UnaryNegateOperatorEvaluatable entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.UnaryNegateOperatorEvaluatableBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.UnaryNegateOperatorEvaluatableBuilder(this);
+        }
+    }
 }
 #nullable disable
