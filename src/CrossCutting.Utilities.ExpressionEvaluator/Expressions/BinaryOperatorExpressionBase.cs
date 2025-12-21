@@ -22,19 +22,19 @@ public abstract class BinaryOperatorExpressionBase : IExpression
 
     public abstract Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token);
 
-    public async Task<ExpressionParseResult> ParseAsync(CancellationToken token)
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         ExpressionParseResult? leftResult = null;
         ExpressionParseResult? rightResult = null;
 
         if (Left.IsSuccessful() && Left.Value is not null)
         {
-            leftResult = await Left.Value.ParseAsync(token).ConfigureAwait(false);
+            leftResult = await Left.Value.ParseAsync(context, token).ConfigureAwait(false);
         }
 
         if (Right.IsSuccessful() && Right.Value is not null)
         {
-            rightResult = await Right.Value.ParseAsync(token).ConfigureAwait(false);
+            rightResult = await Right.Value.ParseAsync(context, token).ConfigureAwait(false);
         }
 
         var result = new ExpressionParseResultBuilder()

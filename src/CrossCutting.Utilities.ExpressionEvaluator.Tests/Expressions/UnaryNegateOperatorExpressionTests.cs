@@ -82,7 +82,7 @@ public class UnaryNegateOperatorExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("true");
-            var sut = new UnaryNegateOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "true")), context.Expression);
+            var sut = new UnaryNegateOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), context.Expression);
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
@@ -141,7 +141,7 @@ public class UnaryNegateOperatorExpressionTests : TestBase
             var sut = new UnaryNegateOperatorExpression(Result.Error<IExpression>("Kaboom"), context.Expression);
 
             // Act
-            var result = await sut.ParseAsync(CancellationToken.None);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -155,10 +155,10 @@ public class UnaryNegateOperatorExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("!true");
-            var sut = new UnaryNegateOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "!true")), context.Expression);
+            var sut = new UnaryNegateOperatorExpression(Result.Success<IExpression>(new OtherExpression("!true")), context.Expression);
 
             // Act
-            var result = await sut.ParseAsync(CancellationToken.None);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -173,13 +173,13 @@ public class UnaryNegateOperatorExpressionTests : TestBase
             // Arrange
             var context = CreateContext("!kaboom");
             Operand
-                .ParseAsync(Arg.Any<CancellationToken>())
+                .ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(new ExpressionParseResultBuilder().WithErrorMessage("Kaboom").WithStatus(ResultStatus.Error));
 
             var sut = new UnaryNegateOperatorExpression(Result.Success(Operand), context.Expression);
 
             // Act
-            var result = await sut.ParseAsync(CancellationToken.None);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

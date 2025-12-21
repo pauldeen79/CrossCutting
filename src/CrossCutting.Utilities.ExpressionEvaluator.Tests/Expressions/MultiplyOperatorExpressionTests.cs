@@ -10,7 +10,7 @@ public class MultiplyOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "4 * 2";
             var context = CreateContext(sourceExpression);
-            var sut = new MultiplyOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "4")), Result.Success<IExpression>(new OtherExpression(context, "2")), sourceExpression);
+            var sut = new MultiplyOperatorExpression(Result.Success<IExpression>(new OtherExpression("4")), Result.Success<IExpression>(new OtherExpression("2")), sourceExpression);
 
             // Act
             var result = sut.ToBuilder();
@@ -33,7 +33,7 @@ public class MultiplyOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "4 * 2";
             var context = CreateContext(sourceExpression);
-            var sut = new MultiplyOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "4")), Result.Success<IExpression>(new OtherExpression(context, "2")), sourceExpression);
+            var sut = new MultiplyOperatorExpression(Result.Success<IExpression>(new OtherExpression("4")), Result.Success<IExpression>(new OtherExpression("2")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -52,10 +52,10 @@ public class MultiplyOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "4 * 2";
             var context = CreateContext(sourceExpression);
-            var sut = new MultiplyOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "4")), Result.Success<IExpression>(new OtherExpression(context, "2")), sourceExpression);
+            var sut = new MultiplyOperatorExpression(Result.Success<IExpression>(new OtherExpression("4")), Result.Success<IExpression>(new OtherExpression("2")), sourceExpression);
 
             // Act
-            var result = await sut.ParseAsync(CancellationToken.None);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

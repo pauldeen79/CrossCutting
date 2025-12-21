@@ -81,7 +81,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             return result.FillFromResult(parseResult);
         }
 
-        return (await parseResult.Value!.ParseAsync(token).ConfigureAwait(false))
+        return (await parseResult.Value!.ParseAsync(context, token).ConfigureAwait(false))
             ?? new ExpressionParseResultBuilder()
                 .WithSourceExpression(context.Expression)
                 .WithStatus(ResultStatus.Error)

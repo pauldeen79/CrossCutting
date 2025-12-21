@@ -180,17 +180,17 @@ public sealed class ExpressionParser : IExpressionParser
             var peek = Peek(state);
             if (peek.Type == ExpressionTokenType.LeftParenthesis)
             {
-                return ParseFunction(context, state, ref peek);
+                return ParseFunction(state, ref peek);
             }
             else if (peek.Type == ExpressionTokenType.Less
                 && PeekNext(state, 1).Type == ExpressionTokenType.Other
                 && PeekNext(state, 2).Type == ExpressionTokenType.Greater
                 && PeekNext(state, 3).Type == ExpressionTokenType.LeftParenthesis)
             {
-                return ParseGenericFunction(context, state);
+                return ParseGenericFunction(state);
             }
 
-            return Result.Success<IExpression>(new OtherExpression(context, Previous(state).Value));
+            return Result.Success<IExpression>(new OtherExpression(Previous(state).Value));
         }
 
         if (Match(state, ExpressionTokenType.LeftParenthesis))
@@ -215,7 +215,7 @@ public sealed class ExpressionParser : IExpressionParser
         return Result.Invalid<IExpression>("Unexpected token");
     }
 
-    private static Result<IExpression> ParseFunction(ExpressionEvaluatorContext context, ExpressionParserState state, ref ExpressionToken peek)
+    private static Result<IExpression> ParseFunction(ExpressionParserState state, ref ExpressionToken peek)
     {
         if (PeekNext(state, 1).Type == ExpressionTokenType.EOF)
         {
@@ -253,10 +253,10 @@ public sealed class ExpressionParser : IExpressionParser
             Advance(state);
         }
 
-        return Result.Success<IExpression>(new OtherExpression(context, builder.ToString()));
+        return Result.Success<IExpression>(new OtherExpression(builder.ToString()));
     }
 
-    private static Result<IExpression> ParseGenericFunction(ExpressionEvaluatorContext context, ExpressionParserState state)
+    private static Result<IExpression> ParseGenericFunction(ExpressionParserState state)
     {
         //format: function<type>(
         //a.k.a. other, less, other, greater, left parenthesis
@@ -274,7 +274,7 @@ public sealed class ExpressionParser : IExpressionParser
             var numberOfItemsToTake = afterParenthesis.Type == ExpressionTokenType.Other
                 ? 7
                 : 6;
-            var result = Result.Success<IExpression>(new OtherExpression(context, string.Concat(state.Tokens.Skip(state.Position - 1).Take(numberOfItemsToTake).Select(x => x.Value))));
+            var result = Result.Success<IExpression>(new OtherExpression(string.Concat(state.Tokens.Skip(state.Position - 1).Take(numberOfItemsToTake).Select(x => x.Value))));
             state.Position += numberOfItemsToTake - 1;
             return result;
         }

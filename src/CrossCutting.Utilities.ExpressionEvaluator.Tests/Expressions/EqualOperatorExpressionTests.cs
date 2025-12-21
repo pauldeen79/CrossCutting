@@ -10,7 +10,7 @@ public class EqualOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "Dummy1 == Dummy2";
             var context = CreateContext(sourceExpression);
-            var sut = new EqualOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "Dummy1")), Result.Success<IExpression>(new OtherExpression(context, "Dummy2")), sourceExpression);
+            var sut = new EqualOperatorExpression(Result.Success<IExpression>(new OtherExpression("Dummy1")), Result.Success<IExpression>(new OtherExpression("Dummy2")), sourceExpression);
 
             // Act
             var result = sut.ToBuilder();
@@ -33,7 +33,7 @@ public class EqualOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "true == true";
             var context = CreateContext(sourceExpression);
-            var sut = new EqualOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "true")), Result.Success<IExpression>(new OtherExpression(context, "true")), sourceExpression);
+            var sut = new EqualOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), Result.Success<IExpression>(new OtherExpression("true")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -52,7 +52,7 @@ public class EqualOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "true == true";
             var context = CreateContext(sourceExpression);
-            var sut = new EqualOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "true")), Result.Success<IExpression>(new OtherExpression(context, "true")), sourceExpression);
+            var sut = new EqualOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), Result.Success<IExpression>(new OtherExpression("true")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
@@ -71,10 +71,10 @@ public class EqualOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "true == true";
             var context = CreateContext(sourceExpression);
-            var sut = new EqualOperatorExpression(Result.Success<IExpression>(new OtherExpression(context, "true")), Result.Success<IExpression>(new OtherExpression(context, "true")), sourceExpression);
+            var sut = new EqualOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), Result.Success<IExpression>(new OtherExpression("true")), sourceExpression);
 
             // Act
-            var result = await sut.ParseAsync(CancellationToken.None);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

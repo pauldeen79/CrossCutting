@@ -18,13 +18,13 @@ public abstract class UnaryOperatorExpressionBase : IExpression
 
     public abstract Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token);
 
-    public async Task<ExpressionParseResult> ParseAsync(CancellationToken token)
+    public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
         ExpressionParseResult? operandResult = null;
 
         if (Operand.IsSuccessful() && Operand.Value is not null)
         {
-            operandResult = await Operand.Value.ParseAsync(token).ConfigureAwait(false);
+            operandResult = await Operand.Value.ParseAsync(context, token).ConfigureAwait(false);
         }
 
         var result = new ExpressionParseResultBuilder()

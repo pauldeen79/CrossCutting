@@ -10,7 +10,7 @@ public class OtherExpressionTests : TestBase
             // Arrange
             var evaluator = Substitute.For<IExpressionEvaluator>();
             var context = CreateContext("dummy expression", evaluator: evaluator);
-            var sut = new OtherExpression(context, "expression");
+            var sut = new OtherExpression("expression");
             evaluator
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success<object?>("the result"));
@@ -32,13 +32,13 @@ public class OtherExpressionTests : TestBase
             // Arrange
             var evaluator = Substitute.For<IExpressionEvaluator>();
             var context = CreateContext("dummy expression", evaluator: evaluator);
-            var sut = new OtherExpression(context, "expression");
+            var sut = new OtherExpression("expression");
             evaluator
                 .ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(new ExpressionParseResultBuilder().WithSourceExpression("expression").WithExpressionComponentType(GetType()).WithResultType(typeof(string)));
 
             // Act
-            var result = await sut.ParseAsync(CancellationToken.None);
+            var result = await sut.ParseAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -53,9 +53,7 @@ public class OtherExpressionTests : TestBase
         public void Can_Use_ToBuilder_To_Alter_Values_And_Create_New_Expression()
         {
             // Arrange
-            var evaluator = Substitute.For<IExpressionEvaluator>();
-            var context = CreateContext("dummy expression", evaluator: evaluator);
-            var sut = new OtherExpression(context, "expression");
+            var sut = new OtherExpression("expression");
 
             // Act
             var builder = sut.ToBuilder();
