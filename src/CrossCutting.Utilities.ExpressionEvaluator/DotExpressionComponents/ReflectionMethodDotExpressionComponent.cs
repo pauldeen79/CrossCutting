@@ -13,7 +13,7 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
             return Result.Continue<object?>();
         }
 
-        var result = state.FunctionParseResult.EnsureNotNull().EnsureValue();
+        var result = state.FunctionParseResult.EnsureValue();
         if (!result.IsSuccessful())
         {
             return result;

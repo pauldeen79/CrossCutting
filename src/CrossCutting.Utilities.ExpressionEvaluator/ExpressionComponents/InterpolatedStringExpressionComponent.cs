@@ -52,7 +52,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent<Generi
 
     private static async Task<Result<GenericFormattableString>> EvaluateRecursiveAsync(string format, ExpressionEvaluatorContext context, CancellationToken token)
     {
-        var results = (await ProcessRecursiveAsync(format, context, false, token).ConfigureAwait(false)).EnsureNotNull().EnsureValue();
+        var results = (await ProcessRecursiveAsync(format, context, false, token).ConfigureAwait(false)).EnsureValue();
 
         if (!results.IsSuccessful())
         {
@@ -64,11 +64,14 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent<Generi
 
     private static async Task<ExpressionParseResult> ParseRecursiveAsync(ExpressionParseResultBuilder result, string format, ExpressionEvaluatorContext context, CancellationToken token)
     {
-        var results = (await ProcessRecursiveAsync(format, context, true, token).ConfigureAwait(false)).EnsureNotNull().EnsureValue();
+        var results = (await ProcessRecursiveAsync(format, context, true, token).ConfigureAwait(false)).EnsureValue();
         var hasFailure = !results.IsSuccessful() || results.Value!.Results.Any(x => !x.IsSuccessful());
 
         return result
-            .AddPartResults(results.Value?.Results.Select((x, index) => new ExpressionParsePartResultBuilder().FillFromResult(x).WithPartName(index.ToString(context.Settings.FormatProvider))) ?? [new ExpressionParsePartResultBuilder().WithPartName("Validation").FillFromResult(results)])
+            .AddPartResults(results.Value?.Results.Select((x, index) => new ExpressionParsePartResultBuilder()
+                .FillFromResult(x)
+                .WithPartName(index.ToString(context.Settings.FormatProvider)))
+                    ?? [new ExpressionParsePartResultBuilder().WithPartName("Validation").FillFromResult(results)])
             .WithStatus(hasFailure
                 ? ResultStatus.Invalid
                 : ResultStatus.Ok)

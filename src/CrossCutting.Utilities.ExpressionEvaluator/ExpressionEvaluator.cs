@@ -32,7 +32,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             .Build()
             .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
             .EnsureNotNull("Parse returned null")
-            .EnsureValue()
+            .EnsureValue("Parse result value is null")
             .OnSuccessAsync(expression => expression.EvaluateAsync(context, token))
             .ConfigureAwait(false);
     }
@@ -49,7 +49,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             .Build()
             .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
             .EnsureNotNull("Parse returned null")
-            .EnsureValue()
+            .EnsureValue("Parse result value is null")
             .OnSuccessAsync(async expression =>
                 expression is IExpression<T> typedExpression
                     ? (await typedExpression.EvaluateTypedAsync(context, token).ConfigureAwait(false))
@@ -74,7 +74,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
             .Build()
             .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
             .EnsureNotNull("Parse returned null")
-            .EnsureValue();
+            .EnsureValue("Parse result value is null");
 
         if (!parseResult.IsSuccessful())
         {

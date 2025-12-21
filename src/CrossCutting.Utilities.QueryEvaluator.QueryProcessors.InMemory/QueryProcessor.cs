@@ -79,5 +79,5 @@ public class QueryProcessor : IQueryProcessor
 
     private async Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query, object? context)
         where TResult : class
-        => (await _dataFactory.GetDataAsync<TResult>(query, context).ConfigureAwait(false)).EnsureNotNull().EnsureValue();
+        => (await _dataFactory.GetDataAsync<TResult>(query, context).ConfigureAwait(false)).EnsureValue();
 }

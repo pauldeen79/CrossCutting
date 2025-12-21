@@ -46,7 +46,7 @@ public class FunctionExpressionComponent : IExpressionComponent
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var functionCallResult = _functionParser.Parse(context).EnsureNotNull().EnsureValue();
+        var functionCallResult = _functionParser.Parse(context).EnsureValue();
         if (functionCallResult.Status == ResultStatus.NotFound)
         {
             return new ExpressionParseResultBuilder()
