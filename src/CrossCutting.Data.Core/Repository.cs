@@ -11,7 +11,6 @@ public class Repository<TEntity, TIdentity>(
 {
     public async Task<Result<TEntity>> AddAsync(TEntity instance, CancellationToken token)
         => await EntityCommandProvider.CreateAsync(instance, DatabaseOperation.Insert, token).Result
-            .EnsureNotNull()
             .EnsureValue()
             .OnSuccessAsync(async databaseCommand => (await CommandProcessor.ExecuteCommandAsync(databaseCommand, instance, token).ConfigureAwait(false))
                 .HandleResult($"{typeof(TEntity).Name} has not been added"))
@@ -19,7 +18,6 @@ public class Repository<TEntity, TIdentity>(
 
     public async Task<Result<TEntity>> UpdateAsync(TEntity instance, CancellationToken token)
         => await EntityCommandProvider.CreateAsync(instance, DatabaseOperation.Update, token).Result
-            .EnsureNotNull()
             .EnsureValue()
             .OnSuccessAsync(async databaseCommand => (await CommandProcessor.ExecuteCommandAsync(databaseCommand, instance, token).ConfigureAwait(false))
                 .HandleResult($"{typeof(TEntity).Name} has not been updated"))
@@ -27,7 +25,6 @@ public class Repository<TEntity, TIdentity>(
 
     public async Task<Result<TEntity>> DeleteAsync(TEntity instance, CancellationToken token)
         => await EntityCommandProvider.CreateAsync(instance, DatabaseOperation.Delete, token).Result
-            .EnsureNotNull()
             .EnsureValue()
             .OnSuccessAsync(async databaseCommand => (await CommandProcessor.ExecuteCommandAsync(databaseCommand, instance, token).ConfigureAwait(false))
                 .HandleResult($"{typeof(TEntity).Name} has not been deleted"))
@@ -35,21 +32,18 @@ public class Repository<TEntity, TIdentity>(
 
     public async Task<Result<TEntity>> FindAsync(TIdentity identity, CancellationToken token)
         => await IdentitySelectCommandProvider.CreateAsync(identity, DatabaseOperation.Select, token).Result
-            .EnsureNotNull()
             .EnsureValue()
             .OnSuccessAsync(databaseCommand => EntityRetriever.FindOneAsync(databaseCommand, token))
             .ConfigureAwait(false);
 
     public async Task<Result<IReadOnlyCollection<TEntity>>> FindAllAsync(CancellationToken token)
         => await EntitySelectCommandProvider.CreateAsync<TEntity>(DatabaseOperation.Select, token).Result
-            .EnsureNotNull()
             .EnsureValue()
             .OnSuccessAsync(databaseCommand => EntityRetriever.FindManyAsync(databaseCommand, token))
             .ConfigureAwait(false);
 
     public async Task<Result<IPagedResult<TEntity>>> FindAllPagedAsync(int offset, int pageSize, CancellationToken token)
         => await (await PagedEntitySelectCommandProvider.CreatePagedAsync<TEntity>(DatabaseOperation.Select, offset, pageSize, token).ConfigureAwait(false))
-            .EnsureNotNull()
             .EnsureValue()
             .OnSuccessAsync(databaseCommand => EntityRetriever.FindPagedAsync(databaseCommand, token))
             .ConfigureAwait(false);

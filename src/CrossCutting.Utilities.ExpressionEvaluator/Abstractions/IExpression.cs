@@ -2,7 +2,8 @@
 
 public interface IExpression : IEvaluatable
 {
-    Task<ExpressionParseResult> ParseAsync(CancellationToken token);
+    Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token);
+    string SourceExpression { get; }
 }
 
 public interface IExpression<T> : IExpression, IEvaluatable<T>

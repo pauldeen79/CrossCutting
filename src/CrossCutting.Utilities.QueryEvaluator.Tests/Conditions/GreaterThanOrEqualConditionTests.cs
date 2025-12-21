@@ -2,10 +2,10 @@
 
 public class GreaterOrEqualThanConditionTests : TestBase<GreaterThanOrEqualCondition>
 {
-    public class Evaluate : GreaterOrEqualThanConditionTests
+    public class EvaluateAsync : GreaterOrEqualThanConditionTests
     {
         [Fact]
-        public async Task Returns_Ok_On_Two_Strings()
+        public async Task Returns_Ok_On_Two_Integers()
         {
             // Arrange
             var leftValue = 15;
@@ -42,6 +42,29 @@ public class GreaterOrEqualThanConditionTests : TestBase<GreaterThanOrEqualCondi
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Object must be of type String.");
+        }
+    }
+
+    public class EvaluateTypedAsync : GreaterOrEqualThanConditionTests
+    {
+        [Fact]
+        public async Task Returns_Ok_On_Two_Integers()
+        {
+            // Arrange
+            var leftValue = 15;
+            var rightValue = 13;
+            var sut = new GreaterThanOrEqualConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .Build();
+            var context = CreateContext();
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.ThrowIfNotSuccessful();
+            result.Value.ShouldBeTrue();
         }
     }
 }

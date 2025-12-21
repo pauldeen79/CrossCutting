@@ -7,3 +7,11 @@ public partial class LiteralEvaluatableBuilder
         _value = value;
     }
 }
+
+public partial class LiteralEvaluatableBuilder<T>
+{
+    public LiteralEvaluatableBuilder(T value)
+    {
+        _value = value;
+    }
+}

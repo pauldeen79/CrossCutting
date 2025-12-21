@@ -4,3 +4,8 @@ internal interface ILiteralEvaluatable : IEvaluatableBase
 {
     object? Value { get; }
 }
+
+internal interface ILiteralEvaluatable<T> : IEvaluatableBase, IEvaluatable<T>
+{
+    T Value { get; }
+}

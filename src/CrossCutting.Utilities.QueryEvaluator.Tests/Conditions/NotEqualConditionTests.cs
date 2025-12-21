@@ -2,7 +2,7 @@
 
 public class NotEqualConditionTests : TestBase<NotEqualCondition>
 {
-    public class Evaluate : NotEqualConditionTests
+    public class EvaluateAsync : NotEqualConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
@@ -42,6 +42,29 @@ public class NotEqualConditionTests : TestBase<NotEqualCondition>
             // Assert
             result.ThrowIfNotSuccessful();
             result.Value.ShouldBe(true);
+        }
+    }
+
+    public class EvaluateTypedAsync : NotEqualConditionTests
+    {
+        [Fact]
+        public async Task Returns_Ok_On_Two_Strings()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "this";
+            var sut = new NotEqualConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .Build();
+            var context = CreateContext();
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.ThrowIfNotSuccessful();
+            result.Value.ShouldBeFalse();
         }
     }
 }

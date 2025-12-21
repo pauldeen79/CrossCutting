@@ -25,7 +25,6 @@ public class QueryProcessor : IQueryProcessor
                 await Result.WrapExceptionAsync(async () =>
                 {
                     var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault(), token).ConfigureAwait(false))
-                        .EnsureNotNull()
                         .EnsureValue();
                     if (!commandResult.IsSuccessful())
                     {
@@ -46,7 +45,6 @@ public class QueryProcessor : IQueryProcessor
                 await Result.WrapExceptionAsync(async () =>
                 {
                     var commandResult = (await CreateCommandAsync(query, context, 1, token).ConfigureAwait(false))
-                        .EnsureNotNull()
                         .EnsureValue();
                     if (!commandResult.IsSuccessful())
                     {
@@ -67,7 +65,6 @@ public class QueryProcessor : IQueryProcessor
                 await Result.WrapExceptionAsync(async () =>
                 {
                     var commandResult = (await CreateCommandAsync(query, context, query.Limit.GetValueOrDefault(), token).ConfigureAwait(false))
-                        .EnsureNotNull()
                         .EnsureValue();
                     if (!commandResult.IsSuccessful())
                     {

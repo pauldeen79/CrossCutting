@@ -2,7 +2,7 @@
 
 public class NotNullConditionTests : TestBase<NotNullCondition>
 {
-    public class Evaluate : NotNullConditionTests
+    public class EvaluateAsync : NotNullConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Non_Null_Value()
@@ -38,6 +38,45 @@ public class NotNullConditionTests : TestBase<NotNullCondition>
             // Assert
             result.ThrowIfNotSuccessful();
             result.Value.ShouldBe(false);
+        }
+    }
+
+    public class EvaluateTypedAsync : NotNullConditionTests
+    {
+        [Fact]
+        public async Task Returns_Ok_On_Non_Null_Value()
+        {
+            // Arrange
+            var leftValue = "non null value";
+            var sut = new NotNullConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .Build();
+            var context = CreateContext();
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.ThrowIfNotSuccessful();
+            result.Value.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task Returns_Ok_On_Null_value()
+        {
+            // Arrange
+            var leftValue = default(object?);
+            var sut = new NotNullConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .Build();
+            var context = CreateContext();
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.ThrowIfNotSuccessful();
+            result.Value.ShouldBeFalse();
         }
     }
 }

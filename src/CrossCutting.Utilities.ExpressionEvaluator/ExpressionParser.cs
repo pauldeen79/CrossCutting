@@ -2,15 +2,6 @@
 
 public sealed class ExpressionParser : IExpressionParser
 {
-    private readonly IEnumerable<IBinaryExpressionComponent> _components;
-
-    public ExpressionParser(IEnumerable<IBinaryExpressionComponent> components)
-    {
-        ArgumentGuard.IsNotNull(components, nameof(components));
-
-        _components = components;
-    }
-
     public Result<IExpression> Parse(ExpressionEvaluatorContext context, ICollection<ExpressionToken> tokens)
         => ParseLogicalOr(context, new ExpressionParserState(tokens));
 
@@ -26,7 +17,9 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new OperatorExpression(context, expr, op.Type, right, op.Value, _components));
+            expr = Result.Success<IExpression>(op.Type == ExpressionTokenType.And
+                ? new BinaryAndOperatorExpression(expr, right, op.Value)
+                : new BinaryOrOperatorExpression(expr, right, op.Value));
         }
 
         return expr;
@@ -44,7 +37,9 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new OperatorExpression(context, expr, op.Type, right, op.Value, _components));
+            expr = Result.Success<IExpression>(op.Type == ExpressionTokenType.Equal
+                ? new BinaryAndOperatorExpression(expr, right, op.Value)
+                : new BinaryOrOperatorExpression(expr, right, op.Value));
         }
 
         return expr;
@@ -62,7 +57,9 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new OperatorExpression(context, expr, op.Type, right, op.Value, _components));
+            expr = Result.Success<IExpression>(op.Type == ExpressionTokenType.Equal
+                ? new EqualOperatorExpression(expr, right, op.Value)
+                : new NotEqualOperatorExpression(expr, right, op.Value));
         }
 
         return expr;
@@ -80,7 +77,14 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new OperatorExpression(context, expr, op.Type, right, op.Value, _components));
+            expr = Result.Success<IExpression>(op.Type switch
+            {
+                ExpressionTokenType.Less => new SmallerOperatorExpression(expr, right, op.Value),
+                ExpressionTokenType.LessOrEqual => new SmallerOrEqualOperatorExpression(expr, right, op.Value),
+                ExpressionTokenType.Greater => new GreaterOperatorExpression(expr, right, op.Value),
+                //ExpressionTokenType.GreaterOrEqual
+                _ => new GreaterOrEqualOperatorExpression(expr, right, op.Value)
+            });
         }
 
         return expr;
@@ -98,7 +102,9 @@ public sealed class ExpressionParser : IExpressionParser
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new OperatorExpression(context, expr, op.Type, right, op.Value, _components));
+            expr = Result.Success<IExpression>(op.Type == ExpressionTokenType.Plus
+                ? new AddOperatorExpression(expr, right, op.Value)
+                : new SubtractOperatorExpression(expr, right, op.Value));
         }
 
         return expr;
@@ -106,20 +112,49 @@ public sealed class ExpressionParser : IExpressionParser
 
     private Result<IExpression> ParseMultiplicative(ExpressionEvaluatorContext context, ExpressionParserState state)
     {
-        var expr = ParseUnary(context, state);
+        var expr = ParseExponent(context, state);
 
         while (expr.IsSuccessful() && Match(state, ExpressionTokenType.Multiply, ExpressionTokenType.Divide, ExpressionTokenType.Modulus))
         {
             var op = Previous(state);
-            var right = ParseUnary(context, state);
+            var right = ParseExponent(context, state);
             if (!right.IsSuccessful())
             {
                 return right;
             }
-            expr = Result.Success<IExpression>(new OperatorExpression(context, expr, op.Type, right, op.Value, _components));
+            expr = Result.Success<IExpression>(op.Type switch
+            {
+                ExpressionTokenType.Multiply => new MultiplyOperatorExpression(expr, right, op.Value),
+                ExpressionTokenType.Divide => new DivideOperatorExpression(expr, right, op.Value),
+                //ExpressionTokenType.Modulus
+                _  => new ModulusOperatorExpression(expr, right, op.Value),
+            });
         }
 
         return expr;
+    }
+
+    private Result<IExpression> ParseExponent(ExpressionEvaluatorContext context, ExpressionParserState state)
+    {
+        var left = ParseUnary(context, state);
+
+        if (!left.IsSuccessful())
+            return left;
+
+        if (Match(state, ExpressionTokenType.Exponentiation))
+        {
+            var op = Previous(state);
+            var right = ParseExponent(context, state); // recursion = right-associative
+
+            if (!right.IsSuccessful())
+            {
+                return right;
+            }
+
+            return Result.Success<IExpression>(new PowerOperatorExpression(left, right, op.Value));
+        }
+
+        return left;
     }
 
     private Result<IExpression> ParseUnary(ExpressionEvaluatorContext context, ExpressionParserState state)
@@ -132,7 +167,7 @@ public sealed class ExpressionParser : IExpressionParser
                 return right;
             }
 
-            return Result.Success<IExpression>(new UnaryExpression(context, right));
+            return Result.Success<IExpression>(new UnaryNegateOperatorExpression(right, context.Expression));
         }
 
         return ParsePrimary(context, state);
@@ -145,17 +180,17 @@ public sealed class ExpressionParser : IExpressionParser
             var peek = Peek(state);
             if (peek.Type == ExpressionTokenType.LeftParenthesis)
             {
-                return ParseFunction(context, state, ref peek);
+                return ParseFunction(state, ref peek);
             }
             else if (peek.Type == ExpressionTokenType.Less
                 && PeekNext(state, 1).Type == ExpressionTokenType.Other
                 && PeekNext(state, 2).Type == ExpressionTokenType.Greater
                 && PeekNext(state, 3).Type == ExpressionTokenType.LeftParenthesis)
             {
-                return ParseGenericFunction(context, state);
+                return ParseGenericFunction(state);
             }
 
-            return Result.Success<IExpression>(new OtherExpression(context, Previous(state).Value));
+            return Result.Success<IExpression>(new EvaluatableExpression(Previous(state).Value));
         }
 
         if (Match(state, ExpressionTokenType.LeftParenthesis))
@@ -180,7 +215,7 @@ public sealed class ExpressionParser : IExpressionParser
         return Result.Invalid<IExpression>("Unexpected token");
     }
 
-    private static Result<IExpression> ParseFunction(ExpressionEvaluatorContext context, ExpressionParserState state, ref ExpressionToken peek)
+    private static Result<IExpression> ParseFunction(ExpressionParserState state, ref ExpressionToken peek)
     {
         if (PeekNext(state, 1).Type == ExpressionTokenType.EOF)
         {
@@ -218,10 +253,10 @@ public sealed class ExpressionParser : IExpressionParser
             Advance(state);
         }
 
-        return Result.Success<IExpression>(new OtherExpression(context, builder.ToString()));
+        return Result.Success<IExpression>(new EvaluatableExpression(builder.ToString()));
     }
 
-    private static Result<IExpression> ParseGenericFunction(ExpressionEvaluatorContext context, ExpressionParserState state)
+    private static Result<IExpression> ParseGenericFunction(ExpressionParserState state)
     {
         //format: function<type>(
         //a.k.a. other, less, other, greater, left parenthesis
@@ -239,7 +274,7 @@ public sealed class ExpressionParser : IExpressionParser
             var numberOfItemsToTake = afterParenthesis.Type == ExpressionTokenType.Other
                 ? 7
                 : 6;
-            var result = Result.Success<IExpression>(new OtherExpression(context, string.Concat(state.Tokens.Skip(state.Position - 1).Take(numberOfItemsToTake).Select(x => x.Value))));
+            var result = Result.Success<IExpression>(new EvaluatableExpression(string.Concat(state.Tokens.Skip(state.Position - 1).Take(numberOfItemsToTake).Select(x => x.Value))));
             state.Position += numberOfItemsToTake - 1;
             return result;
         }

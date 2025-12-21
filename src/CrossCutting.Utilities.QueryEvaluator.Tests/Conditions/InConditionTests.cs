@@ -2,7 +2,7 @@
 
 public class InConditionTests : TestBase<InCondition>
 {
-    public class Evaluate : InConditionTests
+    public class EvaluateAsync : InConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
@@ -63,6 +63,29 @@ public class InConditionTests : TestBase<InCondition>
             // Assert
             result.ThrowIfNotSuccessful();
             result.Value.ShouldBe(false);
+        }
+    }
+
+    public class EvaluateTypedAsync : InConditionTests
+    {
+        [Fact]
+        public async Task Returns_Ok_On_Two_Strings()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "this";
+            var sut = new InConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .AddCompareExpressions(new LiteralEvaluatableBuilder(rightValue))
+                .Build();
+            var context = CreateContext();
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.ThrowIfNotSuccessful();
+            result.Value.ShouldBeTrue();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 public class NotInConditionTests : TestBase<NotInCondition>
 {
-    public class Evaluate : NotInConditionTests
+    public class EvaluateAsync : NotInConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
@@ -44,6 +44,30 @@ public class NotInConditionTests : TestBase<NotInCondition>
             // Assert
             result.ThrowIfNotSuccessful();
             result.Value.ShouldBe(true);
+        }
+    }
+
+    public class EvaluateTypedAsync : NotInConditionTests
+    {
+        [Fact]
+        public async Task Returns_Ok_On_Two_Strings()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "THIS";
+            var sut = new NotInConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .AddCompareExpressions(new LiteralEvaluatableBuilder(rightValue))
+                .Build();
+            var settings = new ExpressionEvaluatorSettingsBuilder().WithStringComparison(StringComparison.OrdinalIgnoreCase);
+            var context = CreateContext(settings: settings);
+
+            // Act
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
+
+            // Assert
+            result.ThrowIfNotSuccessful();
+            result.Value.ShouldBeFalse();
         }
     }
 }

@@ -7,6 +7,7 @@ public class ExpressionEvaluator : IExpressionEvaluator
     private readonly IExpressionComponent[] _components;
 
     private const string EvaluateAsyncReturnedNullErrorMessage = "EvaluateAsync returned null";
+    private const string TokenizeReturnedNullErrorMessage = "Tokenize returned null";
 
     public ExpressionEvaluator(IExpressionTokenizer tokenizer, IExpressionParser parser, IEnumerable<IExpressionComponent> components)
     {
@@ -27,11 +28,11 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         return await new ResultDictionaryBuilder()
             .Add(() => context.Validate<object?>())
-            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
+            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull(TokenizeReturnedNullErrorMessage))
             .Build()
             .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
             .EnsureNotNull("Parse returned null")
-            .EnsureValue()
+            .EnsureValue("Parse result value is null")
             .OnSuccessAsync(expression => expression.EvaluateAsync(context, token))
             .ConfigureAwait(false);
     }
@@ -44,11 +45,11 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         return await new ResultDictionaryBuilder()
             .Add(() => context.Validate<object?>())
-            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
+            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull(TokenizeReturnedNullErrorMessage))
             .Build()
             .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
             .EnsureNotNull("Parse returned null")
-            .EnsureValue()
+            .EnsureValue("Parse result value is null")
             .OnSuccessAsync(async expression =>
                 expression is IExpression<T> typedExpression
                     ? (await typedExpression.EvaluateTypedAsync(context, token).ConfigureAwait(false))
@@ -69,18 +70,18 @@ public class ExpressionEvaluator : IExpressionEvaluator
 
         var parseResult = new ResultDictionaryBuilder()
             .Add(() => context.Validate<object?>())
-            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull("Tokenize returned null"))
+            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull(TokenizeReturnedNullErrorMessage))
             .Build()
             .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
             .EnsureNotNull("Parse returned null")
-            .EnsureValue();
+            .EnsureValue("Parse result value is null");
 
         if (!parseResult.IsSuccessful())
         {
             return result.FillFromResult(parseResult);
         }
 
-        return (await parseResult.Value!.ParseAsync(token).ConfigureAwait(false))
+        return (await parseResult.Value!.ParseAsync(context, token).ConfigureAwait(false))
             ?? new ExpressionParseResultBuilder()
                 .WithSourceExpression(context.Expression)
                 .WithStatus(ResultStatus.Error)

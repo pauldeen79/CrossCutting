@@ -16,7 +16,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "true && true && \"string value\"";
+        var expression = "true || true && true || false && true";
 
         // Act
         var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
@@ -26,19 +26,23 @@ public sealed class IntegrationTests : TestBase, IDisposable
         result.Value.ShouldBe(true);
     }
 
-    [Fact]
-    public async Task Can_Evaluate_Comparison_Operator_Expression()
+    [Theory]
+    [InlineData("<", false)]
+    [InlineData(">", true)]
+    [InlineData("<=", false)]
+    [InlineData(">=", true)]
+    public async Task Can_Evaluate_Comparison_Operator_Expression(string @operator, bool expectedResult)
     {
         // Arrange
         var sut = CreateSut();
-        var expression = "2 > 1";
+        var expression = $"2 {@operator} 1";
 
         // Act
         var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.ShouldBe(true);
+        result.Value.ShouldBe(expectedResult);
     }
 
     [Fact]
@@ -253,6 +257,20 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldBe(false);
+    }
+
+    [Fact]
+    public async Task Can_Evaluate_Operator_Expression_With_Power_Operator()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        // Act
+        var result = await sut.EvaluateAsync(CreateContext("2 ^ 2", evaluator: sut));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(4);
     }
 
     [Fact]

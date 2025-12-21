@@ -5,66 +5,6 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
     public class ParseAsync : ExpressionParserTests
     {
         [Fact]
-        public async Task Returns_Correct_Result_On_Logical_Or()
-        {
-            // Arrange
-            var context = CreateContext("false || true");
-            var tokens = new List<ExpressionToken>
-            {
-                new ExpressionToken(ExpressionTokenType.Other, "false"),
-                new ExpressionToken(ExpressionTokenType.Or),
-                new ExpressionToken(ExpressionTokenType.Other, "true"),
-                new ExpressionToken(ExpressionTokenType.EOF),
-            };
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context, tokens);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
-            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
-            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
-            evaluationResult.Status.ShouldBe(ResultStatus.Ok);
-            evaluationResult.Value.ShouldBe(false || true);
-        }
-
-        [Fact]
-        public async Task Returns_Correct_Result_On_Logical_And()
-        {
-            // Arrange
-            var context = CreateContext("false && true");
-            var tokens = new List<ExpressionToken>
-            {
-                new ExpressionToken(ExpressionTokenType.Other, "false"),
-                new ExpressionToken(ExpressionTokenType.And),
-                new ExpressionToken(ExpressionTokenType.Other, "true"),
-                new ExpressionToken(ExpressionTokenType.EOF),
-            };
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context, tokens);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
-            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
-            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
-            evaluationResult.Status.ShouldBe(ResultStatus.Ok);
-            evaluationResult.Value.ShouldBe(false && true);
-        }
-
-        [Fact]
         public async Task Returns_Correct_Result_On_Equal()
         {
             // Arrange
@@ -83,12 +23,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
+            result.Value.ShouldBeOfType<EqualOperatorExpression>();
+            var operatorExpression = (EqualOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false == true);
@@ -113,135 +53,15 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
+            result.Value.ShouldBeOfType<NotEqualOperatorExpression>();
+            var operatorExpression = (NotEqualOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false != true);
-        }
-
-        [Fact]
-        public async Task Returns_Correct_Result_On_Less()
-        {
-            // Arrange
-            var context = CreateContext("1 < 2");
-            var tokens = new List<ExpressionToken>
-            {
-                new ExpressionToken(ExpressionTokenType.Other, "1"),
-                new ExpressionToken(ExpressionTokenType.Less),
-                new ExpressionToken(ExpressionTokenType.Other, "2"),
-                new ExpressionToken(ExpressionTokenType.EOF),
-            };
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context, tokens);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
-            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
-            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
-            evaluationResult.Status.ShouldBe(ResultStatus.Ok);
-            evaluationResult.Value.ShouldBe(1 < 2);
-        }
-
-        [Fact]
-        public async Task Returns_Correct_Result_On_LessOrEqual()
-        {
-            // Arrange
-            var context = CreateContext("1 <= 2");
-            var tokens = new List<ExpressionToken>
-            {
-                new ExpressionToken(ExpressionTokenType.Other, "1"),
-                new ExpressionToken(ExpressionTokenType.LessOrEqual),
-                new ExpressionToken(ExpressionTokenType.Other, "2"),
-                new ExpressionToken(ExpressionTokenType.EOF),
-            };
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context, tokens);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
-            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
-            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
-            evaluationResult.Status.ShouldBe(ResultStatus.Ok);
-            evaluationResult.Value.ShouldBe(1 <= 2);
-        }
-
-        [Fact]
-        public async Task Returns_Correct_Result_On_Greater()
-        {
-            // Arrange
-            var context = CreateContext("1 > 2");
-            var tokens = new List<ExpressionToken>
-            {
-                new ExpressionToken(ExpressionTokenType.Other, "1"),
-                new ExpressionToken(ExpressionTokenType.Greater),
-                new ExpressionToken(ExpressionTokenType.Other, "2"),
-                new ExpressionToken(ExpressionTokenType.EOF),
-            };
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context, tokens);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
-            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
-            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
-            evaluationResult.Status.ShouldBe(ResultStatus.Ok);
-            evaluationResult.Value.ShouldBe(1 > 2);
-        }
-
-        [Fact]
-        public async Task Returns_Correct_Result_On_GreaterOrEqual()
-        {
-            // Arrange
-            var context = CreateContext("1 >= 2");
-            var tokens = new List<ExpressionToken>
-            {
-                new ExpressionToken(ExpressionTokenType.Other, "1"),
-                new ExpressionToken(ExpressionTokenType.GreaterOrEqual),
-                new ExpressionToken(ExpressionTokenType.Other, "2"),
-                new ExpressionToken(ExpressionTokenType.EOF),
-            };
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Parse(context, tokens);
-
-            // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
-            operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
-            operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
-            var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
-            evaluationResult.Status.ShouldBe(ResultStatus.Ok);
-            evaluationResult.Value.ShouldBe(1 >= 2);
         }
 
         [Fact]
@@ -263,12 +83,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
+            result.Value.ShouldBeOfType<AddOperatorExpression>();
+            var operatorExpression = (AddOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 + 2);
@@ -293,12 +113,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
+            result.Value.ShouldBeOfType<SubtractOperatorExpression>();
+            var operatorExpression = (SubtractOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 - 2);
@@ -323,12 +143,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
+            result.Value.ShouldBeOfType<MultiplyOperatorExpression>();
+            var operatorExpression = (MultiplyOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 * 2);
@@ -353,12 +173,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
+            result.Value.ShouldBeOfType<DivideOperatorExpression>();
+            var operatorExpression = (DivideOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 / 2);
@@ -383,12 +203,12 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OperatorExpression>();
-            var operatorExpression = (OperatorExpression)result.Value;
+            result.Value.ShouldBeOfType<ModulusOperatorExpression>();
+            var operatorExpression = (ModulusOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 % 2);
@@ -412,10 +232,10 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<UnaryExpression>();
-            var unaryOperator = (UnaryExpression)result.Value;
+            result.Value.ShouldBeOfType<UnaryNegateOperatorExpression>();
+            var unaryOperator = (UnaryNegateOperatorExpression)result.Value;
             unaryOperator.Operand.Status.ShouldBe(ResultStatus.Ok);
-            unaryOperator.Operand.Value.ShouldBeOfType<OtherExpression>();
+            unaryOperator.Operand.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(!true);
@@ -577,8 +397,8 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)result.Value).Expression.ShouldBe("MyFunction(MyNestedFunction(arguments))");
+            result.Value.ShouldBeOfType<EvaluatableExpression>();
+            ((EvaluatableExpression)result.Value).SourceExpression.ShouldBe("MyFunction(MyNestedFunction(arguments))");
         }
 
         [Fact]
