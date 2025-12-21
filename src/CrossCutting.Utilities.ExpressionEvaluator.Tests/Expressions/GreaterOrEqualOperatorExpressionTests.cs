@@ -9,8 +9,7 @@ public class GreaterOrEqualOperatorExpressionTests : TestBase
         {
             // Arrange
             var sourceExpression = "Dummy1 > Dummy2";
-            var context = CreateContext(sourceExpression);
-            var sut = new GreaterOrEqualOperatorExpression(Result.Success<IExpression>(new OtherExpression("Dummy1")), Result.Success<IExpression>(new OtherExpression("Dummy2")), sourceExpression);
+            var sut = new GreaterOrEqualOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("Dummy1")), Result.Success<IExpression>(new EvaluatableExpression("Dummy2")), sourceExpression);
 
             // Act
             var result = sut.ToBuilder();
@@ -18,10 +17,10 @@ public class GreaterOrEqualOperatorExpressionTests : TestBase
             // Assert
             result.ShouldBeOfType<GreaterOrEqualOperatorEvaluatableBuilder>();
             var GreaterOrEqualOperatorEvaluatableBuilder = (GreaterOrEqualOperatorEvaluatableBuilder)result;
-            GreaterOrEqualOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)GreaterOrEqualOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
-            GreaterOrEqualOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)GreaterOrEqualOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
+            GreaterOrEqualOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
+            ((EvaluatableExpression)GreaterOrEqualOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
+            GreaterOrEqualOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
+            ((EvaluatableExpression)GreaterOrEqualOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
         }
     }
 
@@ -33,7 +32,7 @@ public class GreaterOrEqualOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "2 >= 1";
             var context = CreateContext(sourceExpression);
-            var sut = new GreaterOrEqualOperatorExpression(Result.Success<IExpression>(new OtherExpression("2")), Result.Success<IExpression>(new OtherExpression("1")), sourceExpression);
+            var sut = new GreaterOrEqualOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("2")), Result.Success<IExpression>(new EvaluatableExpression("1")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -52,7 +51,7 @@ public class GreaterOrEqualOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "2 >= 1";
             var context = CreateContext(sourceExpression);
-            var sut = new GreaterOrEqualOperatorExpression(Result.Success<IExpression>(new OtherExpression("2")), Result.Success<IExpression>(new OtherExpression("1")), sourceExpression);
+            var sut = new GreaterOrEqualOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("2")), Result.Success<IExpression>(new EvaluatableExpression("1")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
@@ -71,7 +70,7 @@ public class GreaterOrEqualOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "2 >= 1";
             var context = CreateContext(sourceExpression);
-            var sut = new GreaterOrEqualOperatorExpression(Result.Success<IExpression>(new OtherExpression("2")), Result.Success<IExpression>(new OtherExpression("1")), sourceExpression);
+            var sut = new GreaterOrEqualOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("2")), Result.Success<IExpression>(new EvaluatableExpression("1")), sourceExpression);
 
             // Act
             var result = await sut.ParseAsync(context, CancellationToken.None);

@@ -26,9 +26,9 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             result.Value.ShouldBeOfType<EqualOperatorExpression>();
             var operatorExpression = (EqualOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false == true);
@@ -56,9 +56,9 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             result.Value.ShouldBeOfType<NotEqualOperatorExpression>();
             var operatorExpression = (NotEqualOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(false != true);
@@ -86,9 +86,9 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             result.Value.ShouldBeOfType<AddOperatorExpression>();
             var operatorExpression = (AddOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 + 2);
@@ -116,9 +116,9 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             result.Value.ShouldBeOfType<SubtractOperatorExpression>();
             var operatorExpression = (SubtractOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 - 2);
@@ -146,9 +146,9 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             result.Value.ShouldBeOfType<MultiplyOperatorExpression>();
             var operatorExpression = (MultiplyOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 * 2);
@@ -176,9 +176,9 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             result.Value.ShouldBeOfType<DivideOperatorExpression>();
             var operatorExpression = (DivideOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 / 2);
@@ -206,9 +206,9 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             result.Value.ShouldBeOfType<ModulusOperatorExpression>();
             var operatorExpression = (ModulusOperatorExpression)result.Value;
             operatorExpression.Left.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Left.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Left.Value.ShouldBeOfType<EvaluatableExpression>();
             operatorExpression.Right.Status.ShouldBe(ResultStatus.Ok);
-            operatorExpression.Right.Value.ShouldBeOfType<OtherExpression>();
+            operatorExpression.Right.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(1 % 2);
@@ -235,7 +235,7 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
             result.Value.ShouldBeOfType<UnaryNegateOperatorExpression>();
             var unaryOperator = (UnaryNegateOperatorExpression)result.Value;
             unaryOperator.Operand.Status.ShouldBe(ResultStatus.Ok);
-            unaryOperator.Operand.Value.ShouldBeOfType<OtherExpression>();
+            unaryOperator.Operand.Value.ShouldBeOfType<EvaluatableExpression>();
             var evaluationResult = await result.Value.EvaluateAsync(context, CancellationToken.None);
             evaluationResult.Status.ShouldBe(ResultStatus.Ok);
             evaluationResult.Value.ShouldBe(!true);
@@ -397,8 +397,8 @@ public class ExpressionParserTests : TestBase<ExpressionParser>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)result.Value).SourceExpression.ShouldBe("MyFunction(MyNestedFunction(arguments))");
+            result.Value.ShouldBeOfType<EvaluatableExpression>();
+            ((EvaluatableExpression)result.Value).SourceExpression.ShouldBe("MyFunction(MyNestedFunction(arguments))");
         }
 
         [Fact]

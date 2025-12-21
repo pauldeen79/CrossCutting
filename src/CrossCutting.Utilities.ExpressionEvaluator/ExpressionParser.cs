@@ -190,7 +190,7 @@ public sealed class ExpressionParser : IExpressionParser
                 return ParseGenericFunction(state);
             }
 
-            return Result.Success<IExpression>(new OtherExpression(Previous(state).Value));
+            return Result.Success<IExpression>(new EvaluatableExpression(Previous(state).Value));
         }
 
         if (Match(state, ExpressionTokenType.LeftParenthesis))
@@ -253,7 +253,7 @@ public sealed class ExpressionParser : IExpressionParser
             Advance(state);
         }
 
-        return Result.Success<IExpression>(new OtherExpression(builder.ToString()));
+        return Result.Success<IExpression>(new EvaluatableExpression(builder.ToString()));
     }
 
     private static Result<IExpression> ParseGenericFunction(ExpressionParserState state)
@@ -274,7 +274,7 @@ public sealed class ExpressionParser : IExpressionParser
             var numberOfItemsToTake = afterParenthesis.Type == ExpressionTokenType.Other
                 ? 7
                 : 6;
-            var result = Result.Success<IExpression>(new OtherExpression(string.Concat(state.Tokens.Skip(state.Position - 1).Take(numberOfItemsToTake).Select(x => x.Value))));
+            var result = Result.Success<IExpression>(new EvaluatableExpression(string.Concat(state.Tokens.Skip(state.Position - 1).Take(numberOfItemsToTake).Select(x => x.Value))));
             state.Position += numberOfItemsToTake - 1;
             return result;
         }

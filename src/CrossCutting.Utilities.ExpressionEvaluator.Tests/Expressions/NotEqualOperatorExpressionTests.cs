@@ -9,8 +9,7 @@ public class NotEqualOperatorExpressionTests : TestBase
         {
             // Arrange
             var sourceExpression = "Dummy1 == Dummy2";
-            var context = CreateContext(sourceExpression);
-            var sut = new NotEqualOperatorExpression(Result.Success<IExpression>(new OtherExpression("Dummy1")), Result.Success<IExpression>(new OtherExpression("Dummy2")), sourceExpression);
+            var sut = new NotEqualOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("Dummy1")), Result.Success<IExpression>(new EvaluatableExpression("Dummy2")), sourceExpression);
 
             // Act
             var result = sut.ToBuilder();
@@ -18,10 +17,10 @@ public class NotEqualOperatorExpressionTests : TestBase
             // Assert
             result.ShouldBeOfType<NotEqualOperatorEvaluatableBuilder>();
             var notEqualOperatorEvaluatableBuilder = (NotEqualOperatorEvaluatableBuilder)result;
-            notEqualOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)notEqualOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
-            notEqualOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)notEqualOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
+            notEqualOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
+            ((EvaluatableExpression)notEqualOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
+            notEqualOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
+            ((EvaluatableExpression)notEqualOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
         }
     }
 
@@ -33,7 +32,7 @@ public class NotEqualOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "true == true";
             var context = CreateContext(sourceExpression);
-            var sut = new NotEqualOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), Result.Success<IExpression>(new OtherExpression("true")), sourceExpression);
+            var sut = new NotEqualOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), Result.Success<IExpression>(new EvaluatableExpression("true")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -52,7 +51,7 @@ public class NotEqualOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "true == true";
             var context = CreateContext(sourceExpression);
-            var sut = new NotEqualOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), Result.Success<IExpression>(new OtherExpression("true")), sourceExpression);
+            var sut = new NotEqualOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), Result.Success<IExpression>(new EvaluatableExpression("true")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
@@ -71,7 +70,7 @@ public class NotEqualOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "true == true";
             var context = CreateContext(sourceExpression);
-            var sut = new NotEqualOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), Result.Success<IExpression>(new OtherExpression("true")), sourceExpression);
+            var sut = new NotEqualOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), Result.Success<IExpression>(new EvaluatableExpression("true")), sourceExpression);
 
             // Act
             var result = await sut.ParseAsync(context, CancellationToken.None);

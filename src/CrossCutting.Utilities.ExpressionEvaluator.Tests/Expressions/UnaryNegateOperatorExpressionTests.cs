@@ -82,7 +82,7 @@ public class UnaryNegateOperatorExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("true");
-            var sut = new UnaryNegateOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), context.Expression);
+            var sut = new UnaryNegateOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), context.Expression);
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
@@ -155,7 +155,7 @@ public class UnaryNegateOperatorExpressionTests : TestBase
         {
             // Arrange
             var context = CreateContext("!true");
-            var sut = new UnaryNegateOperatorExpression(Result.Success<IExpression>(new OtherExpression("!true")), context.Expression);
+            var sut = new UnaryNegateOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("!true")), context.Expression);
 
             // Act
             var result = await sut.ParseAsync(context, CancellationToken.None);

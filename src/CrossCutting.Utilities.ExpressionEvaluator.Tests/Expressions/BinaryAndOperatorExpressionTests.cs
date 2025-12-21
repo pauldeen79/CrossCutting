@@ -9,8 +9,7 @@ public class BinaryAndOperatorExpressionTests : TestBase
         {
             // Arrange
             var sourceExpression = "true && true";
-            var context = CreateContext(sourceExpression);
-            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), Result.Success<IExpression>(new OtherExpression("true")), sourceExpression);
+            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), Result.Success<IExpression>(new EvaluatableExpression("true")), sourceExpression);
 
             // Act
             var result = sut.ToBuilder();
@@ -18,10 +17,10 @@ public class BinaryAndOperatorExpressionTests : TestBase
             // Assert
             result.ShouldBeOfType<BinaryAndOperatorEvaluatableBuilder>();
             var binaryAndOperatorEvaluatableBuilder = (BinaryAndOperatorEvaluatableBuilder)result;
-            binaryAndOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)binaryAndOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("true");
-            binaryAndOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)binaryAndOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("true");
+            binaryAndOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
+            ((EvaluatableExpression)binaryAndOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("true");
+            binaryAndOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
+            ((EvaluatableExpression)binaryAndOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("true");
         }
 
         [Fact]
@@ -54,7 +53,7 @@ public class BinaryAndOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "true && true";
             var context = CreateContext(sourceExpression);
-            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), Result.Success<IExpression>(new OtherExpression("true")), sourceExpression);
+            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), Result.Success<IExpression>(new EvaluatableExpression("true")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -73,7 +72,7 @@ public class BinaryAndOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "true && false";
             var context = CreateContext(sourceExpression);
-            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), Result.Success<IExpression>(new OtherExpression("false")), sourceExpression);
+            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), Result.Success<IExpression>(new EvaluatableExpression("false")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
@@ -89,7 +88,7 @@ public class BinaryAndOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "1 && true";
             var context = CreateContext(sourceExpression);
-            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new OtherExpression("1")), Result.Success<IExpression>(new OtherExpression("true")), sourceExpression);
+            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("1")), Result.Success<IExpression>(new EvaluatableExpression("true")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
@@ -105,7 +104,7 @@ public class BinaryAndOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "true && 1";
             var context = CreateContext(sourceExpression);
-            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), Result.Success<IExpression>(new OtherExpression("1")), sourceExpression);
+            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), Result.Success<IExpression>(new EvaluatableExpression("1")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
@@ -124,7 +123,7 @@ public class BinaryAndOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "true && true";
             var context = CreateContext(sourceExpression);
-            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new OtherExpression("true")), Result.Success<IExpression>(new OtherExpression("true")), sourceExpression);
+            var sut = new BinaryAndOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), Result.Success<IExpression>(new EvaluatableExpression("true")), sourceExpression);
 
             // Act
             var result = await sut.ParseAsync(context, CancellationToken.None);

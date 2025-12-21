@@ -9,7 +9,7 @@ public class SmallerOperatorExpressionTests : TestBase
         {
             // Arrange
             var sourceExpression = "Dummy1 < Dummy2";
-            var sut = new SmallerOperatorExpression(Result.Success<IExpression>(new OtherExpression("Dummy1")), Result.Success<IExpression>(new OtherExpression("Dummy2")), sourceExpression);
+            var sut = new SmallerOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("Dummy1")), Result.Success<IExpression>(new EvaluatableExpression("Dummy2")), sourceExpression);
 
             // Act
             var result = sut.ToBuilder();
@@ -17,10 +17,10 @@ public class SmallerOperatorExpressionTests : TestBase
             // Assert
             result.ShouldBeOfType<SmallerOperatorEvaluatableBuilder>();
             var SmallerOperatorEvaluatableBuilder = (SmallerOperatorEvaluatableBuilder)result;
-            SmallerOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)SmallerOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
-            SmallerOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)SmallerOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
+            SmallerOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
+            ((EvaluatableExpression)SmallerOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
+            SmallerOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
+            ((EvaluatableExpression)SmallerOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
         }
     }
 
@@ -32,7 +32,7 @@ public class SmallerOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "2 < 1";
             var context = CreateContext(sourceExpression);
-            var sut = new SmallerOperatorExpression(Result.Success<IExpression>(new OtherExpression("2")), Result.Success<IExpression>(new OtherExpression("1")), sourceExpression);
+            var sut = new SmallerOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("2")), Result.Success<IExpression>(new EvaluatableExpression("1")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
@@ -51,7 +51,7 @@ public class SmallerOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "2 < 1";
             var context = CreateContext(sourceExpression);
-            var sut = new SmallerOperatorExpression(Result.Success<IExpression>(new OtherExpression("2")), Result.Success<IExpression>(new OtherExpression("1")), sourceExpression);
+            var sut = new SmallerOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("2")), Result.Success<IExpression>(new EvaluatableExpression("1")), sourceExpression);
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
@@ -70,7 +70,7 @@ public class SmallerOperatorExpressionTests : TestBase
             // Arrange
             var sourceExpression = "2 < 1";
             var context = CreateContext(sourceExpression);
-            var sut = new SmallerOperatorExpression(Result.Success<IExpression>(new OtherExpression("2")), Result.Success<IExpression>(new OtherExpression("1")), sourceExpression);
+            var sut = new SmallerOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("2")), Result.Success<IExpression>(new EvaluatableExpression("1")), sourceExpression);
 
             // Act
             var result = await sut.ParseAsync(context, CancellationToken.None);

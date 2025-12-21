@@ -1,8 +1,10 @@
-﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Expressions;
+﻿using CrossCutting.Utilities.ExpressionEvaluator.Builders.Expressions;
 
-public class OtherExpressionTests : TestBase
+namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Expressions;
+
+public class EvaluatableExpressionTests : TestBase
 {
-    public class EvaluateAsync : OtherExpressionTests
+    public class EvaluateAsync : EvaluatableExpressionTests
     {
         [Fact]
         public async Task Returns_Correct_Result()
@@ -10,7 +12,7 @@ public class OtherExpressionTests : TestBase
             // Arrange
             var evaluator = Substitute.For<IExpressionEvaluator>();
             var context = CreateContext("dummy expression", evaluator: evaluator);
-            var sut = new OtherExpression("expression");
+            var sut = new EvaluatableExpression("expression");
             evaluator
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success<object?>("the result"));
@@ -24,7 +26,7 @@ public class OtherExpressionTests : TestBase
         }
     }
 
-    public class ParseAsync : OtherExpressionTests
+    public class ParseAsync : EvaluatableExpressionTests
     {
         [Fact]
         public async Task Returns_Correct_Result()
@@ -32,7 +34,7 @@ public class OtherExpressionTests : TestBase
             // Arrange
             var evaluator = Substitute.For<IExpressionEvaluator>();
             var context = CreateContext("dummy expression", evaluator: evaluator);
-            var sut = new OtherExpression("expression");
+            var sut = new EvaluatableExpressionBuilder().WithSourceExpression("expression").BuildTyped();
             evaluator
                 .ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(new ExpressionParseResultBuilder().WithSourceExpression("expression").WithExpressionComponentType(GetType()).WithResultType(typeof(string)));
@@ -47,21 +49,21 @@ public class OtherExpressionTests : TestBase
         }
     }
 
-    public class ToBuilder : OtherExpressionTests
+    public class ToBuilder : EvaluatableExpressionTests
     {
         [Fact]
         public void Can_Use_ToBuilder_To_Alter_Values_And_Create_New_Expression()
         {
             // Arrange
-            var sut = new OtherExpression("expression");
+            var sut = new EvaluatableExpressionBuilder { SourceExpression = "expression" }.BuildTyped();
 
             // Act
             var builder = sut.ToBuilder();
             var sut2 = builder.Build();
 
             // Assert
-            sut2.ShouldBeOfType<OtherExpression>();
-            ((OtherExpression)sut2).SourceExpression.ShouldBe(sut.SourceExpression);
+            sut2.ShouldBeOfType<EvaluatableExpression>();
+            ((EvaluatableExpression)sut2).SourceExpression.ShouldBe(sut.SourceExpression);
         }
     }
 }
