@@ -24,7 +24,7 @@ public static class NumericAggregator
             () => DoubleAggregatorProcessor.Aggregate(firstExpression, secondExpression, formatProvider, doubleAggregatorDelegate),
             () => DecimalAggregatorProcessor.Aggregate(firstExpression, secondExpression, formatProvider, decimalAggregatorDelegate),
             () => Result.Invalid<object?>("First expression is not of a supported type")
-        }).Select(FailSafe).First(x => x.Status != ResultStatus.Continue);
+        }).Select(x => Result.WrapException(x, "Aggregation failed. Error message: {0}")).First(x => x.Status != ResultStatus.Continue);
 
     public static Result<Type> Validate(Type? type1, Type? type2)
     {
@@ -74,19 +74,5 @@ public static class NumericAggregator
         }
 
         return Result.Invalid<Type>($"Unsupported type: {type1.FullName}");
-    }
-
-    private static Result<object?> FailSafe(Func<Result<object?>> x)
-    {
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
-        {
-            return x.Invoke();
-        }
-        catch (Exception ex)
-        {
-            return Result.Error<object?>(ex, $"Aggregation failed. Error message: {ex.Message}");
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
     }
 }

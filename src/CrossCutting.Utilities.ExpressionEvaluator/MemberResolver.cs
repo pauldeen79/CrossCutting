@@ -27,8 +27,7 @@ public class MemberResolver : IMemberResolver
     {
         functionCallContext = ArgumentGuard.IsNotNull(functionCallContext, nameof(functionCallContext));
 
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
+    return await Result.WrapExceptionAsync(async () =>
         {
             if (!Descriptors.IsSuccessful())
             {
@@ -58,12 +57,7 @@ public class MemberResolver : IMemberResolver
                 1 => await GetFunctionByDescriptor(functionCallContext, functionsWithRightArgumentCount[0], token).ConfigureAwait(false),
                 _ => Result.NotFound<MemberAndTypeDescriptor>($"{functionCallContext.FunctionCall.MemberType} {functionCallContext.FunctionCall.Name} with {functionCallContext.FunctionCall.Arguments.Count} arguments could not be identified uniquely"),
             };
-        }
-        catch (Exception ex)
-        {
-            return Result.Error<MemberAndTypeDescriptor>(ex, "Exception occured");
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
+        }).ConfigureAwait(false);
     }
 
     private static bool IsMemberTypeValid(MemberType descriptorMemberType, MemberType contextMemberType)

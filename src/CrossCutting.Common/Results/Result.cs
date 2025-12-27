@@ -422,7 +422,7 @@ public record Result
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
-    public static Result WrapException(Func<Result> resultDelegate)
+    public static Result WrapException(Func<Result> resultDelegate, string? errorMessage = null)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
 
@@ -433,14 +433,14 @@ public record Result
         }
         catch (Exception ex)
         {
-            return Error(ex, ExceptionOccured);
+            return Error(ex, string.Format(errorMessage.WhenNullOrEmpty(ExceptionOccured), ex.Message));
         }
 #pragma warning restore CA1031 // Do not catch general exception types
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
-    public static Result<T> WrapException<T>(Func<Result<T>> resultDelegate)
+    public static Result<T> WrapException<T>(Func<Result<T>> resultDelegate, string? errorMessage = null)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
 
@@ -451,14 +451,14 @@ public record Result
         }
         catch (Exception ex)
         {
-            return Error<T>(ex, ExceptionOccured);
+            return Error<T>(ex, string.Format(errorMessage.WhenNullOrEmpty(ExceptionOccured), ex.Message));
         }
 #pragma warning restore CA1031 // Do not catch general exception types
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
-    public static Result<T> WrapException<T>(Func<T> resultDelegate)
+    public static Result<T> WrapException<T>(Func<T> resultDelegate, string? errorMessage = null)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
 
@@ -469,14 +469,14 @@ public record Result
         }
         catch (Exception ex)
         {
-            return Error<T>(ex, ExceptionOccured);
+            return Error<T>(ex, string.Format(errorMessage.WhenNullOrEmpty(ExceptionOccured), ex.Message));
         }
 #pragma warning restore CA1031 // Do not catch general exception types
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
-    public static async Task<Result> WrapExceptionAsync(Func<Task<Result>> resultDelegate)
+    public static async Task<Result> WrapExceptionAsync(Func<Task<Result>> resultDelegate, string? errorMessage = null)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
 
@@ -487,14 +487,14 @@ public record Result
         }
         catch (Exception ex)
         {
-            return Error(ex, ExceptionOccured);
+            return Error(ex, string.Format(errorMessage.WhenNullOrEmpty(ExceptionOccured), ex.Message));
         }
 #pragma warning restore CA1031 // Do not catch general exception types
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
-    public static async Task<Result<T>> WrapExceptionAsync<T>(Func<Task<Result<T>>> resultDelegate)
+    public static async Task<Result<T>> WrapExceptionAsync<T>(Func<Task<Result<T>>> resultDelegate, string? errorMessage = null)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
 
@@ -505,14 +505,14 @@ public record Result
         }
         catch (Exception ex)
         {
-            return Error<T>(ex, ExceptionOccured);
+            return Error<T>(ex, string.Format(errorMessage.WhenNullOrEmpty(ExceptionOccured), ex.Message));
         }
 #pragma warning restore CA1031 // Do not catch general exception types
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
-    public static async Task<Result<T>> WrapExceptionAsync<T>(Func<Task<T>> resultDelegate)
+    public static async Task<Result<T>> WrapExceptionAsync<T>(Func<Task<T>> resultDelegate, string? errorMessage = null)
     {
         ArgumentGuard.IsNotNull(resultDelegate, nameof(resultDelegate));
 
@@ -523,7 +523,7 @@ public record Result
         }
         catch (Exception ex)
         {
-            return Error<T>(ex, ExceptionOccured);
+            return Error<T>(ex, string.Format(errorMessage.WhenNullOrEmpty(ExceptionOccured), ex.Message));
         }
 #pragma warning restore CA1031 // Do not catch general exception types
     }
