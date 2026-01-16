@@ -7,8 +7,8 @@
     <AnalysisLevel>latest-All</AnalysisLevel>
     <PackageId>pauldeen79.CrossCutting.Utilities.QueryEvaluator.Abstractions</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>1.1.9</Version>
-    <PackageVersion>1.1.9</PackageVersion>
+    <Version>1.1.11</Version>
+    <PackageVersion>1.1.11</PackageVersion>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
