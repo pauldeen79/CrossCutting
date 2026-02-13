@@ -21,20 +21,20 @@ namespace PDC.Net.Core.Queries
                 yield return new ValidationResult("Limit exceeds the maximum of " + MaxLimit, new[] { nameof(Limit), nameof(Limit) });
             }
 
-            foreach (var condition in Conditions)
-            {
-                if (!IsValidExpression(condition))
-                {
-                    yield return new ValidationResult("Invalid field name in condition: " + condition, new[] { nameof(Conditions) });
-                }
-            }
-            foreach (var querySortOrder in SortOrders)
-            {
-                if (!IsValidExpression(querySortOrder.Expression))
-                {
-                    yield return new ValidationResult("Invalid field name in order by expression: " + querySortOrder.Expression, new[] { nameof(SortOrders) });
-                }
-            }
+            // foreach (var condition in Conditions)
+            // {
+            //     if (!IsValidExpression(condition))
+            //     {
+            //         yield return new ValidationResult("Invalid field name in condition: " + condition, new[] { nameof(Conditions) });
+            //     }
+            // }
+            // foreach (var querySortOrder in SortOrders)
+            // {
+            //     if (!IsValidExpression(querySortOrder.Expression))
+            //     {
+            //         yield return new ValidationResult("Invalid field name in order by expression: " + querySortOrder.Expression, new[] { nameof(SortOrders) });
+            //     }
+            // }
         }
 
         private bool IsValidExpression(IEvaluatable expression)
