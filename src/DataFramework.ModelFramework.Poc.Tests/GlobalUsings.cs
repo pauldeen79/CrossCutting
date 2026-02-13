@@ -8,7 +8,6 @@ global using System.Threading.Tasks;
 global using CrossCutting.Data.Abstractions;
 global using CrossCutting.Data.Abstractions.Extensions;
 global using CrossCutting.Data.Core.Builders;
-global using CrossCutting.Data.Core.Extensions;
 global using CrossCutting.Data.Sql.Extensions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables;
 global using CrossCutting.Utilities.ExpressionEvaluator.Extensions;

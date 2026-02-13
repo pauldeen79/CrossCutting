@@ -7,11 +7,11 @@ using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Abstractions;
 using PDC.Net.Core.Queries;
 
-namespace DataFramework.ModelFramework.Poc.QueryFieldInfoProviders
+namespace DataFramework.ModelFramework.Poc.QueryFieldInfoProviderHandlers
 {
 #nullable enable
     [GeneratedCode(@"DataFramework.ModelFramework.Generators.Repositories.RepositoryGenerator", @"1.0.0.0")]
-    public partial class ExtraFieldQueryFieldInfoProvider : IQueryFieldInfoProvider
+    public partial class ExtraFieldQueryFieldInfoProviderHandler : IQueryFieldInfoProviderHandler
     {
         public Result<IQueryFieldInfo> Create(IQuery query)
         {

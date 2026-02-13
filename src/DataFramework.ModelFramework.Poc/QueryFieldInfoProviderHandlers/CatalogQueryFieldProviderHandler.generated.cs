@@ -9,11 +9,11 @@ using DataFramework.ModelFramework.Poc.Repositories;
 using PDC.Net.Core.Entities;
 using PDC.Net.Core.Queries;
 
-namespace DataFramework.ModelFramework.Poc.QueryFieldInfoProviders
+namespace DataFramework.ModelFramework.Poc.QueryFieldInfoProviderHandlers
 {
 #nullable enable
     [GeneratedCode(@"DataFramework.ModelFramework.Generators.Repositories.RepositoryGenerator", @"1.0.0.0")]
-    public partial class CatalogQueryFieldInfoProvider : IQueryFieldInfoProvider
+    public partial class CatalogQueryFieldInfoProviderHandler : IQueryFieldInfoProviderHandler
     {
         //private readonly IExtraFieldRepository _extraFieldRepository;
 

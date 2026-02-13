@@ -10,7 +10,7 @@ using DataFramework.ModelFramework.Poc.DatabaseEntityRetrieverProviders;
 using DataFramework.ModelFramework.Poc.DatabaseEntityRetrieverSettingsProviders;
 using DataFramework.ModelFramework.Poc.EntityMappers;
 using DataFramework.ModelFramework.Poc.PagedDatabaseEntityRetrieverSettingsProviders;
-using DataFramework.ModelFramework.Poc.QueryFieldInfoProviders;
+using DataFramework.ModelFramework.Poc.QueryFieldInfoProviderHandlers;
 using DataFramework.ModelFramework.Poc.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using PDC.Net.Core.Entities;
@@ -35,7 +35,7 @@ namespace DataFramework.ModelFramework.Poc.DependencyInjection
                 .AddSingleton<IDatabaseCommandProvider<CatalogIdentity>, CatalogIdentityCommandProvider>()
 
                 //query:
-                .AddSingleton<IQueryFieldInfoProvider, CatalogQueryFieldInfoProvider>()
+                .AddSingleton<IQueryFieldInfoProviderHandler, CatalogQueryFieldInfoProviderHandler>()
                 .AddSingleton<IDatabaseEntityRetrieverProvider, CatalogDatabaseEntityRetrieverProvider>()
                 .AddSingleton<IDatabaseEntityRetrieverSettingsProvider, CatalogDatabaseEntityRetrieverSettingsProvider>()
                 .AddSingleton<IPagedDatabaseEntityRetrieverSettingsProvider, CatalogPagedDatabaseEntityRetrieverSettingsProvider>()
@@ -58,7 +58,7 @@ namespace DataFramework.ModelFramework.Poc.DependencyInjection
                 .AddSingleton<IDatabaseCommandProvider<ExtraFieldIdentity>, ExtraFieldIdentityCommandProvider>()
 
                 //query:
-                .AddSingleton<IQueryFieldInfoProvider, ExtraFieldQueryFieldInfoProvider>()
+                .AddSingleton<IQueryFieldInfoProviderHandler, ExtraFieldQueryFieldInfoProviderHandler>()
                 .AddSingleton<IDatabaseEntityRetrieverProvider, ExtraFieldDatabaseEntityRetrieverProvider>()
                 .AddSingleton<IDatabaseEntityRetrieverSettingsProvider, ExtraFieldDatabaseEntityRetrieverSettingsProvider>()
                 .AddSingleton<IPagedDatabaseEntityRetrieverSettingsProvider, ExtraFieldPagedDatabaseEntityRetrieverSettingsProvider>()
