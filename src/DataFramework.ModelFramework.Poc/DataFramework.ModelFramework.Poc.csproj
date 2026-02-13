@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>13.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <PackageId>pauldeen79.DataFramework.ModelFramework</PackageId>
+    <RepositoryUrl>https://github.com/pauldeen79/DataFramework</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.*" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.*" />
+    <!-- <PackageReference Include="pauldeen79.CrossCutting.Data.Sql" Version="6.0.15" />
+    <PackageReference Include="pauldeen79.QueryFramework.Core" Version="0.13.16" />
+    <PackageReference Include="pauldeen79.QueryFramework.SqlServer" Version="0.13.16" /> -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrossCutting.Data.Sql\CrossCutting.Data.Sql.csproj" />
+    <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql\CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.csproj" />
+    <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator\CrossCutting.Utilities.QueryEvaluator.Core.csproj" />
+  </ItemGroup>
+
+</Project>
