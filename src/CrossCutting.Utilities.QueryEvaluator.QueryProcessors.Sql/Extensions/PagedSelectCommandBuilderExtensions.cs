@@ -21,7 +21,7 @@ internal static class PagedSelectCommandBuilderExtensions
             return Result.Success(allFields.Length != 0
                 ? instance.Select(string.Join(", ", allFields
                     .Select(fieldInfo.GetDatabaseFieldName)
-                    .Where(x => !string.IsNullOrEmpty(x))))
+                    .Where(x => !string.IsNullOrEmpty(x))).WhenNullOrEmpty("*"))
                 : instance.Select(settings.Fields.WhenNullOrWhitespace("*")));
         });
 
