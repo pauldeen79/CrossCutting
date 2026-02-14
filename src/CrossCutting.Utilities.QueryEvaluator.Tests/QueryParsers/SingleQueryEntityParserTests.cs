@@ -37,8 +37,8 @@ public class SingleEntityQueryParserTests
 
         // Assert
         actual.Conditions.Count.ShouldBe(1);
-        var conditionField = (actual.Conditions[0] as ISingleExpressionContainerBuilder)?.SourceExpression as PropertyNameEvaluatableBuilder;
-        var conditionValue = ((actual.Conditions[0] as IDoubleExpressionContainerBuilder)?.CompareExpression as LiteralEvaluatableBuilder)?.Value;
+        var conditionField = (actual.Conditions[0] as ISourceExpressionContainerBuilder)?.SourceExpression as PropertyNameEvaluatableBuilder;
+        var conditionValue = ((actual.Conditions[0] as ICompareExpressionContainerBuilder)?.CompareExpression as LiteralEvaluatableBuilder)?.Value;
         conditionField.ShouldNotBeNull();
         conditionField.PropertyName.ShouldBe("MyFieldName");
         actual.Conditions[0].ShouldBeOfType(expectedConditionBuilder);
@@ -57,8 +57,8 @@ public class SingleEntityQueryParserTests
 
         // Assert
         actual.Conditions.Count.ShouldBe(1);
-        var conditionField = (actual.Conditions[0] as ISingleExpressionContainerBuilder)?.SourceExpression as PropertyNameEvaluatableBuilder;
-        var conditionValue = ((actual.Conditions[0] as IDoubleExpressionContainerBuilder)?.CompareExpression as LiteralEvaluatableBuilder)?.Value;
+        var conditionField = (actual.Conditions[0] as ISourceExpressionContainerBuilder)?.SourceExpression as PropertyNameEvaluatableBuilder;
+        var conditionValue = ((actual.Conditions[0] as ICompareExpressionContainerBuilder)?.CompareExpression as LiteralEvaluatableBuilder)?.Value;
         conditionField.ShouldNotBeNull();
         conditionField.PropertyName.ShouldBe("MyFieldName");
         actual.Conditions[0].ShouldBeOfType<EqualConditionBuilder>();

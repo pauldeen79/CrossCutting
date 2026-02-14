@@ -34,7 +34,7 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
     protected static async Task<Result> GetSimpleConditionExpressionAsync<T>(
         ConditionExpressionHandlerContext<T> context,
         ConditionParameters parameters,
-        CancellationToken token) where T : IDoubleExpressionContainer
+        CancellationToken token) where T : ICompareExpressionContainer
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         parameters = ArgumentGuard.IsNotNull(parameters, nameof(parameters));
@@ -49,7 +49,7 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
     protected static async Task<Result> GetStringConditionExpressionAsync<T>(
         ConditionExpressionHandlerContext<T> context,
         StringConditionParameters parameters,
-        CancellationToken token) where T : IDoubleExpressionContainer
+        CancellationToken token) where T : ICompareExpressionContainer
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         parameters = ArgumentGuard.IsNotNull(parameters, nameof(parameters));

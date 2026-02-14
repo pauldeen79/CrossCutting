@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Abstractions;
 
-internal interface IDoubleExpressionContainer : ISingleExpressionContainer
+internal interface ICompareExpressionContainer : ISourceExpressionContainer
 {
     [Required][ValidateObject] IEvaluatable CompareExpression { get; set; }
 }

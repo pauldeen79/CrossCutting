@@ -104,8 +104,8 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpression> : IQueryPa
                 .WithEndGroup(endGroup)
                 .WithCombination(nextSearchCombination);
 
-            (condition as ISingleExpressionContainerBuilder)?.WithSourceExpression(GetField(fieldName));
-            (condition as IDoubleExpressionContainerBuilder)?.WithCompareExpression(new LiteralEvaluatableBuilder(fieldValue));
+            (condition as ISourceExpressionContainerBuilder)?.WithSourceExpression(GetField(fieldName));
+            (condition as ICompareExpressionContainerBuilder)?.WithCompareExpression(new LiteralEvaluatableBuilder(fieldValue));
 
             if (items.Length > i + 3)
             {

@@ -1,5 +1,5 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.Models.Conditions;
 
-internal interface IStringNotEndsWithCondition : IConditionBase, IDoubleExpressionContainer, IStringComparisonContainer
+internal interface IStringNotEndsWithCondition : IConditionBase, ICompareExpressionContainer, IStringComparisonContainer
 {
 }
