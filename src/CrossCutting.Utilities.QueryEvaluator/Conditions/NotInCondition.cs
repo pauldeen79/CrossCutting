@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions;
 
-public partial record NotInCondition
+public partial record NotInCondition : IChildEvaluatablesContainer
 {
     public async override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
@@ -12,4 +12,13 @@ public partial record NotInCondition
             .BuildAsync(token)
             .ConfigureAwait(false))
             .OnSuccess(results => Result.Success(!results.GetValue(nameof(SourceExpression)).In(context.Settings.StringComparison, results.Where(x => x.Key.StartsWith($"{nameof(CompareExpressions)}.")).Select(x => x.Value.GetValue()))));
+
+    public IEnumerable<IEvaluatable> GetChildEvaluatables()
+    {
+        yield return SourceExpression;
+        foreach (var expression in CompareExpressions)
+        {
+            yield return expression;
+        }
+    }
 }

@@ -146,5 +146,23 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions
 
         CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.IStringComparisonContainerBuilder ToBuilder();
     }
+    public partial interface ITwoBoundariesExpressionContainer
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable LowerBoundExpression
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable UpperBoundExpression
+        {
+            get;
+        }
+
+        CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ITwoBoundariesExpressionContainerBuilder ToBuilder();
+    }
 }
 #nullable disable

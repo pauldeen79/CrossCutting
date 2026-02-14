@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Core.Conditions;
 
-public partial record BetweenCondition : IChildEvaluatablesContainer
+public partial record NotBetweenCondition : IChildEvaluatablesContainer
 {
     public async override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
@@ -15,7 +15,7 @@ public partial record BetweenCondition : IChildEvaluatablesContainer
             .Add(nameof(UpperBoundExpression), () => UpperBoundExpression.EvaluateAsync(context, token))
             .BuildAsync(token)
             .ConfigureAwait(false))
-            .OnSuccess(results => Between.Evaluate(results.GetValue(nameof(SourceExpression)), results.GetValue(nameof(LowerBoundExpression)), results.GetValue(nameof(UpperBoundExpression))));
+            .OnSuccess(results => NotBetween.Evaluate(results.GetValue(nameof(SourceExpression)), results.GetValue(nameof(LowerBoundExpression)), results.GetValue(nameof(UpperBoundExpression))));
     }
 
     public IEnumerable<IEvaluatable> GetChildEvaluatables() =>

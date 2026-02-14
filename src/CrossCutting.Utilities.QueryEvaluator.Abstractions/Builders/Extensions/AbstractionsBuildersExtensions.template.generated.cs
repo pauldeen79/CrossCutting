@@ -183,5 +183,23 @@ namespace CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions
             return instance;
         }
     }
+    public static partial class TwoBoundariesExpressionContainerBuilderExtensions
+    {
+        public static T WithLowerBoundExpression<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder lowerBoundExpression)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ITwoBoundariesExpressionContainerBuilder
+        {
+            if (lowerBoundExpression is null) throw new System.ArgumentNullException(nameof(lowerBoundExpression));
+            instance.LowerBoundExpression = lowerBoundExpression;
+            return instance;
+        }
+
+        public static T WithUpperBoundExpression<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder upperBoundExpression)
+            where T : CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.ITwoBoundariesExpressionContainerBuilder
+        {
+            if (upperBoundExpression is null) throw new System.ArgumentNullException(nameof(upperBoundExpression));
+            instance.UpperBoundExpression = upperBoundExpression;
+            return instance;
+        }
+    }
 }
 #nullable disable
