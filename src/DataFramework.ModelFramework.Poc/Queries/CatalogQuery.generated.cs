@@ -18,7 +18,7 @@ namespace PDC.Net.Core.Queries
         {
             if (Limit.HasValue && Limit.Value > MaxLimit)
             {
-                yield return new ValidationResult("Limit exceeds the maximum of " + MaxLimit, new[] { nameof(Limit), nameof(Limit) });
+                yield return new ValidationResult("Limit exceeds the maximum of " + MaxLimit, new[] { nameof(Limit) });
             }
 
             // foreach (var condition in Conditions)
