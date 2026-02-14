@@ -78,7 +78,7 @@ public class InsertCommandBuilderTests
     }
 
     [Fact]
-    public void Build_Generates_Command_With_Output_And_Into()
+    public void Implicit_Operator_Generates_Command_With_Output_And_Into()
     {
         // Arrange
         var input = new InsertCommandBuilder().Into("MyTable")
@@ -89,7 +89,7 @@ public class InsertCommandBuilderTests
             .WithTemporaryTable("@NewValues");
 
         // Act
-        var actual = input.Build();
+        SqlDatabaseCommand actual = input;
 
         // Assert
         actual.Operation.ShouldBe(DatabaseOperation.Insert);
@@ -109,7 +109,7 @@ public class InsertCommandBuilderTests
             .AddOutputFields(new[] { "INSERTED.Field1", "INSERTED.Field2", "INSERTED.Field3" }.AsEnumerable());
 
         // Act
-        var actual = input.Build();
+        var actual = input.BuildTyped();
 
         // Assert
         actual.Operation.ShouldBe(DatabaseOperation.Insert);

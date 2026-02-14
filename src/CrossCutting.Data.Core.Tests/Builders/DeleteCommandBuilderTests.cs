@@ -59,7 +59,7 @@ public class DeleteCommandBuilderTests
     }
 
     [Fact]
-    public void Build_Generates_Command_With_OutputValues()
+    public void BuildTyped_Generates_Command_With_OutputValues()
     {
         // Arrange
         var input = new DeleteCommandBuilder()
@@ -70,7 +70,7 @@ public class DeleteCommandBuilderTests
             .AddOutputFields("Field1", "Field2");
 
         // Act
-        var actual = input.Build();
+        var actual = input.BuildTyped();
 
         // Assert
         actual.Operation.ShouldBe(DatabaseOperation.Delete);
@@ -78,7 +78,7 @@ public class DeleteCommandBuilderTests
     }
 
     [Fact]
-    public void Build_Generates_Command_With_OutputValues_And_TemporaryTable()
+    public void Implicit_Operator_Generates_Command_With_OutputValues_And_TemporaryTable()
     {
         // Arrange
         var input = new DeleteCommandBuilder()
@@ -90,7 +90,7 @@ public class DeleteCommandBuilderTests
             .AddOutputFields("Field1", "Field2");
 
         // Act
-        var actual = input.Build();
+        SqlDatabaseCommand actual = input;
 
         // Assert
         actual.Operation.ShouldBe(DatabaseOperation.Delete);

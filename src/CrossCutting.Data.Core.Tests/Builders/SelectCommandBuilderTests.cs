@@ -29,7 +29,7 @@ public class SelectCommandBuilderTests
     }
 
     [Fact]
-    public void Can_Build_SelectCommand_From_SelectCommandBuilder_With_Where_Clause_Using_Parameters_Object()
+    public void Can_BuildTyped_SelectCommand_From_SelectCommandBuilder_With_Where_Clause_Using_Parameters_Object()
     {
         // Arrange
         var command = new SelectCommandBuilder();
@@ -40,7 +40,7 @@ public class SelectCommandBuilderTests
             .Select("Field1", "Field2")
             .Where("Field1 = @field1")
             .AppendParameters(new { field1 = "some value" })
-            .Build();
+            .BuildTyped();
 
         // Assert
         actual.CommandText.ShouldBe("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1");
@@ -55,19 +55,18 @@ public class SelectCommandBuilderTests
     }
 
     [Fact]
-    public void Can_Build_SelectCommand_From_SelectCommandBuilder_With_And_Clause()
+    public void Can_Create_SelectCommand_From_SelectCommandBuilder_With_And_Clause_Using_Implicit_Operator()
     {
         // Arrange
         var command = new SelectCommandBuilder();
 
         // Act
-        var actual = command
+        SqlDatabaseCommand actual = command
             .From("Table")
             .Select("Field1", "Field2")
             .Where("Field1 = @field1")
             .And("Field2 IS NOT NULL")
-            .AppendParameter("field1", "some value")
-            .Build();
+            .AppendParameter("field1", "some value");
 
         // Assert
         actual.CommandText.ShouldBe("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1 AND Field2 IS NOT NULL");

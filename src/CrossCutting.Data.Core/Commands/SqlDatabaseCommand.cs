@@ -7,7 +7,7 @@ public class SqlDatabaseCommand : IDatabaseCommand
                               DatabaseOperation operation = DatabaseOperation.Unspecified,
                               object? commandParameters = null)
     {
-        ArgumentGuard.IsNotNullOrEmpty(commandText, nameof(commandText));
+        ArgumentGuard.IsNotNullOrWhiteSpace(commandText, nameof(commandText));
 
         CommandText = commandText;
         CommandType = commandType;

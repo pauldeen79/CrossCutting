@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Data.Core.Builders;
 
-public class InsertSelectCommandBuilder
+public class InsertSelectCommandBuilder : IBuilder<IDatabaseCommand>
 {
     public IDictionary<string, object> CommandParameters { get; set; }
     public string Table { get; set; }
@@ -58,7 +58,13 @@ public class InsertSelectCommandBuilder
     }
 
     public IDatabaseCommand Build()
+        => BuildTyped();
+
+    public SqlDatabaseCommand BuildTyped()
         => new SqlDatabaseCommand(BuildSql(), DatabaseCommandType.Text, DatabaseOperation.Insert, CommandParameters);
+
+    public static implicit operator SqlDatabaseCommand(InsertSelectCommandBuilder instance)
+        => instance.BuildTyped();
 
     private string BuildSql()
     {

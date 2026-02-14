@@ -15,13 +15,13 @@ public class InsertSelectCommandBuilderTests
     }
 
     [Fact]
-    public void Build_Throws_When_FieldNames_Are_Empty()
+    public void BuildTyped_Throws_When_FieldNames_Are_Empty()
     {
         // Arrange
         var input = new InsertSelectCommandBuilder().Into("MyTable");
 
         // Act & Assert
-        Action a = () => input.Build();
+        Action a = () => input.BuildTyped();
         a.ShouldThrow<InvalidOperationException>()
          .Message.ShouldBe("field names are missing");
     }
@@ -69,7 +69,7 @@ public class InsertSelectCommandBuilderTests
     }
 
     [Fact]
-    public void Build_Generates_Command_With_Output_And_Into()
+    public void Implicit_Operator_Generates_Command_With_Output_And_Into()
     {
         // Arrange
         var input = new InsertSelectCommandBuilder().Into("MyTable")
@@ -85,7 +85,7 @@ public class InsertSelectCommandBuilderTests
             .WithTemporaryTable("@NewValues");
 
         // Act
-        var actual = input.Build();
+        SqlDatabaseCommand actual = input;
 
         // Assert
         actual.Operation.ShouldBe(DatabaseOperation.Insert);
