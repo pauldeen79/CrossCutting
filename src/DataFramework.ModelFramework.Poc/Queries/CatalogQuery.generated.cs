@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
+using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.Core;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders;
@@ -21,25 +22,36 @@ namespace PDC.Net.Core.Queries
                 yield return new ValidationResult("Limit exceeds the maximum of " + MaxLimit, new[] { nameof(Limit) });
             }
 
-            // foreach (var condition in Conditions)
-            // {
-            //     if (!IsValidExpression(condition))
-            //     {
-            //         yield return new ValidationResult("Invalid field name in condition: " + condition, new[] { nameof(Conditions) });
-            //     }
-            // }
-            // foreach (var querySortOrder in SortOrders)
-            // {
-            //     if (!IsValidExpression(querySortOrder.Expression))
-            //     {
-            //         yield return new ValidationResult("Invalid field name in order by expression: " + querySortOrder.Expression, new[] { nameof(SortOrders) });
-            //     }
-            // }
+            foreach (var condition in Conditions)
+            {
+                if (!IsValidExpression(condition))
+                {
+                    yield return new ValidationResult("Invalid field name in condition: " + condition, new[] { nameof(Conditions) });
+                }
+            }
+            foreach (var querySortOrder in SortOrders)
+            {
+                if (!IsValidExpression(querySortOrder.Expression))
+                {
+                    yield return new ValidationResult("Invalid field name in order by expression: " + querySortOrder.Expression, new[] { nameof(SortOrders) });
+                }
+            }
         }
 
         private bool IsValidExpression(IEvaluatable evaluatable)
         {
-            //TODO: Fix nested expressions. You might get an EqualCondition with a left or right expression of type PropertyNameEvaluatable...
+            foreach (var childEvaluatable in evaluatable.GetContainedEvaluatables(true))
+            {
+                if (!IsValidExpressionCore(childEvaluatable))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private bool IsValidExpressionCore(IEvaluatable evaluatable)
+        {
             if (evaluatable is PropertyNameEvaluatable propertyNameEvaluatable)
             {
                 // default: var result = false;
