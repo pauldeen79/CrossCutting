@@ -37,10 +37,10 @@ namespace PDC.Net.Core.Queries
             // }
         }
 
-        private bool IsValidExpression(IEvaluatable expression)
+        private bool IsValidExpression(IEvaluatable evaluatable)
         {
             //TODO: Fix nested expressions. You might get an EqualCondition with a left or right expression of type PropertyNameEvaluatable...
-            if (expression is PropertyNameEvaluatable fieldExpression)
+            if (evaluatable is PropertyNameEvaluatable propertyNameEvaluatable)
             {
                 // default: var result = false;
                 // Override because of extrafields transformation
@@ -49,11 +49,11 @@ namespace PDC.Net.Core.Queries
                 // Expression can't be validated here because of support of dynamic extrafields
                 //if (expression is PdcCustomQueryExpression) return true;
 
-                return result || ValidFieldNames.Any(s => s.Equals(fieldExpression.PropertyName, StringComparison.OrdinalIgnoreCase));
+                return result || ValidFieldNames.Any(s => s.Equals(propertyNameEvaluatable.PropertyName, StringComparison.OrdinalIgnoreCase));
             }
 
             // You might want to validate the expression to prevent sql injection (unless you can only create query expressions in code)
-            return expression.GetType().Assembly.FullName.StartsWith("CrossCutting.Utilities.ExpressionEvaluator");
+            return evaluatable.GetType().Assembly.FullName.StartsWith("CrossCutting.Utilities.ExpressionEvaluator");
         }
 
 
