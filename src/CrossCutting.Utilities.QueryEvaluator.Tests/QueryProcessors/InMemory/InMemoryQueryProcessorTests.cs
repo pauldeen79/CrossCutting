@@ -8,9 +8,9 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameEvaluatableBuilder().WithPropertyName(nameof(MyEntity.Property1)))
+                .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(MyEntity.Property1)))
                 .WithCompareExpression(new LiteralEvaluatableBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameEvaluatableBuilder().WithPropertyName(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameEvaluatableBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -30,9 +30,9 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameEvaluatableBuilder().WithPropertyName(nameof(MyEntity.Property1)))
+                .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(MyEntity.Property1)))
                 .WithCompareExpression(new LiteralEvaluatableBuilder("A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameEvaluatableBuilder().WithPropertyName(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameEvaluatableBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .Build();
 
         InitializeMock(CreateData());
@@ -54,9 +54,9 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameEvaluatableBuilder().WithPropertyName(nameof(MyEntity.Property1)))
+                .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(MyEntity.Property1)))
                 .WithCompareExpression(new DelegateEvaluatableBuilder(() => "A")))
-            .AddSortOrders(new SortOrderBuilder(new PropertyNameEvaluatableBuilder().WithPropertyName(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
+            .AddSortOrders(new SortOrderBuilder(new PropertyNameEvaluatableBuilder(nameof(MyEntity.Property2)), SortOrderDirection.Ascending))
             .WithLimit(1)
             .WithOffset(1)
             .Build();
@@ -79,7 +79,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameEvaluatableBuilder().WithSourceExpression(new PropertyNameEvaluatableBuilder().WithPropertyName(nameof(MyNestedEntity.Property))).WithPropertyName(nameof(MyEntity.Property1)))
+                .WithSourceExpression(new PropertyNameEvaluatableBuilder().WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(MyNestedEntity.Property))).WithPropertyName(nameof(MyEntity.Property1)))
                 .WithCompareExpression(new LiteralEvaluatableBuilder("A")))
             .Build();
 
@@ -98,7 +98,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
     public async Task Can_Use_Brackets_And_Multiple_Operators_In_Query()
     {
         // Arrange
-        var parser = new SingleEntityQueryParser<SingleEntityQueryBuilder, PropertyNameEvaluatableBuilder>(() => new PropertyNameEvaluatableBuilder().WithPropertyName("MyProperty"));
+        var parser = new SingleEntityQueryParser<SingleEntityQueryBuilder, PropertyNameEvaluatableBuilder>(() => new PropertyNameEvaluatableBuilder("MyProperty"));
         var builder = new SingleEntityQueryBuilder();
         var query = parser.Parse(builder, "(Property1 = \"A\" AND Property1 <> \"B\") OR Property1 = \"Z\"").Build();
         InitializeMock(CreateData());

@@ -133,7 +133,7 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpression> : IQueryPa
         };
 
     private static PropertyNameEvaluatableBuilder GetField(string fieldName)
-        => new PropertyNameEvaluatableBuilder().WithSourceExpression(new ContextEvaluatableBuilder()).WithPropertyName(fieldName);
+        => new PropertyNameEvaluatableBuilder(fieldName);
 
     private List<IConditionBuilder> PerformSimpleSearch(string[] items)
         => items

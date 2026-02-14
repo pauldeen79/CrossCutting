@@ -5,7 +5,13 @@ using System.Threading.Tasks;
 using CrossCutting.Common.Results;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core;
+using CrossCutting.Data.Core.Builders;
+using CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions;
+using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions;
+using CrossCutting.Utilities.QueryEvaluator.Core.Builders;
+using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
+using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables;
 using DataFramework.ModelFramework.Poc.PagedDatabaseEntityRetrieverSettings;
 using PDC.Net.Core.Entities;
 using PDC.Net.Core.Queries;
@@ -33,15 +39,21 @@ namespace DataFramework.ModelFramework.Poc.Repositories
         {
             var settings = new ExtraFieldPagedEntityRetrieverSettings();
 
-            //return EntityRetriever.FindMany(new SelectCommandBuilder()
+            // return EntityRetriever.FindManyAsync(new SelectCommandBuilder()
             //    .Select("*")
             //    .From(settings.TableName)
             //    .Where("EntityName = @entityName")
             //    .AppendParameter(nameof(entityName), entityName)
             //    .OrderBy(settings.DefaultOrderBy)
-            //    .Build());
+            //    .Build(), token);
 
-            return QueryProcessor.FindManyAsync<ExtraField>(new ExtraFieldQueryBuilder()/*.Where(nameof(ExtraField.EntityName)).IsEqualTo(entityName).OrderBy(settings.DefaultOrderBy)*/.Build(), null, token);
+            return QueryProcessor.FindManyAsync<ExtraField>(new ExtraFieldQueryBuilder()
+                //.Where(nameof(ExtraField.EntityName)).IsEqualTo(entityName).OrderBy(settings.DefaultOrderBy)
+                .AddConditions(new EqualConditionBuilder()
+                    .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(ExtraField.EntityName)))
+                    .WithCompareExpression(new LiteralEvaluatableBuilder(entityName)))
+                .AddSortOrders(new SortOrderBuilder(new PropertyNameEvaluatableBuilder(nameof(ExtraField.Name))))
+                .Build(), null, token);
         }
     }
 }

@@ -4,6 +4,6 @@ public partial class ExpressionEvaluatorSettingsBuilder
 {
     partial void SetDefaultValues()
     {
-        FormatProvider = CultureInfo.InvariantCulture;
+        _formatProvider = CultureInfo.InvariantCulture;
     }
 }

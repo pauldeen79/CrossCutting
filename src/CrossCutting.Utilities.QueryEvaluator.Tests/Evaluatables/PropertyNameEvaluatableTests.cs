@@ -8,10 +8,7 @@ public class PropertyNameEvaluatableTests : TestBase<PropertyNameEvaluatable>
         public async Task Returns_Error_When_Evaluation_Returns_Null_Result()
         {
             // Arrange
-            var sut = new PropertyNameEvaluatableBuilder()
-                .WithPropertyName("MyProperty")
-                .WithSourceExpression(new ContextEvaluatableBuilder())
-                .Build();
+            var sut = new PropertyNameEvaluatableBuilder("MyProperty").Build();
             var context = CreateContext();
 
             // Act
@@ -26,8 +23,7 @@ public class PropertyNameEvaluatableTests : TestBase<PropertyNameEvaluatable>
         public async Task Returns_Error_When_Evaluation_Returns_Null_Value()
         {
             // Arrange
-            var sut = new PropertyNameEvaluatableBuilder()
-                .WithPropertyName("MyProperty")
+            var sut = new PropertyNameEvaluatableBuilder("MyProperty")
                 .WithSourceExpression(new EmptyEvaluatableBuilder())
                 .Build();
             var context = CreateContext(/*state: new AsyncResultDictionaryBuilder<object?>()
@@ -46,10 +42,7 @@ public class PropertyNameEvaluatableTests : TestBase<PropertyNameEvaluatable>
         public async Task Returns_Error_When_PropertyName_Is_Not_Found()
         {
             // Arrange
-            var sut = new PropertyNameEvaluatableBuilder()
-                .WithPropertyName("MyProperty")
-                .WithSourceExpression(new ContextEvaluatableBuilder())
-                .Build();
+            var sut = new PropertyNameEvaluatableBuilder("MyProperty").Build();
             var context = CreateContext(context: this);
 
             // Act
@@ -64,10 +57,7 @@ public class PropertyNameEvaluatableTests : TestBase<PropertyNameEvaluatable>
         public async Task Returns_Success_When_PropertyName_Is_Found()
         {
             // Arrange
-            var sut = new PropertyNameEvaluatableBuilder()
-                .WithPropertyName(nameof(MyClass.MyProperty))
-                .WithSourceExpression(new ContextEvaluatableBuilder())
-                .Build();
+            PropertyNameEvaluatable sut = new PropertyNameEvaluatableBuilder(nameof(MyClass.MyProperty));
             var context = CreateContext(context: new MyClass());
 
             // Act

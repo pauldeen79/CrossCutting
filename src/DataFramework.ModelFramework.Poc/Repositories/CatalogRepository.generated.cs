@@ -5,7 +5,12 @@ using System.Threading.Tasks;
 using CrossCutting.Common.Results;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core;
+using CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions;
+using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions;
+using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
+using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables;
+using CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables;
 using PDC.Net.Core.Entities;
 using PDC.Net.Core.Queries;
 
@@ -30,7 +35,12 @@ namespace DataFramework.ModelFramework.Poc.Repositories
 
         public Task<Result<IReadOnlyCollection<Catalog>>> FindSomethingAsync(CancellationToken token)
         {
-            return QueryProcessor.FindManyAsync<Catalog>(new CatalogQueryBuilder()/*.Where(nameof(Catalog.Name)).IsEqualTo("Something")*/.Build(), null, token);
+            return QueryProcessor.FindManyAsync<Catalog>(new CatalogQueryBuilder()
+            //.Where(nameof(Catalog.Name)).IsEqualTo("Something")
+            .AddConditions(new EqualConditionBuilder()
+                .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
+                .WithCompareExpression(new LiteralEvaluatableBuilder("Something")))
+            .Build(), null, token);
         }
     }
 }

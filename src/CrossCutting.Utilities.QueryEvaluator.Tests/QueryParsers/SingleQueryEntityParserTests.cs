@@ -210,5 +210,5 @@ public class SingleEntityQueryParserTests
     }
 
     private static SingleEntityQueryParser<IQueryBuilder, PropertyNameEvaluatableBuilder> CreateSut()
-        => new(() => new PropertyNameEvaluatableBuilder().WithPropertyName("PrefilledField"));
+        => new(() => new PropertyNameEvaluatableBuilder("PrefilledField"));
 }

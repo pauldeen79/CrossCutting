@@ -12,7 +12,7 @@ public sealed partial class IntegrationTests
         CatalogQuery query = new CatalogQueryBuilder()
             //.Where(nameof(Catalog.Name)).StartsWith("Diversen cd")
             .AddConditions(new StringStartsWithConditionBuilder()
-                .WithSourceExpression(new PropertyNameEvaluatableBuilder().WithPropertyName(nameof(Catalog.Name)))
+                .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
                 .WithCompareExpression(new LiteralEvaluatableBuilder("Diversen cd")));
 
         // Act
@@ -34,7 +34,7 @@ public sealed partial class IntegrationTests
         IQuery query = new CatalogQueryBuilder()
             //.Where("MyField").IsEqualTo("Value")
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameEvaluatableBuilder().WithPropertyName("MyField"))
+                .WithSourceExpression(new PropertyNameEvaluatableBuilder("MyField"))
                 .WithCompareExpression(new LiteralEvaluatableBuilder("Value")))
             .Build();
 
@@ -57,7 +57,7 @@ public sealed partial class IntegrationTests
         var query = new CatalogQuery(new SingleEntityQueryBuilder()
             //.Where("AllFields").Contains("Diversen")
                 .AddConditions(new StringContainsConditionBuilder()
-                .WithSourceExpression(new PropertyNameEvaluatableBuilder().WithPropertyName("AllFields"))
+                .WithSourceExpression(new PropertyNameEvaluatableBuilder("AllFields"))
                 .WithCompareExpression(new LiteralEvaluatableBuilder("Diversen")))
             .Build());
 
@@ -79,7 +79,7 @@ public sealed partial class IntegrationTests
         var query = new CatalogQueryBuilder()
             //.Where("AllFields").Len().IsGreaterThan(4)
             .AddConditions(new GreaterThanConditionBuilder()
-                .WithSourceExpression(new PropertyNameEvaluatableBuilder().WithPropertyName("AllFields.Length"))
+                .WithSourceExpression(new PropertyNameEvaluatableBuilder("AllFields.Length"))
                 .WithCompareExpression(new LiteralEvaluatableBuilder(4)))
             .BuildTyped();
 
