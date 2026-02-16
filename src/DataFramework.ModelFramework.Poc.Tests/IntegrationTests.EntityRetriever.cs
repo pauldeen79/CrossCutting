@@ -3,10 +3,24 @@ namespace DataFramework.ModelFramework.Poc.Tests;
 public sealed partial class IntegrationTests
 {
     [Fact]
-    public async Task Can_Query_Database_Using_Command_Async()
+    public async Task Can_Query_Database_Using_Command()
     {
         // Arrange
-        Connection.AddResultForDataReader(new[] { new Catalog(1, "Diversen cd 1", DateTime.Today, DateTime.Now, DateTime.Now, "0000-0000", "CDT", "CDR", "CD-ROM", 1, 2, true, true, @"C:\", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null) });
+        Connection.AddResultForDataReader(new[] { new CatalogBuilder()
+            .WithId(1)
+            .WithName("Diversen cd 1")
+            .WithDateCreated(DateTime.Today)
+            .WithDateLastModified(DateTime.Now)
+            .WithDateSynchronized(DateTime.Now)
+            .WithDriveSerialNumber("0000-0000")
+            .WithDriveTypeCodeType("CDT")
+            .WithDriveTypeCode("CDR")
+            .WithDriveTypeDescription("CD-ROM")
+            .WithDriveTotalSize(1)
+            .WithDriveFreeSpace(2)
+            .WithRecursive(true)
+            .WithSorted(true)
+            .WithStartDirectory(@"C:\").Build() });
 
         // Act
         var actual = await Retriever.FindManyAsync(new SelectCommandBuilder()

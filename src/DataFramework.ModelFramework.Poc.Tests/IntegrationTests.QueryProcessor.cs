@@ -3,7 +3,7 @@ namespace DataFramework.ModelFramework.Poc.Tests;
 public sealed partial class IntegrationTests
 {
     [Fact]
-    public async Task Can_Query_Database_Using_Basic_Query_Async()
+    public async Task Can_Query_Database_Using_Basic_Query()
     {
         // Arrange
         Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [Catalog]"),
