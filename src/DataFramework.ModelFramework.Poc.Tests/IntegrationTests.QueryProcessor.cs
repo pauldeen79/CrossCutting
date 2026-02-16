@@ -16,7 +16,7 @@ public sealed partial class IntegrationTests
                 .WithCompareExpression(new LiteralEvaluatableBuilder("Diversen cd")));
 
         // Act
-        var actual = await QueryProcessor.FindManyAsync<Catalog>(query, null, CancellationToken.None);
+        var actual = await QueryProcessor.FindManyAsync<Catalog>(query);
 
         // Assert
         actual.Status.ShouldBe(CrossCutting.Common.Results.ResultStatus.Ok);
@@ -34,7 +34,7 @@ public sealed partial class IntegrationTests
         var query = parser.Parse(new CatalogQueryBuilder(), $"Name = \"Diversen cd 1\"").Build();
 
         // Act
-        var actual = await QueryProcessor.FindManyAsync<Catalog>(query, null, CancellationToken.None);
+        var actual = await QueryProcessor.FindManyAsync<Catalog>(query);
 
         // Assert
         actual.Status.ShouldBe(CrossCutting.Common.Results.ResultStatus.Ok);
@@ -57,7 +57,7 @@ public sealed partial class IntegrationTests
             .Build();
 
         // Act
-        var actual = await QueryProcessor.FindManyAsync<Catalog>(query, null, CancellationToken.None);
+        var actual = await QueryProcessor.FindManyAsync<Catalog>(query);
 
         // Assert
         actual.Status.ShouldBe(CrossCutting.Common.Results.ResultStatus.Ok);
@@ -80,7 +80,7 @@ public sealed partial class IntegrationTests
             .Build());
 
         // Act
-        var actual = await QueryProcessor.FindManyAsync<Catalog>(query, null, CancellationToken.None);
+        var actual = await QueryProcessor.FindManyAsync<Catalog>(query);
 
         // Assert
         actual.Status.ShouldBe(CrossCutting.Common.Results.ResultStatus.Ok);
@@ -102,7 +102,7 @@ public sealed partial class IntegrationTests
             .BuildTyped();
 
         // Act
-        var actual = await QueryProcessor.FindManyAsync<Catalog>(query, null, CancellationToken.None);
+        var actual = await QueryProcessor.FindManyAsync<Catalog>(query);
 
         // Assert
         actual.Status.ShouldBe(CrossCutting.Common.Results.ResultStatus.Ok);
