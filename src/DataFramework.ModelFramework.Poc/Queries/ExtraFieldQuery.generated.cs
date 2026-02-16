@@ -9,6 +9,7 @@ using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.Core;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders;
 using CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables;
+using DataFramework.ModelFramework.Poc.Extensions;
 
 namespace PDC.Net.Core.Queries
 {
@@ -24,50 +25,19 @@ namespace PDC.Net.Core.Queries
 
             foreach (var condition in Conditions)
             {
-                if (!IsValidExpression(condition))
+                if (!condition.IsValidExpression(ValidFieldNames))
                 {
                     yield return new ValidationResult("Invalid field name in condition: " + condition, new[] { nameof(Conditions) });
                 }
             }
             foreach (var querySortOrder in SortOrders)
             {
-                if (!IsValidExpression(querySortOrder.Expression))
+                if (!querySortOrder.Expression.IsValidExpression(ValidFieldNames))
                 {
                     yield return new ValidationResult("Invalid field name in order by expression: " + querySortOrder.Expression, new[] { nameof(SortOrders) });
                 }
             }
         }
-
-        private bool IsValidExpression(IEvaluatable evaluatable)
-        {
-            foreach (var childEvaluatable in evaluatable.GetContainedEvaluatables(true))
-            {
-                if (!IsValidExpressionCore(childEvaluatable))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-        
-        private bool IsValidExpressionCore(IEvaluatable evaluatable)
-        {
-            if (evaluatable is PropertyNameEvaluatable propertyNameEvaluatable)
-            {
-                // default: var result = false;
-                // Override because of extrafields transformation
-                var result = true;
-
-                // Expression can't be validated here because of support of dynamic extrafields
-                //if (expression is PdcCustomQueryExpression) return true;
-
-                return result || ValidFieldNames.Any(s => s.Equals(propertyNameEvaluatable.PropertyName, StringComparison.OrdinalIgnoreCase));
-            }
-
-            // You might want to validate the expression to prevent sql injection (unless you can only create query expressions in code)
-            return evaluatable.GetType().Assembly.FullName.StartsWith("CrossCutting.Utilities.ExpressionEvaluator");
-        }
-
 
         public override QueryBaseBuilder ToBuilder()
         {
