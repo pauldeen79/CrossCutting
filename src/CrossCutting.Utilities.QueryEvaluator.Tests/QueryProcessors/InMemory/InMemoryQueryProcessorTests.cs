@@ -98,7 +98,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
     public async Task Can_Use_Brackets_And_Multiple_Operators_In_Query()
     {
         // Arrange
-        var parser = new SingleEntityQueryParser<SingleEntityQueryBuilder, PropertyNameEvaluatableBuilder>(() => new PropertyNameEvaluatableBuilder("MyProperty"));
+        var parser = new QueryParser<SingleEntityQueryBuilder, PropertyNameEvaluatableBuilder>(() => new PropertyNameEvaluatableBuilder("MyProperty"));
         var builder = new SingleEntityQueryBuilder();
         var query = parser.Parse(builder, "(Property1 = \"A\" AND Property1 <> \"B\") OR Property1 = \"Z\"").Build();
         InitializeMock(CreateData());

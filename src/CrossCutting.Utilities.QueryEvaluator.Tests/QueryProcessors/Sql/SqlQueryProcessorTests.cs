@@ -73,6 +73,24 @@ public sealed class SqlQueryProcessorTests : TestBase
     }
 
     [Fact]
+    public async Task Can_Find_One_Item_With_GreaterThanCondition_Using_QueryParser()
+    {
+        // Arrange
+        var parser = new QueryParser<IQueryBuilder, PropertyNameEvaluatableBuilder>(() => new PropertyNameEvaluatableBuilder("PrefilledField"));
+        var query = parser.Parse(new SingleEntityQueryBuilder(), $"Property1 > \"A\"").Build();
+        InitializeMock(CreateData());
+
+        // Act
+        var result = await SqlQueryProcessor.FindOneAsync<MyEntity>(query);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldNotBeNull();
+        LastDatabaseCommand.ShouldNotBeNull();
+        LastDatabaseCommand.CommandText.ShouldBe("SELECT TOP 1 * FROM MyEntity WHERE Property1 > @p0");
+    }
+
+    [Fact]
     public async Task Can_Find_One_Item_With_GreaterThanOrEqualCondition()
     {
         // Arrange

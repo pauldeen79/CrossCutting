@@ -26,6 +26,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator.QueryParsers\CrossCutting.Utilities.QueryEvaluator.QueryParsers.csproj" />
     <ProjectReference Include="..\DataFramework.ModelFramework.Poc\DataFramework.ModelFramework.Poc.csproj" />
     <ProjectReference Include="..\System.Data.Stub\System.Data.Stub.csproj" />
   </ItemGroup>

@@ -25,6 +25,24 @@ public sealed partial class IntegrationTests
     }
 
     [Fact]
+    public async Task Can_Query_Database_Using_Basic_Query_Using_QueryParser()
+    {
+        // Arrange
+        Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [Catalog]"),
+                                          () => new[] { new Catalog(1, "Diversen cd 1", DateTime.Today, DateTime.Now, DateTime.Now, "0000-0000", "CDT", "CDR", "CD-ROM", 1, 2, true, true, @"C:\", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null) });
+        var parser = new QueryParser<IQueryBuilder, PropertyNameEvaluatableBuilder>(() => new PropertyNameEvaluatableBuilder("PrefilledField"));
+        var query = parser.Parse(new CatalogQueryBuilder(), $"Name = \"Diversen cd 1\"").Build();
+
+        // Act
+        var actual = await QueryProcessor.FindManyAsync<Catalog>(query, null, CancellationToken.None);
+
+        // Assert
+        actual.Status.ShouldBe(CrossCutting.Common.Results.ResultStatus.Ok);
+        actual.Value.ShouldHaveSingleItem();
+        actual.Value.First().IsExistingEntity.ShouldBeTrue(); //set from CatalogDatabaseCommandEntityProvider
+    }
+
+    [Fact]
     public async Task Can_Query_Database_Using_ExtraFieldNames()
     {
         // Arrange
@@ -71,7 +89,7 @@ public sealed partial class IntegrationTests
     }
 
     [Fact]
-    public async Task Can_Use_Internal_Expression_From_ExpressionFramework()
+    public async Task Can_Use_Expression_In_Query()
     {
         // Arrange
         Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains("WHERE LEN([Name] + ' ' + [StartDirectory] + ' ' + COALESCE([ExtraField1], '') + ' ' + COALESCE([ExtraField2], '') + ' ' + COALESCE([ExtraField3], '') + ' ' + COALESCE([ExtraField4], '') + ' ' + COALESCE([ExtraField5], '') + ' ' + COALESCE([ExtraField6], '') + ' ' + COALESCE([ExtraField7], '') + ' ' + COALESCE([ExtraField8], '') + ' ' + COALESCE([ExtraField9], '') + ' ' + COALESCE([ExtraField10], '') + ' ' + COALESCE([ExtraField11], '') + ' ' + COALESCE([ExtraField12], '') + ' ' + COALESCE([ExtraField13], '') + ' ' + COALESCE([ExtraField14], '') + ' ' + COALESCE([ExtraField15], '') + ' ' + COALESCE([ExtraField16], '')) > @p0"),

@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryParsers;
 
-public class SingleEntityQueryParser<TQueryBuilder, TQueryExpression> : IQueryParser<TQueryBuilder>
+public class QueryParser<TQueryBuilder, TQueryExpression> : IQueryParser<TQueryBuilder>
     where TQueryBuilder : IQueryBuilder
     where TQueryExpression : IEvaluatableBuilder
 {
@@ -33,7 +33,7 @@ public class SingleEntityQueryParser<TQueryBuilder, TQueryExpression> : IQueryPa
         { "NOTENDSWITH", () => new StringNotEndsWithConditionBuilder() },
     };
 
-    public SingleEntityQueryParser(Func<TQueryExpression> defaultFieldExpressionFactory)
+    public QueryParser(Func<TQueryExpression> defaultFieldExpressionFactory)
     {
         ArgumentGuard.IsNotNull(defaultFieldExpressionFactory, nameof(defaultFieldExpressionFactory));
 

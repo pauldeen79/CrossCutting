@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.QueryParsers;
 
-public class SingleEntityQueryParserTests
+public class QueryParserTests
 {
     [Theory]
     [InlineData("CONTAINS", "MyValue", typeof(StringContainsConditionBuilder))]
@@ -209,6 +209,6 @@ public class SingleEntityQueryParserTests
         validationResults[0].ErrorMessage.ShouldBe("EndGroup not valid at index 0, because there is no corresponding StartGroup");
     }
 
-    private static SingleEntityQueryParser<IQueryBuilder, PropertyNameEvaluatableBuilder> CreateSut()
+    private static QueryParser<IQueryBuilder, PropertyNameEvaluatableBuilder> CreateSut()
         => new(() => new PropertyNameEvaluatableBuilder("PrefilledField"));
 }

@@ -1,8 +1,8 @@
-﻿using CrossCutting.Data.Abstractions;
-using PDC.Net.Core.Entities;
+﻿using CrossCutting.Common.Results;
+using CrossCutting.Data.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Abstractions;
-using CrossCutting.Common.Results;
+using PDC.Net.Core.Entities;
 
 namespace DataFramework.ModelFramework.Poc.DatabaseEntityRetrieverProviders
 {
