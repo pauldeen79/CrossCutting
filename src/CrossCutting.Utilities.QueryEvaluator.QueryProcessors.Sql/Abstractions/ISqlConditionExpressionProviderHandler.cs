@@ -3,8 +3,8 @@
 public interface ISqlConditionExpressionProviderHandler
 {
     Task<Result> GetConditionExpressionAsync(StringBuilder builder,
-                                             IQueryContext context,
-                                             ICondition condition,
+                                             IContextContainer context,
+                                             IEvaluatable<bool> condition,
                                              IQueryFieldInfo fieldInfo,
                                              ISqlExpressionProvider sqlExpressionProvider,
                                              ParameterBag parameterBag,

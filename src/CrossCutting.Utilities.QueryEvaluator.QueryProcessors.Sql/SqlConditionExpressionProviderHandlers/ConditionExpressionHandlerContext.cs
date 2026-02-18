@@ -4,7 +4,7 @@ public class ConditionExpressionHandlerContext<TCondition>
 {
     public ConditionExpressionHandlerContext(
         StringBuilder builder,
-        IQueryContext context,
+        IContextContainer context,
         TCondition condition,
         IQueryFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
@@ -26,7 +26,7 @@ public class ConditionExpressionHandlerContext<TCondition>
     }
 
     public StringBuilder Builder { get; }
-    public IQueryContext Context { get; }
+    public IContextContainer Context { get; }
     public TCondition Condition { get; }
     public IQueryFieldInfo FieldInfo { get; }
     public ISqlExpressionProvider SqlExpressionProvider { get; }

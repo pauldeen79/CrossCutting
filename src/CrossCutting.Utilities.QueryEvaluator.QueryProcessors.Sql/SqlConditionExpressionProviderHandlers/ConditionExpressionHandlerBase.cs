@@ -4,8 +4,8 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
 {
     public async Task<Result> GetConditionExpressionAsync(
         StringBuilder builder,
-        IQueryContext context,
-        ICondition condition,
+        IContextContainer context,
+        IEvaluatable<bool> condition,
         IQueryFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
         ParameterBag parameterBag,

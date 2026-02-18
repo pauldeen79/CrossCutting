@@ -4,7 +4,7 @@ public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpres
     where TExpression : ISqlExpression
 {
     public async Task<Result<string>> GetSqlExpressionAsync(
-        IQueryContext context,
+        IContextContainer context,
         ISqlExpression expression,
         IQueryFieldInfo fieldInfo,
         ParameterBag parameterBag,
@@ -26,7 +26,7 @@ public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpres
     }
 
     protected abstract Task<Result<string>> DoGetSqlExpressionAsync(
-        IQueryContext context,
+        IContextContainer context,
         TExpression expression,
         IQueryFieldInfo fieldInfo,
         ParameterBag parameterBag,
