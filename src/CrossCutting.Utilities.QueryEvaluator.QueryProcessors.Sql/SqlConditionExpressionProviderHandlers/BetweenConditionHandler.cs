@@ -2,7 +2,7 @@
 
 public class BetweenConditionHandler : ConditionExpressionHandlerBase<BetweenCondition>
 {
-    protected override async Task<Result> DoGetConditionExpressionAsync(ConditionExpressionHandlerContext<BetweenCondition> context, CancellationToken token)
+    protected override async Task<Result> GetConditionExpressionAsync(ConditionExpressionHandlerContext<BetweenCondition> context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 

@@ -10,9 +10,8 @@ public class SqlExpressionHandler : SqlExpressionProviderHandlerBase<SqlExpressi
         _expressionEvaluator = expressionEvaluator;
     }
 
-    protected override async Task<Result<string>> DoGetSqlExpressionAsync(object? context, SqlExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback, CancellationToken token)
+    protected override async Task<Result<string>> HandleGetSqlExpressionAsync(object? context, SqlExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback, CancellationToken token)
     {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
         fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));

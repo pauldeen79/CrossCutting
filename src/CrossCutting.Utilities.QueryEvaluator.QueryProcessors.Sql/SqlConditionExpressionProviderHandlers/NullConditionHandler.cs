@@ -2,7 +2,7 @@
 
 public class NullConditionHandler : ConditionExpressionHandlerBase<NullCondition>
 {
-    protected override async Task<Result> DoGetConditionExpressionAsync(ConditionExpressionHandlerContext<NullCondition> context, CancellationToken token)
+    protected override async Task<Result> GetConditionExpressionAsync(ConditionExpressionHandlerContext<NullCondition> context, CancellationToken token)
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 

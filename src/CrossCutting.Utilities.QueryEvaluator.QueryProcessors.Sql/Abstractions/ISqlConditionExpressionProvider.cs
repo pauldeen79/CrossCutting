@@ -2,7 +2,7 @@
 
 public interface ISqlConditionExpressionProvider
 {
-    Task<Result<string>> GetConditionExpressionAsync(IQueryContext context,
+    Task<Result<string>> GetConditionExpressionAsync(object? context,
                                                      ICondition condition,
                                                      IQueryFieldInfo fieldInfo,
                                                      ISqlExpressionProvider sqlExpressionProvider,

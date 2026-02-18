@@ -2,6 +2,6 @@
 
 public class StringNotEqualsConditionHandler : ConditionExpressionHandlerBase<StringNotEqualsCondition>
 {
-    protected override Task<Result> DoGetConditionExpressionAsync(ConditionExpressionHandlerContext<StringNotEqualsCondition> context, CancellationToken token)
+    protected override Task<Result> GetConditionExpressionAsync(ConditionExpressionHandlerContext<StringNotEqualsCondition> context, CancellationToken token)
         => GetStringConditionExpressionAsync(context, new StringConditionParameters("<>", "{0}"), token);
 }

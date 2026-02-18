@@ -102,7 +102,7 @@ internal static class PagedSelectCommandBuilderExtensions
         foreach (var queryCondition in context.QueryContext.Query.Conditions)
         {
             var result = await provider.GetConditionExpressionAsync(
-                context.QueryContext,
+                context.QueryContext.Context,
                 queryCondition,
                 context.FieldInfo,
                 context.SqlExpressionProvider,
@@ -148,7 +148,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.OrderBy(", ");
             }
 
-            var result = await context.SqlExpressionProvider.GetSqlExpressionAsync(context.QueryContext, new SqlExpression(querySortOrder.Item.Expression), context.FieldInfo, context.ParameterBag, token).ConfigureAwait(false);
+            var result = await context.SqlExpressionProvider.GetSqlExpressionAsync(context.QueryContext.Context, new SqlExpression(querySortOrder.Item.Expression), context.FieldInfo, context.ParameterBag, token).ConfigureAwait(false);
             if (!result.IsSuccessful())
             {
                 return Result.FromExistingResult<PagedSelectCommandBuilder>(result);

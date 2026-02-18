@@ -11,7 +11,6 @@ public class ConditionExpressionHandlerContext<TCondition>
         ParameterBag parameterBag)
     {
         ArgumentGuard.IsNotNull(builder, nameof(builder));
-        ArgumentGuard.IsNotNull(context, nameof(context));
         ArgumentGuard.IsNotNull(condition, nameof(condition));
         ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
         ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));

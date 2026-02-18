@@ -2,6 +2,6 @@
 
 public class SmallerThanOrEqualConditionHandler : ConditionExpressionHandlerBase<SmallerThanOrEqualCondition>
 {
-    protected override Task<Result> DoGetConditionExpressionAsync(ConditionExpressionHandlerContext<SmallerThanOrEqualCondition> context, CancellationToken token)
+    protected override Task<Result> GetConditionExpressionAsync(ConditionExpressionHandlerContext<SmallerThanOrEqualCondition> context, CancellationToken token)
         => GetSimpleConditionExpressionAsync(context, new ConditionParameters("<="), token);
 }

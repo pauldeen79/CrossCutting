@@ -2,6 +2,6 @@
 
 public class EqualConditionHandler : ConditionExpressionHandlerBase<EqualCondition>
 {
-    protected override Task<Result> DoGetConditionExpressionAsync(ConditionExpressionHandlerContext<EqualCondition> context, CancellationToken token)
+    protected override Task<Result> GetConditionExpressionAsync(ConditionExpressionHandlerContext<EqualCondition> context, CancellationToken token)
         => GetSimpleConditionExpressionAsync(context, new ConditionParameters("="), token);
 }

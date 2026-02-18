@@ -12,7 +12,6 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
         CancellationToken token)
     {
         builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
         fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
         sqlExpressionProvider = ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
@@ -24,10 +23,10 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
         }
 
         var expressionHandlerContext = new ConditionExpressionHandlerContext<TCondition>(builder, context, typedCondition, fieldInfo, sqlExpressionProvider, parameterBag);
-        return await DoGetConditionExpressionAsync(expressionHandlerContext, token).ConfigureAwait(false);
+        return await GetConditionExpressionAsync(expressionHandlerContext, token).ConfigureAwait(false);
     }
 
-    protected abstract Task<Result> DoGetConditionExpressionAsync(
+    protected abstract Task<Result> GetConditionExpressionAsync(
         ConditionExpressionHandlerContext<TCondition> context,
         CancellationToken token);
 
