@@ -1,11 +1,7 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Abstractions;
 
-public interface IQueryContext : IContextContainer
+public interface IQueryContext
 {
     IQuery Query { get; }
-}
-
-public interface IContextContainer
-{
     object? Context { get; }
 }
