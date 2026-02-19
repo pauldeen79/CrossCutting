@@ -19,6 +19,7 @@ public sealed partial class IntegrationTests : IDisposable
             .AddCrossCuttingDataSql()
             .AddQueryEvaluatorSql()
             .AddExpressionEvaluator()
+            .AddExpressionEvaluatorSql()
             .AddPdcNet()
             .AddSingleton<System.Data.Common.DbConnection>(Connection)
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });

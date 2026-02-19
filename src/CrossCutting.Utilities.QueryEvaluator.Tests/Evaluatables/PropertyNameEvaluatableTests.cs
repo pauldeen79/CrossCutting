@@ -24,7 +24,7 @@ public class PropertyNameEvaluatableTests : TestBase<PropertyNameEvaluatable>
         {
             // Arrange
             var sut = new PropertyNameEvaluatableBuilder("MyProperty")
-                .WithSourceExpression(new EmptyEvaluatableBuilder())
+                .WithSourceExpression(new EmptyEvaluatable()) //TODO: Review why we can't use builder here
                 .Build();
             var context = CreateContext(/*state: new AsyncResultDictionaryBuilder<object?>()
                 .Add(Constants.Context, () => null!)

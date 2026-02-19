@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Sql;
 
 public class SqlExpressionProvider : ISqlExpressionProvider
 {

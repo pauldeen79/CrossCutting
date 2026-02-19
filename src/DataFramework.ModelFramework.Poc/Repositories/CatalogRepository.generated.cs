@@ -9,8 +9,6 @@ using CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
-using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Evaluatables;
-using CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables;
 using PDC.Net.Core.Entities;
 using PDC.Net.Core.Queries;
 

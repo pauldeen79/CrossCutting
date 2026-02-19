@@ -1,11 +1,11 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
 
 public partial record PropertyNameEvaluatable
 {
     public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => (await SourceExpression.EvaluateAsync(context, token)
             .ConfigureAwait(false))
-            .EnsureNotNull("Expression evaluation resulted in null")
+            .EnsureNotNull("Expression evaluation returned null")
             .EnsureValue("Expression evaluation result value is null")
             .OnSuccess(valueResult =>
             {

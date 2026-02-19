@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Abstractions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Sql.Abstractions;
 
 public interface ISqlExpressionProviderHandler
 {

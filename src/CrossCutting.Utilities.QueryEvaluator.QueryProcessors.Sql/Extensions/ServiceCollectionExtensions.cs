@@ -9,7 +9,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IQueryFieldInfoProvider, QueryFieldInfoProvider>()
             .AddSingleton<IQueryProcessor, QueryProcessor>()
             .AddSingleton<ISqlConditionExpressionProvider, SqlConditionExpressionProvider>()
-            .AddSingleton<ISqlExpressionProvider, SqlExpressionProvider>()
             .AddSingleton<ISqlConditionExpressionProviderHandler, BetweenConditionHandler>()
             .AddSingleton<ISqlConditionExpressionProviderHandler, EqualConditionHandler>()
             .AddSingleton<ISqlConditionExpressionProviderHandler, GreaterThanConditionHandler>()
@@ -28,7 +27,5 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ISqlConditionExpressionProviderHandler, StringNotEndsWithConditionHandler>()
             .AddSingleton<ISqlConditionExpressionProviderHandler, StringNotEqualsConditionHandler>()
             .AddSingleton<ISqlConditionExpressionProviderHandler, StringNotStartsWithConditionHandler>()
-            .AddSingleton<ISqlConditionExpressionProviderHandler, StringStartsWithConditionHandler>()
-            .AddSingleton<ISqlExpressionProviderHandler, SqlExpressionHandler>()
-            .AddSingleton<ISqlExpressionProviderHandler, SqlLikeExpressionHandler>();
+            .AddSingleton<ISqlConditionExpressionProviderHandler, StringStartsWithConditionHandler>();
 }

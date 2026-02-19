@@ -79,7 +79,12 @@ public sealed class InMemoryQueryProcessorTests : TestBase
         // Arrange
         var query = new SingleEntityQueryBuilder()
             .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameEvaluatableBuilder().WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(MyNestedEntity.Property))).WithPropertyName(nameof(MyEntity.Property1)))
+                .WithSourceExpression(new PropertyNameEvaluatableBuilder()
+                    .WithPropertyName(nameof(MyEntity.Property1))
+                    //TODO: Review why we can't use builder here
+                    //.WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(MyNestedEntity.Property)))
+                    .WithSourceExpression(new PropertyNameEvaluatable(new ContextEvaluatable(), nameof(MyNestedEntity.Property)))
+                    )
                 .WithCompareExpression(new LiteralEvaluatableBuilder("A")))
             .Build();
 

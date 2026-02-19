@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.SqlExpressionProviderHandlers;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Sql.SqlExpressionProviderHandlers;
 
 public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpressionProviderHandler
     where TExpression : ISqlExpression

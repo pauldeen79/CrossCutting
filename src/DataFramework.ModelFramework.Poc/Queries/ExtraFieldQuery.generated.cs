@@ -8,7 +8,6 @@ using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.Core;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders;
-using CrossCutting.Utilities.QueryEvaluator.Core.Evaluatables;
 using DataFramework.ModelFramework.Poc.Extensions;
 
 namespace PDC.Net.Core.Queries

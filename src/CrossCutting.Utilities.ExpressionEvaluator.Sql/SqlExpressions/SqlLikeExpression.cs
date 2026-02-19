@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.SqlExpressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Sql.SqlExpressions;
 
 public class SqlLikeExpression : ISqlExpression
 {
