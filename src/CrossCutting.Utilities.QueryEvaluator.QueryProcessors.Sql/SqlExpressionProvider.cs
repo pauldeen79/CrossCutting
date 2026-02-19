@@ -11,7 +11,7 @@ public class SqlExpressionProvider : ISqlExpressionProvider
         _handlers = handlers;
     }
 
-    public async Task<Result<string>> GetSqlExpressionAsync(object? context, ISqlExpression expression, IQueryFieldInfo fieldInfo, ParameterBag parameterBag, CancellationToken token)
+    public async Task<Result<string>> GetSqlExpressionAsync(object? context, ISqlExpression expression, IFieldNameProvider fieldInfo, ParameterBag parameterBag, CancellationToken token)
     {
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
         fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));

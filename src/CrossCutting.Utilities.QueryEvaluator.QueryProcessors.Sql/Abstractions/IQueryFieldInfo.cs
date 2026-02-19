@@ -1,7 +1,6 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Abstractions;
 
-public interface IQueryFieldInfo
+public interface IQueryFieldInfo : IFieldNameProvider
 {
-    string? GetDatabaseFieldName(string queryFieldName);
     IEnumerable<string> GetAllFields();
 }

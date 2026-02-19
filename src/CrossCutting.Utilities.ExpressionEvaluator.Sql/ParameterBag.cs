@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Sql;
 
 public class ParameterBag
 {
@@ -19,7 +19,7 @@ public class ParameterBag
         return returnValue;
     }
 
-    internal Result<string> ReplaceString(string key, string formatString)
+    public Result<string> ReplaceString(string key, string formatString)
     {
         var found = _parameters
             .Select(x => new { Item = x })

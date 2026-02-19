@@ -5,10 +5,10 @@
     <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-All</AnalysisLevel>
-    <PackageId>pauldeen79.CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql</PackageId>
+    <PackageId>pauldeen79.CrossCutting.Utilities.ExpressionEvaluator.Sql</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>1.2.0</Version>
-    <PackageVersion>1.2.0</PackageVersion>
+    <Version>2.4.0</Version>
+    <PackageVersion>2.4.0</PackageVersion>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
@@ -18,14 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CrossCutting.Data.Sql\CrossCutting.Data.Sql.csproj" />
-    <ProjectReference Include="..\CrossCutting.Utilities.ExpressionEvaluator.Sql\CrossCutting.Utilities.ExpressionEvaluator.Sql.csproj" />
-    <ProjectReference Include="..\CrossCutting.Utilities.QueryEvaluator\CrossCutting.Utilities.QueryEvaluator.Core.csproj" />
+    <ProjectReference Include="..\CrossCutting.Utilities.ExpressionEvaluator\CrossCutting.Utilities.ExpressionEvaluator.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
-
 </Project>
