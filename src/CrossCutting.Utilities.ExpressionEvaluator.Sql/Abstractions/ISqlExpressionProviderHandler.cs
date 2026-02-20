@@ -2,5 +2,5 @@
 
 public interface ISqlExpressionProviderHandler
 {
-    Task<Result<string>> GetSqlExpressionAsync(object? context, ISqlExpression expression, IFieldNameProvider fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback, CancellationToken token);
+    Task<Result<string>> GetSqlExpressionAsync(object? context, ISqlExpression expression, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, ISqlExpressionProvider callback, CancellationToken token);
 }

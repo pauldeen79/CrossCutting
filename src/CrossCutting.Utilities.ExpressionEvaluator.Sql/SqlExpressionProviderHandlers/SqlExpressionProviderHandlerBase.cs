@@ -6,13 +6,13 @@ public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpres
     public async Task<Result<string>> GetSqlExpressionAsync(
         object? context,
         ISqlExpression expression,
-        IFieldNameProvider fieldInfo,
+        IFieldNameProvider fieldNameProvider,
         ParameterBag parameterBag,
         ISqlExpressionProvider callback,
         CancellationToken token)
     {
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
-        fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
+        fieldNameProvider = ArgumentGuard.IsNotNull(fieldNameProvider, nameof(fieldNameProvider));
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
         callback = ArgumentGuard.IsNotNull(callback, nameof(callback));
 
@@ -21,13 +21,13 @@ public abstract class SqlExpressionProviderHandlerBase<TExpression> : ISqlExpres
             return Result.Continue<string>();
         }
 
-        return await HandleGetSqlExpressionAsync(context, typedExpression, fieldInfo, parameterBag, callback, token).ConfigureAwait(false);
+        return await HandleGetSqlExpressionAsync(context, typedExpression, fieldNameProvider, parameterBag, callback, token).ConfigureAwait(false);
     }
 
     protected abstract Task<Result<string>> HandleGetSqlExpressionAsync(
         object? context,
         TExpression expression,
-        IFieldNameProvider fieldInfo,
+        IFieldNameProvider fieldNameProvider,
         ParameterBag parameterBag,
         ISqlExpressionProvider callback,
         CancellationToken token);

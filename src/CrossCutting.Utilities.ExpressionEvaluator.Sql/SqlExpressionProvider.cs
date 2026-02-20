@@ -11,15 +11,15 @@ public class SqlExpressionProvider : ISqlExpressionProvider
         _handlers = handlers;
     }
 
-    public async Task<Result<string>> GetSqlExpressionAsync(object? context, ISqlExpression expression, IFieldNameProvider fieldInfo, ParameterBag parameterBag, CancellationToken token)
+    public async Task<Result<string>> GetSqlExpressionAsync(object? context, ISqlExpression expression, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, CancellationToken token)
     {
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
-        fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
+        fieldNameProvider = ArgumentGuard.IsNotNull(fieldNameProvider, nameof(fieldNameProvider));
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
 
         foreach (var handler in _handlers)
         {
-            var result = await handler.GetSqlExpressionAsync(context, expression, fieldInfo, parameterBag, this, token).ConfigureAwait(false);
+            var result = await handler.GetSqlExpressionAsync(context, expression, fieldNameProvider, parameterBag, this, token).ConfigureAwait(false);
             if (result.Status != ResultStatus.Continue)
             {
                 return result;

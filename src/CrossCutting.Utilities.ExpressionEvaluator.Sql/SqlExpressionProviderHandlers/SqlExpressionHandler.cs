@@ -10,15 +10,15 @@ public class SqlExpressionHandler : SqlExpressionProviderHandlerBase<SqlExpressi
         _expressionEvaluator = expressionEvaluator;
     }
 
-    protected override async Task<Result<string>> HandleGetSqlExpressionAsync(object? context, SqlExpression expression, IFieldNameProvider fieldInfo, ParameterBag parameterBag, ISqlExpressionProvider callback, CancellationToken token)
+    protected override async Task<Result<string>> HandleGetSqlExpressionAsync(object? context, SqlExpression expression, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, ISqlExpressionProvider callback, CancellationToken token)
     {
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
-        fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
+        fieldNameProvider = ArgumentGuard.IsNotNull(fieldNameProvider, nameof(fieldNameProvider));
 
         if (expression.SourceExpression is PropertyNameEvaluatable propertyNameEvaluatable)
         {
-            var databaseFieldName = fieldInfo.GetDatabaseFieldName(propertyNameEvaluatable.PropertyName);
+            var databaseFieldName = fieldNameProvider.GetDatabaseFieldName(propertyNameEvaluatable.PropertyName);
 
             return string.IsNullOrEmpty(databaseFieldName)
                 ? Result.NotFound<string>($"Expression contains unknown field [{propertyNameEvaluatable.PropertyName}]")
