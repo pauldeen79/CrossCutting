@@ -16,11 +16,11 @@ public class DivideOperatorExpressionTests : TestBase
 
             // Assert
             result.ShouldBeOfType<DivideOperatorEvaluatableBuilder>();
-            var equalOperatorEvaluatableBuilder = (DivideOperatorEvaluatableBuilder)result;
-            equalOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("4");
-            equalOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("2");
+            var divideOperatorEvaluatableBuilder = (DivideOperatorEvaluatableBuilder)result;
+            divideOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)divideOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("4");
+            divideOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)divideOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("2");
         }
     }
 

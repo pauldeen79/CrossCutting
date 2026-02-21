@@ -17,10 +17,10 @@ public class SmallerOperatorExpressionTests : TestBase
             // Assert
             result.ShouldBeOfType<SmallerOperatorEvaluatableBuilder>();
             var SmallerOperatorEvaluatableBuilder = (SmallerOperatorEvaluatableBuilder)result;
-            SmallerOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)SmallerOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
-            SmallerOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)SmallerOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
+            SmallerOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)SmallerOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
+            SmallerOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)SmallerOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
         }
     }
 

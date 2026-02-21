@@ -25,6 +25,27 @@ public abstract class ExpressionEvaluatorCSharpClassBase(ICommandService command
             (
                 new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
             );
+
+        //HACK: Add support for using builder abstraction type conversion on IEvaluatable
+        var x = typeof(IEvaluatable);
+        yield return new TypenameMappingBuilder("CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable")
+            .AddMetadata
+            (
+                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderNamespace, $"{CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}"),
+                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderName, $"I{x.GetEntityClassName()}Builder"),
+                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderInterfaceNamespace, /*$"{AbstractionsNamespace}.Builders"*/ "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions"),
+                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderInterfaceName, $"I{x.GetEntityClassName()}Builder"),
+                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderInterfaceTypeName, $"{AbstractionsNamespace}.Builders.I{x.GetEntityClassName()}Builder"),
+                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderSourceExpression, /*x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
+                    ? $"new {CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder([Name])"
+                    : */"[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"),
+                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue, /*x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && IsAbstractType(x)
+                    ? */new Literal($"default({CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.I{x.GetEntityClassName()}Builder)")
+                    /*: new Literal($"new {CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder()")*/),
+                new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderMethodParameterExpression, x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
+                    ? "[Name][NullableSuffix].BuildTyped()[ForcedNullableSuffix]"
+                    : "[Name][NullableSuffix].Build()[ForcedNullableSuffix]")
+            );
     }
 
     // Skip builder pattern on abstractions (Most importantly, IOperator, because we generate them manually. But also on IParseResult, which is only used for removing code duplication on parse results)

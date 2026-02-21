@@ -12,7 +12,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions
 {
     public static partial class BinaryOperatorBuilderExtensions
     {
-        public static T WithLeftOperand<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable leftOperand)
+        public static T WithLeftOperand<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder leftOperand)
             where T : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
         {
             if (leftOperand is null) throw new System.ArgumentNullException(nameof(leftOperand));
@@ -20,7 +20,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions
             return instance;
         }
 
-        public static T WithRightOperand<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable rightOperand)
+        public static T WithRightOperand<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder rightOperand)
             where T : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
         {
             if (rightOperand is null) throw new System.ArgumentNullException(nameof(rightOperand));

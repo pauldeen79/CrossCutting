@@ -14,7 +14,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable LeftOperand
+        CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder LeftOperand
         {
             get;
             set;
@@ -22,7 +22,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable RightOperand
+        CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder RightOperand
         {
             get;
             set;

@@ -16,11 +16,11 @@ public class PowerOperatorExpressionTests : TestBase
 
             // Assert
             result.ShouldBeOfType<PowerOperatorEvaluatableBuilder>();
-            var equalOperatorEvaluatableBuilder = (PowerOperatorEvaluatableBuilder)result;
-            equalOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("4");
-            equalOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("2");
+            var powerOperatorEvaluatableBuilder = (PowerOperatorEvaluatableBuilder)result;
+            powerOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)powerOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("4");
+            powerOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)powerOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("2");
         }
     }
 

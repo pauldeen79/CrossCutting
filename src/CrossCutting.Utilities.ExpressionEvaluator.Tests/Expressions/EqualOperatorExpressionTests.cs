@@ -17,10 +17,10 @@ public class EqualOperatorExpressionTests : TestBase
             // Assert
             result.ShouldBeOfType<EqualOperatorEvaluatableBuilder>();
             var equalOperatorEvaluatableBuilder = (EqualOperatorEvaluatableBuilder)result;
-            equalOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
-            equalOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
+            equalOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)equalOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
+            equalOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)equalOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
         }
     }
 

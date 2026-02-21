@@ -17,10 +17,10 @@ public class BinaryOrOperatorExpressionTests : TestBase
             // Assert
             result.ShouldBeOfType<BinaryOrOperatorEvaluatableBuilder>();
             var BinaryOrOperatorEvaluatableBuilder = (BinaryOrOperatorEvaluatableBuilder)result;
-            BinaryOrOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)BinaryOrOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("true");
-            BinaryOrOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)BinaryOrOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("false");
+            BinaryOrOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)BinaryOrOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("true");
+            BinaryOrOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)BinaryOrOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("false");
         }
     }
 

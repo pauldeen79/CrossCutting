@@ -203,9 +203,9 @@ public class UnaryNegateOperatorExpressionTests : TestBase
 
             // Assert
             result.ShouldBeOfType<UnaryNegateOperatorEvaluatableBuilder>();
-            var equalOperatorEvaluatableBuilder = (UnaryNegateOperatorEvaluatableBuilder)result;
-            equalOperatorEvaluatableBuilder.Operand.ShouldNotBeNull();
-            var evaluateResult = await equalOperatorEvaluatableBuilder.Operand.EvaluateAsync(context, CancellationToken.None);
+            var unaryNegateOperatorEvaluatableBuilder = (UnaryNegateOperatorEvaluatableBuilder)result;
+            unaryNegateOperatorEvaluatableBuilder.Operand.ShouldNotBeNull();
+            var evaluateResult = await unaryNegateOperatorEvaluatableBuilder.Operand.Build().EvaluateAsync(context, CancellationToken.None);
             evaluateResult.Status.ShouldBe(ResultStatus.Error);
             evaluateResult.ErrorMessage.ShouldBe("Kaboom");
         }
