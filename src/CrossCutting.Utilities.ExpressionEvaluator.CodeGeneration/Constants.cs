@@ -7,10 +7,12 @@ public static class Constants
     public static class Namespaces
     {
         public const string UtilitiesExpressionEvaluator = "CrossCutting.Utilities.ExpressionEvaluator";
+        public const string UtilitiesExpressionEvaluatorAbstractions = "CrossCutting.Utilities.ExpressionEvaluator.Abstractions";
         public const string UtilitiesExpressionEvaluatorFunctionCallArguments = "CrossCutting.Utilities.ExpressionEvaluator.FunctionCallArguments";
         public const string UtilitiesExpressionEvaluatorFunctionCallTypeArguments = "CrossCutting.Utilities.ExpressionEvaluator.FunctionCallTypeArguments";
         public const string UtilitiesExpressionEvaluatorFunctionDescriptorArguments = "CrossCutting.Utilities.ExpressionEvaluator.FunctionDescriptorArguments";
         public const string UtilitiesExpressionEvaluatorBuilders = "CrossCutting.Utilities.ExpressionEvaluator.Builders";
+        public const string UtilitiesExpressionEvaluatorBuildersAbstractions = "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions";
         public const string UtilitiesExpressionEvaluatorBuildersFunctionCallArguments = "CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallArguments";
         public const string UtilitiesExpressionEvaluatorBuildersFunctionCallTypeArguments = "CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionCallTypeArguments";
         public const string UtilitiesExpressionEvaluatorBuildersFunctionDescriptorArguments = "CrossCutting.Utilities.ExpressionEvaluator.Builders.FunctionDescriptorArguments";

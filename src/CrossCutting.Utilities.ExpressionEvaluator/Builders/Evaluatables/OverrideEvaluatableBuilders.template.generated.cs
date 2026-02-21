@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
 {
-    public partial class AddOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<AddOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.AddOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class AddOperatorEvaluatableBuilder : EvaluatableBaseBuilder<AddOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.AddOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -74,7 +74,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class BinaryAndOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<BinaryAndOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.BinaryAndOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class BinaryAndOperatorEvaluatableBuilder : EvaluatableBaseBuilder<BinaryAndOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.BinaryAndOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -138,7 +138,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class BinaryOrOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<BinaryOrOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.BinaryOrOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class BinaryOrOperatorEvaluatableBuilder : EvaluatableBaseBuilder<BinaryOrOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.BinaryOrOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -202,7 +202,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class ContextEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<ContextEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.ContextEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class ContextEvaluatableBuilder : EvaluatableBaseBuilder<ContextEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.ContextEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         public ContextEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.ContextEvaluatable source) : base(source)
         {
@@ -226,7 +226,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class DelegateEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<DelegateEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class DelegateEvaluatableBuilder : EvaluatableBaseBuilder<DelegateEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         private System.Func<object?> _value;
 
@@ -275,7 +275,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class DelegateEvaluatableBuilder<T> : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<DelegateEvaluatableBuilder<T>, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateEvaluatable<T>>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class DelegateEvaluatableBuilder<T> : EvaluatableBaseBuilder<DelegateEvaluatableBuilder<T>, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateEvaluatable<T>>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         private System.Func<T> _value;
 
@@ -324,7 +324,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class DelegateResultEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<DelegateResultEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class DelegateResultEvaluatableBuilder : EvaluatableBaseBuilder<DelegateResultEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         private System.Func<CrossCutting.Common.Results.Result<object?>> _value;
 
@@ -373,7 +373,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class DelegateResultEvaluatableBuilder<T> : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<DelegateResultEvaluatableBuilder<T>, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable<T>>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class DelegateResultEvaluatableBuilder<T> : EvaluatableBaseBuilder<DelegateResultEvaluatableBuilder<T>, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DelegateResultEvaluatable<T>>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         private System.Func<CrossCutting.Common.Results.Result<T>> _value;
 
@@ -422,7 +422,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class DivideOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<DivideOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DivideOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class DivideOperatorEvaluatableBuilder : EvaluatableBaseBuilder<DivideOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.DivideOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -486,7 +486,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class EmptyEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<EmptyEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.EmptyEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class EmptyEvaluatableBuilder : EvaluatableBaseBuilder<EmptyEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.EmptyEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         public EmptyEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.EmptyEvaluatable source) : base(source)
         {
@@ -510,7 +510,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class EqualOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<EqualOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.EqualOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class EqualOperatorEvaluatableBuilder : EvaluatableBaseBuilder<EqualOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.EqualOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -574,7 +574,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class GreaterOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<GreaterOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.GreaterOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class GreaterOperatorEvaluatableBuilder : EvaluatableBaseBuilder<GreaterOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.GreaterOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -638,7 +638,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class GreaterOrEqualOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<GreaterOrEqualOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.GreaterOrEqualOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class GreaterOrEqualOperatorEvaluatableBuilder : EvaluatableBaseBuilder<GreaterOrEqualOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.GreaterOrEqualOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -702,7 +702,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class LiteralEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<LiteralEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class LiteralEvaluatableBuilder : EvaluatableBaseBuilder<LiteralEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         private object? _value;
 
@@ -749,7 +749,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class LiteralEvaluatableBuilder<T> : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<LiteralEvaluatableBuilder<T>, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralEvaluatable<T>>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class LiteralEvaluatableBuilder<T> : EvaluatableBaseBuilder<LiteralEvaluatableBuilder<T>, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralEvaluatable<T>>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         private T _value;
 
@@ -797,7 +797,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class LiteralResultEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<LiteralResultEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class LiteralResultEvaluatableBuilder : EvaluatableBaseBuilder<LiteralResultEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         private CrossCutting.Common.Results.Result<object?> _value;
 
@@ -846,7 +846,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class LiteralResultEvaluatableBuilder<T> : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<LiteralResultEvaluatableBuilder<T>, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable<T>>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class LiteralResultEvaluatableBuilder<T> : EvaluatableBaseBuilder<LiteralResultEvaluatableBuilder<T>, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.LiteralResultEvaluatable<T>>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         private CrossCutting.Common.Results.Result<T> _value;
 
@@ -895,7 +895,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class ModulusOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<ModulusOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.ModulusOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class ModulusOperatorEvaluatableBuilder : EvaluatableBaseBuilder<ModulusOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.ModulusOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -959,7 +959,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class MultiplyOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<MultiplyOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.MultiplyOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class MultiplyOperatorEvaluatableBuilder : EvaluatableBaseBuilder<MultiplyOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.MultiplyOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -1023,7 +1023,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class NotEqualOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<NotEqualOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.NotEqualOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class NotEqualOperatorEvaluatableBuilder : EvaluatableBaseBuilder<NotEqualOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.NotEqualOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -1087,7 +1087,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class PowerOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<PowerOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.PowerOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class PowerOperatorEvaluatableBuilder : EvaluatableBaseBuilder<PowerOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.PowerOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -1151,7 +1151,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class PropertyNameEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<PropertyNameEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.PropertyNameEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class PropertyNameEvaluatableBuilder : EvaluatableBaseBuilder<PropertyNameEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.PropertyNameEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _sourceExpression;
 
@@ -1228,7 +1228,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class SmallerOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<SmallerOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.SmallerOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class SmallerOperatorEvaluatableBuilder : EvaluatableBaseBuilder<SmallerOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.SmallerOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -1292,7 +1292,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class SmallerOrEqualOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<SmallerOrEqualOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.SmallerOrEqualOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class SmallerOrEqualOperatorEvaluatableBuilder : EvaluatableBaseBuilder<SmallerOrEqualOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.SmallerOrEqualOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -1356,7 +1356,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class SubtractOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<SubtractOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.SubtractOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class SubtractOperatorEvaluatableBuilder : EvaluatableBaseBuilder<SubtractOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.SubtractOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
 
@@ -1420,7 +1420,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class UnaryNegateOperatorEvaluatableBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder<UnaryNegateOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.UnaryNegateOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class UnaryNegateOperatorEvaluatableBuilder : EvaluatableBaseBuilder<UnaryNegateOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.UnaryNegateOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _operand;
 

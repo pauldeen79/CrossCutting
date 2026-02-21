@@ -26,25 +26,19 @@ public abstract class ExpressionEvaluatorCSharpClassBase(ICommandService command
                 new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
             );
 
-        //HACK: Add support for using builder abstraction type conversion on IEvaluatable
-        foreach (var mapping in GetEvaluatableMappings())
+        // Add support for builder pattern on abstractions on IEvaluatable
+        var evaluatableType = typeof(IEvaluatable);
+        foreach (var mapping in CreateBuilderAbstractionTypeConversionTypenameMappings(
+            evaluatableType.GetEntityClassName(),
+            evaluatableType.GetGenericTypeArgumentsString(),
+            Constants.Namespaces.UtilitiesExpressionEvaluatorAbstractions,
+            Constants.Namespaces.UtilitiesExpressionEvaluatorBuildersAbstractions,
+            Constants.Namespaces.UtilitiesExpressionEvaluator))
         {
             yield return mapping;
         }
     }
 
-    private static IEnumerable<TypenameMappingBuilder> GetEvaluatableMappings()
-    {
-        var evaluatableType = typeof(IEvaluatable);
-        return CreateBuilderAbstractionTypeConversionTypenameMappings(evaluatableType.GetEntityClassName(), evaluatableType.GetGenericTypeArgumentsString(), "CrossCutting.Utilities.ExpressionEvaluator.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions", "CrossCutting.Utilities.ExpressionEvaluator")
-            .Concat(
-            [
-                new TypenameMappingBuilder("CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase")
-                    .AddMetadata(ClassFramework.Pipelines.MetadataNames.CustomBuilderBaseClassTypeName, "CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder")
-                    .AddMetadata(ClassFramework.Pipelines.MetadataNames.CustomBuilderNamespace, "CrossCutting.Utilities.ExpressionEvaluator.Builders")
-            ]);
-    }
-
-    // Skip builder pattern on abstractions (Most importantly, IOperator, because we generate them manually. But also on IParseResult, which is only used for removing code duplication on parse results)
+    // Skip builder pattern on abstractions (except for IEvaluatable, see previous comment)
     protected override bool UseBuilderAbstractionsTypeConversion => false;
 }
