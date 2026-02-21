@@ -24,8 +24,6 @@ internal static class Program
             .AddCsharpExpressionDumper()
             .AddClassFrameworkTemplates()
             .AddClassFrameworkCodeGenerators(generators)
-            //HACK: Remove duplicate interface generation (needs to be implemented in ClassFramework someday)
-            .AddSingleton<IPipelineComponent<GenerateBuilderCommand, ClassBuilder>, FixInterfacesComponent>()
             .AddScoped<IAssemblyInfoContextService, MyAssemblyInfoContextService>();
 
         using var serviceProvider = services.BuildServiceProvider();
