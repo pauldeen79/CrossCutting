@@ -9,15 +9,7 @@ public static partial class QueryBuilderExtensions
     public static T Where<T>(this T instance, IEnumerable<IConditionBuilder> additionalConditions)
         where T : IQueryBuilder
         => instance.Where(additionalConditions.ToArray());
-/*
-    public static ComposableEvaluatableFieldNameBuilderWrapper<T> Where<T>(this T instance, string fieldName)
-        where T : IQueryBuilder
-        => new ComposableEvaluatableFieldNameBuilderWrapper<T>(instance, fieldName);
 
-    public static ComposableEvaluatableExpressionBuilderWrapper<T> Where<T>(this T instance, IEvaluatableBuilder expression)
-        where T : IQueryBuilder
-        => new ComposableEvaluatableExpressionBuilderWrapper<T>(instance, expression);
-*/
     public static T Or<T>(this T instance, params IConditionBuilder[] additionalConditions)
         where T : IQueryBuilder
         => instance.Where(additionalConditions.Select(a => a.WithCombination(combination: Combination.Or)));
@@ -25,11 +17,7 @@ public static partial class QueryBuilderExtensions
     public static T Or<T>(this T instance, IEnumerable<IConditionBuilder> additionalConditions)
         where T : IQueryBuilder
         => instance.Or(additionalConditions.ToArray());
-/*
-    public static ComposableEvaluatableFieldNameBuilderWrapper<T> Or<T>(this T instance, string fieldName)
-        where T : IQueryBuilder
-        => new ComposableEvaluatableFieldNameBuilderWrapper<T>(instance, fieldName, Combination.Or);
-*/
+
     public static T And<T>(this T instance, params IConditionBuilder[] additionalConditions)
         where T : IQueryBuilder
         => instance.Where(additionalConditions.Select(a => a.WithCombination(combination: Combination.And)));
@@ -37,11 +25,7 @@ public static partial class QueryBuilderExtensions
     public static T And<T>(this T instance, IEnumerable<IConditionBuilder> additionalConditions)
         where T : IQueryBuilder
         => instance.And(additionalConditions.ToArray());
-/*
-    public static ComposableEvaluatableFieldNameBuilderWrapper<T> And<T>(this T instance, string fieldName)
-        where T : IQueryBuilder
-        => new ComposableEvaluatableFieldNameBuilderWrapper<T>(instance, fieldName, Combination.And);
-*/
+
     public static T AndAny<T>(this T instance, params IConditionBuilder[] additionalConditions)
         where T : IQueryBuilder
         => instance.Where(additionalConditions.Select((a, index) => a.WithStartGroup(index == 0)

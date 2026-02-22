@@ -50,10 +50,10 @@ public sealed partial class IntegrationTests
                                           () => new[] { new Catalog(1, "Diversen cd 1", DateTime.Today, DateTime.Now, DateTime.Now, "0000-0000", "CDT", "CDR", "CD-ROM", 1, 2, true, true, @"C:\", "Value", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null) });
         // Note that you can use 'var' here as well, which uses QueryBase instead of IQuery (where QueryBase implements IQuery)
         IQuery query = new CatalogQueryBuilder()
-            //.Where("MyField").IsEqualTo("Value")
-            .Where(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameEvaluatableBuilder("MyField"))
-                .WithCompareExpression(new LiteralEvaluatableBuilder("Value")))
+            .Where("MyField").IsEqualTo("Value")
+            // .Where(new EqualConditionBuilder()
+            //     .WithSourceExpression(new PropertyNameEvaluatableBuilder("MyField"))
+            //     .WithCompareExpression(new LiteralEvaluatableBuilder("Value")))
             .Build();
 
         // Act
