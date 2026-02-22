@@ -21,10 +21,9 @@ public static class EvaluatableExtensions
 
         foreach (var evaluatable in childEvaluatablesContainer.GetChildEvaluatables())
         {
-            yield return evaluatable;
             foreach(var childEvaluatable in GetContainedEvaluatables(evaluatable, true))
             {
-                yield return evaluatable;
+                yield return childEvaluatable;
             }
         }
     }

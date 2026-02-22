@@ -66,4 +66,25 @@ public class StringNotContainsConditionTests : TestBase<StringNotContainsConditi
             result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
         }
     }
+
+    public class GetChildEvaluatables : StringNotContainsConditionTests
+    {
+        [Fact]
+        public void Returns_Child_Evaluatables_Correctly()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = 2;
+            var sut = new StringNotContainsConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .Build();
+
+            // Act
+            var children = sut.GetContainedEvaluatables(true).ToArray();
+
+            // Assert
+            children.Length.ShouldBe(2);
+        }
+    }
 }

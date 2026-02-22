@@ -70,4 +70,26 @@ public class NotInConditionTests : TestBase<NotInCondition>
             result.Value.ShouldBeFalse();
         }
     }
+
+    public class GetChildEvaluatables : NotInConditionTests
+    {
+        [Fact]
+        public void Returns_Child_Evaluatables_Correctly()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue1 = "this1";
+            var rightValue2 = "this2";
+            var sut = new NotInConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .AddCompareExpressions(new LiteralEvaluatableBuilder(rightValue1), new LiteralEvaluatableBuilder(rightValue2))
+                .Build();
+
+            // Act
+            var children = sut.GetContainedEvaluatables(true).ToArray();
+
+            // Assert
+            children.Length.ShouldBe(3);
+        }
+    }
 }

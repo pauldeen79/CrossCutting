@@ -67,4 +67,25 @@ public class SmallerThanConditionTests : TestBase<SmallerThanCondition>
             result.Value.ShouldBeTrue();
         }
     }
+
+    public class GetChildEvaluatables : SmallerThanConditionTests
+    {
+        [Fact]
+        public void Returns_Child_Evaluatables_Correctly()
+        {
+            // Arrange
+            var leftValue = 13;
+            var rightValue = 15;
+            var sut = new SmallerThanConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .Build();
+
+            // Act
+            var children = sut.GetContainedEvaluatables(true).ToArray();
+
+            // Assert
+            children.Length.ShouldBe(2);
+        }
+    }
 }

@@ -50,4 +50,27 @@ public class NotBetweenConditionTests : TestBase<BetweenCondition>
             result.Value.ShouldBeFalse();
         }
     }
+
+    public class GetChildEvaluatables : NotBetweenConditionTests
+    {
+        [Fact]
+        public void Returns_Child_Evaluatables_Correctly()
+        {
+            // Arrange
+            var sourceValue = "this";
+            var lowerBoundValue = 13;
+            var upperBoundValue = 15;
+            var builder = new NotBetweenConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
+                .WithLowerBoundExpression(new LiteralEvaluatableBuilder(lowerBoundValue))
+                .WithUpperBoundExpression(new LiteralEvaluatableBuilder(upperBoundValue));
+            var sut = builder.Build();
+
+            // Act
+            var children = sut.GetContainedEvaluatables(true).ToArray();
+
+            // Assert
+            children.Length.ShouldBe(3);
+        }
+    }
 }

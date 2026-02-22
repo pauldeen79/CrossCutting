@@ -67,4 +67,25 @@ public class NotEqualConditionTests : TestBase<NotEqualCondition>
             result.Value.ShouldBeFalse();
         }
     }
+
+    public class GetChildEvaluatables : NotEqualConditionTests
+    {
+        [Fact]
+        public void Returns_Child_Evaluatables_Correctly()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "this";
+            var sut = new NotEqualConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .Build();
+
+            // Act
+            var children = sut.GetContainedEvaluatables(true).ToArray();
+
+            // Assert
+            children.Length.ShouldBe(2);
+        }
+    }
 }
