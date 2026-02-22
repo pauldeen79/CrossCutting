@@ -11,6 +11,7 @@ using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
+using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Extensions;
 using DataFramework.ModelFramework.Poc.PagedDatabaseEntityRetrieverSettings;
 using PDC.Net.Core.Entities;
 using PDC.Net.Core.Queries;
@@ -32,7 +33,7 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             QueryProcessor = queryProcessor;
         }
 
-        public IQueryProcessor QueryProcessor { get; }
+        private IQueryProcessor QueryProcessor { get; }
 
         public Task<Result<IReadOnlyCollection<ExtraField>>> FindExtraFieldsByEntityNameAsync(string entityName, CancellationToken token)
         {
@@ -47,11 +48,12 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             //    .Build(), token);
 
             return QueryProcessor.FindManyAsync<ExtraField>(new ExtraFieldQueryBuilder()
-                //.Where(nameof(ExtraField.EntityName)).IsEqualTo(entityName).OrderBy(settings.DefaultOrderBy)
-                .AddConditions(new EqualConditionBuilder()
-                    .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(ExtraField.EntityName)))
-                    .WithCompareExpression(new LiteralEvaluatableBuilder(entityName)))
-                .AddSortOrders(new SortOrderBuilder(new PropertyNameEvaluatableBuilder(nameof(ExtraField.Name))))
+                .Where(nameof(ExtraField.EntityName)).IsEqualTo(entityName)
+                .OrderBy(settings.DefaultOrderBy)
+                // .AddConditions(new EqualConditionBuilder()
+                //     .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(ExtraField.EntityName)))
+                //     .WithCompareExpression(new LiteralEvaluatableBuilder(entityName)))
+                // .AddSortOrders(new SortOrderBuilder(new PropertyNameEvaluatableBuilder(nameof(ExtraField.Name))))
                 .Build(), null, token);
         }
     }

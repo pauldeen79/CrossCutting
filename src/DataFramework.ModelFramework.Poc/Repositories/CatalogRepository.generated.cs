@@ -9,6 +9,7 @@ using CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
+using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Extensions;
 using PDC.Net.Core.Entities;
 using PDC.Net.Core.Queries;
 
@@ -29,15 +30,15 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             QueryProcessor = queryProcessor;
         }
 
-        public IQueryProcessor QueryProcessor { get; }
+        private IQueryProcessor QueryProcessor { get; }
 
         public Task<Result<IReadOnlyCollection<Catalog>>> FindSomethingAsync(CancellationToken token)
         {
             return QueryProcessor.FindManyAsync<Catalog>(new CatalogQueryBuilder()
-            //.Where(nameof(Catalog.Name)).IsEqualTo("Something")
-            .AddConditions(new EqualConditionBuilder()
-                .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
-                .WithCompareExpression(new LiteralEvaluatableBuilder("Something")))
+                .Where(nameof(Catalog.Name)).IsEqualTo("Something")
+                // .AddConditions(new EqualConditionBuilder()
+                //     .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
+                //     .WithCompareExpression(new LiteralEvaluatableBuilder("Something")))
             .Build(), null, token);
         }
     }
