@@ -16,6 +16,7 @@ global using CrossCutting.Common.Results;
 global using CrossCutting.Common.Testing;
 global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
+global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Expressions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;

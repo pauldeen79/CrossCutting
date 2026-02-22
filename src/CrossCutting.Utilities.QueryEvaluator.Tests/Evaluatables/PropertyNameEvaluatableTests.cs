@@ -1,6 +1,4 @@
-﻿using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
-
-namespace CrossCutting.Utilities.QueryEvaluator.Tests.Evaluatables;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Evaluatables;
 
 public class PropertyNameEvaluatableTests : TestBase<PropertyNameEvaluatable>
 {

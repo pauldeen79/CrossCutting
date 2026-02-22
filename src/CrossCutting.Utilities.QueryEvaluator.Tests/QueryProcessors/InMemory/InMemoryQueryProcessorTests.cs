@@ -1,6 +1,4 @@
-﻿using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
-
-namespace CrossCutting.Utilities.QueryEvaluator.Tests.QueryProcessors.InMemory;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.QueryProcessors.InMemory;
 
 public sealed class InMemoryQueryProcessorTests : TestBase
 {

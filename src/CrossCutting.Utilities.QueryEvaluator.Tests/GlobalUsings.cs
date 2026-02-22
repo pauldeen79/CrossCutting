@@ -13,6 +13,7 @@ global using CrossCutting.Utilities.ExpressionEvaluator;
 global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables;
+global using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
 global using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Sql.Extensions;

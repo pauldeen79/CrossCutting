@@ -1,6 +1,4 @@
-﻿using CrossCutting.Utilities.ExpressionEvaluator.Builders.Expressions;
-
-namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Expressions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Expressions;
 
 public class EvaluatableExpressionTests : TestBase
 {
