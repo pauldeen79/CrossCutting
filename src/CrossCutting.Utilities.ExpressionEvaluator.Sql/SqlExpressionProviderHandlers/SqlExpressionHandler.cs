@@ -16,7 +16,7 @@ public class SqlExpressionHandler : SqlExpressionProviderHandlerBase<SqlExpressi
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
         fieldNameProvider = ArgumentGuard.IsNotNull(fieldNameProvider, nameof(fieldNameProvider));
 
-        if (expression.SourceExpression is PropertyNameEvaluatable propertyNameEvaluatable && propertyNameEvaluatable.SourceExpression is ContextEvaluatable)
+        if (expression.SourceExpression is PropertyNameEvaluatable propertyNameEvaluatable && propertyNameEvaluatable.Operand is ContextEvaluatable)
         {
             var databaseFieldName = fieldNameProvider.GetDatabaseFieldName(propertyNameEvaluatable.PropertyName);
 

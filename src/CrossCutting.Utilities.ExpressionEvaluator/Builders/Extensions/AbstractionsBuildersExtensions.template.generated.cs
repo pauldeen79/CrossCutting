@@ -94,5 +94,15 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions
             return instance;
         }
     }
+    public static partial class UnaryOperatorBuilderExtensions
+    {
+        public static T WithOperand<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder operand)
+            where T : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IUnaryOperatorBuilder
+        {
+            if (operand is null) throw new System.ArgumentNullException(nameof(operand));
+            instance.Operand = operand;
+            return instance;
+        }
+    }
 }
 #nullable disable

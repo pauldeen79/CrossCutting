@@ -80,5 +80,15 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions
             set;
         }
     }
+    public partial interface IUnaryOperatorBuilder
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder Operand
+        {
+            get;
+            set;
+        }
+    }
 }
 #nullable disable

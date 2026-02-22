@@ -4,12 +4,12 @@ public partial class PropertyNameEvaluatableBuilder : IEvaluatableBuilder
 {
     partial void SetDefaultValues()
     {
-        _sourceExpression = new ContextEvaluatableBuilder();
+        _operand = new ContextEvaluatableBuilder();
     }
 
     public PropertyNameEvaluatableBuilder(string propertyName)
     {
-        _sourceExpression = new ContextEvaluatableBuilder();
+        _operand = new ContextEvaluatableBuilder();
         _propertyName = propertyName;
     }
 }

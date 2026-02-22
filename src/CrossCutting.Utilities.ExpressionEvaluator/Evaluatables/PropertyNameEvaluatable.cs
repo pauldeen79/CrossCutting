@@ -3,7 +3,7 @@
 public partial record PropertyNameEvaluatable
 {
     public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => (await SourceExpression.EvaluateAsync(context, token)
+        => (await Operand.EvaluateAsync(context, token)
             .ConfigureAwait(false))
             .EnsureNotNull("Expression evaluation returned null")
             .EnsureValue("Expression evaluation result value is null")

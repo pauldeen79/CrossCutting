@@ -1151,27 +1151,11 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class PropertyNameEvaluatableBuilder : EvaluatableBaseBuilder<PropertyNameEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.PropertyNameEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class PropertyNameEvaluatableBuilder : EvaluatableBaseBuilder<PropertyNameEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.PropertyNameEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IUnaryOperatorBuilder
     {
-        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _sourceExpression;
-
         private string _propertyName;
 
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder SourceExpression
-        {
-            get
-            {
-                return _sourceExpression;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder>.Default.Equals(_sourceExpression!, value!);
-                _sourceExpression = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(SourceExpression));
-            }
-        }
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _operand;
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string PropertyName
@@ -1188,33 +1172,42 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             }
         }
 
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder Operand
+        {
+            get
+            {
+                return _operand;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder>.Default.Equals(_operand!, value!);
+                _operand = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Operand));
+            }
+        }
+
         public PropertyNameEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.PropertyNameEvaluatable source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _sourceExpression = source.SourceExpression?.ToBuilder()!;
             _propertyName = source.PropertyName;
+            _operand = source.Operand?.ToBuilder()!;
         }
 
         public PropertyNameEvaluatableBuilder() : base()
         {
-            _sourceExpression = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
             _propertyName = string.Empty;
+            _operand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.PropertyNameEvaluatable BuildTyped()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.PropertyNameEvaluatable(SourceExpression?.Build()!, PropertyName);
+            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.PropertyNameEvaluatable(PropertyName, Operand?.Build()!);
         }
 
         partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.PropertyNameEvaluatableBuilder WithSourceExpression(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder sourceExpression)
-        {
-            if (sourceExpression is null) throw new System.ArgumentNullException(nameof(sourceExpression));
-            SourceExpression = sourceExpression;
-            return this;
-        }
 
         public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.PropertyNameEvaluatableBuilder WithPropertyName(string propertyName)
         {
@@ -1420,7 +1413,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class UnaryNegateOperatorEvaluatableBuilder : EvaluatableBaseBuilder<UnaryNegateOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.UnaryNegateOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder
+    public partial class UnaryNegateOperatorEvaluatableBuilder : EvaluatableBaseBuilder<UnaryNegateOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.UnaryNegateOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IUnaryOperatorBuilder
     {
         private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _operand;
 
@@ -1458,13 +1451,6 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
         }
 
         partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.UnaryNegateOperatorEvaluatableBuilder WithOperand(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder operand)
-        {
-            if (operand is null) throw new System.ArgumentNullException(nameof(operand));
-            Operand = operand;
-            return this;
-        }
 
         public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.UnaryNegateOperatorEvaluatable(UnaryNegateOperatorEvaluatableBuilder builder)
         {

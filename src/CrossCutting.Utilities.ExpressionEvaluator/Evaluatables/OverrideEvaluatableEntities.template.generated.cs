@@ -696,25 +696,25 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.PowerOperatorEvaluatableBuilder(this);
         }
     }
-    public partial record PropertyNameEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable
+    public partial record PropertyNameEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IUnaryOperator
     {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable SourceExpression
-        {
-            get;
-        }
-
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string PropertyName
         {
             get;
         }
 
-        public PropertyNameEvaluatable(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable sourceExpression, string propertyName) : base()
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable Operand
         {
-            this.SourceExpression = sourceExpression;
+            get;
+        }
+
+        public PropertyNameEvaluatable(string propertyName, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable operand) : base()
+        {
             this.PropertyName = propertyName;
+            this.Operand = operand;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -847,7 +847,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.SubtractOperatorEvaluatableBuilder(this);
         }
     }
-    public partial record UnaryNegateOperatorEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable<bool>
+    public partial record UnaryNegateOperatorEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IUnaryOperator, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable<bool>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
