@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Evaluatables;
+﻿using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
+
+namespace CrossCutting.Utilities.QueryEvaluator.Tests.Evaluatables;
 
 public class PropertyNameEvaluatableTests : TestBase<PropertyNameEvaluatable>
 {
@@ -24,7 +26,7 @@ public class PropertyNameEvaluatableTests : TestBase<PropertyNameEvaluatable>
         {
             // Arrange
             var sut = new PropertyNameEvaluatableBuilder("MyProperty")
-                .WithSourceExpression(new EmptyEvaluatableBuilder())
+                .WithOperand(new EmptyEvaluatableBuilder())
                 .Build();
             var context = CreateContext(/*state: new AsyncResultDictionaryBuilder<object?>()
                 .Add(Constants.Context, () => null!)

@@ -14,7 +14,7 @@ public static class EvaluatableExtensions
 
     private static bool IsValidExpressionRecursive(IEvaluatable evaluatable, IEnumerable<string> validFieldNames)
     {
-        if (evaluatable is PropertyNameEvaluatable propertyNameEvaluatable && propertyNameEvaluatable.SourceExpression is ContextEvaluatable)
+        if (evaluatable is PropertyNameEvaluatable propertyNameEvaluatable && propertyNameEvaluatable.Operand is ContextEvaluatable)
         {
             return validFieldNames.Any(s => s.Equals(propertyNameEvaluatable.PropertyName, StringComparison.Ordinal));
         }

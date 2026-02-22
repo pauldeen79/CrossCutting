@@ -11,7 +11,7 @@ public sealed partial class IntegrationTests
         // Note that you might want to cast to IQuery, but that is not possible due to C# language restrictions, at this time... (no implicit operator allowed on interfaces)
         CatalogQuery query = new CatalogQueryBuilder()
             //.Where(nameof(Catalog.Name)).StartsWith("Diversen cd")
-            .AddConditions(new StringStartsWithConditionBuilder()
+            .Where(new StringStartsWithConditionBuilder()
                 .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
                 .WithCompareExpression(new LiteralEvaluatableBuilder("Diversen cd")));
 
@@ -51,7 +51,7 @@ public sealed partial class IntegrationTests
         // Note that you can use 'var' here as well, which uses QueryBase instead of IQuery (where QueryBase implements IQuery)
         IQuery query = new CatalogQueryBuilder()
             //.Where("MyField").IsEqualTo("Value")
-            .AddConditions(new EqualConditionBuilder()
+            .Where(new EqualConditionBuilder()
                 .WithSourceExpression(new PropertyNameEvaluatableBuilder("MyField"))
                 .WithCompareExpression(new LiteralEvaluatableBuilder("Value")))
             .Build();
@@ -74,7 +74,7 @@ public sealed partial class IntegrationTests
                                           () => new[] { new Catalog(1, "Diversen cd 1", DateTime.Today, DateTime.Now, DateTime.Now, "0000-0000", "CDT", "CDR", "CD-ROM", 1, 2, true, true, @"C:\", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null) });
         var query = new CatalogQuery(new SingleEntityQueryBuilder()
             //.Where("AllFields").Contains("Diversen")
-                .AddConditions(new StringContainsConditionBuilder()
+            .Where(new StringContainsConditionBuilder()
                 .WithSourceExpression(new PropertyNameEvaluatableBuilder("AllFields"))
                 .WithCompareExpression(new LiteralEvaluatableBuilder("Diversen")))
             .Build());
@@ -96,7 +96,7 @@ public sealed partial class IntegrationTests
                                           () => new[] { new Catalog(1, "Diversen cd 1", DateTime.Today, DateTime.Now, DateTime.Now, "0000-0000", "CDT", "CDR", "CD-ROM", 1, 2, true, true, @"C:\", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null) });
         var query = new CatalogQueryBuilder()
             //.Where("AllFields").Len().IsGreaterThan(4)
-            .AddConditions(new GreaterThanConditionBuilder()
+            .Where(new GreaterThanConditionBuilder()
                 .WithSourceExpression(new PropertyNameEvaluatableBuilder("AllFields.Length"))
                 .WithCompareExpression(new LiteralEvaluatableBuilder(4)))
             .BuildTyped();

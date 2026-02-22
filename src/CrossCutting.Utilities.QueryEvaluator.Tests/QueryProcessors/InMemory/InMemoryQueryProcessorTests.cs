@@ -1,4 +1,6 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.QueryProcessors.InMemory;
+﻿using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
+
+namespace CrossCutting.Utilities.QueryEvaluator.Tests.QueryProcessors.InMemory;
 
 public sealed class InMemoryQueryProcessorTests : TestBase
 {
@@ -81,7 +83,7 @@ public sealed class InMemoryQueryProcessorTests : TestBase
             .AddConditions(new EqualConditionBuilder()
                 .WithSourceExpression(new PropertyNameEvaluatableBuilder()
                     .WithPropertyName(nameof(MyEntity.Property1))
-                    .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(MyNestedEntity.Property)))
+                    .WithOperand(new PropertyNameEvaluatableBuilder(nameof(MyNestedEntity.Property)))
                     )
                 .WithCompareExpression(new LiteralEvaluatableBuilder("A")))
             .Build();
