@@ -20,6 +20,6 @@ public static class EvaluatableExtensions
         }
 
         // You might want to validate the expression to prevent sql injection (unless you can only create query expressions in code)
-        return evaluatable.GetType().Assembly.FullName.StartsWith("CrossCutting.Utilities.QueryEvaluator");
+        return evaluatable.GetType().Assembly.FullName.StartsWith("CrossCutting.Utilities.ExpressionEvaluator");
     }
 }
