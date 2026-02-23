@@ -39,7 +39,7 @@ namespace DataFramework.ModelFramework.Poc.Repositories
                 // .AddConditions(new EqualConditionBuilder()
                 //     .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
                 //     .WithCompareExpression(new LiteralEvaluatableBuilder("Something")))
-            .Build(), null, token);
+                .Build(), null, token);
         }
     }
 }

@@ -2,11 +2,10 @@
 
 public interface IEvaluatableSqlExpressionProvider
 {
-    Task<Result> GetConditionExpressionAsync(StringBuilder builder,
+    Task<Result> GetConditionExpressionAsync(SelectCommandBuilder selectCommandBuilder,
                                              object? context,
                                              IEvaluatable<bool> condition,
                                              IFieldNameProvider fieldNameProvider,
-                                             //ISqlExpressionProvider sqlExpressionProvider,
                                              ParameterBag parameterBag,
                                              CancellationToken token);
 }
