@@ -1,16 +1,14 @@
 namespace CrossCutting.Utilities.ExpressionEvaluator.Sql;
 
-public class EvaluatableSqlExpressionProvider : IEvaluatableSqlExpressionProvider
+public class EvaluatableSqlExpressionProvider : IEvaluatableSqlExpressionProvider, IEvaluatableSqlExpressionProviderHandler
 {
-    private readonly ISqlExpressionProvider _sqlExpressionProvider;
-    private readonly IExpressionEvaluator _expressionEvaluator;
+    private readonly IEnumerable<IEvaluatableSqlExpressionProviderHandler> _handlers;
 
-    public EvaluatableSqlExpressionProvider(ISqlExpressionProvider sqlExpressionProvider, IExpressionEvaluator expressionEvaluator)
+    public EvaluatableSqlExpressionProvider(IEnumerable<IEvaluatableSqlExpressionProviderHandler> handlers)
     {
-        ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
-        ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
-        _sqlExpressionProvider = sqlExpressionProvider;
-        _expressionEvaluator = expressionEvaluator;
+        ArgumentGuard.IsNotNull(handlers, nameof(handlers));
+
+        _handlers = handlers;
     }
 
     public async Task<Result> GetConditionExpressionAsync(SelectCommandBuilder selectCommandBuilder, object? context, IEvaluatable<bool> condition, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, CancellationToken token)
@@ -20,22 +18,47 @@ public class EvaluatableSqlExpressionProvider : IEvaluatableSqlExpressionProvide
         fieldNameProvider = ArgumentGuard.IsNotNull(fieldNameProvider, nameof(fieldNameProvider));
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
 
-        if (condition is PropertyNameEvaluatable propertyNameEvaluatable && propertyNameEvaluatable.Operand is ContextEvaluatable)
+        foreach (var handler in _handlers)
         {
-            var databaseFieldName = fieldNameProvider.GetDatabaseFieldName(propertyNameEvaluatable.PropertyName);
+            var handlerResult = (await handler.GetConditionExpressionAsync(context, condition, fieldNameProvider, parameterBag, this, token).ConfigureAwait(false))
+                .EnsureValue();
+            if (!handlerResult.IsSuccessful())
+            {
+                return handlerResult;
+            }
 
-            return string.IsNullOrEmpty(databaseFieldName)
-                ? Result.NotFound<string>($"Expression contains unknown field [{propertyNameEvaluatable.PropertyName}]")
-                : Result.Success(databaseFieldName!);
+            if (handlerResult.Status == ResultStatus.Ok)
+            {
+                selectCommandBuilder
+                    .Where(handlerResult.Value!)
+                    .AppendParameters(parameterBag.Parameters);
+                return handlerResult;
+            }
         }
-        else
+
+        return Result.NotSupported($"No evaluatable sql expression provider handler found for condition type: {condition.GetType().FullName}");
+    }
+
+    public async Task<Result<string>> GetConditionExpressionAsync(object? context, IEvaluatable evaluatable, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, IEvaluatableSqlExpressionProviderHandler callback, CancellationToken token)
+    {
+        evaluatable = ArgumentGuard.IsNotNull(evaluatable, nameof(evaluatable));
+
+        foreach (var handler in _handlers)
         {
-            var expressionEvaluatorContext = new ExpressionEvaluatorContext(new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, context);
+            var handlerResult = (await handler.GetConditionExpressionAsync(context, evaluatable, fieldNameProvider, parameterBag, this, token).ConfigureAwait(false))
+                .EnsureValue();
+            if (!handlerResult.IsSuccessful())
+            {
+                return handlerResult;
+            }
 
-            return (await condition.EvaluateAsync(expressionEvaluatorContext, token).ConfigureAwait(false))
-                .OnSuccess(value => Result.Success(parameterBag.CreateQueryParameterName(value)));
+            if (handlerResult.Status == ResultStatus.Ok)
+            {
+                //selectCommandBuilder.Where(handlerResult.Value!);
+                return handlerResult;
+            }
         }
 
-        //await _sqlExpressionProvider.GetSqlExpressionAsync(context, )
+        return Result.NotSupported<string>($"No evaluatable sql expression provider handler found for evaluatable type: {evaluatable.GetType().FullName}");
     }
 }

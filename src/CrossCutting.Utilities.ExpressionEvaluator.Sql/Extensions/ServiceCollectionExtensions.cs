@@ -6,5 +6,9 @@ public static class ServiceCollectionExtensions
         => serviceCollection
             .AddSingleton<ISqlExpressionProvider, SqlExpressionProvider>()
             .AddSingleton<ISqlExpressionProviderHandler, SqlExpressionHandler>()
-            .AddSingleton<ISqlExpressionProviderHandler, SqlLikeExpressionHandler>();
+            .AddSingleton<ISqlExpressionProviderHandler, SqlLikeExpressionHandler>()
+            .AddSingleton<IEvaluatableSqlExpressionProvider, EvaluatableSqlExpressionProvider>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, EqualOperatorEvaluatableHandler>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, LiteralEvaluatableHandler>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, PropertyNameEvaluatableHandler>();
 }

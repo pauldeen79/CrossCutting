@@ -10,6 +10,7 @@ global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
 global using CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
 global using CrossCutting.Utilities.ExpressionEvaluator.Sql.Abstractions;
+global using CrossCutting.Utilities.ExpressionEvaluator.Sql.EvaluatableSqlExpressionProviderHandlers;
 global using CrossCutting.Utilities.ExpressionEvaluator.Sql.SqlExpressionProviderHandlers;
 global using CrossCutting.Utilities.ExpressionEvaluator.Sql.SqlExpressions;
 global using Microsoft.Extensions.DependencyInjection;
