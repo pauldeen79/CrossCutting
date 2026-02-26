@@ -91,7 +91,7 @@ public sealed partial class IntegrationTests
     }
 
     [Fact]
-    public async Task Can_Use_QueryProcessor_In_Repository()
+    public async Task Can_Use_EvaluatableSqlExpressionProvider_In_Repository()
     {
         // Arrange
         Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [Catalog]"),

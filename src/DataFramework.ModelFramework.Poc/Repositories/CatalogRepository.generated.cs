@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using CrossCutting.Common.Extensions;
 using CrossCutting.Common.Results;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core;
@@ -51,7 +52,6 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             //     .Build(), null, token);
 
             var settings = new CatalogPagedEntityRetrieverSettings();
-            var parameterBag = new ParameterBag();
             var builder = new SelectCommandBuilder()
                 .Select("*")
                 .From(settings.TableName);
@@ -60,13 +60,9 @@ namespace DataFramework.ModelFramework.Poc.Repositories
                 .WithRightOperand(new LiteralEvaluatableBuilder("Something"))
                 .BuildTyped();
             var fieldNameProvider = new CatalogQueryFieldInfo([]);
-            var result = await EvaluatableSqlExpressionProvider.GetConditionExpressionAsync(builder, null, condition, fieldNameProvider, parameterBag, token).ConfigureAwait(false);
-            if (!result.IsSuccessful())
-            {
-                return Result.FromExistingResult<IReadOnlyCollection<Catalog>>(result);
-            }
-            // builder.AppendParameters(parameterBag.Parameters);
-            return await EntityRetriever.FindManyAsync(builder.Build(), token).ConfigureAwait(false);
+
+            return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(builder, null, condition, fieldNameProvider, token).ConfigureAwait(false))
+                .OnSuccessAsync(_ => EntityRetriever.FindManyAsync(builder.Build(), token)).ConfigureAwait(false);
         }
     }
 }

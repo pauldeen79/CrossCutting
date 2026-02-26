@@ -2,10 +2,10 @@
 
 public interface IEvaluatableSqlExpressionProviderHandler
 {
-    Task<Result<string>> GetConditionExpressionAsync(object? context,
-                                                     IEvaluatable evaluatable,
-                                                     IFieldNameProvider fieldNameProvider,
-                                                     ParameterBag parameterBag,
-                                                     IEvaluatableSqlExpressionProviderHandler callback,
-                                                     CancellationToken token);
+    Task<Result<string>> GetExpressionAsync(object? context,
+                                            IEvaluatable evaluatable,
+                                            IFieldNameProvider fieldNameProvider,
+                                            ParameterBag parameterBag,
+                                            IEvaluatableSqlExpressionProviderHandler callback,
+                                            CancellationToken token);
 }

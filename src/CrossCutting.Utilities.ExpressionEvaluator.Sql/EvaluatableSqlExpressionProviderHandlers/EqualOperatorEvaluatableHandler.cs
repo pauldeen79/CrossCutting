@@ -2,7 +2,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Sql.EvaluatableSqlExpressio
 
 public class EqualOperatorEvaluatableHandler : IEvaluatableSqlExpressionProviderHandler
 {
-    public async Task<Result<string>> GetConditionExpressionAsync(object? context, IEvaluatable evaluatable, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, IEvaluatableSqlExpressionProviderHandler callback, CancellationToken token)
+    public async Task<Result<string>> GetExpressionAsync(object? context, IEvaluatable evaluatable, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, IEvaluatableSqlExpressionProviderHandler callback, CancellationToken token)
     {
         if (evaluatable is not EqualOperatorEvaluatable equalOperatorEvaluatable)
         {
@@ -10,8 +10,8 @@ public class EqualOperatorEvaluatableHandler : IEvaluatableSqlExpressionProvider
         }
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add(nameof(EqualOperatorEvaluatable.LeftOperand), () => callback.GetConditionExpressionAsync(context, equalOperatorEvaluatable.LeftOperand, fieldNameProvider, parameterBag, callback, token))
-            .Add(nameof(EqualOperatorEvaluatable.RightOperand), () => callback.GetConditionExpressionAsync(context, equalOperatorEvaluatable.RightOperand, fieldNameProvider, parameterBag, callback, token))
+            .Add(nameof(EqualOperatorEvaluatable.LeftOperand), () => callback.GetExpressionAsync(context, equalOperatorEvaluatable.LeftOperand, fieldNameProvider, parameterBag, callback, token))
+            .Add(nameof(EqualOperatorEvaluatable.RightOperand), () => callback.GetExpressionAsync(context, equalOperatorEvaluatable.RightOperand, fieldNameProvider, parameterBag, callback, token))
             .BuildAsync()
             .ConfigureAwait(false))
             .OnSuccess(results => $"{results.GetValue(nameof(EqualOperatorEvaluatable.LeftOperand))} = {results.GetValue(nameof(EqualOperatorEvaluatable.RightOperand))}");

@@ -11,16 +11,17 @@ public class EvaluatableSqlExpressionProvider : IEvaluatableSqlExpressionProvide
         _handlers = handlers;
     }
 
-    public async Task<Result> GetConditionExpressionAsync(SelectCommandBuilder selectCommandBuilder, object? context, IEvaluatable<bool> condition, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, CancellationToken token)
+    public async Task<Result> GetExpressionAsync(SelectCommandBuilder selectCommandBuilder, object? context, IEvaluatable<bool> condition, IFieldNameProvider fieldNameProvider, CancellationToken token)
     {
         selectCommandBuilder = ArgumentGuard.IsNotNull(selectCommandBuilder, nameof(selectCommandBuilder));
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
         fieldNameProvider = ArgumentGuard.IsNotNull(fieldNameProvider, nameof(fieldNameProvider));
-        parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
+        
+        var parameterBag = new ParameterBag();
 
         foreach (var handler in _handlers)
         {
-            var handlerResult = (await handler.GetConditionExpressionAsync(context, condition, fieldNameProvider, parameterBag, this, token).ConfigureAwait(false))
+            var handlerResult = (await handler.GetExpressionAsync(context, condition, fieldNameProvider, parameterBag, this, token).ConfigureAwait(false))
                 .EnsureValue();
             if (!handlerResult.IsSuccessful())
             {
@@ -39,22 +40,16 @@ public class EvaluatableSqlExpressionProvider : IEvaluatableSqlExpressionProvide
         return Result.NotSupported($"No evaluatable sql expression provider handler found for condition type: {condition.GetType().FullName}");
     }
 
-    public async Task<Result<string>> GetConditionExpressionAsync(object? context, IEvaluatable evaluatable, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, IEvaluatableSqlExpressionProviderHandler callback, CancellationToken token)
+    public async Task<Result<string>> GetExpressionAsync(object? context, IEvaluatable evaluatable, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, IEvaluatableSqlExpressionProviderHandler callback, CancellationToken token)
     {
         evaluatable = ArgumentGuard.IsNotNull(evaluatable, nameof(evaluatable));
 
         foreach (var handler in _handlers)
         {
-            var handlerResult = (await handler.GetConditionExpressionAsync(context, evaluatable, fieldNameProvider, parameterBag, this, token).ConfigureAwait(false))
+            var handlerResult = (await handler.GetExpressionAsync(context, evaluatable, fieldNameProvider, parameterBag, this, token).ConfigureAwait(false))
                 .EnsureValue();
-            if (!handlerResult.IsSuccessful())
+            if (handlerResult.Status != ResultStatus.Continue)
             {
-                return handlerResult;
-            }
-
-            if (handlerResult.Status == ResultStatus.Ok)
-            {
-                //selectCommandBuilder.Where(handlerResult.Value!);
                 return handlerResult;
             }
         }

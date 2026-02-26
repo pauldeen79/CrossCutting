@@ -2,7 +2,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Sql.EvaluatableSqlExpressio
 
 public class PropertyNameEvaluatableHandler : IEvaluatableSqlExpressionProviderHandler
 {
-    public async Task<Result<string>> GetConditionExpressionAsync(object? context, IEvaluatable evaluatable, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, IEvaluatableSqlExpressionProviderHandler callback, CancellationToken token)
+    public async Task<Result<string>> GetExpressionAsync(object? context, IEvaluatable evaluatable, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, IEvaluatableSqlExpressionProviderHandler callback, CancellationToken token)
     {
         fieldNameProvider = ArgumentGuard.IsNotNull(fieldNameProvider, nameof(fieldNameProvider));
 
