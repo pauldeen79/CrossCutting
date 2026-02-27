@@ -32,12 +32,10 @@ namespace DataFramework.ModelFramework.Poc.Repositories
                                     IPagedDatabaseCommandProvider pagedEntitySelectCommandProvider,
                                     IDatabaseCommandProvider entitySelectCommandProvider,
                                     IDatabaseCommandProvider<ExtraField> entityCommandProvider,
-                                    IQueryProcessor queryProcessor/*,
-                                    IEvaluatableSqlExpressionProvider evaluatableSqlExpressionProvider*/)
+                                    IQueryProcessor queryProcessor)
             : base(commandProcessor, entityRetriever, identitySelectCommandProvider, pagedEntitySelectCommandProvider, entitySelectCommandProvider, entityCommandProvider)
         {
             QueryProcessor = queryProcessor;
-            // EvaluatableSqlExpressionProvider = evaluatableSqlExpressionProvider;
         }
 
         private IQueryProcessor QueryProcessor { get; }
@@ -54,23 +52,6 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             //    .AppendParameter(nameof(entityName), entityName)
             //    .OrderBy(settings.DefaultOrderBy)
             //    .Build(), token);
-
-            // var parameterBag = new ParameterBag();
-            // var builder = new SelectCommandBuilder()
-            //     .Select("*")
-            //     .From(settings.TableName);
-            // var condition = new EqualOperatorEvaluatableBuilder()
-            //     .WithLeftOperand(new PropertyNameEvaluatableBuilder(nameof(ExtraField.Name)))
-            //     .WithRightOperand(new LiteralEvaluatableBuilder(entityName))
-            //     .BuildTyped();
-            // var fieldNameProvider = new ExtraFieldQueryFieldInfo();
-            // var result = await EvaluatableSqlExpressionProvider.GetConditionExpressionAsync(builder, null, condition, fieldNameProvider, parameterBag, token).ConfigureAwait(false);
-            // if (!result.IsSuccessful())
-            // {
-            //     return Result.FromExistingResult<IReadOnlyCollection<ExtraField>>(result);
-            // }
-            // builder.AppendParameters(parameterBag.Parameters);
-            // return await EntityRetriever.FindManyAsync(builder.Build(), token).ConfigureAwait(false);
 
             return QueryProcessor.FindManyAsync<ExtraField>(new ExtraFieldQueryBuilder()
                 .Where(nameof(ExtraField.EntityName)).IsEqualTo(entityName)

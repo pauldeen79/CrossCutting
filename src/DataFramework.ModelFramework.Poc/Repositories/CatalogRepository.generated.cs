@@ -53,15 +53,15 @@ namespace DataFramework.ModelFramework.Poc.Repositories
 
             var settings = new CatalogPagedEntityRetrieverSettings();
             var builder = new SelectCommandBuilder()
-                .Select("*")
+                .Select(settings.Fields)
                 .From(settings.TableName);
-            var condition = new EqualOperatorEvaluatableBuilder()
+            var evaluatable = new EqualOperatorEvaluatableBuilder()
                 .WithLeftOperand(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
                 .WithRightOperand(new LiteralEvaluatableBuilder("Something"))
                 .BuildTyped();
             var fieldNameProvider = new CatalogQueryFieldInfo([]);
 
-            return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(builder, null, condition, fieldNameProvider, token).ConfigureAwait(false))
+            return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(builder, null, evaluatable, fieldNameProvider, token).ConfigureAwait(false))
                 .OnSuccessAsync(_ => EntityRetriever.FindManyAsync(builder.Build(), token)).ConfigureAwait(false);
         }
     }
