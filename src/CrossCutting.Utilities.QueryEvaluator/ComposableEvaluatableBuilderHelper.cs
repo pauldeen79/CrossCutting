@@ -76,6 +76,7 @@ public static class ComposableEvaluatableBuilderHelper
             .WithStartGroup(startGroup)
             .WithEndGroup(endGroup);
 
+    //TODO: Fix open/closed principle, maybe create a new interface that you need to implement on your 'conditionable' evaluatable builders
     private static IConditionBuilder CreateCondition(IEvaluatableBuilder @operator)
         => @operator switch
         {
