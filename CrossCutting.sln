@@ -89,7 +89,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Commands.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataFramework.ModelFramework.Poc", "src\DataFramework.ModelFramework.Poc\DataFramework.ModelFramework.Poc.csproj", "{07DFEFA6-E3B1-463E-863D-E86E2B34B885}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataFramework.ModelFramework.Poc.Tests", "src\DataFramework.ModelFramework.Poc.tests\DataFramework.ModelFramework.Poc.Tests.csproj", "{AECAD58B-6872-4989-B2CA-D081C9615C36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataFramework.ModelFramework.Poc.Tests", "src\DataFramework.ModelFramework.Poc.Tests\DataFramework.ModelFramework.Poc.Tests.csproj", "{AECAD58B-6872-4989-B2CA-D081C9615C36}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utilities.ExpressionEvaluator.Sql", "src\CrossCutting.Utilities.ExpressionEvaluator.Sql\CrossCutting.Utilities.ExpressionEvaluator.Sql.csproj", "{EABDDD2D-AB53-40C2-BFE6-EEB76ADECD41}"
 EndProject
