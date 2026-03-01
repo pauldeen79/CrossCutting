@@ -658,6 +658,66 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables
             return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.NotEqualOperatorEvaluatableBuilder(this);
         }
     }
+    public partial record NotNullOperatorEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IUnaryOperator, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable<bool>
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable Operand
+        {
+            get;
+        }
+
+        public NotNullOperatorEvaluatable(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable operand) : base()
+        {
+            this.Operand = operand;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.NotNullOperatorEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.NotNullOperatorEvaluatable entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.NotNullOperatorEvaluatableBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.NotNullOperatorEvaluatableBuilder(this);
+        }
+    }
+    public partial record NullOperatorEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IUnaryOperator, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable<bool>
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        public CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable Operand
+        {
+            get;
+        }
+
+        public NullOperatorEvaluatable(CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable operand) : base()
+        {
+            this.Operand = operand;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.NullOperatorEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.NullOperatorEvaluatable entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
+        public override CrossCutting.Utilities.ExpressionEvaluator.Builders.EvaluatableBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.NullOperatorEvaluatableBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables.NullOperatorEvaluatableBuilder(this);
+        }
+    }
     public partial record PowerOperatorEvaluatable : CrossCutting.Utilities.ExpressionEvaluator.EvaluatableBase, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable, CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IBinaryOperator
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]

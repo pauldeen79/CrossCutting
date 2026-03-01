@@ -86,6 +86,8 @@ public static class ComposableEvaluatableBuilderHelper
             GreaterOrEqualOperatorEvaluatableBuilder => new GreaterThanOrEqualConditionBuilder(),
             SmallerOperatorEvaluatableBuilder => new SmallerThanConditionBuilder(),
             SmallerOrEqualOperatorEvaluatableBuilder => new SmallerThanOrEqualConditionBuilder(),
+            NullOperatorEvaluatableBuilder => new NullConditionBuilder(),
+            NotNullOperatorEvaluatableBuilder => new NotNullConditionBuilder(),
             _ => throw new NotSupportedException($"Operator of type {@operator.GetType().FullName} is not supported")
         };
 }
