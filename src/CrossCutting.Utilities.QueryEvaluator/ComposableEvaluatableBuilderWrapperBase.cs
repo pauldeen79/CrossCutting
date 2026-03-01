@@ -20,59 +20,59 @@ public abstract class ComposableEvaluatableBuilderWrapperBase<T>
 
     #region Generated code
     public T IsEqualTo<TValue>(TValue value)
-        => AddFilterWithOperator(new EqualOperatorEvaluatableBuilder(), value);
+        => AddFilterWithOperator(new EqualConditionBuilder(), value);
 
     public T IsEqualTo<TValue>(Func<TValue> valueDelegate)
-        => AddFilterWithOperator(new EqualOperatorEvaluatableBuilder(), valueDelegate);
+        => AddFilterWithOperator(new EqualConditionBuilder(), valueDelegate);
 
     public T IsGreaterOrEqualThan<TValue>(TValue value)
-        => AddFilterWithOperator(new GreaterOrEqualOperatorEvaluatableBuilder(), value);
+        => AddFilterWithOperator(new GreaterThanOrEqualConditionBuilder(), value);
 
     public T IsGreaterOrEqualThan<TValue>(Func<TValue> valueDelegate)
-        => AddFilterWithOperator(new GreaterOrEqualOperatorEvaluatableBuilder(), valueDelegate);
+        => AddFilterWithOperator(new GreaterThanOrEqualConditionBuilder(), valueDelegate);
 
     public T IsGreaterThan<TValue>(TValue value)
-        => AddFilterWithOperator(new GreaterOperatorEvaluatableBuilder(), value);
+        => AddFilterWithOperator(new GreaterThanConditionBuilder(), value);
 
     public T IsGreaterThan<TValue>(Func<TValue> valueDelegate)
-        => AddFilterWithOperator(new GreaterOperatorEvaluatableBuilder(), valueDelegate);
+        => AddFilterWithOperator(new GreaterThanConditionBuilder(), valueDelegate);
 
     public T IsNotNull()
-        => AddFilterWithOperator(new NotNullOperatorEvaluatableBuilder());
+        => AddFilterWithOperator(new NotNullConditionBuilder());
 
     public T IsNull()
-        => AddFilterWithOperator(new NullOperatorEvaluatableBuilder());
+        => AddFilterWithOperator(new NullConditionBuilder());
 
     public T IsSmallerOrEqualThan<TValue>(TValue value)
-        => AddFilterWithOperator(new SmallerOrEqualOperatorEvaluatableBuilder(), value);
+        => AddFilterWithOperator(new SmallerThanOrEqualConditionBuilder(), value);
 
     public T IsSmallerOrEqualThan<TValue>(Func<TValue> valueDelegate)
-        => AddFilterWithOperator(new SmallerOrEqualOperatorEvaluatableBuilder(), valueDelegate);
+        => AddFilterWithOperator(new SmallerThanOrEqualConditionBuilder(), valueDelegate);
 
     public T IsSmallerThan<TValue>(TValue value)
-        => AddFilterWithOperator(new SmallerOperatorEvaluatableBuilder(), value);
+        => AddFilterWithOperator(new SmallerThanConditionBuilder(), value);
 
     public T IsSmallerThan<TValue>(Func<TValue> valueDelegate)
-        => AddFilterWithOperator(new SmallerOperatorEvaluatableBuilder(), valueDelegate);
+        => AddFilterWithOperator(new SmallerThanConditionBuilder(), valueDelegate);
 
     public T IsNotEqualTo<TValue>(TValue value)
-        => AddFilterWithOperator(new NotEqualOperatorEvaluatableBuilder(), value);
+        => AddFilterWithOperator(new NotEqualConditionBuilder(), value);
 
     public T IsNotEqualTo<TValue>(Func<TValue> valueDelegate)
-        => AddFilterWithOperator(new NotEqualOperatorEvaluatableBuilder(), valueDelegate);
+        => AddFilterWithOperator(new NotEqualConditionBuilder(), valueDelegate);
     #endregion
 
-    protected virtual T AddFilterWithOperator<TValue>(IEvaluatableBuilder @operator, TValue value)
+    protected virtual T AddFilterWithOperator<TValue>(IConditionBuilder @operator, TValue value)
         => value is IEvaluatableBuilder expressionBuilder
             ? AddFilterWithOperator(@operator, expressionBuilder)
             : Instance.Where(ComposableEvaluatableBuilderHelper.Create(_leftExpression, @operator, value, Combination, StartGroup, EndGroup));
 
-    protected virtual T AddFilterWithOperator<TValue>(IEvaluatableBuilder @operator, Func<TValue> valueDelegate)
+    protected virtual T AddFilterWithOperator<TValue>(IConditionBuilder @operator, Func<TValue> valueDelegate)
         => Instance.Where(ComposableEvaluatableBuilderHelper.Create(_leftExpression, @operator, valueDelegate, Combination, StartGroup, EndGroup));
 
-    protected virtual T AddFilterWithOperator(IEvaluatableBuilder @operator, IEvaluatableBuilder expression)
+    protected virtual T AddFilterWithOperator(IConditionBuilder @operator, IEvaluatableBuilder expression)
         => Instance.Where(ComposableEvaluatableBuilderHelper.Create(_leftExpression, @operator, expression, Combination, StartGroup, EndGroup));
 
-    protected virtual T AddFilterWithOperator(IEvaluatableBuilder @operator)
+    protected virtual T AddFilterWithOperator(IConditionBuilder @operator)
         => Instance.Where(ComposableEvaluatableBuilderHelper.Create(_leftExpression, @operator, Combination, StartGroup, EndGroup));
 }
