@@ -14,10 +14,14 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, DelegateEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, DelegateResultEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, EqualOperatorEvaluatableHandler>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, GreaterOperatorEvaluatableHandler>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, GreaterOrEqualOperatorEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, LiteralEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, LiteralResultEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, NotEqualOperatorEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, NotNullOperatorEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, NullOperatorEvaluatableHandler>()
-            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, PropertyNameEvaluatableHandler>();
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, PropertyNameEvaluatableHandler>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, SmallerOperatorEvaluatableHandler>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, SmallerOrEqualOperatorEvaluatableHandler>();
 }

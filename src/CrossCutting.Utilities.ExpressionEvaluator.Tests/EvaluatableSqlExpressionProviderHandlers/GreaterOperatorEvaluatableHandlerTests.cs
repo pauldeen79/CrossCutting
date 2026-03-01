@@ -1,15 +1,15 @@
 namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.EvaluatableSqlExpressionProviderHandlers;
 
-public class NotEqualOperatorEvaluatableHandlerTests : TestBase<NotEqualOperatorEvaluatableHandler>
+public class GreaterOperatorEvaluatableHandlerTests : TestBase<GreaterOperatorEvaluatableHandler>
 {
-    public class GetExpressionAsync : NotEqualOperatorEvaluatableHandlerTests
+    public class GetExpressionAsync : GreaterOperatorEvaluatableHandlerTests
     {
         [Fact]
         public async Task Returns_Correct_Sql()
         {
             // Arrange
             var parameterBag = new ParameterBag();
-            var evaluatable = new NotEqualOperatorEvaluatableBuilder()
+            var evaluatable = new GreaterOperatorEvaluatableBuilder()
                 .WithLeftOperand(new LiteralEvaluatableBuilder())
                 .WithRightOperand(new LiteralEvaluatableBuilder())
                 .Build();
@@ -21,7 +21,7 @@ public class NotEqualOperatorEvaluatableHandlerTests : TestBase<NotEqualOperator
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe("@p0 <> @p1");
+            result.Value.ShouldBe("@p0 > @p1");
         }
     }
 }

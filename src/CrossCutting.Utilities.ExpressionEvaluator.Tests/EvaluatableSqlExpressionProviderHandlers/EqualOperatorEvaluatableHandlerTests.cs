@@ -10,8 +10,8 @@ public class EqualOperatorEvaluatableHandlerTests : TestBase<EqualOperatorEvalua
             // Arrange
             var parameterBag = new ParameterBag();
             var evaluatable = new EqualOperatorEvaluatableBuilder()
-                .WithLeftOperand(new LiteralEvaluatableBuilder(true))
-                .WithRightOperand(new LiteralEvaluatableBuilder(true))
+                .WithLeftOperand(new LiteralEvaluatableBuilder())
+                .WithRightOperand(new LiteralEvaluatableBuilder())
                 .Build();
             var sut = CreateSut();
             var callback = new EvaluatableSqlExpressionProvider([new LiteralEvaluatableHandler()]);
