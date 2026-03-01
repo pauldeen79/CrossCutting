@@ -25,9 +25,6 @@ public abstract class ComposableEvaluatableBuilderWrapperBase<T>
     public T IsEqualTo<TValue>(Func<TValue> valueDelegate)
         => AddFilterWithOperator(new EqualOperatorEvaluatableBuilder(), valueDelegate);
 
-    // public T IsEqualToParameter(string parameterName)
-    //     => AddFilterWithOperator(new EqualOperatorEvaluatableBuilder(), new QueryParameterExpressionBuilder().WithParameterName(parameterName));
-
     public T IsGreaterOrEqualThan<TValue>(TValue value)
         => AddFilterWithOperator(new GreaterOrEqualOperatorEvaluatableBuilder(), value);
 
