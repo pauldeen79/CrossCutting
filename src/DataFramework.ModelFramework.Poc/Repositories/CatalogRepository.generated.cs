@@ -54,7 +54,8 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             var settings = new CatalogPagedEntityRetrieverSettings();
             var builder = new SelectCommandBuilder()
                 .Select(settings.Fields)
-                .From(settings.TableName);
+                .From(settings.TableName)
+                .OrderBy(settings.DefaultOrderBy);
             var evaluatable = new EqualOperatorEvaluatableBuilder()
                 .WithLeftOperand(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
                 .WithRightOperand(new LiteralEvaluatableBuilder("Something"))

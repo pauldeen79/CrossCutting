@@ -8,7 +8,10 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ISqlExpressionProviderHandler, SqlExpressionHandler>()
             .AddSingleton<ISqlExpressionProviderHandler, SqlLikeExpressionHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProvider, EvaluatableSqlExpressionProvider>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, BinaryAndOperatorEvaluatableHandler>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, BinaryOrOperatorEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, EqualOperatorEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, LiteralEvaluatableHandler>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, NotEqualOperatorEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, PropertyNameEvaluatableHandler>();
 }
