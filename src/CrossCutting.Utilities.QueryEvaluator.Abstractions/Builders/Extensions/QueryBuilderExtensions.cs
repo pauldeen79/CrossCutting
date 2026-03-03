@@ -26,17 +26,17 @@ public static partial class QueryBuilderExtensions
         where T : IQueryBuilder
         => instance.And(additionalConditions.ToArray());
 
-    public static T AndAny<T>(this T instance, params IConditionBuilder[] additionalConditions)
-        where T : IQueryBuilder
-        => instance.Where(additionalConditions.Select((a, index) => a.WithStartGroup(index == 0)
-                                                                     .WithEndGroup(index + 1 == additionalConditions.Length)
-                                                                     .WithCombination(index == 0 ? Combination.And : Combination.Or)));
+    // public static T AndAny<T>(this T instance, params IConditionBuilder[] additionalConditions)
+    //     where T : IQueryBuilder
+    //     => instance.Where(additionalConditions.Select((a, index) => a.WithStartGroup(index == 0)
+    //                                                                  .WithEndGroup(index + 1 == additionalConditions.Length)
+    //                                                                  .WithCombination(index == 0 ? Combination.And : Combination.Or)));
 
-    public static T OrAll<T>(this T instance, params IConditionBuilder[] additionalConditions)
-        where T : IQueryBuilder
-        => instance.Where(additionalConditions.Select((a, index) => a.WithStartGroup(index == 0)
-                                                                     .WithEndGroup(index + 1 == additionalConditions.Length)
-                                                                     .WithCombination(index == 0 ? Combination.Or : Combination.And)));
+    // public static T OrAll<T>(this T instance, params IConditionBuilder[] additionalConditions)
+    //     where T : IQueryBuilder
+    //     => instance.Where(additionalConditions.Select((a, index) => a.WithStartGroup(index == 0)
+    //                                                                  .WithEndGroup(index + 1 == additionalConditions.Length)
+    //                                                                  .WithCombination(index == 0 ? Combination.Or : Combination.And)));
 
     public static T OrderBy<T>(this T instance, params ISortOrderBuilder[] additionalOrderByFields)
         where T : IQueryBuilder
@@ -53,6 +53,10 @@ public static partial class QueryBuilderExtensions
     public static T ThenBy<T>(this T instance, params ISortOrderBuilder[] additionalSortOrders)
         where T : IQueryBuilder
         => instance.OrderBy(additionalSortOrders);
+
+    public static T ThenBy<T>(this T instance, IEnumerable<ISortOrderBuilder> additionalOrderByFields)
+        where T : IQueryBuilder
+        => instance.OrderBy(additionalOrderByFields.ToArray());
 
     public static T ThenBy<T>(this T instance, params string[] additionalSortOrders)
         where T : IQueryBuilder
@@ -78,6 +82,10 @@ public static partial class QueryBuilderExtensions
         where T : IQueryBuilder
         => instance.OrderBy(additionalSortOrders.Select(so => new QuerySortOrderBuilder().WithExpression(so.Expression).WithOrder(SortOrderDirection.Descending)));
 
+    public static T OrderByDescending<T>(this T instance, IEnumerable<ISortOrderBuilder> additionalOrderByFields)
+        where T : IQueryBuilder
+        => instance.OrderByDescending(additionalOrderByFields.ToArray());
+
     public static T OrderByDescending<T>(this T instance, params string[] additionalSortOrders)
         where T : IQueryBuilder
         => instance.OrderBy(additionalSortOrders.Select(s => new QuerySortOrderBuilder().WithPropertyName(s).WithOrder(SortOrderDirection.Descending)));
@@ -85,6 +93,10 @@ public static partial class QueryBuilderExtensions
     public static T ThenByDescending<T>(this T instance, params ISortOrderBuilder[] additionalSortOrders)
         where T : IQueryBuilder
         => instance.OrderByDescending(additionalSortOrders);
+
+    public static T ThenByDescending<T>(this T instance, IEnumerable<ISortOrderBuilder> additionalOrderByFields)
+        where T : IQueryBuilder
+        => instance.ThenByDescending(additionalOrderByFields.ToArray());
 
     public static T ThenByDescending<T>(this T instance, params string[] additionalSortOrders)
         where T : IQueryBuilder
