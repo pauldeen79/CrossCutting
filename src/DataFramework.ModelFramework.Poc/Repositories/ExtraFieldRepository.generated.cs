@@ -39,7 +39,6 @@ namespace DataFramework.ModelFramework.Poc.Repositories
         }
 
         private IQueryProcessor QueryProcessor { get; }
-        // private IEvaluatableSqlExpressionProvider EvaluatableSqlExpressionProvider { get; }
 
         public Task<Result<IReadOnlyCollection<ExtraField>>> FindExtraFieldsByEntityNameAsync(string entityName, CancellationToken token)
         {
