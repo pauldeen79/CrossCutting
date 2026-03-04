@@ -10,14 +10,6 @@ public static class ComposableEvaluatableBuilderHelper
             .WithStartGroup(startGroup)
             .WithEndGroup(endGroup);
 
-    public static IConditionBuilder Create<T>(string fieldName, IConditionBuilder @operator, Func<T> valueDelegate, Combination? combination = null, bool startGroup = false, bool endGroup = false, IEvaluatableBuilder? expression = null)
-        => @operator
-            .WithCombination(combination)
-            .WithLeftExpression(expression ?? new PropertyNameEvaluatableBuilder().WithOperand(new ContextEvaluatableBuilder()).WithPropertyName(fieldName))
-            .WithRightExpression(new DelegateEvaluatableBuilder<T>().WithValue(new Func<T>(() => valueDelegate())))
-            .WithStartGroup(startGroup)
-            .WithEndGroup(endGroup);
-
     public static IConditionBuilder Create(string fieldName, IConditionBuilder @operator, IEvaluatableBuilder rightExpression, Combination? combination = null, bool startGroup = false, bool endGroup = false, IEvaluatableBuilder? expression = null)
         => @operator
             .WithCombination(combination)
@@ -35,14 +27,6 @@ public static class ComposableEvaluatableBuilderHelper
                 .WithRightExpression(new LiteralEvaluatableBuilder<T>().WithValue(value))
                 .WithStartGroup(startGroup)
                 .WithEndGroup(endGroup);
-
-    public static IConditionBuilder Create<T>(IEvaluatableBuilder leftExpression, IConditionBuilder @operator, Func<T> valueDelegate, Combination? combination = null, bool startGroup = false, bool endGroup = false)
-        => @operator
-            .WithCombination(combination)
-            .WithLeftExpression(leftExpression)
-            .WithRightExpression(new DelegateEvaluatableBuilder<T>().WithValue(new Func<T>(() => valueDelegate())))
-            .WithStartGroup(startGroup)
-            .WithEndGroup(endGroup);
 
     public static IConditionBuilder Create(IEvaluatableBuilder leftExpression, IConditionBuilder @operator, IEvaluatableBuilder rightExpression, Combination? combination = null, bool startGroup = false, bool endGroup = false)
         => @operator
