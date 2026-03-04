@@ -48,7 +48,7 @@ public static partial class QueryBuilderExtensions
 
     public static T ThenBy<T>(this T instance, IEnumerable<ISortOrderBuilder> additionalOrderByFields)
         where T : IQueryBuilder
-        => instance.OrderBy(additionalOrderByFields.ToArray());
+        => instance.ThenBy(additionalOrderByFields.ToArray());
 
     public static T ThenBy<T>(this T instance, params string[] additionalSortOrders)
         where T : IQueryBuilder
@@ -56,7 +56,7 @@ public static partial class QueryBuilderExtensions
 
     public static T ThenBy<T>(this T instance, IEnumerable<string> additionalOrderByFields)
         where T : IQueryBuilder
-        => instance.OrderBy(additionalOrderByFields.ToArray());
+        => instance.ThenBy(additionalOrderByFields.ToArray());
 
     public static T Offset<T>(this T instance, int? offset)
         where T : IQueryBuilder
