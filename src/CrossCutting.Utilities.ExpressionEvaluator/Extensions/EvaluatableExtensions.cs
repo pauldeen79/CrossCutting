@@ -27,4 +27,10 @@ public static class EvaluatableExtensions
             }
         }
     }
+
+    public static BinaryAndOperatorEvaluatable And(this IEvaluatable instance, IEvaluatable other)
+        => new BinaryAndOperatorEvaluatable(instance, other);
+
+    public static BinaryOrOperatorEvaluatable Or(this IEvaluatable instance, IEvaluatable other)
+        => new BinaryOrOperatorEvaluatable(instance, other);
 }
