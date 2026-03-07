@@ -220,4 +220,45 @@ public class QueryBuilderExtensionsTests : TestBase
         result.Offset.ShouldBe(10);
     }
 
+    [Fact]
+    public void Where_Adds_Condition_Correclty()
+    {
+        // Arrange
+        var sut = new SingleEntityQueryBuilder();
+
+        // Act
+        var result = sut.Where("MyProperty").IsEqualTo("Some value");
+
+        // Assert
+        result.Conditions.Count.ShouldBe(1);
+        result.Conditions.Single().Combination.ShouldBeNull();
+    }
+
+    [Fact]
+    public void And_Adds_Condition_Correclty()
+    {
+        // Arrange
+        var sut = new SingleEntityQueryBuilder();
+
+        // Act
+        var result = sut.And("MyProperty").IsEqualTo("Some value");
+
+        // Assert
+        result.Conditions.Count.ShouldBe(1);
+        result.Conditions.Single().Combination.ShouldBe(Combination.And);
+    }
+    
+    [Fact]
+    public void Or_Adds_Condition_Correclty()
+    {
+        // Arrange
+        var sut = new SingleEntityQueryBuilder();
+
+        // Act
+        var result = sut.Or("MyProperty").IsEqualTo("Some value");
+
+        // Assert
+        result.Conditions.Count.ShouldBe(1);
+        result.Conditions.Single().Combination.ShouldBe(Combination.Or);
+    }
 }
