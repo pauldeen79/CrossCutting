@@ -2,7 +2,7 @@
 
 public static class ComposableEvaluatableBuilderHelper
 {
-    public static IConditionBuilder Create(string fieldName, IConditionBuilder @operator, object value, Combination? combination = null, bool startGroup = false, bool endGroup = false)
+    public static IConditionBuilder Create(string fieldName, IConditionBuilder @operator, object? value, Combination? combination = null, bool startGroup = false, bool endGroup = false)
         => @operator
             .WithCombination(combination)
             .WithLeftExpression(new PropertyNameEvaluatableBuilder().WithOperand(new ContextEvaluatableBuilder()).WithPropertyName(fieldName))
@@ -26,7 +26,7 @@ public static class ComposableEvaluatableBuilderHelper
             .WithStartGroup(startGroup)
             .WithEndGroup(endGroup);
 
-    public static IConditionBuilder Create(IEvaluatableBuilder leftExpression, IConditionBuilder @operator, object value, Combination? combination = null, bool startGroup = false, bool endGroup = false)
+    public static IConditionBuilder Create(IEvaluatableBuilder leftExpression, IConditionBuilder @operator, object? value, Combination? combination = null, bool startGroup = false, bool endGroup = false)
         => @operator
             .WithCombination(combination)
             .WithLeftExpression(leftExpression)
