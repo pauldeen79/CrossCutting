@@ -33,4 +33,28 @@ public static class EvaluatableExtensions
 
     public static BinaryOrOperatorEvaluatable Or(this IEvaluatable instance, IEvaluatable other)
         => new BinaryOrOperatorEvaluatable(instance, other);
+
+    public static EqualOperatorEvaluatable IsEqualTo(this IEvaluatable instance, IEvaluatable other)
+        => new EqualOperatorEvaluatable(instance, other);
+
+    public static GreaterOrEqualOperatorEvaluatable IsGreaterOrEqualThan(this IEvaluatable instance, IEvaluatable other)
+        => new GreaterOrEqualOperatorEvaluatable(instance, other);
+
+    public static GreaterOperatorEvaluatable IsGreaterThan(this IEvaluatable instance, IEvaluatable other)
+        => new GreaterOperatorEvaluatable(instance, other);
+
+    public static SmallerOrEqualOperatorEvaluatable IsSmallerOrEqualThan(this IEvaluatable instance, IEvaluatable other)
+        => new SmallerOrEqualOperatorEvaluatable(instance, other);
+
+    public static SmallerOperatorEvaluatable IsSmallerThan(this IEvaluatable instance, IEvaluatable other)
+        => new SmallerOperatorEvaluatable(instance, other);
+
+    public static NotEqualOperatorEvaluatable IsNotEqualTo(this IEvaluatable instance, IEvaluatable other)
+        => new NotEqualOperatorEvaluatable(instance, other);
+
+    public static NotNullOperatorEvaluatable IsNotNull(this IEvaluatable instance)
+        => new NotNullOperatorEvaluatable(instance);
+
+    public static NullOperatorEvaluatable IsNull(this IEvaluatable instance)
+        => new NullOperatorEvaluatable(instance);
 }

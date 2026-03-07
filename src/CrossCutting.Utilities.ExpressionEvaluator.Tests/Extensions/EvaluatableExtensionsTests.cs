@@ -67,4 +67,166 @@ public class EvaluatableExtensionsTests : TestBase
             ((LiteralEvaluatable<bool>)rightOperand.RightOperand).Value.ShouldBe(false);
         }
     }
+
+    public class IsEqualTo : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatableBuilder<bool>(true).Build();
+
+            // Act
+            var result = sut.IsEqualTo(new LiteralEvaluatable<bool>(false));
+
+            // Assert
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var leftOperand = (LiteralEvaluatable<bool>)result.LeftOperand;
+            leftOperand.Value.ShouldBe(true);
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var rightOperand = (LiteralEvaluatable<bool>)result.RightOperand;
+            rightOperand.Value.ShouldBe(false);
+        }
+    }
+
+    public class IsGreaterOrEqualThan : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatableBuilder<bool>(true).Build();
+
+            // Act
+            var result = sut.IsGreaterOrEqualThan(new LiteralEvaluatable<bool>(false));
+
+            // Assert
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var leftOperand = (LiteralEvaluatable<bool>)result.LeftOperand;
+            leftOperand.Value.ShouldBe(true);
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var rightOperand = (LiteralEvaluatable<bool>)result.RightOperand;
+            rightOperand.Value.ShouldBe(false);
+        }
+    }
+
+    public class IsGreaterThan : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatableBuilder<bool>(true).Build();
+
+            // Act
+            var result = sut.IsGreaterThan(new LiteralEvaluatable<bool>(false));
+
+            // Assert
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var leftOperand = (LiteralEvaluatable<bool>)result.LeftOperand;
+            leftOperand.Value.ShouldBe(true);
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var rightOperand = (LiteralEvaluatable<bool>)result.RightOperand;
+            rightOperand.Value.ShouldBe(false);
+        }
+    }
+
+    public class IsSmallerOrEqualThan : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatableBuilder<bool>(true).Build();
+
+            // Act
+            var result = sut.IsSmallerOrEqualThan(new LiteralEvaluatable<bool>(false));
+
+            // Assert
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var leftOperand = (LiteralEvaluatable<bool>)result.LeftOperand;
+            leftOperand.Value.ShouldBe(true);
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var rightOperand = (LiteralEvaluatable<bool>)result.RightOperand;
+            rightOperand.Value.ShouldBe(false);
+        }
+    }
+
+    public class IsSmallerThan : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatableBuilder<bool>(true).Build();
+
+            // Act
+            var result = sut.IsSmallerThan(new LiteralEvaluatable<bool>(false));
+
+            // Assert
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var leftOperand = (LiteralEvaluatable<bool>)result.LeftOperand;
+            leftOperand.Value.ShouldBe(true);
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var rightOperand = (LiteralEvaluatable<bool>)result.RightOperand;
+            rightOperand.Value.ShouldBe(false);
+        }
+    }
+
+    public class IsNotEqualTo : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatableBuilder<bool>(true).Build();
+
+            // Act
+            var result = sut.IsNotEqualTo(new LiteralEvaluatable<bool>(false));
+
+            // Assert
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var leftOperand = (LiteralEvaluatable<bool>)result.LeftOperand;
+            leftOperand.Value.ShouldBe(true);
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var rightOperand = (LiteralEvaluatable<bool>)result.RightOperand;
+            rightOperand.Value.ShouldBe(false);
+        }
+    }
+
+    public class IsNotNull : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatableBuilder<bool>(true).Build();
+
+            // Act
+            var result = sut.IsNotNull();
+
+            // Assert
+            result.Operand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var operand = (LiteralEvaluatable<bool>)result.Operand;
+            operand.Value.ShouldBe(true);
+        }
+    }
+
+    public class IsNull : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatableBuilder<bool>(true).Build();
+
+            // Act
+            var result = sut.IsNull();
+
+            // Assert
+            result.Operand.ShouldBeOfType<LiteralEvaluatable<bool>>();
+            var operand = (LiteralEvaluatable<bool>)result.Operand;
+            operand.Value.ShouldBe(true);
+        }
+    }
 }

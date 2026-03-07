@@ -56,10 +56,11 @@ namespace DataFramework.ModelFramework.Poc.Repositories
                 .Select(settings.Fields)
                 .From(settings.TableName)
                 .OrderBy(settings.DefaultOrderBy);
-            var evaluatable = new EqualOperatorEvaluatableBuilder()
-                .WithLeftOperand(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
-                .WithRightOperand(new LiteralEvaluatableBuilder("Something"))
-                .BuildTyped();
+            // var evaluatable = new EqualOperatorEvaluatableBuilder()
+            //     .WithLeftOperand(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
+            //     .WithRightOperand(new LiteralEvaluatableBuilder("Something"))
+            //     .BuildTyped();
+            var evaluatable = new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)).IsEqualTo("Something").BuildTyped();
             var fieldNameProvider = new CatalogQueryFieldInfo([]);
 
             return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(builder, null, evaluatable, fieldNameProvider, token).ConfigureAwait(false))
