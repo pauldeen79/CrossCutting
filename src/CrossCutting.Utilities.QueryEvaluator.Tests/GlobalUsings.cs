@@ -22,6 +22,7 @@ global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Domains;
 global using CrossCutting.Utilities.QueryEvaluator.Abstractions.Extensions;
+global using CrossCutting.Utilities.QueryEvaluator.Core;
 global using CrossCutting.Utilities.QueryEvaluator.Core.Builders;
 global using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
 global using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Queries;

@@ -14,10 +14,15 @@ public static partial class ConditionBuilderExtensions
         return instance;
     }
 
-    public static IConditionBuilder WithRightExpression(this IConditionBuilder instance, IEvaluatableBuilder expression)
+    public static IConditionBuilder WithRightExpression(this IConditionBuilder instance, IEvaluatableBuilder expression, bool allowEmpty = false)
     {
         if (instance is not ICompareExpressionContainerBuilder compareExpressionContainerBuilder)
         {
+            if (allowEmpty)
+            {
+                return instance;
+            }
+            
             throw new ArgumentException($"Condition {instance.GetType().FullName} is not assignable to {nameof(ICompareExpressionContainerBuilder)}");
         }
         

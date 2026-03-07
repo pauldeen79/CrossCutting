@@ -5,7 +5,8 @@ public class ComposableEvaluatableFieldNameBuilderWrapper<T> : ComposableEvaluat
 {
     private readonly string _fieldName;
 
-    public ComposableEvaluatableFieldNameBuilderWrapper(T instance, string fieldName, Combination? combination = null) : base(instance, new EmptyEvaluatableBuilder(), combination)
+    public ComposableEvaluatableFieldNameBuilderWrapper(T instance, string fieldName, Combination? combination = null)
+        : base(instance, new EmptyEvaluatableBuilder(), combination)
     {
         _fieldName = fieldName.IsNotNull(nameof(fieldName));
     }
