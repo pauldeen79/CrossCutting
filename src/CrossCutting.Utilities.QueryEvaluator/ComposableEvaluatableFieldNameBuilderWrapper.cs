@@ -11,24 +11,6 @@ public class ComposableEvaluatableFieldNameBuilderWrapper<T> : ComposableEvaluat
         _fieldName = fieldName.IsNotNull(nameof(fieldName));
     }
 
-    public ComposableEvaluatableFieldNameBuilderWrapper<T> WithStartGroup(bool startGroup = true)
-    {
-        StartGroup = startGroup;
-        return this;
-    }
-
-    public ComposableEvaluatableFieldNameBuilderWrapper<T> WithEndGroup(bool endGroup = true)
-    {
-        EndGroup = endGroup;
-        return this;
-    }
-
-    public ComposableEvaluatableFieldNameBuilderWrapper<T> WithCombination(Combination combination)
-    {
-        Combination = combination;
-        return this;
-    }
-
     protected override T AddFilterWithOperator(IConditionBuilder @operator, object? value)
         => Instance.Where(ComposableEvaluatableBuilderHelper.Create(_fieldName, @operator, value, Combination, StartGroup, EndGroup));
 
