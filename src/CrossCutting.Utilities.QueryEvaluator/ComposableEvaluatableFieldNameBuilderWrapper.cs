@@ -29,10 +29,8 @@ public class ComposableEvaluatableFieldNameBuilderWrapper<T> : ComposableEvaluat
         return this;
     }
 
-    protected override T AddFilterWithOperator<TValue>(IConditionBuilder @operator, TValue value)
-        => value is IEvaluatableBuilder expressionBuilder
-            ? AddFilterWithOperator(@operator, expressionBuilder)
-            : Instance.Where(ComposableEvaluatableBuilderHelper.Create(_fieldName, @operator, value, Combination, StartGroup, EndGroup));
+    protected override T AddFilterWithOperator(IConditionBuilder @operator, object? value)
+        => Instance.Where(ComposableEvaluatableBuilderHelper.Create(_fieldName, @operator, value, Combination, StartGroup, EndGroup));
 
     protected override T AddFilterWithOperator(IConditionBuilder @operator, IEvaluatableBuilder expression)
         => Instance.Where(ComposableEvaluatableBuilderHelper.Create(_fieldName, @operator, expression, Combination, StartGroup, EndGroup));

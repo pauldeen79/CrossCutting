@@ -62,7 +62,7 @@ public abstract class ComposableEvaluatableBuilderWrapperBase<T>
         => AddFilterWithOperator(new NullConditionBuilder());
     #endregion
 
-    protected virtual T AddFilterWithOperator<TValue>(IConditionBuilder @operator, TValue value)
+    protected virtual T AddFilterWithOperator(IConditionBuilder @operator, object? value)
         => Instance.Where(ComposableEvaluatableBuilderHelper.Create(_leftExpression, @operator, value, Combination, StartGroup, EndGroup));
 
     protected virtual T AddFilterWithOperator(IConditionBuilder @operator, IEvaluatableBuilder expression)
