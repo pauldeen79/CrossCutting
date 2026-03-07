@@ -9,9 +9,8 @@ public class BinaryAndOperatorEvaluatableHandlerTests : TestBase<BinaryAndOperat
         {
             // Arrange
             var parameterBag = new ParameterBag();
-            var evaluatable = new BinaryAndOperatorEvaluatableBuilder()
-                .WithLeftOperand(new EqualOperatorEvaluatableBuilder().WithLeftOperand(new LiteralEvaluatableBuilder(true)).WithRightOperand(new LiteralEvaluatableBuilder(true)))
-                .WithRightOperand(new EqualOperatorEvaluatableBuilder().WithLeftOperand(new LiteralEvaluatableBuilder(false)).WithRightOperand(new LiteralEvaluatableBuilder(false)))
+            var evaluatable = new LiteralEvaluatableBuilder(true).IsEqualTo(new LiteralEvaluatableBuilder(true))
+                .And(new LiteralEvaluatableBuilder(false).IsEqualTo(new LiteralEvaluatableBuilder(false)))
                 .Build();
             var sut = CreateSut();
             var callback = new EvaluatableSqlExpressionProvider([new LiteralEvaluatableHandler(), new EqualOperatorEvaluatableHandler()]);
