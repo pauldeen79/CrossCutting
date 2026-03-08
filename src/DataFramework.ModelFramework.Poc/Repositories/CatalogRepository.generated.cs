@@ -75,23 +75,5 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(builder, null, evaluatable, fieldNameProvider, token).ConfigureAwait(false))
                 .OnSuccessAsync(_ => EntityRetriever.FindManyAsync(builder.Build(), token)).ConfigureAwait(false);
         }
-
-        private static class Evaluatable
-        {
-            public static PropertyNameEvaluatable OfProperty(string propertyName)
-                => new PropertyNameEvaluatable(propertyName);
-
-            public static PropertyNameEvaluatable OfProperty(string propertyName, IEvaluatable operand)
-                => new PropertyNameEvaluatable(propertyName, operand);
-
-            public static LiteralEvaluatable<T> OfValue<T>(T value)
-                => new LiteralEvaluatable<T>(value);
-
-            public static DelegateEvaluatable<T> OfDelegate<T>(Func<T> @delegate)
-                => new DelegateEvaluatable<T>(@delegate);
-
-            public static ContextEvaluatable OfContext()
-                => new ContextEvaluatable();
-        }
     }
 }
