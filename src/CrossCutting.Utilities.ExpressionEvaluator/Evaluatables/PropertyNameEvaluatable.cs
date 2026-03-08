@@ -2,6 +2,10 @@
 
 public partial record PropertyNameEvaluatable
 {
+    public PropertyNameEvaluatable(string propertyName) : this(propertyName, new ContextEvaluatable())
+    {
+    }
+    
     public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => (await Operand.EvaluateAsync(context, token)
             .ConfigureAwait(false))

@@ -9,6 +9,8 @@ using CrossCutting.Data.Core;
 using CrossCutting.Data.Core.Builders;
 using CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables;
 using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
+using CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
+using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 using CrossCutting.Utilities.ExpressionEvaluator.Sql;
 using CrossCutting.Utilities.ExpressionEvaluator.Sql.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions;
@@ -60,7 +62,8 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             //     .WithLeftOperand(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
             //     .WithRightOperand(new LiteralEvaluatableBuilder("Something"))
             //     .BuildTyped();
-            var evaluatable = new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)).IsEqualTo("Something").BuildTyped();
+            //var evaluatable = new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)).IsEqualTo("Something").BuildTyped();
+            var evaluatable = new PropertyNameEvaluatable(nameof(Catalog.Name)).IsEqualTo("Something");
             var fieldNameProvider = new CatalogQueryFieldInfo([]);
 
             return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(builder, null, evaluatable, fieldNameProvider, token).ConfigureAwait(false))
