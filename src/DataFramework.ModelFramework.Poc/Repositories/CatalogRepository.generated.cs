@@ -1,12 +1,17 @@
-﻿using System.CodeDom.Compiler;
+﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using CrossCutting.Common;
 using CrossCutting.Common.Extensions;
 using CrossCutting.Common.Results;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core;
 using CrossCutting.Data.Core.Builders;
+using CrossCutting.Utilities.ExpressionEvaluator;
+using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
+using CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions;
 using CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables;
 using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
 using CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
@@ -63,11 +68,30 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             //     .WithRightOperand(new LiteralEvaluatableBuilder("Something"))
             //     .BuildTyped();
             //var evaluatable = new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)).IsEqualTo("Something").BuildTyped();
-            var evaluatable = new PropertyNameEvaluatable(nameof(Catalog.Name)).IsEqualTo("Something");
+            // var evaluatable = new PropertyNameEvaluatable(nameof(Catalog.Name)).IsEqualTo("Something");
+            var evaluatable = Evaluatable.OfProperty(nameof(Catalog.Name)).IsEqualTo("Something");
             var fieldNameProvider = new CatalogQueryFieldInfo([]);
 
             return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(builder, null, evaluatable, fieldNameProvider, token).ConfigureAwait(false))
                 .OnSuccessAsync(_ => EntityRetriever.FindManyAsync(builder.Build(), token)).ConfigureAwait(false);
+        }
+
+        private static class Evaluatable
+        {
+            public static PropertyNameEvaluatable OfProperty(string propertyName)
+                => new PropertyNameEvaluatable(propertyName);
+
+            public static PropertyNameEvaluatable OfProperty(string propertyName, IEvaluatable operand)
+                => new PropertyNameEvaluatable(propertyName, operand);
+
+            public static LiteralEvaluatable<T> OfValue<T>(T value)
+                => new LiteralEvaluatable<T>(value);
+
+            public static DelegateEvaluatable<T> OfDelegate<T>(Func<T> @delegate)
+                => new DelegateEvaluatable<T>(@delegate);
+
+            public static ContextEvaluatable OfContext()
+                => new ContextEvaluatable();
         }
     }
 }
