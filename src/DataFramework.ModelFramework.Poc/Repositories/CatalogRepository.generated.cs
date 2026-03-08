@@ -52,10 +52,10 @@ namespace DataFramework.ModelFramework.Poc.Repositories
         public async Task<Result<IReadOnlyCollection<Catalog>>> FindSomethingAsync(CancellationToken token)
         {
             // return QueryProcessor.FindManyAsync<Catalog>(new CatalogQueryBuilder()
-            //     .Where(nameof(Catalog.Name)).IsEqualTo("Something")
             //     // .AddConditions(new EqualConditionBuilder()
             //     //     .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
             //     //     .WithCompareExpression(new LiteralEvaluatableBuilder("Something")))
+            //     .Where(nameof(Catalog.Name)).IsEqualTo("Something")
             //     .Build(), null, token);
 
             var settings = new CatalogPagedEntityRetrieverSettings();
@@ -67,7 +67,7 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             //     .WithLeftOperand(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
             //     .WithRightOperand(new LiteralEvaluatableBuilder("Something"))
             //     .BuildTyped();
-            //var evaluatable = new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)).IsEqualTo("Something").BuildTyped();
+            // var evaluatable = new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)).IsEqualTo("Something").BuildTyped();
             // var evaluatable = new PropertyNameEvaluatable(nameof(Catalog.Name)).IsEqualTo("Something");
             var evaluatable = Evaluatable.OfProperty(nameof(Catalog.Name)).IsEqualTo("Something");
             var fieldNameProvider = new CatalogQueryFieldInfo([]);
