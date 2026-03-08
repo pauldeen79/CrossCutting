@@ -20,7 +20,7 @@ public class BinaryAndOperatorEvaluatableHandlerTests : TestBase<BinaryAndOperat
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe("@p0 = @p1 AND @p2 = @p3");
+            result.Value.ShouldBe("(@p0 = @p1 AND @p2 = @p3)");
         }
     }
 }

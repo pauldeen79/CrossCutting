@@ -14,6 +14,6 @@ public class BinaryAndOperatorEvaluatableHandler : IEvaluatableSqlExpressionProv
             .Add(nameof(BinaryAndOperatorEvaluatable.RightOperand), () => callback.GetExpressionAsync(context, binaryAndOperatorEvaluatable.RightOperand, fieldNameProvider, parameterBag, callback, token))
             .BuildAsync()
             .ConfigureAwait(false))
-            .OnSuccess(results => $"{results.GetValue(nameof(BinaryAndOperatorEvaluatable.LeftOperand))} AND {results.GetValue(nameof(BinaryAndOperatorEvaluatable.RightOperand))}");
+            .OnSuccess(results => $"({results.GetValue(nameof(BinaryAndOperatorEvaluatable.LeftOperand))} AND {results.GetValue(nameof(BinaryAndOperatorEvaluatable.RightOperand))})");
     }
 }

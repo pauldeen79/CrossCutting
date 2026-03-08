@@ -21,7 +21,7 @@ public class BinaryOrOperatorEvaluatableHandlerTests : TestBase<BinaryOrOperator
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe("@p0 = @p1 OR @p2 = @p3");
+            result.Value.ShouldBe("(@p0 = @p1 OR @p2 = @p3)");
         }
     }
 }
