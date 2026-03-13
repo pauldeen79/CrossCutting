@@ -18,6 +18,7 @@ using CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
 using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 using CrossCutting.Utilities.ExpressionEvaluator.Sql;
 using CrossCutting.Utilities.ExpressionEvaluator.Sql.Abstractions;
+using CrossCutting.Utilities.ExpressionEvaluator.Sql.Extensions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
@@ -59,21 +60,18 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             //     .Build(), null, token);
 
             var settings = new CatalogPagedEntityRetrieverSettings();
-            var builder = new SelectCommandBuilder()
-                .Select(settings.Fields)
-                .From(settings.TableName)
-                .OrderBy(settings.DefaultOrderBy);
+            var fieldNameProvider = new CatalogQueryFieldInfo([]);
+
             // var evaluatable = new EqualOperatorEvaluatableBuilder()
             //     .WithLeftOperand(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
             //     .WithRightOperand(new LiteralEvaluatableBuilder("Something"))
             //     .BuildTyped();
             // var evaluatable = new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)).IsEqualTo("Something").BuildTyped();
             // var evaluatable = new PropertyNameEvaluatable(nameof(Catalog.Name)).IsEqualTo("Something");
-            var evaluatable = Evaluatable.OfProperty(nameof(Catalog.Name)).IsEqualTo("Something");
-            var fieldNameProvider = new CatalogQueryFieldInfo([]);
+            var evaluatable = Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something");
 
-            return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(builder, null, evaluatable, fieldNameProvider, token).ConfigureAwait(false))
-                .OnSuccessAsync(_ => EntityRetriever.FindManyAsync(builder.Build(), token)).ConfigureAwait(false);
+            return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(settings, evaluatable, fieldNameProvider, token).ConfigureAwait(false))
+                .OnSuccessAsync(builder => EntityRetriever.FindManyAsync(builder, token)).ConfigureAwait(false);
         }
     }
 }

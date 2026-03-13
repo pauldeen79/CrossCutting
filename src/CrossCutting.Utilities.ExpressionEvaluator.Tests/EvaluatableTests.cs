@@ -3,10 +3,10 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Tests;
 public class EvaluatableTests : TestBase
 {
     [Fact]
-    public void OfProperty_Generates_Evaluatable_With_Property()
+    public void OfPropertyName_Generates_Evaluatable_With_Property()
     {
         // Act
-        var sut = Evaluatable.OfProperty("MyProperty");
+        var sut = Evaluatable.OfPropertyName("MyProperty");
 
         // Assert
         sut.ShouldBeOfType<PropertyNameEvaluatable>();
@@ -15,10 +15,10 @@ public class EvaluatableTests : TestBase
     }
 
     [Fact]
-    public void OfProperty_Generates_Evaluatable_With_NestedProperty()
+    public void OfPropertyName_Generates_Evaluatable_With_NestedProperty()
     {
         // Act
-        var sut = Evaluatable.OfProperty("MyNestedProperty", Evaluatable.OfProperty("MyProperty"));
+        var sut = Evaluatable.OfProperty("MyNestedProperty", Evaluatable.OfPropertyName("MyProperty"));
 
         // Assert
         sut.ShouldBeOfType<PropertyNameEvaluatable>();

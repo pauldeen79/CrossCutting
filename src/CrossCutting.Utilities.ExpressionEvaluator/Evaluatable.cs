@@ -2,7 +2,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator;
 
 public static class Evaluatable
 {
-    public static PropertyNameEvaluatable OfProperty(string propertyName)
+    public static PropertyNameEvaluatable OfPropertyName(string propertyName)
         => new PropertyNameEvaluatable(propertyName);
 
     public static PropertyNameEvaluatable OfProperty(string propertyName, IEvaluatable operand)
