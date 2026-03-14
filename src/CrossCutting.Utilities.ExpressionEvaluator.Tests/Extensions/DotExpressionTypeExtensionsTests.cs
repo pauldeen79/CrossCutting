@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.Extensions;
 
-public class DotExpressionTypeExtensionsTests
+public class DotExpressionTypeExtensionsTests : TestBase
 {
     public class ToMemberType : DotExpressionTypeExtensionsTests
     {
