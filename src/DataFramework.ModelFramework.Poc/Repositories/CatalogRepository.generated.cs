@@ -70,8 +70,9 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             // var evaluatable = new PropertyNameEvaluatable(nameof(Catalog.Name)).IsEqualTo("Something");
             var evaluatable = Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something");
 
-            return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(settings, evaluatable, fieldNameProvider, token).ConfigureAwait(false))
-                .OnSuccessAsync(builder => EntityRetriever.FindManyAsync(builder, token)).ConfigureAwait(false);
+            // return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(settings, evaluatable, fieldNameProvider, token).ConfigureAwait(false))
+            //     .OnSuccessAsync(builder => EntityRetriever.FindManyAsync(builder, token)).ConfigureAwait(false);
+            return await EntityRetriever.FindManyAsync(EvaluatableSqlExpressionProvider, settings, evaluatable, fieldNameProvider, token).ConfigureAwait(false);
         }
     }
 }

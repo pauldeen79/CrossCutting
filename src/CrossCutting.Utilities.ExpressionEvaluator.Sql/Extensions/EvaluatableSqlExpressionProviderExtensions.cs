@@ -1,5 +1,3 @@
-using CrossCutting.Data.Abstractions;
-
 namespace CrossCutting.Utilities.ExpressionEvaluator.Sql.Extensions;
 
 public static class EvaluatableSqlExpressionProviderExtensions

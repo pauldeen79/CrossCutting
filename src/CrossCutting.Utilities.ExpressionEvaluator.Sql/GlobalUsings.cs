@@ -5,6 +5,7 @@ global using System.Threading.Tasks;
 global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
+global using CrossCutting.Data.Abstractions;
 global using CrossCutting.Data.Core.Builders;
 global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
