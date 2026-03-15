@@ -59,4 +59,14 @@ public class EvaluatableTests : TestBase
         // Assert
         sut.ShouldBeOfType<ContextEvaluatable>();
     }
+    
+    [Fact]
+    public void Empty_Generates_Empty_Expression()
+    {
+        // Act
+        var sut = Evaluatable.Empty();
+
+        // Assert
+        sut.ShouldBeOfType<EmptyEvaluatable>();
+    }
 }

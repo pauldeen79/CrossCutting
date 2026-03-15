@@ -16,4 +16,10 @@ public static class Evaluatable
 
     public static ContextEvaluatable OfContext()
         => new ContextEvaluatable();    
+
+    public static EmptyEvaluatable Empty()
+        => new EmptyEvaluatable();
+
+    public static EmptyEvaluatable<T> Empty<T>()
+        => new EmptyEvaluatable<T>();
 }
