@@ -9,11 +9,11 @@ public class BinaryOrOperatorEvaluatableHandler : IEvaluatableSqlExpressionProvi
             return Result.Continue<string>();
         }      
         
-        return (await new AsyncResultDictionaryBuilder()
+        return (await new AsyncResultDictionaryBuilder<string>()
             .Add(nameof(BinaryOrOperatorEvaluatable.LeftOperand), () => callback.GetExpressionAsync(context, binaryOrOperatorEvaluatable.LeftOperand, fieldNameProvider, parameterBag, callback, token))
             .Add(nameof(BinaryOrOperatorEvaluatable.RightOperand), () => callback.GetExpressionAsync(context, binaryOrOperatorEvaluatable.RightOperand, fieldNameProvider, parameterBag, callback, token))
             .BuildAsync()
             .ConfigureAwait(false))
-            .OnSuccess(results => $"({results.GetValue(nameof(BinaryOrOperatorEvaluatable.LeftOperand))} OR {results.GetValue(nameof(BinaryOrOperatorEvaluatable.RightOperand))})");
+            .OnSuccess(results => BinaryOperatorEvaluatableHandlerUtil.GetSqlExpression(results, "OR"));
     }
 }
