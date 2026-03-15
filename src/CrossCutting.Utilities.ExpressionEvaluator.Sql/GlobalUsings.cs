@@ -1,16 +1,13 @@
-global using System;
 global using System.Collections.Generic;
+global using System.Collections.ObjectModel;
 global using System.Linq;
-global using System.Text.RegularExpressions;
 global using System.Threading;
 global using System.Threading.Tasks;
 global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
 global using CrossCutting.Data.Abstractions;
-global using CrossCutting.Data.Abstractions.Extensions;
 global using CrossCutting.Data.Core.Builders;
-global using CrossCutting.Data.Core.Commands;
 global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
 global using CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;

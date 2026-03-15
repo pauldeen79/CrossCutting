@@ -27,7 +27,7 @@ public static class EvaluatableSqlExpressionProviderExtensions
                 .From(settings.TableName)
                 .OrderBy(settings.DefaultOrderBy);
 
-        return (await instance.GetExpressionAsync(builder, context, condition, fieldNameProvider, token).ConfigureAwait(false))
-            .OnSuccess(_ => Result.Success(builder.Build()));
+        return (await instance.GetExpressionAsync(context, condition, fieldNameProvider, token).ConfigureAwait(false))
+            .OnSuccess(result => Result.Success(builder.Where(result.Expression).AppendParameters(result.Parameters).Build()));
     }
 }

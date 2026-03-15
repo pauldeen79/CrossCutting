@@ -11,9 +11,8 @@ public class EvaluatableSqlExpressionProvider : IEvaluatableSqlExpressionProvide
         _handlers = handlers;
     }
 
-    public async Task<Result> GetExpressionAsync(SelectCommandBuilder selectCommandBuilder, object? context, IEvaluatable<bool> condition, IFieldNameProvider fieldNameProvider, CancellationToken token)
+    public async Task<Result<SqlExpressionData>> GetExpressionAsync(object? context, IEvaluatable<bool> condition, IFieldNameProvider fieldNameProvider, CancellationToken token)
     {
-        selectCommandBuilder = ArgumentGuard.IsNotNull(selectCommandBuilder, nameof(selectCommandBuilder));
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
         fieldNameProvider = ArgumentGuard.IsNotNull(fieldNameProvider, nameof(fieldNameProvider));
         
@@ -25,19 +24,16 @@ public class EvaluatableSqlExpressionProvider : IEvaluatableSqlExpressionProvide
                 .EnsureValue();
             if (!handlerResult.IsSuccessful())
             {
-                return handlerResult;
+                return Result.FromExistingResult<SqlExpressionData>(handlerResult);
             }
 
             if (handlerResult.Status == ResultStatus.Ok)
             {
-                selectCommandBuilder
-                    .Where(handlerResult.Value!)
-                    .AppendParameters(parameterBag.Parameters);
-                return handlerResult;
+                return Result.Success(new SqlExpressionData(handlerResult.Value!, parameterBag.Parameters));
             }
         }
 
-        return Result.NotSupported($"No evaluatable sql expression provider handler found for condition type: {condition.GetType().FullName}");
+        return Result.NotSupported<SqlExpressionData>($"No evaluatable sql expression provider handler found for condition type: {condition.GetType().FullName}");
     }
 
     public async Task<Result<string>> GetExpressionAsync(object? context, IEvaluatable evaluatable, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, IEvaluatableSqlExpressionProviderHandler callback, CancellationToken token)

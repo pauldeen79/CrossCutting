@@ -2,9 +2,9 @@
 
 public interface IEvaluatableSqlExpressionProvider
 {
-    Task<Result> GetExpressionAsync(SelectCommandBuilder selectCommandBuilder,
-                                    object? context,
-                                    IEvaluatable<bool> condition,
-                                    IFieldNameProvider fieldNameProvider,
-                                    CancellationToken token);
+    Task<Result<SqlExpressionData>> GetExpressionAsync(
+        object? context,
+        IEvaluatable<bool> condition,
+        IFieldNameProvider fieldNameProvider,
+        CancellationToken token);
 }
