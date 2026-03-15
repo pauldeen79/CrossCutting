@@ -18,6 +18,7 @@ using CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
 using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 using CrossCutting.Utilities.ExpressionEvaluator.Sql;
 using CrossCutting.Utilities.ExpressionEvaluator.Sql.Abstractions;
+using CrossCutting.Utilities.ExpressionEvaluator.Sql.Extensions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
@@ -60,10 +61,6 @@ namespace DataFramework.ModelFramework.Poc.Repositories
 
             var settings = new CatalogPagedEntityRetrieverSettings();
             var fieldNameProvider = new CatalogQueryFieldInfo([]);
-            var builder = new SelectCommandBuilder()
-                .Select(settings.Fields)
-                .From(settings.TableName)
-                .OrderBy(settings.DefaultOrderBy);
             // var evaluatable = new EqualOperatorEvaluatableBuilder()
             //     .WithLeftOperand(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
             //     .WithRightOperand(new LiteralEvaluatableBuilder("Something"))
@@ -73,8 +70,8 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             IEvaluatable<bool> evaluatable = Evaluatable.Empty<bool>();
             evaluatable = evaluatable.And(Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something"));
 
-            return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(null, evaluatable, fieldNameProvider, token).ConfigureAwait(false))
-                .OnSuccessAsync(result => EntityRetriever.FindManyAsync(builder.Where(result.Expression).AppendParameters(result.Parameters).Build(), token)).ConfigureAwait(false);
+            return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(settings, evaluatable, fieldNameProvider, token).ConfigureAwait(false))
+                .OnSuccessAsync(result => EntityRetriever.FindManyAsync(result, token)).ConfigureAwait(false);
         }
     }
 }

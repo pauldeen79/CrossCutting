@@ -3,8 +3,8 @@
 public interface IEvaluatableSqlExpressionProvider
 {
     Task<Result<SqlExpressionData>> GetExpressionAsync(
-        object? context,
         IEvaluatable<bool> condition,
         IFieldNameProvider fieldNameProvider,
+        object? context,
         CancellationToken token);
 }

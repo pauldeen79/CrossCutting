@@ -11,7 +11,7 @@ public class EvaluatableSqlExpressionProvider : IEvaluatableSqlExpressionProvide
         _handlers = handlers;
     }
 
-    public async Task<Result<SqlExpressionData>> GetExpressionAsync(object? context, IEvaluatable<bool> condition, IFieldNameProvider fieldNameProvider, CancellationToken token)
+    public async Task<Result<SqlExpressionData>> GetExpressionAsync(IEvaluatable<bool> condition, IFieldNameProvider fieldNameProvider, object? context, CancellationToken token)
     {
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
         fieldNameProvider = ArgumentGuard.IsNotNull(fieldNameProvider, nameof(fieldNameProvider));
