@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Data.Core.Builders;
 
-public class UpdateCommandBuilder
+public class UpdateCommandBuilder : IBuilder<IDatabaseCommand>
 {
     public IDictionary<string, object> CommandParameters { get; set; }
     public string Table { get; set; }
@@ -87,7 +87,13 @@ public class UpdateCommandBuilder
     }
 
     public IDatabaseCommand Build()
+        => BuildTyped();
+
+    public SqlDatabaseCommand BuildTyped()
         => new SqlDatabaseCommand(BuildSql(), DatabaseCommandType.Text, DatabaseOperation.Update, CommandParameters);
+
+    public static implicit operator SqlDatabaseCommand(UpdateCommandBuilder instance)
+        => instance.BuildTyped();
 
     private string BuildSql()
     {

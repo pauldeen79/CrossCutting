@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Abstractions;
-
-namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.CodeGenerationProviders;
+﻿namespace CrossCutting.Utilities.QueryEvaluator.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 public class AbstractionsInterfaces(ICommandService commandService) : QueryEvaluatorCSharpClassBase(commandService)

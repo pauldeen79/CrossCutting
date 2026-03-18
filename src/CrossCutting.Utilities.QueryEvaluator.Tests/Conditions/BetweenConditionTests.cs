@@ -48,4 +48,27 @@ public class BetweenConditionTests : TestBase<BetweenCondition>
             result.ErrorMessage.ShouldBe("Object must be of type String.");
         }
     }
+
+    public class GetChildEvaluatables : BetweenConditionTests
+    {
+        [Fact]
+        public void Returns_Child_Evaluatables_Correctly()
+        {
+            // Arrange
+            var sourceValue = "this";
+            var lowerBoundValue = 13;
+            var upperBoundValue = 15;
+            var builder = new BetweenConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
+                .WithLowerBoundExpression(new LiteralEvaluatableBuilder(lowerBoundValue))
+                .WithUpperBoundExpression(new LiteralEvaluatableBuilder(upperBoundValue));
+            var sut = builder.Build();
+
+            // Act
+            var children = sut.GetContainedEvaluatables(true).ToArray();
+
+            // Assert
+            children.Length.ShouldBe(3);
+        }
+    }
 }

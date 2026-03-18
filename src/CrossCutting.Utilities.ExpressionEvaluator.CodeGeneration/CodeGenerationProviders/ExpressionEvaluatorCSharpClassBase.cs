@@ -25,8 +25,20 @@ public abstract class ExpressionEvaluatorCSharpClassBase(ICommandService command
             (
                 new MetadataBuilder(ClassFramework.Pipelines.MetadataNames.CustomBuilderDefaultValue, new Literal($"{typeof(CultureInfo).FullName}.{nameof(CultureInfo.InvariantCulture)}"))
             );
+
+        // Add support for builder pattern on abstractions on IEvaluatable
+        var evaluatableType = typeof(IEvaluatable);
+        foreach (var mapping in CreateBuilderAbstractionTypeConversionTypenameMappings(
+            evaluatableType.GetEntityClassName(),
+            evaluatableType.GetGenericTypeArgumentsString(),
+            Constants.Namespaces.UtilitiesExpressionEvaluatorAbstractions,
+            Constants.Namespaces.UtilitiesExpressionEvaluatorBuildersAbstractions,
+            Constants.Namespaces.UtilitiesExpressionEvaluator))
+        {
+            yield return mapping;
+        }
     }
 
-    // Skip builder pattern on abstractions (Most importantly, IOperator, because we generate them manually. But also on IParseResult, which is only used for removing code duplication on parse results)
+    // Skip builder pattern on abstractions (except for IEvaluatable, see previous comment)
     protected override bool UseBuilderAbstractionsTypeConversion => false;
 }

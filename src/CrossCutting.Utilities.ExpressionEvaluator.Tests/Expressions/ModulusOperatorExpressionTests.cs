@@ -16,11 +16,11 @@ public class ModulusOperatorExpressionTests : TestBase
 
             // Assert
             result.ShouldBeOfType<ModulusOperatorEvaluatableBuilder>();
-            var equalOperatorEvaluatableBuilder = (ModulusOperatorEvaluatableBuilder)result;
-            equalOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("4");
-            equalOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("2");
+            var modulusOperatorEvaluatableBuilder = (ModulusOperatorEvaluatableBuilder)result;
+            modulusOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)modulusOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("4");
+            modulusOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)modulusOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("2");
         }
     }
 

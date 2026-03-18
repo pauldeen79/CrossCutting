@@ -1,0 +1,24 @@
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
+
+public partial record PropertyNameEvaluatable
+{
+    public PropertyNameEvaluatable(string propertyName) : this(propertyName, new ContextEvaluatable())
+    {
+    }
+    
+    public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => (await Operand.EvaluateAsync(context, token)
+            .ConfigureAwait(false))
+            .EnsureNotNull("Expression evaluation returned null")
+            .EnsureValue("Expression evaluation result value is null")
+            .OnSuccess(valueResult =>
+            {
+                var property = valueResult.Value!.GetType().GetProperty(PropertyName, BindingFlags.Instance | BindingFlags.Public);
+                if (property is null)
+                {
+                    return Result.Error<object?>($"Type {valueResult.Value.GetType().FullName} does not contain property {PropertyName}");
+                }
+
+                return Result.WrapException<object?>(() => property.GetValue(valueResult.Value));
+            });
+}

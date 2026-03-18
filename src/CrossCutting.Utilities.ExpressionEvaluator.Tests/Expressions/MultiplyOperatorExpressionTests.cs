@@ -16,11 +16,11 @@ public class MultiplyOperatorExpressionTests : TestBase
 
             // Assert
             result.ShouldBeOfType<MultiplyOperatorEvaluatableBuilder>();
-            var equalOperatorEvaluatableBuilder = (MultiplyOperatorEvaluatableBuilder)result;
-            equalOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("4");
-            equalOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("2");
+            var multiplyOperatorEvaluatableBuilder = (MultiplyOperatorEvaluatableBuilder)result;
+            multiplyOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)multiplyOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("4");
+            multiplyOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)multiplyOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("2");
         }
     }
 

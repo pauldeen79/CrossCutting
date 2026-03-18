@@ -4,14 +4,13 @@ public class ConditionExpressionHandlerContext<TCondition>
 {
     public ConditionExpressionHandlerContext(
         StringBuilder builder,
-        IQueryContext context,
+        object? context,
         TCondition condition,
         IQueryFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
         ParameterBag parameterBag)
     {
         ArgumentGuard.IsNotNull(builder, nameof(builder));
-        ArgumentGuard.IsNotNull(context, nameof(context));
         ArgumentGuard.IsNotNull(condition, nameof(condition));
         ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
         ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
@@ -26,7 +25,7 @@ public class ConditionExpressionHandlerContext<TCondition>
     }
 
     public StringBuilder Builder { get; }
-    public IQueryContext Context { get; }
+    public object? Context { get; }
     public TCondition Condition { get; }
     public IQueryFieldInfo FieldInfo { get; }
     public ISqlExpressionProvider SqlExpressionProvider { get; }

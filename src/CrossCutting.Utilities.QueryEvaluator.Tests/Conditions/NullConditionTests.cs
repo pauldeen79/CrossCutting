@@ -79,4 +79,23 @@ public class NullConditionTests : TestBase<NullCondition>
             result.Value.ShouldBeTrue();
         }
     }
+
+    public class GetChildEvaluatables : NullConditionTests
+    {
+        [Fact]
+        public void Returns_Child_Evaluatables_Correctly()
+        {
+            // Arrange
+            var leftValue = "this";
+            var sut = new NullConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .Build();
+
+            // Act
+            var children = sut.GetContainedEvaluatables(true).ToArray();
+
+            // Assert
+            children.Length.ShouldBe(1);
+        }
+    }
 }

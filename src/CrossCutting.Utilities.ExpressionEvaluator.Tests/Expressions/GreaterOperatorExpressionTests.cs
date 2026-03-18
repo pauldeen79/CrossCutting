@@ -17,10 +17,10 @@ public class GreaterOperatorExpressionTests : TestBase
             // Assert
             result.ShouldBeOfType<GreaterOperatorEvaluatableBuilder>();
             var GreaterOperatorEvaluatableBuilder = (GreaterOperatorEvaluatableBuilder)result;
-            GreaterOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)GreaterOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
-            GreaterOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)GreaterOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
+            GreaterOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)GreaterOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("Dummy1");
+            GreaterOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)GreaterOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("Dummy2");
         }
     }
 

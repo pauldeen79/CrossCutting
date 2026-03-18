@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
 
-public partial record MultiplyOperatorEvaluatable
+public partial record MultiplyOperatorEvaluatable : IChildEvaluatablesContainer
 {
     public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => (await new AsyncResultDictionaryBuilder()
@@ -8,4 +8,10 @@ public partial record MultiplyOperatorEvaluatable
             .Add(nameof(RightOperand), () => RightOperand.EvaluateAsync(context, token))
             .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results => Multiply.Evaluate(results.GetValue(nameof(LeftOperand)), results.GetValue(nameof(RightOperand)), context.Settings.FormatProvider));
+
+    public IEnumerable<IEvaluatable> GetChildEvaluatables() =>
+    [
+        LeftOperand,
+        RightOperand
+    ];
 }

@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
-public class GreaterOrEqualThanConditionTests : TestBase<GreaterThanOrEqualCondition>
+public class GreaterThanOrEqualConditionTests : TestBase<GreaterThanOrEqualCondition>
 {
-    public class EvaluateAsync : GreaterOrEqualThanConditionTests
+    public class EvaluateAsync : GreaterThanOrEqualConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Integers()
@@ -45,7 +45,7 @@ public class GreaterOrEqualThanConditionTests : TestBase<GreaterThanOrEqualCondi
         }
     }
 
-    public class EvaluateTypedAsync : GreaterOrEqualThanConditionTests
+    public class EvaluateTypedAsync : GreaterThanOrEqualConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Integers()
@@ -65,6 +65,27 @@ public class GreaterOrEqualThanConditionTests : TestBase<GreaterThanOrEqualCondi
             // Assert
             result.ThrowIfNotSuccessful();
             result.Value.ShouldBeTrue();
+        }
+    }
+
+    public class GetChildEvaluatables : GreaterThanOrEqualConditionTests
+    {
+        [Fact]
+        public void Returns_Child_Evaluatables_Correctly()
+        {
+            // Arrange
+            var leftValue = 13;
+            var rightValue = 15;
+            var sut = new GreaterThanOrEqualConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .Build();
+
+            // Act
+            var children = sut.GetContainedEvaluatables(true).ToArray();
+
+            // Assert
+            children.Length.ShouldBe(2);
         }
     }
 }

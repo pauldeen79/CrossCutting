@@ -17,10 +17,10 @@ public class BinaryAndOperatorExpressionTests : TestBase
             // Assert
             result.ShouldBeOfType<BinaryAndOperatorEvaluatableBuilder>();
             var binaryAndOperatorEvaluatableBuilder = (BinaryAndOperatorEvaluatableBuilder)result;
-            binaryAndOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)binaryAndOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("true");
-            binaryAndOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)binaryAndOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("true");
+            binaryAndOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)binaryAndOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("true");
+            binaryAndOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)binaryAndOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("true");
         }
 
         [Fact]
@@ -36,12 +36,12 @@ public class BinaryAndOperatorExpressionTests : TestBase
             // Assert
             result.ShouldBeOfType<BinaryAndOperatorEvaluatableBuilder>();
             var binaryAndOperatorEvaluatableBuilder = (BinaryAndOperatorEvaluatableBuilder)result;
-            binaryAndOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<LiteralResultEvaluatable>();
-            ((LiteralResultEvaluatable)binaryAndOperatorEvaluatableBuilder.LeftOperand).Value.Status.ShouldBe(ResultStatus.Error);
-            ((LiteralResultEvaluatable)binaryAndOperatorEvaluatableBuilder.LeftOperand).Value.ErrorMessage.ShouldBe("x is unknown");
-            binaryAndOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<LiteralResultEvaluatable>();
-            ((LiteralResultEvaluatable)binaryAndOperatorEvaluatableBuilder.RightOperand).Value.Status.ShouldBe(ResultStatus.Error);
-            ((LiteralResultEvaluatable)binaryAndOperatorEvaluatableBuilder.RightOperand).Value.ErrorMessage.ShouldBe("y is unknown");
+            binaryAndOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<LiteralResultEvaluatableBuilder>();
+            ((LiteralResultEvaluatableBuilder)binaryAndOperatorEvaluatableBuilder.LeftOperand).Value.Status.ShouldBe(ResultStatus.Error);
+            ((LiteralResultEvaluatableBuilder)binaryAndOperatorEvaluatableBuilder.LeftOperand).Value.ErrorMessage.ShouldBe("x is unknown");
+            binaryAndOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<LiteralResultEvaluatableBuilder>();
+            ((LiteralResultEvaluatableBuilder)binaryAndOperatorEvaluatableBuilder.RightOperand).Value.Status.ShouldBe(ResultStatus.Error);
+            ((LiteralResultEvaluatableBuilder)binaryAndOperatorEvaluatableBuilder.RightOperand).Value.ErrorMessage.ShouldBe("y is unknown");
         }
     }
 

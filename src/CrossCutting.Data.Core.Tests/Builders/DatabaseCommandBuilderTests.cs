@@ -9,21 +9,47 @@ public class DatabaseCommandBuilderTests
         var sut = new DatabaseCommandBuilder();
 
         // Act
-        var actual = sut.Append("SELECT * FROM Fridge")
-                        .Append(" WHERE Alcohol > @percentage")
-                        .AppendParameter("percentage", 10)
-                        .Build();
+        var actual = sut
+            .Append("SELECT * FROM Fridge")
+            .Append(" WHERE Alcohol > @percentage")
+            .AppendParameter("percentage", 10)
+            .Build();
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT * FROM Fridge WHERE Alcohol > @percentage");
-        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
-        var parameters = actual.CommandParameters as IDictionary<string, object>;
-        if (parameters is not null)
-        {
-            parameters.Count.ShouldBe(1);
-            parameters.First().Key.ShouldBe("percentage");
-            parameters.First().Value.ShouldBe(10);
-        }
+        AssertCommand(actual);
+    }
+
+    [Fact]
+    public void Can_Build_DatabaseCommand_Using_Builder_Typed()
+    {
+        // Arrange
+        var sut = new DatabaseCommandBuilder();
+
+        // Act
+        var actual = sut
+            .Append("SELECT * FROM Fridge")
+            .Append(" WHERE Alcohol > @percentage")
+            .AppendParameter("percentage", 10)
+            .BuildTyped();
+
+        // Assert
+        AssertCommand(actual);
+    }
+
+    [Fact]
+    public void Can_Create_DatabaseCommand_Using_Builder_Implicit_Operator()
+    {
+        // Arrange
+        var sut = new DatabaseCommandBuilder();
+
+        // Act
+        SqlDatabaseCommand actual = sut
+            .Append("SELECT * FROM Fridge")
+            .Append(" WHERE Alcohol > @percentage")
+            .AppendParameter("percentage", 10);
+
+        // Assert
+        AssertCommand(actual);
     }
 
     [Fact]
@@ -45,6 +71,19 @@ public class DatabaseCommandBuilderTests
         if (parameters is not null)
         {
             parameters.Count.ShouldBe(0);
+        }
+    }
+
+    private static void AssertCommand(IDatabaseCommand actual)
+    {
+        actual.CommandText.ShouldBe("SELECT * FROM Fridge WHERE Alcohol > @percentage");
+        actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
+        var parameters = actual.CommandParameters as IDictionary<string, object>;
+        if (parameters is not null)
+        {
+            parameters.Count.ShouldBe(1);
+            parameters.First().Key.ShouldBe("percentage");
+            parameters.First().Value.ShouldBe(10);
         }
     }
 }

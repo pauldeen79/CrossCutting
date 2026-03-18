@@ -4,15 +4,14 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
 {
     public async Task<Result> GetConditionExpressionAsync(
         StringBuilder builder,
-        IQueryContext context,
-        ICondition condition,
+        object? context,
+        IEvaluatable<bool> condition,
         IQueryFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
         ParameterBag parameterBag,
         CancellationToken token)
     {
         builder = ArgumentGuard.IsNotNull(builder, nameof(builder));
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
         fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
         sqlExpressionProvider = ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
@@ -24,17 +23,17 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
         }
 
         var expressionHandlerContext = new ConditionExpressionHandlerContext<TCondition>(builder, context, typedCondition, fieldInfo, sqlExpressionProvider, parameterBag);
-        return await DoGetConditionExpressionAsync(expressionHandlerContext, token).ConfigureAwait(false);
+        return await GetConditionExpressionAsync(expressionHandlerContext, token).ConfigureAwait(false);
     }
 
-    protected abstract Task<Result> DoGetConditionExpressionAsync(
+    protected abstract Task<Result> GetConditionExpressionAsync(
         ConditionExpressionHandlerContext<TCondition> context,
         CancellationToken token);
 
     protected static async Task<Result> GetSimpleConditionExpressionAsync<T>(
         ConditionExpressionHandlerContext<T> context,
         ConditionParameters parameters,
-        CancellationToken token) where T : IDoubleExpressionContainer
+        CancellationToken token) where T : ICompareExpressionContainer
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         parameters = ArgumentGuard.IsNotNull(parameters, nameof(parameters));
@@ -49,7 +48,7 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
     protected static async Task<Result> GetStringConditionExpressionAsync<T>(
         ConditionExpressionHandlerContext<T> context,
         StringConditionParameters parameters,
-        CancellationToken token) where T : IDoubleExpressionContainer
+        CancellationToken token) where T : ICompareExpressionContainer
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
         parameters = ArgumentGuard.IsNotNull(parameters, nameof(parameters));

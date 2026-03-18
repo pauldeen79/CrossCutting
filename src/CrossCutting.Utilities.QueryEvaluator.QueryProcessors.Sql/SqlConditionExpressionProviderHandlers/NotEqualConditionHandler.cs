@@ -2,6 +2,6 @@
 
 public class NotEqualConditionHandler : ConditionExpressionHandlerBase<NotEqualCondition>
 {
-    protected override Task<Result> DoGetConditionExpressionAsync(ConditionExpressionHandlerContext<NotEqualCondition> context, CancellationToken token)
+    protected override Task<Result> GetConditionExpressionAsync(ConditionExpressionHandlerContext<NotEqualCondition> context, CancellationToken token)
         => GetSimpleConditionExpressionAsync(context, new ConditionParameters("<>"), token);
 }

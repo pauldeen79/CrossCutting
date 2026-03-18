@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Data.Core.Builders;
 
-public class SelectCommandBuilder
+public class SelectCommandBuilder : IBuilder<IDatabaseCommand>
 {
     public IDictionary<string, object> CommandParameters { get; set; }
     private readonly StringBuilder _selectBuilder;
@@ -131,7 +131,13 @@ public class SelectCommandBuilder
     }
 
     public IDatabaseCommand Build()
+        => BuildTyped();
+
+    public SqlDatabaseCommand BuildTyped()
         => new SqlDatabaseCommand(BuildSql(), DatabaseCommandType.Text, DatabaseOperation.Select, CommandParameters);
+
+    public static implicit operator SqlDatabaseCommand(SelectCommandBuilder instance)
+        => instance.BuildTyped();
 
     private string BuildSql()
     {

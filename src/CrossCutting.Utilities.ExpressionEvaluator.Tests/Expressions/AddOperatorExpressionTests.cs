@@ -16,11 +16,11 @@ public class AddOperatorExpressionTests : TestBase
 
             // Assert
             result.ShouldBeOfType<AddOperatorEvaluatableBuilder>();
-            var equalOperatorEvaluatableBuilder = (AddOperatorEvaluatableBuilder)result;
-            equalOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("4");
-            equalOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("2");
+            var addOperatorEvaluatableBuilder = (AddOperatorEvaluatableBuilder)result;
+            addOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)addOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("4");
+            addOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)addOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("2");
         }
     }
 

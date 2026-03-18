@@ -27,6 +27,7 @@ public abstract class TestBase
         var excludedTypes = new Type[] { typeof(IDateTimeProvider) };
         ClassFactoryDictionary = new ServiceCollection()
             .AddExpressionEvaluator()
+            .AddExpressionEvaluatorSql()
             .AddQueryEvaluatorInMemory()
             .AddQueryEvaluatorSql()
             .Where(sd => !excludedTypes.Contains(sd.ServiceType))

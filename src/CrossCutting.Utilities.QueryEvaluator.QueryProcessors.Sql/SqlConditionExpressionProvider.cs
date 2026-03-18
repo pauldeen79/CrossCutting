@@ -11,14 +11,13 @@ public class SqlConditionExpressionProvider : ISqlConditionExpressionProvider
     }
 
     public async Task<Result<string>> GetConditionExpressionAsync(
-        IQueryContext context,
+        object? context,
         ICondition condition,
         IQueryFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
         ParameterBag parameterBag,
         CancellationToken token)
     {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
         condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
         fieldInfo = ArgumentGuard.IsNotNull(fieldInfo, nameof(fieldInfo));
         sqlExpressionProvider = ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));

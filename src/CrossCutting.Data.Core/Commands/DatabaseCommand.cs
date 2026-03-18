@@ -19,7 +19,7 @@ public class DatabaseCommand<T> : IDatabaseCommand
                            DatabaseOperation operation,
                            Func<T, object?>? commandParametersDelegate)
     {
-        ArgumentGuard.IsNotNullOrEmpty(commandText, nameof(commandText));
+        ArgumentGuard.IsNotNullOrWhiteSpace(commandText, nameof(commandText));
 
         CommandText = commandText;
         CommandType = commandType;

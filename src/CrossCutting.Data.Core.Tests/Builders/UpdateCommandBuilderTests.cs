@@ -15,13 +15,13 @@ public class UpdateCommandBuilderTests
     }
 
     [Fact]
-    public void Build_Throws_When_FieldNames_Are_Empty()
+    public void BuildTyped_Throws_When_FieldNames_Are_Empty()
     {
         // Arrange
         var input = new UpdateCommandBuilder().WithTable("MyTable");
 
         // Act & Assert
-        Action a = () => input.Build();
+        Action a = () => input.BuildTyped();
         a.ShouldThrow<InvalidOperationException>()
          .Message.ShouldBe("field names are missing");
     }
@@ -82,7 +82,7 @@ public class UpdateCommandBuilderTests
     }
 
     [Fact]
-    public void Build_Generates_Command_With_Where_Statement()
+    public void Implicit_Operator_Generates_Command_With_Where_Statement()
     {
         // Arrange
         var input = new UpdateCommandBuilder()
@@ -94,7 +94,7 @@ public class UpdateCommandBuilderTests
             .And("Field3 = \"OldValue3\"");
 
         // Act
-        var actual = input.Build();
+        SqlDatabaseCommand actual = input;
 
         // Assert
         actual.Operation.ShouldBe(DatabaseOperation.Update);

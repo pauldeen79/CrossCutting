@@ -16,11 +16,11 @@ public class SubtractOperatorExpressionTests : TestBase
 
             // Assert
             result.ShouldBeOfType<SubtractOperatorEvaluatableBuilder>();
-            var equalOperatorEvaluatableBuilder = (SubtractOperatorEvaluatableBuilder)result;
-            equalOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("4");
-            equalOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpression>();
-            ((EvaluatableExpression)equalOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("2");
+            var subtractOperatorEvaluatableBuilder = (SubtractOperatorEvaluatableBuilder)result;
+            subtractOperatorEvaluatableBuilder.LeftOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)subtractOperatorEvaluatableBuilder.LeftOperand).SourceExpression.ShouldBe("4");
+            subtractOperatorEvaluatableBuilder.RightOperand.ShouldBeOfType<EvaluatableExpressionBuilder>();
+            ((EvaluatableExpressionBuilder)subtractOperatorEvaluatableBuilder.RightOperand).SourceExpression.ShouldBe("2");
         }
     }
 

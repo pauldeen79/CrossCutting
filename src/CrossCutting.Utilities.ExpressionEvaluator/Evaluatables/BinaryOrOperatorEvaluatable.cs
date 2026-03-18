@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Evaluatables;
 
-public partial record BinaryOrOperatorEvaluatable
+public partial record BinaryOrOperatorEvaluatable : IChildEvaluatablesContainer
 {
     public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => (await EvaluateTypedAsync(context, token).ConfigureAwait(false)).TryCast<object?>();
@@ -11,4 +11,10 @@ public partial record BinaryOrOperatorEvaluatable
             .Add(nameof(RightOperand), async () => (await RightOperand.EvaluateAsync(context, token).ConfigureAwait(false)).TryCast<bool>("Right operand should be of type boolean"))
             .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results => results.GetValue<bool>(nameof(LeftOperand)) || results.GetValue<bool>(nameof(RightOperand)));
+
+    public IEnumerable<IEvaluatable> GetChildEvaluatables() =>
+    [
+        LeftOperand,
+        RightOperand
+    ];
 }

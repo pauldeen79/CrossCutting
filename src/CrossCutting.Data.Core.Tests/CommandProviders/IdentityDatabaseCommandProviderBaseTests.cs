@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace CrossCutting.Data.Core.Tests.CommandProviders;
+﻿namespace CrossCutting.Data.Core.Tests.CommandProviders;
 
 public class IdentityDatabaseCommandProviderBaseTests
 {
