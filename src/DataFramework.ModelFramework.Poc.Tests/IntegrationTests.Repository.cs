@@ -107,4 +107,22 @@ public sealed partial class IntegrationTests
         actual.Value.ShouldHaveSingleItem();
         actual.Value.First().IsExistingEntity.ShouldBeTrue(); //set from CatalogEntityMapper
     }
+
+    [Fact]
+    public async Task Can_Use_EvaluatableSqlExpressionProvider_In_Paged_Query()
+    {
+        // Arrange
+        Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [Catalog]"),
+                                          () => new[] { new Catalog(1, "Diversen cd 1", DateTime.Today, DateTime.Now, DateTime.Now, "0000-0000", "CDT", "CDR", "CD-ROM", 1, 2, true, true, @"C:\", "Value", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null) });
+        Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [ExtraField]"),
+                                          () => new[] { new ExtraField("Catalog", "MyField", null, 1, typeof(string).FullName, true) });
+
+        // Act
+        var actual = await Repository.FindSomethingPagedAsync(0, 10, CancellationToken.None);
+
+        // Assert
+        actual.Status.ShouldBe(CrossCutting.Common.Results.ResultStatus.Ok);
+        actual.Value.ShouldHaveSingleItem();
+        actual.Value.First().IsExistingEntity.ShouldBeTrue(); //set from CatalogEntityMapper
+    }
 }

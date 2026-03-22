@@ -45,7 +45,7 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             var settings = new ExtraFieldPagedEntityRetrieverSettings();
 
             // return EntityRetriever.FindManyAsync(new SelectCommandBuilder()
-            //    .Select("*")
+            //    .Select(settings.Fields)
             //    .From(settings.TableName)
             //    .Where("EntityName = @entityName")
             //    .AppendParameter(nameof(entityName), entityName)
@@ -55,10 +55,6 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             return QueryProcessor.FindManyAsync<ExtraField>(new ExtraFieldQueryBuilder()
                 .Where(nameof(ExtraField.EntityName)).IsEqualTo(entityName)
                 .OrderBy(settings.DefaultOrderBy)
-                // .AddConditions(new EqualConditionBuilder()
-                //     .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(ExtraField.EntityName)))
-                //     .WithCompareExpression(new LiteralEvaluatableBuilder(entityName)))
-                // .AddSortOrders(new SortOrderBuilder(new PropertyNameEvaluatableBuilder(nameof(ExtraField.Name))))
                 .Build(), null, token);
         }
     }

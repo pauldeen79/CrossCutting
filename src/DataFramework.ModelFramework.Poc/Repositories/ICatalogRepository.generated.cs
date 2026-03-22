@@ -12,6 +12,7 @@ namespace DataFramework.ModelFramework.Poc.Repositories
     public partial interface ICatalogRepository : IRepository<Catalog, CatalogIdentity>
     {
         Task<Result<IReadOnlyCollection<Catalog>>> FindSomethingAsync(CancellationToken token);
+        Task<Result<IPagedResult<Catalog>>> FindSomethingPagedAsync(int offset, int pageSize, CancellationToken token);
     }
 }
 

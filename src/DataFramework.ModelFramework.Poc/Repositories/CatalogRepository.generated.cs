@@ -9,6 +9,7 @@ using CrossCutting.Common.Results;
 using CrossCutting.Data.Abstractions;
 using CrossCutting.Data.Core;
 using CrossCutting.Data.Core.Builders;
+using CrossCutting.Data.Sql.Builders;
 using CrossCutting.Utilities.ExpressionEvaluator;
 using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 using CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions;
@@ -53,20 +54,11 @@ namespace DataFramework.ModelFramework.Poc.Repositories
         public async Task<Result<IReadOnlyCollection<Catalog>>> FindSomethingAsync(CancellationToken token)
         {
             // return QueryProcessor.FindManyAsync<Catalog>(new CatalogQueryBuilder()
-            //     // .AddConditions(new EqualConditionBuilder()
-            //     //     .WithSourceExpression(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
-            //     //     .WithCompareExpression(new LiteralEvaluatableBuilder("Something")))
             //     .Where(nameof(Catalog.Name)).IsEqualTo("Something")
             //     .Build(), null, token);
 
             var settings = new CatalogPagedEntityRetrieverSettings();
             var fieldNameProvider = new CatalogQueryFieldInfo([]);
-            // var evaluatable = new EqualOperatorEvaluatableBuilder()
-            //     .WithLeftOperand(new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)))
-            //     .WithRightOperand(new LiteralEvaluatableBuilder("Something"))
-            //     .BuildTyped();
-            // var evaluatable = new PropertyNameEvaluatableBuilder(nameof(Catalog.Name)).IsEqualTo("Something").BuildTyped();
-            // var evaluatable = new PropertyNameEvaluatable(nameof(Catalog.Name)).IsEqualTo("Something");
             IEvaluatable<bool> evaluatable = Evaluatable.Empty<bool>();
             evaluatable = evaluatable.And(Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something"));
 
@@ -78,6 +70,26 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(evaluatable, fieldNameProvider, null, token).ConfigureAwait(false))
                 .OnSuccessAsync(result => EntityRetriever.FindManyAsync(builder.Where(result.Expression).AppendParameters(result.Parameters).Build(), token))
                 .ConfigureAwait(false);
+        }
+
+        public async Task<Result<IPagedResult<Catalog>>> FindSomethingPagedAsync(int offset, int pageSize, CancellationToken token)
+        {
+            var settings = new CatalogPagedEntityRetrieverSettings();
+            var fieldNameProvider = new CatalogQueryFieldInfo([]);
+
+            var builder = new PagedSelectCommandBuilder()
+                    .Select(settings.Fields)
+                    .From(settings.TableName)
+                    .Skip(offset)
+                    .Take(pageSize)
+                    .OrderBy(settings.DefaultOrderBy);
+
+            var evaluatable = Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something");
+
+            return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(evaluatable, fieldNameProvider, null, token).ConfigureAwait(false))
+                .OnSuccessAsync(result => EntityRetriever.FindPagedAsync(builder.Where(result.Expression).AppendParameters(result.Parameters).Build(), token))
+                .ConfigureAwait(false);
+            
         }
     }
 }
