@@ -12,30 +12,24 @@ public class ExpressionEvaluator : IExpressionEvaluator
     }
 
     public Result<object?> Evaluate(string expression, ExpressionEvaluatorSettings settings, object? context)
-    {
-        if (string.IsNullOrEmpty(expression))
-        {
-            return Result.Invalid<object?>("Value is required");
-        }
+         => Result.Validate<object?>(() => !string.IsNullOrEmpty(expression), "Value is required")
+            .OnSuccess(() =>
+            {
+                var expressionContext = new ExpressionEvaluatorContext(expression, settings, context, this);
 
-        var expressionContext = new ExpressionEvaluatorContext(expression, settings, context, this);
-
-        return _expressions
-            .Select(x => x.Evaluate(expressionContext))
-            .WhenNotContinue(() => Result.NotSupported<object?>($"Unknown expression type found in fragment: {expression}"));
-    }
+                return _expressions
+                    .Select(x => x.Evaluate(expressionContext))
+                    .WhenNotContinue(() => Result.NotSupported<object?>($"Unknown expression type found in fragment: {expression}"));
+            });
 
     public Result<Type> Validate(string expression, ExpressionEvaluatorSettings settings, object? context)
-    {
-        if (string.IsNullOrEmpty(expression))
-        {
-            return Result.Invalid<Type>("Value is required");
-        }
+         => Result.Validate<Type>(() => !string.IsNullOrEmpty(expression), "Value is required")
+            .OnSuccess(() =>
+            {
+                var expressionContext = new ExpressionEvaluatorContext(expression, settings, context, this);
 
-        var expressionContext = new ExpressionEvaluatorContext(expression, settings, context, this);
-
-        return _expressions
-            .Select(x => x.Validate(expressionContext))
-            .WhenNotContinue(() => Result.Invalid<Type>($"Unknown expression type found in fragment: {expression}"));
-    }
+                return _expressions
+                    .Select(x => x.Validate(expressionContext))
+                    .WhenNotContinue(() => Result.Invalid<Type>($"Unknown expression type found in fragment: {expression}"));
+            });
 }
