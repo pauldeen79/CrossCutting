@@ -8,7 +8,7 @@ public class QueryParser<TQueryBuilder, TQueryExpression> : IQueryParser<TQueryB
 
     private static readonly Dictionary<string, Func<IConditionBuilder>> _operatorMap = new(StringComparer.OrdinalIgnoreCase)
     {
-        { "=", ()=> new EqualConditionBuilder() },
+        { "=", () => new EqualConditionBuilder() },
         { "==", () => new EqualConditionBuilder() },
         { "<>", () => new NotEqualConditionBuilder() },
         { "!=", () => new NotEqualConditionBuilder() },

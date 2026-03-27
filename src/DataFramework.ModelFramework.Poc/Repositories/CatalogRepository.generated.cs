@@ -63,9 +63,9 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             evaluatable = evaluatable.And(Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something"));
 
             var builder = new SelectCommandBuilder()
-                    .Select(settings.Fields)
-                    .From(settings.TableName)
-                    .OrderBy(settings.DefaultOrderBy);
+                .Select(settings.Fields)
+                .From(settings.TableName)
+                .OrderBy(settings.DefaultOrderBy);
 
             return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(evaluatable, fieldNameProvider, null, token).ConfigureAwait(false))
                 .OnSuccessAsync(result => EntityRetriever.FindManyAsync(builder.Where(result.Expression).AppendParameters(result.Parameters).Build(), token))
@@ -78,18 +78,17 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             var fieldNameProvider = new CatalogQueryFieldInfo([]);
 
             var builder = new PagedSelectCommandBuilder()
-                    .Select(settings.Fields)
-                    .From(settings.TableName)
-                    .Skip(offset)
-                    .Take(pageSize)
-                    .OrderBy(settings.DefaultOrderBy);
+                .Select(settings.Fields)
+                .From(settings.TableName)
+                .Skip(offset)
+                .Take(pageSize)
+                .OrderBy(settings.DefaultOrderBy);
 
             var evaluatable = Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something");
 
             return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(evaluatable, fieldNameProvider, null, token).ConfigureAwait(false))
                 .OnSuccessAsync(result => EntityRetriever.FindPagedAsync(builder.Where(result.Expression).AppendParameters(result.Parameters).Build(), token))
-                .ConfigureAwait(false);
-            
+                .ConfigureAwait(false);            
         }
     }
 }

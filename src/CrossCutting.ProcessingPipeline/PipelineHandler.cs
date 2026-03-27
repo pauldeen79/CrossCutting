@@ -15,34 +15,34 @@ public class PipelineHandler<TCommand> : ICommandHandler<TCommand>
     }
 
     public async Task<Result> ExecuteAsync(TCommand command, ICommandService commandService, CancellationToken token)
-    {
-        ArgumentGuard.IsNotNull(command, nameof(command));
-
-        var results = new List<Result>();
-        foreach (var component in _components)
-        {
-            if (token.IsCancellationRequested)
+        => await Result.Validate(() => command is not null, "command is required")
+            .OnSuccessAsync(async () =>
             {
-                break;
-            }
+                var results = new List<Result>();
+                foreach (var component in _components)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
 
-            var result = await DoExecuteAsync(component, command, commandService, token)
-                .ConfigureAwait(false);
+                    var result = await DoExecuteAsync(component, command, commandService, token)
+                        .ConfigureAwait(false);
 
-            results.Add(result);
-            if (!result.IsSuccessful())
-            {
-                break;
-            }
-        }
+                    results.Add(result);
+                    if (!result.IsSuccessful())
+                    {
+                        break;
+                    }
+                }
 
-        return Result.Aggregate
-        (
-            results,
-            Result.Success(),
-            errors => Result.Error(errors, "An error occured while processing the pipeline. See the inner results for more details.")
-        );
-    }
+                return Result.Aggregate
+                (
+                    results,
+                    Result.Success(),
+                    errors => Result.Error(errors, "An error occured while processing the pipeline. See the inner results for more details.")
+                );
+            }).ConfigureAwait(false);
 
     private async Task<Result> DoExecuteAsync(IPipelineComponent<TCommand> component, TCommand command, ICommandService commandService, CancellationToken token)
     {
@@ -80,40 +80,40 @@ public class PipelineHandler<TCommand, TResponse> : ICommandHandler<TCommand, TR
     }
 
     public async Task<Result<TResponse>> ExecuteAsync(TCommand command, ICommandService commandService, CancellationToken token)
-    {
-        ArgumentGuard.IsNotNull(command, nameof(command));
-
-        var results = new List<Result>();
-
-        return await _responseGenerator.Generate<TResponse>(command!)
-            .EnsureValue()
-            .OnSuccessAsync(async response =>
+            => await Result.Validate<TResponse>(() => command is not null, "command is required")
+            .OnSuccessAsync(async () =>
             {
-                foreach (var component in _components)
-                {
-                    if (token.IsCancellationRequested)
+                var results = new List<Result>();
+
+                return await _responseGenerator.Generate<TResponse>(command!)
+                    .EnsureValue()
+                    .OnSuccessAsync(async response =>
                     {
-                        break;
-                    }
+                        foreach (var component in _components)
+                        {
+                            if (token.IsCancellationRequested)
+                            {
+                                break;
+                            }
 
-                    var result = await DoExecuteAsync(component, command, response.Value!, commandService, token)
-                        .ConfigureAwait(false);
+                            var result = await DoExecuteAsync(component, command, response.Value!, commandService, token)
+                                .ConfigureAwait(false);
 
-                    results.Add(result);
-                    if (!result.IsSuccessful())
-                    {
-                        break;
-                    }
-                }
+                            results.Add(result);
+                            if (!result.IsSuccessful())
+                            {
+                                break;
+                            }
+                        }
 
-                return Result.Aggregate
-                (
-                    results,
-                    Result.Success(response.Value!),
-                    errors => Result.Error<TResponse>(errors, "An error occured while processing the pipeline. See the inner results for more details.")
-                );
+                        return Result.Aggregate
+                        (
+                            results,
+                            Result.Success(response.Value!),
+                            errors => Result.Error<TResponse>(errors, "An error occured while processing the pipeline. See the inner results for more details.")
+                        );
+                    }).ConfigureAwait(false);
             }).ConfigureAwait(false);
-    }
 
     private async Task<Result> DoExecuteAsync(IPipelineComponent<TCommand, TResponse> component, TCommand command, TResponse response, ICommandService commandService, CancellationToken token)
     {

@@ -21,46 +21,33 @@ public class ExpressionStringEvaluator : IExpressionStringEvaluator
     }
 
     public Result<object?> Evaluate(string expressionString, ExpressionStringEvaluatorSettings settings, object? context, IFormattableStringParser? formattableStringParser)
-    {
-        if (expressionString is null)
-        {
-            return Result.Invalid<object?>("Expression string is required");
-        }
+        => Result.Validate<object?>(() => expressionString is not null, "Expression string is required")
+            .OnSuccess(() => 
+            {
+                var state = new ExpressionStringEvaluatorContext(expressionString, settings, context, this, formattableStringParser);
 
-        var state = new ExpressionStringEvaluatorContext(expressionString, settings, context, this, formattableStringParser);
-
-        return _expressionStrings
-            .Select(x => x.Evaluate(state))
-            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? EvaluateSimpleExpression(state);
-    }
+                return _expressionStrings
+                    .Select(x => x.Evaluate(state))
+                    .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                        ?? EvaluateSimpleExpression(state);
+            });
 
     public Result<Type> Validate(string expressionString, ExpressionStringEvaluatorSettings settings, object? context, IFormattableStringParser? formattableStringParser)
-    {
-        if (expressionString is null)
+        => Result.Validate<Type>(() => expressionString is not null, "Expression string is required")
+        .OnSuccess(() =>
         {
-            return Result.Invalid<Type>("Expression string is required");
-        }
+            var state = new ExpressionStringEvaluatorContext(expressionString, settings, context, this, formattableStringParser);
 
-        var state = new ExpressionStringEvaluatorContext(expressionString, settings, context, this, formattableStringParser);
-
-        return _expressionStrings
-            .Select(x => x.Validate(state))
-            .FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? ValidateSimpleExpression(state);
-    }
+            return _expressionStrings
+                .Select(x => x.Validate(state))
+                .FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                    ?? ValidateSimpleExpression(state);
+        });
 
     private Result<object?> EvaluateSimpleExpression(ExpressionStringEvaluatorContext context)
-    {
         // =something else, we can try function
-        var functionResult = _functionParser.Parse(context.Input.Substring(1), new FunctionParserSettings(context.Settings.FormatProvider, context.FormattableStringParser), context.Context);
-        if (!functionResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(functionResult);
-        }
-
-        return _functionEvaluator.Evaluate(functionResult.Value!, new FunctionEvaluatorSettings(context.Settings.FormatProvider, context.Settings.ValidateArgumentTypes), context.Context);
-    }
+         => _functionParser.Parse(context.Input.Substring(1), new FunctionParserSettings(context.Settings.FormatProvider, context.FormattableStringParser), context.Context)
+            .OnSuccess(functionResult => _functionEvaluator.Evaluate(functionResult.Value!, new FunctionEvaluatorSettings(context.Settings.FormatProvider, context.Settings.ValidateArgumentTypes), context.Context));
 
     private Result<Type> ValidateSimpleExpression(ExpressionStringEvaluatorContext context)
     {

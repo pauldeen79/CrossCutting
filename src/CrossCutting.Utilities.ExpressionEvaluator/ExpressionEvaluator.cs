@@ -21,44 +21,44 @@ public class ExpressionEvaluator : IExpressionEvaluator
     }
 
     public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
+        => await Result.Validate<object?>(() => context is not null, "context is required")
+        .OnSuccessAsync(async () =>
+        {
+            context = context.FromRoot();
 
-        context = context.FromRoot();
-
-        return await new ResultDictionaryBuilder()
-            .Add(() => context.Validate<object?>())
-            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull(TokenizeReturnedNullErrorMessage))
-            .Build()
-            .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
-            .EnsureNotNull("Parse returned null")
-            .EnsureValue("Parse result value is null")
-            .OnSuccessAsync(expression => expression.EvaluateAsync(context, token))
-            .ConfigureAwait(false);
-    }
+            return await new ResultDictionaryBuilder()
+                .Add(() => context.Validate<object?>())
+                .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull(TokenizeReturnedNullErrorMessage))
+                .Build()
+                .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
+                .EnsureNotNull("Parse returned null")
+                .EnsureValue("Parse result value is null")
+                .OnSuccessAsync(expression => expression.EvaluateAsync(context, token))
+                .ConfigureAwait(false);
+        }).ConfigureAwait(false);
 
     public async Task<Result<T>> EvaluateTypedAsync<T>(ExpressionEvaluatorContext context, CancellationToken token)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
+        => await Result.Validate<T>(() => context is not null, "context is required")
+        .OnSuccessAsync(async () =>
+        {
+            context = context.FromRoot();
 
-        context = context.FromRoot();
-
-        return await new ResultDictionaryBuilder()
-            .Add(() => context.Validate<object?>())
-            .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull(TokenizeReturnedNullErrorMessage))
-            .Build()
-            .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
-            .EnsureNotNull("Parse returned null")
-            .EnsureValue("Parse result value is null")
-            .OnSuccessAsync(async expression =>
-                expression is IExpression<T> typedExpression
-                    ? (await typedExpression.EvaluateTypedAsync(context, token).ConfigureAwait(false))
-                        .EnsureNotNull("EvaluateTypedAsync returned null")
-                    : (await expression.EvaluateAsync(context, token).ConfigureAwait(false))
-                        .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage)
-                        .TryCastAllowNull<T>())
-            .ConfigureAwait(false);
-    }
+            return await new ResultDictionaryBuilder()
+                .Add(() => context.Validate<object?>())
+                .Add(nameof(IExpressionTokenizer.Tokenize), () => _tokenizer.Tokenize(context).EnsureNotNull(TokenizeReturnedNullErrorMessage))
+                .Build()
+                .OnSuccess(results => _parser.Parse(context, results.GetValue<List<ExpressionToken>>(nameof(IExpressionTokenizer.Tokenize))))
+                .EnsureNotNull("Parse returned null")
+                .EnsureValue("Parse result value is null")
+                .OnSuccessAsync(async expression =>
+                    expression is IExpression<T> typedExpression
+                        ? (await typedExpression.EvaluateTypedAsync(context, token).ConfigureAwait(false))
+                            .EnsureNotNull("EvaluateTypedAsync returned null")
+                        : (await expression.EvaluateAsync(context, token).ConfigureAwait(false))
+                            .EnsureNotNull(EvaluateAsyncReturnedNullErrorMessage)
+                            .TryCastAllowNull<T>())
+                .ConfigureAwait(false);
+        }).ConfigureAwait(false);
 
     public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
