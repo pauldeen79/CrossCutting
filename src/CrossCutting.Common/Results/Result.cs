@@ -83,17 +83,12 @@ public record Result<T> : Result
         return this;
     }
 
-    // public static implicit operator Result<object?>(Result<T> result)
-    // {
-    //     result = ArgumentGuard.IsNotNull(result, nameof(result));
+    public static implicit operator Result<object?>(Result<T> result)
+    {
+        result = ArgumentGuard.IsNotNull(result, nameof(result));
 
-    //     return result.TryCastAllowNull<object?>();
-    // }
-
-    public static implicit operator Result<T>(T value)
-        => value is Result r
-            ? r.TryCastAllowNull<T>()
-            : Success(value);
+        return result.TryCastAllowNull<object?>();
+    }
 
     public Result<object?> FromResult()
         => TryCastAllowNull<object?>();

@@ -8,7 +8,7 @@ public class OnlyEqualsExpressionString : IExpressionString
 
         if (context.Input == "=")
         {
-            return context.Input;
+            return Result.Success<object?>(context.Input);
         }
 
         return Result.Continue<object?>();
@@ -20,7 +20,7 @@ public class OnlyEqualsExpressionString : IExpressionString
 
         if (context.Input == "=")
         {
-            return typeof(string);
+            return Result.Success(typeof(string));
         }
 
         return Result.Continue<Type>();

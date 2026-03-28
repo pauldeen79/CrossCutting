@@ -79,7 +79,7 @@ public abstract class DataProviderBase : IDataProvider
             }
         }
 
-        return true;
+        return Result.Success(true);
     }
 
     private static async Task<Result<bool>> EvaluateComplexConditions(IEnumerable<ICondition> conditions, ExpressionEvaluatorContext context, CancellationToken token)
@@ -106,7 +106,7 @@ public abstract class DataProviderBase : IDataProvider
                    .Append(suffix);
         }
 
-        return EvaluateBooleanExpression(builder.ToString());
+        return Result.Success(EvaluateBooleanExpression(builder.ToString()));
     }
 
     private static bool EvaluateBooleanExpression(string expression)

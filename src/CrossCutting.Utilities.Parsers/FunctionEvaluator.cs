@@ -153,7 +153,7 @@ public class FunctionEvaluator : IFunctionEvaluator
             return Result.Invalid<FunctionAndTypeDescriptor>($"Could not evaluate function {functionCallContext.FunctionCall.Name}, see inner results for more details", errors);
         }
 
-        return new FunctionAndTypeDescriptor(function, genericFunction, functionDescriptor.ReturnValueType);
+        return Result.Success(new FunctionAndTypeDescriptor(function, genericFunction, functionDescriptor.ReturnValueType));
     }
 
     private static Result<object?> EvaluateGenericFunction(FunctionAndTypeDescriptor result, FunctionCallContext functionCallContext)

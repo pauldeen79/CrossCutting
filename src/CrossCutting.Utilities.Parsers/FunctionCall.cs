@@ -9,7 +9,7 @@ public partial record FunctionCall
 
     public Result<object?> GetArgumentValueResult(int index, string argumentName, FunctionCallContext context, object? defaultValue)
         => index + 1 > Arguments.Count
-            ? defaultValue
+            ? Result.Success(defaultValue)
             : Arguments.ElementAt(index).Evaluate(context);
 
     public Result<T> GetArgumentValueResult<T>(int index, string argumentName, FunctionCallContext context)
@@ -19,7 +19,7 @@ public partial record FunctionCall
 
     public Result<T?> GetArgumentValueResult<T>(int index, string argumentName, FunctionCallContext context, T? defaultValue)
         => index + 1 > Arguments.Count
-            ? defaultValue
+            ? Result.Success(defaultValue)
             : Arguments.ElementAt(index).Evaluate(context).TryCastAllowNull<T>().Transform(value => value is null ? defaultValue : value);
 
     public Result<string> GetArgumentStringValueResult(int index, string argumentName, FunctionCallContext context)
@@ -107,7 +107,7 @@ public partial record FunctionCall
 
         if (argumentValueResult.Value is int i1)
         {
-            return i1;
+            return Result.Success(i1);
         }
 
         if (argumentValueResult.Value is not string s)
@@ -122,7 +122,7 @@ public partial record FunctionCall
         }
 
         return parseResult.Value is int i2
-            ? i2
+            ? Result.Success(i2)
             : Result.Invalid<int>($"{argumentName} is not of type integer");
     }
 
@@ -135,7 +135,7 @@ public partial record FunctionCall
 
         if (argumentValueResult.Value is long l1)
         {
-            return l1;
+            return Result.Success(l1);
         }
 
         if (argumentValueResult.Value is not string s)
@@ -150,7 +150,7 @@ public partial record FunctionCall
         }
 
         return parseResult.Value is long l2
-            ? l2
+            ? Result.Success(l2)
             : Result.Invalid<long>($"{argumentName} is not of type long integer");
     }
 
@@ -163,7 +163,7 @@ public partial record FunctionCall
 
         if (argumentValueResult.Value is decimal d1)
         {
-            return d1;
+            return Result.Success(d1);
         }
 
         if (argumentValueResult.Value is not string s)
@@ -178,7 +178,7 @@ public partial record FunctionCall
         }
 
         return parseResult.Value is decimal d2
-            ? d2
+            ? Result.Success(d2)
             : Result.Invalid<decimal>($"{argumentName} is not of type decimal");
     }
 
@@ -191,7 +191,7 @@ public partial record FunctionCall
 
         if (argumentValueResult.Value is bool b1)
         {
-            return b1;
+            return Result.Success(b1);
         }
 
         if (argumentValueResult.Value is not string s)
@@ -206,7 +206,7 @@ public partial record FunctionCall
         }
 
         return parseResult.Value is bool b2
-            ? b2
+            ? Result.Success(b2)
             : Result.Invalid<bool>($"{argumentName} is not of type boolean");
     }
 
@@ -219,7 +219,7 @@ public partial record FunctionCall
 
         if (argumentValueResult.Value is DateTime dt1)
         {
-            return dt1;
+            return Result.Success(dt1);
         }
 
         if (argumentValueResult.Value is not string s)
@@ -233,7 +233,7 @@ public partial record FunctionCall
         }
 
         return parseResult.Value is DateTime dt2
-            ? dt2
+            ? Result.Success(dt2)
             : Result.Invalid<DateTime>($"{argumentName} is not of type datetime");
     }
 
@@ -245,7 +245,7 @@ public partial record FunctionCall
         }
 
         return argumentValueResult.Value is string stringValue
-            ? stringValue
+            ? Result.Success(stringValue)
             : Result.Invalid<string>($"{argumentName} is not of type string");
     }
 }

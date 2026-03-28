@@ -22,14 +22,14 @@ public class SqlExpressionHandler : SqlExpressionProviderHandlerBase<SqlExpressi
 
             return string.IsNullOrEmpty(databaseFieldName)
                 ? Result.NotFound<string>($"Expression contains unknown field [{propertyNameEvaluatable.PropertyName}]")
-                : databaseFieldName!;
+                : Result.Success(databaseFieldName!);
         }
         else
         {
             var expressionEvaluatorContext = new ExpressionEvaluatorContext(new ExpressionEvaluatorSettingsBuilder(), _expressionEvaluator, context);
 
             return (await expression.SourceExpression.EvaluateAsync(expressionEvaluatorContext, token).ConfigureAwait(false))
-                .OnSuccess(value => parameterBag.CreateQueryParameterName(value));
+                .OnSuccess(value => Result.Success(parameterBag.CreateQueryParameterName(value)));
         }
     }
 }

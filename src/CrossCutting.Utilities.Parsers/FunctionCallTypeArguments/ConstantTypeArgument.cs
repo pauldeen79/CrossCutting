@@ -5,8 +5,8 @@ public partial record ConstantTypeArgument
     public override bool IsDynamic => false;
 
     public override Result<Type> Evaluate(FunctionCallContext context)
-        => Value;
+        => Result.Success(Value);
 
     public override Result<Type> Validate(FunctionCallContext context)
-        => typeof(Type);
+        => Result.Success(typeof(Type));
 }

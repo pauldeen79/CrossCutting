@@ -12,7 +12,7 @@ public class PropertyNameEvaluatableHandler : IEvaluatableSqlExpressionProviderH
 
             return string.IsNullOrEmpty(databaseFieldName)
                 ? Result.NotFound<string>($"Expression contains unknown field [{propertyNameEvaluatable.PropertyName}]")
-                : databaseFieldName!;
+                : Result.Success(databaseFieldName!);   
         }
         
         return Result.Continue<string>();

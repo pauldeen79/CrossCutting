@@ -20,7 +20,7 @@ public class EmptyExpressionString : IExpressionString
 
         if (string.IsNullOrEmpty(context.Input))
         {
-            return typeof(string);
+            return Result.Success(typeof(string));
         }
 
         return Result.Continue<Type>();

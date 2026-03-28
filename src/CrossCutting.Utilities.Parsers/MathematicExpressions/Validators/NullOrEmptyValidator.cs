@@ -9,6 +9,6 @@ internal sealed class NullOrEmptyValidator : IMathematicExpressionValidator
             return Result.Invalid<MathematicExpressionState>("Input cannot be null or empty");
         }
 
-        return state;
+        return Result.Success(state);
     }
 }

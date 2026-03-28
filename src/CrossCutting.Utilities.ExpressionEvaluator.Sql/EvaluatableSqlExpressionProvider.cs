@@ -29,7 +29,7 @@ public class EvaluatableSqlExpressionProvider : IEvaluatableSqlExpressionProvide
 
             if (handlerResult.Status == ResultStatus.Ok)
             {
-                return new SqlExpressionData(handlerResult.Value!, parameterBag.Parameters);
+                return Result.Success(new SqlExpressionData(handlerResult.Value!, parameterBag.Parameters));
             }
         }
 

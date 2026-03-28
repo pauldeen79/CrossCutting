@@ -9,7 +9,7 @@ public class DelegateResultEvaluatableTests : TestBase
         {
             // Arrange
             var context = CreateContext("Dummy");
-            var sut = new DelegateResultEvaluatable<string>(() => "Hello world!");
+            var sut = new DelegateResultEvaluatable<string>(() => Result.Success("Hello world!"));
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);

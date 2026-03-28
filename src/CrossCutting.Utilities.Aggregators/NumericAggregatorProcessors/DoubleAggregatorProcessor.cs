@@ -12,6 +12,6 @@ public static class DoubleAggregatorProcessor
         }
 
         var d2 = Convert.ToDouble(secondValue, formatProvider);
-        return aggregatorDelegate.Invoke(d1, d2);
+        return Result.Success(aggregatorDelegate.Invoke(d1, d2));
     }
 }

@@ -9,7 +9,7 @@ public class LiteralResultEvaluatableTests : TestBase
         {
             // Arrange
             var context = CreateContext("Dummy");
-            var sut = new LiteralResultEvaluatable<string>("Hello world!");
+            var sut = new LiteralResultEvaluatable<string>(Result.Success("Hello world!"));
 
             // Act
             var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);

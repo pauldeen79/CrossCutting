@@ -15,10 +15,10 @@ public class DefaultFunctionParserNameProcessor : IFunctionParserNameProcessor
 
         if (greatestIndex > -1)
         {
-            return ParseName(input.Substring(greatestIndex + 1));
+            return Result.Success(ParseName(input.Substring(greatestIndex + 1)));
         }
 
-        return ParseName(input);
+        return Result.Success(ParseName(input));
     }
 
     private static FunctionNameAndTypeArguments ParseName(string input)

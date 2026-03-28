@@ -53,7 +53,7 @@ public class QueryProcessor : IQueryProcessor
 
         return firstItem is null
             ? Result.NotFound<TResult>()
-            : firstItem;
+            : Result.Success(firstItem);
     }
 
     public async Task<Result<IPagedResult<TResult>>> FindPagedAsync<TResult>(IQuery query, object? context, CancellationToken token)

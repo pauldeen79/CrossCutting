@@ -31,12 +31,12 @@ public class FormattableStringExpressionString : IExpressionString
             // =@"string value" -> literal, no functions but formattable strings possible
             return context.FormattableStringParser is not null
                 ? Result.FromExistingResult(context.FormattableStringParser.Validate(context.Input.Substring(3, context.Input.Length - 4), new FormattableStringParserSettingsBuilder().WithFormatProvider(context.Settings.FormatProvider).Build(), context.Context), typeof(FormattableString))
-                : typeof(FormattableString);
+                : Result.Success(typeof(FormattableString));
         }
         else if (context.Input.StartsWith("=\"") && context.Input.EndsWith("\""))
         {
             // ="string value" -> literal, no functions and no formattable strings possible
-            return typeof(FormattableString);
+            return Result.Success(typeof(FormattableString));
         }
 
         return Result.Continue<Type>();

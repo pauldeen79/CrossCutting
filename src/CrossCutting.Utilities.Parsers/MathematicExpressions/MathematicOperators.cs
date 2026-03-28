@@ -58,6 +58,6 @@ public class MathematicOperators : IMathematicExpression
             } while (state.Position > -1);
         }
 
-        return state;
+        return Result.Success(state);
     }
 }

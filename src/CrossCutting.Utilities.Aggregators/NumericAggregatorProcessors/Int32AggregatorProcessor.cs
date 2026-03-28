@@ -12,6 +12,6 @@ public static class Int32AggregatorProcessor
         }
 
         var i2 = Convert.ToInt32(secondValue, formatProvider);
-        return aggregatorDelegate.Invoke(i1, i2);
+        return Result.Success(aggregatorDelegate.Invoke(i1, i2));
     }
 }

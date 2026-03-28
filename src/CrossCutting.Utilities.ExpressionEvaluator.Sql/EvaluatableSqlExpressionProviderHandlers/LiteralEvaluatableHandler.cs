@@ -11,6 +11,6 @@ public class LiteralEvaluatableHandler : IEvaluatableSqlExpressionProviderHandle
             return Result.Continue<string>();
         }      
         
-        return parameterBag.CreateQueryParameterName(literalEvaluatable.Value);
+        return Result.Success(parameterBag.CreateQueryParameterName(literalEvaluatable.Value));
     }
 }

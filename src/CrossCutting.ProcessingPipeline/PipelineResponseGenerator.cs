@@ -28,7 +28,7 @@ public class PipelineResponseGenerator : IPipelineResponseGenerator
 
         if (ctor is not null)
         {
-            return (T)ctor.Invoke([]);
+            return Result.Success((T)ctor.Invoke([]));
         }
 
         return Result.NotSupported<T>($"Response of type {typeof(T)} could not be constructed");

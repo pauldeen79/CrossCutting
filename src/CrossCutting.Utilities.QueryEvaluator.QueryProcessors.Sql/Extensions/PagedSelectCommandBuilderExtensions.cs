@@ -46,14 +46,14 @@ internal static class PagedSelectCommandBuilderExtensions
             instance.Select(result.Value!);
         }
 
-        return instance;
+        return Result.Success(instance);
     }
 
     internal static Result<PagedSelectCommandBuilder> Distinct(this PagedSelectCommandBuilder instance, IQueryContext context)
     {
         var fieldSelectionQuery = context.Query as IFieldSelectionQuery;
 
-        return instance.DistinctValues(fieldSelectionQuery?.Distinct == true);
+        return Result.Success(instance.DistinctValues(fieldSelectionQuery?.Distinct == true));
     }
 
     internal static Result<PagedSelectCommandBuilder> Top(this PagedSelectCommandBuilder instance,
@@ -63,9 +63,9 @@ internal static class PagedSelectCommandBuilderExtensions
     {
         var limit = context.Query.Limit.IfNotGreaterThan(settings.OverridePageSize, customLimit);
 
-        return limit > 0
+        return Result.Success(limit > 0
             ? instance.WithTop(limit)
-            : instance;
+            : instance);
     }
 
     internal static Result<PagedSelectCommandBuilder> Offset(this PagedSelectCommandBuilder instance,
@@ -74,15 +74,15 @@ internal static class PagedSelectCommandBuilderExtensions
     {
         var offset = context.Query.Offset.GetValueOrDefault(customPageSize.GetValueOrDefault());
 
-        return offset > 0
+        return Result.Success(offset > 0
             ? instance.Skip(offset)
-            : instance;
+            : instance);
     }
 
     internal static Result<PagedSelectCommandBuilder> From(this PagedSelectCommandBuilder instance,
                                                            IQueryContext context,
                                                            IPagedDatabaseEntityRetrieverSettings settings)
-        => instance.From(context.Query.GetTableName(settings.TableName));
+        => Result.Success(instance.From(context.Query.GetTableName(settings.TableName)));
 
     internal static async Task<Result<PagedSelectCommandBuilder>> Where(this PagedSelectCommandBuilder instance,
                                                                         PagedSelectCommandBuilderContext context,
@@ -91,7 +91,7 @@ internal static class PagedSelectCommandBuilderExtensions
     {
         if (context.QueryContext.Query.Conditions.Count == 0 && string.IsNullOrEmpty(context.Settings.DefaultWhere))
         {
-            return instance;
+            return Result.Success(instance);
         }
 
         if (!string.IsNullOrEmpty(context.Settings.DefaultWhere))
@@ -120,7 +120,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 : instance.Or(value));
         }
 
-        return instance;
+        return Result.Success(instance);
     }
 
     internal static async Task<Result<PagedSelectCommandBuilder>> OrderBy(this PagedSelectCommandBuilder instance,
@@ -133,7 +133,7 @@ internal static class PagedSelectCommandBuilderExtensions
         }
         else
         {
-            return instance;
+            return Result.Success(instance);
         }
     }
 
@@ -162,7 +162,7 @@ internal static class PagedSelectCommandBuilderExtensions
             instance.OrderBy(context.Settings.DefaultOrderBy);
         }
 
-        return instance;
+        return Result.Success(instance);
     }
 
     internal static Result<PagedSelectCommandBuilder> AddParameters(this PagedSelectCommandBuilder instance,
@@ -174,6 +174,6 @@ internal static class PagedSelectCommandBuilderExtensions
             instance.AppendParameter(parameter.Key, parameter.Value!);
         }
 
-        return instance;
+        return Result.Success(instance);
     }
 }

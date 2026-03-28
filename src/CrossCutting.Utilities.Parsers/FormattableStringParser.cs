@@ -31,7 +31,7 @@ public class FormattableStringParser : IFormattableStringParser
     {
         if (string.IsNullOrEmpty(format))
         {
-            return new GenericFormattableString(string.Empty, []);
+            return Result.Success(new GenericFormattableString(string.Empty, []));
         }
 
         // Handle escaped markers (e.g., {{ -> {)
@@ -92,8 +92,8 @@ public class FormattableStringParser : IFormattableStringParser
         remainder = ReplaceTemporaryDelimiters(remainder, results);
 
         return validateOnly
-            ? Result.Aggregate(results, new GenericFormattableString(string.Empty, []), validationResults => Result.Invalid<GenericFormattableString>("Validation failed, see inner results for details", validationResults))
-            : new GenericFormattableString(remainder, [.. results.Where(x => x.Value is not null).Select(x => x.Value!.ToString(settings.FormatProvider))]);
+            ? Result.Aggregate(results, Result.Success(new GenericFormattableString(string.Empty, [])), validationResults => Result.Invalid<GenericFormattableString>("Validation failed, see inner results for details", validationResults))
+            : Result.Success(new GenericFormattableString(remainder, [.. results.Where(x => x.Value is not null).Select(x => x.Value!.ToString(settings.FormatProvider))]));
     }
 
     private Result<GenericFormattableString> ProcessRecursive(string format, FormattableStringParserSettings settings, object? context, Result<GenericFormattableString> placeholderResult, bool validateOnly, int currentRecursionLevel)

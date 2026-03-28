@@ -8,7 +8,7 @@ public class StringExpression : IExpression
 
         return context.Expression.StartsWith("\"") switch
         {
-            true when context.Expression.EndsWith("\"") => context.Expression.Substring(1, context.Expression.Length - 2),
+            true when context.Expression.EndsWith("\"") => Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2)),
             _ => Result.Continue<object?>()
         };
     }
@@ -19,7 +19,7 @@ public class StringExpression : IExpression
 
         return context.Expression.StartsWith("\"") switch
         {
-            true when context.Expression.EndsWith("\"") => typeof(string),
+            true when context.Expression.EndsWith("\"") => Result.Success(typeof(string)),
             _ => Result.Continue<Type>()
         };
     }

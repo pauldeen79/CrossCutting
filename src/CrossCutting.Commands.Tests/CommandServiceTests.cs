@@ -118,7 +118,7 @@ public class CommandServiceTests
             // Arrange
             var handler = Substitute.For<ICommandHandler<MyCommand, MyResponse>>();
             handler.ExecuteAsync(Arg.Any<MyCommand>(), Arg.Any<ICommandService>(), Arg.Any<CancellationToken>())
-                    .Returns(new MyResponse());
+                    .Returns(Result.Success(new MyResponse()));
             var command = new MyCommand();
             var sut = new CommandService([], [handler]);
 
@@ -135,7 +135,7 @@ public class CommandServiceTests
             // Arrange
             var handler = Substitute.For<ICommandHandler<MyCommand, MyResponse>>();
             handler.ExecuteAsync(Arg.Any<MyCommand>(), Arg.Any<ICommandService>(), Arg.Any<CancellationToken>())
-                    .Returns(new MyResponse());
+                    .Returns(Result.Success(new MyResponse()));
             var interceptor = Substitute.For<ICommandInterceptor>();
             interceptor.ExecuteAsync(Arg.Any<MyCommand>(), Arg.Any<ICommandService>(), Arg.Any<Func<Task<Result<MyResponse>>>>(), Arg.Any<CancellationToken>())
                        .Returns(x => x.ArgAt<Func<Task<Result<MyResponse>>>>(2)());

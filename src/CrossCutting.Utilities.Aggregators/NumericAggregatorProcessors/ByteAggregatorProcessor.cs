@@ -12,6 +12,6 @@ public static class ByteAggregatorProcessor
         }
 
         var b2 = Convert.ToByte(secondValue, formatProvider);
-        return aggregatorDelegate.Invoke(b1, b2);
+        return Result.Success(aggregatorDelegate.Invoke(b1, b2));
     }
 }

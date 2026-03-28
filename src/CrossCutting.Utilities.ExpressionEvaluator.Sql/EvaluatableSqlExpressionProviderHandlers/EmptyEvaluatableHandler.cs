@@ -9,6 +9,6 @@ public class EmptyEvaluatableHandler : IEvaluatableSqlExpressionProviderHandler
             return Result.Continue<string>();
         }      
         
-        return string.Empty;
+        return Result.Success(string.Empty);
     }
 }

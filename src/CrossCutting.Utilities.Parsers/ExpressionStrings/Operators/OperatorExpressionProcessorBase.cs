@@ -61,7 +61,7 @@ public abstract class OperatorExpressionProcessorBase : IExpressionString
             return rightResult;
         }
 
-        return typeof(bool);
+        return Result.Success(typeof(bool));
     }
 
     protected abstract Result<bool> PerformOperator(object? leftValue, object? rightValue);

@@ -12,7 +12,7 @@ public class LiteralResultEvaluatableHandler : IEvaluatableSqlExpressionProvider
         }      
         
         return literalResultEvaluatable.Value.Status.IsSuccessful()
-            ? parameterBag.CreateQueryParameterName(literalResultEvaluatable.Value.Value)
+            ? Result.Success(parameterBag.CreateQueryParameterName(literalResultEvaluatable.Value.Value))
             : Result.FromExistingResult<string>(literalResultEvaluatable.Value);
     }
 }

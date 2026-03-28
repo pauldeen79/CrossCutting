@@ -40,37 +40,37 @@ public static class NumericAggregator
 
         if (type1 == typeof(byte))
         {
-            return typeof(byte);
+            return Result.Success(typeof(byte));
         }
 
         if (type1 == typeof(short))
         {
-            return typeof(short);
+            return Result.Success(typeof(short));
         }
 
         if (type1 == typeof(int))
         {
-            return typeof(int);
+            return Result.Success(typeof(int));
         }
 
         if (type1 == typeof(long))
         {
-            return typeof(long);
+            return Result.Success(typeof(long));
         }
 
         if (type1 == typeof(float))
         {
-            return typeof(float);
+            return Result.Success(typeof(float));
         }
 
         if (type1 == typeof(double))
         {
-            return typeof(double);
+            return Result.Success(typeof(double));
         }
 
         if (type1 == typeof(decimal))
         {
-            return typeof(decimal);
+            return Result.Success(typeof(decimal));
         }
 
         return Result.Invalid<Type>($"Unsupported type: {type1.FullName}");

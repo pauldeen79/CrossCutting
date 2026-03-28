@@ -28,13 +28,13 @@ public class LiteralExpressionString : IExpressionString
         if (context.Input.StartsWith("\'="))
         {
             // escaped expression string
-            return typeof(string);
+            return Result.Success(typeof(string));
         }
 
         if (!context.Input.StartsWith("="))
         {
             // literal
-            return typeof(string);
+            return Result.Success(typeof(string));
         }
 
         return Result.Continue<Type>();

@@ -9,6 +9,6 @@ internal sealed class StartWithOperatorValidator : IMathematicExpressionValidato
             return Result.NotFound<MathematicExpressionState>($"Input cannot start with an operator");
         }
 
-        return state;
+        return Result.Success(state);
     }
 }

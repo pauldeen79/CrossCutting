@@ -5,11 +5,11 @@ public partial record DelegateArgument<T>
     public override bool IsDynamic => true;
 
     public Result<T> EvaluateTyped(FunctionCallContext context)
-        => Delegate();
+        => Result.Success(Delegate());
 
     public override Result<object?> Evaluate(FunctionCallContext context)
-        => Delegate();
+        => Result.Success<object?>(Delegate());
 
     public override Result<Type> Validate(FunctionCallContext context)
-        => ValidationDelegate?.Invoke()!;
+        => Result.Success(ValidationDelegate?.Invoke()!);
 }
