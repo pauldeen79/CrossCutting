@@ -15,7 +15,7 @@ public class CommandService : ICommandService
     }
 
     public async Task<Result> ExecuteAsync<TCommand>(TCommand command, CancellationToken token)
-        => await Result.Validate(() => command is not null, "command is required")
+        => await Result.EnsureNotNull<TCommand>(command, nameof(command))
             .OnSuccessAsync(async () =>
             {
                 var handlers = _handlers.OfType<ICommandHandler<TCommand>>().ToArray();
@@ -29,7 +29,7 @@ public class CommandService : ICommandService
             }).ConfigureAwait(false);
 
     public async Task<Result<TResponse>> ExecuteAsync<TCommand, TResponse>(TCommand command, CancellationToken token)
-        => await Result.Validate<TResponse>(() => command is not null, "command is required")
+        => await Result.EnsureNotNull<TResponse>(command, nameof(command))
             .OnSuccessAsync(async () =>
             {
                 var handlers = _handlers.OfType<ICommandHandler<TCommand, TResponse>>().ToArray();

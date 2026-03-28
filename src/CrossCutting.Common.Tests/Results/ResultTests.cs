@@ -2958,4 +2958,64 @@ public class ResultTests
             result.ErrorMessage.ShouldBe("Invalid!");
         }
     }
+
+    public class EnsureNotNull_Untyped : ResultTests
+    {
+        [Fact]
+        public void Returns_Continue_When_Validation_Succeeds()
+        {
+            // Arrange
+            object? input = new object();
+
+            // Act
+            var result = Result.EnsureNotNull(input, nameof(input));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Validation_Fails()
+        {
+            // Arrange
+            object? input = default;
+
+            // Act
+            var result = Result.EnsureNotNull(input, nameof(input));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("input is required");
+        }
+    }
+
+    public class EnsureNotNull_Typed : ResultTests
+    {
+        [Fact]
+        public void Returns_Continue_When_Validation_Succeeds()
+        {
+            // Arrange
+            object? input = new object();
+
+            // Act
+            var result = Result.EnsureNotNull<object?>(input, nameof(input));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Validation_Fails()
+        {
+            // Arrange
+            object? input = default;
+
+            // Act
+            var result = Result.EnsureNotNull<object?>(input, nameof(input));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("input is required");
+        }
+    }
 }

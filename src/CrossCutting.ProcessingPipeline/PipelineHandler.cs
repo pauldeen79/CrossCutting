@@ -15,7 +15,7 @@ public class PipelineHandler<TCommand> : ICommandHandler<TCommand>
     }
 
     public async Task<Result> ExecuteAsync(TCommand command, ICommandService commandService, CancellationToken token)
-        => await Result.Validate(() => command is not null, "command is required")
+        => await Result.EnsureNotNull<TCommand>(command, nameof(command))
             .OnSuccessAsync(async () =>
             {
                 var results = new List<Result>();

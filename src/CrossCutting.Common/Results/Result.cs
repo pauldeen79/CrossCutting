@@ -574,4 +574,24 @@ public record Result
 
         return Continue<T>();
     }
+
+    public static Result EnsureNotNull(object? value, string memberName)
+    {
+        if (value is null)
+        {
+            return Invalid($"{memberName} is required");
+        }
+
+        return Continue();
+    }
+
+    public static Result<T> EnsureNotNull<T>(object? value, string memberName)
+    {
+        if (value is null)
+        {
+            return Invalid<T>($"{memberName} is required");
+        }
+
+        return Continue<T>();
+    }
 }
