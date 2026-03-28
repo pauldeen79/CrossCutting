@@ -8,5 +8,5 @@ public partial record ConstantResultTypeArgument
         => Value;
 
     public override Result<Type> Validate(FunctionCallContext context)
-        => Result.Success(typeof(Type));
+        => typeof(Type);
 }

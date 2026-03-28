@@ -282,7 +282,7 @@ public static class ResultExtensions
         var result = instance.EnsureNotNull().EnsureValue();
         if (result.IsSuccessful())
         {
-            return Result.Success(successDelegate(result.Value!));
+            return successDelegate(result.Value!);
         }
 
         return Result.FromExistingResult<TTarget>(result);
@@ -346,7 +346,7 @@ public static class ResultExtensions
         var result = instance.EnsureNotNull().EnsureValue();
         if (result.IsSuccessful())
         {
-            return Result.Success(await successDelegate(result.Value!).ConfigureAwait(false));
+            return await successDelegate(result.Value!).ConfigureAwait(false);
         }
 
         return Result.FromExistingResult<TTarget>(result);

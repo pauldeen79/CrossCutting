@@ -20,8 +20,8 @@ public class BooleanExpression : IExpression
 
         return context.IsNotNull(nameof(context)).Expression switch
         {
-            "true" => Result.Success(typeof(bool)),
-            "false" => Result.Success(typeof(bool)),
+            "true" => typeof(bool),
+            "false" => typeof(bool),
             _ => Result.Continue<Type>()
         };
     }

@@ -11,6 +11,6 @@ public class ContextEvaluatableHandler : IEvaluatableSqlExpressionProviderHandle
             return Result.Continue<string>();
         }      
         
-        return Result.Success(parameterBag.CreateQueryParameterName(context));
+        return parameterBag.CreateQueryParameterName(context);
     }
 }

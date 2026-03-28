@@ -109,7 +109,7 @@ public class PipelineHandler<TCommand, TResponse> : ICommandHandler<TCommand, TR
                         return Result.Aggregate
                         (
                             results,
-                            Result.Success(response.Value!),
+                            response.Value!,
                             errors => Result.Error<TResponse>(errors, "An error occured while processing the pipeline. See the inner results for more details.")
                         );
                     }).ConfigureAwait(false);

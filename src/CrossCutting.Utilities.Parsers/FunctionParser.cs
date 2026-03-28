@@ -77,7 +77,7 @@ public class FunctionParser : IFunctionParser
         } while (remainder.IndexOf("(") > -1 || remainder.IndexOf(")") > -1);
 
         return remainder.EndsWith(TemporaryDelimiter)
-            ? Result.Success(results[results.Count - 1])
+            ? results[results.Count - 1]
             : Result.NotFound<FunctionCall>("Input has additional characters after last close bracket");
     }
 

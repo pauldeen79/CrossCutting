@@ -34,6 +34,6 @@ public partial record ExpressionTypeArgument
             return Result.Invalid<Type>($"Unknown type: {Expression}");
         }
 
-        return Result.Success(type);
+        return type;
     }
 }

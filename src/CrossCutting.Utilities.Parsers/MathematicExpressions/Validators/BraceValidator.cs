@@ -31,6 +31,6 @@ internal sealed class BraceValidator : IMathematicExpressionValidator
             return Result.NotFound<MathematicExpressionState>($"Missing {bracketCount} close brace{suffix}");
         }
 
-        return Result.Success(state);
+        return state;
     }
 }

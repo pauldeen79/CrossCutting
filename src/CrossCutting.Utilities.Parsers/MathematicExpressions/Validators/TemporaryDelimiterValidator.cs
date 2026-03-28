@@ -9,6 +9,6 @@ internal sealed class TemporaryDelimiterValidator : IMathematicExpressionValidat
             return Result.Invalid<MathematicExpressionState>($"Input cannot contain {MathematicExpressionEvaluator.TemporaryDelimiter}, as this is used internally for formatting");
         }
 
-        return Result.Success(state);
+        return state;
     }
 }

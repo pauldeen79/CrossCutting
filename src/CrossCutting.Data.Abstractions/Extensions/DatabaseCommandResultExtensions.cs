@@ -10,6 +10,6 @@ public static class DatabaseCommandResultExtensions
             return Result.Error<T>(exceptionMessage);
         }
 
-        return Result.Success(instance.Data!);
+        return instance.Data;
     }
 }

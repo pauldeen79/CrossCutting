@@ -58,27 +58,27 @@ public class NumericExpression : IExpression
 
         if (isWholeNumber.Value && int.TryParse(context.Expression, NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out _))
         {
-            return Result.Success(typeof(int));
+            return typeof(int);
         }
 
         if (isWholeNumber.Value && long.TryParse(context.Expression, NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out _))
         {
-            return Result.Success(typeof(long));
+            return typeof(long);
         }
 
         if (isLongNumber.Value && long.TryParse(context.Expression.Substring(0, context.Expression.Length - 1), NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out _))
         {
-            return Result.Success(typeof(long));
+            return typeof(long);
         }
 
         if (isFloatingPoint.Value && context.Expression.Contains('.') && decimal.TryParse(context.Expression, NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out _))
         {
-            return Result.Success(typeof(decimal));
+            return typeof(decimal);
         }
 
         if ((isWholeDecimal.Value || isFloatingPointDecimal.Value) && decimal.TryParse(context.Expression.Substring(0, context.Expression.Length - 1), NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out _))
         {
-            return Result.Success(typeof(decimal));
+            return typeof(decimal);
         }
 
         return Result.Continue<Type>();

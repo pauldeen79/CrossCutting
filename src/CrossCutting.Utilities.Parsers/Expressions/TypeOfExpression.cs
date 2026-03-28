@@ -42,7 +42,7 @@ public class TypeOfExpression : IExpression
                 return Result.Invalid<Type>($"Unknown type: {typename}");
             }
 
-            return Result.Success(typeof(Type));
+            return typeof(Type);
         }
         else
         {

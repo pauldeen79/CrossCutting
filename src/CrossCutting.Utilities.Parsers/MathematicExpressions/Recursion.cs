@@ -38,6 +38,6 @@ public class Recursion : IMathematicExpression
 
         } while (state.Remainder.IndexOf(")") > -1);
 
-        return Result.Success(state);
+        return state;
     }
 }

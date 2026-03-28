@@ -5,11 +5,11 @@ public partial record ConstantArgument<T>
     public override bool IsDynamic => false;
 
     public Result<T> EvaluateTyped(FunctionCallContext context)
-        => Result.Success(Value);
+        => Value;
 
     public override Result<object?> Evaluate(FunctionCallContext context)
-        => Result.Success<object?>(Value);
+        => Value;
 
     public override Result<Type> Validate(FunctionCallContext context)
-        => Result.Success(Value?.GetType()!);
+        => Value?.GetType()!;
 }

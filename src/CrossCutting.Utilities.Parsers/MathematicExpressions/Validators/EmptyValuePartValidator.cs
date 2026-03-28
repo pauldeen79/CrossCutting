@@ -9,6 +9,6 @@ internal sealed class EmptyValuePartValidator : IMathematicExpressionValidator
             return Result.NotFound<MathematicExpressionState>($"Input cannot contain operators without values between them");
         }
 
-        return Result.Success(state);
+        return state;
     }
 }

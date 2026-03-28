@@ -10,19 +10,19 @@ public static class BinaryOperatorEvaluatableHandlerUtil
 
             if (string.IsNullOrEmpty(leftOperand) && string.IsNullOrEmpty(rightOperand))
             {
-                return Result.Success(string.Empty);
+                return string.Empty;
             }
 
             if (string.IsNullOrEmpty(leftOperand))
             {
-                return Result.Success(rightOperand);
+                return rightOperand;
             }
 
             if (string.IsNullOrEmpty(rightOperand))
             {
-                return Result.Success(leftOperand);
+                return leftOperand;
             }
 
-            return Result.Success($"({leftOperand} {combinator} {rightOperand})");
+            return $"({leftOperand} {combinator} {rightOperand})";
         });
 }

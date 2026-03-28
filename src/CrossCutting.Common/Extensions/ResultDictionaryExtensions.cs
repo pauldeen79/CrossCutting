@@ -43,7 +43,7 @@ public static class ResultDictionaryExtensions
         return error switch
         {
             not null => error,
-            _ => Result.Success(successDelegate(resultDictionary))
+            _ => successDelegate(resultDictionary)
         };
     }
 
@@ -82,7 +82,7 @@ public static class ResultDictionaryExtensions
         return error switch
         {
             not null => Result.FromExistingResult<T>(error),
-            _ => Result.Success(successDelegate(resultDictionary))
+            _ => successDelegate(resultDictionary)
         };
     }
 

@@ -3,9 +3,9 @@
 public static class In
 {
     public static Result<bool> Evaluate(object? leftValue, object? rightValue, StringComparison? stringComparison)
-        => Result.Success(leftValue is null
+        => leftValue is null
             ? ValueContainsNull(rightValue)
-            : leftValue.In(stringComparison.GetValueOrDefault(StringComparison.CurrentCulture), GetValues(rightValue)));
+            : leftValue.In(stringComparison.GetValueOrDefault(StringComparison.CurrentCulture), GetValues(rightValue));
 
     private static bool ValueContainsNull(object? value)
         => value is not string and IEnumerable enumerable
