@@ -72,7 +72,7 @@ public sealed class IntegrationTests : IDisposable
     private sealed class MyBooleanFunction : ITypedFunction<bool>
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-            => EvaluateTyped(context);
+            => EvaluateTyped(context).TryCast<object?>();
 
         public Result<bool> EvaluateTyped(FunctionCallContext context)
             => new ResultDictionaryBuilder()

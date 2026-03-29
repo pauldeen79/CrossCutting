@@ -8,7 +8,7 @@ public class ContextExpression : IExpression
 
         return context.Expression switch
         {
-            "context" => Result.Success(context.Context),
+            "context" => context.Context,
             _ => Result.Continue<object?>()
         };
     }
@@ -19,7 +19,7 @@ public class ContextExpression : IExpression
 
         return context.Expression switch
         {
-            "context" => Result.Success(context.Context?.GetType()!),
+            "context" => context.Context?.GetType()!,
             _ => Result.Continue<Type>()
         };
     }

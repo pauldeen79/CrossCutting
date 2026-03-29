@@ -23,7 +23,9 @@ public class IndexerExpressionComponent : IExpressionComponent
             .BuildAsync(token)
             .ConfigureAwait(false);
 
-        return Result.Success(results.GetValue<IEnumerable>(Constants.Expression).OfType<object?>().ElementAtOrDefault(results.GetValue<int>(Index)));
+        return results.GetValue<IEnumerable>(Constants.Expression)
+            .OfType<object?>()
+            .ElementAtOrDefault(results.GetValue<int>(Index));
     }
 
     public async Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)

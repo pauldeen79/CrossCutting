@@ -22,7 +22,7 @@ public class MidFunction : IFunction
                 var length = results.GetValue<int>("Length");
 
                 return stringExpression.Length >= index + length
-                    ? Result.Success<object?>(stringExpression.Substring(index, length))
+                    ? stringExpression.Substring(index, length)
                     : Result.Invalid<object?>("Index and length must refer to a location within the string");
             });
     }

@@ -31,7 +31,7 @@ public class EmptyArgumentTests
         var result = sut.Evaluate(context);
 
         // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.NoContent);
         result.Value.ShouldBeNull();
     }
 

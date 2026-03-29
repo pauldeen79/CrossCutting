@@ -16,7 +16,7 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
         var result = state.FunctionParseResult.EnsureValue();
         if (!result.IsSuccessful())
         {
-            return result;
+            return result.TryCast<object?>();
         }
 
         var functionCall = state.FunctionParseResult.Value!;
@@ -92,6 +92,6 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
                 return Result.Invalid<Type>($"Method {functionCall.Name} on type {state.ResultType!.FullName} has multiple overloads with {functionCall.Arguments.Count} arguments, this is not supported");
             }
 
-            return Result.Success(methods[0].ReturnType);
+            return methods[0].ReturnType;
         }, token);
 }

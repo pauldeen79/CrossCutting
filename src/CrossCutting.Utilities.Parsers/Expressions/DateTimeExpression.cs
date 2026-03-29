@@ -8,7 +8,7 @@ public class DateTimeExpression : IExpression
 
         return context.Expression switch
         {
-            not null when DateTime.TryParse(context.Expression, context.Settings.FormatProvider, DateTimeStyles.None, out var dt) => Result.Success<object?>(dt),
+            not null when DateTime.TryParse(context.Expression, context.Settings.FormatProvider, DateTimeStyles.None, out var dt) => dt,
             _ => Result.Continue<object?>()
         };
     }
@@ -19,7 +19,7 @@ public class DateTimeExpression : IExpression
 
         return context.Expression switch
         {
-            not null when DateTime.TryParse(context.Expression, context.Settings.FormatProvider, DateTimeStyles.None, out _) => Result.Success(typeof(DateTime)),
+            not null when DateTime.TryParse(context.Expression, context.Settings.FormatProvider, DateTimeStyles.None, out _) => typeof(DateTime),
             _ => Result.Continue<Type>()
         };
     }

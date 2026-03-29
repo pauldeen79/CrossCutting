@@ -9,13 +9,13 @@ public class LiteralExpressionString : IExpressionString
         if (context.Input.StartsWith("\'="))
         {
             // escaped expression string
-            return Result.Success<object?>(context.Input.Substring(1));
+            return context.Input.Substring(1);
         }
 
         if (!context.Input.StartsWith("="))
         {
             // literal
-            return Result.Success<object?>(context.Input);
+            return context.Input;
         }
 
         return Result.Continue<object?>();
@@ -28,13 +28,13 @@ public class LiteralExpressionString : IExpressionString
         if (context.Input.StartsWith("\'="))
         {
             // escaped expression string
-            return Result.Success(typeof(string));
+            return typeof(string);
         }
 
         if (!context.Input.StartsWith("="))
         {
             // literal
-            return Result.Success(typeof(string));
+            return typeof(string);
         }
 
         return Result.Continue<Type>();

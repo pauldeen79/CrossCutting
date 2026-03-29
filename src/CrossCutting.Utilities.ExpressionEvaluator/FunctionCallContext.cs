@@ -68,7 +68,7 @@ public class FunctionCallContext
 
     public Result<T> GetInstanceValueResult<T>()
         => InstanceValue is T typedValue
-            ? Result.Success(typedValue)
+            ? typedValue
             : Result.Error<T>(GetInstanceValueErrorMessage<T>());
 
     public Task<Result<T>> GetInstanceValueResultAsync<T>(CancellationToken token)

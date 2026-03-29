@@ -28,12 +28,12 @@ public class StringSubstringMethod : IMethod
                 if (length is null)
                 {
                     return sourceValue.Length >= index
-                        ? Result.Success<object?>(sourceValue.Substring(index))
+                        ? sourceValue.Substring(index)
                         : Result.Invalid<object?>("Index must refer to a location within the string");
                 }
 
                 return sourceValue.Length >= index + length
-                    ? Result.Success<object?>(sourceValue.Substring(index, length.Value))
+                    ? sourceValue.Substring(index, length.Value)
                     : Result.Invalid<object?>("Index and length must refer to a location within the string");
             });
     }

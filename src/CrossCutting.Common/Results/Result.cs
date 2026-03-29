@@ -83,15 +83,13 @@ public record Result<T> : Result
         return this;
     }
 
-    public static implicit operator Result<object?>(Result<T> result)
-    {
-        result = ArgumentGuard.IsNotNull(result, nameof(result));
-
-        return result.TryCastAllowNull<object?>();
-    }
-
     public Result<object?> FromResult()
         => TryCastAllowNull<object?>();
+
+#pragma warning disable CA2225 // Provide a method named 'ToResult' or 'FromT' as an alternate for operator op_Implicit
+    public static implicit operator Result<T>(T value)
+#pragma warning restore CA2225 // Provide a method named 'ToResult' or 'FromT' as an alternate for operator op_Implicit
+        => From(value);
 }
 
 public record Result
@@ -561,4 +559,42 @@ public record Result
 
         return Continue();
     }
+
+    public static Result<T> Validate<T>(Func<bool> validationPredicate, string errorMessage)
+    {
+        ArgumentGuard.IsNotNull(validationPredicate, nameof(validationPredicate));
+
+        var result = validationPredicate();
+        if (!result)
+        {
+            return Invalid<T>(errorMessage);
+        }
+
+        return Continue<T>();
+    }
+
+    public static Result EnsureNotNull(object? value, string memberName)
+    {
+        if (value is null)
+        {
+            return Invalid($"{memberName} is required");
+        }
+
+        return Continue();
+    }
+
+    public static Result<T> EnsureNotNull<T>(object? value, string memberName)
+    {
+        if (value is null)
+        {
+            return Invalid<T>($"{memberName} is required");
+        }
+
+        return Continue<T>();
+    }
+
+    public static Result<T> From<T>(T value)
+        => value is Result r
+            ? r.TryCastAllowNull<T>()
+            : Success(value);
 }

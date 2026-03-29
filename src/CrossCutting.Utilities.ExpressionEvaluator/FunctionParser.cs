@@ -99,7 +99,7 @@ public class FunctionParser : IFunctionParser
             typeArguments.Add(type);
         }
 
-        return Result.Success(typeArguments);
+        return typeArguments;
     }
 
     private static Result ProcessNameSection(FunctionParserState state)

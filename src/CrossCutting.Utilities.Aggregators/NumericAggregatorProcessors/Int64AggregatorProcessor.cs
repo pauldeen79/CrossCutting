@@ -12,6 +12,6 @@ public static class Int64AggregatorProcessor
         }
 
         var l2 = Convert.ToInt64(secondValue, formatProvider);
-        return Result.Success(aggregatorDelegate.Invoke(l1, l2));
+        return aggregatorDelegate.Invoke(l1, l2);
     }
 }

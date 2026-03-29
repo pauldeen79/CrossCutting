@@ -15,32 +15,32 @@ public class CommandService : ICommandService
     }
 
     public async Task<Result> ExecuteAsync<TCommand>(TCommand command, CancellationToken token)
-    {
-        ArgumentGuard.IsNotNull(command, nameof(command));
+        => await Result.EnsureNotNull<TCommand>(command, nameof(command))
+            .OnSuccessAsync(async () =>
+            {
+                var handlers = _handlers.OfType<ICommandHandler<TCommand>>().ToArray();
 
-        var handlers = _handlers.OfType<ICommandHandler<TCommand>>().ToArray();
-
-        return handlers.Length switch
-        {
-            0 => Result.NotSupported($"No command handler is known for command type {typeof(TCommand).FullName}"),
-            1 => await DoExecute(handlers[0], command, this, token).ConfigureAwait(false),
-            _ => Result.NotSupported($"{handlers.Length} command handlers are known for command type {typeof(TCommand).FullName}, only 1 can be present"),
-        };
-    }
+                return handlers.Length switch
+                {
+                    0 => Result.NotSupported($"No command handler is known for command type {typeof(TCommand).FullName}"),
+                    1 => await DoExecute(handlers[0], command, this, token).ConfigureAwait(false),
+                    _ => Result.NotSupported($"{handlers.Length} command handlers are known for command type {typeof(TCommand).FullName}, only 1 can be present"),
+                };
+            }).ConfigureAwait(false);
 
     public async Task<Result<TResponse>> ExecuteAsync<TCommand, TResponse>(TCommand command, CancellationToken token)
-    {
-        ArgumentGuard.IsNotNull(command, nameof(command));
+        => await Result.EnsureNotNull<TResponse>(command, nameof(command))
+            .OnSuccessAsync(async () =>
+            {
+                var handlers = _handlers.OfType<ICommandHandler<TCommand, TResponse>>().ToArray();
 
-        var handlers = _handlers.OfType<ICommandHandler<TCommand, TResponse>>().ToArray();
-
-        return handlers.Length switch
-        {
-            0 => Result.NotSupported<TResponse>($"No command handler is known for command type {typeof(TCommand).FullName}"),
-            1 => await DoExecute(handlers[0], command, this, token).ConfigureAwait(false),
-            _ => Result.NotSupported<TResponse>($"{handlers.Length} command handlers are known for command type {typeof(TCommand).FullName}, only 1 can be present"),
-        };
-    }
+                return handlers.Length switch
+                {
+                    0 => Result.NotSupported<TResponse>($"No command handler is known for command type {typeof(TCommand).FullName}"),
+                    1 => await DoExecute(handlers[0], command, this, token).ConfigureAwait(false),
+                    _ => Result.NotSupported<TResponse>($"{handlers.Length} command handlers are known for command type {typeof(TCommand).FullName}, only 1 can be present"),
+                };
+            }).ConfigureAwait(false);
 
     private async Task<Result> DoExecute<TCommand>(ICommandHandler<TCommand> commandHandler, TCommand command, CommandService commandService, CancellationToken token)
     {

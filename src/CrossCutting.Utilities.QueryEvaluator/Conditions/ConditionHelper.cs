@@ -11,7 +11,7 @@ public static class ConditionHelper
         => EvaluateObjectConditionAsync(firstExpression, secondExpression, context,
             (first, second) => first is string firstString
                     && second is string secondString
-                        ? Result.Success(resultDelegate(firstString, secondString))
+                        ? resultDelegate(firstString, secondString)
                         : Result.Invalid<bool>("LeftValue and RightValue both need to be of type string"), token);
 
     public static async Task<Result<bool>> EvaluateObjectConditionAsync(

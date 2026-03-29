@@ -14,34 +14,34 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
     public int Order => 21;
 
     public async Task<Result<object?>> EvaluateAsync(DotExpressionComponentState state, CancellationToken token)
-    {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        => await Result.EnsureNotNull<object?>(state, nameof(state))
+            .OnSuccessAsync(async () =>
+            {
+                var context = new FunctionCallContext(state);
+                var result = (await _memberResolver.ResolveAsync(context, token).ConfigureAwait(false))
+                    .EnsureNotNull("MemberResolver.ResolveAsync returned null")
+                    .IgnoreNotFound();
 
-        var context = new FunctionCallContext(state);
-        var result = (await _memberResolver.ResolveAsync(context, token).ConfigureAwait(false))
-            .EnsureNotNull("MemberResolver.ResolveAsync returned null")
-            .IgnoreNotFound();
+                if (!result.IsSuccessful() || result.Value is null)
+                {
+                    return Result.FromExistingResult<object?>(result);
+                }
 
-        if (!result.IsSuccessful() || result.Value is null)
-        {
-            return result;
-        }
-
-        return result.Value.Member switch
-        {
-            INonGenericMember nonGenericMember => await nonGenericMember.EvaluateAsync(context, token).ConfigureAwait(false),
-            _ => Result.NotSupported<object?>("Resolved member should be of type Method or Property")
-        };
-    }
+                return result.Value.Member switch
+                {
+                    INonGenericMember nonGenericMember => await nonGenericMember.EvaluateAsync(context, token).ConfigureAwait(false),
+                    _ => Result.NotSupported<object?>("Resolved member should be of type Method or Property")
+                };
+            }).ConfigureAwait(false);
 
     public async Task<Result<Type>> ValidateAsync(DotExpressionComponentState state, CancellationToken token)
-    {
-        state = ArgumentGuard.IsNotNull(state, nameof(state));
+        => await Result.EnsureNotNull<Type>(state, nameof(state))
+            .OnSuccessAsync(async () =>
+            {
+                var context = new FunctionCallContext(state);
 
-        var context = new FunctionCallContext(state);
-
-        return (await _memberResolver.ResolveAsync(context, token).ConfigureAwait(false))
-            .IgnoreNotFound()
-            .Transform(result => Result.Success(result.ReturnValueType!));
-    }
+                return (await _memberResolver.ResolveAsync(context, token).ConfigureAwait(false))
+                    .IgnoreNotFound()
+                    .Transform(result => result.ReturnValueType!);
+            }).ConfigureAwait(false);
 }

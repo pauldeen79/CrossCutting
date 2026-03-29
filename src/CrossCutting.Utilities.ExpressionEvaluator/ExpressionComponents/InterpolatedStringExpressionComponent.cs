@@ -7,7 +7,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent<Generi
     public int Order => 12;
 
     public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
+        => (await EvaluateTypedAsync(context, token).ConfigureAwait(false)).TryCastAllowNull<object?>();
 
     public async Task<Result<GenericFormattableString>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {
@@ -59,7 +59,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent<Generi
             return Result.FromExistingResult<GenericFormattableString>(results);
         }
 
-        return Result.Success(new GenericFormattableString(results.Value!.Remainder, [.. results.Value.Results.Select(x => x.Value?.ToString(context.Settings.FormatProvider))!]));
+        return new GenericFormattableString(results.Value!.Remainder, [.. results.Value.Results.Select(x => x.Value?.ToString(context.Settings.FormatProvider))!]);
     }
 
     private static async Task<ExpressionParseResult> ParseRecursiveAsync(ExpressionParseResultBuilder result, string format, ExpressionEvaluatorContext context, CancellationToken token)
@@ -150,7 +150,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent<Generi
         remainder = remainder.Replace("\uE000", start)
                              .Replace("\uE001", end);
 
-        return Result.Success(new ProcessResult(ReplaceTemporaryDelimiters(remainder, results), results));
+        return new ProcessResult(ReplaceTemporaryDelimiters(remainder, results), results);
     }
 
     private static string EscapeBraces(ExpressionEvaluatorContext context, string remainder)
@@ -201,7 +201,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent<Generi
             return Result.Invalid<(int openIndex, int closeIndex)>($"PlaceholderStart sign '{context.Settings.PlaceholderStart}' is missing");
         }
 
-        return Result.Success((openIndex, closeIndex));
+        return (openIndex, closeIndex);
     }
 
     private static string ReplaceTemporaryDelimiters(string remainder, List<Result<GenericFormattableString>> results)

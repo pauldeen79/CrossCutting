@@ -12,6 +12,6 @@ public static class DecimalAggregatorProcessor
         }
 
         var d2 = Convert.ToDecimal(secondValue, formatProvider);
-        return Result.Success(aggregatorDelegate.Invoke(d1, d2));
+        return aggregatorDelegate.Invoke(d1, d2);
     }
 }

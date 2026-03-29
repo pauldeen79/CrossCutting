@@ -20,27 +20,27 @@ public class NumericExpression : IExpression
 
         if (isWholeNumber.Value && int.TryParse(context.Expression, NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out var i))
         {
-            return Result.Success<object?>(i);
+            return i;
         }
 
         if (isWholeNumber.Value && long.TryParse(context.Expression, NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out var l1))
         {
-            return Result.Success<object?>(l1);
+            return l1;
         }
 
         if (isLongNumber.Value && long.TryParse(context.Expression.Substring(0, context.Expression.Length - 1), NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out var l2))
         {
-            return Result.Success<object?>(l2);
+            return l2;
         }
 
         if (isFloatingPoint.Value && context.Expression.Contains('.') && decimal.TryParse(context.Expression, NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out var d1))
         {
-            return Result.Success<object?>(d1);
+            return d1;
         }
 
         if ((isWholeDecimal.Value || isFloatingPointDecimal.Value) && decimal.TryParse(context.Expression.Substring(0, context.Expression.Length - 1), NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out var d2))
         {
-            return Result.Success<object?>(d2);
+            return d2;
         }
 
         return Result.Continue<object?>();
@@ -58,27 +58,27 @@ public class NumericExpression : IExpression
 
         if (isWholeNumber.Value && int.TryParse(context.Expression, NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out _))
         {
-            return Result.Success(typeof(int));
+            return typeof(int);
         }
 
         if (isWholeNumber.Value && long.TryParse(context.Expression, NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out _))
         {
-            return Result.Success(typeof(long));
+            return typeof(long);
         }
 
         if (isLongNumber.Value && long.TryParse(context.Expression.Substring(0, context.Expression.Length - 1), NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out _))
         {
-            return Result.Success(typeof(long));
+            return typeof(long);
         }
 
         if (isFloatingPoint.Value && context.Expression.Contains('.') && decimal.TryParse(context.Expression, NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out _))
         {
-            return Result.Success(typeof(decimal));
+            return typeof(decimal);
         }
 
         if ((isWholeDecimal.Value || isFloatingPointDecimal.Value) && decimal.TryParse(context.Expression.Substring(0, context.Expression.Length - 1), NumberStyles.AllowDecimalPoint, context.Settings.FormatProvider, out _))
         {
-            return Result.Success(typeof(decimal));
+            return typeof(decimal);
         }
 
         return Result.Continue<Type>();

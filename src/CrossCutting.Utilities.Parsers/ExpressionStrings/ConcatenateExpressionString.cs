@@ -20,7 +20,7 @@ public class ConcatenateExpressionString : IExpressionString
                 builder.Append(result.Value.ToString(context.Settings.FormatProvider));
             }
 
-            return Result.Success<object?>(builder.ToString());
+            return builder.ToString();
         });
     }
 

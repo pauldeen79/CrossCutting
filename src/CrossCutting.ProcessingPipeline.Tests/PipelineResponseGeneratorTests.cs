@@ -11,7 +11,7 @@ public class PipelineResponseGeneratorTests : TestBase
             var responseGeneratorComponent = Fixture.Create<IPipelineResponseGeneratorComponent>();
             responseGeneratorComponent
                 .Generate<Generate>(Arg.Any<object>())
-                .Returns(Result.Success(this));
+                .Returns(this);
             var sut = new PipelineResponseGenerator([responseGeneratorComponent]);
 
             // Act

@@ -2409,20 +2409,6 @@ public class ResultTests
     }
 
     [Fact]
-    public void Can_Cast_Any_Typed_Result_To_Result_Of_Object_Using_Implicit_Operator()
-    {
-        // Arrange
-        var sut = Result.Success("Hello");
-
-        // Act
-        Result<object?> untyped = sut;
-
-        // Assert
-        untyped.Status.ShouldBe(ResultStatus.Ok);
-        untyped.Value.ShouldBe("Hello");
-    }
-
-    [Fact]
     public void Can_Cast_Any_Typed_Result_To_Result_Of_Object_Using_ToResult_Instance_Method()
     {
         // Arrange
@@ -2956,6 +2942,100 @@ public class ResultTests
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
             result.ErrorMessage.ShouldBe("Invalid!");
+        }
+    }
+
+    public class EnsureNotNull_Untyped : ResultTests
+    {
+        [Fact]
+        public void Returns_Continue_When_Validation_Succeeds()
+        {
+            // Arrange
+            object? input = new object();
+
+            // Act
+            var result = Result.EnsureNotNull(input, nameof(input));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Validation_Fails()
+        {
+            // Arrange
+            object? input = default;
+
+            // Act
+            var result = Result.EnsureNotNull(input, nameof(input));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("input is required");
+        }
+    }
+
+    public class EnsureNotNull_Typed : ResultTests
+    {
+        [Fact]
+        public void Returns_Continue_When_Validation_Succeeds()
+        {
+            // Arrange
+            object? input = new object();
+
+            // Act
+            var result = Result.EnsureNotNull<object?>(input, nameof(input));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Invalid_When_Validation_Fails()
+        {
+            // Arrange
+            object? input = default;
+
+            // Act
+            var result = Result.EnsureNotNull<object?>(input, nameof(input));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("input is required");
+        }
+    }
+
+    public class ImplicitOperator : ResultTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Act
+            var input = "some value";
+
+            // Act
+            Result<string> result = input;
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(input);
+        }
+    }
+
+    public class From : ResultTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Act
+            var input = "some value";
+
+            // Act
+            var result = Result.From(input);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(input);
         }
     }
 }

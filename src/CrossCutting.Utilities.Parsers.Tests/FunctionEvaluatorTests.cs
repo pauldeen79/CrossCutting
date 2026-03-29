@@ -835,7 +835,7 @@ public sealed class FunctionEvaluatorTests : IDisposable
     private sealed class StringArgumentFunction : ITypedFunction<string>
     {
         public Result<object?> Evaluate(FunctionCallContext context)
-            => EvaluateTyped(context);
+            => EvaluateTyped(context).TryCast<object?>();
 
         public Result<string> EvaluateTyped(FunctionCallContext context)
             => context.GetArgumentStringValueResult(0, "Argument1");

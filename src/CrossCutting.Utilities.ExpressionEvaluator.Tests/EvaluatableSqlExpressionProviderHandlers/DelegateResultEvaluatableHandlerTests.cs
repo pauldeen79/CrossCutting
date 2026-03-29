@@ -10,7 +10,7 @@ public class DelegateResultEvaluatableHandlerTests : TestBase<DelegateResultEval
             // Arrange
             var parameterBag = new ParameterBag();
             var evaluatable = new DelegateResultEvaluatableBuilder()
-                .WithValue(() => Result.Success("Hello world!"))
+                .WithValue(() => Result.Success("Hello world!").TryCast<object?>())
                 .Build();
             var sut = CreateSut();
             var callback = new EvaluatableSqlExpressionProvider([]);

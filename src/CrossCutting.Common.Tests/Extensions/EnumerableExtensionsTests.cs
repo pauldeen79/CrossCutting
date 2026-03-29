@@ -366,7 +366,7 @@ public class EnumerableExtensionsTests
         var result = await input.PerformUntilFailure(x =>
         {
             counter++;
-            return Task.FromResult(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
+            return Task.FromResult<Result>(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
         });
 
         // Assert
@@ -416,7 +416,7 @@ public class EnumerableExtensionsTests
         var result = await input.PerformUntilFailure(() => Result.Success("default success"), x =>
         {
             counter++;
-            return Task.FromResult(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
+            return Task.FromResult<Result>(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
         });
 
         // Assert
@@ -439,7 +439,7 @@ public class EnumerableExtensionsTests
         var result = await input.PerformUntilFailure(x =>
         {
             counter++;
-            return Task.FromResult(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
+            return Task.FromResult<Result>(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
         });
 
         // Assert
@@ -487,7 +487,7 @@ public class EnumerableExtensionsTests
         var result = await input.PerformUntilFailure(() => Result.Success("default success"), x =>
         {
             counter++;
-            return Task.FromResult(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
+            return Task.FromResult<Result>(x.ToStringWithDefault().StartsWith("success") ? Result.Success(x) : Result.Error("Error"));
         });
 
         // Assert

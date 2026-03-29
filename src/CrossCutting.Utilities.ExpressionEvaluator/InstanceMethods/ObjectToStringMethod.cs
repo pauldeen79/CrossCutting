@@ -10,6 +10,6 @@ public class ObjectToStringMethod : IMethod
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await context.GetInstanceValueResultAsync<object?>(token).ConfigureAwait(false))
-            .OnSuccess(x => Result.Success<object?>(x.Value.ToString(context.Context.Settings.FormatProvider)));
+            .OnSuccess(x => x.Value.ToString(context.Context.Settings.FormatProvider));
     }
 }

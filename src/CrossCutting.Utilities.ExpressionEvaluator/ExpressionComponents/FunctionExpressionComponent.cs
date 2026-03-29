@@ -29,14 +29,14 @@ public class FunctionExpressionComponent : IExpressionComponent
 
         if (!parseResult.IsSuccessful())
         {
-            return parseResult;
+            return parseResult.TryCast<object?>();
         }
 
         var functionCallContext = new FunctionCallContext(parseResult.Value!, context);
         var resolveResult = await _memberResolver.ResolveAsync(functionCallContext, token).ConfigureAwait(false);
         if (!resolveResult.IsSuccessful())
         {
-            return resolveResult;
+            return resolveResult.TryCast<object?>();
         }
 
         return await EvaluateFunction(resolveResult.Value!, functionCallContext, token).ConfigureAwait(false);

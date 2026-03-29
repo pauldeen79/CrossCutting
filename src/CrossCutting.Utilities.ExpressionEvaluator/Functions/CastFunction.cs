@@ -13,7 +13,7 @@ public class CastFunction : IFunction
             {
                 var method = typeof(CastFunction).GetMethod(nameof(CastHelper), BindingFlags.Static | BindingFlags.Public);
                 var generic = method.MakeGenericMethod(results.GetValue<Type>("Type"));
-                return Result.WrapException(() => generic.Invoke(null, [results.GetValue("Expression")!]));
+                return Result.WrapException<object?>(() => generic.Invoke(null, [results.GetValue("Expression")!]));
             });
 
     public static T CastHelper<T>(object value) => (T)value;

@@ -6,12 +6,12 @@ public static class Between
     {
         try
         {
-            return Result.Success(sourceValue is not null
+            return sourceValue is not null
                 && lowerBound is not null
                 && upperBound is not null
                 && sourceValue is IComparable c
                 && c.CompareTo(lowerBound) >= 0
-                && c.CompareTo(upperBound) <= 0);
+                && c.CompareTo(upperBound) <= 0;
         }
         catch (ArgumentException ex)
         {

@@ -45,6 +45,6 @@ public class ReflectionPropertyDotExpressionComponent : IDotExpressionComponent
                 return Result.Invalid<Type>($"Type {state.ResultType.FullName} does not contain property {state.Part}");
             }
 
-            return Result.Success(property.PropertyType);
+            return property.PropertyType;
         }, token);
 }
