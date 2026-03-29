@@ -34,7 +34,6 @@ public interface IAsyncResultDictionaryBuilder<T>
     IAsyncResultDictionaryBuilder<T> Add(string name, Func<Result<T>> value);
     IAsyncResultDictionaryBuilder<T> Add(string name, Func<T> value);
     IAsyncResultDictionaryBuilder<T> Add(string name, Result<T> value);
-    IAsyncResultDictionaryBuilder<T> Add(string name, T value);
     IAsyncResultDictionaryBuilder<T> Add(string name, Func<Task<Result<T>>> value);
     IAsyncResultDictionaryBuilder<T> Add(Func<Task<Result<T>>> value);
     IAsyncResultDictionaryBuilder<T> Add(Func<Result<T>> value);
