@@ -964,7 +964,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
         // Act
         var result = (await new AsyncResultDictionaryBuilder<object?>()
-            .Add("instance", context.GetInstanceValueResult<string>())
+            .Add("instance", context.GetInstanceValueResult<object?>())
             .Add("error", Result.Error<object?>("Kaboom"))
             .BuildAsync())
             .OnSuccess(results => results.GetValue("instance"));

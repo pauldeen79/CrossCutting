@@ -330,7 +330,7 @@ public static class ResultExtensions
     {
         ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
-        var result = instance.EnsureNotNull().EnsureValue();
+        var result = instance.EnsureNotNull();
         if (result.IsSuccessful())
         {
             return successDelegate(result.Value!);
@@ -343,7 +343,7 @@ public static class ResultExtensions
     {
         ArgumentGuard.IsNotNull(successDelegate, nameof(successDelegate));
 
-        var result = instance.EnsureNotNull().EnsureValue();
+        var result = instance.EnsureNotNull();
         if (result.IsSuccessful())
         {
             return Result.Success(await successDelegate(result.Value!).ConfigureAwait(false));

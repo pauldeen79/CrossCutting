@@ -85,6 +85,11 @@ public record Result<T> : Result
 
     public Result<object?> FromResult()
         => TryCastAllowNull<object?>();
+
+    public static implicit operator Result<T>(T value)
+        => value is Result r
+            ? r.TryCastAllowNull<T>()
+            : Success(value);
 }
 
 public record Result

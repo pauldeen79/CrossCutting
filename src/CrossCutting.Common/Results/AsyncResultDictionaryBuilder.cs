@@ -336,9 +336,6 @@ public class AsyncResultDictionaryBuilder<T> : IAsyncResultDictionaryBuilder<T>
         return this;
     }
 
-    public IAsyncResultDictionaryBuilder<T> Add(T value)
-        => Add((_resultset.Count + 1).ToString("D4"), value);
-
     public IAsyncResultDictionaryBuilder<T> Add(string name, T value)
     {
         _resultset.Add(name, () => Task.FromResult(Result.Success(value)));

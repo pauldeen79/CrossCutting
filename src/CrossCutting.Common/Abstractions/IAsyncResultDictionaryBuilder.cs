@@ -39,7 +39,6 @@ public interface IAsyncResultDictionaryBuilder<T>
     IAsyncResultDictionaryBuilder<T> Add(Func<Task<Result<T>>> value);
     IAsyncResultDictionaryBuilder<T> Add(Func<Result<T>> value);
     IAsyncResultDictionaryBuilder<T> Add(Result<T> value);
-    IAsyncResultDictionaryBuilder<T> Add(T value);
     IAsyncResultDictionaryBuilder<T> Add(Func<T> value);
     IAsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Func<Result<T>>> value);
     IAsyncResultDictionaryBuilder<T> AddRange(string nameFormatString, IEnumerable<Result<T>> value);
