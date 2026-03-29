@@ -3004,4 +3004,38 @@ public class ResultTests
             result.ErrorMessage.ShouldBe("input is required");
         }
     }
+
+    public class ImplicitOperator : ResultTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Act
+            var input = "some value";
+
+            // Act
+            Result<string> result = input;
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(input);
+        }
+    }
+
+    public class From : ResultTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Act
+            var input = "some value";
+
+            // Act
+            var result = Result.From(input);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(input);
+        }
+    }
 }

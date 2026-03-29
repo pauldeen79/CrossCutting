@@ -86,10 +86,10 @@ public record Result<T> : Result
     public Result<object?> FromResult()
         => TryCastAllowNull<object?>();
 
+#pragma warning disable CA2225 // Provide a method named 'ToResult' or 'FromT' as an alternate for operator op_Implicit
     public static implicit operator Result<T>(T value)
-        => value is Result r
-            ? r.TryCastAllowNull<T>()
-            : Success(value);
+#pragma warning restore CA2225 // Provide a method named 'ToResult' or 'FromT' as an alternate for operator op_Implicit
+        => From(value);
 }
 
 public record Result
@@ -592,4 +592,9 @@ public record Result
 
         return Continue<T>();
     }
+
+    public static Result<T> From<T>(T value)
+        => value is Result r
+            ? r.TryCastAllowNull<T>()
+            : Success(value);
 }
