@@ -17,12 +17,12 @@ public class Int64ExpressionComponent : IExpressionComponent
 
             if (isWholeNumber.Value && long.TryParse(context.Expression, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, context.Settings.FormatProvider, out var l1))
             {
-                return Result.Success<object?>(l1);
+                return l1;
             }
 
             if (isLongNumber.Value && long.TryParse(context.Expression.Substring(0, context.Expression.Length - 1), NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, context.Settings.FormatProvider, out var l2))
             {
-                return Result.Success<object?>(l2);
+                return l2;
             }
 
             return Result.Continue<object?>();

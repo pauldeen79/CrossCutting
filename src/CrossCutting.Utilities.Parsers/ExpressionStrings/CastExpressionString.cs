@@ -26,7 +26,7 @@ public class CastExpressionString : IExpressionString
                 return expressionResult;
             }
 
-            return Result.Success<object?>(Convert.ChangeType(expressionResult.Value, type!, context.Settings.FormatProvider));
+            return Convert.ChangeType(expressionResult.Value, type!, context.Settings.FormatProvider);
         }
         else
         {

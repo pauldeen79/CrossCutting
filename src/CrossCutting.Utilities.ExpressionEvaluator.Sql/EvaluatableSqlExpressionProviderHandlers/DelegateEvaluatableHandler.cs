@@ -11,6 +11,6 @@ public class DelegateEvaluatableHandler : IEvaluatableSqlExpressionProviderHandl
             return Result.Continue<string>();
         }      
         
-        return Result.WrapException(() => Result.Success(parameterBag.CreateQueryParameterName(delegateEvaluatable.Value())));
+        return Result.WrapException(() => parameterBag.CreateQueryParameterName(delegateEvaluatable.Value()));
     }
 }

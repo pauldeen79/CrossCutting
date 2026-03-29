@@ -101,6 +101,6 @@ public class OperatorExpression : IExpression
             return Result.Invalid<Type>("Missing right operand");
         }
 
-        return Result.Success(typeof(bool));
+        return typeof(bool);
     }
 }

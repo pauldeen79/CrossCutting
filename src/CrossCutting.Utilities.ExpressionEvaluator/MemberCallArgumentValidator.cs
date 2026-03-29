@@ -47,7 +47,7 @@ public class MemberCallArgumentValidator : IMemberCallArgumentValidator
             return Result.Invalid<MemberAndTypeDescriptor>($"Validation of member {context.FunctionCall.Name} failed, see validation errors for more details", errors);
         }
 
-        return Result.Success(new MemberAndTypeDescriptor(member, functionDescriptor.ReturnValueType));
+        return new MemberAndTypeDescriptor(member, functionDescriptor.ReturnValueType);
     }
 
     private static bool IsTypeValid(ExpressionEvaluatorSettings settings, MemberDescriptorArgument descriptorArgument, ExpressionParseResult callArgumentResult)

@@ -11,7 +11,7 @@ public partial record ExpressionArgument
         var result = context.ExpressionEvaluator.Evaluate(Expression, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(context.Settings.FormatProvider), context.Context);
 
         return result.Status == ResultStatus.NotSupported
-            ? Result.Success<object?>(Expression)
+            ? Expression
             : result;
     }
 

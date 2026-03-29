@@ -8,10 +8,10 @@ public static class Comparable
 
         try
         {
-            return Result.Success(leftValue is not null
+            return leftValue is not null
                 && rightValue is not null
                 && leftValue is IComparable c
-                && compareResultDelegate(c.CompareTo(rightValue)));
+                && compareResultDelegate(c.CompareTo(rightValue));
         }
         catch (ArgumentException ex)
         {

@@ -8,7 +8,7 @@ public class NullExpression : IExpression
 
         return context.Expression switch
         {
-            "null" => Result.Success<object?>(null),
+            "null" => Result.NoContent<object?>(),
             _ => Result.Continue<object?>()
         };
     }

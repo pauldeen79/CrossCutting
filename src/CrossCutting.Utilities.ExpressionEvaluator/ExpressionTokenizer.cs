@@ -59,7 +59,7 @@ public sealed class ExpressionTokenizer : IExpressionTokenizer
         }
 
         state.Tokens.Add(new ExpressionToken(ExpressionTokenType.EOF));
-        return Result.Success(state.Tokens);
+        return state.Tokens;
     }
 
     private static Result ProcessPlus(ExpressionTokenizerState state)

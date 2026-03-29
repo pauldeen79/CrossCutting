@@ -14,7 +14,7 @@ public class DelegateResultEvaluatableHandler : IEvaluatableSqlExpressionProvide
         return Result.WrapException(() => {
             var result = delegateResultEvaluatable.Value();
             return result.Status.IsSuccessful()
-                ? Result.Success(parameterBag.CreateQueryParameterName(result.Value))
+                ? parameterBag.CreateQueryParameterName(result.Value)
                 : Result.FromExistingResult<string>(result);
         });
     }

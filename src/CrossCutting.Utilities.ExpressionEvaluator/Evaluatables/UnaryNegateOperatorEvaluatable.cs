@@ -10,7 +10,7 @@ public partial record UnaryNegateOperatorEvaluatable : IChildEvaluatablesContain
     public async Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => (await Operand.EvaluateAsync(context, token).ConfigureAwait(false))
             .TryCast<bool>("Expression is not of type boolean")
-            .OnSuccess(result => Result.Success(!result.Value));
+            .OnSuccess(result => !result.Value);
 
     public IEnumerable<IEvaluatable> GetChildEvaluatables() => [Operand];
 }

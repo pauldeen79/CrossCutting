@@ -57,7 +57,7 @@ public class ExpressionEvaluatorTests : IDisposable
             var result = CreateSut().Evaluate(input, CultureInfo.InvariantCulture);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.NoContent);
             result.Value.ShouldBeNull();
         }
 

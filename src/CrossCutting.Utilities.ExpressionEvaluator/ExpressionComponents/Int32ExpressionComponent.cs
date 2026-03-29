@@ -15,7 +15,7 @@ public class Int32ExpressionComponent : IExpressionComponent
 
             if (isWholeNumber.Value && int.TryParse(context.Expression, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, context.Settings.FormatProvider, out var i))
             {
-                return Result.Success<object?>(i);
+                return i;
             }
 
             return Result.Continue<object?>();

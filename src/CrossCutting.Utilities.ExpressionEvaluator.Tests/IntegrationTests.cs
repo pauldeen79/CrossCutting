@@ -148,7 +148,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var result = await sut.EvaluateAsync(CreateContext(expression, evaluator: sut));
 
         // Assert
-        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Status.ShouldBe(ResultStatus.NoContent);
         result.Value.ShouldBe(null);
     }
 

@@ -308,7 +308,7 @@ public sealed class ExpressionParser : IExpressionParser
             state.Position++;
         }
 
-        return Result.Success(Previous(state));
+        return Previous(state);
     }
 
     private static bool IsAtEnd(ExpressionParserState state) => Peek(state).Type == ExpressionTokenType.EOF;

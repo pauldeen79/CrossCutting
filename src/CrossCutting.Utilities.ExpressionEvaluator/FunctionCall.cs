@@ -16,7 +16,7 @@ public partial record FunctionCall
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return index + 1 > Arguments.Count
-            ? Result.Success(defaultValue)
+            ? defaultValue
             : await context.Context.EvaluateAsync(Arguments.ElementAt(index), token).ConfigureAwait(false);
     }
 
@@ -34,9 +34,11 @@ public partial record FunctionCall
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return index + 1 > Arguments.Count
-            ? Result.Success(defaultValue)
+            ? defaultValue
             : (await context.Context.EvaluateAsync(Arguments.ElementAt(index), token).ConfigureAwait(false))
                 .TryCastAllowNull<T>()
-                .Transform(value => value is null ? defaultValue : value);
+                .Transform(value => value is null
+                    ? defaultValue
+                    : value);
     }
 }

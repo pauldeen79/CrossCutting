@@ -14,7 +14,7 @@ public class StringExpressionComponent : IExpressionComponent
                 return Result.Continue<object?>();
             }
 
-            return Result.Success<object?>(context.Expression.Substring(1, context.Expression.Length - 2));
+            return context.Expression.Substring(1, context.Expression.Length - 2);
         }, token);
 
     public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)

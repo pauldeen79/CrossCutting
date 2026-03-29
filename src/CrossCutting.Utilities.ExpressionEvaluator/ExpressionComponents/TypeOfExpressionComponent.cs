@@ -25,7 +25,7 @@ public class TypeOfExpressionComponent : IExpressionComponent
                 return Result.Invalid<object?>($"Unknown type: {typename}");
             }
 
-            return Result.Success<object?>(type!);
+            return type;
         }, token);
 
     public Task<ExpressionParseResult> ParseAsync(ExpressionEvaluatorContext context, CancellationToken token)

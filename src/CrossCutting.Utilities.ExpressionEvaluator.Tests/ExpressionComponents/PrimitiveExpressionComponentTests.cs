@@ -32,7 +32,7 @@ public class PrimitiveExpressionComponentTests : TestBase<PrimitiveExpressionCom
             var result = await sut.EvaluateAsync(context, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.NoContent);
             result.Value.ShouldBeNull();
         }
 

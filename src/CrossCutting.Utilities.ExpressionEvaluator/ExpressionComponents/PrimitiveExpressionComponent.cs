@@ -19,11 +19,11 @@ public class PrimitiveExpressionComponent : IExpressionComponent
 
             return context.Expression switch
             {
-                "true" => Result.Success<object?>(true),
-                "false" => Result.Success<object?>(false),
-                "null" => Result.Success<object?>(null),
-                "DateTime.Now" => Result.Success<object?>(_dateTimeProvider.GetCurrentDateTime()),
-                "DateTime.Today" => Result.Success<object?>(_dateTimeProvider.GetCurrentDateTime().Date),
+                "true" => true,
+                "false" => false,
+                "null" => Result.NoContent<object?>(),
+                "DateTime.Now" => _dateTimeProvider.GetCurrentDateTime(),
+                "DateTime.Today" => _dateTimeProvider.GetCurrentDateTime().Date,
                 _ => Result.Continue<object?>()
             };
         }, token);

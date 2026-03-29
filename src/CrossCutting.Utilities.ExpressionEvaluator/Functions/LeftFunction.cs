@@ -19,7 +19,7 @@ public class LeftFunction : IFunction
                 var length = results.GetValue<int>("Length");
 
                 return stringExpression.Length >= length
-                    ? Result.Success<object?>(stringExpression.Substring(0, length))
+                    ? stringExpression.Substring(0, length)
                     : Result.Invalid<object?>("Length must refer to a location within the string");
             });
     }

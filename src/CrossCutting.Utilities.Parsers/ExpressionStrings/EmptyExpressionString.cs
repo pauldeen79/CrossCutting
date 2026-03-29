@@ -8,7 +8,7 @@ public class EmptyExpressionString : IExpressionString
 
         if (string.IsNullOrEmpty(context.Input))
         {
-            return Result.Success<object?>(string.Empty);
+            return string.Empty;
         }
 
         return Result.Continue<object?>();
@@ -20,7 +20,7 @@ public class EmptyExpressionString : IExpressionString
 
         if (string.IsNullOrEmpty(context.Input))
         {
-            return Result.Success(typeof(string));
+            return typeof(string);
         }
 
         return Result.Continue<Type>();

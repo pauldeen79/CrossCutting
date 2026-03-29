@@ -20,7 +20,7 @@ public class DatabaseEntityRetriever<T>(
 
         return returnValue is null
             ? Result.NotFound<TResult>()
-            : Result.Success(returnValue);
+            : returnValue;
     }
 
     public async Task<Result<T>> FindOneAsync(IDatabaseCommand command, CancellationToken token)

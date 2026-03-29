@@ -38,7 +38,7 @@ public class ParameterBag
             _parameters.Add(new KeyValuePair<string, object?>(found.Item.Key, newValue));
         }
 
-        return Result.Success(found.Item.Key);
+        return found.Item.Key;
     }
 
     private string Add(string key, object? value)

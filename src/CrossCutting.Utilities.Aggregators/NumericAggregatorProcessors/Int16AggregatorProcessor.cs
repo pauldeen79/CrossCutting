@@ -12,6 +12,6 @@ public static class Int16AggregatorProcessor
         }
 
         var s2 = Convert.ToInt16(secondValue, formatProvider);
-        return Result.Success(aggregatorDelegate.Invoke(s1, s2));
+        return aggregatorDelegate.Invoke(s1, s2);
     }
 }

@@ -19,12 +19,12 @@ public class DecimalExpressionComponent : IExpressionComponent
 
             if (isFloatingPoint.Value && decimal.TryParse(context.Expression, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, context.Settings.FormatProvider, out var d1))
             {
-                return Result.Success<object?>(d1);
+                return d1;
             }
 
             if ((isWholeDecimal.Value || isFloatingPointDecimal.Value) && decimal.TryParse(context.Expression.Substring(0, context.Expression.Length - 1), NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, context.Settings.FormatProvider, out var d2))
             {
-                return Result.Success<object?>(d2);
+                return d2;
             }
 
             return Result.Continue<object?>();

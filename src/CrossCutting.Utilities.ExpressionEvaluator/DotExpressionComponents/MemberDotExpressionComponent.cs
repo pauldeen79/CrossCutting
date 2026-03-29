@@ -42,6 +42,6 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
 
                 return (await _memberResolver.ResolveAsync(context, token).ConfigureAwait(false))
                     .IgnoreNotFound()
-                    .Transform(result => Result.Success(result.ReturnValueType!));
+                    .Transform(result => result.ReturnValueType!);
             }).ConfigureAwait(false);
 }

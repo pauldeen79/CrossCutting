@@ -26,6 +26,6 @@ public class InFunction : IFunction
             rightValues.Add(result.Value);
         }
 
-        return Result.Success<object?>(leftValueResult.Value.In(rightValues));
+        return leftValueResult.Value.In(rightValues);
     }
 }

@@ -6,12 +6,12 @@ public static class NotBetween
     {
         try
         {
-            return Result.Success(sourceValue is not null
+            return !(sourceValue is not null
                 && lowerBound is not null
                 && upperBound is not null
                 && sourceValue is IComparable c
                 && c.CompareTo(lowerBound) >= 0
-                && c.CompareTo(upperBound) <= 0).Transform(value => !value);
+                && c.CompareTo(upperBound) <= 0);
         }
         catch (ArgumentException ex)
         {

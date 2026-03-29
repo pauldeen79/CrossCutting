@@ -12,6 +12,6 @@ public static class SingleAggregatorProcessor
         }
 
         var f2 = Convert.ToSingle(secondValue, formatProvider);
-        return Result.Success(aggregatorDelegate.Invoke(f1, f2));
+        return aggregatorDelegate.Invoke(f1, f2);
     }
 }
