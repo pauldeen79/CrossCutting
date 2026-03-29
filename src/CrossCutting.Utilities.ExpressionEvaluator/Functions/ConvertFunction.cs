@@ -9,5 +9,5 @@ public class ConvertFunction : IFunction
             .Add<Type>(context, 0, "Type", token)
             .Add(context, 1, "Expression", token)
             .BuildAsync(token).ConfigureAwait(false))
-            .OnSuccess(results => Result.WrapException(() => Convert.ChangeType(results.GetValue("Expression")!, results.GetValue<Type>("Type"))));
+            .OnSuccess(results => Result.WrapException<object?>(() => Convert.ChangeType(results.GetValue("Expression")!, results.GetValue<Type>("Type"))));
 }

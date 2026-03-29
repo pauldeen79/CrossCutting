@@ -24,7 +24,7 @@ public class MemberDotExpressionComponent : IDotExpressionComponent
 
                 if (!result.IsSuccessful() || result.Value is null)
                 {
-                    return result;
+                    return Result.FromExistingResult<object?>(result);
                 }
 
                 return result.Value.Member switch

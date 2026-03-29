@@ -3,7 +3,7 @@
 public partial record BetweenCondition : IChildEvaluatablesContainer
 {
     public async override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
+        => (await EvaluateTypedAsync(context, token).ConfigureAwait(false)).TryCast<object?>();
 
     public override async Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {

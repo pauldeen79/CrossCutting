@@ -3,5 +3,5 @@
 public static class ResultOfExpressionExtensions
 {
     public static IEvaluatableBuilder ToEvaluatable(this Result<IExpression> expression)
-        => (((IEvaluatable)expression.Value!) ?? new LiteralResultEvaluatable(Result.FromExistingResult<IEvaluatable>(expression))).ToBuilder();
+        => (((IEvaluatable)expression.Value!) ?? new LiteralResultEvaluatable(Result.FromExistingResult<object?>(expression))).ToBuilder();
 }

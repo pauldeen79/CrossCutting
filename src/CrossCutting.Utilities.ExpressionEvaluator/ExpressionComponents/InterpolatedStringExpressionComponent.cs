@@ -7,7 +7,7 @@ public class InterpolatedStringExpressionComponent : IExpressionComponent<Generi
     public int Order => 12;
 
     public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
+        => (await EvaluateTypedAsync(context, token).ConfigureAwait(false)).TryCastAllowNull<object?>();
 
     public async Task<Result<GenericFormattableString>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
     {

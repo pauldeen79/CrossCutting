@@ -16,7 +16,7 @@ public class ReflectionMethodDotExpressionComponent : IDotExpressionComponent
         var result = state.FunctionParseResult.EnsureValue();
         if (!result.IsSuccessful())
         {
-            return result;
+            return result.TryCast<object?>();
         }
 
         var functionCall = state.FunctionParseResult.Value!;

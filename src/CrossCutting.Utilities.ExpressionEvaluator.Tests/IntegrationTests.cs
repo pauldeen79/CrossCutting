@@ -940,7 +940,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var context = new FunctionCallContext(new DotExpressionComponentState(CreateContext("Dummy()", state), functionParser, Result.Success<object?>("Dummy"), "Dummy", typeof(string)) { Value = "hello" });
 
         // Act
-        var result = (await new AsyncResultDictionaryBuilder<object?>()
+        var result = (await new AsyncResultDictionaryBuilder<string>()
             .Add("instance", context.GetInstanceValueResult<string>())
             .BuildAsync())
             .OnSuccess(results => results.GetValue("instance"));
@@ -1370,7 +1370,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     private sealed class MyTypedFunction : IFunction<string>
     {
         public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
-            => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
+            => (await EvaluateTypedAsync(context, token).ConfigureAwait(false)).TryCast<object?>();
 
         public async Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context, CancellationToken token)
             => (await new AsyncResultDictionaryBuilder()
