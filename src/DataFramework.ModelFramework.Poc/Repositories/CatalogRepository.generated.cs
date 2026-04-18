@@ -62,13 +62,13 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             IEvaluatable<bool> evaluatable = Evaluatable.Empty<bool>();
             evaluatable = evaluatable.And(Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something"));
 
-            var builder = new SelectCommandBuilder()
-                .Select(settings.Fields)
-                .From(settings.TableName)
-                .OrderBy(settings.DefaultOrderBy);
-
             return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(evaluatable, fieldNameProvider, null, token).ConfigureAwait(false))
-                .OnSuccessAsync(result => EntityRetriever.FindManyAsync(builder.WithSqlExpression(result).Build(), token))
+                .OnSuccessAsync(result => EntityRetriever.FindManyAsync(new SelectCommandBuilder()
+                    .Select(settings.Fields)
+                    .From(settings.TableName)
+                    .WithSqlExpression(result)
+                    .OrderBy(settings.DefaultOrderBy)
+                    .Build(), token))
                 .ConfigureAwait(false);
         }
 
@@ -77,17 +77,17 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             var settings = new CatalogPagedEntityRetrieverSettings();
             var fieldNameProvider = new CatalogQueryFieldInfo([]);
 
-            var builder = new PagedSelectCommandBuilder()
-                .Select(settings.Fields)
-                .From(settings.TableName)
-                .Skip(offset)
-                .Take(pageSize)
-                .OrderBy(settings.DefaultOrderBy);
-
             var evaluatable = Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something");
 
             return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(evaluatable, fieldNameProvider, null, token).ConfigureAwait(false))
-                .OnSuccessAsync(result => EntityRetriever.FindPagedAsync(builder.WithSqlExpression(result).Build(), token))
+                .OnSuccessAsync(result => EntityRetriever.FindPagedAsync(new PagedSelectCommandBuilder()
+                    .Select(settings.Fields)
+                    .From(settings.TableName)
+                    .WithSqlExpression(result)
+                    .Skip(offset)
+                    .Take(pageSize)
+                    .OrderBy(settings.DefaultOrderBy)
+                    .Build(), token))
                 .ConfigureAwait(false);            
         }
     }
