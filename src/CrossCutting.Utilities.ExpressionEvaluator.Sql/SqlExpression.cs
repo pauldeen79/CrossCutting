@@ -1,11 +1,11 @@
 namespace CrossCutting.Utilities.ExpressionEvaluator.Sql;
 
-public sealed class SqlExpressionData
+public sealed class SqlExpression
 {
     public string Expression { get; }
     public IReadOnlyCollection<KeyValuePair<string, object?>> Parameters { get; }
 
-    public SqlExpressionData(string expression, IReadOnlyCollection<KeyValuePair<string, object?>>? parameters = null)
+    public SqlExpression(string expression, IReadOnlyCollection<KeyValuePair<string, object?>>? parameters = null)
     {
         ArgumentGuard.IsNotNull(expression, nameof(expression));
 

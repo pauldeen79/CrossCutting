@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Sql.SqlExpressions;
 
-public class SqlExpression : ISqlExpression
+public class PlainExpression : ISqlExpression
 {
-    public SqlExpression(IEvaluatable sourceExpression)
+    public PlainExpression(IEvaluatable sourceExpression)
     {
         ArgumentGuard.IsNotNull(sourceExpression, nameof(sourceExpression));
 

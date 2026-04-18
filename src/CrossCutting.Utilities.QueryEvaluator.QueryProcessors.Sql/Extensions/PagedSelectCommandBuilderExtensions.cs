@@ -36,7 +36,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.Select(", ");
             }
 
-            var result = (await context.SqlExpressionProvider.GetSqlExpressionAsync(fieldSelectionQuery.WithContext(context.QueryContext), new SqlExpression(new PropertyNameEvaluatable(expression.Item, new ContextEvaluatable())), context.FieldInfo, context.ParameterBag, CancellationToken.None).ConfigureAwait(false))
+            var result = (await context.SqlExpressionProvider.GetSqlExpressionAsync(fieldSelectionQuery.WithContext(context.QueryContext), new PlainExpression(new PropertyNameEvaluatable(expression.Item, new ContextEvaluatable())), context.FieldInfo, context.ParameterBag, CancellationToken.None).ConfigureAwait(false))
                 .EnsureValue();
             if (!result.IsSuccessful())
             {
@@ -148,7 +148,7 @@ internal static class PagedSelectCommandBuilderExtensions
                 instance.OrderBy(", ");
             }
 
-            var result = await context.SqlExpressionProvider.GetSqlExpressionAsync(context.QueryContext.Context, new SqlExpression(querySortOrder.Item.Expression), context.FieldInfo, context.ParameterBag, token).ConfigureAwait(false);
+            var result = await context.SqlExpressionProvider.GetSqlExpressionAsync(context.QueryContext.Context, new PlainExpression(querySortOrder.Item.Expression), context.FieldInfo, context.ParameterBag, token).ConfigureAwait(false);
             if (!result.IsSuccessful())
             {
                 return Result.FromExistingResult<PagedSelectCommandBuilder>(result);

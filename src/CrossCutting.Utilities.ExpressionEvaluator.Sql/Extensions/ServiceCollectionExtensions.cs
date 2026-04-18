@@ -5,8 +5,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddExpressionEvaluatorSql(this IServiceCollection serviceCollection)
         => serviceCollection
             .AddSingleton<ISqlExpressionProvider, SqlExpressionProvider>()
-            .AddSingleton<ISqlExpressionProviderHandler, SqlExpressionHandler>()
-            .AddSingleton<ISqlExpressionProviderHandler, SqlLikeExpressionHandler>()
+            .AddSingleton<ISqlExpressionProviderHandler, PlainExpressionHandler>()
+            .AddSingleton<ISqlExpressionProviderHandler, LikeExpressionHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProvider, EvaluatableSqlExpressionProvider>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, BinaryAndOperatorEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, BinaryOrOperatorEvaluatableHandler>()

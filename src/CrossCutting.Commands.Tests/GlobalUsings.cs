@@ -1,15 +1,6 @@
-﻿global using System.ComponentModel.DataAnnotations;
-global using System.Text;
-global using AutoFixture;
-global using AutoFixture.AutoNSubstitute;
-global using AutoFixture.Kernel;
-global using CrossCutting.Commands.Abstractions;
+﻿global using CrossCutting.Commands.Abstractions;
 global using CrossCutting.Commands.Extensions;
-global using CrossCutting.Common;
-global using CrossCutting.Common.DataAnnotations;
 global using CrossCutting.Common.Results;
-global using Microsoft.Extensions.DependencyInjection;
 global using NSubstitute;
-global using NSubstitute.Core;
 global using Shouldly;
 global using Xunit;

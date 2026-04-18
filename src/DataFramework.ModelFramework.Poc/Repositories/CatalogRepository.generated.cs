@@ -68,7 +68,7 @@ namespace DataFramework.ModelFramework.Poc.Repositories
                 .OrderBy(settings.DefaultOrderBy);
 
             return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(evaluatable, fieldNameProvider, null, token).ConfigureAwait(false))
-                .OnSuccessAsync(result => EntityRetriever.FindManyAsync(builder.Where(result.Expression).AppendParameters(result.Parameters).Build(), token))
+                .OnSuccessAsync(result => EntityRetriever.FindManyAsync(builder.WithSqlExpression(result).Build(), token))
                 .ConfigureAwait(false);
         }
 
@@ -87,7 +87,7 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             var evaluatable = Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something");
 
             return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(evaluatable, fieldNameProvider, null, token).ConfigureAwait(false))
-                .OnSuccessAsync(result => EntityRetriever.FindPagedAsync(builder.Where(result.Expression).AppendParameters(result.Parameters).Build(), token))
+                .OnSuccessAsync(result => EntityRetriever.FindPagedAsync(builder.WithSqlExpression(result).Build(), token))
                 .ConfigureAwait(false);            
         }
     }
