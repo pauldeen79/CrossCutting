@@ -1,15 +1,8 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql;
 
-public class QueryFieldInfoProvider : IQueryFieldInfoProvider
+public class QueryFieldInfoProvider(IEnumerable<IQueryFieldInfoProviderHandler> handlers) : IQueryFieldInfoProvider
 {
-    private readonly IEnumerable<IQueryFieldInfoProviderHandler> _handlers;
-
-    public QueryFieldInfoProvider(IEnumerable<IQueryFieldInfoProviderHandler> handlers)
-    {
-        ArgumentGuard.IsNotNull(handlers, nameof(handlers));
-
-        _handlers = handlers;
-    }
+    private readonly IQueryFieldInfoProviderHandler[] _handlers = ArgumentGuard.IsNotNull(handlers, nameof(handlers)).ToArray();
 
     public Result<IQueryFieldInfo> Create(IQuery query)
     {

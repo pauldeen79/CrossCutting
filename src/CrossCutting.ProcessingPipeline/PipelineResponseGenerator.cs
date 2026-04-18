@@ -1,15 +1,10 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public class PipelineResponseGenerator : IPipelineResponseGenerator
+public class PipelineResponseGenerator(IEnumerable<IPipelineResponseGeneratorComponent> responseGeneratorComponents) : IPipelineResponseGenerator
 {
-    private readonly IEnumerable<IPipelineResponseGeneratorComponent> _responseGeneratorComponents;
-
-    public PipelineResponseGenerator(IEnumerable<IPipelineResponseGeneratorComponent> responseGeneratorComponents)
-    {
-        ArgumentGuard.IsNotNull(responseGeneratorComponents, nameof(responseGeneratorComponents));
-
-        _responseGeneratorComponents = responseGeneratorComponents.OrderBy(x => (x as IOrderContainer)?.Order).ToArray();
-    }
+    private readonly IPipelineResponseGeneratorComponent[] _responseGeneratorComponents = ArgumentGuard.IsNotNull(responseGeneratorComponents, nameof(responseGeneratorComponents))
+        .OrderBy(x => (x as IOrderContainer)?.Order)
+        .ToArray();
 
     public Result<T> Generate<T>(object command)
     {

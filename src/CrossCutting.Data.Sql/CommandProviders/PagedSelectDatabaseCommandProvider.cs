@@ -2,7 +2,7 @@
 
 public class PagedSelectDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders) : IPagedDatabaseCommandProvider
 {
-    private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
+    private readonly IPagedDatabaseEntityRetrieverSettingsProvider[] _settingsProviders = ArgumentGuard.IsNotNull(settingsProviders, nameof(settingsProviders)).ToArray();
 
     public async Task<Result<IPagedDatabaseCommand>> CreatePagedAsync<TSource>(DatabaseOperation operation, int offset, int pageSize, CancellationToken token)
         => (await new AsyncResultDictionaryBuilder()

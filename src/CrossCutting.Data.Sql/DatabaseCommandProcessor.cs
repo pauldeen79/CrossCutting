@@ -13,8 +13,8 @@ public class DatabaseCommandProcessor<TEntity, TBuilder>(
     where TEntity : class
     where TBuilder : class
 {
-    private readonly DbConnection _connection = connection;
-    private readonly IDatabaseCommandEntityProvider<TEntity, TBuilder> _provider = provider;
+    private readonly DbConnection _connection = ArgumentGuard.IsNotNull(connection, nameof(connection));
+    private readonly IDatabaseCommandEntityProvider<TEntity, TBuilder> _provider = ArgumentGuard.IsNotNull(provider, nameof(provider));
 
     public int ExecuteNonQuery(IDatabaseCommand command)
         => InvokeCommand(command, cmd => cmd.ExecuteNonQuery());

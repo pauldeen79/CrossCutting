@@ -1,30 +1,26 @@
 ﻿namespace CrossCutting.Commands;
 
-public class CommandService : ICommandService
+public class CommandService(
+    IEnumerable<ICommandInterceptor> interceptors,
+    IEnumerable<ICommandHandler> handlers) : ICommandService
 {
-    private readonly List<ICommandInterceptor> _interceptors;
-    private readonly IEnumerable<ICommandHandler> _handlers;
+    private readonly ICommandInterceptor[] _interceptors = ArgumentGuard.IsNotNull(interceptors, nameof(interceptors))
+        .OrderBy(x => (x as IOrderContainer)?.Order)
+        .ToArray();
 
-    public CommandService(IEnumerable<ICommandInterceptor> interceptors, IEnumerable<ICommandHandler> handlers)
-    {
-        ArgumentGuard.IsNotNull(interceptors, nameof(interceptors));
-        ArgumentGuard.IsNotNull(handlers, nameof(handlers));
-
-        _interceptors = interceptors.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
-        _handlers = handlers;
-    }
+    private readonly ICommandHandler[] _handlers = ArgumentGuard.IsNotNull(handlers, nameof(handlers)).ToArray();
 
     public async Task<Result> ExecuteAsync<TCommand>(TCommand command, CancellationToken token)
         => await Result.EnsureNotNull<TCommand>(command, nameof(command))
             .OnSuccessAsync(async () =>
             {
-                var handlers = _handlers.OfType<ICommandHandler<TCommand>>().ToArray();
+                var commandHandlers = _handlers.OfType<ICommandHandler<TCommand>>().ToArray();
 
-                return handlers.Length switch
+                return commandHandlers.Length switch
                 {
                     0 => Result.NotSupported($"No command handler is known for command type {typeof(TCommand).FullName}"),
-                    1 => await DoExecute(handlers[0], command, this, token).ConfigureAwait(false),
-                    _ => Result.NotSupported($"{handlers.Length} command handlers are known for command type {typeof(TCommand).FullName}, only 1 can be present"),
+                    1 => await DoExecute(commandHandlers[0], command, this, token).ConfigureAwait(false),
+                    _ => Result.NotSupported($"{commandHandlers.Length} command handlers are known for command type {typeof(TCommand).FullName}, only 1 can be present"),
                 };
             }).ConfigureAwait(false);
 
@@ -32,13 +28,13 @@ public class CommandService : ICommandService
         => await Result.EnsureNotNull<TResponse>(command, nameof(command))
             .OnSuccessAsync(async () =>
             {
-                var handlers = _handlers.OfType<ICommandHandler<TCommand, TResponse>>().ToArray();
+                var commandHandlers = _handlers.OfType<ICommandHandler<TCommand, TResponse>>().ToArray();
 
-                return handlers.Length switch
+                return commandHandlers.Length switch
                 {
                     0 => Result.NotSupported<TResponse>($"No command handler is known for command type {typeof(TCommand).FullName}"),
-                    1 => await DoExecute(handlers[0], command, this, token).ConfigureAwait(false),
-                    _ => Result.NotSupported<TResponse>($"{handlers.Length} command handlers are known for command type {typeof(TCommand).FullName}, only 1 can be present"),
+                    1 => await DoExecute(commandHandlers[0], command, this, token).ConfigureAwait(false),
+                    _ => Result.NotSupported<TResponse>($"{commandHandlers.Length} command handlers are known for command type {typeof(TCommand).FullName}, only 1 can be present"),
                 };
             }).ConfigureAwait(false);
 
@@ -48,7 +44,7 @@ public class CommandService : ICommandService
 
         Task<Result> Next()
         {
-            if (index < _interceptors.Count)
+            if (index < _interceptors.Length)
             {
                 return _interceptors[index++].ExecuteAsync(command, commandService, Next, token);
             }
@@ -65,7 +61,7 @@ public class CommandService : ICommandService
 
         Task<Result<TResponse>> Next()
         {
-            if (index < _interceptors.Count)
+            if (index < _interceptors.Length)
             {
                 return _interceptors[index++].ExecuteAsync(command, commandService, Next, token);
             }

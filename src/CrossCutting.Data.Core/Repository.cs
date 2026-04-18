@@ -48,10 +48,10 @@ public class Repository<TEntity, TIdentity>(
             .OnSuccessAsync(databaseCommand => EntityRetriever.FindPagedAsync(databaseCommand, token))
             .ConfigureAwait(false);
 
-    protected IDatabaseCommandProcessor<TEntity> CommandProcessor { get; } = commandProcessor;
-    protected IDatabaseEntityRetriever<TEntity> EntityRetriever { get; } = entityRetriever;
-    protected IDatabaseCommandProvider<TIdentity> IdentitySelectCommandProvider { get; } = identitySelectCommandProvider;
-    protected IDatabaseCommandProvider EntitySelectCommandProvider { get; } = entitySelectCommandProvider;
-    protected IPagedDatabaseCommandProvider PagedEntitySelectCommandProvider { get; } = pagedEntitySelectCommandProvider;
-    protected IDatabaseCommandProvider<TEntity> EntityCommandProvider { get; } = entityCommandProvider;
+    protected IDatabaseCommandProcessor<TEntity> CommandProcessor { get; } = ArgumentGuard.IsNotNull(commandProcessor, nameof(commandProcessor));
+    protected IDatabaseEntityRetriever<TEntity> EntityRetriever { get; } = ArgumentGuard.IsNotNull(entityRetriever, nameof(entityRetriever));
+    protected IDatabaseCommandProvider<TIdentity> IdentitySelectCommandProvider { get; } = ArgumentGuard.IsNotNull(identitySelectCommandProvider, nameof(identitySelectCommandProvider));
+    protected IDatabaseCommandProvider EntitySelectCommandProvider { get; } = ArgumentGuard.IsNotNull(entitySelectCommandProvider, nameof(entitySelectCommandProvider));
+    protected IPagedDatabaseCommandProvider PagedEntitySelectCommandProvider { get; } = ArgumentGuard.IsNotNull(pagedEntitySelectCommandProvider, nameof(pagedEntitySelectCommandProvider));
+    protected IDatabaseCommandProvider<TEntity> EntityCommandProvider { get; } = ArgumentGuard.IsNotNull(entityCommandProvider, nameof(entityCommandProvider));
 }

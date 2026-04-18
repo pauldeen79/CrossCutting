@@ -1,27 +1,14 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql;
 
-public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<IQueryContext>
+public class QueryPagedDatabaseCommandProvider(IQueryFieldInfoProvider fieldInfoProvider,
+                                              ISqlExpressionProvider sqlExpressionProvider,
+                                              ISqlConditionExpressionProvider sqlConditionExpressionProvider,
+                                              IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders) : IPagedDatabaseCommandProvider<IQueryContext>
 {
-    private readonly IQueryFieldInfoProvider _fieldInfoProvider;
-    private readonly ISqlExpressionProvider _sqlExpressionProvider;
-    private readonly ISqlConditionExpressionProvider _sqlConditionExpressionProvider;
-    private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders;
-
-    public QueryPagedDatabaseCommandProvider(IQueryFieldInfoProvider fieldInfoProvider,
-                                             ISqlExpressionProvider sqlExpressionProvider,
-                                             ISqlConditionExpressionProvider sqlConditionExpressionProvider,
-                                             IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders)
-    {
-        ArgumentGuard.IsNotNull(fieldInfoProvider, nameof(fieldInfoProvider));
-        ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
-        ArgumentGuard.IsNotNull(sqlConditionExpressionProvider, nameof(sqlConditionExpressionProvider));
-        ArgumentGuard.IsNotNull(settingsProviders, nameof(settingsProviders));
-
-        _fieldInfoProvider = fieldInfoProvider;
-        _sqlExpressionProvider = sqlExpressionProvider;
-        _sqlConditionExpressionProvider = sqlConditionExpressionProvider;
-        _settingsProviders = settingsProviders;
-    }
+    private readonly IQueryFieldInfoProvider _fieldInfoProvider = ArgumentGuard.IsNotNull(fieldInfoProvider, nameof(fieldInfoProvider));
+    private readonly ISqlExpressionProvider _sqlExpressionProvider = ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
+    private readonly ISqlConditionExpressionProvider _sqlConditionExpressionProvider = ArgumentGuard.IsNotNull(sqlConditionExpressionProvider, nameof(sqlConditionExpressionProvider));
+    private readonly IPagedDatabaseEntityRetrieverSettingsProvider[] _settingsProviders = ArgumentGuard.IsNotNull(settingsProviders, nameof(settingsProviders)).ToArray();
 
     public async Task<Result<IPagedDatabaseCommand>> CreatePagedAsync(IQueryContext source, DatabaseOperation operation, int offset, int pageSize, CancellationToken token)
         => await (await new AsyncResultDictionaryBuilder()

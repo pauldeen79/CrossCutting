@@ -5,8 +5,8 @@ public class DatabaseEntityRetriever<T>(
     IDatabaseEntityMapper<T> mapper) : IDatabaseEntityRetriever<T>
     where T : class
 {
-    private readonly DbConnection _connection = connection;
-    private readonly IDatabaseEntityMapper<T> _mapper = mapper;
+    private readonly DbConnection _connection = ArgumentGuard.IsNotNull(connection, nameof(connection));
+    private readonly IDatabaseEntityMapper<T> _mapper = ArgumentGuard.IsNotNull(mapper, nameof(mapper));
 
     private async Task<Result<TResult>> FindAsync<TResult>(Func<DbCommand, Task<TResult>> findDelegate)
     {

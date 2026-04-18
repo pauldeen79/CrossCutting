@@ -1,24 +1,15 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-public class ExpressionEvaluator : IExpressionEvaluator
+public class ExpressionEvaluator(IExpressionTokenizer tokenizer, IExpressionParser parser, IEnumerable<IExpressionComponent> components) : IExpressionEvaluator
 {
-    private readonly IExpressionTokenizer _tokenizer;
-    private readonly IExpressionParser _parser;
-    private readonly IExpressionComponent[] _components;
+    private readonly IExpressionTokenizer _tokenizer = ArgumentGuard.IsNotNull(tokenizer, nameof(tokenizer));
+    private readonly IExpressionParser _parser = ArgumentGuard.IsNotNull(parser, nameof(parser));
+    private readonly IExpressionComponent[] _components = ArgumentGuard.IsNotNull(components, nameof(components))
+        .OrderBy(x => x.Order)
+        .ToArray();
 
     private const string EvaluateAsyncReturnedNullErrorMessage = "EvaluateAsync returned null";
     private const string TokenizeReturnedNullErrorMessage = "Tokenize returned null";
-
-    public ExpressionEvaluator(IExpressionTokenizer tokenizer, IExpressionParser parser, IEnumerable<IExpressionComponent> components)
-    {
-        ArgumentGuard.IsNotNull(tokenizer, nameof(tokenizer));
-        ArgumentGuard.IsNotNull(parser, nameof(parser));
-        ArgumentGuard.IsNotNull(components, nameof(components));
-
-        _tokenizer = tokenizer;
-        _parser = parser;
-        _components = components.OrderBy(x => x.Order).ToArray();
-    }
 
     public async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => await Result.Validate<object?>(() => context is not null, "context is required")
