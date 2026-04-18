@@ -68,7 +68,16 @@ public class QueryProcessor(
     }
 
     private async Task<Result<IPagedDatabaseCommand>> CreateCommandAsync(IQuery query, object? context, int pageSize, CancellationToken token)
-        => await _pagedDatabaseCommandProvider.CreatePagedAsync(query.EnsureValid().WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize, token).ConfigureAwait(false);
+    {
+        var validationResult = Result.FromValidatableInstance(query);
+        if (!validationResult.IsSuccessful())
+        {
+           return Result.FromExistingResult<IPagedDatabaseCommand>(validationResult); 
+        }
+
+        return await _pagedDatabaseCommandProvider.CreatePagedAsync(query.WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize, token)
+            .ConfigureAwait(false);
+    }
 
     private Result<IDatabaseEntityRetriever<TResult>> GetDatabaseEntityRetriever<TResult>(IQuery query) where TResult : class
         => _databaseEntityRetrieverProviders
