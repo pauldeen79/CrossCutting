@@ -16,8 +16,8 @@ using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Extensions;
+using DataFramework.ModelFramework.Poc.EntityFieldInfoProviderHandlers;
 using DataFramework.ModelFramework.Poc.PagedDatabaseEntityRetrieverSettings;
-using DataFramework.ModelFramework.Poc.QueryFieldInfoProviderHandlers;
 using PDC.Net.Core.Entities;
 using PDC.Net.Core.Queries;
 

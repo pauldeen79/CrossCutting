@@ -1,4 +1,4 @@
-namespace CrossCutting.Utilities.ExpressionEvaluator.Sql.Abstractions;
+namespace CrossCutting.Data.Abstractions;
 
 public interface IFieldNameProvider
 {

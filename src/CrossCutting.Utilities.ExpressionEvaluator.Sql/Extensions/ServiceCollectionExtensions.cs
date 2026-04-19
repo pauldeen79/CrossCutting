@@ -7,6 +7,8 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ISqlExpressionProvider, SqlExpressionProvider>()
             .AddSingleton<ISqlExpressionProviderHandler, PlainExpressionHandler>()
             .AddSingleton<ISqlExpressionProviderHandler, LikeExpressionHandler>()
+            .AddSingleton<IEvaluatableProcessor, EvaluatableProcessor>()
+            .AddSingleton<IPagedDatabaseCommandProvider<IEvaluatableContext>, EvaluatablePagedDatabaseCommandProvider>()
             .AddSingleton<IEvaluatableSqlExpressionProvider, EvaluatableSqlExpressionProvider>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, BinaryAndOperatorEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, BinaryOrOperatorEvaluatableHandler>()

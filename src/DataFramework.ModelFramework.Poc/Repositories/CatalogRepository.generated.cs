@@ -24,8 +24,8 @@ using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions.Builders.Extensions;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Conditions;
 using CrossCutting.Utilities.QueryEvaluator.Core.Builders.Extensions;
+using DataFramework.ModelFramework.Poc.EntityFieldInfoProviderHandlers;
 using DataFramework.ModelFramework.Poc.PagedDatabaseEntityRetrieverSettings;
-using DataFramework.ModelFramework.Poc.QueryFieldInfoProviderHandlers;
 using PDC.Net.Core.Entities;
 using PDC.Net.Core.Queries;
 
@@ -41,15 +41,15 @@ namespace DataFramework.ModelFramework.Poc.Repositories
                                  IDatabaseCommandProvider entitySelectCommandProvider,
                                  IDatabaseCommandProvider<Catalog> entityCommandProvider,
                                  IQueryProcessor queryProcessor,
-                                 IEvaluatableSqlExpressionProvider evaluatableSqlExpressionProvider)
+                                 IEvaluatableProcessor evaluatableProcessor)
             : base(commandProcessor, entityRetriever, identitySelectCommandProvider, pagedEntitySelectCommandProvider, entitySelectCommandProvider, entityCommandProvider)
         {
             QueryProcessor = queryProcessor;
-            EvaluatableSqlExpressionProvider = evaluatableSqlExpressionProvider;
+            EvaluatableProcessor = evaluatableProcessor;
         }
 
         private IQueryProcessor QueryProcessor { get; }
-        private IEvaluatableSqlExpressionProvider EvaluatableSqlExpressionProvider { get; }
+        private IEvaluatableProcessor EvaluatableProcessor { get; }
 
         public async Task<Result<IReadOnlyCollection<Catalog>>> FindSomethingAsync(CancellationToken token)
         {
@@ -57,38 +57,17 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             //     .Where(nameof(Catalog.Name)).IsEqualTo("Something")
             //     .Build(), null, token);
 
-            var settings = new CatalogPagedEntityRetrieverSettings();
-            var fieldNameProvider = new CatalogQueryFieldInfo([]);
             IEvaluatable<bool> evaluatable = Evaluatable.Empty<bool>();
             evaluatable = evaluatable.And(Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something"));
 
-            return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(evaluatable, fieldNameProvider, null, token).ConfigureAwait(false))
-                .OnSuccessAsync(result => EntityRetriever.FindManyAsync(new SelectCommandBuilder()
-                    .Select(settings.Fields)
-                    .From(settings.TableName)
-                    .WithSqlExpression(result)
-                    .OrderBy(settings.DefaultOrderBy)
-                    .Build(), token))
-                .ConfigureAwait(false);
+            return await EvaluatableProcessor.FindManyAsync<Catalog>(evaluatable, null, token);
         }
 
         public async Task<Result<IPagedResult<Catalog>>> FindSomethingPagedAsync(int offset, int pageSize, CancellationToken token)
         {
-            var settings = new CatalogPagedEntityRetrieverSettings();
-            var fieldNameProvider = new CatalogQueryFieldInfo([]);
-
             var evaluatable = Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something");
 
-            return await (await EvaluatableSqlExpressionProvider.GetExpressionAsync(evaluatable, fieldNameProvider, null, token).ConfigureAwait(false))
-                .OnSuccessAsync(result => EntityRetriever.FindPagedAsync(new PagedSelectCommandBuilder()
-                    .Select(settings.Fields)
-                    .From(settings.TableName)
-                    .WithSqlExpression(result)
-                    .Skip(offset)
-                    .Take(pageSize)
-                    .OrderBy(settings.DefaultOrderBy)
-                    .Build(), token))
-                .ConfigureAwait(false);            
+            return await EvaluatableProcessor.FindPagedAsync<Catalog>(evaluatable, offset, pageSize, null, token);
         }
     }
 }

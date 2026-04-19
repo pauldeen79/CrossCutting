@@ -15,8 +15,8 @@ public abstract class TestBase
     protected IDateTimeProvider DateTimeProvider => ClassFactoryDictionary.GetOrCreate<IDateTimeProvider>(ClassFactory);
     protected IPagedDatabaseEntityRetrieverSettingsProvider DatabaseEntityRetrieverSettingsProvider => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseEntityRetrieverSettingsProvider>(ClassFactory);
     protected IPagedDatabaseEntityRetrieverSettings DatabaseEntityRetrieverSettings => ClassFactoryDictionary.GetOrCreate<IPagedDatabaseEntityRetrieverSettings>(ClassFactory);
-    protected IQueryFieldInfoProviderHandler QueryFieldInfoProviderHandler => ClassFactoryDictionary.GetOrCreate<IQueryFieldInfoProviderHandler>(ClassFactory);
-    protected IQueryFieldInfo QueryFieldInfo => ClassFactoryDictionary.GetOrCreate<IQueryFieldInfo>(ClassFactory);
+    protected IEntityFieldInfoProviderHandler QueryFieldInfoProviderHandler => ClassFactoryDictionary.GetOrCreate<IEntityFieldInfoProviderHandler>(ClassFactory);
+    protected IEntityFieldInfo QueryFieldInfo => ClassFactoryDictionary.GetOrCreate<IEntityFieldInfo>(ClassFactory);
     protected DateTime CurrentDateTime { get; }
 
     protected IDatabaseCommand? LastDatabaseCommand { get; private set; }
@@ -26,6 +26,7 @@ public abstract class TestBase
     {
         var excludedTypes = new Type[] { typeof(IDateTimeProvider) };
         ClassFactoryDictionary = new ServiceCollection()
+            .AddCrossCuttingDataCore()
             .AddExpressionEvaluator()
             .AddExpressionEvaluatorSql()
             .AddQueryEvaluatorInMemory()

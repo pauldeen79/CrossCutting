@@ -72,7 +72,7 @@ public class QueryProcessor(
         var validationResult = Result.FromValidatableInstance(query);
         if (!validationResult.IsSuccessful())
         {
-           return Result.FromExistingResult<IPagedDatabaseCommand>(validationResult); 
+            return Result.FromExistingResult<IPagedDatabaseCommand>(validationResult); 
         }
 
         return await _pagedDatabaseCommandProvider.CreatePagedAsync(query.WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize, token)

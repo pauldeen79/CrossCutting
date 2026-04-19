@@ -6,7 +6,7 @@ public abstract class ConditionExpressionHandlerBase<TCondition> : ISqlCondition
         StringBuilder builder,
         object? context,
         IEvaluatable<bool> condition,
-        IQueryFieldInfo fieldInfo,
+        IEntityFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
         ParameterBag parameterBag,
         CancellationToken token)

@@ -10,7 +10,7 @@ namespace DataFramework.ModelFramework.Poc.PagedDatabaseEntityRetrieverSettingsP
     {
         public Result<IPagedDatabaseEntityRetrieverSettings> Get<TSource>()
         {
-            if (typeof(TSource) == typeof(CatalogIdentity) || typeof(TSource) == typeof(CatalogQuery))
+            if (typeof(TSource) == typeof(Catalog) || typeof(TSource) == typeof(CatalogIdentity) || typeof(TSource) == typeof(CatalogQuery))
             {
                 return Result.Success<IPagedDatabaseEntityRetrieverSettings>(new CatalogPagedEntityRetrieverSettings());
             }

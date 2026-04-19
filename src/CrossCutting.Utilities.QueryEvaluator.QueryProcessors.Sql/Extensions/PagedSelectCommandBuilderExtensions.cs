@@ -14,7 +14,7 @@ internal static class PagedSelectCommandBuilderExtensions
 
     private static Task<Result<PagedSelectCommandBuilder>> AppendSelectFieldsForAllFields(this PagedSelectCommandBuilder instance,
                                                                                           IPagedDatabaseEntityRetrieverSettings settings,
-                                                                                          IQueryFieldInfo fieldInfo)
+                                                                                          IEntityFieldInfo fieldInfo)
         => Task.Run(() =>
         {
             var allFields = fieldInfo.GetAllFields().ToArray();

@@ -5,7 +5,7 @@ public class PagedSelectCommandBuilderContext
     public PagedSelectCommandBuilderContext(
         IQueryContext context,
         IPagedDatabaseEntityRetrieverSettings settings,
-        IQueryFieldInfo fieldInfo,
+        IEntityFieldInfo fieldInfo,
         ISqlExpressionProvider sqlExpressionProvider,
         ParameterBag parameterBag)
     {
@@ -24,7 +24,7 @@ public class PagedSelectCommandBuilderContext
 
     public IQueryContext QueryContext { get; }
     public IPagedDatabaseEntityRetrieverSettings Settings { get; }
-    public IQueryFieldInfo FieldInfo { get; }
+    public IEntityFieldInfo FieldInfo { get; }
     public ISqlExpressionProvider SqlExpressionProvider { get; }
     public ParameterBag ParameterBag { get; }
 }

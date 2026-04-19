@@ -5,7 +5,7 @@ public interface ISqlConditionExpressionProviderHandler
     Task<Result> GetConditionExpressionAsync(StringBuilder builder,
                                              object? context,
                                              IEvaluatable<bool> condition,
-                                             IQueryFieldInfo fieldInfo,
+                                             IEntityFieldInfo fieldInfo,
                                              ISqlExpressionProvider sqlExpressionProvider,
                                              ParameterBag parameterBag,
                                              CancellationToken token);
