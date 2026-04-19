@@ -9,6 +9,7 @@ public class EvaluatableProcessorTests : TestBase
     protected IDatabaseCommand DataCommand { get; } = new SelectCommandBuilder()
         .Select(nameof(MyEntity.MyProperty))
         .From(nameof(MyEntity))
+        .WithSqlExpression(new SqlExpression(string.Empty, null))
         .Build();
 
     protected EvaluatableProcessor CreateSut() => ClassFactories.GetOrCreate<EvaluatableProcessor>(ClassFactory);
