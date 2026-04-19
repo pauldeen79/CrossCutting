@@ -4,16 +4,16 @@ public class EvaluatableSqlExpressionProvider(IEnumerable<IEvaluatableSqlExpress
 {
     private readonly IEvaluatableSqlExpressionProviderHandler[] _handlers = ArgumentGuard.IsNotNull(handlers, nameof(handlers)).ToArray();
 
-    public async Task<Result<SqlExpression>> GetExpressionAsync(IEvaluatable<bool> condition, IFieldNameProvider fieldNameProvider, object? context, CancellationToken token)
+    public async Task<Result<SqlExpression>> GetExpressionAsync(IEvaluatable evaluatable, IFieldNameProvider fieldNameProvider, object? context, CancellationToken token)
     {
-        condition = ArgumentGuard.IsNotNull(condition, nameof(condition));
+        evaluatable = ArgumentGuard.IsNotNull(evaluatable, nameof(evaluatable));
         fieldNameProvider = ArgumentGuard.IsNotNull(fieldNameProvider, nameof(fieldNameProvider));
         
         var parameterBag = new ParameterBag();
 
         foreach (var handler in _handlers)
         {
-            var handlerResult = (await handler.GetExpressionAsync(context, condition, fieldNameProvider, parameterBag, this, token).ConfigureAwait(false))
+            var handlerResult = (await handler.GetExpressionAsync(context, evaluatable, fieldNameProvider, parameterBag, this, token).ConfigureAwait(false))
                 .EnsureValue();
             if (!handlerResult.IsSuccessful())
             {
@@ -26,7 +26,7 @@ public class EvaluatableSqlExpressionProvider(IEnumerable<IEvaluatableSqlExpress
             }
         }
 
-        return Result.NotSupported<SqlExpression>($"No evaluatable sql expression provider handler found for condition type: {condition.GetType().FullName}");
+        return Result.NotSupported<SqlExpression>($"No evaluatable sql expression provider handler found for condition type: {evaluatable.GetType().FullName}");
     }
 
     public async Task<Result<string>> GetExpressionAsync(object? context, IEvaluatable evaluatable, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, IEvaluatableSqlExpressionProviderHandler callback, CancellationToken token)

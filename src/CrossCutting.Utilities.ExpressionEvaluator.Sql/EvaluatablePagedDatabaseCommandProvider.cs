@@ -43,15 +43,21 @@ public class EvaluatablePagedDatabaseCommandProvider(IEntityFieldInfoProvider fi
             }
         });
 
-    private async Task<Result<IPagedDatabaseCommand>> BuildCommandAsync(IEvaluatableContext context, int offset, int pageSize, IPagedDatabaseEntityRetrieverSettings settings, IEntityFieldInfo fieldInfo, CancellationToken token)
+    private async Task<Result<IPagedDatabaseCommand>> BuildCommandAsync(IEvaluatableContext context, int? offset, int? pageSize, IPagedDatabaseEntityRetrieverSettings settings, IEntityFieldInfo fieldInfo, CancellationToken token)
     {
+        string? orderBy = null;
+        if (context.OrderByEvaluatable is not null)
+        {
+            (await _evaluatableSqlExpressionProvider.GetExpressionAsync(context.Evaluatable, fieldInfo, null, token).ConfigureAwait(false))
+                .OnSuccess(sqlExpression => orderBy = sqlExpression.Expression);
+        }
+
         var builder = new PagedSelectCommandBuilder()
             .Select(settings.Fields)
             .From(settings.TableName)
             .Skip(offset)
             .Take(pageSize)
-            //TODO: Extract order by clause from context.Evaluatable if possible, then use this, otherwise settings.DefaultOrderBy
-            .OrderBy(settings.DefaultOrderBy);
+            .OrderBy(orderBy.WhenNullOrEmpty(settings.DefaultOrderBy));
 
         return (await _evaluatableSqlExpressionProvider.GetExpressionAsync(context.Evaluatable, fieldInfo, null, token).ConfigureAwait(false))
             .OnSuccess(sqlExpression => builder.WithSqlExpression(sqlExpression).Build());
