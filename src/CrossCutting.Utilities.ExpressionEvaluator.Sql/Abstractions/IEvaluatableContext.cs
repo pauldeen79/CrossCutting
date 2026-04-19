@@ -1,4 +1,4 @@
-﻿namespace CrossCutting.Utilities.QueryEvaluator.Abstractions;
+﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 
 public interface IEvaluatableContext
 {

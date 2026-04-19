@@ -19,5 +19,4 @@ global using CrossCutting.Utilities.ExpressionEvaluator.Sql.EvaluatableSqlExpres
 global using CrossCutting.Utilities.ExpressionEvaluator.Sql.Extensions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Sql.SqlExpressionProviderHandlers;
 global using CrossCutting.Utilities.ExpressionEvaluator.Sql.SqlExpressions;
-global using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 global using Microsoft.Extensions.DependencyInjection;
