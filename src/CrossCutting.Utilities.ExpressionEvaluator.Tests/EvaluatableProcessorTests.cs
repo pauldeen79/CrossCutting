@@ -30,6 +30,20 @@ public class EvaluatableProcessorTests : TestBase
     public class FindOne : EvaluatableProcessorTests
     {
         [Fact]
+        public async Task Returns_Invalid_When_Validation_On_Evaluatable_Fails()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var evaluatable = new ValidatableEvaluatable();
+
+            // Act
+            var result = await sut.FindOneAsync<MyEntity>(evaluatable, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+        }
+
+        [Fact]
         public async Task Returns_Empty_Result_When_Not_Found()
         {
             // Arrange
@@ -115,8 +129,31 @@ public class EvaluatableProcessorTests : TestBase
         }
     }
 
-    public sealed class MyEntity
+    public class MyEntity
     {
         public string MyProperty { get; set; } = "";
+    }
+
+    private sealed class ValidatableEvaluatable : IEvaluatable<bool>, IValidatableObject
+    {
+        public Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEvaluatableBuilder ToBuilder()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            yield return new ValidationResult("Invalid!");
+        }
     }
 }
