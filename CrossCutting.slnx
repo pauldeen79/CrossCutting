@@ -37,9 +37,7 @@
   <Project Path="src/CrossCutting.Utilities.Operators/CrossCutting.Utilities.Operators.csproj" />
   <Project Path="src/CrossCutting.Utilities.Parsers.CodeGeneration/CrossCutting.Utilities.Parsers.CodeGeneration.csproj" />
   <Project Path="src/CrossCutting.Utilities.Parsers.Tests/CrossCutting.Utilities.Parsers.Tests.csproj" />
-  <Project Path="src/CrossCutting.Utilities.Parsers/CrossCutting.Utilities.Parsers.csproj">
-    <BuildDependency Project="src/CrossCutting.Utilities.Parsers.CodeGeneration/CrossCutting.Utilities.Parsers.CodeGeneration.csproj" />
-  </Project>
+  <Project Path="src/CrossCutting.Utilities.Parsers/CrossCutting.Utilities.Parsers.csproj" />
   <Project Path="src/CrossCutting.Utilities.QueryEvaluator.Abstractions/CrossCutting.Utilities.QueryEvaluator.Abstractions.csproj" />
   <Project Path="src/CrossCutting.Utilities.QueryEvaluator.CodeGeneration/CrossCutting.Utilities.QueryEvaluator.CodeGeneration.csproj" />
   <Project Path="src/CrossCutting.Utilities.QueryEvaluator.QueryParsers/CrossCutting.Utilities.QueryEvaluator.QueryParsers.csproj" />
