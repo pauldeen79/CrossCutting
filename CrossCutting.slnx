@@ -1,0 +1,54 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="README.md" />
+    <File Path="TODO.md" />
+  </Folder>
+  <Project Path="src/CrossCutting.Commands.Tests/CrossCutting.Commands.Tests.csproj" />
+  <Project Path="src/CrossCutting.Commands/CrossCutting.Commands.csproj" />
+  <Project Path="src/CrossCutting.Common.Testing.Tests/CrossCutting.Common.Testing.Tests.csproj" />
+  <Project Path="src/CrossCutting.Common.Testing/CrossCutting.Common.Testing.csproj" />
+  <Project Path="src/CrossCutting.Common.Tests/CrossCutting.Common.Tests.csproj" />
+  <Project Path="src/CrossCutting.Common/CrossCutting.Common.csproj" />
+  <Project Path="src/CrossCutting.Data.Abstractions.Tests/CrossCutting.Data.Abstractions.Tests.csproj" />
+  <Project Path="src/CrossCutting.Data.Abstractions/CrossCutting.Data.Abstractions.csproj" />
+  <Project Path="src/CrossCutting.Data.Core.Tests/CrossCutting.Data.Core.Tests.csproj" />
+  <Project Path="src/CrossCutting.Data.Core/CrossCutting.Data.Core.csproj" />
+  <Project Path="src/CrossCutting.Data.Sql.Tests/CrossCutting.Data.Sql.Tests.csproj" />
+  <Project Path="src/CrossCutting.Data.Sql/CrossCutting.Data.Sql.csproj" />
+  <Project Path="src/CrossCutting.DataTableDumper.Tests/CrossCutting.DataTableDumper.Tests.csproj" />
+  <Project Path="src/CrossCutting.DataTableDumper/CrossCutting.DataTableDumper.csproj" />
+  <Project Path="src/CrossCutting.ProcessingPipeline.Tests/CrossCutting.ProcessingPipeline.Tests.csproj" />
+  <Project Path="src/CrossCutting.ProcessingPipeline/CrossCutting.ProcessingPipeline.csproj" />
+  <Project Path="src/CrossCutting.Utilities.Aggregators.Tests/CrossCutting.Utilities.Aggregators.Tests.csproj" />
+  <Project Path="src/CrossCutting.Utilities.Aggregators/CrossCutting.Utilities.Aggregators.csproj" />
+  <Project Path="src/CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration/CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.csproj" />
+  <Project Path="src/CrossCutting.Utilities.ExpressionEvaluator.Sql/CrossCutting.Utilities.ExpressionEvaluator.Sql.csproj" />
+  <Project Path="src/CrossCutting.Utilities.ExpressionEvaluator.Tests/CrossCutting.Utilities.ExpressionEvaluator.Tests.csproj" />
+  <Project Path="src/CrossCutting.Utilities.ExpressionEvaluator/CrossCutting.Utilities.ExpressionEvaluator.csproj" />
+  <Project Path="src/CrossCutting.Utilities.ObjectDumper.Tests/CrossCutting.Utilities.ObjectDumper.Tests.csproj" />
+  <Project Path="src/CrossCutting.Utilities.ObjectDumper/CrossCutting.Utilities.ObjectDumper.csproj" />
+  <Project Path="src/CrossCutting.Utilities.Operators.Tests/CrossCutting.Utilities.Operators.Tests.csproj" />
+  <Project Path="src/CrossCutting.Utilities.Operators/CrossCutting.Utilities.Operators.csproj" />
+  <Project Path="src/CrossCutting.Utilities.Parsers.CodeGeneration/CrossCutting.Utilities.Parsers.CodeGeneration.csproj" />
+  <Project Path="src/CrossCutting.Utilities.Parsers.Tests/CrossCutting.Utilities.Parsers.Tests.csproj" />
+  <Project Path="src/CrossCutting.Utilities.Parsers/CrossCutting.Utilities.Parsers.csproj">
+    <BuildDependency Project="src/CrossCutting.Utilities.Parsers.CodeGeneration/CrossCutting.Utilities.Parsers.CodeGeneration.csproj" />
+  </Project>
+  <Project Path="src/CrossCutting.Utilities.QueryEvaluator.Abstractions/CrossCutting.Utilities.QueryEvaluator.Abstractions.csproj" />
+  <Project Path="src/CrossCutting.Utilities.QueryEvaluator.CodeGeneration/CrossCutting.Utilities.QueryEvaluator.CodeGeneration.csproj" />
+  <Project Path="src/CrossCutting.Utilities.QueryEvaluator.QueryParsers/CrossCutting.Utilities.QueryEvaluator.QueryParsers.csproj" />
+  <Project Path="src/CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory/CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory.csproj" />
+  <Project Path="src/CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql/CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.csproj" />
+  <Project Path="src/CrossCutting.Utilities.QueryEvaluator.Tests/CrossCutting.Utilities.QueryEvaluator.Tests.csproj" />
+  <Project Path="src/CrossCutting.Utilities.QueryEvaluator/CrossCutting.Utilities.QueryEvaluator.Core.csproj" />
+  <Project Path="src/DataFramework.ModelFramework.Poc.Tests/DataFramework.ModelFramework.Poc.Tests.csproj" />
+  <Project Path="src/DataFramework.ModelFramework.Poc/DataFramework.ModelFramework.Poc.csproj" />
+  <Project Path="src/System.Data.Stub.Tests/System.Data.Stub.Tests.csproj" />
+  <Project Path="src/System.Data.Stub/System.Data.Stub.csproj" />
+</Solution>
