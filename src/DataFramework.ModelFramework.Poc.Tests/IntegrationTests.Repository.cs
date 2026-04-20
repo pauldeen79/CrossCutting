@@ -97,7 +97,7 @@ public sealed partial class IntegrationTests
         Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [Catalog]"),
                                           () => new[] { new Catalog(1, "Diversen cd 1", DateTime.Today, DateTime.Now, DateTime.Now, "0000-0000", "CDT", "CDR", "CD-ROM", 1, 2, true, true, @"C:\", "Value", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null) });
         Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [ExtraField]"),
-                                          () => new[] { new ExtraField("Catalog", "MyField", null, 1, typeof(string).FullName, true) });
+                                          () => new[] { new ExtraField("Catalog", "MyField", null, 1, typeof(string).FullName!, true) });
 
         // Act
         var actual = await Repository.FindSomethingAsync(CancellationToken.None);
@@ -115,7 +115,7 @@ public sealed partial class IntegrationTests
         Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [Catalog]"),
                                           () => new[] { new Catalog(1, "Diversen cd 1", DateTime.Today, DateTime.Now, DateTime.Now, "0000-0000", "CDT", "CDR", "CD-ROM", 1, 2, true, true, @"C:\", "Value", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null) });
         Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [ExtraField]"),
-                                          () => new[] { new ExtraField("Catalog", "MyField", null, 1, typeof(string).FullName, true) });
+                                          () => new[] { new ExtraField("Catalog", "MyField", null, 1, typeof(string).FullName!, true) });
 
         // Act
         var actual = await Repository.FindSomethingPagedAsync(0, 10, CancellationToken.None);

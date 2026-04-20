@@ -1,0 +1,39 @@
+<Project>
+
+  <!-- Detect test projects (fallback if needed) -->
+  <PropertyGroup>
+    <IsTestProject Condition="'$(IsTestProject)' == '' and $(MSBuildProjectName.EndsWith('.Tests'))">
+      true
+    </IsTestProject>
+  </PropertyGroup>
+
+  <!-- ✅ Applied to ALL projects -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- 🧪 Only TEST projects -->
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+    <IsPackable>false</IsPackable>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- 🚀 Only NON-test projects -->
+  <PropertyGroup Condition="'$(IsTestProject)' != 'true'">
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>14.0</LangVersion>
+    <!-- <AnalysisLevel>latest-All</AnalysisLevel> -->
+    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
+    <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <!-- <GenerateDocumentationFile>true</GenerateDocumentationFile> -->
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsTestProject)' != 'true'">
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

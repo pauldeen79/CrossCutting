@@ -1,15 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>14.0</LangVersion>
-    <Nullable>enable</Nullable>
     <PackageId>pauldeen79.CrossCutting.Data.Sql</PackageId>
-    <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
     <Version>8.0.8</Version>
     <PackageVersion>8.0.8</PackageVersion>
-    <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,11 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="..\CrossCutting.Data.Abstractions\CrossCutting.Data.Abstractions.csproj" />
     <ProjectReference Include="..\CrossCutting.Data.Core\CrossCutting.Data.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
-    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
