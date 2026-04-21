@@ -13,30 +13,24 @@ public class QueryPagedDatabaseCommandProvider(IEntityFieldInfoProvider fieldInf
     public async Task<Result<IPagedDatabaseCommand>> CreatePagedAsync(IQueryContext context, DatabaseOperation operation, int offset, int pageSize, CancellationToken token)
         => await (await new AsyncResultDictionaryBuilder()
             .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
-            .Add("Settings", () => GetSettings(context))
+            .Add("Settings", () => GetSettings(context.Query.GetType()))
             .Add("FieldInfo", () => _fieldInfoProvider.Create(context.Query).EnsureValue())
             .BuildAsync(token).ConfigureAwait(false))
-            .OnSuccessAsync(results => BuildCommandAsync(
-                context,
-                offset,
-                pageSize,
-                results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings"),
-                results.GetValue<IEntityFieldInfo>("FieldInfo"),
-                token)).ConfigureAwait(false);
+            .OnSuccessAsync(results => BuildCommandAsync(context, offset, pageSize, results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings"), results.GetValue<IEntityFieldInfo>("FieldInfo"), token)).ConfigureAwait(false);
 
     public Result<IPagedDatabaseEntityRetrieverSettings> Create<TResult>() where TResult : class
         => _settingsProviders
             .Select(x => x.Get<TResult>())
             .WhenNotContinue(() => Result.Invalid<IPagedDatabaseEntityRetrieverSettings>($"No database entity retriever settings provider was found for query type [{typeof(TResult).FullName}]"));
 
-    private Result<IPagedDatabaseEntityRetrieverSettings> GetSettings(IQueryContext context)
+    private Result<IPagedDatabaseEntityRetrieverSettings> GetSettings(Type queryType)
         => Result.WrapException(() =>
         {
             try
             {
                 return ((Result<IPagedDatabaseEntityRetrieverSettings>)GetType()
                     .GetMethod(nameof(Create))
-                    .MakeGenericMethod(context.Query.GetType())
+                    .MakeGenericMethod(queryType)
                     .Invoke(this, Array.Empty<object>())).EnsureValue();
             }
             catch (TargetInvocationException ex)
