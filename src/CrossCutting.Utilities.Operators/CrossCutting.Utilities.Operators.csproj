@@ -4,6 +4,7 @@
     <PackageId>pauldeen79.CrossCutting.Utilities.Operators</PackageId>
     <Version>4.1.3</Version>
     <PackageVersion>4.1.3</PackageVersion>
+    <AnalysisLevel>latest-All</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>

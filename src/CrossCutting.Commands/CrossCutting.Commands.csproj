@@ -4,6 +4,7 @@
     <PackageId>pauldeen79.CrossCutting.Commands</PackageId>
     <Version>3.0.5</Version>
     <PackageVersion>3.0.5</PackageVersion>
+    <AnalysisLevel>latest-All</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>

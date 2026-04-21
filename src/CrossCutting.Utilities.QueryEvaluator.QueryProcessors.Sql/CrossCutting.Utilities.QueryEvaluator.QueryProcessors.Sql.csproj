@@ -4,6 +4,7 @@
     <PackageId>pauldeen79.CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql</PackageId>
     <Version>1.2.3</Version>
     <PackageVersion>1.2.3</PackageVersion>
+    <AnalysisLevel>latest-All</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>

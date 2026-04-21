@@ -4,6 +4,7 @@
     <PackageId>pauldeen79.CrossCutting.Utilities.Parsers</PackageId>
     <Version>10.1.29</Version>
     <PackageVersion>10.1.29</PackageVersion>
+    <AnalysisLevel>latest-All</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>

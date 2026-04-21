@@ -4,6 +4,7 @@
     <PackageId>pauldeen79.CrossCutting.ProcessingPipeline</PackageId>
     <Version>14.0.5</Version>
     <PackageVersion>14.0.5</PackageVersion>
+    <AnalysisLevel>latest-All</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
