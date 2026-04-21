@@ -15,6 +15,7 @@ public sealed class DbTransaction(DbConnection dbConnection) : Common.DbTransact
 
     protected override void Dispose(bool disposing)
     {
+        base.Dispose(disposing);
         if (disposing)
         {
             RolledBack?.Invoke(this, EventArgs.Empty);

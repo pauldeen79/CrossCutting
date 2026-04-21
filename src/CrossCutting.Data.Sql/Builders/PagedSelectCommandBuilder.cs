@@ -145,8 +145,8 @@ public class PagedSelectCommandBuilder
                                     Offset.GetValueOrDefault(),
                                     PageSize.GetValueOrDefault(int.MaxValue));
 
-    private IDatabaseCommand CreateCommand(bool countOnly)
-        => new SqlDatabaseCommand(BuildSql(countOnly), DatabaseCommandType.Text, DatabaseOperation.Select, CommandParameters);
+    private SqlDatabaseCommand CreateCommand(bool countOnly)
+        => new(BuildSql(countOnly), DatabaseCommandType.Text, DatabaseOperation.Select, CommandParameters);
 
     private string BuildSql(bool countOnly)
     {

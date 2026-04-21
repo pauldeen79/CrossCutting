@@ -67,7 +67,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder>(
             else
             {
                 //Use ExecuteReader
-                return await ExecuteReaderAsync(cmd, command.Operation, token, _provider.AfterRead, resultEntity);
+                return await ExecuteReaderAsync(cmd, command.Operation, _provider.AfterRead, resultEntity, token);
             }
         }
     }
@@ -114,8 +114,8 @@ public class DatabaseCommandProcessor<TEntity, TBuilder>(
         }
     }
 
-    private IDatabaseCommandResult<TEntity> ExecuteNonQuery(IDbCommand cmd, TBuilder result)
-        => new DatabaseCommandResult<TEntity>(cmd.ExecuteNonQuery() != 0, CreateEntityFromBuilder(result));
+    private DatabaseCommandResult<TEntity> ExecuteNonQuery(DbCommand cmd, TBuilder result)
+        => new(cmd.ExecuteNonQuery() != 0, CreateEntityFromBuilder(result));
 
     private async Task<IDatabaseCommandResult<TEntity>> ExecuteNonQueryAsync(DbCommand cmd, TBuilder result, CancellationToken token)
         => new DatabaseCommandResult<TEntity>(await cmd.ExecuteNonQueryAsync(token) != 0, CreateEntityFromBuilder(result));
@@ -135,7 +135,7 @@ public class DatabaseCommandProcessor<TEntity, TBuilder>(
         throw new InvalidOperationException($"Could not cast type [{result.GetType().FullName}] to [{typeof(TEntity).FullName}]");
     }
 
-    private IDatabaseCommandResult<TEntity> ExecuteReader(
+    private DatabaseCommandResult<TEntity> ExecuteReader(
         IDbCommand cmd,
         DatabaseOperation operation,
         AfterReadHandler<TBuilder> afterReadDelegate,
@@ -159,9 +159,9 @@ public class DatabaseCommandProcessor<TEntity, TBuilder>(
     private async Task<IDatabaseCommandResult<TEntity>> ExecuteReaderAsync(
         DbCommand cmd,
         DatabaseOperation operation,
-        CancellationToken token,
         AfterReadHandler<TBuilder> afterReadDelegate,
-        TBuilder resultEntity)
+        TBuilder resultEntity,
+        CancellationToken token)
     {
         var success = false;
         using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.Default, token))

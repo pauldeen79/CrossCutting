@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <PackageId>pauldeen79.CrossCutting.Common.Testing</PackageId>
-    <Version>2.17.0</Version>
-    <PackageVersion>2.17.0</PackageVersion>
+    <Version>2.18.0</Version>
+    <PackageVersion>2.18.0</PackageVersion>
   </PropertyGroup>
 
 </Project>
