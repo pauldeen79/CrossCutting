@@ -2,6 +2,7 @@ namespace CrossCutting.Utilities.QueryEvaluator.Tests;
 
 public class ComposableEvaluatableFieldNameBuilderWrapperTests : TestBase
 {
+    //TODO: Copy unit tests for StartsWith, DoesNotStartWith, EndsWith, DoesNotEndWith, Contains and DoesNotContain
     public class IsEqualTo_Object : ComposableEvaluatableFieldNameBuilderWrapperTests
     {
         [Fact]
