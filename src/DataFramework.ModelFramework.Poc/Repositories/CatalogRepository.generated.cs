@@ -60,7 +60,7 @@ namespace DataFramework.ModelFramework.Poc.Repositories
             IEvaluatable<bool> evaluatable = Evaluatable.Empty<bool>();
             evaluatable = evaluatable.And(Evaluatable.OfPropertyName(nameof(Catalog.Name)).IsEqualTo("Something"));
 
-            return await EvaluatableProcessor.FindManyAsync<Catalog>(evaluatable, token);
+            return await EvaluatableProcessor.FindManyAsync<Catalog>(evaluatable, Evaluatable.OfPropertyName(nameof(Catalog.Name)), token);
         }
 
         public async Task<Result<IPagedResult<Catalog>>> FindSomethingPagedAsync(int offset, int pageSize, CancellationToken token)

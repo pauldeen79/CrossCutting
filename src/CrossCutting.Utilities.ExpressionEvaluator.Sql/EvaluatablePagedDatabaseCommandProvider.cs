@@ -42,8 +42,12 @@ public class EvaluatablePagedDatabaseCommandProvider(IEntityFieldInfoProvider fi
         string? orderBy = null;
         if (context.OrderByEvaluatable is not null)
         {
-            (await _evaluatableSqlExpressionProvider.GetExpressionAsync(context.Evaluatable, fieldInfo, null, token).ConfigureAwait(false))
+            var orderByResult = (await _evaluatableSqlExpressionProvider.GetExpressionAsync(context.OrderByEvaluatable, fieldInfo, null, token).ConfigureAwait(false))
                 .OnSuccess(sqlExpression => orderBy = sqlExpression.Expression);
+            if (!orderByResult.IsSuccessful())
+            {
+                return Result.FromExistingResult<IPagedDatabaseCommand>(orderByResult);
+            }
         }
 
         var builder = new PagedSelectCommandBuilder()
