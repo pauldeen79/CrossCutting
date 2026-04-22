@@ -2,7 +2,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Sql.Extensions;
 
 public static class EvaluatableProcessorExtensions
 {
-    public static Task<Result<TResult>> FindOneAsync<TResult>(this IEvaluatableProcessor instance, IEvaluatable<bool> evaluatable/*, IEvaluatable? orderByEvaluatable, object? context*/, CancellationToken token)
+    public static Task<Result<TResult>> FindOneAsync<TResult>(this IEvaluatableProcessor instance, IEvaluatable<bool> evaluatable, CancellationToken token)
         where TResult : class
         => instance.FindOneAsync<TResult>(evaluatable, null, null, token);
 
