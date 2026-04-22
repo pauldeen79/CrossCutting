@@ -1,12 +1,5 @@
 <Project>
 
-  <!-- Detect test projects (fallback if needed) -->
-  <PropertyGroup>
-    <IsTestProject Condition="'$(IsTestProject)' == '' and $(MSBuildProjectName.EndsWith('.Tests'))">
-      true
-    </IsTestProject>
-  </PropertyGroup>
-
   <!-- ✅ Applied to ALL projects -->
   <PropertyGroup>
     <Nullable>enable</Nullable>
@@ -27,7 +20,6 @@
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <!-- <GenerateDocumentationFile>true</GenerateDocumentationFile> -->
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsTestProject)' != 'true'">
