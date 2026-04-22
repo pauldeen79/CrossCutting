@@ -7,10 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsharpExpressionDumper.Core" Version="1.5.*" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.*" />
-    <PackageReference Include="pauldeen79.ClassFramework.TemplateFramework" Version="0.30.1" />
-    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="3.1.5" />
+    <PackageReference Include="CsharpExpressionDumper.Core" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="pauldeen79.ClassFramework.TemplateFramework" />
+    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" />
   </ItemGroup>
 
 </Project>
