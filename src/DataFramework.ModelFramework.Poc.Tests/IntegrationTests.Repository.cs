@@ -94,7 +94,7 @@ public sealed partial class IntegrationTests
     public async Task Can_Use_EvaluatableSqlExpressionProvider_In_Repository()
     {
         // Arrange
-        Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [Catalog]") && cmd.CommandText.Contains("WHERE Name = @p0 ORDER BY Name"),
+        Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [Catalog]") && cmd.CommandText.Contains("WHERE [Name] = @p0 ORDER BY [Name]"),
                                           () => new[] { new Catalog(1, "Diversen cd 1", DateTime.Today, DateTime.Now, DateTime.Now, "0000-0000", "CDT", "CDR", "CD-ROM", 1, 2, true, true, @"C:\", "Value", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null) });
         Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [ExtraField]"),
                                           () => new[] { new ExtraField("Catalog", "MyField", null, 1, typeof(string).FullName!, true) });

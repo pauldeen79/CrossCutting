@@ -36,11 +36,11 @@ public class SelectDatabaseCommandProviderTests : TestBase<SelectDatabaseCommand
     public async Task CreateAsync_Returns_Correct_Command_On_Select_DatabaseOperation()
     {
         // Arrange
-        const string Sql = "SELECT Id, Active, Field1, Field2, Field3 FROM MyTable WHERE Active = 1 ORDER BY Field1";
-        SettingsMock.DefaultOrderBy.Returns("Field1");
-        SettingsMock.DefaultWhere.Returns("Active = 1");
-        SettingsMock.Fields.Returns("Id, Active, Field1, Field2, Field3");
-        SettingsMock.TableName.Returns("MyTable");
+        const string Sql = "SELECT [Id], [Active], [Field1], [Field2], [Field3] FROM [MyTable] WHERE [Active] = 1 ORDER BY [Field1]";
+        SettingsMock.DefaultOrderBy.Returns("[Field1]");
+        SettingsMock.DefaultWhere.Returns("[Active] = 1");
+        SettingsMock.Fields.Returns("[Id], [Active], [Field1], [Field2], [Field3]");
+        SettingsMock.TableName.Returns("[MyTable]");
         Fixture.Freeze<IDatabaseEntityRetrieverSettingsProvider>()
                .Get<TestEntity>()
                .Returns(_ => Result.Success(SettingsMock));

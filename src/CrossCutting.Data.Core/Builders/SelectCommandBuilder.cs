@@ -187,4 +187,9 @@ public class SelectCommandBuilder : IBuilder<IDatabaseCommand>
         }
         return builder.ToString();
     }
+
+    public object From(object value)
+    {
+        throw new NotImplementedException();
+    }
 }

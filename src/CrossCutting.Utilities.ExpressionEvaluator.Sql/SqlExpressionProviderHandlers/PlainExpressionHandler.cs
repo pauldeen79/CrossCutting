@@ -22,7 +22,7 @@ public class PlainExpressionHandler : SqlExpressionProviderHandlerBase<PlainExpr
 
             return string.IsNullOrEmpty(databaseFieldName)
                 ? Result.NotFound<string>($"Expression contains unknown field [{propertyNameEvaluatable.PropertyName}]")
-                : databaseFieldName!;
+                : databaseFieldName.FormatAsDatabaseIdentifier();
         }
         else
         {

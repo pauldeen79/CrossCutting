@@ -15,9 +15,9 @@ public class PagedSelectDatabaseCommandProvider(IEnumerable<IPagedDatabaseEntity
 
                 return new PagedSelectCommandBuilder()
                     .Select(settings.Fields)
-                    .From(settings.TableName)
+                    .From(settings.TableName.FormatAsDatabaseIdentifier())
                     .Where(settings.DefaultWhere)
-                    .OrderBy(settings.DefaultOrderBy)
+                    .OrderBy(settings.DefaultOrderBy.FormatAsDatabaseIdentifier())
                     .Skip(offset)
                     .Take(((int?)pageSize).IfNotGreaterThan(settings.OverridePageSize))
                     .Build();

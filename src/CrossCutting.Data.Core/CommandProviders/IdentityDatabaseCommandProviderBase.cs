@@ -16,8 +16,8 @@ public abstract class IdentityDatabaseCommandProviderBase<T>(IEnumerable<IPagedD
 
                 return new SelectCommandBuilder()
                     .Select(settings.Fields)
-                    .From(settings.TableName)
-                    .Where(string.Join(" AND ", GetFields().Select(x => $"[{x.FieldName}] = @{x.ParameterName}")))
+                    .From(settings.TableName.FormatAsDatabaseIdentifier())
+                    .Where(string.Join(" AND ", GetFields().Select(x => $"{x.FieldName.FormatAsDatabaseIdentifier()} = @{x.ParameterName}")))
                     .AppendParameters(source)
                     .Build();
             });

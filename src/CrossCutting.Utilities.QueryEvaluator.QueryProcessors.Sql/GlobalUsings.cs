@@ -9,6 +9,7 @@ global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
 global using CrossCutting.Data.Abstractions;
+global using CrossCutting.Data.Core.Extensions;
 global using CrossCutting.Data.Sql.Builders;
 global using CrossCutting.Data.Sql.Extensions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;

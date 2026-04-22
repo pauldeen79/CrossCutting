@@ -82,7 +82,7 @@ internal static class PagedSelectCommandBuilderExtensions
     internal static Result<PagedSelectCommandBuilder> From(this PagedSelectCommandBuilder instance,
                                                            IQueryContext context,
                                                            IPagedDatabaseEntityRetrieverSettings settings)
-        => instance.From(context.Query.GetTableName(settings.TableName));
+        => instance.From(context.Query.GetTableName(settings.TableName).FormatAsDatabaseIdentifier());
 
     internal static async Task<Result<PagedSelectCommandBuilder>> Where(this PagedSelectCommandBuilder instance,
                                                                         PagedSelectCommandBuilderContext context,

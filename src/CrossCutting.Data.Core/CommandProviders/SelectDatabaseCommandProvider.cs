@@ -15,9 +15,9 @@ public class SelectDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverS
                 
                 return new SelectCommandBuilder()
                     .Select(settings.Fields)
-                    .From(settings.TableName)
+                    .From(settings.TableName.FormatAsDatabaseIdentifier())
                     .Where(settings.DefaultWhere)
-                    .OrderBy(settings.DefaultOrderBy)
+                    .OrderBy(settings.DefaultOrderBy.FormatAsDatabaseIdentifier())
                     .Build();
             });
 

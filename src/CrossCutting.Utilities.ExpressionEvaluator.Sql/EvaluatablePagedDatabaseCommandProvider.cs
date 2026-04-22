@@ -52,10 +52,10 @@ public class EvaluatablePagedDatabaseCommandProvider(IEntityFieldInfoProvider fi
 
         var builder = new PagedSelectCommandBuilder()
             .Select(settings.Fields)
-            .From(settings.TableName)
+            .From(settings.TableName.FormatAsDatabaseIdentifier())
             .Skip(offset)
             .Take(pageSize)
-            .OrderBy(orderBy.WhenNullOrEmpty(settings.DefaultOrderBy));
+            .OrderBy(orderBy.WhenNullOrEmpty(settings.DefaultOrderBy.FormatAsDatabaseIdentifier()));
 
         return (await _evaluatableSqlExpressionProvider.GetExpressionAsync(context.Evaluatable, fieldInfo, null, token).ConfigureAwait(false))
             .OnSuccess(sqlExpression => builder.WithSqlExpression(sqlExpression).Build());
