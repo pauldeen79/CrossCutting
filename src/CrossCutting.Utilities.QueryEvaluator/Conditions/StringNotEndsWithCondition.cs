@@ -2,11 +2,11 @@
 
 public partial record StringNotEndsWithCondition : IChildEvaluatablesContainer
 {
-    public override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => new StringNotEndsWithOperatorEvaluatable(StringComparison, SourceExpression, CompareExpression).EvaluateAsync(context, token);
+    public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
-    public override Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => new StringNotEndsWithOperatorEvaluatable(StringComparison, SourceExpression, CompareExpression).EvaluateTypedAsync(context, token);
+    public override async Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => (await new StringEndsWithOperatorEvaluatable(StringComparison, SourceExpression, CompareExpression).EvaluateTypedAsync(context, token).ConfigureAwait(false)).Transform(x => !x);
 
     public IEnumerable<IEvaluatable> GetChildEvaluatables() =>
     [
