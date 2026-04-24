@@ -397,4 +397,226 @@ public class EvaluatableExtensionsTests : TestBase
             rightOperand.Value.ShouldBe("T");
         }
     }
+
+    public class EndsWith_Evaluatable : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatable("Test");
+
+            // Act
+            var result = sut.EndsWith(new LiteralEvaluatable("T"));
+
+            // Assert
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var leftOperand = (LiteralEvaluatable)result.LeftOperand;
+            leftOperand.Value.ShouldBe("Test");
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var rightOperand = (LiteralEvaluatable)result.RightOperand;
+            rightOperand.Value.ShouldBe("T");
+        }
+    }
+
+    public class EndsWith_Object : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatable("Test");
+
+            // Act
+            var result = sut.EndsWith("T");
+
+            // Assert
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var leftOperand = (LiteralEvaluatable)result.LeftOperand;
+            leftOperand.Value.ShouldBe("Test");
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var rightOperand = (LiteralEvaluatable)result.RightOperand;
+            rightOperand.Value.ShouldBe("T");
+        }
+    }
+
+    public class Contains_Evaluatable : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatable("Test");
+
+            // Act
+            var result = sut.Contains(new LiteralEvaluatable("T"));
+
+            // Assert
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var leftOperand = (LiteralEvaluatable)result.LeftOperand;
+            leftOperand.Value.ShouldBe("Test");
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var rightOperand = (LiteralEvaluatable)result.RightOperand;
+            rightOperand.Value.ShouldBe("T");
+        }
+    }
+
+    public class Contains_Object : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatable("Test");
+
+            // Act
+            var result = sut.Contains("T");
+
+            // Assert
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var leftOperand = (LiteralEvaluatable)result.LeftOperand;
+            leftOperand.Value.ShouldBe("Test");
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var rightOperand = (LiteralEvaluatable)result.RightOperand;
+            rightOperand.Value.ShouldBe("T");
+        }
+    }
+
+    public class DoesNotStartWith_Evaluatable : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatable("Test");
+
+            // Act
+            var result = sut.DoesNotStartWith(new LiteralEvaluatable("T"));
+
+            // Assert
+            result.Operand.ShouldBeOfType<StringStartsWithOperatorEvaluatable>();
+            var stringStartsWithOperatorEvaluatable = (StringStartsWithOperatorEvaluatable)result.Operand;
+            stringStartsWithOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var leftOperand = (LiteralEvaluatable)stringStartsWithOperatorEvaluatable.LeftOperand;
+            leftOperand.Value.ShouldBe("Test");
+            stringStartsWithOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var rightOperand = (LiteralEvaluatable)stringStartsWithOperatorEvaluatable.RightOperand;
+            rightOperand.Value.ShouldBe("T");
+        }
+    }
+
+    public class DoesNotStartWith_Object : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatable("Test");
+
+            // Act
+            var result = sut.DoesNotStartWith("T");
+
+            // Assert
+            result.Operand.ShouldBeOfType<StringStartsWithOperatorEvaluatable>();
+            var stringStartsWithOperatorEvaluatable = (StringStartsWithOperatorEvaluatable)result.Operand;
+            stringStartsWithOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var leftOperand = (LiteralEvaluatable)stringStartsWithOperatorEvaluatable.LeftOperand;
+            leftOperand.Value.ShouldBe("Test");
+            stringStartsWithOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var rightOperand = (LiteralEvaluatable)stringStartsWithOperatorEvaluatable.RightOperand;
+            rightOperand.Value.ShouldBe("T");
+        }
+    }
+
+    public class DoesNotEndWith_Evaluatable : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatable("Test");
+
+            // Act
+            var result = sut.DoesNotEndWith(new LiteralEvaluatable("T"));
+
+            // Assert
+            result.Operand.ShouldBeOfType<StringEndsWithOperatorEvaluatable>();
+            var stringEndsWithOperatorEvaluatable = (StringEndsWithOperatorEvaluatable)result.Operand;
+            stringEndsWithOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var leftOperand = (LiteralEvaluatable)stringEndsWithOperatorEvaluatable.LeftOperand;
+            leftOperand.Value.ShouldBe("Test");
+            stringEndsWithOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var rightOperand = (LiteralEvaluatable)stringEndsWithOperatorEvaluatable.RightOperand;
+            rightOperand.Value.ShouldBe("T");
+        }
+    }
+
+    public class DoesNotEndWith_Object : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatable("Test");
+
+            // Act
+            var result = sut.DoesNotEndWith("T");
+
+            // Assert
+            result.Operand.ShouldBeOfType<StringEndsWithOperatorEvaluatable>();
+            var stringEndsWithOperatorEvaluatable = (StringEndsWithOperatorEvaluatable)result.Operand;
+            stringEndsWithOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var leftOperand = (LiteralEvaluatable)stringEndsWithOperatorEvaluatable.LeftOperand;
+            leftOperand.Value.ShouldBe("Test");
+            stringEndsWithOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var rightOperand = (LiteralEvaluatable)stringEndsWithOperatorEvaluatable.RightOperand;
+            rightOperand.Value.ShouldBe("T");
+        }
+    }
+
+    public class DoesNotContain_Evaluatable : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatable("Test");
+
+            // Act
+            var result = sut.DoesNotContain(new LiteralEvaluatable("T"));
+
+            // Assert
+            result.Operand.ShouldBeOfType<StringContainsOperatorEvaluatable>();
+            var stringContainsOperatorEvaluatable = (StringContainsOperatorEvaluatable)result.Operand;
+            stringContainsOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var leftOperand = (LiteralEvaluatable)stringContainsOperatorEvaluatable.LeftOperand;
+            leftOperand.Value.ShouldBe("Test");
+            stringContainsOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var rightOperand = (LiteralEvaluatable)stringContainsOperatorEvaluatable.RightOperand;
+            rightOperand.Value.ShouldBe("T");
+        }
+    }
+
+    public class DoesNotContain_Object : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatable("Test");
+
+            // Act
+            var result = sut.DoesNotContain("T");
+
+            // Assert
+            result.Operand.ShouldBeOfType<StringContainsOperatorEvaluatable>();
+            var stringContainsOperatorEvaluatable = (StringContainsOperatorEvaluatable)result.Operand;
+            stringContainsOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var leftOperand = (LiteralEvaluatable)stringContainsOperatorEvaluatable.LeftOperand;
+            leftOperand.Value.ShouldBe("Test");
+            stringContainsOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var rightOperand = (LiteralEvaluatable)stringContainsOperatorEvaluatable.RightOperand;
+            rightOperand.Value.ShouldBe("T");
+        }
+    }
 }

@@ -82,5 +82,33 @@ public static class EvaluatableExtensions
     public static StringStartsWithOperatorEvaluatable StartsWith(this IEvaluatable instance, object? value, StringComparison stringComparison = default)
         => new StringStartsWithOperatorEvaluatable(stringComparison, instance, new LiteralEvaluatable(value));
 
-    //TODO: Add EndsWith, Contains, DoesNotStartWith, DoesNotEndWith and DoesNotContain
+    public static StringEndsWithOperatorEvaluatable EndsWith(this IEvaluatable instance, IEvaluatable other, StringComparison stringComparison = default)
+        => new StringEndsWithOperatorEvaluatable(stringComparison, instance, other);
+
+    public static StringEndsWithOperatorEvaluatable EndsWith(this IEvaluatable instance, object? value, StringComparison stringComparison = default)
+        => new StringEndsWithOperatorEvaluatable(stringComparison, instance, new LiteralEvaluatable(value));
+
+    public static StringContainsOperatorEvaluatable Contains(this IEvaluatable instance, IEvaluatable other, StringComparison stringComparison = default)
+        => new StringContainsOperatorEvaluatable(stringComparison, instance, other);
+
+    public static StringContainsOperatorEvaluatable Contains(this IEvaluatable instance, object? value, StringComparison stringComparison = default)
+        => new StringContainsOperatorEvaluatable(stringComparison, instance, new LiteralEvaluatable(value));
+
+    public static UnaryNegateOperatorEvaluatable DoesNotStartWith(this IEvaluatable instance, IEvaluatable other, StringComparison stringComparison = default)
+        => new UnaryNegateOperatorEvaluatable(new StringStartsWithOperatorEvaluatable(stringComparison, instance, other));
+
+    public static UnaryNegateOperatorEvaluatable DoesNotStartWith(this IEvaluatable instance, object? value, StringComparison stringComparison = default)
+        => new UnaryNegateOperatorEvaluatable(new StringStartsWithOperatorEvaluatable(stringComparison, instance, new LiteralEvaluatable(value)));
+
+    public static UnaryNegateOperatorEvaluatable DoesNotEndWith(this IEvaluatable instance, IEvaluatable other, StringComparison stringComparison = default)
+        => new UnaryNegateOperatorEvaluatable(new StringEndsWithOperatorEvaluatable(stringComparison, instance, other));
+
+    public static UnaryNegateOperatorEvaluatable DoesNotEndWith(this IEvaluatable instance, object? value, StringComparison stringComparison = default)
+        => new UnaryNegateOperatorEvaluatable(new StringEndsWithOperatorEvaluatable(stringComparison, instance, new LiteralEvaluatable(value)));
+
+    public static UnaryNegateOperatorEvaluatable DoesNotContain(this IEvaluatable instance, IEvaluatable other, StringComparison stringComparison = default)
+        => new UnaryNegateOperatorEvaluatable(new StringContainsOperatorEvaluatable(stringComparison, instance, other));
+
+    public static UnaryNegateOperatorEvaluatable DoesNotContain(this IEvaluatable instance, object? value, StringComparison stringComparison = default)
+        => new UnaryNegateOperatorEvaluatable(new StringContainsOperatorEvaluatable(stringComparison, instance, new LiteralEvaluatable(value)));
 }
