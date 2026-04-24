@@ -355,4 +355,46 @@ public class EvaluatableExtensionsTests : TestBase
             operand.Value.ShouldBe(true);
         }
     }
+
+    public class StartsWith_Evaluatable : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatable("Test");
+
+            // Act
+            var result = sut.StartsWith(new LiteralEvaluatable("T"));
+
+            // Assert
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var leftOperand = (LiteralEvaluatable)result.LeftOperand;
+            leftOperand.Value.ShouldBe("Test");
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var rightOperand = (LiteralEvaluatable)result.RightOperand;
+            rightOperand.Value.ShouldBe("T");
+        }
+    }
+
+    public class StartsWith_Object : EvaluatableExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result()
+        {
+            // Arrange
+            var sut = new LiteralEvaluatable("Test");
+
+            // Act
+            var result = sut.StartsWith("T");
+
+            // Assert
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var leftOperand = (LiteralEvaluatable)result.LeftOperand;
+            leftOperand.Value.ShouldBe("Test");
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
+            var rightOperand = (LiteralEvaluatable)result.RightOperand;
+            rightOperand.Value.ShouldBe("T");
+        }
+    }
 }

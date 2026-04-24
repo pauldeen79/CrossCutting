@@ -15,7 +15,7 @@ public class EvaluatableProcessor(
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
                 {
-                    var commandResult = (await CreateCommandAsync(evaluatable, typeof(TResult), context, 0, 0, orderByEvaluatable, token).ConfigureAwait(false))
+                    var commandResult = (await CreateCommandAsync(evaluatable, typeof(TResult), 0, 0, orderByEvaluatable, token).ConfigureAwait(false))
                         .EnsureValue();
                     if (!commandResult.IsSuccessful())
                     {
@@ -35,7 +35,7 @@ public class EvaluatableProcessor(
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
                 {
-                    var commandResult = (await CreateCommandAsync(evaluatable, typeof(TResult), context, 1, 0, orderByEvaluatable, token).ConfigureAwait(false))
+                    var commandResult = (await CreateCommandAsync(evaluatable, typeof(TResult), 1, 0, orderByEvaluatable, token).ConfigureAwait(false))
                         .EnsureValue();
                     if (!commandResult.IsSuccessful())
                     {
@@ -55,7 +55,7 @@ public class EvaluatableProcessor(
             .OnSuccessAsync(async provider =>
                 await Result.WrapExceptionAsync(async () =>
                 {
-                    var commandResult = (await CreateCommandAsync(evaluatable, typeof(TResult), context, offset, pageSize, orderByEvaluatable, token).ConfigureAwait(false))
+                    var commandResult = (await CreateCommandAsync(evaluatable, typeof(TResult), offset, pageSize, orderByEvaluatable, token).ConfigureAwait(false))
                         .EnsureValue();
                     if (!commandResult.IsSuccessful())
                     {
@@ -67,7 +67,7 @@ public class EvaluatableProcessor(
             .ConfigureAwait(false);
     }
 
-    private async Task<Result<IPagedDatabaseCommand>> CreateCommandAsync(IEvaluatable<bool> evaluatable, Type entityType, object? context, int offset, int pageSize, IEvaluatable? orderByEvaluatable, CancellationToken token)
+    private async Task<Result<IPagedDatabaseCommand>> CreateCommandAsync(IEvaluatable<bool> evaluatable, Type entityType, int offset, int pageSize, IEvaluatable? orderByEvaluatable, CancellationToken token)
     {
         var validationResult = Result.FromValidatableInstance(evaluatable);
         if (!validationResult.IsSuccessful())
@@ -75,7 +75,7 @@ public class EvaluatableProcessor(
             return Result.FromExistingResult<IPagedDatabaseCommand>(validationResult); 
         }
 
-        return await _pagedDatabaseCommandProvider.CreatePagedAsync(evaluatable.ToEvaluatableContext(entityType, context, orderByEvaluatable), DatabaseOperation.Select, offset, pageSize, token)
+        return await _pagedDatabaseCommandProvider.CreatePagedAsync(evaluatable.ToEvaluatableContext(entityType, orderByEvaluatable), DatabaseOperation.Select, offset, pageSize, token)
             .ConfigureAwait(false);
     }
 

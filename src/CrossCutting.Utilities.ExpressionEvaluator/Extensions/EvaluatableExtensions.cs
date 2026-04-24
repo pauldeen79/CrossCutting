@@ -76,5 +76,11 @@ public static class EvaluatableExtensions
     public static NullOperatorEvaluatable IsNull(this IEvaluatable instance)
         => new NullOperatorEvaluatable(instance);
 
-    //TODO: Add StartsWith, EndsWith, Contains, DoesNotStartWith, DoesNotEndWith and DoesNotContain
+    public static StringStartsWithOperatorEvaluatable StartsWith(this IEvaluatable instance, IEvaluatable other, StringComparison stringComparison = default)
+        => new StringStartsWithOperatorEvaluatable(stringComparison, instance, other);
+
+    public static StringStartsWithOperatorEvaluatable StartsWith(this IEvaluatable instance, object? value, StringComparison stringComparison = default)
+        => new StringStartsWithOperatorEvaluatable(stringComparison, instance, new LiteralEvaluatable(value));
+
+    //TODO: Add EndsWith, Contains, DoesNotStartWith, DoesNotEndWith and DoesNotContain
 }

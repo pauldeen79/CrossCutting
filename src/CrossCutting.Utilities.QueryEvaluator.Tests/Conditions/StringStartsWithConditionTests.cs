@@ -44,7 +44,7 @@ public class StringStartsWithConditionTests : TestBase<StringStartsWithCondition
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
+            result.ErrorMessage.ShouldBe("LeftOperand is not of type string");
         }
 
         [Fact]
@@ -65,7 +65,7 @@ public class StringStartsWithConditionTests : TestBase<StringStartsWithCondition
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
+            result.ErrorMessage.ShouldBe("RightOperand is not of type string");
         }
     }
 
