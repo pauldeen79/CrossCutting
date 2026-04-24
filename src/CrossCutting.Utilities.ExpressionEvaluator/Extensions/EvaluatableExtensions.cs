@@ -75,4 +75,6 @@ public static class EvaluatableExtensions
 
     public static NullOperatorEvaluatable IsNull(this IEvaluatable instance)
         => new NullOperatorEvaluatable(instance);
+
+    //TODO: Add StartsWith, EndsWith, Contains, DoesNotStartWith, DoesNotEndWith and DoesNotContain
 }
