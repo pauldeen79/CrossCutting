@@ -7,4 +7,5 @@ public partial interface IEvaluatable : IBuildableEntity<IEvaluatableBuilder>
 public partial interface IEvaluatable<T> : IEvaluatable
 {
     Task<Result<T>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token);
+    IEvaluatableBuilder<T> ToTypedBuilder();
 }

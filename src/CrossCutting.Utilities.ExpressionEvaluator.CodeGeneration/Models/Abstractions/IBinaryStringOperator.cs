@@ -1,10 +1,9 @@
 namespace CrossCutting.Utilities.ExpressionEvaluator.CodeGeneration.Models.Abstractions;
 
-internal interface IBinaryStringOperator : IBinaryOperator
+internal interface IBinaryStringOperator
 {
-    //TODO: Try to use this instead of IBinaryOperator
-    // [Required, ValidateObject] IEvaluatable<string> LeftOperand { get; }
-    // [Required, ValidateObject] IEvaluatable<string> RightOperand { get; }
+    [Required, ValidateObject] IEvaluatable<string> LeftOperand { get; }
+    [Required, ValidateObject] IEvaluatable<string> RightOperand { get; }
 
     StringComparison StringComparison { get; }
 }

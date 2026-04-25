@@ -28,8 +28,24 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions
             set;
         }
     }
-    public partial interface IBinaryStringOperatorBuilder : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial interface IBinaryStringOperatorBuilder
     {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> LeftOperand
+        {
+            get;
+            set;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> RightOperand
+        {
+            get;
+            set;
+        }
+
         System.StringComparison StringComparison
         {
             get;

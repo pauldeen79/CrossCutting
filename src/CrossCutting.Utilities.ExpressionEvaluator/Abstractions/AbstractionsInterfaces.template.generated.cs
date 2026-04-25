@@ -26,8 +26,22 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Abstractions
             get;
         }
     }
-    public partial interface IBinaryStringOperator : CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IBinaryOperator
+    public partial interface IBinaryStringOperator
     {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable<string> LeftOperand
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IEvaluatable<string> RightOperand
+        {
+            get;
+        }
+
         System.StringComparison StringComparison
         {
             get;

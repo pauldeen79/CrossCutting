@@ -1461,31 +1461,17 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class StringContainsOperatorEvaluatableBuilder : EvaluatableBaseBuilder<StringContainsOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringContainsOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryStringOperatorBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class StringContainsOperatorEvaluatableBuilder : EvaluatableBaseBuilder<StringContainsOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringContainsOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryStringOperatorBuilder
     {
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> _leftOperand;
+
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> _rightOperand;
+
         private System.StringComparison _stringComparison;
-
-        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
-
-        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _rightOperand;
-
-        public System.StringComparison StringComparison
-        {
-            get
-            {
-                return _stringComparison;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
-                _stringComparison = value;
-                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
-            }
-        }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder LeftOperand
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> LeftOperand
         {
             get
             {
@@ -1501,7 +1487,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder RightOperand
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> RightOperand
         {
             get
             {
@@ -1515,24 +1501,38 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             }
         }
 
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
         public StringContainsOperatorEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringContainsOperatorEvaluatable source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _leftOperand = source.LeftOperand?.ToTypedBuilder()!;
+            _rightOperand = source.RightOperand?.ToTypedBuilder()!;
             _stringComparison = source.StringComparison;
-            _leftOperand = source.LeftOperand?.ToBuilder()!;
-            _rightOperand = source.RightOperand?.ToBuilder()!;
         }
 
         public StringContainsOperatorEvaluatableBuilder() : base()
         {
-            _leftOperand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
-            _rightOperand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
+            _leftOperand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string>)!;
+            _rightOperand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string>)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringContainsOperatorEvaluatable BuildTyped()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringContainsOperatorEvaluatable(StringComparison, LeftOperand?.Build()!, RightOperand?.Build()!);
+            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringContainsOperatorEvaluatable(LeftOperand?.BuildTyped()!, RightOperand?.BuildTyped()!, StringComparison);
         }
 
         partial void SetDefaultValues();
@@ -1542,31 +1542,17 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class StringEndsWithOperatorEvaluatableBuilder : EvaluatableBaseBuilder<StringEndsWithOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringEndsWithOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryStringOperatorBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class StringEndsWithOperatorEvaluatableBuilder : EvaluatableBaseBuilder<StringEndsWithOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringEndsWithOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryStringOperatorBuilder
     {
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> _leftOperand;
+
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> _rightOperand;
+
         private System.StringComparison _stringComparison;
-
-        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
-
-        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _rightOperand;
-
-        public System.StringComparison StringComparison
-        {
-            get
-            {
-                return _stringComparison;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
-                _stringComparison = value;
-                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
-            }
-        }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder LeftOperand
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> LeftOperand
         {
             get
             {
@@ -1582,7 +1568,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder RightOperand
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> RightOperand
         {
             get
             {
@@ -1596,24 +1582,38 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             }
         }
 
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
         public StringEndsWithOperatorEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringEndsWithOperatorEvaluatable source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _leftOperand = source.LeftOperand?.ToTypedBuilder()!;
+            _rightOperand = source.RightOperand?.ToTypedBuilder()!;
             _stringComparison = source.StringComparison;
-            _leftOperand = source.LeftOperand?.ToBuilder()!;
-            _rightOperand = source.RightOperand?.ToBuilder()!;
         }
 
         public StringEndsWithOperatorEvaluatableBuilder() : base()
         {
-            _leftOperand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
-            _rightOperand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
+            _leftOperand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string>)!;
+            _rightOperand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string>)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringEndsWithOperatorEvaluatable BuildTyped()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringEndsWithOperatorEvaluatable(StringComparison, LeftOperand?.Build()!, RightOperand?.Build()!);
+            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringEndsWithOperatorEvaluatable(LeftOperand?.BuildTyped()!, RightOperand?.BuildTyped()!, StringComparison);
         }
 
         partial void SetDefaultValues();
@@ -1623,31 +1623,17 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             return builder.BuildTyped();
         }
     }
-    public partial class StringStartsWithOperatorEvaluatableBuilder : EvaluatableBaseBuilder<StringStartsWithOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringStartsWithOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryStringOperatorBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryOperatorBuilder
+    public partial class StringStartsWithOperatorEvaluatableBuilder : EvaluatableBaseBuilder<StringStartsWithOperatorEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringStartsWithOperatorEvaluatable>, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryStringOperatorBuilder
     {
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> _leftOperand;
+
+        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> _rightOperand;
+
         private System.StringComparison _stringComparison;
-
-        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _leftOperand;
-
-        private CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder _rightOperand;
-
-        public System.StringComparison StringComparison
-        {
-            get
-            {
-                return _stringComparison;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
-                _stringComparison = value;
-                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
-            }
-        }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder LeftOperand
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> LeftOperand
         {
             get
             {
@@ -1663,7 +1649,7 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder RightOperand
+        public CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> RightOperand
         {
             get
             {
@@ -1677,24 +1663,38 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Evaluatables
             }
         }
 
+        public System.StringComparison StringComparison
+        {
+            get
+            {
+                return _stringComparison;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.StringComparison>.Default.Equals(_stringComparison, value);
+                _stringComparison = value;
+                if (hasChanged) HandlePropertyChanged(nameof(StringComparison));
+            }
+        }
+
         public StringStartsWithOperatorEvaluatableBuilder(CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringStartsWithOperatorEvaluatable source) : base(source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _leftOperand = source.LeftOperand?.ToTypedBuilder()!;
+            _rightOperand = source.RightOperand?.ToTypedBuilder()!;
             _stringComparison = source.StringComparison;
-            _leftOperand = source.LeftOperand?.ToBuilder()!;
-            _rightOperand = source.RightOperand?.ToBuilder()!;
         }
 
         public StringStartsWithOperatorEvaluatableBuilder() : base()
         {
-            _leftOperand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
-            _rightOperand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder)!;
+            _leftOperand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string>)!;
+            _rightOperand = default(CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string>)!;
             SetDefaultValues();
         }
 
         public override CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringStartsWithOperatorEvaluatable BuildTyped()
         {
-            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringStartsWithOperatorEvaluatable(StringComparison, LeftOperand?.Build()!, RightOperand?.Build()!);
+            return new CrossCutting.Utilities.ExpressionEvaluator.Evaluatables.StringStartsWithOperatorEvaluatable(LeftOperand?.BuildTyped()!, RightOperand?.BuildTyped()!, StringComparison);
         }
 
         partial void SetDefaultValues();
