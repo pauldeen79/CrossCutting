@@ -2,7 +2,7 @@
 
 public class StringNotContainsConditionTests : TestBase<StringNotContainsCondition>
 {
-    public class Evaluate : StringNotContainsConditionTests
+    public class EvaluateAsync : StringNotContainsConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
@@ -43,7 +43,7 @@ public class StringNotContainsConditionTests : TestBase<StringNotContainsConditi
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
+            result.ErrorMessage.ShouldBe("LeftOperand is not of type string");
         }
 
         [Fact]
@@ -59,11 +59,11 @@ public class StringNotContainsConditionTests : TestBase<StringNotContainsConditi
             var context = CreateContext();
 
             // Act
-            var result = await sut.EvaluateAsync(context, CancellationToken.None);
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
+            result.ErrorMessage.ShouldBe("RightOperand is not of type string");
         }
     }
 

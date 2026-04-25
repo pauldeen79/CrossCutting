@@ -3,7 +3,7 @@
 public abstract class IdentityDatabaseCommandProviderBase<T>(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders) : IDatabaseCommandProvider<T>
     where T : class
 {
-    private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
+    private readonly IPagedDatabaseEntityRetrieverSettingsProvider[] _settingsProviders = ArgumentGuard.IsNotNull(settingsProviders, nameof(settingsProviders)).ToArray();
 
     public async Task<Result<IDatabaseCommand>> CreateAsync(T source, DatabaseOperation operation, CancellationToken token)
         => (await new AsyncResultDictionaryBuilder()
@@ -16,8 +16,8 @@ public abstract class IdentityDatabaseCommandProviderBase<T>(IEnumerable<IPagedD
 
                 return new SelectCommandBuilder()
                     .Select(settings.Fields)
-                    .From(settings.TableName)
-                    .Where(string.Join(" AND ", GetFields().Select(x => $"[{x.FieldName}] = @{x.ParameterName}")))
+                    .From(settings.TableName.FormatAsDatabaseIdentifier())
+                    .Where(string.Join(" AND ", GetFields().Select(x => $"{x.FieldName.FormatAsDatabaseIdentifier()} = @{x.ParameterName}")))
                     .AppendParameters(source)
                     .Build();
             });

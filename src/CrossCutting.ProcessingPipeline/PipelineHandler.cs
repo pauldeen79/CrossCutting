@@ -1,18 +1,13 @@
 ﻿namespace CrossCutting.ProcessingPipeline;
 
-public class PipelineHandler<TCommand> : ICommandHandler<TCommand>
+public class PipelineHandler<TCommand>(IEnumerable<IPipelineComponentInterceptor> interceptors, IEnumerable<IPipelineComponent<TCommand>> components) : ICommandHandler<TCommand>
 {
-    private readonly List<IPipelineComponentInterceptor> _interceptors;
-    private readonly IEnumerable<IPipelineComponent<TCommand>> _components;
-
-    public PipelineHandler(IEnumerable<IPipelineComponentInterceptor> interceptors, IEnumerable<IPipelineComponent<TCommand>> components)
-    {
-        ArgumentGuard.IsNotNull(interceptors, nameof(interceptors));
-        ArgumentGuard.IsNotNull(components, nameof(components));
-
-        _interceptors = interceptors.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
-        _components = components.OrderBy(x => (x as IOrderContainer)?.Order).ToArray();
-    }
+    private readonly IPipelineComponentInterceptor[] _interceptors = ArgumentGuard.IsNotNull(interceptors, nameof(interceptors))
+        .OrderBy(x => (x as IOrderContainer)?.Order)
+        .ToArray();
+    private readonly IPipelineComponent<TCommand>[] _components = ArgumentGuard.IsNotNull(components, nameof(components))
+        .OrderBy(x => (x as IOrderContainer)?.Order)
+        .ToArray();
 
     public async Task<Result> ExecuteAsync(TCommand command, ICommandService commandService, CancellationToken token)
         => await Result.EnsureNotNull<TCommand>(command, nameof(command))
@@ -50,7 +45,7 @@ public class PipelineHandler<TCommand> : ICommandHandler<TCommand>
 
         Task<Result> Next()
         {
-            if (index < _interceptors.Count)
+            if (index < _interceptors.Length)
             {
                 return _interceptors[index++].ExecuteAsync(command, commandService, Next, token);
             }
@@ -62,22 +57,15 @@ public class PipelineHandler<TCommand> : ICommandHandler<TCommand>
     }
 }
 
-public class PipelineHandler<TCommand, TResponse> : ICommandHandler<TCommand, TResponse>
+public class PipelineHandler<TCommand, TResponse>(IEnumerable<IPipelineComponentInterceptor> interceptors, IPipelineResponseGenerator responseGenerator, IEnumerable<IPipelineComponent<TCommand, TResponse>> components) : ICommandHandler<TCommand, TResponse>
 {
-    private readonly List<IPipelineComponentInterceptor> _interceptors;
-    private readonly IPipelineResponseGenerator _responseGenerator;
-    private readonly IEnumerable<IPipelineComponent<TCommand, TResponse>> _components;
-
-    public PipelineHandler(IEnumerable<IPipelineComponentInterceptor> interceptors, IPipelineResponseGenerator responseGenerator, IEnumerable<IPipelineComponent<TCommand, TResponse>> components)
-    {
-        ArgumentGuard.IsNotNull(interceptors, nameof(interceptors));
-        ArgumentGuard.IsNotNull(responseGenerator, nameof(responseGenerator));
-        ArgumentGuard.IsNotNull(components, nameof(components));
-
-        _interceptors = interceptors.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
-        _responseGenerator = responseGenerator;
-        _components = components.OrderBy(x => (x as IOrderContainer)?.Order).ToList();
-    }
+    private readonly IPipelineComponentInterceptor[] _interceptors = ArgumentGuard.IsNotNull(interceptors, nameof(interceptors))
+        .OrderBy(x => (x as IOrderContainer)?.Order)
+        .ToArray();
+    private readonly IPipelineResponseGenerator _responseGenerator = ArgumentGuard.IsNotNull(responseGenerator, nameof(responseGenerator));
+    private readonly IPipelineComponent<TCommand, TResponse>[] _components = ArgumentGuard.IsNotNull(components, nameof(components))
+        .OrderBy(x => (x as IOrderContainer)?.Order)
+        .ToArray();
 
     public async Task<Result<TResponse>> ExecuteAsync(TCommand command, ICommandService commandService, CancellationToken token)
             => await Result.Validate<TResponse>(() => command is not null, "command is required")
@@ -121,7 +109,7 @@ public class PipelineHandler<TCommand, TResponse> : ICommandHandler<TCommand, TR
 
         Task<Result> Next()
         {
-            if (index < _interceptors.Count)
+            if (index < _interceptors.Length)
             {
                 return _interceptors[index++].ExecuteAsync(command, commandService, Next, token);
             }

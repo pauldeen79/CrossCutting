@@ -4,7 +4,6 @@ global using AutoFixture;
 global using AutoFixture.AutoNSubstitute;
 global using AutoFixture.Kernel;
 global using CrossCutting.Commands.Abstractions;
-global using CrossCutting.Common;
 global using CrossCutting.Common.Results;
 global using CrossCutting.ProcessingPipeline.Abstractions;
 global using Microsoft.Extensions.DependencyInjection;

@@ -3,35 +3,36 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using CrossCutting.Common.Results;
+using CrossCutting.Data.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.Abstractions;
 using CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql.Abstractions;
 using DataFramework.ModelFramework.Poc.Repositories;
 using PDC.Net.Core.Entities;
 using PDC.Net.Core.Queries;
 
-namespace DataFramework.ModelFramework.Poc.QueryFieldInfoProviderHandlers
+namespace DataFramework.ModelFramework.Poc.EntityFieldInfoProviderHandlers
 {
 #nullable enable
     [GeneratedCode(@"DataFramework.ModelFramework.Generators.Repositories.RepositoryGenerator", @"1.0.0.0")]
-    public partial class CatalogQueryFieldInfoProviderHandler : IQueryFieldInfoProviderHandler
+    public partial class CatalogEntityFieldInfoProviderHandler : IEntityFieldInfoProviderHandler
     {
         //private readonly IExtraFieldRepository _extraFieldRepository;
 
-        //public CatalogQueryFieldInfoProvider(IExtraFieldRepository extraFieldRepository)
+        //public CatalogEntityFieldInfoProvider(IExtraFieldRepository extraFieldRepository)
         //    => _extraFieldRepository = extraFieldRepository;
 
-        public Result<IQueryFieldInfo> Create(IQuery query)
+        public Result<IEntityFieldInfo> Create(object query)
         {
-            if (query is CatalogQuery)
+            if (query is CatalogQuery || query.Equals(typeof(Catalog)))
             {
-                return Result.Success<IQueryFieldInfo>(new CatalogQueryFieldInfo(new[] { new ExtraFieldBuilder().WithName("MyField").WithEntityName("Catalog").WithFieldType("varchar(512)").WithFieldNumber(1).Build() }/*_extraFieldRepository.FindExtraFieldsByEntityName(nameof(Catalog))*/));
+                return Result.Success<IEntityFieldInfo>(new CatalogQueryFieldInfo(new[] { new ExtraFieldBuilder().WithName("MyField").WithEntityName("Catalog").WithFieldType("varchar(512)").WithFieldNumber(1).Build() }/*_extraFieldRepository.FindExtraFieldsByEntityName(nameof(Catalog))*/));
             }
 
-            return Result.Continue<IQueryFieldInfo>();
+            return Result.Continue<IEntityFieldInfo>();
         }
     }
     [GeneratedCode(@"DataFramework.ModelFramework.Generators.Repositories.RepositoryGenerator", @"1.0.0.0")]
-    public partial class CatalogQueryFieldInfo : IQueryFieldInfo
+    public partial class CatalogQueryFieldInfo : IEntityFieldInfo
     {
         private readonly IEnumerable<ExtraField> _extraFields;
 

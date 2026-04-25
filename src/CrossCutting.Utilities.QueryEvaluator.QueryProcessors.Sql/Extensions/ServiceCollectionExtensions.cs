@@ -6,7 +6,6 @@ public static class ServiceCollectionExtensions
         => serviceCollection
             .AddSingleton<IDatabaseCommandProvider<IQuery>, QueryDatabaseCommandProvider>()
             .AddSingleton<IPagedDatabaseCommandProvider<IQueryContext>, QueryPagedDatabaseCommandProvider>()
-            .AddSingleton<IQueryFieldInfoProvider, QueryFieldInfoProvider>()
             .AddSingleton<IQueryProcessor, QueryProcessor>()
             .AddSingleton<ISqlConditionExpressionProvider, SqlConditionExpressionProvider>()
             .AddSingleton<ISqlConditionExpressionProviderHandler, BetweenConditionHandler>()

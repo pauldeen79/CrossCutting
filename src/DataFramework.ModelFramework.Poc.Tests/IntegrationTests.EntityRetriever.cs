@@ -25,8 +25,8 @@ public sealed partial class IntegrationTests
         // Act
         var actual = await Retriever.FindManyAsync(new SelectCommandBuilder()
             .Select("*")
-            .From("Catalog")
-            .Where("LEFT(Name, 11) = @p0")
+            .From("[Catalog]")
+            .Where("LEFT([Name], 11) = @p0")
             .AppendParameter("p0", "Diversen cd")
             .Build());
 

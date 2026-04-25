@@ -1,22 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>14.0</LangVersion>
-    <Nullable>enable</Nullable>
-    <AnalysisLevel>latest-All</AnalysisLevel>
     <PackageId>pauldeen79.CrossCutting.Utilities.QueryEvaluator.Abstractions</PackageId>
-    <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>1.2.2</Version>
-    <PackageVersion>1.2.2</PackageVersion>
-    <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>1.2.3</Version>
+    <PackageVersion>1.2.3</PackageVersion>
+    <AnalysisLevel>latest-All</AnalysisLevel>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
-    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CrossCutting.Data.Abstractions\CrossCutting.Data.Abstractions.csproj" />

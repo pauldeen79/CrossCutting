@@ -2,7 +2,7 @@
 
 public class PagedResult<T>(IEnumerable<T> records, int totalRecordCount, int offset, int pageSize) : IPagedResult<T>
 {
-    private readonly IReadOnlyCollection<T> _records = new List<T>(records).AsReadOnly();
+    private readonly ReadOnlyCollection<T> _records = new List<T>(records).AsReadOnly();
 
     public int TotalRecordCount { get; } = totalRecordCount;
 

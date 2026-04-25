@@ -60,6 +60,42 @@ public abstract class ComposableEvaluatableBuilderWrapperBase<T>
 
     public T IsNull()
         => AddFilterWithOperator(new NullConditionBuilder());
+
+    public T StartsWith(string value)
+        => AddFilterWithOperator(new StringStartsWithConditionBuilder(), value);
+
+    public T StartsWith(IEvaluatableBuilder expression)
+        => AddFilterWithOperator(new StringStartsWithConditionBuilder(), expression);
+
+    public T DoesNotStartWith(string value)
+        => AddFilterWithOperator(new StringNotStartsWithConditionBuilder(), value);
+
+    public T DoesNotStartWith(IEvaluatableBuilder expression)
+        => AddFilterWithOperator(new StringNotStartsWithConditionBuilder(), expression);
+
+    public T EndsWith(string value)
+        => AddFilterWithOperator(new StringEndsWithConditionBuilder(), value);
+
+    public T EndsWith(IEvaluatableBuilder expression)
+        => AddFilterWithOperator(new StringEndsWithConditionBuilder(), expression);
+
+    public T DoesNotEndWith(string value)
+        => AddFilterWithOperator(new StringNotEndsWithConditionBuilder(), value);
+
+    public T DoesNotEndWith(IEvaluatableBuilder expression)
+        => AddFilterWithOperator(new StringNotEndsWithConditionBuilder(), expression);
+
+    public T Contains(string value)
+        => AddFilterWithOperator(new StringContainsConditionBuilder(), value);
+
+    public T Contains(IEvaluatableBuilder expression)
+        => AddFilterWithOperator(new StringContainsConditionBuilder(), expression);
+
+    public T DoesNotContain(string value)
+        => AddFilterWithOperator(new StringNotContainsConditionBuilder(), value);
+
+    public T DoesNotContain(IEvaluatableBuilder expression)
+        => AddFilterWithOperator(new StringNotContainsConditionBuilder(), expression);
     #endregion
 
     protected virtual T AddFilterWithOperator(IConditionBuilder @operator, object? value)

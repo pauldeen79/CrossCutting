@@ -1,18 +1,9 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-public class MemberDescriptorProvider : IMemberDescriptorProvider
+public class MemberDescriptorProvider(IMemberDescriptorMapper functionDescriptorMapper, IEnumerable<IMember> members) : IMemberDescriptorProvider
 {
-    private readonly IMemberDescriptorMapper _functionDescriptorMapper;
-    private readonly IEnumerable<IMember> _members;
-
-    public MemberDescriptorProvider(IMemberDescriptorMapper functionDescriptorMapper, IEnumerable<IMember> members)
-    {
-        ArgumentGuard.IsNotNull(functionDescriptorMapper, nameof(functionDescriptorMapper));
-        ArgumentGuard.IsNotNull(members, nameof(members));
-
-        _functionDescriptorMapper = functionDescriptorMapper;
-        _members = members;
-    }
+    private readonly IMemberDescriptorMapper _functionDescriptorMapper = ArgumentGuard.IsNotNull(functionDescriptorMapper, nameof(functionDescriptorMapper));
+    private readonly IMember[] _members = ArgumentGuard.IsNotNull(members, nameof(members)).ToArray();
 
     public Result<IReadOnlyCollection<MemberDescriptor>> GetAll()
     {

@@ -13,7 +13,7 @@ public sealed partial class IntegrationTests : IDisposable
     {
         Connection = new DbConnection();
         Connection.AddResultForDataReader(cmd => cmd.CommandText.StartsWith("SELECT") && cmd.CommandText.Contains(" FROM [ExtraField]"),
-                                          () => new[] { new ExtraField("Catalog", "MyField", null, 1, typeof(string).FullName, true) });
+                                          () => new[] { new ExtraField("Catalog", "MyField", null, 1, typeof(string).FullName!, true) });
 
         ServiceProvider = new ServiceCollection()
             .AddCrossCuttingDataSql()

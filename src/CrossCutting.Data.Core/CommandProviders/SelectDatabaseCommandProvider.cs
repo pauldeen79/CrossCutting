@@ -2,7 +2,7 @@
 
 public class SelectDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverSettingsProvider> settingsProviders) : IDatabaseCommandProvider
 {
-    private readonly IEnumerable<IDatabaseEntityRetrieverSettingsProvider> _settingsProviders = settingsProviders;
+    private readonly IDatabaseEntityRetrieverSettingsProvider[] _settingsProviders = ArgumentGuard.IsNotNull(settingsProviders, nameof(settingsProviders)).ToArray();
 
     public async Task<Result<IDatabaseCommand>> CreateAsync<TSource>(DatabaseOperation operation, CancellationToken token)
         => (await new AsyncResultDictionaryBuilder()
@@ -15,9 +15,9 @@ public class SelectDatabaseCommandProvider(IEnumerable<IDatabaseEntityRetrieverS
                 
                 return new SelectCommandBuilder()
                     .Select(settings.Fields)
-                    .From(settings.TableName)
+                    .From(settings.TableName.FormatAsDatabaseIdentifier())
                     .Where(settings.DefaultWhere)
-                    .OrderBy(settings.DefaultOrderBy)
+                    .OrderBy(settings.DefaultOrderBy.FormatAsDatabaseIdentifier())
                     .Build();
             });
 

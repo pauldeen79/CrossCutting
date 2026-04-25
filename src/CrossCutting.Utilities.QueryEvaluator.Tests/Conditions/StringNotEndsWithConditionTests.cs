@@ -2,7 +2,7 @@
 
 public class StringNotEndsWithConditionTests : TestBase<StringNotEndsWithCondition>
 {
-    public class Evaluate : StringNotEndsWithConditionTests
+    public class EvaluateAsync : StringNotEndsWithConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
@@ -43,7 +43,7 @@ public class StringNotEndsWithConditionTests : TestBase<StringNotEndsWithConditi
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
+            result.ErrorMessage.ShouldBe("LeftOperand is not of type string");
         }
 
         [Fact]
@@ -59,11 +59,11 @@ public class StringNotEndsWithConditionTests : TestBase<StringNotEndsWithConditi
             var context = CreateContext();
 
             // Act
-            var result = await sut.EvaluateAsync(context, CancellationToken.None);
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
+            result.ErrorMessage.ShouldBe("RightOperand is not of type string");
         }
     }
 

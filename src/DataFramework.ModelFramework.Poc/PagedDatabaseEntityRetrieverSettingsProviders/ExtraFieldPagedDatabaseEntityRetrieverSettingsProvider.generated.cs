@@ -1,6 +1,7 @@
 ﻿using CrossCutting.Common.Results;
 using CrossCutting.Data.Abstractions;
 using DataFramework.ModelFramework.Poc.PagedDatabaseEntityRetrieverSettings;
+using PDC.Net.Core.Entities;
 using PDC.Net.Core.Queries;
 
 namespace DataFramework.ModelFramework.Poc.PagedDatabaseEntityRetrieverSettingsProviders
@@ -9,7 +10,7 @@ namespace DataFramework.ModelFramework.Poc.PagedDatabaseEntityRetrieverSettingsP
     {
         public Result<IPagedDatabaseEntityRetrieverSettings> Get<TSource>()
         {
-            if (typeof(TSource) == typeof(ExtraFieldQuery))
+            if (typeof(TSource) == typeof(ExtraField) || typeof(TSource) == typeof(ExtraFieldIdentity) || typeof(TSource) == typeof(ExtraFieldQuery))
             {
                 return Result.Success<IPagedDatabaseEntityRetrieverSettings>(new ExtraFieldPagedEntityRetrieverSettings());
             }

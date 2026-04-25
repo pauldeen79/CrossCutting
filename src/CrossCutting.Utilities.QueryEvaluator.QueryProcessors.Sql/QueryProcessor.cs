@@ -1,20 +1,11 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql;
 
-public class QueryProcessor : IQueryProcessor
+public class QueryProcessor(
+    IPagedDatabaseCommandProvider<IQueryContext> pagedDatabaseCommandProvider,
+    IEnumerable<IDatabaseEntityRetrieverProvider> databaseEntityRetrieverProviders) : IQueryProcessor
 {
-    private readonly IPagedDatabaseCommandProvider<IQueryContext> _pagedDatabaseCommandProvider;
-    private readonly IEnumerable<IDatabaseEntityRetrieverProvider> _databaseEntityRetrieverProviders;
-
-    public QueryProcessor(
-        IPagedDatabaseCommandProvider<IQueryContext> pagedDatabaseCommandProvider,
-        IEnumerable<IDatabaseEntityRetrieverProvider> databaseEntityRetrieverProviders)
-    {
-        ArgumentGuard.IsNotNull(pagedDatabaseCommandProvider, nameof(pagedDatabaseCommandProvider));
-        ArgumentGuard.IsNotNull(databaseEntityRetrieverProviders, nameof(databaseEntityRetrieverProviders));
-
-        _pagedDatabaseCommandProvider = pagedDatabaseCommandProvider;
-        _databaseEntityRetrieverProviders = databaseEntityRetrieverProviders;
-    }
+    private readonly IPagedDatabaseCommandProvider<IQueryContext> _pagedDatabaseCommandProvider = ArgumentGuard.IsNotNull(pagedDatabaseCommandProvider, nameof(pagedDatabaseCommandProvider));
+    private readonly IDatabaseEntityRetrieverProvider[] _databaseEntityRetrieverProviders = ArgumentGuard.IsNotNull(databaseEntityRetrieverProviders, nameof(databaseEntityRetrieverProviders)).ToArray();
 
     public async Task<Result<IReadOnlyCollection<TResult>>> FindManyAsync<TResult>(IQuery query, object? context, CancellationToken token) where TResult : class
     {
@@ -77,7 +68,16 @@ public class QueryProcessor : IQueryProcessor
     }
 
     private async Task<Result<IPagedDatabaseCommand>> CreateCommandAsync(IQuery query, object? context, int pageSize, CancellationToken token)
-        => await _pagedDatabaseCommandProvider.CreatePagedAsync(query.EnsureValid().WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize, token).ConfigureAwait(false);
+    {
+        var validationResult = Result.FromValidatableInstance(query);
+        if (!validationResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<IPagedDatabaseCommand>(validationResult); 
+        }
+
+        return await _pagedDatabaseCommandProvider.CreatePagedAsync(query.WithContext(context), DatabaseOperation.Select, query.Offset ?? 0, pageSize, token)
+            .ConfigureAwait(false);
+    }
 
     private Result<IDatabaseEntityRetriever<TResult>> GetDatabaseEntityRetriever<TResult>(IQuery query) where TResult : class
         => _databaseEntityRetrieverProviders

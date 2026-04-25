@@ -2,11 +2,11 @@
 
 public partial record StringNotContainsCondition : IChildEvaluatablesContainer
 {
-    public async override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => (await EvaluateTypedAsync(context, token).ConfigureAwait(false)).TryCast<object?>();
+    public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
-    public override Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => ConditionHelper.EvaluateStringConditionAsync(SourceExpression, CompareExpression, context, (firstString, secondString) => firstString.IndexOf(secondString, StringComparison) == -1, token);
+    public override async Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => (await new StringContainsOperatorEvaluatable(StringComparison, SourceExpression, CompareExpression).EvaluateTypedAsync(context, token).ConfigureAwait(false)).Transform(x => !x);
 
     public IEnumerable<IEvaluatable> GetChildEvaluatables() =>
     [

@@ -13,7 +13,7 @@ namespace DataFramework.ModelFramework.Poc.DatabaseEntityRetrieverProviders
         public CatalogDatabaseEntityRetrieverProvider(IDatabaseEntityRetriever<Catalog> databaseEntityRetriever)
             => _databaseEntityRetriever = databaseEntityRetriever;
 
-        public Result<IDatabaseEntityRetriever<TResult>> Create<TResult>(IQuery query) where TResult : class
+        public Result<IDatabaseEntityRetriever<TResult>> Create<TResult>(object query) where TResult : class
         {
             if (typeof(TResult) == typeof(Catalog))
             {

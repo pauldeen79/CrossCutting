@@ -1,55 +1,36 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.Sql;
 
-public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<IQueryContext>
+public class QueryPagedDatabaseCommandProvider(IEntityFieldInfoProvider fieldInfoProvider,
+                                               ISqlExpressionProvider sqlExpressionProvider,
+                                               ISqlConditionExpressionProvider sqlConditionExpressionProvider,
+                                               IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders) : IPagedDatabaseCommandProvider<IQueryContext>
 {
-    private readonly IQueryFieldInfoProvider _fieldInfoProvider;
-    private readonly ISqlExpressionProvider _sqlExpressionProvider;
-    private readonly ISqlConditionExpressionProvider _sqlConditionExpressionProvider;
-    private readonly IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> _settingsProviders;
+    private readonly IEntityFieldInfoProvider _fieldInfoProvider = ArgumentGuard.IsNotNull(fieldInfoProvider, nameof(fieldInfoProvider));
+    private readonly ISqlExpressionProvider _sqlExpressionProvider = ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
+    private readonly ISqlConditionExpressionProvider _sqlConditionExpressionProvider = ArgumentGuard.IsNotNull(sqlConditionExpressionProvider, nameof(sqlConditionExpressionProvider));
+    private readonly IPagedDatabaseEntityRetrieverSettingsProvider[] _settingsProviders = ArgumentGuard.IsNotNull(settingsProviders, nameof(settingsProviders)).ToArray();
 
-    public QueryPagedDatabaseCommandProvider(IQueryFieldInfoProvider fieldInfoProvider,
-                                             ISqlExpressionProvider sqlExpressionProvider,
-                                             ISqlConditionExpressionProvider sqlConditionExpressionProvider,
-                                             IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders)
-    {
-        ArgumentGuard.IsNotNull(fieldInfoProvider, nameof(fieldInfoProvider));
-        ArgumentGuard.IsNotNull(sqlExpressionProvider, nameof(sqlExpressionProvider));
-        ArgumentGuard.IsNotNull(sqlConditionExpressionProvider, nameof(sqlConditionExpressionProvider));
-        ArgumentGuard.IsNotNull(settingsProviders, nameof(settingsProviders));
-
-        _fieldInfoProvider = fieldInfoProvider;
-        _sqlExpressionProvider = sqlExpressionProvider;
-        _sqlConditionExpressionProvider = sqlConditionExpressionProvider;
-        _settingsProviders = settingsProviders;
-    }
-
-    public async Task<Result<IPagedDatabaseCommand>> CreatePagedAsync(IQueryContext source, DatabaseOperation operation, int offset, int pageSize, CancellationToken token)
+    public async Task<Result<IPagedDatabaseCommand>> CreatePagedAsync(IQueryContext context, DatabaseOperation operation, int offset, int pageSize, CancellationToken token)
         => await (await new AsyncResultDictionaryBuilder()
             .Add(() => Result.Validate(() => operation == DatabaseOperation.Select, "Only select operation is supported"))
-            .Add("Settings", () => GetSettings(source))
-            .Add("FieldInfo", () => _fieldInfoProvider.Create(source.Query).EnsureValue())
+            .Add("Settings", () => GetSettings(context.Query.GetType()))
+            .Add("FieldInfo", () => _fieldInfoProvider.Create(context.Query).EnsureValue())
             .BuildAsync(token).ConfigureAwait(false))
-            .OnSuccessAsync(results => BuildCommandAsync(
-                source,
-                offset,
-                pageSize,
-                results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings"),
-                results.GetValue<IQueryFieldInfo>("FieldInfo"),
-                token)).ConfigureAwait(false);
+            .OnSuccessAsync(results => BuildCommandAsync(context, offset, pageSize, results.GetValue<IPagedDatabaseEntityRetrieverSettings>("Settings"), results.GetValue<IEntityFieldInfo>("FieldInfo"), token)).ConfigureAwait(false);
 
     public Result<IPagedDatabaseEntityRetrieverSettings> Create<TResult>() where TResult : class
         => _settingsProviders
             .Select(x => x.Get<TResult>())
-            .WhenNotContinue(() => Result.Invalid<IPagedDatabaseEntityRetrieverSettings>($"No database entity retriever provider was found for query type [{typeof(TResult).FullName}]"));
+            .WhenNotContinue(() => Result.Invalid<IPagedDatabaseEntityRetrieverSettings>($"No database entity retriever settings provider was found for query type [{typeof(TResult).FullName}]"));
 
-    private Result<IPagedDatabaseEntityRetrieverSettings> GetSettings(IQueryContext source)
+    private Result<IPagedDatabaseEntityRetrieverSettings> GetSettings(Type queryType)
         => Result.WrapException(() =>
         {
             try
             {
                 return ((Result<IPagedDatabaseEntityRetrieverSettings>)GetType()
                     .GetMethod(nameof(Create))
-                    .MakeGenericMethod(source.Query.GetType())
+                    .MakeGenericMethod(queryType)
                     .Invoke(this, Array.Empty<object>())).EnsureValue();
             }
             catch (TargetInvocationException ex)
@@ -58,22 +39,22 @@ public class QueryPagedDatabaseCommandProvider : IPagedDatabaseCommandProvider<I
             }
         });
 
-    private async Task<Result<IPagedDatabaseCommand>> BuildCommandAsync(IQueryContext source, int offset, int pageSize, IPagedDatabaseEntityRetrieverSettings settings, IQueryFieldInfo fieldInfo, CancellationToken token)
+    private async Task<Result<IPagedDatabaseCommand>> BuildCommandAsync(IQueryContext context, int offset, int pageSize, IPagedDatabaseEntityRetrieverSettings settings, IEntityFieldInfo fieldInfo, CancellationToken token)
     {
         var parameterBag = new ParameterBag();
         var builder = new PagedSelectCommandBuilder();
-        var context = new PagedSelectCommandBuilderContext(source, settings, fieldInfo, _sqlExpressionProvider, parameterBag);
+        var builderContext = new PagedSelectCommandBuilderContext(context, settings, fieldInfo, _sqlExpressionProvider, parameterBag);
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add(() => builder.Select(context))
-            .Add(() => builder.Distinct(source))
-            .Add(() => builder.Top(source, settings, pageSize))
-            .Add(() => builder.Offset(source, offset))
-            .Add(() => builder.From(source, settings))
-            .Add(() => builder.Where(context, _sqlConditionExpressionProvider, token))
-            .Add(() => builder.OrderBy(context, token))
+            .Add(() => builder.Select(builderContext))
+            .Add(() => builder.Distinct(context))
+            .Add(() => builder.Top(context, settings, pageSize))
+            .Add(() => builder.Offset(context, offset))
+            .Add(() => builder.From(context, settings))
+            .Add(() => builder.Where(builderContext, _sqlConditionExpressionProvider, token))
+            .Add(() => builder.OrderBy(builderContext, token))
             .BuildAsync(token).ConfigureAwait(false))
-            .OnSuccess(_ => builder.AddParameters(source, parameterBag))
+            .OnSuccess(_ => builder.AddParameters(context, parameterBag))
             .OnSuccess(_ => builder.Build());
     }
 }

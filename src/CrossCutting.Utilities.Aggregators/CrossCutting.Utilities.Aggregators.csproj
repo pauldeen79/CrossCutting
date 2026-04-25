@@ -1,25 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>14.0</LangVersion>
-    <Nullable>enable</Nullable>
-    <AnalysisLevel>latest-All</AnalysisLevel>
     <PackageId>pauldeen79.CrossCutting.Utilities.Aggregators</PackageId>
-    <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>5.0.3</Version>
-    <PackageVersion>5.0.3</PackageVersion>
-    <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>5.0.4</Version>
+    <PackageVersion>5.0.4</PackageVersion>
+    <AnalysisLevel>latest-All</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CrossCutting.Common\CrossCutting.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
-    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

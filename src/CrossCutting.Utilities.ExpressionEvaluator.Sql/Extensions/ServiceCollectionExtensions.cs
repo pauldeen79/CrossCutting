@@ -5,8 +5,10 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddExpressionEvaluatorSql(this IServiceCollection serviceCollection)
         => serviceCollection
             .AddSingleton<ISqlExpressionProvider, SqlExpressionProvider>()
-            .AddSingleton<ISqlExpressionProviderHandler, SqlExpressionHandler>()
-            .AddSingleton<ISqlExpressionProviderHandler, SqlLikeExpressionHandler>()
+            .AddSingleton<ISqlExpressionProviderHandler, PlainExpressionHandler>()
+            .AddSingleton<ISqlExpressionProviderHandler, LikeExpressionHandler>()
+            .AddSingleton<IEvaluatableProcessor, EvaluatableProcessor>()
+            .AddSingleton<IPagedDatabaseCommandProvider<IEvaluatableContext>, EvaluatablePagedDatabaseCommandProvider>()
             .AddSingleton<IEvaluatableSqlExpressionProvider, EvaluatableSqlExpressionProvider>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, BinaryAndOperatorEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, BinaryOrOperatorEvaluatableHandler>()
@@ -24,5 +26,8 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, NullOperatorEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, PropertyNameEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, SmallerOperatorEvaluatableHandler>()
-            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, SmallerOrEqualOperatorEvaluatableHandler>();
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, SmallerOrEqualOperatorEvaluatableHandler>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, StringContainsOperatorEvaluatableHandler>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, StringEndsWithOperatorEvaluatableHandler>()
+            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, StringStartsWithOperatorEvaluatableHandler>();
 }

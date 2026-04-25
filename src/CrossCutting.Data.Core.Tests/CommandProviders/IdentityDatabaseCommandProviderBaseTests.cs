@@ -43,7 +43,7 @@ public class IdentityDatabaseCommandProviderBaseTests
         var actual = (await sut.CreateAsync(new TestEntityIdentity("A", "B"), DatabaseOperation.Select, CancellationToken.None)).EnsureValue().GetValueOrThrow();
 
         // Assert
-        actual.CommandText.ShouldBe(@"SELECT A, B, C FROM Table WHERE [Field1] = @Field1 AND [Field2] = @Field2Alias");
+        actual.CommandText.ShouldBe(@"SELECT [A], [B], [C] FROM [Table] WHERE [Field1] = @Field1 AND [Field2] = @Field2Alias");
     }
 
     private sealed class IdentityDatabaseCommandProviderMock(IEnumerable<IPagedDatabaseEntityRetrieverSettingsProvider> settingsProviders) : IdentityDatabaseCommandProviderBase<TestEntityIdentity>(settingsProviders)
@@ -71,8 +71,8 @@ public class IdentityDatabaseCommandProviderBaseTests
     private sealed class PagedDatabaseEntityRetrieverSettingsMock : IPagedDatabaseEntityRetrieverSettings
     {
         public int? OverridePageSize => null;
-        public string TableName => "Table";
-        public string Fields => "A, B, C";
+        public string TableName => "[Table]";
+        public string Fields => "[A], [B], [C]";
         public string DefaultOrderBy => string.Empty;
         public string DefaultWhere => string.Empty;
     }

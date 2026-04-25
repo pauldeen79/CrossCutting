@@ -1,15 +1,8 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Sql;
 
-public class SqlExpressionProvider : ISqlExpressionProvider
+public class SqlExpressionProvider(IEnumerable<ISqlExpressionProviderHandler> handlers) : ISqlExpressionProvider
 {
-    private readonly IEnumerable<ISqlExpressionProviderHandler> _handlers;
-
-    public SqlExpressionProvider(IEnumerable<ISqlExpressionProviderHandler> handlers)
-    {
-        ArgumentGuard.IsNotNull(handlers, nameof(handlers));
-
-        _handlers = handlers;
-    }
+    private readonly ISqlExpressionProviderHandler[] _handlers = ArgumentGuard.IsNotNull(handlers, nameof(handlers)).ToArray();
 
     public async Task<Result<string>> GetSqlExpressionAsync(object? context, ISqlExpression expression, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, CancellationToken token)
     {

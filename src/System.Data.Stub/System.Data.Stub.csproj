@@ -1,20 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>14.0</LangVersion>
-    <Nullable>enable</Nullable>
     <PackageId>pauldeen79.System.Data.Stub</PackageId>
-    <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
-    <Version>3.0.1</Version>
-    <PackageVersion>3.0.1</PackageVersion>
-    <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>3.0.2</Version>
+    <PackageVersion>3.0.2</PackageVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
-    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
-  </ItemGroup>
 
 </Project>

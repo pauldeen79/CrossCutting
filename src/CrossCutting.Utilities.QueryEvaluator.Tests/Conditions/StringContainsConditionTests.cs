@@ -2,7 +2,7 @@
 
 public class StringContainsConditionTests : TestBase<StringContainsCondition>
 {
-    public class Evaluate : StringContainsConditionTests
+    public class EvaluateAsync : StringContainsConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
@@ -43,7 +43,7 @@ public class StringContainsConditionTests : TestBase<StringContainsCondition>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
+            result.ErrorMessage.ShouldBe("LeftOperand is not of type string");
         }
 
         [Fact]
@@ -60,11 +60,11 @@ public class StringContainsConditionTests : TestBase<StringContainsCondition>
             var context = CreateContext();
 
             // Act
-            var result = await sut.EvaluateAsync(context, CancellationToken.None);
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("LeftValue and RightValue both need to be of type string");
+            result.ErrorMessage.ShouldBe("RightOperand is not of type string");
         }
     }
 

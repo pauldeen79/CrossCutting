@@ -2,7 +2,7 @@
 
 public class StringEqualsConditionTests : TestBase<StringEqualsCondition>
 {
-    public class Evaluate : StringEqualsConditionTests
+    public class EvaluateAsync : StringEqualsConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
@@ -41,7 +41,7 @@ public class StringEqualsConditionTests : TestBase<StringEqualsCondition>
 
 
             // Act
-            var result = await sut.EvaluateAsync(context, CancellationToken.None);
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

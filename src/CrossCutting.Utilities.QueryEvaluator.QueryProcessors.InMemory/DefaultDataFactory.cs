@@ -1,15 +1,8 @@
 ﻿namespace CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory;
 
-public class DefaultDataFactory : IDataFactory
+public class DefaultDataFactory(IEnumerable<IDataProvider> providers) : IDataFactory
 {
-    private readonly IEnumerable<IDataProvider> _providers;
-
-    public DefaultDataFactory(IEnumerable<IDataProvider> providers)
-    {
-        ArgumentGuard.IsNotNull(providers, nameof(providers));
-
-        _providers = providers;
-    }
+    private readonly IDataProvider[] _providers = ArgumentGuard.IsNotNull(providers, nameof(providers)).ToArray();
 
     public async Task<Result<IEnumerable<TResult>>> GetDataAsync<TResult>(IQuery query, object? context)
         where TResult : class

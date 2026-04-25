@@ -1,25 +1,13 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator;
 
-public class MemberResolver : IMemberResolver
-{
-    private readonly IMemberCallArgumentValidator _memberCallArgumentValidator;
-    private readonly IEnumerable<IMember> _members;
-
-    public MemberResolver(
+public class MemberResolver(
         IMemberDescriptorProvider memberDescriptorProvider,
         IMemberCallArgumentValidator memberCallArgumentValidator,
-        IEnumerable<IMember> members)
-    {
-        memberDescriptorProvider = ArgumentGuard.IsNotNull(memberDescriptorProvider, nameof(memberDescriptorProvider));
-        ArgumentGuard.IsNotNull(memberCallArgumentValidator, nameof(memberCallArgumentValidator));
-        ArgumentGuard.IsNotNull(members, nameof(members));
-
-        _memberCallArgumentValidator = memberCallArgumentValidator;
-        _descriptors = new Lazy<Result<IReadOnlyCollection<MemberDescriptor>>>(memberDescriptorProvider.GetAll);
-        _members = members;
-    }
-
-    private readonly Lazy<Result<IReadOnlyCollection<MemberDescriptor>>> _descriptors;
+        IEnumerable<IMember> members) : IMemberResolver
+{
+    private readonly IMemberCallArgumentValidator _memberCallArgumentValidator = ArgumentGuard.IsNotNull(memberCallArgumentValidator, nameof(memberCallArgumentValidator));
+    private readonly IMember[] _members = ArgumentGuard.IsNotNull(members, nameof(members)).ToArray();
+    private readonly Lazy<Result<IReadOnlyCollection<MemberDescriptor>>> _descriptors = new Lazy<Result<IReadOnlyCollection<MemberDescriptor>>>(ArgumentGuard.IsNotNull(memberDescriptorProvider, nameof(memberDescriptorProvider)).GetAll);
 
     public Result<IReadOnlyCollection<MemberDescriptor>> Descriptors => _descriptors.Value;
 
@@ -27,7 +15,7 @@ public class MemberResolver : IMemberResolver
     {
         functionCallContext = ArgumentGuard.IsNotNull(functionCallContext, nameof(functionCallContext));
 
-    return await Result.WrapExceptionAsync(async () =>
+        return await Result.WrapExceptionAsync(async () =>
         {
             if (!Descriptors.IsSuccessful())
             {

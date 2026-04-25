@@ -1,6 +1,8 @@
 ﻿namespace System.Data.Stub;
 
+#pragma warning disable CA1010 // Generic interface should also be implemented
 public sealed class DbParameterCollection : Common.DbParameterCollection
+#pragma warning restore CA1010 // Generic interface should also be implemented
 {
     private readonly IDictionary<string, object> dictionary = new Dictionary<string, object>();
 

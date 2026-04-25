@@ -2,8 +2,8 @@
 
 public interface IEvaluatableSqlExpressionProvider
 {
-    Task<Result<SqlExpressionData>> GetExpressionAsync(
-        IEvaluatable<bool> condition,
+    Task<Result<SqlExpression>> GetExpressionAsync(
+        IEvaluatable evaluatable,
         IFieldNameProvider fieldNameProvider,
         object? context,
         CancellationToken token);

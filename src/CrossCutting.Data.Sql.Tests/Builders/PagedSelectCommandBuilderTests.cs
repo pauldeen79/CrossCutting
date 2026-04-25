@@ -10,14 +10,14 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
-            .Select("Field1, Field2")
-            .Where("Field1 = @field1")
+            .From("[Table]")
+            .Select("[Field1], [Field2]")
+            .Where("[Field1] = @field1")
             .AppendParameter("field1", "some value")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1");
+        actual.CommandText.ShouldBe("SELECT [Field1], [Field2] FROM [Table] WHERE [Field1] = @field1");
         actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
@@ -36,14 +36,14 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
-            .Select("Field1, Field2")
-            .Where("Field1 = @field1")
+            .From("[Table]")
+            .Select("[Field1], [Field2]")
+            .Where("[Field1] = @field1")
             .AppendParameters(new { field1 = "some value" })
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1");
+        actual.CommandText.ShouldBe("SELECT [Field1], [Field2] FROM [Table] WHERE [Field1] = @field1");
         actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
@@ -62,15 +62,15 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
-            .Select("Field1, Field2")
-            .Where("Field1 = @field1")
-            .And("Field2 IS NOT NULL")
+            .From("[Table]")
+            .Select("[Field1], [Field2]")
+            .Where("[Field1] = @field1")
+            .And("[Field2] IS NOT NULL")
             .AppendParameter("field1", "some value")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1 AND Field2 IS NOT NULL");
+        actual.CommandText.ShouldBe("SELECT [Field1], [Field2] FROM [Table] WHERE [Field1] = @field1 AND [Field2] IS NOT NULL");
         actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
@@ -89,15 +89,15 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
-            .Select("Field1, Field2")
-            .Where("Field1 = @field1")
-            .Or("Field2 IS NOT NULL")
+            .From("[Table]")
+            .Select("[Field1], [Field2]")
+            .Where("[Field1] = @field1")
+            .Or("[Field2] IS NOT NULL")
             .AppendParameter("field1", "some value")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT Field1, Field2 FROM Table WHERE Field1 = @field1 OR Field2 IS NOT NULL");
+        actual.CommandText.ShouldBe("SELECT [Field1], [Field2] FROM [Table] WHERE [Field1] = @field1 OR [Field2] IS NOT NULL");
         actual.CommandParameters.ShouldBeAssignableTo<IDictionary<string, object>>();
         var parameters = actual.CommandParameters as IDictionary<string, object>;
         if (parameters is not null)
@@ -116,13 +116,13 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
-            .Select("Field1, Field2")
-            .OrderBy("Field1")
+            .From("[Table]")
+            .Select("[Field1], [Field2]")
+            .OrderBy("[Field1]")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT Field1, Field2 FROM Table ORDER BY Field1");
+        actual.CommandText.ShouldBe("SELECT [Field1], [Field2] FROM [Table] ORDER BY [Field1]");
     }
 
     [Fact]
@@ -133,13 +133,13 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
-            .InnerJoin("Table2 ON Table.Id = Table2.FkId")
-            .Select("Table.Field1, Table.Field2, Table2.Field3")
+            .From("[Table]")
+            .InnerJoin("[Table2] ON [Table].[Id] = [Table2].[FkId]")
+            .Select("[Table].[Field1], [Table].[Field2], [Table2].[Field3]")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT Table.Field1, Table.Field2, Table2.Field3 FROM Table INNER JOIN Table2 ON Table.Id = Table2.FkId");
+        actual.CommandText.ShouldBe("SELECT [Table].[Field1], [Table].[Field2], [Table2].[Field3] FROM [Table] INNER JOIN [Table2] ON [Table].[Id] = [Table2].[FkId]");
     }
 
     [Fact]
@@ -149,7 +149,7 @@ public class PagedSelectCommandBuilderTests
         var command = new PagedSelectCommandBuilder();
 
         // Act
-        Action a = () => command.InnerJoin("Table2 ON Table.Id = Table2.FkId");
+        Action a = () => command.InnerJoin("[Table2] ON [Table].[Id] = [Table2].[FkId]");
         a.ShouldThrow<InvalidOperationException>()
          .Message.ShouldBe("No FROM clause found to add INNER JOIN clause to");
     }
@@ -162,13 +162,13 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
-            .LeftOuterJoin("Table2 ON Table.Id = Table2.FkId")
-            .Select("Table.Field1, Table.Field2, Table2.Field3")
+            .From("[Table]")
+            .LeftOuterJoin("[Table2] ON [Table].[Id] = [Table2].[FkId]")
+            .Select("[Table].[Field1], [Table].[Field2], [Table2].[Field3]")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT Table.Field1, Table.Field2, Table2.Field3 FROM Table LEFT OUTER JOIN Table2 ON Table.Id = Table2.FkId");
+        actual.CommandText.ShouldBe("SELECT [Table].[Field1], [Table].[Field2], [Table2].[Field3] FROM [Table] LEFT OUTER JOIN [Table2] ON [Table].[Id] = [Table2].[FkId]");
     }
 
     [Fact]
@@ -178,7 +178,7 @@ public class PagedSelectCommandBuilderTests
         var command = new PagedSelectCommandBuilder();
 
         // Act
-        Action a = () => command.LeftOuterJoin("Table2 ON Table.Id = Table2.FkId");
+        Action a = () => command.LeftOuterJoin("[Table2] ON [Table].[Id] = [Table2].[FkId]");
         a.ShouldThrow<InvalidOperationException>()
          .Message.ShouldBe("No FROM clause found to add LEFT OUTER JOIN clause to");
     }
@@ -191,13 +191,13 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
-            .RightOuterJoin("Table2 ON Table.Id = Table2.FkId")
-            .Select("Table.Field1, Table.Field2, Table2.Field3")
+            .From("[Table]")
+            .RightOuterJoin("[Table2] ON [Table].[Id] = [Table2].[FkId]")
+            .Select("[Table].[Field1], [Table].[Field2], [Table2].[Field3]")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT Table.Field1, Table.Field2, Table2.Field3 FROM Table RIGHT OUTER JOIN Table2 ON Table.Id = Table2.FkId");
+        actual.CommandText.ShouldBe("SELECT [Table].[Field1], [Table].[Field2], [Table2].[Field3] FROM [Table] RIGHT OUTER JOIN [Table2] ON [Table].[Id] = [Table2].[FkId]");
     }
 
     [Fact]
@@ -207,7 +207,7 @@ public class PagedSelectCommandBuilderTests
         var command = new PagedSelectCommandBuilder();
 
         // Act
-        Action a = () => command.RightOuterJoin("Table2 ON Table.Id = Table2.FkId");
+        Action a = () => command.RightOuterJoin("[Table2] ON [Table].[Id] = [Table2].[FkId]");
         a.ShouldThrow<InvalidOperationException>()
          .Message.ShouldBe("No FROM clause found to add RIGHT OUTER JOIN clause to");
     }
@@ -220,13 +220,13 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
-            .CrossJoin("Table2")
-            .Select("Table.Field1, Table.Field2, Table2.Field3")
+            .From("[Table]")
+            .CrossJoin("[Table2]")
+            .Select("[Table].[Field1], [Table].[Field2], [Table2].[Field3]")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT Table.Field1, Table.Field2, Table2.Field3 FROM Table CROSS JOIN Table2");
+        actual.CommandText.ShouldBe("SELECT [Table].[Field1], [Table].[Field2], [Table2].[Field3] FROM [Table] CROSS JOIN [Table2]");
     }
 
     [Fact]
@@ -238,12 +238,12 @@ public class PagedSelectCommandBuilderTests
         // Act
         var actual = command
             .WithTop(1)
-            .From("Table")
-            .Select("Field1, Field2")
+            .From("[Table]")
+            .Select("[Field1], [Field2]")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT TOP 1 Field1, Field2 FROM Table");
+        actual.CommandText.ShouldBe("SELECT TOP 1 [Field1], [Field2] FROM [Table]");
     }
 
     [Fact]
@@ -255,12 +255,12 @@ public class PagedSelectCommandBuilderTests
         // Act
         var actual = command
             .DistinctValues()
-            .From("Table")
-            .Select("Field1, Field2")
+            .From("[Table]")
+            .Select("[Field1], [Field2]")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT DISTINCT Field1, Field2 FROM Table");
+        actual.CommandText.ShouldBe("SELECT DISTINCT [Field1], [Field2] FROM [Table]");
     }
 
     [Fact]
@@ -271,11 +271,11 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
+            .From("[Table]")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT * FROM Table");
+        actual.CommandText.ShouldBe("SELECT * FROM [Table]");
     }
 
     [Fact]
@@ -286,14 +286,14 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
-            .Select("Field1, Field2, COUNT(Field3)")
-            .GroupBy("Field3")
-            .Having("Field3 IS NOT NULL")
+            .From("[Table]")
+            .Select("[Field1], [Field2], COUNT([Field3])")
+            .GroupBy("[Field3]")
+            .Having("[Field3] IS NOT NULL")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT Field1, Field2, COUNT(Field3) FROM Table GROUP BY Field3 HAVING Field3 IS NOT NULL");
+        actual.CommandText.ShouldBe("SELECT [Field1], [Field2], COUNT([Field3]) FROM [Table] GROUP BY [Field3] HAVING [Field3] IS NOT NULL");
     }
 
     [Fact]
@@ -304,13 +304,13 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
-            .OrderBy("Id")
+            .From("[Table]")
+            .OrderBy("[Id]")
             .Take(10)
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT TOP 10 * FROM Table ORDER BY Id");
+        actual.CommandText.ShouldBe("SELECT TOP 10 * FROM [Table] ORDER BY [Id]");
     }
 
     [Fact]
@@ -321,14 +321,14 @@ public class PagedSelectCommandBuilderTests
 
         // Act
         var actual = command
-            .From("Table")
-            .OrderBy("Id")
+            .From("[Table]")
+            .OrderBy("[Id]")
             .Take(10)
             .Skip(10)
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY Id) as sq_row_number FROM Table) sq WHERE sq.sq_row_number BETWEEN 11 and 20;");
+        actual.CommandText.ShouldBe("SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY [Id]) as sq_row_number FROM [Table]) sq WHERE sq.sq_row_number BETWEEN 11 and 20;");
     }
 
     [Fact]
@@ -338,17 +338,17 @@ public class PagedSelectCommandBuilderTests
         var command = new PagedSelectCommandBuilder()
             .DistinctValues()
             .WithTop(1)
-            .From("Table2")
-            .Select("Field4, Field5, Field6");
+            .From("[Table2]")
+            .Select("[Field4], [Field5], [Field6]");
 
         // Act
         var actual = command.Clear()
-            .From("Table")
-            .Select("Field1, Field2, Field3")
+            .From("[Table]")
+            .Select("[Field1], [Field2], [Field3]")
             .Build().DataCommand;
 
         // Assert
-        actual.CommandText.ShouldBe("SELECT Field1, Field2, Field3 FROM Table");
+        actual.CommandText.ShouldBe("SELECT [Field1], [Field2], [Field3] FROM [Table]");
     }
 
     [Fact]

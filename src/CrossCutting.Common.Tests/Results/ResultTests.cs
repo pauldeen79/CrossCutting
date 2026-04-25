@@ -147,6 +147,49 @@ public class ResultTests
     }
 
     [Fact]
+    public void FromValidatableInstance_Returns_Success_When_Value_Is_Not_Validatable()
+    {
+        // Arrange
+        var source = new object();
+
+        // Act
+        var result = Result.FromValidatableInstance(source);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeSameAs(source);
+    }
+
+    [Fact]
+    public void FromValidatableInstance_Returns_Success_When_Value_Is_Validatable_And_Valid()
+    {
+        // Arrange
+        var source = new MyValidatableObject(true);
+
+        // Act
+        var result = Result.FromValidatableInstance(source);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBeSameAs(source);
+    }
+
+    [Fact]
+    public void FromValidatableInstance_Returns_Success_When_Value_Is_Validatable_And_Invalid()
+    {
+        // Arrange
+        var source = new MyValidatableObject(false);
+
+        // Act
+        var result = Result.FromValidatableInstance(source);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.Value.ShouldBeNull();
+        result.ValidationErrors.Count.ShouldBe(1);
+    }
+
+    [Fact]
     public void Can_Create_Success_With_Correct_Value_Using_ReferenceType()
     {
         // Act
@@ -3036,6 +3079,24 @@ public class ResultTests
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldBe(input);
+        }
+    }
+
+    private sealed class MyValidatableObject : IValidatableObject
+    {
+        private readonly bool _valid;
+
+        public MyValidatableObject(bool valid)
+        {
+            _valid = valid;
+        }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (!_valid)
+            {
+                yield return new ValidationResult("This is invalid!");
+            }
         }
     }
 }

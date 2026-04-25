@@ -1,16 +1,16 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Sql.SqlExpressionProviderHandlers;
 
-public class SqlExpressionHandler : SqlExpressionProviderHandlerBase<SqlExpression>
+public class PlainExpressionHandler : SqlExpressionProviderHandlerBase<PlainExpression>
 {
     private readonly IExpressionEvaluator _expressionEvaluator;
 
-    public SqlExpressionHandler(IExpressionEvaluator expressionEvaluator)
+    public PlainExpressionHandler(IExpressionEvaluator expressionEvaluator)
     {
         ArgumentGuard.IsNotNull(expressionEvaluator, nameof(expressionEvaluator));
         _expressionEvaluator = expressionEvaluator;
     }
 
-    protected override async Task<Result<string>> HandleGetSqlExpressionAsync(object? context, SqlExpression expression, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, ISqlExpressionProvider callback, CancellationToken token)
+    protected override async Task<Result<string>> HandleGetSqlExpressionAsync(object? context, PlainExpression expression, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, ISqlExpressionProvider callback, CancellationToken token)
     {
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
         expression = ArgumentGuard.IsNotNull(expression, nameof(expression));
@@ -22,7 +22,7 @@ public class SqlExpressionHandler : SqlExpressionProviderHandlerBase<SqlExpressi
 
             return string.IsNullOrEmpty(databaseFieldName)
                 ? Result.NotFound<string>($"Expression contains unknown field [{propertyNameEvaluatable.PropertyName}]")
-                : databaseFieldName!;
+                : databaseFieldName.FormatAsDatabaseIdentifier();
         }
         else
         {

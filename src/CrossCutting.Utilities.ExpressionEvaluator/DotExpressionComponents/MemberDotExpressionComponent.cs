@@ -1,15 +1,8 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.DotExpressionComponents;
 
-public class MemberDotExpressionComponent : IDotExpressionComponent
+public class MemberDotExpressionComponent(IMemberResolver memberResolver) : IDotExpressionComponent
 {
-    private readonly IMemberResolver _memberResolver;
-
-    public MemberDotExpressionComponent(IMemberResolver memberResolver)
-    {
-        ArgumentGuard.IsNotNull(memberResolver, nameof(memberResolver));
-
-        _memberResolver = memberResolver;
-    }
+    private readonly IMemberResolver _memberResolver = ArgumentGuard.IsNotNull(memberResolver, nameof(memberResolver));
 
     public int Order => 21;
 

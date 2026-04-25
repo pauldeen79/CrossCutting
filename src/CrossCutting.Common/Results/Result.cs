@@ -382,6 +382,22 @@ public record Result
             ? Invalid<TInstance>(validationErrors)
             : Success(instance);
 
+    public static Result<TInstance> FromValidatableInstance<TInstance>(TInstance instance)
+    {
+        if (instance is IValidatableObject validatableObject)
+        {
+            var validationResults = validatableObject.Validate(new ValidationContext(instance)).ToArray();
+            if (validationResults.Length > 0)
+            {
+                return FromValidationErrors(validationResults
+                        .Select(x => new ValidationError(x.ErrorMessage, x.MemberNames)))
+                    .TryCast<TInstance>();
+            }
+        }
+
+        return Success(instance);
+    }
+
     public static Result FromValidationErrors(IEnumerable<ValidationError> validationErrors)
         => validationErrors.Any()
             ? Invalid(validationErrors)

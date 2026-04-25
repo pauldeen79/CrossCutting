@@ -97,10 +97,8 @@ public static class TypeExtensions
         Func<ParameterInfo, object?>? parameterReplaceDelegate = null,
         Func<ConstructorInfo, bool>? constructorPredicate = null)
     {
-        if (classFactories.ContainsKey(type))
+        if (classFactories.TryGetValue(type, out var returnValue))
         {
-            // Ensure only one instance per type is created, and we don't call the class factory for a second time.
-            var returnValue = classFactories[type];
             if (returnValue is not Type t)
             {
                 return returnValue;
@@ -118,7 +116,7 @@ public static class TypeExtensions
 
         if (type.IsInterface)
         {
-            var returnValue = classFactory.Invoke(type);
+            returnValue = classFactory.Invoke(type);
             classFactories[type] = returnValue;
             return returnValue;
         }
@@ -175,9 +173,8 @@ public static class TypeExtensions
         (
             p =>
             {
-                if (classFactories.ContainsKey(p.ParameterType))
+                if (classFactories.TryGetValue(p.ParameterType, out var returnValue))
                 {
-                    var returnValue = classFactories[p.ParameterType];
                     if (returnValue is not Type t)
                     {
                         return returnValue;
@@ -205,19 +202,19 @@ public static class TypeExtensions
                 else if (IsEnumerable(p.ParameterType))
                 {
                     var containedType = GetContainedType(p.ParameterType);
-                    var returnValue = CreateGenericList(containedType, classFactory, classFactories);
+                    returnValue = CreateGenericList(containedType, classFactory, classFactories);
                     classFactories[containedType] = returnValue;
                     return returnValue;
                 }
                 else if (p.ParameterType.IsValueType || p.ParameterType.IsEnum)
                 {
-                    var returnValue = default(object?);
+                    returnValue = default(object?);
                     classFactories[p.ParameterType] = returnValue;
                     return returnValue; // skip value types and enums, these are not mocked
                 }
                 else
                 {
-                    var returnValue = classFactory.Invoke(p.ParameterType);
+                    returnValue = classFactory.Invoke(p.ParameterType);
                     classFactories[p.ParameterType] = returnValue;
                     return returnValue;
                 }
@@ -245,9 +242,8 @@ public static class TypeExtensions
         var addMethod = listType.GetMethod(Add);
         var returnValue = Activator.CreateInstance(listType);
 
-        if (classFactories.ContainsKey(containedType))
+        if (classFactories.TryGetValue(containedType, out var classFactoryItem))
         {
-            var classFactoryItem = classFactories[containedType];
             Process(classFactories, addMethod, returnValue, classFactoryItem);
 
             classFactories[containedType] = returnValue;

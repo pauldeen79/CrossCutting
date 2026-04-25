@@ -31,7 +31,7 @@ public class QueryDatabaseCommandProviderTests : TestBase<QueryDatabaseCommandPr
 
             // Assert
             command.ShouldNotBeNull();
-            command.CommandText.ShouldBe("SELECT * FROM MyEntity");
+            command.CommandText.ShouldBe("SELECT * FROM [MyEntity]");
         }
     }
 }

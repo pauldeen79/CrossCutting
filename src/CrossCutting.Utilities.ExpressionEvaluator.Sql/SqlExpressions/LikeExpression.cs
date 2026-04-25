@@ -1,8 +1,8 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Sql.SqlExpressions;
 
-public class SqlLikeExpression : ISqlExpression
+public class LikeExpression : ISqlExpression
 {
-    public SqlLikeExpression(IEvaluatable sourceExpression, string formatString)
+    public LikeExpression(IEvaluatable sourceExpression, string formatString)
     {
         ArgumentGuard.IsNotNull(sourceExpression, nameof(sourceExpression));
         ArgumentGuard.IsNotNull(formatString, nameof(formatString));

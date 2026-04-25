@@ -21,7 +21,7 @@ public static class Parser
 
     private sealed class MyColumnNameProvider(IEnumerable<string[]> data) : IColumnNameProvider
     {
-        private readonly IEnumerable<string[]> _data = data;
+        private readonly IEnumerable<string[]> _data = ArgumentGuard.IsNotNull(data, nameof(data));
 
         public IReadOnlyCollection<string> Get<T>() where T : class
             => new List<string>(_data.First()).AsReadOnly();

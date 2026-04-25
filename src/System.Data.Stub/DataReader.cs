@@ -1,6 +1,8 @@
 ﻿namespace System.Data.Stub;
 
+#pragma warning disable CA1010 // Generic interface should also be implemented
 public sealed class DataReader(CommandBehavior commandBehavior, CultureInfo? cultureInfo = null) : Common.DbDataReader
+#pragma warning restore CA1010 // Generic interface should also be implemented
 {
     public int CurrentIndex { get; private set; }
     private CultureInfo _cultureInfo { get; } = cultureInfo ?? CultureInfo.CurrentCulture;
@@ -20,9 +22,9 @@ public sealed class DataReader(CommandBehavior commandBehavior, CultureInfo? cul
     public override int RecordsAffected { get; }
 
     public override int FieldCount
-        => CurrentIndex > Dictionary.Count || Dictionary.Count == 0 || !Dictionary.ContainsKey(CurrentIndex)
+        => CurrentIndex > Dictionary.Count || Dictionary.Count == 0 || !Dictionary.TryGetValue(CurrentIndex, out var value)
             ? 0
-            : Dictionary[CurrentIndex].Count;
+            : value.Count;
 
     public CommandBehavior CommandBehavior { get; } = commandBehavior;
 

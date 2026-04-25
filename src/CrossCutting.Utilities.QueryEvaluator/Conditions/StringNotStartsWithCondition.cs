@@ -2,11 +2,11 @@
 
 public partial record StringNotStartsWithCondition : IChildEvaluatablesContainer
 {
-    public async override Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => (await EvaluateTypedAsync(context, token).ConfigureAwait(false)).TryCast<object?>();
+    public override async Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
-    public override Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
-        => ConditionHelper.EvaluateStringConditionAsync(SourceExpression, CompareExpression, context, (firstString, secondString) => !firstString.StartsWith(secondString, StringComparison), token);
+    public override async Task<Result<bool>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
+        => (await new StringStartsWithOperatorEvaluatable(StringComparison, SourceExpression, CompareExpression).EvaluateTypedAsync(context, token).ConfigureAwait(false)).Transform(x => !x);
 
     public IEnumerable<IEvaluatable> GetChildEvaluatables() =>
     [
