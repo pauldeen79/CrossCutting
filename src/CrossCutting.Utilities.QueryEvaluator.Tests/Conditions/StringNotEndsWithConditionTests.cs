@@ -2,7 +2,7 @@
 
 public class StringNotEndsWithConditionTests : TestBase<StringNotEndsWithCondition>
 {
-    public class Evaluate : StringNotEndsWithConditionTests
+    public class EvaluateAsync : StringNotEndsWithConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
@@ -59,7 +59,7 @@ public class StringNotEndsWithConditionTests : TestBase<StringNotEndsWithConditi
             var context = CreateContext();
 
             // Act
-            var result = await sut.EvaluateAsync(context, CancellationToken.None);
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

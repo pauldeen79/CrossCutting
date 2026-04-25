@@ -2,7 +2,7 @@
 
 public class StringEndsWithConditionTests : TestBase<StringEndsWithCondition>
 {
-    public class Evaluate : StringEndsWithConditionTests
+    public class EvaluateAsync : StringEndsWithConditionTests
     {
         [Fact]
         public async Task Returns_Ok_On_Two_Strings()
@@ -59,7 +59,7 @@ public class StringEndsWithConditionTests : TestBase<StringEndsWithCondition>
             var context = CreateContext();
 
             // Act
-            var result = await sut.EvaluateAsync(context, CancellationToken.None);
+            var result = await sut.EvaluateTypedAsync(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
