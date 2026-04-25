@@ -30,22 +30,6 @@ namespace CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions
     }
     public static partial class BinaryStringOperatorBuilderExtensions
     {
-        public static T WithLeftOperand<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> leftOperand)
-            where T : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryStringOperatorBuilder
-        {
-            if (leftOperand is null) throw new System.ArgumentNullException(nameof(leftOperand));
-            instance.LeftOperand = leftOperand;
-            return instance;
-        }
-
-        public static T WithRightOperand<T>(this T instance, CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IEvaluatableBuilder<string> rightOperand)
-            where T : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryStringOperatorBuilder
-        {
-            if (rightOperand is null) throw new System.ArgumentNullException(nameof(rightOperand));
-            instance.RightOperand = rightOperand;
-            return instance;
-        }
-
         public static T WithStringComparison<T>(this T instance, System.StringComparison stringComparison)
             where T : CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions.IBinaryStringOperatorBuilder
         {
