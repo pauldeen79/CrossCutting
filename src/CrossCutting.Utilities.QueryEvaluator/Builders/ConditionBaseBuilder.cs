@@ -8,6 +8,4 @@ public partial class ConditionBaseBuilder : IEvaluatableBuilder<bool>
     IEvaluatable<bool> IEvaluatableBuilder<bool>.BuildTyped() => BuildTypedCore();
 #pragma warning restore CA1033 // Interface methods should be callable by child types
     protected abstract IEvaluatable<bool> BuildTypedCore();
-
-    // public abstract IEvaluatable<bool> BuildTyped();
 }
