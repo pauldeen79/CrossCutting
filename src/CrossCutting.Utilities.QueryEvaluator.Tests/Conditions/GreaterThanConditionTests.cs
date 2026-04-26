@@ -11,8 +11,8 @@ public class GreaterThanConditionTests : TestBase<GreaterThanCondition>
             var leftValue = 15;
             var rightValue = 13;
             var sut = new GreaterThanConditionBuilder()
-                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
-                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder<int>(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder<int>(rightValue))
                 .Build();
             var context = CreateContext();
 
@@ -31,8 +31,8 @@ public class GreaterThanConditionTests : TestBase<GreaterThanCondition>
             var leftValue = "this";
             var rightValue = 13;
             var sut = new GreaterThanConditionBuilder()
-                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
-                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder<string>(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder<int>(rightValue))
                 .Build();
             var context = CreateContext();
 
@@ -54,8 +54,8 @@ public class GreaterThanConditionTests : TestBase<GreaterThanCondition>
             var leftValue = 15;
             var rightValue = 13;
             var sut = new GreaterThanConditionBuilder()
-                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
-                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder<int>(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder<int>(rightValue))
                 .Build();
             var context = CreateContext();
 
@@ -77,8 +77,8 @@ public class GreaterThanConditionTests : TestBase<GreaterThanCondition>
             var leftValue = 13;
             var rightValue = 15;
             var sut = new GreaterThanConditionBuilder()
-                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
-                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder<int>(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder<int>(rightValue))
                 .Build();
 
             // Act
@@ -86,6 +86,27 @@ public class GreaterThanConditionTests : TestBase<GreaterThanCondition>
 
             // Assert
             children.Length.ShouldBe(2);
+        }
+    }
+
+    public class ToTypedBuilder : GreaterThanConditionTests
+    {
+        [Fact]
+        public void Returns_Valid_Builder()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "this";
+            var sut = new GreaterThanConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder<string>(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder<string>(rightValue))
+                .BuildTyped();
+
+            // Act
+            var typedBuilder = sut.ToTypedBuilder();
+
+            // Assert
+            typedBuilder.ShouldBeOfType<GreaterThanConditionBuilder>();
         }
     }
 }

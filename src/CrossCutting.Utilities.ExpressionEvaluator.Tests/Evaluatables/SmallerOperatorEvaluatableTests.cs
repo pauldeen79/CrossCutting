@@ -44,4 +44,23 @@ public class SmallerOperatorEvaluatableTests : TestBase
             (await result[1].EvaluateAsync(context, CancellationToken.None)).GetValue().ShouldBe(2);
         }
     }
+
+    public class ToTypedBuilder : SmallerOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<bool> sut = new SmallerOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder(true))
+                .WithRightOperand(new LiteralEvaluatableBuilder(false))
+                .BuildTyped();
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<SmallerOperatorEvaluatableBuilder>();
+        }
+    }
 }

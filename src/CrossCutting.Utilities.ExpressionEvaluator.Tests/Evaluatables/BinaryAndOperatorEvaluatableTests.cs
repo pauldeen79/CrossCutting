@@ -44,4 +44,23 @@ public class BinaryAndOperatorEvaluatableTests : TestBase
             (await result[1].EvaluateAsync(context, CancellationToken.None)).GetValue().ShouldBe(false);
         }
     }
+
+    public class ToTypedBuilder : BinaryAndOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<bool> sut = new BinaryAndOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder(true))
+                .WithRightOperand(new LiteralEvaluatableBuilder(false))
+                .BuildTyped();
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<BinaryAndOperatorEvaluatableBuilder>();
+        }
+    }
 }

@@ -88,4 +88,25 @@ public class SmallerThanConditionTests : TestBase<SmallerThanCondition>
             children.Length.ShouldBe(2);
         }
     }
+
+    public class ToTypedBuilder : SmallerThanConditionTests
+    {
+        [Fact]
+        public void Returns_Valid_Builder()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "this";
+            var sut = new SmallerThanConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder<string>(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder<string>(rightValue))
+                .BuildTyped();
+
+            // Act
+            var typedBuilder = sut.ToTypedBuilder();
+
+            // Assert
+            typedBuilder.ShouldBeOfType<SmallerThanConditionBuilder>();
+        }
+    }
 }

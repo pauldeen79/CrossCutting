@@ -87,4 +87,25 @@ public class StringNotContainsConditionTests : TestBase<StringNotContainsConditi
             children.Length.ShouldBe(2);
         }
     }
+
+    public class ToTypedBuilder : StringNotContainsConditionTests
+    {
+        [Fact]
+        public void Returns_Valid_Builder()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "this";
+            var sut = new StringNotContainsConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .BuildTyped();
+
+            // Act
+            var typedBuilder = sut.ToTypedBuilder();
+
+            // Assert
+            typedBuilder.ShouldBeOfType<StringNotContainsConditionBuilder>();
+        }
+    }
 }

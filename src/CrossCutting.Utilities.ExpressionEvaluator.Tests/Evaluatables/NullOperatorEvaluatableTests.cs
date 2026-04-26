@@ -41,4 +41,22 @@ public class NullOperatorEvaluatableTests : TestBase
             (await result[0].EvaluateAsync(context, CancellationToken.None)).GetValue().ShouldBe(1);
         }
     }
+
+    public class ToTypedBuilder : NullOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<bool> sut = new NullOperatorEvaluatableBuilder()
+                .WithOperand(new LiteralEvaluatableBuilder(true))
+                .BuildTyped();
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<NullOperatorEvaluatableBuilder>();
+        }
+    }
 }

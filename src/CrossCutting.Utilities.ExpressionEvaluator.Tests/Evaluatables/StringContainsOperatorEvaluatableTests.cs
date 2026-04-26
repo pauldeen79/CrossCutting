@@ -44,4 +44,23 @@ public class StringContainsOperatorEvaluatableTests : TestBase
             (await result[1].EvaluateAsync(context, CancellationToken.None)).GetValue().ShouldBe("T");
         }
     }
+
+    public class ToTypedBuilder : StringContainsOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<bool> sut = new StringContainsOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder("And"))
+                .WithRightOperand(new LiteralEvaluatableBuilder("n"))
+                .BuildTyped();
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<StringContainsOperatorEvaluatableBuilder>();
+        }
+    }
 }

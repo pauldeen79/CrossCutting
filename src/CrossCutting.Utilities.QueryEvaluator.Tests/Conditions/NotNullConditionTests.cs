@@ -98,4 +98,23 @@ public class NotNullConditionTests : TestBase<NotNullCondition>
             children.Length.ShouldBe(1);
         }
     }
+
+    public class ToTypedBuilder : NotNullConditionTests
+    {
+        [Fact]
+        public void Returns_Valid_Builder()
+        {
+            // Arrange
+            var sourceValue = "this";
+            var sut = new NotNullConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
+                .BuildTyped();
+
+            // Act
+            var typedBuilder = sut.ToTypedBuilder();
+
+            // Assert
+            typedBuilder.ShouldBeOfType<NotNullConditionBuilder>();
+        }
+    }
 }
