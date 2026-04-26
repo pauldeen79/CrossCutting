@@ -2,6 +2,5 @@
 
 public partial class StringNotStartsWithConditionBuilder : IEvaluatableBuilder<bool>
 {
-    IEvaluatable<bool> IEvaluatableBuilder<bool>.BuildTyped() => BuildTyped();
     protected override IEvaluatable<bool> BuildTypedCore() => BuildTyped();
 }
