@@ -12,6 +12,9 @@ public partial record BinaryOrOperatorEvaluatable : IChildEvaluatablesContainer
             .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results => results.GetValue<bool>(nameof(LeftOperand)) || results.GetValue<bool>(nameof(RightOperand)));
 
+    IEvaluatableBuilder<bool> IEvaluatable<bool>.ToTypedBuilder()
+        => ToTypedBuilder();
+
     public IEnumerable<IEvaluatable> GetChildEvaluatables() =>
     [
         LeftOperand,

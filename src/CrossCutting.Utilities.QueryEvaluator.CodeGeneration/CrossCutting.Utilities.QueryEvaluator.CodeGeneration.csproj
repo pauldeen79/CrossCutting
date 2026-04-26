@@ -9,8 +9,11 @@
   <ItemGroup>
     <PackageReference Include="CsharpExpressionDumper.Core" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-    <PackageReference Include="pauldeen79.ClassFramework.TemplateFramework" />
+    <!-- <PackageReference Include="pauldeen79.ClassFramework.TemplateFramework" /> -->
     <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ClassFramework\src\ClassFramework.TemplateFramework\ClassFramework.TemplateFramework.csproj" />
+  </ItemGroup>
 </Project>

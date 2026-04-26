@@ -6,11 +6,11 @@ public class LiteralEvaluatableHandler : IEvaluatableSqlExpressionProviderHandle
     {
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
 
-        if (evaluatable is not LiteralEvaluatable literalEvaluatable)
+        if (evaluatable is ILiteralEvaluatable literalEvaluatable)
         {
-            return Result.Continue<string>();
+            return parameterBag.CreateQueryParameterName(literalEvaluatable.GetValue());
         }      
-        
-        return parameterBag.CreateQueryParameterName(literalEvaluatable.Value);
+
+        return Result.Continue<string>();
     }
 }

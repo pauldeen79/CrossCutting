@@ -11,5 +11,8 @@ public partial record NullOperatorEvaluatable : IChildEvaluatablesContainer
             .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results => results.GetValue(nameof(Operand)) is null);
 
+    IEvaluatableBuilder<bool> IEvaluatable<bool>.ToTypedBuilder()
+        => ToTypedBuilder();
+
     public IEnumerable<IEvaluatable> GetChildEvaluatables() => [Operand];
 }

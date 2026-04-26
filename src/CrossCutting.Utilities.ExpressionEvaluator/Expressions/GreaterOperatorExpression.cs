@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public class GreaterOperatorExpression : BinaryOperatorExpressionBase, IExpression<bool>
+public sealed class GreaterOperatorExpression : BinaryOperatorExpressionBase, IExpression<bool>
 {
     public GreaterOperatorExpression(Result<IExpression> left, Result<IExpression> right, string sourceExpression) : base(left, right, sourceExpression)
     {
@@ -12,9 +12,7 @@ public class GreaterOperatorExpression : BinaryOperatorExpressionBase, IExpressi
             .EvaluateTypedAsync(context, token)).ConfigureAwait(false);
 
     public override IEvaluatableBuilder ToBuilder()
-        => new GreaterOperatorEvaluatableBuilder()
-            .WithLeftOperand(Left.ToEvaluatable())
-            .WithRightOperand(Right.ToEvaluatable());
+        => ToTypedBuilder();
 
     protected override Type? GetResultType(ExpressionParseResult? leftResult)
         => typeof(bool);
@@ -23,4 +21,12 @@ public class GreaterOperatorExpression : BinaryOperatorExpressionBase, IExpressi
         => await(await EvaluateAsResultDictionaryAsync(context, token).ConfigureAwait(false))
             .OnSuccessAsync(results => new GreaterOperatorEvaluatable(new LiteralEvaluatable(results.GetValue(Constants.LeftExpression)), new LiteralEvaluatable(results.GetValue(Constants.RightExpression)))
             .EvaluateAsync(context, token)).ConfigureAwait(false);
+
+    IEvaluatableBuilder<bool> IEvaluatable<bool>.ToTypedBuilder()
+        => ToTypedBuilder();
+
+    private GreaterOperatorEvaluatableBuilder ToTypedBuilder()
+        => new GreaterOperatorEvaluatableBuilder()
+            .WithLeftOperand(Left.ToEvaluatable())
+            .WithRightOperand(Right.ToEvaluatable());
 }

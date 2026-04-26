@@ -21,4 +21,7 @@ public partial record InCondition : IChildEvaluatablesContainer
             yield return expression;
         }
     }
+
+    public override IEvaluatableBuilder<bool> ToTypedBuilder()
+        => ToTypedBuilderCore();
 }

@@ -362,17 +362,17 @@ public class EvaluatableExtensionsTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new LiteralEvaluatable("Test");
+            var sut = new LiteralEvaluatable<string>("Test");
 
             // Act
-            var result = sut.StartsWith(new LiteralEvaluatable("T"));
+            var result = sut.StartsWith(new LiteralEvaluatable<string>("T"));
 
             // Assert
-            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var leftOperand = (LiteralEvaluatable)result.LeftOperand;
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var leftOperand = (LiteralEvaluatable<string>)result.LeftOperand;
             leftOperand.Value.ShouldBe("Test");
-            result.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var rightOperand = (LiteralEvaluatable)result.RightOperand;
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var rightOperand = (LiteralEvaluatable<string>)result.RightOperand;
             rightOperand.Value.ShouldBe("T");
         }
     }
@@ -383,17 +383,17 @@ public class EvaluatableExtensionsTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new LiteralEvaluatable("Test");
+            var sut = new LiteralEvaluatable<string>("Test");
 
             // Act
             var result = sut.StartsWith("T");
 
             // Assert
-            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var leftOperand = (LiteralEvaluatable)result.LeftOperand;
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var leftOperand = (LiteralEvaluatable<string>)result.LeftOperand;
             leftOperand.Value.ShouldBe("Test");
-            result.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var rightOperand = (LiteralEvaluatable)result.RightOperand;
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var rightOperand = (LiteralEvaluatable<string>)result.RightOperand;
             rightOperand.Value.ShouldBe("T");
         }
     }
@@ -404,17 +404,17 @@ public class EvaluatableExtensionsTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new LiteralEvaluatable("Test");
+            var sut = new LiteralEvaluatable<string>("Test");
 
             // Act
-            var result = sut.EndsWith(new LiteralEvaluatable("T"));
+            var result = sut.EndsWith(new LiteralEvaluatable<string>("T"));
 
             // Assert
-            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var leftOperand = (LiteralEvaluatable)result.LeftOperand;
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var leftOperand = (LiteralEvaluatable<string>)result.LeftOperand;
             leftOperand.Value.ShouldBe("Test");
-            result.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var rightOperand = (LiteralEvaluatable)result.RightOperand;
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var rightOperand = (LiteralEvaluatable<string>)result.RightOperand;
             rightOperand.Value.ShouldBe("T");
         }
     }
@@ -425,17 +425,17 @@ public class EvaluatableExtensionsTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new LiteralEvaluatable("Test");
+            var sut = new LiteralEvaluatable<string>("Test");
 
             // Act
             var result = sut.EndsWith("T");
 
             // Assert
-            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var leftOperand = (LiteralEvaluatable)result.LeftOperand;
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var leftOperand = (LiteralEvaluatable<string>)result.LeftOperand;
             leftOperand.Value.ShouldBe("Test");
-            result.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var rightOperand = (LiteralEvaluatable)result.RightOperand;
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var rightOperand = (LiteralEvaluatable<string>)result.RightOperand;
             rightOperand.Value.ShouldBe("T");
         }
     }
@@ -446,17 +446,17 @@ public class EvaluatableExtensionsTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new LiteralEvaluatable("Test");
+            var sut = new LiteralEvaluatable<string>("Test");
 
             // Act
-            var result = sut.Contains(new LiteralEvaluatable("T"));
+            var result = sut.Contains(new LiteralEvaluatable<string>("T"));
 
             // Assert
-            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var leftOperand = (LiteralEvaluatable)result.LeftOperand;
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var leftOperand = (LiteralEvaluatable<string>)result.LeftOperand;
             leftOperand.Value.ShouldBe("Test");
-            result.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var rightOperand = (LiteralEvaluatable)result.RightOperand;
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var rightOperand = (LiteralEvaluatable<string>)result.RightOperand;
             rightOperand.Value.ShouldBe("T");
         }
     }
@@ -467,17 +467,17 @@ public class EvaluatableExtensionsTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new LiteralEvaluatable("Test");
+            var sut = new LiteralEvaluatable<string>("Test");
 
             // Act
             var result = sut.Contains("T");
 
             // Assert
-            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var leftOperand = (LiteralEvaluatable)result.LeftOperand;
+            result.LeftOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var leftOperand = (LiteralEvaluatable<string>)result.LeftOperand;
             leftOperand.Value.ShouldBe("Test");
-            result.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var rightOperand = (LiteralEvaluatable)result.RightOperand;
+            result.RightOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var rightOperand = (LiteralEvaluatable<string>)result.RightOperand;
             rightOperand.Value.ShouldBe("T");
         }
     }
@@ -488,19 +488,19 @@ public class EvaluatableExtensionsTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new LiteralEvaluatable("Test");
+            var sut = new LiteralEvaluatable<string>("Test");
 
             // Act
-            var result = sut.DoesNotStartWith(new LiteralEvaluatable("T"));
+            var result = sut.DoesNotStartWith(new LiteralEvaluatable<string>("T"));
 
             // Assert
             result.Operand.ShouldBeOfType<StringStartsWithOperatorEvaluatable>();
             var stringStartsWithOperatorEvaluatable = (StringStartsWithOperatorEvaluatable)result.Operand;
-            stringStartsWithOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var leftOperand = (LiteralEvaluatable)stringStartsWithOperatorEvaluatable.LeftOperand;
+            stringStartsWithOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var leftOperand = (LiteralEvaluatable<string>)stringStartsWithOperatorEvaluatable.LeftOperand;
             leftOperand.Value.ShouldBe("Test");
-            stringStartsWithOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var rightOperand = (LiteralEvaluatable)stringStartsWithOperatorEvaluatable.RightOperand;
+            stringStartsWithOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var rightOperand = (LiteralEvaluatable<string>)stringStartsWithOperatorEvaluatable.RightOperand;
             rightOperand.Value.ShouldBe("T");
         }
     }
@@ -511,7 +511,7 @@ public class EvaluatableExtensionsTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new LiteralEvaluatable("Test");
+            var sut = new LiteralEvaluatable<string>("Test");
 
             // Act
             var result = sut.DoesNotStartWith("T");
@@ -519,11 +519,11 @@ public class EvaluatableExtensionsTests : TestBase
             // Assert
             result.Operand.ShouldBeOfType<StringStartsWithOperatorEvaluatable>();
             var stringStartsWithOperatorEvaluatable = (StringStartsWithOperatorEvaluatable)result.Operand;
-            stringStartsWithOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var leftOperand = (LiteralEvaluatable)stringStartsWithOperatorEvaluatable.LeftOperand;
+            stringStartsWithOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var leftOperand = (LiteralEvaluatable<string>)stringStartsWithOperatorEvaluatable.LeftOperand;
             leftOperand.Value.ShouldBe("Test");
-            stringStartsWithOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var rightOperand = (LiteralEvaluatable)stringStartsWithOperatorEvaluatable.RightOperand;
+            stringStartsWithOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var rightOperand = (LiteralEvaluatable<string>)stringStartsWithOperatorEvaluatable.RightOperand;
             rightOperand.Value.ShouldBe("T");
         }
     }
@@ -534,19 +534,19 @@ public class EvaluatableExtensionsTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new LiteralEvaluatable("Test");
+            var sut = new LiteralEvaluatable<string>("Test");
 
             // Act
-            var result = sut.DoesNotEndWith(new LiteralEvaluatable("T"));
+            var result = sut.DoesNotEndWith(new LiteralEvaluatable<string>("T"));
 
             // Assert
             result.Operand.ShouldBeOfType<StringEndsWithOperatorEvaluatable>();
             var stringEndsWithOperatorEvaluatable = (StringEndsWithOperatorEvaluatable)result.Operand;
-            stringEndsWithOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var leftOperand = (LiteralEvaluatable)stringEndsWithOperatorEvaluatable.LeftOperand;
+            stringEndsWithOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var leftOperand = (LiteralEvaluatable<string>)stringEndsWithOperatorEvaluatable.LeftOperand;
             leftOperand.Value.ShouldBe("Test");
-            stringEndsWithOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var rightOperand = (LiteralEvaluatable)stringEndsWithOperatorEvaluatable.RightOperand;
+            stringEndsWithOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var rightOperand = (LiteralEvaluatable<string>)stringEndsWithOperatorEvaluatable.RightOperand;
             rightOperand.Value.ShouldBe("T");
         }
     }
@@ -557,7 +557,7 @@ public class EvaluatableExtensionsTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new LiteralEvaluatable("Test");
+            var sut = new LiteralEvaluatable<string>("Test");
 
             // Act
             var result = sut.DoesNotEndWith("T");
@@ -565,11 +565,11 @@ public class EvaluatableExtensionsTests : TestBase
             // Assert
             result.Operand.ShouldBeOfType<StringEndsWithOperatorEvaluatable>();
             var stringEndsWithOperatorEvaluatable = (StringEndsWithOperatorEvaluatable)result.Operand;
-            stringEndsWithOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var leftOperand = (LiteralEvaluatable)stringEndsWithOperatorEvaluatable.LeftOperand;
+            stringEndsWithOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var leftOperand = (LiteralEvaluatable<string>)stringEndsWithOperatorEvaluatable.LeftOperand;
             leftOperand.Value.ShouldBe("Test");
-            stringEndsWithOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var rightOperand = (LiteralEvaluatable)stringEndsWithOperatorEvaluatable.RightOperand;
+            stringEndsWithOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var rightOperand = (LiteralEvaluatable<string>)stringEndsWithOperatorEvaluatable.RightOperand;
             rightOperand.Value.ShouldBe("T");
         }
     }
@@ -580,19 +580,19 @@ public class EvaluatableExtensionsTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new LiteralEvaluatable("Test");
+            var sut = new LiteralEvaluatable<string>("Test");
 
             // Act
-            var result = sut.DoesNotContain(new LiteralEvaluatable("T"));
+            var result = sut.DoesNotContain(new LiteralEvaluatable<string>("T"));
 
             // Assert
             result.Operand.ShouldBeOfType<StringContainsOperatorEvaluatable>();
             var stringContainsOperatorEvaluatable = (StringContainsOperatorEvaluatable)result.Operand;
-            stringContainsOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var leftOperand = (LiteralEvaluatable)stringContainsOperatorEvaluatable.LeftOperand;
+            stringContainsOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var leftOperand = (LiteralEvaluatable<string>)stringContainsOperatorEvaluatable.LeftOperand;
             leftOperand.Value.ShouldBe("Test");
-            stringContainsOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var rightOperand = (LiteralEvaluatable)stringContainsOperatorEvaluatable.RightOperand;
+            stringContainsOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var rightOperand = (LiteralEvaluatable<string>)stringContainsOperatorEvaluatable.RightOperand;
             rightOperand.Value.ShouldBe("T");
         }
     }
@@ -603,7 +603,7 @@ public class EvaluatableExtensionsTests : TestBase
         public void Returns_Correct_Result()
         {
             // Arrange
-            var sut = new LiteralEvaluatable("Test");
+            var sut = new LiteralEvaluatable<string>("Test");
 
             // Act
             var result = sut.DoesNotContain("T");
@@ -611,11 +611,11 @@ public class EvaluatableExtensionsTests : TestBase
             // Assert
             result.Operand.ShouldBeOfType<StringContainsOperatorEvaluatable>();
             var stringContainsOperatorEvaluatable = (StringContainsOperatorEvaluatable)result.Operand;
-            stringContainsOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var leftOperand = (LiteralEvaluatable)stringContainsOperatorEvaluatable.LeftOperand;
+            stringContainsOperatorEvaluatable.LeftOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var leftOperand = (LiteralEvaluatable<string>)stringContainsOperatorEvaluatable.LeftOperand;
             leftOperand.Value.ShouldBe("Test");
-            stringContainsOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable>();
-            var rightOperand = (LiteralEvaluatable)stringContainsOperatorEvaluatable.RightOperand;
+            stringContainsOperatorEvaluatable.RightOperand.ShouldBeOfType<LiteralEvaluatable<string>>();
+            var rightOperand = (LiteralEvaluatable<string>)stringContainsOperatorEvaluatable.RightOperand;
             rightOperand.Value.ShouldBe("T");
         }
     }

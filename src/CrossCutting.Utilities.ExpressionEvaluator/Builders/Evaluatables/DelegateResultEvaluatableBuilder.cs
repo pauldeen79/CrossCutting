@@ -2,16 +2,12 @@
 
 public partial class DelegateResultEvaluatableBuilder
 {
-    public DelegateResultEvaluatableBuilder(Func<Result<object?>> value)
-    {
-        _value = value;
-    }
+    public DelegateResultEvaluatableBuilder(Func<Result<object?>> value) => _value = value;
 }
 
-public partial class DelegateResultEvaluatableBuilder<T>
+public partial class DelegateResultEvaluatableBuilder<T> : IEvaluatableBuilder<T>
 {
-    public DelegateResultEvaluatableBuilder(Func<Result<T>> value)
-    {
-        _value = value;
-    }
+    public DelegateResultEvaluatableBuilder(Func<Result<T>> value) => _value = value;
+
+    IEvaluatable<T> IEvaluatableBuilder<T>.BuildTyped() => BuildTyped();
 }

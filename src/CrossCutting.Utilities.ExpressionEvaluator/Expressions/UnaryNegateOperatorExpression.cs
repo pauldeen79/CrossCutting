@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.Utilities.ExpressionEvaluator.Expressions;
 
-public class UnaryNegateOperatorExpression : UnaryOperatorExpressionBase, IExpression<bool>
+public sealed class UnaryNegateOperatorExpression : UnaryOperatorExpressionBase, IExpression<bool>
 {
     public UnaryNegateOperatorExpression(Result<IExpression> operand, string sourceExpression) : base(operand, sourceExpression)
     {
@@ -12,8 +12,7 @@ public class UnaryNegateOperatorExpression : UnaryOperatorExpressionBase, IExpre
             .EvaluateTypedAsync(context, token)).ConfigureAwait(false);
 
     public override IEvaluatableBuilder ToBuilder()
-        => new UnaryNegateOperatorEvaluatableBuilder()
-            .WithOperand(Operand.ToEvaluatable());
+        => ToTypedBuilder();
 
     protected override Type? GetResultType(ExpressionParseResult? leftResult)
         => typeof(bool);
@@ -22,4 +21,12 @@ public class UnaryNegateOperatorExpression : UnaryOperatorExpressionBase, IExpre
         => await (await EvaluateAsResultDictionaryAsync(context, token).ConfigureAwait(false))
             .OnSuccessAsync(results => new UnaryNegateOperatorEvaluatable(results.GetEvaluatable<bool>(Constants.Expression))
             .EvaluateAsync(context, token)).ConfigureAwait(false);
+
+
+    IEvaluatableBuilder<bool> IEvaluatable<bool>.ToTypedBuilder()
+        => ToTypedBuilder();
+
+    private UnaryNegateOperatorEvaluatableBuilder ToTypedBuilder()
+        => new UnaryNegateOperatorEvaluatableBuilder()
+            .WithOperand(Operand.ToEvaluatable());
 }

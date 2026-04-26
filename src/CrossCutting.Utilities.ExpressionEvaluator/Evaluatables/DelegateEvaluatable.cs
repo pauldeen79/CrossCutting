@@ -13,4 +13,7 @@ public partial record DelegateEvaluatable<T>
 
     public Task<Result<T>> EvaluateTypedAsync(ExpressionEvaluatorContext context, CancellationToken token)
         => Task.FromResult(Result.Success(Value()));
+
+    IEvaluatableBuilder<T> IEvaluatable<T>.ToTypedBuilder()
+        => ToTypedBuilder();
 }

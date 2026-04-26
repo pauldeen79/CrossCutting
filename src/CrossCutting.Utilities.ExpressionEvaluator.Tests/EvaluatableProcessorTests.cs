@@ -151,6 +151,11 @@ public class EvaluatableProcessorTests : TestBase
             throw new NotImplementedException();
         }
 
+        public IEvaluatableBuilder<bool> ToTypedBuilder()
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             yield return new ValidationResult("Invalid!");

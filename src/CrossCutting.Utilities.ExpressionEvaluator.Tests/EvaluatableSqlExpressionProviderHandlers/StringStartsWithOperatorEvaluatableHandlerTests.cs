@@ -10,8 +10,8 @@ public class StringStartsWithOperatorEvaluatableHandlerTests : TestBase<StringSt
             // Arrange
             var parameterBag = new ParameterBag();
             var evaluatable = new StringStartsWithOperatorEvaluatableBuilder()
-                .WithLeftOperand(new LiteralEvaluatableBuilder("Test"))
-                .WithRightOperand(new LiteralEvaluatableBuilder("T"))
+                .WithLeftOperand(new LiteralEvaluatableBuilder<string>("Test"))
+                .WithRightOperand(new LiteralEvaluatableBuilder<string>("T"))
                 .Build();
             var sut = CreateSut();
             var callback = new EvaluatableSqlExpressionProvider([new LiteralEvaluatableHandler()]);
@@ -37,8 +37,8 @@ public class StringStartsWithOperatorEvaluatableHandlerTests : TestBase<StringSt
             var evaluatable = new UnaryNegateOperatorEvaluatableBuilder()
                 .WithOperand(
                         new StringStartsWithOperatorEvaluatableBuilder()
-                            .WithLeftOperand(new LiteralEvaluatableBuilder("Test"))
-                            .WithRightOperand(new LiteralEvaluatableBuilder("T")))
+                            .WithLeftOperand(new LiteralEvaluatableBuilder<string>("Test"))
+                            .WithRightOperand(new LiteralEvaluatableBuilder<string>("T")))
                 .Build();
             var sut = CreateSut();
             var callback = new EvaluatableSqlExpressionProvider([new LiteralEvaluatableHandler()]);

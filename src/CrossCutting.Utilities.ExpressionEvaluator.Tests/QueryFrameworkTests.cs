@@ -290,6 +290,11 @@ internal sealed class InMemoryQueryProcessor : IEvaluatable<bool>
     {
         throw new NotImplementedException();
     }
+
+    public IEvaluatableBuilder<bool> ToTypedBuilder()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 internal sealed class EqualsOperator : IOperator
@@ -332,6 +337,11 @@ internal sealed class ConstantEvaluatable<T> : IEvaluatable<T>
         => Task.FromResult(Result.Success(Value));
 
     public IEvaluatableBuilder ToBuilder()
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEvaluatableBuilder<T> ToTypedBuilder()
     {
         throw new NotImplementedException();
     }

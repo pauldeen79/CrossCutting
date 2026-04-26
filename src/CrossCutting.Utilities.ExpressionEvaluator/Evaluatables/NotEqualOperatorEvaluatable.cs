@@ -12,6 +12,9 @@ public partial record NotEqualOperatorEvaluatable : IChildEvaluatablesContainer
             .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results => NotEqual.Evaluate(results.GetValue(nameof(LeftOperand)), results.GetValue(nameof(RightOperand)), context.Settings.StringComparison));
 
+    IEvaluatableBuilder<bool> IEvaluatable<bool>.ToTypedBuilder()
+        => ToTypedBuilder();
+
     public IEnumerable<IEvaluatable> GetChildEvaluatables() =>
     [
         LeftOperand,

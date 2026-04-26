@@ -12,6 +12,9 @@ public partial record StringEndsWithOperatorEvaluatable : IChildEvaluatablesCont
             .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results => results.GetValue<string>(nameof(LeftOperand)).EndsWith(results.GetValue<string>(nameof(RightOperand)), StringComparison));
 
+    IEvaluatableBuilder<bool> IEvaluatable<bool>.ToTypedBuilder()
+        => ToTypedBuilder();
+
     public IEnumerable<IEvaluatable> GetChildEvaluatables() =>
     [
         LeftOperand,
