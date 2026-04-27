@@ -63,4 +63,22 @@ public class StringStartsWithOperatorEvaluatableTests : TestBase
             actual.ShouldBeOfType<StringStartsWithOperatorEvaluatableBuilder>();
         }
     }
+
+    public class BuildTyped : StringStartsWithOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new StringStartsWithOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder<string>("test"))
+                .WithRightOperand(new LiteralEvaluatableBuilder<string>("t"));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<StringStartsWithOperatorEvaluatable>();
+        }
+    }
 }

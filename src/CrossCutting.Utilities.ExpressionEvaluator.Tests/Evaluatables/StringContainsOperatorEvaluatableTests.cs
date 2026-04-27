@@ -52,8 +52,8 @@ public class StringContainsOperatorEvaluatableTests : TestBase
         {
             // Arrange
             IEvaluatable<bool> sut = new StringContainsOperatorEvaluatableBuilder()
-                .WithLeftOperand(new LiteralEvaluatableBuilder("And"))
-                .WithRightOperand(new LiteralEvaluatableBuilder("n"))
+                .WithLeftOperand(new LiteralEvaluatableBuilder<string>("And"))
+                .WithRightOperand(new LiteralEvaluatableBuilder<string>("n"))
                 .BuildTyped();
 
             // Act
@@ -61,6 +61,24 @@ public class StringContainsOperatorEvaluatableTests : TestBase
 
             // Assert
             actual.ShouldBeOfType<StringContainsOperatorEvaluatableBuilder>();
+        }
+    }
+
+    public class BuildTyped : StringContainsOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new StringContainsOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder<string>("test"))
+                .WithRightOperand(new LiteralEvaluatableBuilder<string>("t"));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<StringContainsOperatorEvaluatable>();
         }
     }
 }

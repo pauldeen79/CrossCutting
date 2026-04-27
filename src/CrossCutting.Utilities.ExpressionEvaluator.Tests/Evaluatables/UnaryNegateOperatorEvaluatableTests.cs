@@ -59,4 +59,21 @@ public class UnaryNegateOperatorEvaluatableTests : TestBase
             actual.ShouldBeOfType<UnaryNegateOperatorEvaluatableBuilder>();
         }
     }
+
+    public class BuildTyped : UnaryNegateOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new UnaryNegateOperatorEvaluatableBuilder()
+                .WithOperand(new LiteralEvaluatableBuilder<bool>(true));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<UnaryNegateOperatorEvaluatable>();
+        }
+    }
 }
