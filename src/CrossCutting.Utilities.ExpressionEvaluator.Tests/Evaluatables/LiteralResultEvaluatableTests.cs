@@ -49,6 +49,22 @@ public class LiteralResultEvaluatableTests : TestBase
         }
     }
 
+    public class ToTypedBuilder : LiteralResultEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<string> sut = new LiteralResultEvaluatable<string>("Hello world!");
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<LiteralResultEvaluatableBuilder<string>>();
+        }
+    }
+
     public class BuildTyped : LiteralResultEvaluatableTests
     {
         [Fact]
