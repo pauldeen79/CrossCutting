@@ -15,7 +15,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, ContextEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, DelegateEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, DelegateResultEvaluatableHandler>()
-            .AddSingleton<IEvaluatableSqlExpressionProviderHandler, EmptyEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, EqualOperatorEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, GreaterOperatorEvaluatableHandler>()
             .AddSingleton<IEvaluatableSqlExpressionProviderHandler, GreaterOrEqualOperatorEvaluatableHandler>()
