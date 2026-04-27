@@ -1,5 +1,3 @@
-using CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions;
-
 namespace CrossCutting.Utilities.QueryEvaluator.Tests.Conditions;
 
 public class BetweenConditionBuilderTests : TestBase<BetweenConditionBuilder>

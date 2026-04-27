@@ -59,4 +59,21 @@ public class NotNullOperatorEvaluatableTests : TestBase
             actual.ShouldBeOfType<NotNullOperatorEvaluatableBuilder>();
         }
     }
+
+    public class BuildTyped : NotNullOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new NotNullOperatorEvaluatableBuilder()
+                .WithOperand(new LiteralEvaluatableBuilder<bool>(true));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<NotNullOperatorEvaluatable>();
+        }
+    }
 }

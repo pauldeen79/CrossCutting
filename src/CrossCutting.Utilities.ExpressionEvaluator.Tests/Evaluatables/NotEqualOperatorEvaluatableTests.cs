@@ -63,4 +63,22 @@ public class NotEqualOperatorEvaluatableTests : TestBase
             actual.ShouldBeOfType<NotEqualOperatorEvaluatableBuilder>();
         }
     }
+
+    public class BuildTyped : NotEqualOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new NotEqualOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder<bool>(true))
+                .WithRightOperand(new LiteralEvaluatableBuilder<bool>(false));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<NotEqualOperatorEvaluatable>();
+        }
+    }
 }

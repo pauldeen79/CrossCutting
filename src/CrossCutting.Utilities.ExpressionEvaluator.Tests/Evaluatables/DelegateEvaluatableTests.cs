@@ -19,4 +19,20 @@ public class DelegateEvaluatableTests : TestBase
             result.Value.ShouldBe("Hello world!");
         }
     }
+
+    public class ToTypedBuilder : DelegateEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<string> sut = new DelegateEvaluatable<string>(() => "Hello world!");
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<DelegateEvaluatableBuilder>();
+        }
+    }
 }

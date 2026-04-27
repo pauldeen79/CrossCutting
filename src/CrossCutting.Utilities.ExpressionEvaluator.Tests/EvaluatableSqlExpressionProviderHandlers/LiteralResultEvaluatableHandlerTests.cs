@@ -10,7 +10,7 @@ public class LiteralResultEvaluatableHandlerTests : TestBase<LiteralResultEvalua
             // Arrange
             var parameterBag = new ParameterBag();
             var evaluatable = new LiteralResultEvaluatableBuilder()
-                .WithValue(Result.Success("Hello world!").TryCast<object?>())
+                .WithValue(Result.Success("Hello world!"))
                 .Build();
             var sut = CreateSut();
             var callback = new EvaluatableSqlExpressionProvider([]);
@@ -23,6 +23,25 @@ public class LiteralResultEvaluatableHandlerTests : TestBase<LiteralResultEvalua
             result.Value.ShouldBe("@p0");
             parameterBag.Parameters.Count.ShouldBe(1);
             parameterBag.Parameters.First().Value.ShouldBeEquivalentTo("Hello world!");
+        }
+
+        [Fact]
+        public async Task Propagates_Non_Successful_Result()
+        {
+            // Arrange
+            var parameterBag = new ParameterBag();
+            var evaluatable = new LiteralResultEvaluatableBuilder()
+                .WithValue(Result.Error("Kaboom!"))
+                .Build();
+            var sut = CreateSut();
+            var callback = new EvaluatableSqlExpressionProvider([]);
+
+            // Act
+            var result = await sut.GetExpressionAsync(null, evaluatable, Substitute.For<IFieldNameProvider>(), parameterBag, callback, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);           
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
     }
 }

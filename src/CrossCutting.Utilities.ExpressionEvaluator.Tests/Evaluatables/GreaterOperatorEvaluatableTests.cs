@@ -63,4 +63,22 @@ public class GreaterOperatorEvaluatableTests : TestBase
             actual.ShouldBeOfType<GreaterOperatorEvaluatableBuilder>();
         }
     }
+
+    public class BuildTyped : GreaterOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new GreaterOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder<bool>(true))
+                .WithRightOperand(new LiteralEvaluatableBuilder<bool>(false));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<GreaterOperatorEvaluatable>();
+        }
+    }
 }

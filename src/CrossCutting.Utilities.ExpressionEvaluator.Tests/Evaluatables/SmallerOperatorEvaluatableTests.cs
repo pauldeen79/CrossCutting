@@ -63,4 +63,22 @@ public class SmallerOperatorEvaluatableTests : TestBase
             actual.ShouldBeOfType<SmallerOperatorEvaluatableBuilder>();
         }
     }
+
+    public class BuildTyped : SmallerOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new SmallerOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder<bool>(true))
+                .WithRightOperand(new LiteralEvaluatableBuilder<bool>(false));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<SmallerOperatorEvaluatable>();
+        }
+    }
 }

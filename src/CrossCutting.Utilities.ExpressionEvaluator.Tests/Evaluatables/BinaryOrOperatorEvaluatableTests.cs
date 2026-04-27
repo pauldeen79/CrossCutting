@@ -63,4 +63,22 @@ public class BinaryOrOperatorEvaluatableTests : TestBase
             actual.ShouldBeOfType<BinaryOrOperatorEvaluatableBuilder>();
         }
     }
+
+    public class BuildTyped : BinaryOrOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new BinaryOrOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder<bool>(true))
+                .WithRightOperand(new LiteralEvaluatableBuilder<bool>(false));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<BinaryOrOperatorEvaluatable>();
+        }
+    }
 }
