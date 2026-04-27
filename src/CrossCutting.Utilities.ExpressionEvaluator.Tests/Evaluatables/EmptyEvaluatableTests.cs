@@ -47,7 +47,7 @@ public class EmptyEvaluatableTests : TestBase
             var actual = sut.ToTypedBuilder();
 
             // Assert
-            actual.ShouldBeOfType<EmptyEvaluatableBuilder<string>();
+            actual.ShouldBeOfType<EmptyEvaluatableBuilder<string>>();
         }
     }
 
