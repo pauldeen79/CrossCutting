@@ -23,5 +23,25 @@ public class NotEqualOperatorEvaluatableHandlerTests : TestBase<NotEqualOperator
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldBe("@p0 <> @p1");
         }
+
+        [Fact]
+        public async Task Returns_Correct_Sql_For_UnaryNegate_EqualOperatorExpression()
+        {
+            // Arrange
+            var parameterBag = new ParameterBag();
+            var evaluatable = new UnaryNegateOperatorEvaluatable(new NotEqualOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder())
+                .WithRightOperand(new LiteralEvaluatableBuilder())
+                .Build());
+            var sut = CreateSut();
+            var callback = new EvaluatableSqlExpressionProvider([new LiteralEvaluatableHandler()]);
+
+            // Act
+            var result = await sut.GetExpressionAsync(null, evaluatable, Substitute.For<IFieldNameProvider>(), parameterBag, callback, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("@p0 = @p1");
+        }
     }
 }
