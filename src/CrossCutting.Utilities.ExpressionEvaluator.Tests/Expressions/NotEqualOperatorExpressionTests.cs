@@ -81,4 +81,21 @@ public class NotEqualOperatorExpressionTests : TestBase
             result.ResultType.ShouldBe(typeof(bool));
         }
     }
+
+
+    public class ToTypedBuilder : NotEqualOperatorExpressionTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<bool> sut = new NotEqualOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), Result.Success<IExpression>(new EvaluatableExpression("true")), "source expression");
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<NotEqualOperatorEvaluatableBuilder>();
+        }
+    }
 }

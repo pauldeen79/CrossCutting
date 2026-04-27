@@ -22,7 +22,6 @@ public sealed class UnaryNegateOperatorExpression : UnaryOperatorExpressionBase,
             .OnSuccessAsync(results => new UnaryNegateOperatorEvaluatable(results.GetEvaluatable<bool>(Constants.Expression))
             .EvaluateAsync(context, token)).ConfigureAwait(false);
 
-
     IEvaluatableBuilder<bool> IEvaluatable<bool>.ToTypedBuilder()
         => ToTypedBuilder();
 

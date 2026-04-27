@@ -210,4 +210,20 @@ public class UnaryNegateOperatorExpressionTests : TestBase
             evaluateResult.ErrorMessage.ShouldBe("Kaboom");
         }
     }
+
+    public class ToTypedBuilder : UnaryNegateOperatorExpressionTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<bool> sut = new UnaryNegateOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), "source expression");
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<UnaryNegateOperatorEvaluatableBuilder>();
+        }
+    }
 }

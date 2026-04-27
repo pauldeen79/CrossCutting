@@ -35,4 +35,21 @@ public class DelegateResultEvaluatableTests : TestBase
             actual.ShouldBeOfType<DelegateResultEvaluatableBuilder<string>>();
         }
     }
+
+    public class BuildTyped : DelegateResultEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new DelegateResultEvaluatableBuilder<bool>()
+                .WithValue(() => Result.Success(true));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<DelegateResultEvaluatable<bool>>();
+        }
+    }
 }
