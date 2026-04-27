@@ -32,7 +32,7 @@ public class DelegateEvaluatableTests : TestBase
             var actual = sut.ToTypedBuilder();
 
             // Assert
-            actual.ShouldBeOfType<DelegateEvaluatableBuilder>();
+            actual.ShouldBeOfType<DelegateEvaluatableBuilder<string>>();
         }
     }
 }
