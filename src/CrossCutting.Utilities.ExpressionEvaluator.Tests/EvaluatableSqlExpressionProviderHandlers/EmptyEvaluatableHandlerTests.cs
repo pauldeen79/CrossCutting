@@ -1,17 +1,15 @@
 namespace CrossCutting.Utilities.ExpressionEvaluator.Tests.EvaluatableSqlExpressionProviderHandlers;
 
-public class LiteralEvaluatableHandlerTests : TestBase<LiteralEvaluatableHandler>
+public class EmptyEvaluatableHandlerTests : TestBase<EmptyEvaluatableHandler>
 {
-    public class GetExpressionAsync : LiteralEvaluatableHandlerTests
+    public class GetExpressionAsync : EmptyEvaluatableHandlerTests
     {
         [Fact]
-        public async Task Returns_Correct_Sql_For_Untyped_LiteralEvaluatable()
+        public async Task Returns_Correct_Sql_For_Untyped_EmptyEvaluatable()
         {
             // Arrange
             var parameterBag = new ParameterBag();
-            var evaluatable = new LiteralEvaluatableBuilder()
-                .WithValue("Hello world!")
-                .BuildTyped();
+            var evaluatable = new EmptyEvaluatableBuilder().BuildTyped();
             var sut = CreateSut();
             var callback = new EvaluatableSqlExpressionProvider([]);
 
@@ -20,19 +18,16 @@ public class LiteralEvaluatableHandlerTests : TestBase<LiteralEvaluatableHandler
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe("@p0");
-            parameterBag.Parameters.Count.ShouldBe(1);
-            parameterBag.Parameters.First().Value.ShouldBeEquivalentTo("Hello world!");
+            result.Value.ShouldBe(string.Empty);
+            parameterBag.Parameters.Count.ShouldBe(0);
         }
     
         [Fact]
-        public async Task Returns_Correct_Sql_For_Typed_LiteralEvaluatable()
+        public async Task Returns_Correct_Sql_For_Typed_EmptyEvaluatable()
         {
             // Arrange
             var parameterBag = new ParameterBag();
-            var evaluatable = new LiteralEvaluatableBuilder<string>()
-                .WithValue("Hello world!")
-                .BuildTyped();
+            var evaluatable = new EmptyEvaluatableBuilder<string>().BuildTyped();
             var sut = CreateSut();
             var callback = new EvaluatableSqlExpressionProvider([]);
 
@@ -41,9 +36,8 @@ public class LiteralEvaluatableHandlerTests : TestBase<LiteralEvaluatableHandler
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe("@p0");
-            parameterBag.Parameters.Count.ShouldBe(1);
-            parameterBag.Parameters.First().Value.ShouldBeEquivalentTo("Hello world!");
+            result.Value.ShouldBe(string.Empty);
+            parameterBag.Parameters.Count.ShouldBe(0);
         }
     }
 }

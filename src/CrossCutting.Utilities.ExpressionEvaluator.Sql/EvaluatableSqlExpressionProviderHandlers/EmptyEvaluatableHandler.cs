@@ -4,11 +4,11 @@ public class EmptyEvaluatableHandler : IEvaluatableSqlExpressionProviderHandler
 {
     public async Task<Result<string>> GetExpressionAsync(object? context, IEvaluatable evaluatable, IFieldNameProvider fieldNameProvider, ParameterBag parameterBag, IEvaluatableSqlExpressionProviderHandler callback, CancellationToken token)
     {
-        if (evaluatable is not EmptyEvaluatable && evaluatable is not EmptyEvaluatable<bool>)
+        if (evaluatable is IEmptyEvaluatable)
         {
-            return Result.Continue<string>();
-        }      
-        
-        return string.Empty;
+            return string.Empty;
+        }
+
+        return Result.Continue<string>();
     }
 }

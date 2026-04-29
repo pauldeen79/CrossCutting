@@ -51,35 +51,6 @@ public class EmptyEvaluatableTests : TestBase
         }
     }
 
-    public class GetValue : EmptyEvaluatableTests
-    {
-        [Fact]
-        public void Can_Get_Value_From_Untyped_Empty_Evaluatable()
-        {
-            // Arrange
-            var sut = new EmptyEvaluatable();
-
-            // Act
-            var actual = sut.GetValue();
-
-            // Assert
-            actual.ShouldBeNull();
-        }
-
-        [Fact]
-        public void Can_Get_Value_From_Typed_Empty_Evaluatable()
-        {
-            // Arrange
-            var sut = new EmptyEvaluatable<string>();
-
-            // Act
-            var actual = sut.GetValue();
-
-            // Assert
-            actual.ShouldBeNull();            
-        }
-    }
-
     public class BuildTyped : EmptyEvaluatableTests
     {
         [Fact]
