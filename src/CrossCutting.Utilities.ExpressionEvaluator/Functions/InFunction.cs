@@ -26,6 +26,6 @@ public class InFunction : IFunction
             rightValues.Add(result.Value);
         }
 
-        return leftValueResult.Value.In(context.Context.Settings.StringComparison, rightValues);
+        return In.Evaluate(leftValueResult.Value, rightValues, context.Context.Settings.StringComparison);
     }
 }
