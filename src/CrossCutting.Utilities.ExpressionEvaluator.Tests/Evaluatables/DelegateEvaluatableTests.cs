@@ -19,4 +19,37 @@ public class DelegateEvaluatableTests : TestBase
             result.Value.ShouldBe("Hello world!");
         }
     }
+
+    public class ToTypedBuilder : DelegateEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<string> sut = new DelegateEvaluatable<string>(() => "Hello world!");
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<DelegateEvaluatableBuilder<string>>();
+        }
+    }
+
+    public class BuildTyped : DelegateEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new DelegateEvaluatableBuilder<bool>()
+                .WithValue(() => true);
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<DelegateEvaluatable<bool>>();
+        }
+    }
 }

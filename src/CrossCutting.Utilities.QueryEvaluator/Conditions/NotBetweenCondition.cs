@@ -24,4 +24,7 @@ public partial record NotBetweenCondition : IChildEvaluatablesContainer
         LowerBoundExpression,
         UpperBoundExpression
     ];
+
+    public override IEvaluatableBuilder<bool> ToTypedBuilder()
+        => ToTypedBuilderCore();
 }

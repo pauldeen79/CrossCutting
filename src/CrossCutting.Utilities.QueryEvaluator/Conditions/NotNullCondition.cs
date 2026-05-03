@@ -10,4 +10,7 @@ public partial record NotNullCondition : IChildEvaluatablesContainer
 
     public IEnumerable<IEvaluatable> GetChildEvaluatables()
         => [SourceExpression];
+
+    public override IEvaluatableBuilder<bool> ToTypedBuilder()
+        => ToTypedBuilderCore();
 }

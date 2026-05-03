@@ -73,4 +73,27 @@ public class NotBetweenConditionTests : TestBase<BetweenCondition>
             children.Length.ShouldBe(3);
         }
     }
+    
+    public class ToTypedBuilder : NotBetweenConditionTests
+    {
+        [Fact]
+        public void Returns_Valid_Builder()
+        {
+            // Arrange
+            var sourceValue = "this";
+            var lowerBoundValue = 13;
+            var upperBoundValue = 15;
+            var builder = new NotBetweenConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
+                .WithLowerBoundExpression(new LiteralEvaluatableBuilder(lowerBoundValue))
+                .WithUpperBoundExpression(new LiteralEvaluatableBuilder(upperBoundValue));
+            var sut = builder.BuildTyped();
+
+            // Act
+            var typedBuilder = sut.ToTypedBuilder();
+
+            // Assert
+            typedBuilder.ShouldBeOfType<NotBetweenConditionBuilder>();
+        }
+    }
 }

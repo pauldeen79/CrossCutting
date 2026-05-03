@@ -88,4 +88,25 @@ public class GreaterThanOrEqualConditionTests : TestBase<GreaterThanOrEqualCondi
             children.Length.ShouldBe(2);
         }
     }
+
+    public class ToTypedBuilder : GreaterThanOrEqualConditionTests
+    {
+        [Fact]
+        public void Returns_Valid_Builder()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "this";
+            var sut = new GreaterThanOrEqualConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder<string>(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder<string>(rightValue))
+                .BuildTyped();
+
+            // Act
+            var typedBuilder = sut.ToTypedBuilder();
+
+            // Assert
+            typedBuilder.ShouldBeOfType<GreaterThanOrEqualConditionBuilder>();
+        }
+    }
 }

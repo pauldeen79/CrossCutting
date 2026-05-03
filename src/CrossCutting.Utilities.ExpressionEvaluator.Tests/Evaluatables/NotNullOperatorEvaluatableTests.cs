@@ -41,4 +41,39 @@ public class NotNullOperatorEvaluatableTests : TestBase
             (await result[0].EvaluateAsync(context, CancellationToken.None)).GetValue().ShouldBe(1);
         }
     }
+
+    public class ToTypedBuilder : NotNullOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<bool> sut = new NotNullOperatorEvaluatableBuilder()
+                .WithOperand(new LiteralEvaluatableBuilder(true))
+                .BuildTyped();
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<NotNullOperatorEvaluatableBuilder>();
+        }
+    }
+
+    public class BuildTyped : NotNullOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new NotNullOperatorEvaluatableBuilder()
+                .WithOperand(new LiteralEvaluatableBuilder<bool>(true));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<NotNullOperatorEvaluatable>();
+        }
+    }
 }

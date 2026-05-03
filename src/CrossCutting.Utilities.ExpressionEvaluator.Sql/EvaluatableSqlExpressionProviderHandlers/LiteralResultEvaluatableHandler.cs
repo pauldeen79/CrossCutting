@@ -6,13 +6,13 @@ public class LiteralResultEvaluatableHandler : IEvaluatableSqlExpressionProvider
     {
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
 
-        if (evaluatable is not LiteralResultEvaluatable literalResultEvaluatable)
+        if (evaluatable is not ILiteralResultEvaluatable literalResultEvaluatable)
         {
             return Result.Continue<string>();
         }      
         
-        return literalResultEvaluatable.Value.Status.IsSuccessful()
-            ? parameterBag.CreateQueryParameterName(literalResultEvaluatable.Value.Value)
-            : Result.FromExistingResult<string>(literalResultEvaluatable.Value);
+        return literalResultEvaluatable.GetValue().Status.IsSuccessful()
+            ? parameterBag.CreateQueryParameterName(literalResultEvaluatable.GetValue().GetValue())
+            : Result.FromExistingResult<string>(literalResultEvaluatable.GetValue());
     }
 }

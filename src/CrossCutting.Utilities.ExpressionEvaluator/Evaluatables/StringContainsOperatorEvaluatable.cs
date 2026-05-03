@@ -12,6 +12,9 @@ public partial record StringContainsOperatorEvaluatable : IChildEvaluatablesCont
             .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results => results.GetValue<string>(nameof(LeftOperand)).IndexOf(results.GetValue<string>(nameof(RightOperand)), StringComparison) > -1);
 
+    IEvaluatableBuilder<bool> IEvaluatable<bool>.ToTypedBuilder()
+        => ToTypedBuilder();
+
     public IEnumerable<IEvaluatable> GetChildEvaluatables() =>
     [
         LeftOperand,

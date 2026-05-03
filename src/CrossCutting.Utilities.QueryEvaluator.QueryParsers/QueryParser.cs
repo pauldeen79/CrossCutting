@@ -159,8 +159,8 @@ public class QueryParser<TQueryBuilder, TQueryExpression> : IQueryParser<TQueryB
                 .WithSourceExpression(_defaultFieldExpressionFactory())
                 .WithCompareExpression(CreateLiteralExpression(value, startsWithPlusOrMinus));
 
-    private static LiteralEvaluatableBuilder CreateLiteralExpression(string value, bool startsWithPlusOrMinus)
-        => new LiteralEvaluatableBuilder(startsWithPlusOrMinus
+    private static LiteralEvaluatableBuilder<string> CreateLiteralExpression(string value, bool startsWithPlusOrMinus)
+        => new LiteralEvaluatableBuilder<string>(startsWithPlusOrMinus
             ? value.Substring(1)
             : value);
 

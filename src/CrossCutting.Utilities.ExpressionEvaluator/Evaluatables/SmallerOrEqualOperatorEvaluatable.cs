@@ -12,6 +12,9 @@ public partial record SmallerOrEqualOperatorEvaluatable : IChildEvaluatablesCont
             .BuildAsync().ConfigureAwait(false))
             .OnSuccess(results => SmallerOrEqualThan.Evaluate(results.GetValue(nameof(LeftOperand)), results.GetValue(nameof(RightOperand))));
 
+    IEvaluatableBuilder<bool> IEvaluatable<bool>.ToTypedBuilder()
+        => ToTypedBuilder();
+
     public IEnumerable<IEvaluatable> GetChildEvaluatables() =>
     [
         LeftOperand,

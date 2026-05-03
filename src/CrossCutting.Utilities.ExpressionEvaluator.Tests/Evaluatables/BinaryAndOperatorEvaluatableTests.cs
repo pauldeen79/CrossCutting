@@ -9,8 +9,8 @@ public class BinaryAndOperatorEvaluatableTests : TestBase
         {
             // Arrange
             var sut = new BinaryAndOperatorEvaluatableBuilder()
-                .WithLeftOperand(new LiteralEvaluatableBuilder(true))
-                .WithRightOperand(new LiteralEvaluatableBuilder(false))
+                .WithLeftOperand(new LiteralEvaluatableBuilder<bool>(true))
+                .WithRightOperand(new LiteralEvaluatableBuilder<bool>(false))
                 .Build();
             var context = CreateContext("Dummy");
 
@@ -30,8 +30,8 @@ public class BinaryAndOperatorEvaluatableTests : TestBase
         {
             // Arrange
             var sut = new BinaryAndOperatorEvaluatableBuilder()
-                .WithLeftOperand(new LiteralEvaluatableBuilder(true))
-                .WithRightOperand(new LiteralEvaluatableBuilder(false))
+                .WithLeftOperand(new LiteralEvaluatableBuilder<bool>(true))
+                .WithRightOperand(new LiteralEvaluatableBuilder<bool>(false))
                 .BuildTyped();
             var context = CreateContext("Dummy");
 
@@ -42,6 +42,43 @@ public class BinaryAndOperatorEvaluatableTests : TestBase
             result.Length.ShouldBe(2);
             (await result[0].EvaluateAsync(context, CancellationToken.None)).GetValue().ShouldBe(true);
             (await result[1].EvaluateAsync(context, CancellationToken.None)).GetValue().ShouldBe(false);
+        }
+    }
+
+    public class ToTypedBuilder : BinaryAndOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<bool> sut = new BinaryAndOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder<bool>(true))
+                .WithRightOperand(new LiteralEvaluatableBuilder<bool>(false))
+                .BuildTyped();
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<BinaryAndOperatorEvaluatableBuilder>();
+        }
+    }
+
+    public class BuildTyped : BinaryAndOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new BinaryAndOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder<bool>(true))
+                .WithRightOperand(new LiteralEvaluatableBuilder<bool>(false));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<BinaryAndOperatorEvaluatable>();
         }
     }
 }

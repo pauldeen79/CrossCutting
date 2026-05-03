@@ -13,4 +13,7 @@ public partial record NotEqualCondition : IChildEvaluatablesContainer
         SourceExpression,
         CompareExpression
     ];
+
+    public override IEvaluatableBuilder<bool> ToTypedBuilder()
+        => ToTypedBuilderCore();
 }

@@ -107,4 +107,25 @@ public class EqualConditionTests : TestBase<EqualCondition>
             children.Length.ShouldBe(2);
         }
     }
+
+    public class ToTypedBuilder : EqualConditionTests
+    {
+        [Fact]
+        public void Returns_Valid_Builder()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "this";
+            var sut = new EqualConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .BuildTyped();
+
+            // Act
+            var typedBuilder = sut.ToTypedBuilder();
+
+            // Assert
+            typedBuilder.ShouldBeOfType<EqualConditionBuilder>();
+        }
+    }
 }

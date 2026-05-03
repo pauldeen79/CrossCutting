@@ -44,4 +44,41 @@ public class GreaterOrEqualOperatorEvaluatableTests : TestBase
             (await result[1].EvaluateAsync(context, CancellationToken.None)).GetValue().ShouldBe(2);
         }
     }
+
+    public class ToTypedBuilder : GreaterOrEqualOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<bool> sut = new GreaterOrEqualOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder(true))
+                .WithRightOperand(new LiteralEvaluatableBuilder(false))
+                .BuildTyped();
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<GreaterOrEqualOperatorEvaluatableBuilder>();
+        }
+    }
+
+    public class BuildTyped : GreaterOrEqualOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new GreaterOrEqualOperatorEvaluatableBuilder()
+                .WithLeftOperand(new LiteralEvaluatableBuilder<bool>(true))
+                .WithRightOperand(new LiteralEvaluatableBuilder<bool>(false));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<GreaterOrEqualOperatorEvaluatable>();
+        }
+    }
 }

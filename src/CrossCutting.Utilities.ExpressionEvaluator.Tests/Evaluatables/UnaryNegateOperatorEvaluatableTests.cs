@@ -41,4 +41,39 @@ public class UnaryNegateOperatorEvaluatableTests : TestBase
             (await result[0].EvaluateAsync(context, CancellationToken.None)).GetValue().ShouldBe(true);
         }
     }
+
+    public class ToTypedBuilder : UnaryNegateOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<bool> sut = new UnaryNegateOperatorEvaluatableBuilder()
+                .WithOperand(new LiteralEvaluatableBuilder(true))
+                .BuildTyped();
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<UnaryNegateOperatorEvaluatableBuilder>();
+        }
+    }
+
+    public class BuildTyped : UnaryNegateOperatorEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new UnaryNegateOperatorEvaluatableBuilder()
+                .WithOperand(new LiteralEvaluatableBuilder<bool>(true));
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<UnaryNegateOperatorEvaluatable>();
+        }
+    }
 }

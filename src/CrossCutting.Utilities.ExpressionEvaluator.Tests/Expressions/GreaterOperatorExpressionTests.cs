@@ -81,4 +81,20 @@ public class GreaterOperatorExpressionTests : TestBase
             result.ResultType.ShouldBe(typeof(bool));
         }
     }
+
+    public class ToTypedBuilder : GreaterOperatorExpressionTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<bool> sut = new GreaterOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), Result.Success<IExpression>(new EvaluatableExpression("true")), "source expression");
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<GreaterOperatorEvaluatableBuilder>();
+        }
+    }
 }

@@ -69,4 +69,25 @@ public class StringEqualsConditionTests : TestBase<StringEqualsCondition>
             children.Length.ShouldBe(2);
         }
     }
+
+    public class ToTypedBuilder : StringEqualsConditionTests
+    {
+        [Fact]
+        public void Returns_Valid_Builder()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "this";
+            var sut = new StringEqualsConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .BuildTyped();
+
+            // Act
+            var typedBuilder = sut.ToTypedBuilder();
+
+            // Assert
+            typedBuilder.ShouldBeOfType<StringEqualsConditionBuilder>();
+        }
+    }
 }

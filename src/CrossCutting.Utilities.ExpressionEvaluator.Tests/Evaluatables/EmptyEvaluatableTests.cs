@@ -34,4 +34,36 @@ public class EmptyEvaluatableTests : TestBase
             result.Value.ShouldBeNull();
         }
     }
+
+    public class ToTypedBuilder : EmptyEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<string> sut = new EmptyEvaluatable<string>();
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<EmptyEvaluatableBuilder<string>>();
+        }
+    }
+
+    public class BuildTyped : EmptyEvaluatableTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatableBuilder<bool> sut = new EmptyEvaluatableBuilder<bool>();
+
+            // Act
+            var actual = sut.BuildTyped();
+
+            // Assert
+            actual.ShouldBeOfType<EmptyEvaluatable<bool>>();
+        }
+    }
 }

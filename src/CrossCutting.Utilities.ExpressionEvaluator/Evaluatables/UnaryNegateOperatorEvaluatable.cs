@@ -12,5 +12,8 @@ public partial record UnaryNegateOperatorEvaluatable : IChildEvaluatablesContain
             .TryCast<bool>("Expression is not of type boolean")
             .OnSuccess(result => !result.Value);
 
+    IEvaluatableBuilder<bool> IEvaluatable<bool>.ToTypedBuilder()
+        => ToTypedBuilder();
+
     public IEnumerable<IEvaluatable> GetChildEvaluatables() => [Operand];
 }

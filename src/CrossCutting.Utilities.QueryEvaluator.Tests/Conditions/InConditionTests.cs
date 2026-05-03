@@ -8,11 +8,11 @@ public class InConditionTests : TestBase<InCondition>
         public async Task Returns_Ok_On_Two_Strings()
         {
             // Arrange
-            var leftValue = "this";
-            var rightValue = "this";
+            var sourceValue = "this";
+            var compareValues = "this";
             var sut = new InConditionBuilder()
-                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
-                .AddCompareExpressions(new LiteralEvaluatableBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
+                .AddCompareExpressions(new LiteralEvaluatableBuilder(compareValues))
                 .Build();
             var context = CreateContext();
 
@@ -28,11 +28,11 @@ public class InConditionTests : TestBase<InCondition>
         public async Task Returns_Ok_On_String_And_String_Array()
         {
             // Arrange
-            var leftValue = "a";
-            var rightValue = new List<string> { "A", "B", "C" };
+            var sourceValue = "a";
+            var compareValues = new List<string> { "A", "B", "C" };
             var sut = new InConditionBuilder()
-                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
-                .AddCompareExpressions(rightValue.Select(x => new LiteralEvaluatableBuilder(x)))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
+                .AddCompareExpressions(compareValues.Select(x => new LiteralEvaluatableBuilder(x)))
                 .Build();
             var settings = new ExpressionEvaluatorSettingsBuilder().WithStringComparison(StringComparison.OrdinalIgnoreCase);
             var context = CreateContext(settings: settings);
@@ -49,11 +49,11 @@ public class InConditionTests : TestBase<InCondition>
         public async Task Returns_Ok_On_Different_Types()
         {
             // Arrange
-            var leftValue = "this";
-            var rightValue = 13;
+            var sourceValue = "this";
+            var compareValues = 13;
             var sut = new InConditionBuilder()
-                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
-                .AddCompareExpressions(new LiteralEvaluatableBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
+                .AddCompareExpressions(new LiteralEvaluatableBuilder(compareValues))
                 .Build();
             var context = CreateContext();
 
@@ -72,11 +72,11 @@ public class InConditionTests : TestBase<InCondition>
         public async Task Returns_Ok_On_Two_Strings()
         {
             // Arrange
-            var leftValue = "this";
-            var rightValue = "this";
+            var sourceValue = "this";
+            var compareValues = "this";
             var sut = new InConditionBuilder()
-                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
-                .AddCompareExpressions(new LiteralEvaluatableBuilder(rightValue))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
+                .AddCompareExpressions(new LiteralEvaluatableBuilder(compareValues))
                 .Build();
             var context = CreateContext();
 
@@ -95,12 +95,12 @@ public class InConditionTests : TestBase<InCondition>
         public void Returns_Child_Evaluatables_Correctly()
         {
             // Arrange
-            var leftValue = "this";
-            var rightValue1 = "this1";
-            var rightValue2 = "this2";
+            var sourvceValue = "this";
+            var compareValue1 = "this1";
+            var compareValue2 = "this2";
             var sut = new InConditionBuilder()
-                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
-                .AddCompareExpressions(new LiteralEvaluatableBuilder(rightValue1), new LiteralEvaluatableBuilder(rightValue2))
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourvceValue))
+                .AddCompareExpressions(new LiteralEvaluatableBuilder(compareValue1), new LiteralEvaluatableBuilder(compareValue2))
                 .Build();
 
             // Act
@@ -108,6 +108,28 @@ public class InConditionTests : TestBase<InCondition>
 
             // Assert
             children.Length.ShouldBe(3);
+        }
+    }
+
+    public class ToTypedBuilder : InConditionTests
+    {
+        [Fact]
+        public void Returns_Valid_Builder()
+        {
+            // Arrange
+            var sourvceValue = "this";
+            var compareValue1 = "this1";
+            var compareValue2 = "this2";
+            var sut = new InConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourvceValue))
+                .AddCompareExpressions(new LiteralEvaluatableBuilder(compareValue1), new LiteralEvaluatableBuilder(compareValue2))
+                .Build();
+
+            // Act
+            var typedBuilder = sut.ToTypedBuilder();
+
+            // Assert
+            typedBuilder.ShouldBeOfType<InConditionBuilder>();
         }
     }
 }

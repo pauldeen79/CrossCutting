@@ -6,11 +6,11 @@ public class DelegateEvaluatableHandler : IEvaluatableSqlExpressionProviderHandl
     {
         parameterBag = ArgumentGuard.IsNotNull(parameterBag, nameof(parameterBag));
 
-        if (evaluatable is not DelegateEvaluatable delegateEvaluatable)
+        if (evaluatable is not IDelegateEvaluatable delegateEvaluatable)
         {
             return Result.Continue<string>();
         }      
         
-        return Result.WrapException(() => parameterBag.CreateQueryParameterName(delegateEvaluatable.Value()));
+        return Result.WrapException(() => parameterBag.CreateQueryParameterName(delegateEvaluatable.GetValue().Invoke()));
     }
 }

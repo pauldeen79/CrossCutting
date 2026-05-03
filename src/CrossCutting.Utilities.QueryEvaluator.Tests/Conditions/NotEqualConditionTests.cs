@@ -88,4 +88,25 @@ public class NotEqualConditionTests : TestBase<NotEqualCondition>
             children.Length.ShouldBe(2);
         }
     }
+    
+    public class ToTypedBuilder : NotEqualConditionTests
+    {
+        [Fact]
+        public void Returns_Valid_Builder()
+        {
+            // Arrange
+            var leftValue = "this";
+            var rightValue = "this";
+            var sut = new NotEqualConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(leftValue))
+                .WithCompareExpression(new LiteralEvaluatableBuilder(rightValue))
+                .BuildTyped();
+
+            // Act
+            var typedBuilder = sut.ToTypedBuilder();
+
+            // Assert
+            typedBuilder.ShouldBeOfType<NotEqualConditionBuilder>();
+        }
+    }
 }

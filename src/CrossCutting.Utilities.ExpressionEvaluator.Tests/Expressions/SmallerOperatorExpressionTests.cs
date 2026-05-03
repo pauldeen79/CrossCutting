@@ -81,4 +81,20 @@ public class SmallerOperatorExpressionTests : TestBase
             result.ResultType.ShouldBe(typeof(bool));
         }
     }
+
+    public class ToTypedBuilder : SmallerOperatorExpressionTests
+    {
+        [Fact]
+        public async Task Gives_Correct_Result()
+        {
+            // Arrange
+            IEvaluatable<bool> sut = new SmallerOperatorExpression(Result.Success<IExpression>(new EvaluatableExpression("true")), Result.Success<IExpression>(new EvaluatableExpression("true")), "source expression");
+
+            // Act
+            var actual = sut.ToTypedBuilder();
+
+            // Assert
+            actual.ShouldBeOfType<SmallerOperatorEvaluatableBuilder>();
+        }
+    }
 }

@@ -13,4 +13,7 @@ public partial record StringNotStartsWithCondition : IChildEvaluatablesContainer
         SourceExpression,
         CompareExpression
     ];
+
+    public override IEvaluatableBuilder<bool> ToTypedBuilder()
+        => ToTypedBuilderCore();
 }

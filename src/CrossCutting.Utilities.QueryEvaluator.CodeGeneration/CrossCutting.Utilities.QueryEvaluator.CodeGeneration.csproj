@@ -12,5 +12,4 @@
     <PackageReference Include="pauldeen79.ClassFramework.TemplateFramework" />
     <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" />
   </ItemGroup>
-
 </Project>

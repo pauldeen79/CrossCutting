@@ -11,7 +11,7 @@ public partial record InCondition : IChildEvaluatablesContainer
             .AddRange($"{nameof(CompareExpressions)}.{{0}}", CompareExpressions.Select(x => new Func<Task<Result<object?>>>(() => x.EvaluateAsync(context, token))))
             .BuildAsync(token)
             .ConfigureAwait(false))
-            .OnSuccess(results => results.GetValue(nameof(SourceExpression)).In(context.Settings.StringComparison, results.Where(x => x.Key.StartsWith($"{nameof(CompareExpressions)}.")).Select(x => x.Value.GetValue())));
+            .OnSuccess(results => In.Evaluate(results.GetValue(nameof(SourceExpression)), results.Where(x => x.Key.StartsWith($"{nameof(CompareExpressions)}.")).Select(x => x.Value.GetValue()), context.Settings.StringComparison));
 
     public IEnumerable<IEvaluatable> GetChildEvaluatables()
     {
@@ -21,4 +21,7 @@ public partial record InCondition : IChildEvaluatablesContainer
             yield return expression;
         }
     }
+
+    public override IEvaluatableBuilder<bool> ToTypedBuilder()
+        => ToTypedBuilderCore();
 }

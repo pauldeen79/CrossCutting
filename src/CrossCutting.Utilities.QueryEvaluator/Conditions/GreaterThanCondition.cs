@@ -13,4 +13,7 @@ public partial record GreaterThanCondition : IChildEvaluatablesContainer
         SourceExpression,
         CompareExpression
     ];
+
+    public override IEvaluatableBuilder<bool> ToTypedBuilder()
+        => ToTypedBuilderCore();
 }

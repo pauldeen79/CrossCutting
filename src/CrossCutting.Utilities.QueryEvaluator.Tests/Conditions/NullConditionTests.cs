@@ -98,4 +98,23 @@ public class NullConditionTests : TestBase<NullCondition>
             children.Length.ShouldBe(1);
         }
     }
+
+    public class ToTypedBuilder : NullConditionTests
+    {
+        [Fact]
+        public void Returns_Valid_Builder()
+        {
+            // Arrange
+            var sourceValue = "this";
+            var sut = new NullConditionBuilder()
+                .WithSourceExpression(new LiteralEvaluatableBuilder(sourceValue))
+                .BuildTyped();
+
+            // Act
+            var typedBuilder = sut.ToTypedBuilder();
+
+            // Assert
+            typedBuilder.ShouldBeOfType<NullConditionBuilder>();
+        }
+    }
 }
