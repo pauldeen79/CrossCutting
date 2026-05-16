@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <PackageId>pauldeen79.CrossCutting.Utilities.ExpressionEvaluator.Sql</PackageId>
-    <Version>2.4.3</Version>
-    <PackageVersion>2.4.3</PackageVersion>
+    <Version>2.4.4</Version>
+    <PackageVersion>2.4.4</PackageVersion>
     <AnalysisLevel>latest-All</AnalysisLevel>
   </PropertyGroup>
 
