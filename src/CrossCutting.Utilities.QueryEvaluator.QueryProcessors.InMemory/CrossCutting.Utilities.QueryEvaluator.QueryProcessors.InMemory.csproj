@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <PackageId>pauldeen79.CrossCutting.Utilities.QueryEvaluator.QueryProcessors.InMemory</PackageId>
-    <Version>1.2.3</Version>
-    <PackageVersion>1.2.3</PackageVersion>
+    <Version>1.2.4</Version>
+    <PackageVersion>1.2.4</PackageVersion>
     <AnalysisLevel>latest-All</AnalysisLevel>
   </PropertyGroup>
 
