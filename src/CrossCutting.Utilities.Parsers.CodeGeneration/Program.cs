@@ -9,7 +9,7 @@ internal static class Program
         var currentDirectory = Directory.GetCurrentDirectory();
         var basePath = currentDirectory switch
         {
-            var x when x.EndsWith(Constants.ProjectName) => Path.Combine(currentDirectory, @"src/"),
+            var x when x.EndsWith("CrossCutting") => Path.Combine(currentDirectory, @"src/"),
             var x when x.EndsWith($"{Constants.ProjectName}.CodeGeneration") => Path.Combine(currentDirectory, @"../"),
             _ => Path.Combine(currentDirectory, @"../../../../")
         };
